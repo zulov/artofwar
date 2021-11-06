@@ -142,8 +142,7 @@ public:
 	void setSparseIndex(int index);
 
 	float getModelHeight() const override;
-	float getAuraSize() const override;
-	void setModelData(float modelHeight, float auraSize) const override;
+	void setModelData(float modelHeight) const override;
 
 	void setThingToInteract(Physical* toUse) {
 		thingToInteract = toUse;

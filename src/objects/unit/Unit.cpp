@@ -321,13 +321,8 @@ float Unit::getModelHeight() const {
 	return dbLevel->modelHeight;
 }
 
-float Unit::getAuraSize() const {
-	return dbLevel->auraSize;
-}
-
-void Unit::setModelData(float modelHeight, float auraSize) const {
+void Unit::setModelData(float modelHeight) const {
 	dbLevel->modelHeight = modelHeight;
-	dbLevel->auraSize = auraSize;
 }
 
 void Unit::changeColor(float value, float maxValue) const {

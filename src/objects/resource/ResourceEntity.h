@@ -32,8 +32,7 @@ public:
 	bool canUse(int index) const override;
 
 	float getModelHeight() const override;
-	float getAuraSize() const override;
-	void setModelData(float modelHeight, float auraSize) const override;
+	void setModelData(float modelHeight) const override;
 
 	ObjectType getType() const override { return ObjectType::RESOURCE; }
 	unsigned char getMaxCloseUsers() const override;

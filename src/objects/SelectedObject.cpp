@@ -11,10 +11,8 @@ void SelectedObject::disableBillboard(Urho3D::Billboard* billboard) {
 
 void SelectedObject::disableBillboards() {
 	disableBillboard(healthBar);
-	disableBillboard(aura);
 }
 
-void SelectedObject::set(Urho3D::Billboard* aura, Urho3D::Billboard* bar) {
-	this->aura = aura;
+void SelectedObject::set(Urho3D::Billboard* bar) {
 	this->healthBar = bar;
 }

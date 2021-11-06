@@ -41,7 +41,7 @@ void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std:
 	}
 
 	const auto terrain = Game::getEnvironment()->getTerrain();
-	if (terrain && !SIM_GLOBALS.HEADLESS) {
+	if (terrain && !SIM_GLOBALS.HEADLESS && false) {
 		auto current = visibilityPerPlayer[Game::getPlayersMan()->getActivePlayerID()];
 
 		for (const auto resource : (*resources)) {

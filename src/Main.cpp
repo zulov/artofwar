@@ -16,6 +16,7 @@
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
+#include <Urho3D/Graphics/RenderPath.h>
 #include "camera/CameraEnums.h"
 #include "camera/CameraManager.h"
 #include "colors/ColorPaletteRepo.h"
@@ -537,6 +538,7 @@ void Main::SetupViewport() {
 	if (!engineParameters_[EP_HEADLESS].GetBool()) {
 		SharedPtr<Viewport> viewport(new Viewport(context_, Game::getScene(),
 		                                          Game::getCameraManager()->getComponent()));
+		
 		const auto renderer = GetSubsystem<Renderer>();
 		if (renderer) {
 			GetSubsystem<Renderer>()->SetViewport(0, viewport);

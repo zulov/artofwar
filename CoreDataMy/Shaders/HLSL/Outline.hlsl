@@ -71,6 +71,13 @@ void PS(
         blurredMask = clamp(blurredMask - mask.a, 0.0, 1.0);
         blurredMask *= 3.0;
         oColor = viewport * (1.0 - blurredMask.a) + blurredMask;
+		
+		//float4 blurredMask = Sample2D(DiffMap, iTexCoord);
+        //float4 mask = Sample2D(NormalMap, iTexCoord);
+        //float4 viewport = Sample2D(SpecMap, iTexCoord);
+        //blurredMask.a = clamp(blurredMask.a - mask.a, 0.0, 1.0);
+        //blurredMask = clamp(blurredMask * 200.0, 0.0, 1.0);
+        //oColor = float4(viewport.rgb * (1.0 - blurredMask.a) + blurredMask.rgb * blurredMask.a, viewport.a);
     #endif
 
 

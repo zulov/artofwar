@@ -99,13 +99,8 @@ float ResourceEntity::getModelHeight() const {
 	return dbResource->modelHeight;
 }
 
-float ResourceEntity::getAuraSize() const {
-	return dbResource->auraSize;
-}
-
-void ResourceEntity::setModelData(float modelHeight, float auraSize) const {
+void ResourceEntity::setModelData(float modelHeight) const {
 	dbResource->modelHeight = modelHeight;
-	dbResource->auraSize = auraSize;
 }
 
 std::pair<float, bool> ResourceEntity::absorbAttack(float collectSpeed) {

@@ -34,10 +34,6 @@ private:
 	Urho3D::BillboardSet* createSet(Urho3D::Node* node, Urho3D::String& materialName, int size) const;
 
 	Urho3D::Node* nodeBar{};
-	Urho3D::Node* nodeAura{};
-
-	Urho3D::BillboardSet* resourceAura[RESOURCES_SIZE];
-	std::array<Urho3D::BillboardSet*, MAX_PLAYERS> perPlayerAura;
 
 	Urho3D::BillboardSet* resourceBar;
 	std::array<Urho3D::BillboardSet*, MAX_PLAYERS> perPlayerBar;

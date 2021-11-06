@@ -44,7 +44,6 @@ public:
 protected:
 	void populate() override;
 	float getHealthBarThick() const override { return 0.15f; }
-	float calculateAuraSize(const Urho3D::Vector3& boundingBox) const override;
 
 	unsigned short indexInInfluence;
 	StaticState state, nextState;

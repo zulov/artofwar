@@ -55,8 +55,7 @@ public:
 	db_building_level* getLevel() const;
 
 	float getModelHeight() const override;
-	float getAuraSize() const override;
-	void setModelData(float modelHeight, float auraSize) const override;
+	void setModelData(float modelHeight) const override;
 private:
 	int deployIndex = -1;
 	unsigned short currentFrameState = 0;

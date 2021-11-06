@@ -104,11 +104,10 @@ public:
 	virtual bool isInCloseRange(int index) const = 0;
 	virtual const Urho3D::String& getName() const = 0;
 	virtual float getModelHeight() const =0;
-	virtual float getAuraSize() const =0;
 	void setVisibility(bool value);
 
 protected:
-	virtual void setModelData(float modelHeight, float auraSize) const =0;
+	virtual void setModelData(float modelHeight) const =0;
 
 	void loadXml(const Urho3D::String& xmlName);
 	void setPlayerAndTeam(int player);
@@ -132,6 +131,5 @@ protected:
 
 	SelectedObject* selectedObject{};
 private:
-	virtual float calculateAuraSize(const Urho3D::Vector3& boundingBox) const;
 
 };

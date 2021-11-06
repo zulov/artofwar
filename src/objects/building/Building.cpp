@@ -256,11 +256,6 @@ float Building::getModelHeight() const {
 	return dbLevel->modelHeight;
 }
 
-float Building::getAuraSize() const {
-	return dbLevel->auraSize;
-}
-
-void Building::setModelData(float modelHeight, float auraSize) const {
+void Building::setModelData(float modelHeight) const {
 	dbLevel->modelHeight = modelHeight;
-	dbLevel->auraSize = auraSize;
 }

@@ -1,6 +1,7 @@
 #include "objects/Physical.h"
 
 #include <Urho3D/Graphics/BillboardSet.h>
+#include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
@@ -40,10 +41,6 @@ bool Physical::isAlive() const {
 	return true;
 }
 
-float Physical::calculateAuraSize(const Urho3D::Vector3& boundingBox) const {
-	return (boundingBox.x_ + boundingBox.z_) / 2 * 1.2f;
-}
-
 void Physical::updateBillboards() const {
 	if (selectedObject) {
 		auto const healthBar = selectedObject->getHealthBar();
@@ -51,13 +48,6 @@ void Physical::updateBillboards() const {
 			healthBar->position_ = node->GetPosition() + Urho3D::Vector3{0, getModelHeight() * 1.3f, 0};
 			healthBar->size_ = {getHealthBarSize(), getHealthBarThick()};
 			healthBar->enabled_ = true;
-		}
-		auto const aura = selectedObject->getAura();
-		if (aura) {
-			aura->position_ = node->GetPosition();
-			float aS = getAuraSize();
-			aura->size_ = {aS, aS};
-			aura->enabled_ = true;
 		}
 	}
 }
@@ -112,13 +102,28 @@ void Physical::select(SelectedObject* selectedObject) {
 	assert(this->selectedObject == nullptr);
 
 	this->selectedObject = selectedObject;
+	if (node) {
+		auto comp = node->GetComponent<Urho3D::StaticModel>();
 
+		if (comp) {
+			reszta meterialow
+			comp->GetMaterial()->SetShaderParameter("OutlineEnable", true);
+		}
+	}
 	updateBillboards();
 	updateHealthBar();
 }
 
 
 void Physical::unSelect() {
+	if (node) {
+		auto comp = node->GetComponent<Urho3D::StaticModel>();
+
+		if (comp) {
+			reszta meterialow
+			comp->GetMaterial()->SetShaderParameter("OutlineEnable", false);
+		}
+	}
 	if (selectedObject) {
 		selectedObject->disableBillboards();
 		selectedObject = nullptr;
@@ -135,11 +140,7 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 	Urho3D::String name;
 	if (SIM_GLOBALS.HEADLESS) {
 		name = "";
-	}
-		// else if (SIM_GLOBALS.TRAIN_MODE) {
-		// 	name = "Objects/mock.xml";
-		// }
-	else {
+	} else {
 		name = xmlName;
 	}
 
@@ -151,8 +152,11 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 			const auto model = node->GetComponent<Urho3D::StaticModel>();
 			const auto boundingBox = model->GetModel()->GetBoundingBox().Size() * node->GetScale();
 
-			setModelData(Urho3D::Max(1.f, boundingBox.y_), Urho3D::Max(1.f, calculateAuraSize(boundingBox)));
+			setModelData(Urho3D::Max(1.f, boundingBox.y_));
 		}
+		const auto model = node->GetComponent<Urho3D::StaticModel>();
+		model->SetMaterial(model->GetMaterial()->Clone()); //TODO memory
+		reszta meterialow
 	}
 
 	populate();

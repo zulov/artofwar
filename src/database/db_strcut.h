@@ -190,7 +190,6 @@ struct db_with_hp {
 
 struct db_with_model {
 	float modelHeight = -1.f;
-	float auraSize = -1.f;
 };
 
 struct db_build_upgrade {
