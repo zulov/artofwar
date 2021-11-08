@@ -4,8 +4,6 @@
 	<parameter name="MatDiffColor" value="0.588 0.588 0.588 1"/>
 	<parameter name="MatSpecColor" value="0.5 0.5 0 6"/>
 	
-		
-	<parameter name="OutlineWidth" value="0.01" />
     <parameter name="OutlineColor" value="1 0 1 0" />
 	<parameter name="OutlineEnable" value="false" />
 </material>

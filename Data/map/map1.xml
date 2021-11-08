@@ -1,7 +1,7 @@
 <node>
 	<component type="Terrain">
 		<attribute name="Height Map" value="Image;map/h2.png" />
-		<attribute name="Material" value="Material;Materials/test.xml" />
+		<attribute name="Material" value="Material;Materials/Terrain.xml" />
 		<attribute name="Vertex Spacing" value="1 0.05 1" />
 		<attribute name="Patch Size" value="32" />
 		<attribute name="Is Occluder" value="false" />

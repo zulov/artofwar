@@ -110,6 +110,15 @@ void Physical::select(SelectedObject* selectedObject) {
 }
 
 
+void Physical::unSelect() {
+	setShaderParam(false);
+
+	if (selectedObject) {
+		selectedObject->disableBillboards();
+		selectedObject = nullptr;
+	}
+}
+
 void Physical::setShaderParam(bool value) const {
 	if (node) {
 		auto comp = node->GetComponent<Urho3D::StaticModel>();
@@ -119,15 +128,6 @@ void Physical::setShaderParam(bool value) const {
 				comp->GetMaterial(i)->SetShaderParameter("OutlineEnable", value);
 			}
 		}
-	}
-}
-
-void Physical::unSelect() {
-	setShaderParam(false);
-
-	if (selectedObject) {
-		selectedObject->disableBillboards();
-		selectedObject = nullptr;
 	}
 }
 

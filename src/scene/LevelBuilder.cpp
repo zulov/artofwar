@@ -60,8 +60,8 @@ void LevelBuilder::createGround(const Urho3D::String& xmlName, int size) {
 		terrain->SetSpacing(s);
 
 		if (!SIM_GLOBALS.HEADLESS) {
-			terrain->GetMaterial()->SetUVTransform(Urho3D::Vector2(0, 0), 0.f, 16.f * hSpacing);
-
+			terrain->GetMaterial()->SetShaderParameter("DetailTiling",
+			                                           Urho3D::Vector2(16.f * hSpacing, 16.f * hSpacing));
 			terrain->SetSmoothing(true);
 			node->SetVar("ground", true);
 		}

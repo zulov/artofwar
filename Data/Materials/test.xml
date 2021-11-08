@@ -4,5 +4,5 @@
     
     <parameter name="UOffset" value="16 0 0 0" />
     <parameter name="VOffset" value="0 16 0 0" />
-	<renderorder value="10" />
+
 </material>
