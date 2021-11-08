@@ -102,28 +102,29 @@ void Physical::select(SelectedObject* selectedObject) {
 	assert(this->selectedObject == nullptr);
 
 	this->selectedObject = selectedObject;
-	if (node) {
-		auto comp = node->GetComponent<Urho3D::StaticModel>();
 
-		if (comp) {
-			reszta meterialow
-			comp->GetMaterial()->SetShaderParameter("OutlineEnable", true);
-		}
-	}
+	setShaderParam(true);
+
 	updateBillboards();
 	updateHealthBar();
 }
 
 
-void Physical::unSelect() {
+void Physical::setShaderParam(bool value) const {
 	if (node) {
 		auto comp = node->GetComponent<Urho3D::StaticModel>();
 
 		if (comp) {
-			reszta meterialow
-			comp->GetMaterial()->SetShaderParameter("OutlineEnable", false);
+			for (int i = 0; i < comp->GetNumGeometries(); ++i) {
+				comp->GetMaterial(i)->SetShaderParameter("OutlineEnable", value);
+			}
 		}
 	}
+}
+
+void Physical::unSelect() {
+	setShaderParam(false);
+
 	if (selectedObject) {
 		selectedObject->disableBillboards();
 		selectedObject = nullptr;
@@ -155,8 +156,10 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 			setModelData(Urho3D::Max(1.f, boundingBox.y_));
 		}
 		const auto model = node->GetComponent<Urho3D::StaticModel>();
-		model->SetMaterial(model->GetMaterial()->Clone()); //TODO memory
-		reszta meterialow
+		for (int i = 0; i < model->GetNumGeometries(); ++i) {
+			model->SetMaterial(i, model->GetMaterial(i)->Clone()); //TODO memory
+		}
+
 	}
 
 	populate();

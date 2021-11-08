@@ -87,6 +87,7 @@ public:
 	virtual std::pair<float, bool> absorbAttack(float attackCoef) = 0;
 
 	void select(SelectedObject* selectedObject);
+	void setShaderParam(bool value) const;
 	virtual short getCostSum() const = 0;
 
 	void unSelect();
