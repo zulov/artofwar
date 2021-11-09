@@ -3,6 +3,9 @@
 #include <span>
 #include <string>
 #include <vector>
+#include <Urho3D/Core/Variant.h>
+
+#include "database/db_other_struct.h"
 #include "objects/ObjectEnums.h"
 #include "player/Possession.h"
 #include "Urho3D/Math/Vector3.h"
@@ -48,8 +51,7 @@ public:
 	virtual bool isIndexSlotOccupied(int indexToInteract) { return false; }
 	virtual bool indexChanged() const { return false; }
 
-	virtual void setOccupiedIndexSlot(char index, bool value) {
-	}
+	virtual void setOccupiedIndexSlot(char index, bool value) { }
 
 	virtual std::string getValues(int precision);
 	virtual bool isUsable() const { return isAlive(); }
@@ -72,8 +74,7 @@ public:
 
 	int getMainGridIndex() const { return indexInMainGrid; }
 
-	virtual void populate() {
-	}
+	virtual void populate() { }
 
 	virtual bool isToDispose() const { return false; }
 
@@ -97,8 +98,7 @@ public:
 
 	virtual char getLevelNum();
 
-	virtual void addValues(std::span<float> vals) const {
-	}
+	virtual void addValues(std::span<float> vals) const { }
 
 	virtual unsigned char getMaxRangeUsers() const { return 128; }
 	virtual unsigned char getMaxCloseUsers() const { return 8; }
@@ -110,6 +110,7 @@ public:
 protected:
 	virtual void setModelData(float modelHeight) const =0;
 
+	virtual Urho3D::Color getColor(db_player_colors* col) const = 0;
 	void loadXml(const Urho3D::String& xmlName);
 	void setPlayerAndTeam(int player);
 	virtual float getHealthBarThick() const { return 0.12f; }
@@ -132,5 +133,4 @@ protected:
 
 	SelectedObject* selectedObject{};
 private:
-
 };

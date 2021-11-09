@@ -325,6 +325,10 @@ void Unit::setModelData(float modelHeight) const {
 	dbLevel->modelHeight = modelHeight;
 }
 
+Urho3D::Color Unit::getColor(db_player_colors* col) const {
+	return col->unitColor;
+}
+
 void Unit::changeColor(float value, float maxValue) const {
 	changeMaterial(Game::getColorPaletteRepo()->getColor(ColorPallet::RED, value, maxValue), model);
 }

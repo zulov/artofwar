@@ -41,6 +41,7 @@ public:
 	unsigned short getIndexInInfluence() const { return indexInInfluence; }
 	void setIndexInInfluence(int index);
 	bool isInCloseRange(int index) const override;
+	Urho3D::Color getColor(db_player_colors* col) const override;
 protected:
 	void populate() override;
 	float getHealthBarThick() const override { return 0.15f; }

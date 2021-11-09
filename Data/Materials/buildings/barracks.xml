@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <material>
-	<technique name="Techniques/Diff.xml" />
+	<technique name="Techniques/DiffOutline.xml" />
 	<texture name="Textures/barracks_col_1024.png" unit="diffuse" />
 	<parameter name="MatDiffColor" value="1 1 1 1" />
 </material>

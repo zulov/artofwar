@@ -9,6 +9,8 @@
 #include <Urho3D/Scene/Scene.h>
 #include "Game.h"
 #include "SelectedObject.h"
+#include "database/DatabaseCache.h"
+#include "database/db_other_struct.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "scene/load/dbload_container.h"
@@ -158,6 +160,18 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 		const auto model = node->GetComponent<Urho3D::StaticModel>();
 		for (int i = 0; i < model->GetNumGeometries(); ++i) {
 			model->SetMaterial(i, model->GetMaterial(i)->Clone()); //TODO memory
+			auto mat = model->GetMaterial(i);
+			mat->SetShaderParameter("OutlineEnable", false);
+			auto a = mat->GetShaderParameter("OutlineColor");
+
+			if (a.IsEmpty()) {
+				if (player >= 0) {
+					auto colorId = Game::getPlayersMan()->getPlayer(player)->getColor();
+					db_player_colors* col = Game::getDatabase()->getPlayerColor(colorId);
+					model->GetMaterial(i)->SetShaderParameter("OutlineColor", getColor(col));
+				}
+			}
+			int b = 5;
 		}
 
 	}

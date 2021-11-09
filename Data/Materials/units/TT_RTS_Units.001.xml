@@ -3,7 +3,4 @@
 	<technique name="Techniques/DiffOutline.xml" />
 	<texture name="textures/TT_RTS_Units_blue.tga" unit="diffuse" />
 	<parameter name="MatDiffColor" value="0.588235 0.588235 0.588235 1" />
-	
-    <parameter name="OutlineColor" value="1 0 0 0" />
-	<parameter name="OutlineEnable" value="false" />
 </material>

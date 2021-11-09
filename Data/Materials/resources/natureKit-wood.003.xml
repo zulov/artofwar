@@ -4,5 +4,4 @@
 	<parameter name="MatDiffColor" value="1 0.682353 0.435294 1" />
 	
 	<parameter name="OutlineColor" value="1 0.682353 0.435294 0" />
-	<parameter name="OutlineEnable" value="false" />
 </material>

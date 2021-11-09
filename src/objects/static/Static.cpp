@@ -11,9 +11,9 @@
 #include "utils/OtherUtils.h"
 
 Static::Static(Urho3D::Vector3& _position, int indexInGrid, bool withNode) : Physical(_position, withNode),
-                                                                          state(StaticState::ALIVE),
-                                                                          nextState(StaticState::ALIVE) {
-	this->indexInMainGrid=indexInGrid;
+                                                                             state(StaticState::ALIVE),
+                                                                             nextState(StaticState::ALIVE) {
+	this->indexInMainGrid = indexInGrid;
 }
 
 Static::~Static() {
@@ -35,6 +35,10 @@ void Static::setIndexInInfluence(int index) {
 bool Static::isInCloseRange(int index) const {
 	auto cells = getSurroundCells();
 	return std::ranges::find(cells, index) != cells.end();
+}
+
+Urho3D::Color Static::getColor(db_player_colors* col) const {
+	return col->buildingColor;
 }
 
 void Static::populate() {
