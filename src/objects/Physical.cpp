@@ -151,27 +151,24 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 	if (!name.Empty()) {
 		node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(name)->GetRoot());
 		node->SetVar("link", this);
+		const auto model = node->GetComponent<Urho3D::StaticModel>();
 		if (getModelHeight() < 0.f) {
-			const auto model = node->GetComponent<Urho3D::StaticModel>();
 			const auto boundingBox = model->GetModel()->GetBoundingBox().Size() * node->GetScale();
 
 			setModelData(Urho3D::Max(1.f, boundingBox.y_));
 		}
-		const auto model = node->GetComponent<Urho3D::StaticModel>();
+
 		for (int i = 0; i < model->GetNumGeometries(); ++i) {
 			model->SetMaterial(i, model->GetMaterial(i)->Clone()); //TODO memory
 			auto mat = model->GetMaterial(i);
 			mat->SetShaderParameter("OutlineEnable", false);
-			auto a = mat->GetShaderParameter("OutlineColor");
-
-			if (a.IsEmpty()) {
+			if (mat->GetShaderParameter("OutlineColor").IsEmpty()) {
 				if (player >= 0) {
 					auto colorId = Game::getPlayersMan()->getPlayer(player)->getColor();
 					db_player_colors* col = Game::getDatabase()->getPlayerColor(colorId);
-					model->GetMaterial(i)->SetShaderParameter("OutlineColor", getColor(col));
+					mat->SetShaderParameter("OutlineColor", getColor(col));
 				}
 			}
-			int b = 5;
 		}
 
 	}
