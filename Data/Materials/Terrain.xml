@@ -2,7 +2,8 @@
     <technique name="Techniques/TerrainBlend.xml" />
 	<texture unit="0" name="Textures/TerrainWeights.dds" />
 	
+	<texture unit="1" name="Textures/Summer_Moss.png" />
     <texture unit="2" name="Textures/test.png" />
-    <texture unit="3" name="Textures/Summer_Mud_B.png" />
-    <texture unit="1" name="Textures/Summer_Moss.png" />
+    <texture unit="3" name="Textures/black_test.png" />
+    
 </material>
