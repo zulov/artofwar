@@ -18,3 +18,5 @@ Database
 /logs
 
 /StructLayoutSettings.json
+/CoreDataMy/*.ps4
+/CoreDataMy/*.vs4

@@ -1,14 +1,12 @@
 #include "ColorPaletteRepo.h"
 
 #include <Urho3D/Graphics/Material.h>
-#include <Urho3D/Graphics/Terrain.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include "ColorPallet.h"
 #include "Game.h"
 #include "math/MathUtils.h"
 #include "objects/CellState.h"
 #include "simulation/SimGlobals.h"
-#include "simulation/env/influence/map/VisibilityType.h"
 #include "utils/OtherUtils.h"
 
 ColorPaletteRepo::ColorPaletteRepo() {
@@ -29,6 +27,7 @@ ColorPaletteRepo::ColorPaletteRepo() {
 			Game::getCache()->AddManualResource(statePallet[i]);
 		}
 		lineMaterial = Game::getCache()->GetResource<Urho3D::Material>("Materials/line.xml");
+		influenceMaterial = Game::getCache()->GetResource<Urho3D::Material>("Materials/influence.xml");
 		for (int i = 0; i < SPECTRUM_RESOLUTION; ++i) {
 			basicSpectrum[i] = Urho3D::Color(0.1, i * (1.0f / SPECTRUM_RESOLUTION), 0.1, 0.5);
 		}
@@ -59,6 +58,10 @@ Urho3D::Material* ColorPaletteRepo::getColor(UnitState state) {
 
 Urho3D::Material* ColorPaletteRepo::getLineMaterial() const {
 	return lineMaterial;
+}
+
+Urho3D::Material* ColorPaletteRepo::getInfluenceMaterial() const {
+	return influenceMaterial;
 }
 
 std::tuple<bool, Urho3D::Color> ColorPaletteRepo::getInfoForGrid(CellState state) {

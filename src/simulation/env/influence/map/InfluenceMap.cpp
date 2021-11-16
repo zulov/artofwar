@@ -22,22 +22,26 @@ void InfluenceMap::draw(short batch, short maxParts) const {
 	}
 }
 
+Urho3D::Vector3 InfluenceMap::getVertex(const Urho3D::Vector2 center, Urho3D::Vector2 vertex) const {
+	auto result = Game::getEnvironment()->getPosWithHeightAt(center.x_ + vertex.x_, center.y_ + vertex.y_);
+	result.y_ += 1.f;
+	return result;
+}
+
 void InfluenceMap::drawCell(int index, short batch) const {
-	const auto center2 = calculator->getCenter(index);
-	const auto center = Game::getEnvironment()->getPosWithHeightAt(center2.x_, center2.y_);
+	const auto center = calculator->getCenter(index);
+
+	const auto v = calculator->getFieldSize() / 2.3f;
+
+	const auto a = getVertex(center, Urho3D::Vector2(-v, v));
+	const auto b = getVertex(center, Urho3D::Vector2(v, -v));
+	const auto c = getVertex(center, Urho3D::Vector2(v, v));
+	const auto d = getVertex(center, Urho3D::Vector2(-v, -v));
+
 	const auto color = Game::getColorPaletteRepo()->getColor(getValueAt(index), valueThresholdDebug);
 
-	auto v = calculator->getFieldSize() / 2.3f;
-	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE,
-	                            center + Urho3D::Vector3(-v, 1, v),
-	                            center + Urho3D::Vector3(v, 1, v),
-	                            center + Urho3D::Vector3(v, 1, -v),
-	                            color, batch);
-	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE,
-	                            center + Urho3D::Vector3(v, 1, -v),
-	                            center + Urho3D::Vector3(-v, 1, -v),
-	                            center + Urho3D::Vector3(-v, 1, v),
-	                            color, batch);
+	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, a, c, b, color, batch);
+	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, b, d, a, color, batch);
 }
 
 Urho3D::Vector2 InfluenceMap::getCenter(int index) const {

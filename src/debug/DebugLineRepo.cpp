@@ -50,7 +50,13 @@ void DebugLineRepo::commit(DebugLineType type, short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
 			auto* geom = geometry[cast(type)].at(batch);
-			geom->SetMaterial(Game::getColorPaletteRepo()->getLineMaterial());
+			switch (type) {
+			case DebugLineType::INFLUENCE: 
+				geom->SetMaterial(Game::getColorPaletteRepo()->getInfluenceMaterial());
+				break;
+			default:
+				geom->SetMaterial(Game::getColorPaletteRepo()->getLineMaterial());
+			}
 			geom->Commit();
 		}
 	}
