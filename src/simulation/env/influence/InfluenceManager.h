@@ -22,6 +22,7 @@ class InfluenceMapQuad;
 class InfluenceMapHistory;
 
 namespace Urho3D {
+	class Terrain;
 	class String;
 	class Vector2;
 }
@@ -32,7 +33,7 @@ struct content_info;
 
 class InfluenceManager {
 public:
-	explicit InfluenceManager(char numberOfPlayers, float mapSize);
+	explicit InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::Terrain * terrain);
 	~InfluenceManager();
 	void update(std::vector<Unit*>* units) const;
 	void update(std::vector<Building*>* buildings) const;

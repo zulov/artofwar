@@ -147,9 +147,9 @@ private:
 	Grid buildingGrid;
 	StaticGrid resourceStaticGrid;
 	Grid sparseUnitGrid;
+	Urho3D::Terrain* terrain;
 	InfluenceManager influenceManager;
 	Grid* grids[3] = {&mainGrid, &buildingGrid, &resourceStaticGrid};
-	Urho3D::Terrain* terrain;
 	GridCalculator* calculator;
 
 	std::vector<Physical*>* neights; //TODO tu bedzie trzeba tablica jesli beda watki

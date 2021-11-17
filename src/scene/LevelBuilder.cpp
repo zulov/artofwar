@@ -58,6 +58,7 @@ void LevelBuilder::createGround(const Urho3D::String& xmlName, int size) {
 		s.y_ *= hSpacing;
 		s.z_ = hSpacing;
 		terrain->SetSpacing(s);
+		terrain->GetNode()->SetRotation(Urho3D::Quaternion(-90, Urho3D::Vector3(0, 1, 0)));
 
 		if (!SIM_GLOBALS.HEADLESS) {
 			terrain->GetMaterial()->SetShaderParameter("DetailTiling",

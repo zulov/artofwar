@@ -1,7 +1,11 @@
 #pragma once
 #include <vector>
+#include <Urho3D/Container/Ptr.h>
 
 namespace Urho3D {
+	class Terrain;
+	class Texture2D;
+	class Image;
 	class Vector2;
 }
 
@@ -13,9 +17,11 @@ class VisibilityMap;
 
 class VisibilityManager {
 public:
-	VisibilityManager(char numberOfPlayers, float mapSize);
+	VisibilityManager(char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain);
 	~VisibilityManager();
-	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units, std::vector<ResourceEntity*>* resources) const;
+	void setToImage(unsigned* data, std::initializer_list<int> indexes, unsigned color);
+	void setToImage(unsigned* data, std::initializer_list<int> indexes, unsigned color, bool operatorA);
+	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units, std::vector<ResourceEntity*>* resources);
 	void drawMaps(short currentDebugBatch, char index) const;
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;
 	float getVisibilityScore(char player);
@@ -23,4 +29,8 @@ public:
 private:
 	std::vector<VisibilityMap*> visibilityPerPlayer;
 	GridCalculator* calculator;
+	Urho3D::SharedPtr<Urho3D::Image> image;
+	unsigned* dataCopy{};
+	Urho3D::Texture2D* texture{};
+	bool imageChanged;
 };

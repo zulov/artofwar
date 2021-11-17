@@ -19,7 +19,7 @@
 #include "utils/AssertUtils.h"
 
 
-InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
+InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain) {
 	unitsNumberPerPlayer.reserve(numberOfPlayers);
 	buildingsInfluencePerPlayer.reserve(numberOfPlayers);
 	unitsInfluencePerPlayer.reserve(numberOfPlayers);
@@ -66,7 +66,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
 		});
 		assert(validSizes(mapsForAiPerPlayer.at(player)));
 	}
-	visibilityManager = new VisibilityManager(numberOfPlayers, mapSize);
+	visibilityManager = new VisibilityManager(numberOfPlayers, mapSize, terrain);
 
 	calculator = GridCalculatorProvider::get(mapSize / INF_GRID_FIELD_SIZE, mapSize);
 	ci = new content_info();

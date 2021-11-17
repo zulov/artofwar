@@ -78,6 +78,7 @@ float VisibilityMap::getValueAsPercent(const int index) const {
 }
 
 float VisibilityMap::getValueAt(int index) const {
+	assert(index < getResolution() * getResolution());
 	return cast(values[index]);
 }
 
