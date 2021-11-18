@@ -42,6 +42,8 @@ SamplerState sDetailMap4 : register(s4);
 
 #endif
 
+float smoothstep2( float min1, float max1, float min2, float max2, float input ){	return smoothstep(min1, max1, input) * (1 - smoothstep(min2, max2, input));}
+
 void VS(float4 iPos : POSITION,
     float3 iNormal : NORMAL,
     float2 iTexCoord : TEXCOORD0,
@@ -127,6 +129,7 @@ void PS(float2 iTexCoord : TEXCOORD0,
     float3 iNormal : TEXCOORD1,
     float4 iWorldPos : TEXCOORD2,
     float2 iDetailTexCoord : TEXCOORD3,
+	float4 iPos : OUTPOSITION,
     #ifdef PERPIXEL
         #ifdef SHADOW
             float4 iShadowPos[NUMCASCADES] : TEXCOORD4,
@@ -154,18 +157,47 @@ void PS(float2 iTexCoord : TEXCOORD0,
     #endif
     out float4 oColor : OUTCOLOR0)
 {
-    // Get material diffuse albedo
-    float4 weights = Sample2D(WeightMap0, iTexCoord).rgba;
-	//weights.a = 1.0 - weights.a;
-    float sumWeights = weights.r + weights.g + weights.b + weights.a;
-    weights /= sumWeights;
-    float4 diffColor = cMatDiffColor * (
-        weights.r * Sample2D(DetailMap1, iDetailTexCoord) +
-        weights.g * Sample2D(DetailMap2, iDetailTexCoord) +
-        weights.b * Sample2D(DetailMap3, iDetailTexCoord) +
-        weights.a * Sample2D(DetailMap4, iDetailTexCoord)
-    );
 
+	float4 diffColor;
+	
+	float size = 0.0002;
+	float3 diff1 = iWorldPos.xyz-cCameraPosPS.xyz;
+	float d =length(diff1);
+	//smoothstep(0.0002,10,
+	float q = d/200;
+	float4 color=color = float4(1.0, 1.0, 1.0, 0.0);
+
+	if(d>400){
+		size=size*5;
+	}else if(d>300){
+		size=size*4;
+	}else if(d>200){
+		size=size*3;
+	}else if(d>100){
+		size=size*2;
+	}else if(d>50){
+		size=size*1;
+	}
+	
+	float val = (1.0f / 256.0f);
+	if ((iTexCoord.x >= val && (iTexCoord.x % val) < size)
+			|| (iTexCoord.y >= val && (iTexCoord.y % val) < size)) {
+		diffColor = color; 
+	} else {
+		// Get material diffuse albedo
+		float4 weights = Sample2D(WeightMap0, iTexCoord).rgba;
+
+		float sumWeights = weights.r + weights.g + weights.b + weights.a;
+		weights /= sumWeights;
+	
+		diffColor = cMatDiffColor * (
+			weights.r * Sample2D(DetailMap1, iDetailTexCoord) +
+			weights.g * Sample2D(DetailMap2, iDetailTexCoord) +
+			weights.b * Sample2D(DetailMap3, iDetailTexCoord) +
+			weights.a * Sample2D(DetailMap4, iDetailTexCoord)
+		);
+	}
+	
     // Get material specular albedo
     float3 specColor = cMatSpecColor.rgb;
 
