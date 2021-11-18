@@ -536,9 +536,11 @@ void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
 
 void Main::SetupViewport() {
 	if (!engineParameters_[EP_HEADLESS].GetBool()) {
-		SharedPtr<Viewport> viewport(new Viewport(context_, Game::getScene(),
-		                                          Game::getCameraManager()->getComponent()));
-		
+		auto v = new Viewport(context_, Game::getScene(), Game::getCameraManager()->getComponent());
+		SharedPtr<Viewport> viewport(v);
+
+		//v->GetRenderPath()->Append(Game::getCache()->GetResource<XMLFile>("PostProcess/FXAA2.xml"));
+
 		const auto renderer = GetSubsystem<Renderer>();
 		if (renderer) {
 			GetSubsystem<Renderer>()->SetViewport(0, viewport);
