@@ -509,6 +509,14 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 	} else if (key == KEY_F7) {
 		engine_->SetMaxFps(engine_->GetMaxFps() / 2);
 	}
+	if (key == KEY_G) {
+		auto terrain = Game::getEnvironment()->getTerrain();
+		if (terrain) {
+			auto mat = terrain->GetMaterial();
+
+			mat->SetShaderParameter("GridEnable", !mat->GetShaderParameter("GridEnable").GetBool());
+		}
+	}
 }
 
 void Main::HandleMouseModeRequest(StringHash /*eventType*/, VariantMap& eventData) {

@@ -5,6 +5,7 @@
 #include "Lighting.hlsl"
 #include "Fog.hlsl"
 
+uniform bool cGridEnable;
 #ifndef D3D11
 
 // D3D9 uniforms and samplers
@@ -41,8 +42,6 @@ SamplerState sDetailMap4 : register(s4);
 #endif
 
 #endif
-
-float smoothstep2( float min1, float max1, float min2, float max2, float input ){	return smoothstep(min1, max1, input) * (1 - smoothstep(min2, max2, input));}
 
 void VS(float4 iPos : POSITION,
     float3 iNormal : NORMAL,
@@ -158,35 +157,25 @@ void PS(float2 iTexCoord : TEXCOORD0,
     out float4 oColor : OUTCOLOR0)
 {
 
+	float2 coord = iWorldPos.xz*0.5;
+
+	// Compute anti-aliased world-space grid lines
+	float2 grid = abs(frac(coord - 0.5) - 0.5) / fwidth(coord);
+	float line1 = min(grid.x, grid.y);
+
+	// Just visualize the grid lines directly
+	float a = 1.0 - min(line1, 1.0);
+
+	float4 weights = Sample2D(WeightMap0, iTexCoord).rgba;
+
 	float4 diffColor;
-	
-	float size = 0.0002;
-	float3 diff1 = iWorldPos.xyz-cCameraPosPS.xyz;
-	float d =length(diff1);
-	//smoothstep(0.0002,10,
-	float q = d/200;
-	float4 color=color = float4(1.0, 1.0, 1.0, 0.0);
-
-	if(d>400){
-		size=size*5;
-	}else if(d>300){
-		size=size*4;
-	}else if(d>200){
-		size=size*3;
-	}else if(d>100){
-		size=size*2;
-	}else if(d>50){
-		size=size*1;
-	}
-	
-	float val = (1.0f / 256.0f);
-	if ((iTexCoord.x >= val && (iTexCoord.x % val) < size)
-			|| (iTexCoord.y >= val && (iTexCoord.y % val) < size)) {
-		diffColor = color; 
-	} else {
-		// Get material diffuse albedo
-		float4 weights = Sample2D(WeightMap0, iTexCoord).rgba;
-
+	if (cGridEnable && a > 0.0 && (weights.a == 0.0 || weights.r>0.0 || weights.g>0.0|| weights.b>0.0)){
+		if(weights.a != 0.0){
+			diffColor = float4(0.5, 0.5, 0.5, 0.5);
+		}else{
+			diffColor = float4(1.0, 1.0, 1.0, 1.0);
+		}
+	} else{	
 		float sumWeights = weights.r + weights.g + weights.b + weights.a;
 		weights /= sumWeights;
 	
@@ -197,7 +186,7 @@ void PS(float2 iTexCoord : TEXCOORD0,
 			weights.a * Sample2D(DetailMap4, iDetailTexCoord)
 		);
 	}
-	
+
     // Get material specular albedo
     float3 specColor = cMatSpecColor.rgb;
 
