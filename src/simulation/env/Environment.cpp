@@ -1,6 +1,7 @@
 ﻿#include "Environment.h"
 #include <Urho3D/Graphics/Terrain.h>
 #include "EnvConsts.h"
+#include "GridCalculator.h"
 #include "GridCalculatorProvider.h"
 #include "database/db_strcut.h"
 #include "math/MathUtils.h"

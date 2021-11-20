@@ -4,7 +4,6 @@
 #include "ComplexBucketData.h"
 #include "Grid.h"
 #include "path/PathFinder.h"
-#include "simulation/env/GridCalculator.h"
 
 
 namespace Urho3D {
@@ -16,7 +15,6 @@ struct content_info;
 
 enum class GridDebugType : char {
 	NONE,
-	GRID,
 	CELLS_TYPE
 };
 
@@ -66,6 +64,7 @@ public:
 	CellState getCellAt(float x, float z) const;
 	int getAdditionalInfoAt(float x, float z) const;
 	void drawDebug(GridDebugType type) const;
+	Urho3D::Vector3 getVertex(Urho3D::Vector2 center, Urho3D::Vector2 vertex) const;
 	float getFieldSize() const;
 	void drawAll();
 	bool cellIsCollectable(int index) const;

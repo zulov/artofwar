@@ -2,6 +2,8 @@
 #include <vector>
 #include <Urho3D/Container/Ptr.h>
 
+#include "objects/Physical.h"
+
 namespace Urho3D {
 	class Terrain;
 	class Texture2D;
@@ -20,6 +22,7 @@ public:
 	VisibilityManager(char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain);
 	~VisibilityManager();
 	void setToImage(unsigned* data, std::initializer_list<int> indexes, unsigned color);
+	void hideOrShow(VisibilityMap* current, Physical* physical);
 	void setToImage(unsigned* data, std::initializer_list<int> indexes, unsigned color, bool operatorA);
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units, std::vector<ResourceEntity*>* resources);
 	void drawMaps(short currentDebugBatch, char index) const;

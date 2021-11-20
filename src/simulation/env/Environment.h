@@ -3,6 +3,8 @@
 #include <functional>
 #include <Urho3D/Math/Vector2.h>
 #include <Urho3D/Math/Vector3.h>
+
+#include "GridCalculator.h"
 #include "bucket/Grid.h"
 #include "bucket/MainGrid.h"
 #include "bucket/StaticGrid.h"

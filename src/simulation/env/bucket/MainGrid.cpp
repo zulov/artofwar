@@ -12,6 +12,7 @@
 #include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
 #include "simulation/env/CloseIndexes.h"
+#include "simulation/env/Environment.h"
 
 
 MainGrid::MainGrid(short resolution, float size, float maxQueryRadius): Grid(resolution, size, true, maxQueryRadius) {
@@ -178,18 +179,6 @@ void MainGrid::drawDebug(GridDebugType type) const {
 	switch (type) {
 	case GridDebugType::NONE:
 		break;
-	case GridDebugType::GRID: {
-		const float size = calculator->getSize();
-		float value = -size / 2;
-		for (int i = 0; i < calculator->getResolution(); ++i) {
-			DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, {-size / 2, 10, value},
-			                        {size / 2, 10, value}, Urho3D::Color::CYAN);
-			DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, {value, 10, -size / 2},
-			                        {value, 10, size / 2}, Urho3D::Color::CYAN);
-			value += calculator->getFieldSize();
-		}
-	}
-	break;
 	case GridDebugType::CELLS_TYPE: {
 		for (int i = 0; i < sqResolution; ++i) {
 			auto center = calculator->getCenter(i);
@@ -197,8 +186,17 @@ void MainGrid::drawDebug(GridDebugType type) const {
 				getInfoForGrid(complexData[i].getType());
 
 			if (std::get<0>(info)) {
-				DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, {center.x_, 10, center.y_},
-				                        {center.x_, 20, center.y_}, std::get<1>(info));
+				const auto v = calculator->getFieldSize() / 2.3f;
+				const auto a = getVertex(center, Urho3D::Vector2(-v, v));
+				const auto b = getVertex(center, Urho3D::Vector2(v, -v));
+				const auto c = getVertex(center, Urho3D::Vector2(v, v));
+				const auto d = getVertex(center, Urho3D::Vector2(-v, -v));
+
+				// DebugLineRepo::drawTriangle(DebugLineType::MAIN_GRID, {center.x_, 10, center.y_},
+				//                         {center.x_, 20, center.y_}, std::get<1>(info));
+
+				DebugLineRepo::drawTriangle(DebugLineType::MAIN_GRID, a, c, b, std::get<1>(info));
+				DebugLineRepo::drawTriangle(DebugLineType::MAIN_GRID, b, d, a, std::get<1>(info));
 			}
 		}
 	}
@@ -207,6 +205,12 @@ void MainGrid::drawDebug(GridDebugType type) const {
 	}
 
 	DebugLineRepo::commit(DebugLineType::MAIN_GRID);
+}
+
+Urho3D::Vector3 MainGrid::getVertex(const Urho3D::Vector2 center, Urho3D::Vector2 vertex) const {
+	auto result = Game::getEnvironment()->getPosWithHeightAt(center.x_ + vertex.x_, center.y_ + vertex.y_);
+	result.y_ += 1.f;
+	return result;
 }
 
 float MainGrid::getFieldSize() const {
