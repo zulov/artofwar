@@ -11,6 +11,7 @@
 #include "Urho3D/Math/Vector3.h"
 
 
+enum class VisibilityType : char;
 class SelectedObject;
 
 namespace Urho3D {
@@ -88,7 +89,7 @@ public:
 	virtual std::pair<float, bool> absorbAttack(float attackCoef) = 0;
 
 	void select(SelectedObject* selectedObject);
-	void setShaderParam(bool value) const;
+	void setShaderParam(const Urho3D::String& name, const Urho3D::Variant& value) const;
 	virtual short getCostSum() const = 0;
 
 	void unSelect();
@@ -105,7 +106,7 @@ public:
 	virtual bool isInCloseRange(int index) const = 0;
 	virtual const Urho3D::String& getName() const = 0;
 	virtual float getModelHeight() const =0;
-	void setVisibility(bool value);
+	void setVisibility(VisibilityType type);
 
 protected:
 	virtual void setModelData(float modelHeight) const =0;

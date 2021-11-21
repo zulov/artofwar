@@ -14,6 +14,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "scene/load/dbload_container.h"
+#include "simulation/env/influence/map/VisibilityType.h"
 
 
 Physical::Physical(Urho3D::Vector3& _position, bool withNode):
@@ -105,7 +106,7 @@ void Physical::select(SelectedObject* selectedObject) {
 
 	this->selectedObject = selectedObject;
 
-	setShaderParam(true);
+	setShaderParam("OutlineEnable", true);
 
 	updateBillboards();
 	updateHealthBar();
@@ -113,7 +114,7 @@ void Physical::select(SelectedObject* selectedObject) {
 
 
 void Physical::unSelect() {
-	setShaderParam(false);
+	setShaderParam("OutlineEnable", false);
 
 	if (selectedObject) {
 		selectedObject->disableBillboards();
@@ -121,21 +122,40 @@ void Physical::unSelect() {
 	}
 }
 
-void Physical::setShaderParam(bool value) const {
+void Physical::setShaderParam(const Urho3D::String& name, const Urho3D::Variant& value) const {
 	if (node) {
 		auto comp = node->GetComponent<Urho3D::StaticModel>();
 
 		if (comp) {
 			for (int i = 0; i < comp->GetNumGeometries(); ++i) {
-				comp->GetMaterial(i)->SetShaderParameter("OutlineEnable", value);
+				comp->GetMaterial(i)->SetShaderParameter(name, value);
 			}
 		}
 	}
 }
 
-void Physical::setVisibility(bool value) {
-	if (node->IsEnabled() != value) {
-		node->SetEnabled(value);
+void Physical::setVisibility(VisibilityType type) {
+	if(node) {
+		switch (type) {
+		case VisibilityType::NONE:
+			if (node->IsEnabled()) {
+				node->SetEnabled(false);
+			}
+			break;
+		case VisibilityType::SEEN:
+			if (!node->IsEnabled()) {
+				node->SetEnabled(true);
+			}{
+			auto v = Urho3D::Vector4(0.2,0.2,0.2,0.2);
+			setShaderParam("MatDiffColor", v);}
+			break;
+		case VisibilityType::VISIBLE:
+			if (!node->IsEnabled()) {
+				node->SetEnabled(true);
+			}
+			break;
+		default: ;
+		}
 	}
 }
 

@@ -73,11 +73,8 @@ void VisibilityManager::setToImage(unsigned* data, std::initializer_list<int> in
 void VisibilityManager::hideOrShow(VisibilityMap* current, Physical* physical) {
 	auto pos = physical->getPosition();
 
-	if (current->getValueAt(Urho3D::Vector2(pos.x_, pos.z_)) == static_cast<char>(VisibilityType::VISIBLE)) {
-		physical->setVisibility(true);
-	} else {
-		physical->setVisibility(false);
-	}
+	auto visibility = static_cast<VisibilityType>(current->getValueAt(Urho3D::Vector2(pos.x_, pos.z_))) ;
+	physical->setVisibility(visibility);
 }
 
 void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
