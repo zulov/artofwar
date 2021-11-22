@@ -135,7 +135,7 @@ void Physical::setShaderParam(const Urho3D::String& name, const Urho3D::Variant&
 }
 
 void Physical::setVisibility(VisibilityType type) {
-	if(node) {
+	if (node) {
 		switch (type) {
 		case VisibilityType::NONE:
 			if (node->IsEnabled()) {
@@ -145,18 +145,19 @@ void Physical::setVisibility(VisibilityType type) {
 		case VisibilityType::SEEN:
 			if (!node->IsEnabled()) {
 				node->SetEnabled(true);
-			}{
-			auto v = Urho3D::Vector4(0.2,0.2,0.2,0.2);
-			setShaderParam("MatDiffColor", v);}
+			}
+			setShaderParam("SemiHide", true);
 			break;
-		case VisibilityType::VISIBLE:
+		case VisibilityType::VISIBLE: {
 			if (!node->IsEnabled()) {
 				node->SetEnabled(true);
 			}
-			break;
-		default: ;
+			setShaderParam("SemiHide", false);
+		}
+		break;
 		}
 	}
+
 }
 
 void Physical::loadXml(const Urho3D::String& xmlName) {
@@ -182,6 +183,7 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 			model->SetMaterial(i, model->GetMaterial(i)->Clone()); //TODO memory
 			auto mat = model->GetMaterial(i);
 			mat->SetShaderParameter("OutlineEnable", false);
+			mat->SetShaderParameter("SemiHide", false);
 			if (mat->GetShaderParameter("OutlineColor").IsEmpty()) {
 				if (player >= 0) {
 					auto colorId = Game::getPlayersMan()->getPlayer(player)->getColor();

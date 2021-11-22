@@ -1,4 +1,3 @@
-<?xml version="1.0" ?>
 <material>
 	<technique name="Techniques/DiffOutline.xml" />
 	<texture name="textures/TT_RTS_Units_blue.tga" unit="diffuse" />

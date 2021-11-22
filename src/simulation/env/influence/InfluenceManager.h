@@ -5,7 +5,6 @@
 #include <optional>
 #include <vector>
 #include <Urho3D/Math/Vector3.h>
-#include <Urho3D/Math/Vector3.h>
 
 #include "player/ai/InfluenceDataType.h"
 
