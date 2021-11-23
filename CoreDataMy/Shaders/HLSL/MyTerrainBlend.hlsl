@@ -16,7 +16,6 @@ sampler2D sWeightMap0 : register(s0);
 sampler2D sDetailMap1 : register(s1);
 sampler2D sDetailMap2 : register(s2);
 sampler2D sDetailMap3 : register(s3);
-sampler2D sDetailMap4 : register(s4);
 
 #endif
 
@@ -33,12 +32,10 @@ Texture2D tWeightMap0 : register(t0);
 Texture2D tDetailMap1 : register(t1);
 Texture2D tDetailMap2 : register(t2);
 Texture2D tDetailMap3 : register(t3);
-Texture2D tDetailMap4 : register(t4);
 SamplerState sWeightMap0 : register(s0);
 SamplerState sDetailMap1 : register(s1);
 SamplerState sDetailMap2 : register(s2);
 SamplerState sDetailMap3 : register(s3);
-SamplerState sDetailMap4 : register(s4);
 #endif
 
 #endif
@@ -175,7 +172,7 @@ void PS(float2 iTexCoord : TEXCOORD0,
 		}else{
 			diffColor = float4(1.0, 1.0, 1.0, 1.0);
 		}
-	} else{	
+	} else {	
 		float sumWeights = weights.r + weights.g + weights.b + weights.a;
 		weights /= sumWeights;
 	
@@ -183,7 +180,7 @@ void PS(float2 iTexCoord : TEXCOORD0,
 			weights.r * Sample2D(DetailMap1, iDetailTexCoord) +
 			weights.g * Sample2D(DetailMap2, iDetailTexCoord) +
 			weights.b * Sample2D(DetailMap3, iDetailTexCoord) +
-			weights.a * Sample2D(DetailMap4, iDetailTexCoord)
+			weights.a * float4(0,0,0,1)
 		);
 	}
 
