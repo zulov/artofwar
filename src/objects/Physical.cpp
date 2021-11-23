@@ -134,32 +134,6 @@ void Physical::setShaderParam(const Urho3D::String& name, const Urho3D::Variant&
 	}
 }
 
-void Physical::setVisibility(VisibilityType type) {
-	if (node) {
-		switch (type) {
-		case VisibilityType::NONE:
-			if (node->IsEnabled()) {
-				node->SetEnabled(false);
-			}
-			break;
-		case VisibilityType::SEEN:
-			if (!node->IsEnabled()) {
-				node->SetEnabled(true);
-			}
-			setShaderParam("SemiHide", true);
-			break;
-		case VisibilityType::VISIBLE: {
-			if (!node->IsEnabled()) {
-				node->SetEnabled(true);
-			}
-			setShaderParam("SemiHide", false);
-		}
-		break;
-		}
-	}
-
-}
-
 void Physical::loadXml(const Urho3D::String& xmlName) {
 	Urho3D::String name;
 	if (SIM_GLOBALS.HEADLESS) {

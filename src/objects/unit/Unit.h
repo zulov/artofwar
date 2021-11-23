@@ -145,6 +145,7 @@ public:
 	void setModelData(float modelHeight) const override;
 
 	Urho3D::Color getColor(db_player_colors* col) const override;
+	void setVisibility(VisibilityType type) override;
 
 	void setThingToInteract(Physical* toUse) {
 		thingToInteract = toUse;

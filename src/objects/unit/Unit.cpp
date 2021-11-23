@@ -329,6 +329,24 @@ Urho3D::Color Unit::getColor(db_player_colors* col) const {
 	return col->unitColor;
 }
 
+void Unit::setVisibility(VisibilityType type) {
+	if (node) {
+		switch (type) {
+		case VisibilityType::NONE:
+		case VisibilityType::SEEN:
+			if (node->IsEnabled()) {
+				node->SetEnabled(false);
+			}
+			break;
+		case VisibilityType::VISIBLE: {
+			if (!node->IsEnabled()) {
+				node->SetEnabled(true);
+			}
+		}
+		}
+	}
+}
+
 void Unit::changeColor(float value, float maxValue) const {
 	changeMaterial(Game::getColorPaletteRepo()->getColor(ColorPallet::RED, value, maxValue), model);
 }

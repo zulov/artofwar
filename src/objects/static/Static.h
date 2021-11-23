@@ -2,6 +2,7 @@
 #include <unordered_set>
 #include "../Physical.h"
 #include "StaticState.h"
+#include "simulation/env/influence/map/VisibilityType.h"
 
 struct dbload_static;
 enum class CellState : char;
@@ -42,6 +43,7 @@ public:
 	void setIndexInInfluence(int index);
 	bool isInCloseRange(int index) const override;
 	Urho3D::Color getColor(db_player_colors* col) const override;
+	void setVisibility(VisibilityType type) override;
 protected:
 	void populate() override;
 	float getHealthBarThick() const override { return 0.15f; }
@@ -51,5 +53,6 @@ protected:
 
 	unsigned char occupiedCellsSize = 0;
 	unsigned char surroundCellsSize = 0;
+	VisibilityType visibilityType = VisibilityType::VISIBLE;
 	int* data{};
 };

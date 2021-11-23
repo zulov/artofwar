@@ -41,6 +41,32 @@ Urho3D::Color Static::getColor(db_player_colors* col) const {
 	return col->buildingColor;
 }
 
+void Static::setVisibility(VisibilityType type) {
+	if (node && type != visibilityType) {
+		switch (type) {
+		case VisibilityType::NONE:
+			if (node->IsEnabled()) {
+				node->SetEnabled(false);
+			}
+			break;
+		case VisibilityType::SEEN:
+			if (!node->IsEnabled()) {
+				node->SetEnabled(true);
+			}
+			setShaderParam("SemiHide", true);
+			break;
+		case VisibilityType::VISIBLE: {
+			if (!node->IsEnabled()) {
+				node->SetEnabled(true);
+			}
+			setShaderParam("SemiHide", false);
+		}
+		break;
+		}
+	}
+	visibilityType = type;
+}
+
 void Static::populate() {
 	//assert(mainCell==indexInMainGrid);
 	std::vector<int> occupiedCells1;

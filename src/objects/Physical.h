@@ -106,7 +106,7 @@ public:
 	virtual bool isInCloseRange(int index) const = 0;
 	virtual const Urho3D::String& getName() const = 0;
 	virtual float getModelHeight() const =0;
-	void setVisibility(VisibilityType type);
+	virtual void setVisibility(VisibilityType type) = 0;
 
 protected:
 	virtual void setModelData(float modelHeight) const =0;
@@ -133,5 +133,5 @@ protected:
 	bool shouldUpdate = false;
 
 	SelectedObject* selectedObject{};
-private:
+
 };
