@@ -21,9 +21,9 @@ class VisibilityManager {
 public:
 	VisibilityManager(char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain);
 	~VisibilityManager();
-	void setToImage(unsigned* data, std::initializer_list<int> indexes, unsigned color);
+	void setToImage(unsigned* data, std::array<int, 4>& indexes, unsigned color);
+	void setToImage(unsigned* data, std::array<int, 4>& indexes, unsigned color, bool operatorA);
 	void hideOrShow(VisibilityMap* current, Physical* physical);
-	void setToImage(unsigned* data, std::initializer_list<int> indexes, unsigned color, bool operatorA);
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units, std::vector<ResourceEntity*>* resources);
 	void drawMaps(short currentDebugBatch, char index) const;
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;

@@ -75,3 +75,11 @@ inline float fixValue(float value, float maxValue) {
 	return value;
 }
 
+inline std::array<int, 4> getCordsInHigher(unsigned short resolution, int index) {
+	const auto mod = index % resolution;
+	const auto div = index / resolution;
+	auto resX2 = resolution * 2;
+	const auto value = 2 * (mod + div * resX2);
+
+	return {value, value + 1, value + resX2, value + resX2 + 1};
+}

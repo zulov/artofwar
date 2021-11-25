@@ -14,13 +14,14 @@
 #include "objects/unit/Unit.h"
 #include "utils/DeleteUtils.h"
 #include "map/VisibilityType.h"
+#include "math/MathUtils.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimGlobals.h"
 #include "simulation/env/Environment.h"
 #include "simulation/env/GridCalculatorProvider.h"
 
 
-VisibilityManager::VisibilityManager(char numberOfPlayers, float mapSize, Urho3D::Terrain * terrain) {
+VisibilityManager::VisibilityManager(char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain) {
 	visibilityPerPlayer.reserve(numberOfPlayers);
 	const unsigned short resolution = mapSize / VISIBILITY_GRID_FIELD_SIZE;
 
@@ -28,7 +29,7 @@ VisibilityManager::VisibilityManager(char numberOfPlayers, float mapSize, Urho3D
 		visibilityPerPlayer.emplace_back(new VisibilityMap(resolution, mapSize, 3));
 	}
 	calculator = GridCalculatorProvider::get(resolution, mapSize);
-	
+
 	if (terrain && !SIM_GLOBALS.HEADLESS) {
 		auto a = terrain->GetMaterial()->GetTexture(Urho3D::TextureUnit::TU_DIFFUSE);
 		auto d = a->GetName();
@@ -45,7 +46,7 @@ VisibilityManager::~VisibilityManager() {
 	delete[] dataCopy;
 }
 
-void VisibilityManager::setToImage(unsigned* data, std::initializer_list<int> indexes, unsigned color, bool operatorA) {
+void VisibilityManager::setToImage(unsigned* data, std::array<int, 4>& indexes, unsigned color, bool operatorA) {
 	for (const auto index : indexes) {
 		const auto prev = *(data + index);
 
@@ -61,7 +62,7 @@ void VisibilityManager::setToImage(unsigned* data, std::initializer_list<int> in
 	}
 }
 
-void VisibilityManager::setToImage(unsigned* data, std::initializer_list<int> indexes, unsigned color) {
+void VisibilityManager::setToImage(unsigned* data, std::array<int, 4>& indexes, unsigned color) {
 	for (const auto index : indexes) {
 		if (*(data + index) != color) {
 			imageChanged = true;
@@ -73,7 +74,7 @@ void VisibilityManager::setToImage(unsigned* data, std::initializer_list<int> in
 void VisibilityManager::hideOrShow(VisibilityMap* current, Physical* physical) {
 	auto pos = physical->getPosition();
 
-	auto visibility = static_cast<VisibilityType>(current->getValueAt(Urho3D::Vector2(pos.x_, pos.z_))) ;
+	auto visibility = static_cast<VisibilityType>(current->getValueAt(Urho3D::Vector2(pos.x_, pos.z_)));
 	physical->setVisibility(visibility);
 }
 
@@ -94,23 +95,16 @@ void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std:
 
 		auto* data = (unsigned*)image.Get()->GetData();
 		for (int i = 0; i < current->getResolution() * current->getResolution(); ++i) {
+			auto parentIndexes = getCordsInHigher(calculator->getResolution(), i);
+			assert(parentIndexes[3] < texture->GetHeight()* texture->GetWidth());
 
-			auto cords = calculator->getIndexes(i);
-			auto a = cords.x_ * 4 * calculator->getResolution() + cords.y_ * 2;
-			auto b = a + 1;
-			auto c = a + 2 * calculator->getResolution();
-			auto d = c + 1;
-			assert(d < texture->GetHeight()* texture->GetWidth());
-
-			char currentValue = current->getValueAt(i);
+			const char currentValue = current->getValueAt(i);
 			if (currentValue == static_cast<char>(VisibilityType::VISIBLE)) {
-				setToImage(data, { a, b, c, d }, 0x00FFFFFF, true);
-			}
-			else if (currentValue == static_cast<char>(VisibilityType::SEEN)) {
-				setToImage(data, { a, b, c, d }, 0xFF000000, false);
-			}
-			else {
-				setToImage(data, { a, b, c, d }, 0xFF000000);
+				setToImage(data, parentIndexes, 0x00FFFFFF, true);
+			} else if (currentValue == static_cast<char>(VisibilityType::SEEN)) {
+				setToImage(data, parentIndexes, 0xFF000000, false);
+			} else {
+				setToImage(data, parentIndexes, 0xFF000000);
 			}
 		}
 		if (imageChanged) {

@@ -4,6 +4,7 @@
 #include <Urho3D/Resource/Image.h>
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"
+#include "math/MathUtils.h"
 #include "math/SpanUtils.h"
 #include "objects/Physical.h"
 #include "simulation/env/GridCalculator.h"
@@ -69,7 +70,7 @@ std::optional<Urho3D::Vector2> InfluenceMapQuad::getCenter() {
 		int index = std::distance(maps[0].begin(), std::ranges::max_element(maps[0]));
 
 		for (int i = 1; i < maps.size(); ++i) {
-			std::array<int, 4> indexes = getIndexes(sqrt(maps[i - 1].size()), index);
+			std::array<int, 4> indexes = getCordsInHigher(sqrt(maps[i - 1].size()), index);
 			index = getMaxElement(indexes, maps[i]);
 		}
 		return calculator->getCenter(index);
@@ -148,15 +149,3 @@ void InfluenceMapQuad::print(const Urho3D::String name) {
 	}
 }
 
-std::array<int, 4> InfluenceMapQuad::getIndexes(unsigned short resolution, int index) const {
-	const auto mod = index % resolution;
-	const auto div = index / resolution;
-	const auto value = mod * 2 + div * resolution * 4;
-
-	return {
-		value,
-		value + 1,
-		value + resolution * 2,
-		value + resolution * 2 + 1
-	};
-}

@@ -1,5 +1,6 @@
 #pragma once
 #include <Urho3D/Math/Vector3.h>
+#include <array>
 
 struct GridCalculator {
 
@@ -88,14 +89,14 @@ struct GridCalculator {
 		}
 		return val;
 	}
-	
+
 	unsigned short getValidHigh(short val) const {
 		if (val >= resolution) {
 			return resolution - 1;
 		}
 		return val;
 	}
-	
+
 	unsigned short getValid(short val) const {
 		if (val < 0) {
 			return 0;

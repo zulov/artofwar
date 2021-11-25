@@ -24,7 +24,6 @@ public:
 
 	unsigned short getResolution() const; //TODO to chyba niepotrzebne
 private:
-	std::array<int, 4> getIndexes(unsigned short resolution, int index) const;
 	int getMaxElement(const std::array<int, 4>& indexes, std::span<float> values) const;
 	GridCalculator* calculator;
 	void ensureReady();
