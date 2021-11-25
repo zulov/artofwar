@@ -103,7 +103,7 @@ void VisibilityMap::removeUnseen(float* intersection) {
 
 float VisibilityMap::getPercent() {
 	if (!percentReady) {
-		const float sum = std::accumulate((char*)values, (char*)(values + arraySize), 0.f);
+		const int sum = std::accumulate((char*)values, (char*)(values + arraySize), 0);
 		percent = sum / (arraySize * 3.f);
 		percentReady = true;
 	}
