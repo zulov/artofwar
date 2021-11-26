@@ -6,6 +6,9 @@
 #include "Fog.hlsl"
 
 uniform bool cGridEnable;
+uniform bool cSelectionEnable;
+uniform float4 cSelectionRect;
+
 #ifndef D3D11
 
 // D3D9 uniforms and samplers
@@ -166,6 +169,7 @@ void PS(float2 iTexCoord : TEXCOORD0,
 	float4 weights = Sample2D(WeightMap0, iTexCoord).rgba;
 
 	float4 diffColor;
+	
 	if (cGridEnable && a > 0.0 && (weights.a == 0.0 || weights.r>0.0 || weights.g>0.0|| weights.b>0.0)){
 		if(weights.a != 0.0){
 			diffColor = float4(0.5, 0.5, 0.5, 0.5);
@@ -182,6 +186,13 @@ void PS(float2 iTexCoord : TEXCOORD0,
 			weights.b * Sample2D(DetailMap3, iDetailTexCoord) +
 			weights.a * float4(0,0,0,1)
 		);
+		
+		
+		if(cSelectionEnable 
+			&& iWorldPos.x>cSelectionRect.x && iWorldPos.x<cSelectionRect.z 
+			&& iWorldPos.z>cSelectionRect.y && iWorldPos.z<cSelectionRect.w){
+				diffColor = lerp (diffColor, float4(0,1,0,1),0.5);
+		} 
 	}
 
     // Get material specular albedo

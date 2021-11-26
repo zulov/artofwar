@@ -14,8 +14,7 @@
 enum class CenterType:char;
 struct db_building;
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class Terrain;
 }
 
@@ -49,7 +48,8 @@ public:
 
 	void updateInfluenceOther(std::vector<Building*>* buildings) const;
 	void updateQuadOther() const;
-	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units, std::vector<ResourceEntity*>* resources) const;
+	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
+	                      std::vector<ResourceEntity*>* resources) const;
 
 	void invalidateCaches();
 	void update(Unit* unit) const;
@@ -136,6 +136,8 @@ public:
 
 	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
 	Urho3D::Terrain* getTerrain() { return terrain; }
+	void setTerrainShaderParam(const Urho3D::String& name, const Urho3D::Variant& value);
+	void flipTerrainShaderParam(const Urho3D::String& name);
 private:
 	//std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius,

@@ -32,7 +32,6 @@ Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectTyp
 	if (!SIM_GLOBALS.HEADLESS) {
 		selectedInfo = new SelectedInfo();
 		selected.reserve(5000);
-		selectionNode = createNode("Objects/additional/selectionNode.xml");
 		arrowNode = createNode("Objects/additional/arrowNode.xml");
 
 		tempBuildingNode = Game::getScene()->CreateChild();
@@ -49,7 +48,6 @@ Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectTyp
 Controls::~Controls() {
 	delete selectedInfo;
 	if (!SIM_GLOBALS.HEADLESS) {
-		selectionNode->Remove();
 		arrowNode->Remove();
 
 		for (auto mark : deployMark) {
@@ -226,7 +224,7 @@ void Controls::releaseLeft() {
 			leftClick(hitData);
 		}
 	}
-	selectionNode->SetEnabled(false);
+	Game::getEnvironment()->setTerrainShaderParam("SelectionEnable", false);
 	left.clean();
 }
 
@@ -338,8 +336,9 @@ void Controls::createBuilding(Urho3D::Vector2 pos) const {
 void Controls::cleanMouse() {
 	left.clean();
 	right.clean();
-	selectionNode->SetEnabled(false);
 	arrowNode->SetEnabled(false);
+
+	Game::getEnvironment()->setTerrainShaderParam("SelectionEnable", false);
 }
 
 void Controls::deactivate() {
@@ -439,15 +438,15 @@ void Controls::updateSelection() const {
 		const float zScale = left.held.first->z_ - hitData.position.z_;
 		if ((xScale * xScale > clickDistance || zScale * zScale > clickDistance)
 			&& Game::getTime() - left.lastDown > 0.3f) {
-			if (!selectionNode->IsEnabled()) {
-				selectionNode->SetEnabled(true);
-			}
-			selectionNode->SetScale({abs(xScale), 0.1f, abs(zScale)});
-			selectionNode->SetPosition((*left.held.first + hitData.position) / 2);
+				Game::getEnvironment()->setTerrainShaderParam("SelectionEnable", true);
+
+			std::pair<float, float> x = std::minmax(left.held.first->x_, hitData.position.x_);
+			std::pair<float, float> z = std::minmax(left.held.first->z_, hitData.position.z_);
+
+			Game::getEnvironment()->setTerrainShaderParam("SelectionRect",
+			                                              Urho3D::Vector4(x.first, z.first, x.second, z.second));
 		} else {
-			if (selectionNode->IsEnabled()) {
-				selectionNode->SetEnabled(false);
-			}
+			Game::getEnvironment()->setTerrainShaderParam("SelectionEnable", false);
 		}
 	}
 }

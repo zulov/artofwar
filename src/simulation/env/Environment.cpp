@@ -1,4 +1,6 @@
 ﻿#include "Environment.h"
+
+#include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Terrain.h>
 #include "EnvConsts.h"
 #include "GridCalculator.h"
@@ -53,6 +55,20 @@ float Environment::getVisibilityScore(char player) {
 
 std::vector<int> Environment::getIndexesInRange(const Urho3D::Vector3& center, float range) const {
 	return mainGrid.getIndexesInRange(center, range);
+}
+
+void Environment::setTerrainShaderParam(const Urho3D::String& name, const Urho3D::Variant& value) {
+	if (terrain) {
+		terrain->GetMaterial()->SetShaderParameter(name, value);
+	}
+}
+
+void Environment::flipTerrainShaderParam(const Urho3D::String& name) {
+	if (terrain) {
+		auto mat = terrain->GetMaterial();
+
+		mat->SetShaderParameter(name, !mat->GetShaderParameter(name).GetBool());
+	}
 }
 
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
@@ -177,7 +193,8 @@ void Environment::updateQuadOther() const {
 	influenceManager.updateQuadOther();
 }
 
-void Environment::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units, std::vector<ResourceEntity*>* resources) const {
+void Environment::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
+                                   std::vector<ResourceEntity*>* resources) const {
 	influenceManager.updateVisibility(buildings, units, resources);
 }
 

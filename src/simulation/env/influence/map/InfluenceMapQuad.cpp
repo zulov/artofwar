@@ -48,8 +48,6 @@ void InfluenceMapQuad::ensureReady() {
 						const int newIndex = getCordsInLower(currentRes, parentRes, j);
 						assert(newIndex<currentRes*currentRes);
 						current[newIndex] += parent[j];
-
-						//calculator->getindexes test
 					}
 				}
 			}
