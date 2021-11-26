@@ -1,6 +1,7 @@
 #pragma once
 #include <Urho3D/Math/Vector3.h>
 #include <Urho3D/Math/Vector2.h>
+#include <array>
 
 inline float sqDistAs2D(float a, float b) {
 	return a * a + b * b;
@@ -78,8 +79,16 @@ inline float fixValue(float value, float maxValue) {
 inline std::array<int, 4> getCordsInHigher(unsigned short resolution, int index) {
 	const auto mod = index % resolution;
 	const auto div = index / resolution;
-	auto resX2 = resolution * 2;
+	const auto resX2 = resolution * 2;
 	const auto value = 2 * (mod + div * resX2);
 
 	return {value, value + 1, value + resX2, value + resX2 + 1};
+}
+
+inline int getCordsInLower(int currentRes, int parentRes, int index) {
+	auto x = index / parentRes;
+	auto z = index % parentRes;
+	x /= 2;
+	z /= 2;
+	return x * currentRes + z;
 }

@@ -1,6 +1,7 @@
 #include "VisibilityMap.h"
 
 #include "VisibilityType.h"
+#include "math/MathUtils.h"
 #include "math/SpanUtils.h"
 #include "objects/Physical.h"
 #include "simulation/env/GridCalculatorProvider.h"
@@ -119,12 +120,7 @@ void VisibilityMap::ensureReady() {
 		const int currentRes = sqrt(arraySize / 4);
 		for (int j = 0; j < arraySize; ++j) {
 			if (parent[j] == VisibilityType::VISIBLE) {
-				auto x = j / parentRes;
-				auto z = j % parentRes;
-				x /= 2;
-				z /= 2;
-
-				const int newIndex = x * currentRes + z;
+				const int newIndex = getCordsInLower(currentRes, parentRes, j);
 				assert(newIndex<currentRes*currentRes);
 				current[newIndex] = true;
 			}

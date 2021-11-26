@@ -45,12 +45,7 @@ void InfluenceMapQuad::ensureReady() {
 				const int currentRes = sqrt(current.size());
 				for (int j = 0; j < parent.size(); ++j) {
 					if (parent[j] > 0.f) {
-						auto x = j / parentRes;
-						auto z = j % parentRes;
-						x /= 2;
-						z /= 2;
-
-						const int newIndex = x * currentRes + z;
+						const int newIndex = getCordsInLower(currentRes, parentRes, j);
 						assert(newIndex<currentRes*currentRes);
 						current[newIndex] += parent[j];
 
