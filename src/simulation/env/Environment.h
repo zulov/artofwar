@@ -131,13 +131,13 @@ public:
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
 	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
 	short getResolution() const { return calculator->getResolution(); }
-	bool isVisible(char player, const Urho3D::Vector2& pos);
+	bool isVisible(char player, const Urho3D::Vector2& pos) const;
 	float getVisibilityScore(char player);
 
 	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
 	Urho3D::Terrain* getTerrain() { return terrain; }
-	void setTerrainShaderParam(const Urho3D::String& name, const Urho3D::Variant& value);
-	void flipTerrainShaderParam(const Urho3D::String& name);
+	void setTerrainShaderParam(const Urho3D::String& name, const Urho3D::Variant& value) const;
+	void flipTerrainShaderParam(const Urho3D::String& name) const;
 private:
 	//std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius,

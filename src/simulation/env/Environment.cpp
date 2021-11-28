@@ -45,7 +45,7 @@ std::vector<Physical*>* Environment::getNeighboursFromTeamNotEq(Physical* physic
 	                     [player](const Physical* thing) { return thing->getPlayer() != player && thing->isAlive(); });
 }
 
-bool Environment::isVisible(char player, const Urho3D::Vector2& pos) {
+bool Environment::isVisible(char player, const Urho3D::Vector2& pos) const {
 	return influenceManager.isVisible(player, pos);
 }
 
@@ -57,14 +57,14 @@ std::vector<int> Environment::getIndexesInRange(const Urho3D::Vector3& center, f
 	return mainGrid.getIndexesInRange(center, range);
 }
 
-void Environment::setTerrainShaderParam(const Urho3D::String& name, const Urho3D::Variant& value) {
-	if (terrain) {
+void Environment::setTerrainShaderParam(const Urho3D::String& name, const Urho3D::Variant& value) const {
+	if (terrain && !SIM_GLOBALS.HEADLESS) {
 		terrain->GetMaterial()->SetShaderParameter(name, value);
 	}
 }
 
-void Environment::flipTerrainShaderParam(const Urho3D::String& name) {
-	if (terrain) {
+void Environment::flipTerrainShaderParam(const Urho3D::String& name) const {
+	if (terrain && !SIM_GLOBALS.HEADLESS) {
 		auto mat = terrain->GetMaterial();
 
 		mat->SetShaderParameter(name, !mat->GetShaderParameter(name).GetBool());

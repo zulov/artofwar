@@ -380,7 +380,7 @@ std::vector<int>* InfluenceManager::centersFromIndexes(float* values, const std:
 std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(const std::vector<int>& intersection) const {
 	std::vector<Urho3D::Vector2> centers;
 	centers.reserve(intersection.size());
-	for (auto value : intersection) {
+	for (const auto value : intersection) {
 		centers.emplace_back(calculator->getCenter(value));
 	}
 	return centers;
