@@ -106,7 +106,6 @@ private:
 	Urho3D::Node* deployMark[MAX_DEPLOY_MARK_NUMBER];
 	Urho3D::Node* arrowNode{};
 	Urho3D::Node* tempBuildingNode{};
-	Urho3D::StaticModel* tempBuildingModel;
 
 	SelectedInfo* selectedInfo{};
 

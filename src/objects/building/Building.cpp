@@ -40,9 +40,7 @@ Building::~Building() {
 void Building::postCreate() {
 	ready = false;
 	queue->add(1, QueueActionType::BUILDING_CREATE, getId(), 1);
-	if (!SIM_GLOBALS.HEADLESS) {
-		changeMaterial("Materials/orange_overlay.xml", node->GetComponent<Urho3D::StaticModel>());
-	}
+	setShaderParam(node, "Progress", 0.0);
 }
 
 float Building::getMaxHpBarSize() const {
@@ -146,6 +144,10 @@ Building* Building::load(dbload_building* dbloadBuilding) {
 }
 
 QueueElement* Building::updateQueue() const {
+	if(!ready) {
+		setShaderParam(node, "Progress", queue->getAt(0)->getProgress());
+	}
+
 	return queue->update();
 }
 

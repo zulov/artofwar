@@ -22,3 +22,15 @@ inline void changeMaterial(Urho3D::Material* newMaterial, Urho3D::StaticModel* m
 inline void changeMaterial(const Urho3D::String& name, Urho3D::StaticModel* model) {
 	changeMaterial(Game::getCache()->GetResource<Urho3D::Material>(name), model);
 }
+
+inline void setShaderParam(Urho3D::Node * node, const Urho3D::String& name, const Urho3D::Variant& value) {
+	if (node) {
+		const auto comp = node->GetComponent<Urho3D::StaticModel>();
+
+		if (comp) {
+			for (int i = 0; i < comp->GetNumGeometries(); ++i) {
+				comp->GetMaterial(i)->SetShaderParameter(name, value);
+			}
+		}
+	}
+}

@@ -8,13 +8,13 @@
 #include <Urho3D/Resource/XMLFile.h>
 #include <Urho3D/Scene/Scene.h>
 #include "Game.h"
+#include "NodeUtils.h"
 #include "SelectedObject.h"
 #include "database/DatabaseCache.h"
 #include "database/db_other_struct.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "scene/load/dbload_container.h"
-#include "simulation/env/influence/map/VisibilityType.h"
 
 
 Physical::Physical(Urho3D::Vector3& _position, bool withNode):
@@ -106,7 +106,7 @@ void Physical::select(SelectedObject* selectedObject) {
 
 	this->selectedObject = selectedObject;
 
-	setShaderParam("OutlineEnable", true);
+	setShaderParam(node, "OutlineEnable", true);
 
 	updateBillboards();
 	updateHealthBar();
@@ -114,7 +114,7 @@ void Physical::select(SelectedObject* selectedObject) {
 
 
 void Physical::unSelect() {
-	setShaderParam("OutlineEnable", false);
+	setShaderParam(node, "OutlineEnable", false);
 
 	if (selectedObject) {
 		selectedObject->disableBillboards();
@@ -122,17 +122,6 @@ void Physical::unSelect() {
 	}
 }
 
-void Physical::setShaderParam(const Urho3D::String& name, const Urho3D::Variant& value) const {
-	if (node) {
-		auto comp = node->GetComponent<Urho3D::StaticModel>();
-
-		if (comp) {
-			for (int i = 0; i < comp->GetNumGeometries(); ++i) {
-				comp->GetMaterial(i)->SetShaderParameter(name, value);
-			}
-		}
-	}
-}
 
 void Physical::loadXml(const Urho3D::String& xmlName) {
 	Urho3D::String name;
@@ -158,6 +147,7 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 			auto mat = model->GetMaterial(i);
 			mat->SetShaderParameter("OutlineEnable", false);
 			mat->SetShaderParameter("SemiHide", false);
+			mat->SetShaderParameter("Progress", 2.0);
 			if (mat->GetShaderParameter("OutlineColor").IsEmpty()) {
 				if (player >= 0) {
 					auto colorId = Game::getPlayersMan()->getPlayer(player)->getColor();

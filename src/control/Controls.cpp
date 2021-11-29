@@ -546,29 +546,32 @@ void Controls::buildControl() {
 
 			tempBuildingNode->SetPosition(env->getPosWithHeightAt(validPos.x_, validPos.y_));
 			if (!tempBuildingNode->IsEnabled()) {
+				auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(idToCreate);
 
-				auto level = building->getLevel(0).value();
 				tempBuildingNode->LoadXML(Game::getCache()
 				                          ->GetResource<Urho3D::XMLFile>("Objects/buildings/" + level->nodeName)->
 				                          GetRoot());
-				tempBuildingModel = tempBuildingNode->GetComponent<Urho3D::StaticModel>();
+				auto tempBuildingModel = tempBuildingNode->GetComponent<Urho3D::StaticModel>();
+				for (int i = 0; i < tempBuildingModel->GetNumGeometries(); ++i) {
+					tempBuildingModel->SetMaterial(i, tempBuildingModel->GetMaterial(i)->Clone());
+				}
 				tempBuildingNode->SetEnabled(true);
 			}
-			Urho3D::String textureName;
+			Urho3D::Color color;
 			if (env->validateStatic(building->size, hitPos)) {
 				if (env->isVisible(Game::getPlayersMan()->getActivePlayerID(), hitPos)) {
 					if (Game::getPlayersMan()->getActivePlayer()->getResources().hasEnough(building->costs)) {
-						textureName = "Materials/green_overlay.xml";
+						color = Urho3D::Color::GREEN;
 					} else {
-						textureName = "Materials/light_red_overlay.xml";
+						color = Urho3D::Color(0.7, 0.4, 0.1);
 					}
 				} else {
-					textureName = "Materials/light_red_overlay2.xml";
+					color = Urho3D::Color(0.7,0.2,0.1);
 				}
 			} else {
-				textureName = "Materials/red_overlay.xml";
+				color = Urho3D::Color::RED;
 			}
-			changeMaterial(textureName, tempBuildingModel);
+			setShaderParam(tempBuildingNode, "MatDiffColor", color);
 		}
 	}
 

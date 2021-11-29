@@ -6,6 +6,7 @@
 #include "math/MathUtils.h"
 #include "../unit/Unit.h"
 #include "database/db_strcut.h"
+#include "objects/NodeUtils.h"
 #include "scene/load/dbload_container.h"
 #include "simulation/env/Environment.h"
 #include "utils/OtherUtils.h"
@@ -53,13 +54,13 @@ void Static::setVisibility(VisibilityType type) {
 			if (!node->IsEnabled()) {
 				node->SetEnabled(true);
 			}
-			setShaderParam("SemiHide", true);
+			setShaderParam(node, "SemiHide", true);
 			break;
 		case VisibilityType::VISIBLE: {
 			if (!node->IsEnabled()) {
 				node->SetEnabled(true);
 			}
-			setShaderParam("SemiHide", false);
+			setShaderParam(node, "SemiHide", false);
 		}
 		break;
 		}

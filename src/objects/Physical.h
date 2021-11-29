@@ -89,7 +89,6 @@ public:
 	virtual std::pair<float, bool> absorbAttack(float attackCoef) = 0;
 
 	void select(SelectedObject* selectedObject);
-	void setShaderParam(const Urho3D::String& name, const Urho3D::Variant& value) const;
 	virtual short getCostSum() const = 0;
 
 	void unSelect();
