@@ -1,0 +1,4 @@
+<material>
+	<technique name="Techniques/DiffOutline.xml" />
+	<texture name="Textures/house_col_1024.png" unit="diffuse" />
+</material>
