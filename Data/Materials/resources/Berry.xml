@@ -1,7 +1,6 @@
 <?xml version="1.0" ?>
 <material>
 	<technique name="Techniques/NoTextureOutline.xml" />
-	<parameter name="MatDiffColor" value="0.467199 0.027032 0.0382131 1" />
-		
+	<parameter name="MatDiffColor" value="0.467199 0.027032 0.0382131 1" />	
     <parameter name="OutlineColor" value="0.467199 0.027032 0.0382131 1" />
 </material>

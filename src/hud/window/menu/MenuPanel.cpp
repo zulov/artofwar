@@ -20,7 +20,7 @@
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : EventPanel(_style, "LeftMenuWindow",
-                                                                    {GameState::RUNNING, GameState::PAUSE}) {
+                                                           {GameState::RUNNING, GameState::PAUSE}) {
 }
 
 MenuPanel::~MenuPanel() {
@@ -171,7 +171,7 @@ void MenuPanel::levelBuilding() {
 	resetRestButtons(k);
 }
 
-std::vector<unsigned char> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) const{
+std::vector<unsigned char> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) const {
 	if (selectedInfo->getAllNumber() <= 0) { return {}; }
 
 	auto& infoTypes = selectedInfo->getSelectedTypes();
@@ -209,20 +209,22 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 	resetRestButtons(k);
 }
 
-std::vector<unsigned char> MenuPanel::getOrderForUnit(SelectedInfo* selectedInfo) const{
+std::vector<unsigned char> MenuPanel::getOrderForUnit(SelectedInfo* selectedInfo) const {
 	if (selectedInfo->getAllNumber() <= 0) { return {}; }
 
 	auto& infoTypes = selectedInfo->getSelectedTypes();
 
 	std::vector<std::vector<unsigned char>*> ids;
 	for (int i = 0; i < infoTypes.size(); ++i) {
-		auto info = infoTypes.at(i);
+		const auto info = infoTypes.at(i);
 		if (!info->getData().empty()) {
-			for (auto level : info->getLevels()) {
-			
-				ids.push_back(&Game::getDatabase()->getUnit(i)->getLevel(level).value()->ordersIds);
+			const auto dbUnit = Game::getDatabase()->getUnit(i);
+			auto& levels = info->getLevels();
+			for (int level = 0; level < levels.size(); ++level) {
+				if (levels[level]) {
+					ids.push_back(&dbUnit->getLevel(level).value()->ordersIds);
+				}
 			}
-			
 		}
 	}
 	return intersection(ids);

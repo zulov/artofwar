@@ -10,11 +10,13 @@
 SelectedInfo::SelectedInfo() {
 	allNumber = 0;
 	allSubTypeNumber = 0;
-	auto size  = Game::getDatabase()->getUnits().size();
+	const auto db = Game::getDatabase();
+
+	const auto size = Urho3D::Max(db->getUnits().size(), db->getBuildings().size());
 	selectedByType.reserve(size);
 
 	for (int i = 0; i < size; ++i) {
-		selectedByType.push_back(new SelectedInfoType());
+		selectedByType.push_back(new SelectedInfoType(i));
 	}
 }
 

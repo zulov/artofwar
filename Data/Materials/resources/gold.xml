@@ -1,8 +1,7 @@
 <material>
 	<technique name="Techniques/DiffOutline.xml"/>
-	<texture name="Textures/gold.tga" unit="diffuse"/>
+	<texture name="Textures/resources/gold.tga" unit="diffuse"/>
 	<parameter name="MatDiffColor" value="0.588 0.588 0.588 1"/>
 	<parameter name="MatSpecColor" value="0.62 0.555 0.366 1"/>
-	
     <parameter name="OutlineColor" value="1 0.8 0 0" />
 </material>

@@ -1,4 +1,4 @@
 <material>
 	<technique name="Techniques/DiffOutline.xml" />
-	<texture name="Textures/buildings/farm.png" unit="diffuse" />
+	<texture name="Textures/buildings/stable.png" unit="diffuse" />
 </material>

@@ -2,19 +2,20 @@
 #include "objects/Physical.h"
 
 
-SelectedInfoType::SelectedInfoType() {
-	data.reserve(100);
-	id = -1;
+SelectedInfoType::SelectedInfoType(unsigned short id):id(id) {
+	data.reserve(10);
 }
 
 void SelectedInfoType::clear() {
 	data.clear();
-	levels.clear();
-	id = -1;
+	std::fill_n(levels.begin(), levels.size(), false);
 }
 
 void SelectedInfoType::add(Physical* physical) {
+	assert(physical->getLevelNum() <= (int)levels.size());
+	assert(physical->getId() == id);
 	data.push_back(physical);
-	levels.insert(physical->getLevelNum());
-	id = physical->getId();
+	if (physical->getLevelNum() >= 0) {
+		levels[physical->getLevelNum()] = true;
+	}
 }

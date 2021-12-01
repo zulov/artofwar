@@ -1,21 +1,22 @@
 #pragma once
-#include <unordered_set>
 #include <vector>
+#include <array>
 
 class Physical;
 
 class SelectedInfoType {
 public:
-	SelectedInfoType();
+	explicit SelectedInfoType(unsigned short id);
 	~SelectedInfoType() = default;
 	void clear();
 	void add(Physical* physical);
 
 	const std::vector<Physical*>& getData() const { return data; }
-	const std::unordered_set<char>& getLevels() const { return levels; }
-	int getId() const { return id; }
+	const std::array<bool, 6>& getLevels() const { return levels; }
+	unsigned short getId() const { return id; }
 private:
-	int id;
-	std::unordered_set<char> levels;
+	unsigned short id;
+
+	std::array<bool, 6> levels;
 	std::vector<Physical*> data;
 };
