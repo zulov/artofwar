@@ -546,6 +546,7 @@
     <ClInclude Include="src\objects\projectile\ProjectileManager.h" />
     <ClInclude Include="src\simulation\env\influence\VisibilityManager.h" />
     <ClInclude Include="src\simulation\env\influence\MapsUtils.h" />
+    <ClInclude Include="src\simulation\env\influence\VisibilityMode.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

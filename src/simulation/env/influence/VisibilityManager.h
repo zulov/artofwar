@@ -2,7 +2,9 @@
 #include <vector>
 #include <Urho3D/Container/Ptr.h>
 
+#include "VisibilityMode.h"
 #include "objects/Physical.h"
+
 
 namespace Urho3D {
 	class Terrain;
@@ -35,5 +37,6 @@ private:
 	Urho3D::SharedPtr<Urho3D::Image> image;
 	unsigned* dataCopy{};
 	Urho3D::Texture2D* texture{};
+	VisibilityMode visibilityMode =VisibilityMode::PLAYER_ONLY;
 	bool imageChanged;
 };

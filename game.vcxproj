@@ -418,6 +418,7 @@
     <ClInclude Include="src\scene\save\SQLConsts.h" />
     <ClInclude Include="src\simulation\env\influence\MapsUtils.h" />
     <ClInclude Include="src\simulation\env\influence\map\VisibilityType.h" />
+    <ClInclude Include="src\simulation\env\influence\VisibilityMode.h" />
     <ClInclude Include="src\simulation\FrameInfo.h" />
     <ClInclude Include="src\simulation\SimInfo.h" />
     <ClInclude Include="src\player\ai\AiActionType.h" />
