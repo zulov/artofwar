@@ -31,12 +31,13 @@ public:
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;
 	float getVisibilityScore(char player);
 	void removeUnseen(char player, float* intersection);
+	void nextVisibilityType();
 private:
 	std::vector<VisibilityMap*> visibilityPerPlayer;
 	GridCalculator* calculator;
 	Urho3D::SharedPtr<Urho3D::Image> image;
 	unsigned* dataCopy{};
 	Urho3D::Texture2D* texture{};
-	VisibilityMode visibilityMode =VisibilityMode::PLAYER_ONLY;
+	VisibilityMode visibilityMode = VisibilityMode::PLAYER_ONLY;
 	bool imageChanged;
 };

@@ -8,7 +8,6 @@
 #include "map/InfluenceMapQuad.h"
 #include "debug/DebugLineRepo.h"
 #include "map/InfluenceMapInt.h"
-#include "map/VisibilityType.h"
 #include "math/VectorUtils.h"
 #include "objects/CellState.h"
 #include "objects/building/Building.h"
@@ -218,21 +217,6 @@ void InfluenceManager::drawAll() const {
 	MapsUtils::drawAll(econQuad, "econQuad");
 }
 
-void InfluenceManager::switchDebug() {
-	switch (debugType) {
-	case InfluenceDataType::NONE:
-		debugType = InfluenceDataType::UNITS_NUMBER_PER_PLAYER;
-		break;
-	case InfluenceDataType::UNITS_NUMBER_PER_PLAYER:
-		debugType = InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER;
-		break;
-	case InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER:
-		debugType = InfluenceDataType::NONE;
-		break;
-	default: ;
-	}
-}
-
 content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfo,
                                                bool checks[], int activePlayer) {
 	ci->reset(); //TODO przemyslec to, zbyt skomplikowane
@@ -362,6 +346,10 @@ float InfluenceManager::getVisibilityScore(char player) const {
 
 int InfluenceManager::getIndex(const Urho3D::Vector3& position) const {
 	return calculator->indexFromPosition(position);
+}
+
+void InfluenceManager::nextVisibilityType() {
+	visibilityManager->nextVisibilityType();
 }
 
 std::vector<int>* InfluenceManager::centersFromIndexes(float* values, const std::vector<unsigned>& indexes,

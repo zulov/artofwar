@@ -512,6 +512,9 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 	if (key == KEY_G) {
 		Game::getEnvironment()->flipTerrainShaderParam("GridEnable");
 	}
+	if (key == KEY_V) {
+		Game::getEnvironment()->nextVisibilityType();
+	}
 }
 
 void Main::HandleMouseModeRequest(StringHash /*eventType*/, VariantMap& eventData) {

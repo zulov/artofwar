@@ -138,6 +138,7 @@ public:
 	Urho3D::Terrain* getTerrain() { return terrain; }
 	void setTerrainShaderParam(const Urho3D::String& name, const Urho3D::Variant& value) const;
 	void flipTerrainShaderParam(const Urho3D::String& name) const;
+	void nextVisibilityType();
 private:
 	//std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius,

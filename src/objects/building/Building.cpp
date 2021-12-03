@@ -64,7 +64,7 @@ void Building::populate() {
 	hp = dbLevel->maxHp;
 	id = dbBuilding->id;
 	invMaxHp = dbLevel->invMaxHp;
-	delete queue; //TODO optimize
+	delete queue; //TODO optimize //TODO bug co jezeli cos jets w kolejce!!!!
 	if (dbLevel->queueMaxCapacity > 0) {
 		queue = new QueueManager(dbLevel->queueMaxCapacity);
 	} else {

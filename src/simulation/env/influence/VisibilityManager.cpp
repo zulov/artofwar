@@ -19,6 +19,7 @@
 #include "simulation/SimGlobals.h"
 #include "simulation/env/Environment.h"
 #include "simulation/env/GridCalculatorProvider.h"
+#include "utils/OtherUtils.h"
 
 
 VisibilityManager::VisibilityManager(char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain) {
@@ -31,9 +32,8 @@ VisibilityManager::VisibilityManager(char numberOfPlayers, float mapSize, Urho3D
 	calculator = GridCalculatorProvider::get(resolution, mapSize);
 
 	if (terrain && !SIM_GLOBALS.HEADLESS) {
-		auto a = terrain->GetMaterial()->GetTexture(Urho3D::TextureUnit::TU_DIFFUSE);
-		auto d = a->GetName();
-		texture = Game::getCache()->GetResource<Urho3D::Texture2D>(d);
+		const auto name = terrain->GetMaterial()->GetTexture(Urho3D::TextureUnit::TU_DIFFUSE)->GetName();
+		texture = Game::getCache()->GetResource<Urho3D::Texture2D>(name);
 		image = texture->GetImage();
 		dataCopy = new unsigned[texture->GetHeight() * texture->GetWidth()];
 		auto* data = (unsigned*)image.Get()->GetData();
@@ -97,15 +97,21 @@ void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std:
 		for (int i = 0; i < current->getResolution() * current->getResolution(); ++i) {
 			auto parentIndexes = getCordsInHigher(calculator->getResolution(), i);
 			assert(parentIndexes[3] < texture->GetHeight()* texture->GetWidth());
-
-			const char currentValue = current->getValueAt(i);
-			if (currentValue == static_cast<char>(VisibilityType::VISIBLE)) {
+			if(visibilityMode==VisibilityMode::ALL) {
 				setToImage(data, parentIndexes, 0x00FFFFFF, true);
-			} else if (currentValue == static_cast<char>(VisibilityType::SEEN)) {
-				setToImage(data, parentIndexes, 0xFF000000, false);
-			} else {
-				setToImage(data, parentIndexes, 0xFF000000);
+			}else {
+				const char currentValue = current->getValueAt(i);
+				if (currentValue == static_cast<char>(VisibilityType::VISIBLE)) {
+					setToImage(data, parentIndexes, 0x00FFFFFF, true);
+				}
+				else if (currentValue == static_cast<char>(VisibilityType::SEEN)) {
+					setToImage(data, parentIndexes, 0xFF000000, false);
+				}
+				else {
+					setToImage(data, parentIndexes, 0xFF000000);
+				}
 			}
+			
 		}
 		if (imageChanged) {
 			texture->SetData(image, true);
@@ -137,4 +143,8 @@ float VisibilityManager::getVisibilityScore(char player) {
 
 void VisibilityManager::removeUnseen(char player, float* intersection) {
 	visibilityPerPlayer[player]->removeUnseen(intersection);
+}
+
+void VisibilityManager::nextVisibilityType() {
+	visibilityMode = NEXT_VISIBILITY_MODES[cast(visibilityMode)];
 }

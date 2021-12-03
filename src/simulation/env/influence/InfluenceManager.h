@@ -46,7 +46,6 @@ public:
 
 	void draw(InfluenceDataType type, char index);
 	void drawAll() const;
-	void switchDebug();
 
 	content_info* getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfos, bool* checks,
 	                             int activePlayer);
@@ -66,6 +65,7 @@ public:
 	Urho3D::Vector2 getCenter(int index) const;
 	float getVisibilityScore(char player) const;
 	int getIndex(const Urho3D::Vector3& position) const;
+	void nextVisibilityType();
 
 private:
 	std::vector<int>* centersFromIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;

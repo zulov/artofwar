@@ -71,6 +71,10 @@ void Environment::flipTerrainShaderParam(const Urho3D::String& name) const {
 	}
 }
 
+void Environment::nextVisibilityType() {
+	influenceManager.nextVisibilityType();
+}
+
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
                                                    const std::function<bool(Physical*)>& condition) const {
 	neights->clear();
