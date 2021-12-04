@@ -1,6 +1,5 @@
 #include "VisibilityManager.h"
 
-#include <iostream>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Graphics/Texture2D.h>
@@ -10,10 +9,7 @@
 #include "MapsUtils.h"
 #include "colors/ColorPaletteRepo.h"
 #include "map/VisibilityMap.h"
-#include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
-#include "utils/DeleteUtils.h"
-#include "map/VisibilityType.h"
 #include "math/MathUtils.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimGlobals.h"
@@ -72,10 +68,21 @@ void VisibilityManager::setToImage(unsigned* data, std::array<int, 4>& indexes, 
 }
 
 void VisibilityManager::hideOrShow(VisibilityMap* current, Physical* physical) {
-	auto pos = physical->getPosition();
-
-	auto visibility = static_cast<VisibilityType>(current->getValueAt(Urho3D::Vector2(pos.x_, pos.z_)));
-	physical->setVisibility(visibility);
+	VisibilityType type = VisibilityType::NONE;
+	const auto pos = physical->getPosition();
+	
+	if (visibilityMode == VisibilityMode::ALL) {
+		type = VisibilityType::VISIBLE;
+	} else if (visibilityMode == VisibilityMode::ALL_PLAYERS) {
+		char val = cast(type);
+		for (auto vis : visibilityPerPlayer) {
+			val |= cast(vis->getValueAt(pos.x_, pos.z_));
+		}
+		type = static_cast<VisibilityType>(val);
+	} else {
+		type = current->getValueAt(pos.x_,pos.z_);
+	}
+	physical->setVisibility(type);
 }
 
 void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
@@ -97,21 +104,27 @@ void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std:
 		for (int i = 0; i < current->getResolution() * current->getResolution(); ++i) {
 			auto parentIndexes = getCordsInHigher(calculator->getResolution(), i);
 			assert(parentIndexes[3] < texture->GetHeight()* texture->GetWidth());
-			if(visibilityMode==VisibilityMode::ALL) {
+			if (visibilityMode == VisibilityMode::ALL) {
 				setToImage(data, parentIndexes, 0x00FFFFFF, true);
-			}else {
-				const char currentValue = current->getValueAt(i);
-				if (currentValue == static_cast<char>(VisibilityType::VISIBLE)) {
+			} else {
+				char combineTime = cast(VisibilityType::NONE);
+				if (visibilityMode == VisibilityMode::ALL_PLAYERS) {
+					for (auto vis : visibilityPerPlayer) {
+						const char currentValue = vis->getValueAt(i);
+						combineTime |= currentValue;
+					}
+				} else {
+					combineTime = current->getValueAt(i);
+				}
+				VisibilityType currentValue = static_cast<VisibilityType>(combineTime);
+				if (currentValue == VisibilityType::VISIBLE) {
 					setToImage(data, parentIndexes, 0x00FFFFFF, true);
-				}
-				else if (currentValue == static_cast<char>(VisibilityType::SEEN)) {
+				} else if (currentValue == VisibilityType::SEEN) {
 					setToImage(data, parentIndexes, 0xFF000000, false);
-				}
-				else {
+				} else {
 					setToImage(data, parentIndexes, 0xFF000000);
 				}
 			}
-			
 		}
 		if (imageChanged) {
 			texture->SetData(image, true);

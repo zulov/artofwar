@@ -2,13 +2,13 @@
 #include <magic_enum.hpp>
 
 enum class VisibilityMode:char {
-	ALL = 0,
+	PLAYER_ONLY= 0,
+	ALL_PLAYERS,
 	//TEAM,
-	ALL_PLAYER,
-	PLAYER_ONLY
+	ALL,
 };
 
 
 constexpr inline VisibilityMode NEXT_VISIBILITY_MODES[magic_enum::enum_count<VisibilityMode>()] = {
-	VisibilityMode::ALL_PLAYER, VisibilityMode::PLAYER_ONLY, VisibilityMode::ALL
+	VisibilityMode::ALL_PLAYERS, VisibilityMode::ALL, VisibilityMode::PLAYER_ONLY
 };

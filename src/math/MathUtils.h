@@ -92,3 +92,8 @@ inline int getCordsInLower(int currentRes, int parentRes, int index) {
 	z /= 2;
 	return x * currentRes + z;
 }
+
+inline Urho3D::Vector2 to2D(Urho3D::Vector3 vec) {
+	return { vec.x_, vec.z_ };
+}
+

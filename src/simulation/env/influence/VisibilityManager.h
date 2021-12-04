@@ -3,8 +3,9 @@
 #include <Urho3D/Container/Ptr.h>
 
 #include "VisibilityMode.h"
-#include "objects/Physical.h"
 
+
+class Physical;
 
 namespace Urho3D {
 	class Terrain;

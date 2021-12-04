@@ -62,6 +62,11 @@ char VisibilityMap::getValueAt(const Urho3D::Vector2& pos) const {
 	return getValueAt(calculator->indexFromPosition(pos));
 }
 
+VisibilityType VisibilityMap::getValueAt(float x, float z) const {
+	char val = getValueAt(calculator->indexFromPosition(x, z));
+	return static_cast<VisibilityType>(val);
+}
+
 float VisibilityMap::getValueAsPercent(const Urho3D::Vector2& pos) const {
 	const float diff = max - min;
 	if (diff != 0.f) {

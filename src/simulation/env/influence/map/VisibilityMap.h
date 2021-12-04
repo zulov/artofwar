@@ -14,6 +14,7 @@ public:
 	void updateInt(int index, int value = 1) const;
 	void reset() override;
 	char getValueAt(const Urho3D::Vector2& pos) const;
+	VisibilityType getValueAt(float x, float z) const;
 	float getValueAsPercent(const Urho3D::Vector2& pos) const override;
 	float getValueAsPercent(const int index) const override;
 	float getValueAt(int index) const override;

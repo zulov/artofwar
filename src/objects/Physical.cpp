@@ -156,7 +156,6 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 				}
 			}
 		}
-
 	}
 
 	populate();
