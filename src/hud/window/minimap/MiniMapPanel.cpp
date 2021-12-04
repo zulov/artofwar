@@ -176,5 +176,5 @@ void MiniMapPanel::HandleMiniMapClick(Urho3D::StringHash eventType, Urho3D::Vari
 	float x = eventData[Urho3D::Click::P_X].GetInt() - begin.x_;
 	float y = size.y_ - (eventData[Urho3D::Click::P_Y].GetInt() - begin.y_);
 
-	Game::getCameraManager()->changePosition(x / size.x_, y / size.y_);
+	Game::getCameraManager()->changePositionInPercent(x / size.x_, y / size.y_);
 }

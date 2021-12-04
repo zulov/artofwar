@@ -37,10 +37,15 @@ const Urho3D::Vector3& CameraBehave::getPosition() const {
 	return cameraNode->GetPosition();
 }
 
-void CameraBehave::changePosition(float percentX, float percentY) const {
+void CameraBehave::changePositionInPercent(float percentX, float percentY) const {
 	const auto newPos = Game::getEnvironment()->
-		getValidPosForCamera(percentX, percentY, cameraNode->GetPosition(), minY);
+		getValidPosForCameraInPercent(percentX, percentY, cameraNode->GetPosition().y_, minY);
 
+	setPos2D(newPos);
+}
+
+void CameraBehave::changePosition(float x, float z) const {
+	const auto newPos = Game::getEnvironment()->getValidPosForCamera(x, cameraNode->GetPosition().y_, z, minY);
 	setPos2D(newPos);
 }
 

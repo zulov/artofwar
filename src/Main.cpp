@@ -41,6 +41,7 @@
 #include "simulation/SimInfo.h"
 #include "simulation/Simulation.h"
 #include "simulation/env/Environment.h"
+#include "simulation/env/influence/CenterType.h"
 #include "simulation/formation/FormationManager.h"
 #include "stats/AiInputProvider.h"
 #include "stats/Stats.h"
@@ -143,14 +144,14 @@ void Main::writeOutput() const {
 	if (!outputName.Empty()) {
 		writeOutput(
 			{
-				[](Player* p) -> float { return p->getScore(); }
+				[](Player* p) -> float{ return p->getScore(); }
 			},
 			{
-				[](Player* p) -> std::span<float> { return p->getResources().getValues(); },
-				[](Player* p) -> std::span<float> { return p->getResources().getSumValues(); },
+				[](Player* p) -> std::span<float>{ return p->getResources().getValues(); },
+				[](Player* p) -> std::span<float>{ return p->getResources().getSumValues(); },
 
-				[](Player* p) -> std::span<float> { return p->getPossession().getUnitsMetrics(); },
-				[](Player* p) -> std::span<float> { return p->getPossession().getBuildingsMetrics(); }
+				[](Player* p) -> std::span<float>{ return p->getPossession().getUnitsMetrics(); },
+				[](Player* p) -> std::span<float>{ return p->getPossession().getBuildingsMetrics(); }
 			});
 	}
 }
@@ -334,9 +335,6 @@ void Main::load(const String& saveName, Loading& progress) {
 	case 1: {
 		createEnv(loader.getConfig()->size);
 		Game::getStats()->init();
-		if (SIM_GLOBALS.CAMERA_START != Urho3D::Vector2::ZERO) {
-			Game::getCameraManager()->changePosition(SIM_GLOBALS.CAMERA_START.x_, SIM_GLOBALS.CAMERA_START.y_);
-		}
 		break;
 	}
 	case 2: {
@@ -350,6 +348,14 @@ void Main::load(const String& saveName, Loading& progress) {
 	case 4:
 		simulation->initScene(loader);
 		simulation->forceUpdateInfluenceMaps();
+		if (SIM_GLOBALS.CAMERA_START != Urho3D::Vector2::ZERO) {
+			Game::getCameraManager()->changePositionInPercent(SIM_GLOBALS.CAMERA_START.x_, SIM_GLOBALS.CAMERA_START.y_);
+		} else {
+			auto opt = Game::getEnvironment()->getCenterOf(CenterType::BUILDING,
+			                                               Game::getPlayersMan()->getActivePlayerID());
+			auto camPos = opt.value_or(Urho3D::Vector2::ZERO);
+			Game::getCameraManager()->changePosition(camPos.x_, camPos.y_);
+		}
 		break;
 	case 5:
 		changeState(GameState::RUNNING);
@@ -401,7 +407,6 @@ void Main::newGame(NewGameForm* form, Loading& progress) {
 		simulation->forceUpdateInfluenceMaps();
 		break;
 	case 5:
-
 		delete form; //TODO trzeba ustawic na null
 
 		changeState(GameState::RUNNING);

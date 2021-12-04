@@ -35,14 +35,14 @@ Environment::~Environment() {
 std::vector<Physical*>* Environment::getNeighboursFromSparseSamePlayer(Physical* physical, const float radius,
                                                                        char player) {
 	return getNeighbours(physical, sparseUnitGrid, radius,
-	                     [player](const Physical* thing) { return thing->getPlayer() == player && thing->isAlive(); });
+	                     [player](const Physical* thing){ return thing->getPlayer() == player && thing->isAlive(); });
 }
 
 std::vector<Physical*>* Environment::getNeighboursFromTeamNotEq(Physical* physical, const float radius) {
 	auto player = physical->getPlayer();
 
 	return getNeighbours(physical, sparseUnitGrid, radius,
-	                     [player](const Physical* thing) { return thing->getPlayer() != player && thing->isAlive(); });
+	                     [player](const Physical* thing){ return thing->getPlayer() != player && thing->isAlive(); });
 }
 
 bool Environment::isVisible(char player, const Urho3D::Vector2& pos) const {
@@ -100,14 +100,14 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	const auto currentIdx = unit->getMainGridIndex();
 	assert(currentIdx>=0);
 	if (mainGrid.onlyOneInside(currentIdx)) {
-		return getNeighbours(unit, mainGrid, radius, [](Physical* physical) { return true; });
+		return getNeighbours(unit, mainGrid, radius, [](Physical* physical){ return true; });
 	}
 	const auto simpleNeght = mainGrid.getAllFromCache(currentIdx, radius);
 
 	const float sqRadius = radius * radius;
 
 	neights->clear();
-	auto pred = [sqRadius,unit](Physical* neight) {
+	auto pred = [sqRadius,unit](Physical* neight){
 		return (unit != neight && sqDistAs2D(unit->getPosition(), neight->getPosition()) < sqRadius);
 	};
 	std::ranges::copy_if(*simpleNeght, std::back_inserter(*neights), pred);
@@ -170,7 +170,7 @@ std::vector<Physical*>* Environment::getResources(const Urho3D::Vector3& center,
 std::vector<Physical*>*
 Environment::getBuildingsFromTeamNotEq(Physical* physical, int id, float radius) {
 	auto team = physical->getTeam();
-	auto condition = [id, team](const Physical* physical) {
+	auto condition = [id, team](const Physical* physical){
 		return (id < 0 || physical->getId() == id) && (physical->getTeam() != team || team < 0);
 	};
 	return getNeighbours(physical, buildingGrid, radius, condition);
@@ -285,25 +285,26 @@ Urho3D::Vector3 Environment::getPosWithHeightAt(int index) const {
 	return getPosWithHeightAt(center.x_, center.y_);
 }
 
+float Environment::getCordPercent(float v) const { return v * mapSize - mapSize * 0.5f; }
+
 float Environment::getGroundHeightPercent(float y, float x, float div) const {
 	if (terrain != nullptr) {
 		const float scale = terrain->GetSpacing().y_;
-		auto const a = Urho3D::Vector3(x * mapSize - mapSize * 0.5f, 0.f,
-		                               y * mapSize - mapSize * 0.5f);
+		auto const a = Urho3D::Vector3(getCordPercent(x), 0.f, getCordPercent(y));
 
 		return getGroundHeightAt(a) / scale / div;
 	}
 	return 0.f;
 }
 
-Urho3D::Vector3 Environment::getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos,
-                                                  float min) const {
-	auto a = Urho3D::Vector3(percentX * mapSize - mapSize * 0.5f, pos.y_,
-	                         percentY * mapSize - mapSize * 0.5f);
+Urho3D::Vector3 Environment::getValidPosForCameraInPercent(float percentX, float y, float percentY, float min) const {
+	return getValidPosForCamera(getCordPercent(percentX), y, getCordPercent(percentY), min);
+}
+
+Urho3D::Vector3 Environment::getValidPosForCamera(float x, float y, float z, float min) const {
+	auto a = Urho3D::Vector3(x, y, z);
 	const float h = getGroundHeightAt(a);
-	if (h + min > pos.y_) {
-		a.y_ = h + min;
-	}
+	a.y_ = Urho3D::Max(h + min, y);
 	return a;
 }
 

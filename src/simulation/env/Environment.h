@@ -14,7 +14,8 @@
 enum class CenterType:char;
 struct db_building;
 
-namespace Urho3D {
+namespace Urho3D
+{
 	class Terrain;
 }
 
@@ -71,6 +72,7 @@ public:
 	float getGroundHeightAt(const Urho3D::Vector3& pos) const;
 	Urho3D::Vector3 getPosWithHeightAt(float x, float z) const;
 	Urho3D::Vector3 getPosWithHeightAt(int index) const;
+	float getCordPercent(float v) const;
 	float getGroundHeightPercent(float y, float x, float div) const;
 	bool validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const;
 	bool validateStatic(const Urho3D::IntVector2& size, const Urho3D::IntVector2 bucketCords) const;
@@ -88,7 +90,8 @@ public:
 	Physical* closestPhysical(Unit* unit, const std::vector<Physical*>* things,
 	                          const std::function<bool(Physical*)>& condition, int limit) const;
 	Physical* closestPhysicalSimple(const Physical* physical, const std::vector<Physical*>* things, float range) const;
-	Urho3D::Vector3 getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos, float min) const;
+	Urho3D::Vector3 getValidPosForCameraInPercent(float percentX, float y, float percentY, float min) const;
+	Urho3D::Vector3 getValidPosForCamera(float x, float y, float z, float min) const;
 
 	Urho3D::Vector2 getCenter(int index) const;
 	Urho3D::Vector2 getCenter(short x, short z) const;

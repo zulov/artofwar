@@ -93,6 +93,13 @@ Urho3D::MouseMode CameraManager::getMouseMode() const {
 	return activeBehave->getMouseMode();
 }
 
+void CameraManager::changePositionInPercent(float x, float y) {
+	activeBehave->changePositionInPercent(x, y);
+	hasMoved = true;
+	camInfo->info = activeBehave->getInfo();
+}
+
+
 void CameraManager::changePosition(float x, float y) {
 	activeBehave->changePosition(x, y);
 	hasMoved = true;
