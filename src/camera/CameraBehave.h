@@ -23,9 +23,9 @@ public:
 	Urho3D::String getInfo() const;
 	virtual Urho3D::MouseMode getMouseMode() = 0;
 	const Urho3D::Vector3& getPosition() const;
-	void changePositionInPercent(float percentX, float percentY) const;
-	void changePosition(float x, float z) const;
-	void setPos2D(const Urho3D::Vector3& newPos) const;
+	void changeTargetInPercent(float percentX, float percentY) const;
+	void changeTarget(float x, float z) const;
+	void setPos(const Urho3D::Vector3& newPos) const;
 	virtual Urho3D::Vector2 getTargetPos() const;
 protected:
 	void translateCam(float timeStep, float diff, Urho3D::Vector3 dir) const;

@@ -19,17 +19,23 @@ inline bool isGround(Urho3D::Node* node) {
 }
 
 inline void resultQuery(const Urho3D::IntVector2& pos, Urho3D::PODVector<Urho3D::RayQueryResult>& results) {
-	const auto& cameraRay = Game::getCameraManager()->getComponent()
+	const auto cameraRay = Game::getCameraManager()->getComponent()
 	                                                ->GetScreenRay((float)pos.x_ / Game::getGraphics()->GetWidth(),
 	                                                               (float)pos.y_ / Game::getGraphics()->GetHeight());
+
 
 	Urho3D::RayOctreeQuery query(results, cameraRay, Urho3D::RAY_TRIANGLE, 300, Urho3D::DRAWABLE_GEOMETRY);
 	Game::getScene()->Node::GetComponent<Urho3D::Octree>()->Raycast(query);
 }
 
+inline bool skipRayCast(const Urho3D::IntVector2 pos) {
+	auto ui = Game::getUI();
+	return !ui->GetCursor()->IsVisible() || ui->GetElementAt(pos, true);
+}
+
 bool raycast(hit_data& hitData) {
 	const auto pos = Game::getUI()->GetCursorPosition();
-	if (!Game::getUI()->GetCursor()->IsVisible() || Game::getUI()->GetElementAt(pos, true)) {
+	if (skipRayCast(pos)) {
 		return false;
 	}
 
@@ -42,35 +48,29 @@ bool raycast(hit_data& hitData) {
 			hitData.set(result, true);
 			return true;
 		}
-		Physical* lc;
-		if ((lc = getLink(node)) || (lc = getLink(node->GetParent()))) {
+		if (Physical * lc; (lc = getLink(node)) || (lc = getLink(node->GetParent()))) {
 			hitData.set(result, lc);
 			return true;
 		}
 	}
-	hitData.drawable = nullptr;
-	hitData.clicked = nullptr;
-
+	hitData.reset();
 	return false;
 }
 
 bool raycastGround(hit_data& hitData) {
 	const auto pos = Game::getUI()->GetCursorPosition();
-	if (!Game::getUI()->GetCursor()->IsVisible() || Game::getUI()->GetElementAt(pos, true)) {
+	if (skipRayCast(pos)) {
 		return false;
 	}
 
 	Urho3D::PODVector<Urho3D::RayQueryResult> results;
 	resultQuery(pos, results);
 	for (const auto result : results) {
-		const auto node = result.node_;
-		if (isGround(node)) {
+		if (isGround(result.node_)) {
 			hitData.set(result, true);
 			return true;
 		}
 	}
-	hitData.drawable = nullptr;
-	hitData.clicked = nullptr;
-
+	hitData.reset();
 	return false;
 }

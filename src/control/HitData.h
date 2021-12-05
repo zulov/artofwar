@@ -35,4 +35,9 @@ struct hit_data {
 	bool isSth() const {
 		return isGround || clicked;
 	}
+
+	void reset() {
+		drawable = nullptr;
+		clicked = nullptr;
+	}
 };

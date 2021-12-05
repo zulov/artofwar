@@ -2,6 +2,8 @@
 #include <Urho3D/Scene/Node.h>
 #include <Urho3D/Input/Input.h>
 
+#include "math/MathUtils.h"
+
 RtsCameraBehave::RtsCameraBehave(): CameraBehave(Urho3D::Vector3(0.0f, 50.0f, -50.0f), 3, "RTSCam") {
 	const auto diff = sqrt(50.0f - minY) + 1.f;
 	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * 10.f);
@@ -48,7 +50,9 @@ Urho3D::MouseMode RtsCameraBehave::getMouseMode() {
 }
 
 Urho3D::Vector2 RtsCameraBehave::getTargetPos() const {
-	auto pos = cameraNode->GetPosition();
+	const auto cameraRay = getComponent()->GetScreenRay(0.5, 0.5);
 
-	return Urho3D::Vector2(pos.x_, pos.z_ + 100.f); //TODO hardcoded
+	auto plane  = camera->ScreenToWorldPoint(Urho3D::Vector3(0.5, 0.5, cameraRay.HitDistance(Urho3D::Plane::UP)));
+	
+	return to2D(plane);
 }

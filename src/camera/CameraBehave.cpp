@@ -1,9 +1,7 @@
 #include "CameraBehave.h"
 
-#include <utility>
-#include <Urho3D/Graphics/Camera.h>
-#include <Urho3D/Scene/Node.h>
 #include "Game.h"
+#include "math/MathUtils.h"
 #include "simulation/env/Environment.h"
 #include "utils/consts.h"
 
@@ -37,25 +35,31 @@ const Urho3D::Vector3& CameraBehave::getPosition() const {
 	return cameraNode->GetPosition();
 }
 
-void CameraBehave::changePositionInPercent(float percentX, float percentY) const {
-	const auto newPos = Game::getEnvironment()->
-		getValidPosForCameraInPercent(percentX, percentY, cameraNode->GetPosition().y_, minY);
-
-	setPos2D(newPos);
+void CameraBehave::changeTargetInPercent(float percentX, float percentY) const {
+	const auto pos = Game::getEnvironment()->getPosFromPercent(percentX, percentY);
+	changeTarget(pos.x_, pos.y_);
 }
 
-void CameraBehave::changePosition(float x, float z) const {
-	const auto newPos = Game::getEnvironment()->getValidPosForCamera(x, cameraNode->GetPosition().y_, z, minY);
-	setPos2D(newPos);
+void CameraBehave::changeTarget(float x, float z) const {
+	const auto currentTarget = getTargetPos();
+	const auto diff = Urho3D::Vector2(x, z) - currentTarget;
+
+	const auto currentPos = cameraNode->GetPosition();
+
+	const auto newPos = Urho3D::Vector2(currentPos.x_ + diff.x_, currentPos.z_ + diff.y_);
+	
+	float h = Game::getEnvironment()->getGroundHeightAt(newPos.x_, newPos.y_);
+	auto y = Urho3D::Max(h + minY, cameraNode->GetPosition().y_);
+
+	setPos(to3D(newPos, y));
 }
 
-void CameraBehave::setPos2D(const Urho3D::Vector3& newPos) const {
+void CameraBehave::setPos(const Urho3D::Vector3& newPos) const {
 	cameraNode->SetPosition(newPos);
 }
 
 Urho3D::Vector2 CameraBehave::getTargetPos() const {
-	const auto pos = cameraNode->GetPosition();
-	return Urho3D::Vector2(pos.x_, pos.z_);
+	return to2D(cameraNode->GetPosition());
 }
 
 void CameraBehave::translateCam(float timeStep, float diff, Urho3D::Vector3 dir) const {

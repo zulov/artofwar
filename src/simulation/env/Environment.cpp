@@ -285,27 +285,11 @@ Urho3D::Vector3 Environment::getPosWithHeightAt(int index) const {
 	return getPosWithHeightAt(center.x_, center.y_);
 }
 
-float Environment::getCordPercent(float v) const { return v * mapSize - mapSize * 0.5f; }
-
-float Environment::getGroundHeightPercent(float y, float x, float div) const {
+float Environment::getGroundHeightPercentScaled(float x, float z, float div) const {
 	if (terrain != nullptr) {
-		const float scale = terrain->GetSpacing().y_;
-		auto const a = Urho3D::Vector3(getCordPercent(x), 0.f, getCordPercent(y));
-
-		return getGroundHeightAt(a) / scale / div;
+		return getGroundHeightAt(getPosFromPercent(x), getPosFromPercent(z)) / terrain->GetSpacing().y_ / div;
 	}
 	return 0.f;
-}
-
-Urho3D::Vector3 Environment::getValidPosForCameraInPercent(float percentX, float y, float percentY, float min) const {
-	return getValidPosForCamera(getCordPercent(percentX), y, getCordPercent(percentY), min);
-}
-
-Urho3D::Vector3 Environment::getValidPosForCamera(float x, float y, float z, float min) const {
-	auto a = Urho3D::Vector3(x, y, z);
-	const float h = getGroundHeightAt(a);
-	a.y_ = Urho3D::Max(h + min, y);
-	return a;
 }
 
 bool Environment::validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const {
@@ -477,15 +461,19 @@ void Environment::prepareGridToFind() const {
 }
 
 content_info* Environment::getContentInfo(Urho3D::Vector2 centerPercent, bool checks[], int activePlayer) {
-	const float x = getPositionFromPercent(centerPercent.x_);
-	const float z = getPositionFromPercent(centerPercent.y_);
+	const float x = getPosFromPercent(centerPercent.x_);
+	const float z = getPosFromPercent(centerPercent.y_);
 	const CellState state = mainGrid.getCellAt(x, z);
 	const int addInfo = mainGrid.getAdditionalInfoAt(x, z);
 	return influenceManager.getContentInfo({x, z}, state, addInfo, checks, activePlayer);
 }
 
-float Environment::getPositionFromPercent(float value) const {
+float Environment::getPosFromPercent(float value) const {
 	return mapSize * (value - 0.5);
+}
+
+Urho3D::Vector2 Environment::getPosFromPercent(float x, float z) const {
+	return {getPosFromPercent(x), getPosFromPercent(z)};
 }
 
 Physical* Environment::closestPhysical(Unit* unit, const std::vector<Physical*>* things,

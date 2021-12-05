@@ -44,7 +44,7 @@ CameraManager::~CameraManager() {
 void CameraManager::setCameraBehave(CameraBehaviorType _type) {
 	auto& pos = activeBehave->getPosition();
 	activeBehave = cameraBehaves[cast(_type)];
-	activeBehave->setPos2D(pos);
+	activeBehave->setPos(pos);
 	hasMoved = true;
 }
 
@@ -94,14 +94,14 @@ Urho3D::MouseMode CameraManager::getMouseMode() const {
 }
 
 void CameraManager::changePositionInPercent(float x, float y) {
-	activeBehave->changePositionInPercent(x, y);
+	activeBehave->changeTargetInPercent(x, y);
 	hasMoved = true;
 	camInfo->info = activeBehave->getInfo();
 }
 
 
 void CameraManager::changePosition(float x, float y) {
-	activeBehave->changePosition(x, y);
+	activeBehave->changeTarget(x, y);
 	hasMoved = true;
 	camInfo->info = activeBehave->getInfo();
 }

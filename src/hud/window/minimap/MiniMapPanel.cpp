@@ -71,7 +71,7 @@ void MiniMapPanel::createEmpty(int parts) {
 	float xVal = 0;
 	for (short y = size.y_; y > 0; --y) {
 		for (short x = 0; x < size.x_; ++x) {
-			float val = env->getGroundHeightPercent(yVal, xVal, div);
+			float val = env->getGroundHeightPercentScaled( xVal, yVal, div);
 			*(data + idR) = 0xFF003000 + unsigned(val) * 0X100;
 			heightMap[idR] = *(data + idR);
 			++idR;
