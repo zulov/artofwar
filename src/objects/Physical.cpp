@@ -148,6 +148,8 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 			mat->SetShaderParameter("OutlineEnable", false);
 			mat->SetShaderParameter("SemiHide", false);
 			mat->SetShaderParameter("Progress", 2.0);
+			mat->SetShaderParameter("VerticalPos",
+			                        Urho3D::Vector2(getPosition().y_, getPosition().y_ + getModelHeight()));
 			if (mat->GetShaderParameter("OutlineColor").IsEmpty()) {
 				if (player >= 0) {
 					auto colorId = Game::getPlayersMan()->getPlayer(player)->getColor();
