@@ -92,24 +92,25 @@ struct db_static {
 };
 
 struct db_cost {
-	const short resource;
-	const short value;
+	const std::array<short, 4> values;
 
-	db_cost(short resource, short value)
-		: resource(resource),
-		  value(value) {
+	const short sum = 0;
+
+	db_cost(short food, short wood, short stone, short gold) : values({food, wood, stone, gold}),
+	                                                           sum(food + wood + stone + gold) {
 	}
 };
 
 struct db_with_cost {
-	std::vector<db_cost*> costs;
-	short sumCost = 0;
+	db_cost* costs{};
 
 	unsigned short getSumCost() const {
-		return sumCost;
+		return costs ? costs->sum : 0;
 	}
 
-	~db_with_cost() { clear_vector(costs); }
+	~db_with_cost() {
+		delete costs;
+	}
 };
 
 struct db_basic_metric {

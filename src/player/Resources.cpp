@@ -28,11 +28,10 @@ void Resources::init(float valueForAll) {
 	changed = true;
 }
 
-bool Resources::reduce(const std::vector<db_cost*>& costs) {
+bool Resources::reduce(const db_cost* costs) {
 	if (hasEnough(costs)) {
-		for (int i = 0; i < costs.size(); ++i) {
-			const int j = costs.at(i)->resource;
-			values[j] -= costs.at(i)->value;
+		for (int i = 0; i < costs->values.size(); ++i) {
+			values[i]-=costs->values[i];
 		}
 		changed = true;
 		return true;
@@ -40,9 +39,9 @@ bool Resources::reduce(const std::vector<db_cost*>& costs) {
 	return false;
 }
 
-bool Resources::hasEnough(const std::vector<db_cost*>& costs) const {
-	for (auto cost : costs) {
-		if (values[cost->resource] < cost->value) {
+bool Resources::hasEnough(const db_cost* costs) const {
+	for (int i = 0; i < costs->values.size(); ++i) {
+		if (values[i] < costs->values[i]) {
 			return false;
 		}
 	}

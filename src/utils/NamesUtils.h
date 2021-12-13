@@ -1,12 +1,13 @@
 #pragma once
 #include "database/db_strcut.h"
 #include <Urho3D/Container/Str.h>
-#include <vector>
 
-Urho3D::String stringFrom(const Urho3D::String& name, const std::vector<db_cost*>& costs) {
+Urho3D::String stringFrom(const Urho3D::String& name, const db_cost* costs) {
 	auto msg = name + "\n";
-	for (db_cost* cost : costs) {		
-		msg += Game::getDatabase()->getResource(cost->resource)->name + " - " + Urho3D::String(cost->value) + "\n";
+	for (int i = 0; i < costs->values.size(); ++i) {
+		if (const auto val = costs->values[i]; val > 0) {
+			msg += Game::getDatabase()->getResource(i)->name + " - " + Urho3D::String(val) + "\n";
+		}
 	}
 	return msg;
 }

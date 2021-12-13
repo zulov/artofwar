@@ -6,6 +6,7 @@
 
 #include "utils/defines.h"
 
+struct db_with_cost;
 struct db_cost;
 
 class Resources {
@@ -16,8 +17,8 @@ public:
 	explicit Resources(float valueForAll);
 	Resources(const Resources&) = delete;
 
-	bool reduce(const std::vector<db_cost*>& costs);
-	bool hasEnough(const std::vector<db_cost*>& costs) const;
+	bool reduce(const db_cost* costs);
+	bool hasEnough(const db_cost* costs) const;
 	void add(int id, float value);
 	bool hasChanged() const { return changed; }
 

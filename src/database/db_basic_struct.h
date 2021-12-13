@@ -6,15 +6,15 @@ constexpr char SPLIT_SIGN = ';';
 struct db_entity {
 	const short id;
 
-	explicit db_entity(short id)
-		: id(id) { }
+	explicit db_entity(short id) : id(id) {
+	}
 };
 
 struct db_with_name {
 	const Urho3D::String name;
 
-	explicit db_with_name(const Urho3D::String& name)
-		: name(name) { }
+	explicit db_with_name(const Urho3D::String& name) : name(name) {
+	}
 };
 
 template <typename T>

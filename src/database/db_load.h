@@ -16,7 +16,7 @@ static db_container* getContainer(void* data) { return static_cast<db_container*
 
 int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
-	setEntity(getContainer(data)->units, new db_unit(atoi(argv[0]), argv[1], argv[3], atoi(argv[4])));
+	setEntity(getContainer(data)->units, new db_unit(atoi(argv[0]), argv[1], argv[2], atoi(argv[3])));
 	return 0;
 }
 
@@ -67,9 +67,7 @@ int static loadHudVars(void* data, int argc, char** argv, char** azColName) {
 }
 
 static void addCost(char** argv, db_with_cost* withCost) {
-	const auto value = atoi(argv[2]);
-	withCost->costs.push_back(new db_cost(atoi(argv[1]), value));
-	withCost->sumCost += value;
+	withCost->costs = new db_cost(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
 }
 
 int static loadCostUnit(void* data, int argc, char** argv, char** azColName) {
@@ -190,7 +188,6 @@ int static loadBuildingToNation(void* data, int argc, char** argv, char** azColN
 	if (argc == 0) { return 0; }
 	const auto xyz = getContainer(data);
 
-	//std::cerr<<"(b" << atoi(argv[0]) << "@n" << atoi(argv[1]) << ") ";
 	auto building = xyz->buildings[atoi(argv[0])];
 	auto nation = xyz->nations[atoi(argv[1])];
 
@@ -203,8 +200,8 @@ int static loadUnitToBuildingLevels(void* data, int argc, char** argv, char** az
 	if (argc == 0) { return 0; }
 	const auto xyz = getContainer(data);
 
-	auto level = xyz->buildingsLevels[atoi(argv[1])];
-	auto unit = xyz->units[atoi(argv[0])];
+	auto level = xyz->buildingsLevels[atoi(argv[0])];
+	auto unit = xyz->units[atoi(argv[1])];
 	level->allUnits.push_back(unit);
 	for (auto nation : unit->nations) {
 		level->unitsPerNation[nation->id]->push_back(unit);

@@ -43,7 +43,10 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 
 bool ActionMaker::createWorker() {
 	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-	const auto unit = units[4]; //TODO lepiej wybrac
+	const auto unit = units[0]; //TODO lepiej wybrac
+	// for (auto dbUnit : units) {
+	// 	dbUnit->getLevel(0)->
+	// }
 	return createWorker(unit);
 }
 
