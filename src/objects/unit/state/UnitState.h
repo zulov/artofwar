@@ -4,12 +4,15 @@ enum class UnitState : char {
 	STOP=0,
 	MOVE,
 	GO,
-	DEAD,
-	CHARGE,
+	FOLLOW,
+
 	ATTACK,
 	SHOT,
+	CHARGE,
 	DEFEND,
-	FOLLOW,
 	COLLECT,
+
+	DEAD,
 	DISPOSE
+	
 };

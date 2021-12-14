@@ -21,15 +21,17 @@
 StateManager* StateManager::instance = nullptr;
 
 StateManager::StateManager() {
-	states[cast(UnitState::GO)] = new GoState();
 	states[cast(UnitState::STOP)] = new StopState();
-	states[cast(UnitState::CHARGE)] = new ChargeState();
-	states[cast(UnitState::ATTACK)] = new AttackState();
-	states[cast(UnitState::DEFEND)] = new DefendState();
-	states[cast(UnitState::FOLLOW)] = new FollowState();
-	states[cast(UnitState::COLLECT)] = new CollectState();
 	states[cast(UnitState::MOVE)] = new MoveState();
+	states[cast(UnitState::GO)] = new GoState();
+	states[cast(UnitState::FOLLOW)] = new FollowState();
+
+	states[cast(UnitState::ATTACK)] = new AttackState();
 	states[cast(UnitState::SHOT)] = new ShotState();
+	states[cast(UnitState::CHARGE)] = new ChargeState();
+	states[cast(UnitState::DEFEND)] = new DefendState();
+	states[cast(UnitState::COLLECT)] = new CollectState();
+
 	states[cast(UnitState::DEAD)] = new DeadState();
 	states[cast(UnitState::DISPOSE)] = new DisposeState();
 
