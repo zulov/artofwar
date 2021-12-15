@@ -370,27 +370,27 @@ struct db_nation : db_entity, db_with_name {
 	std::vector<db_unit*> units;
 	std::vector<db_building*> buildings;
 
-	Urho3D::Vector<Urho3D::String> actionPrefix;
-	Urho3D::Vector<Urho3D::String> orderPrefix;
-	Urho3D::Vector<Urho3D::String> orderThresholdPrefix;
+	std::vector<std::string> actionPrefix;
+	std::vector<std::string> orderPrefix;
+	std::vector<std::string> orderThresholdPrefix;
 
 	db_nation(short id, char* name, char* actionPrefix, char* orderPrefix, char* orderThresholdPrefix)
 		: db_entity(id), db_with_name(name),
-		  actionPrefix(Urho3D::String(actionPrefix).Split(SPLIT_SIGN)),
-		  orderPrefix(Urho3D::String(orderPrefix).Split(SPLIT_SIGN)),
-		  orderThresholdPrefix(Urho3D::String(orderThresholdPrefix).Split(SPLIT_SIGN)) {
+		  actionPrefix(split(actionPrefix, SPLIT_SIGN)),
+		  orderPrefix(split(orderPrefix, SPLIT_SIGN)),
+		  orderThresholdPrefix(split(orderThresholdPrefix, SPLIT_SIGN)) {
 	}
 
 	void refresh() {
 		assert(id<MAX_PLAYERS); //TODO BUG to sa troszke inne rzeczy
-		if (!SimGlobals::ACTION_AI_PATH[id].Empty()) {
-			this->actionPrefix = SimGlobals::ACTION_AI_PATH[id].Split(SPLIT_SIGN);
+		if (!SimGlobals::ACTION_AI_PATH[id].empty()) {
+			this->actionPrefix = split(SimGlobals::ACTION_AI_PATH[id], SPLIT_SIGN);
 		}
-		if (!SimGlobals::ORDER_AI_PATH[id].Empty()) {
-			this->orderPrefix = SimGlobals::ORDER_AI_PATH[id].Split(SPLIT_SIGN);
+		if (!SimGlobals::ORDER_AI_PATH[id].empty()) {
+			this->orderPrefix = split(SimGlobals::ORDER_AI_PATH[id], SPLIT_SIGN);
 		}
-		if (!SimGlobals::ORDER_THRESHOLD_PATH[id].Empty()) {
-			this->orderThresholdPrefix = SimGlobals::ORDER_THRESHOLD_PATH[id].Split(SPLIT_SIGN);
+		if (!SimGlobals::ORDER_THRESHOLD_PATH[id].empty()) {
+			this->orderThresholdPrefix = split(SimGlobals::ORDER_THRESHOLD_PATH[id], SPLIT_SIGN);
 		}
 	}
 };

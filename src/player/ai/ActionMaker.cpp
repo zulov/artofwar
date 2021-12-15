@@ -21,18 +21,16 @@
 
 ActionMaker::ActionMaker(Player* player, db_nation* nation):
 	player(player),
-	ifWorkerCreate(BrainProvider::get(std::string(nation->actionPrefix[0].CString()) + "ifWorkerCreate_w.csv")),
-	whereWorkerCreate(BrainProvider::get(std::string(nation->actionPrefix[1].CString()) + "whereWorkerCreate_w.csv")),
+	ifWorkerCreate(BrainProvider::get(nation->actionPrefix[0] + "ifWorkerCreate_w.csv")),
+	whereWorkerCreate(BrainProvider::get(nation->actionPrefix[1] + "whereWorkerCreate_w.csv")),
 
-	ifBuildingCreate(BrainProvider::get(std::string(nation->actionPrefix[2].CString()) + "ifBuildingCreate_w.csv")),
-	whichBuildingCreate(
-		BrainProvider::get(std::string(nation->actionPrefix[3].CString()) + "whichBuildingCreate_w.csv")),
-	whereBuildingCreate(
-		BrainProvider::get(std::string(nation->actionPrefix[4].CString()) + "whereBuildingCreate_w.csv")),
+	ifBuildingCreate(BrainProvider::get(nation->actionPrefix[2] + "ifBuildingCreate_w.csv")),
+	whichBuildingCreate(BrainProvider::get(nation->actionPrefix[3] + "whichBuildingCreate_w.csv")),
+	whereBuildingCreate(BrainProvider::get(nation->actionPrefix[4] + "whereBuildingCreate_w.csv")),
 
-	ifUnitCreate(BrainProvider::get(std::string(nation->actionPrefix[5].CString()) + "ifUnitCreate_w.csv")),
-	whichUnitCreate(BrainProvider::get(std::string(nation->actionPrefix[6].CString()) + "whichUnitCreate_w.csv")),
-	whereUnitCreate(BrainProvider::get(std::string(nation->actionPrefix[7].CString()) + "whereUnitCreate_w.csv")) {
+	ifUnitCreate(BrainProvider::get(nation->actionPrefix[5] + "ifUnitCreate_w.csv")),
+	whichUnitCreate(BrainProvider::get(nation->actionPrefix[6] + "whichUnitCreate_w.csv")),
+	whereUnitCreate(BrainProvider::get(nation->actionPrefix[7] + "whereUnitCreate_w.csv")) {
 }
 
 bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {

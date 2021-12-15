@@ -80,6 +80,7 @@ private:
 	void writeOutput(std::initializer_list<const std::function<float(Player*)>> funcs1,
 	                 std::initializer_list<const std::function<std::span<float>(Player*)>> funcs2) const;
 	void writeOutput() const;
+	void setCameraPos() const;
 
 	Urho3D::MouseMode useMouseMode_;
 	Simulation* simulation;

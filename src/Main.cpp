@@ -156,6 +156,20 @@ void Main::writeOutput() const {
 	}
 }
 
+void Main::setCameraPos() const {
+	if (!SIM_GLOBALS.HEADLESS) {
+		if (SIM_GLOBALS.CAMERA_START != Urho3D::Vector2::ZERO) {
+			Game::getCameraManager()->changePositionInPercent(SIM_GLOBALS.CAMERA_START.x_,
+			                                                  SIM_GLOBALS.CAMERA_START.y_);
+		} else {
+			auto opt = Game::getEnvironment()->getCenterOf(CenterType::BUILDING,
+			                                               Game::getPlayersMan()->getActivePlayerID());
+			auto camPos = opt.value_or(Urho3D::Vector2::ZERO);
+			Game::getCameraManager()->changePosition(camPos.x_, camPos.y_);
+		}
+	}
+}
+
 void Main::Stop() {
 	writeOutput();
 
@@ -348,14 +362,7 @@ void Main::load(const String& saveName, Loading& progress) {
 	case 4:
 		simulation->initScene(loader);
 		simulation->forceUpdateInfluenceMaps();
-		if (SIM_GLOBALS.CAMERA_START != Urho3D::Vector2::ZERO) {
-			Game::getCameraManager()->changePositionInPercent(SIM_GLOBALS.CAMERA_START.x_, SIM_GLOBALS.CAMERA_START.y_);
-		} else {
-			auto opt = Game::getEnvironment()->getCenterOf(CenterType::BUILDING,
-			                                               Game::getPlayersMan()->getActivePlayerID());
-			auto camPos = opt.value_or(Urho3D::Vector2::ZERO);
-			Game::getCameraManager()->changePosition(camPos.x_, camPos.y_);
-		}
+		setCameraPos();
 		break;
 	case 5:
 		changeState(GameState::RUNNING);
@@ -405,6 +412,7 @@ void Main::newGame(NewGameForm* form, Loading& progress) {
 	case 4:
 		simulation->initScene(form);
 		simulation->forceUpdateInfluenceMaps();
+		setCameraPos();
 		break;
 	case 5:
 		delete form; //TODO trzeba ustawic na null
@@ -670,22 +678,22 @@ void Main::readParameters() {
 				engineParameters_[EP_WINDOW_HEIGHT] = ToInt(value);
 				++i;
 			} else if (argument == "actionaipath1" && !value.Empty()) {
-				SimGlobals::ACTION_AI_PATH[0] = value;
+				SimGlobals::ACTION_AI_PATH[0] = value.CString();
 				++i;
 			} else if (argument == "actionaipath2" && !value.Empty()) {
-				SimGlobals::ACTION_AI_PATH[1] = value;
+				SimGlobals::ACTION_AI_PATH[1] = value.CString();
 				++i;
 			} else if (argument == "orderaipath1" && !value.Empty()) {
-				SimGlobals::ORDER_AI_PATH[0] = value;
+				SimGlobals::ORDER_AI_PATH[0] = value.CString();
 				++i;
 			} else if (argument == "orderaipath2" && !value.Empty()) {
-				SimGlobals::ORDER_AI_PATH[1] = value;
+				SimGlobals::ORDER_AI_PATH[1] = value.CString();
 				++i;
 			} else if (argument == "orderthreshold1" && !value.Empty()) {
-				SimGlobals::ORDER_THRESHOLD_PATH[0] = value;
+				SimGlobals::ORDER_THRESHOLD_PATH[0] = value.CString();
 				++i;
 			} else if (argument == "orderthreshold2" && !value.Empty()) {
-				SimGlobals::ORDER_THRESHOLD_PATH[1] = value;
+				SimGlobals::ORDER_THRESHOLD_PATH[1] = value.CString();
 				++i;
 			} else if (argument == "camposx" && !value.Empty()) {
 				SimGlobals::CAMERA_START.x_ = ToInt(value);

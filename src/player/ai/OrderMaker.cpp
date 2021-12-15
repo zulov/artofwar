@@ -26,9 +26,9 @@ constexpr float SEMI_CLOSE = 30.f;
 
 OrderMaker::OrderMaker(Player* player, db_nation* nation)
 	: player(player),
-	  whichResource(BrainProvider::get(std::string(nation->orderPrefix[0].CString()) + "whichResource_w.csv")),
-	  attackThreshold(
-		  ThresholdProvider::get(std::string(nation->orderThresholdPrefix[0].CString()) + "attack_t.csv")) {}
+	  whichResource(BrainProvider::get(nation->orderPrefix[0] + "whichResource_w.csv")),
+	  attackThreshold(ThresholdProvider::get(nation->orderThresholdPrefix[0] + "attack_t.csv")) {
+}
 
 void OrderMaker::semiCloseAttack(const std::vector<Unit*>& subArmy, const std::vector<Physical*>& things) {
 	if (!things.empty()) {
@@ -75,11 +75,13 @@ void OrderMaker::action() {
 						const auto unit = subArmy.at(0);
 
 						if (centerType == CenterType::BUILDING) {
-							const auto buildings = Game::getEnvironment()->getBuildingsFromTeamNotEq(unit, -1, SEMI_CLOSE);
+							const auto buildings = Game::getEnvironment()->getBuildingsFromTeamNotEq(
+								unit, -1, SEMI_CLOSE);
 							semiCloseAttack(subArmy, *buildings);
 
 						} else if (centerType == CenterType::ECON) {
-							const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);//TODO perf wrzuciæ predykat do œrodka
+							const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+							//TODO perf wrzuciæ predykat do œrodka
 							std::vector<Physical*> workers;
 							workers.resize(neights->size());
 							auto pred = [](const Physical* physical) {
@@ -87,7 +89,8 @@ void OrderMaker::action() {
 							};
 							std::copy_if(neights->begin(), neights->end(), std::back_inserter(workers), pred);
 							semiCloseAttack(subArmy, workers);
-						} else {//CenterType::UNITS
+						} else {
+							//CenterType::UNITS
 							const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
 							semiCloseAttack(subArmy, *neights);
 						}

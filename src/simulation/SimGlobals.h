@@ -24,9 +24,9 @@ inline struct SimGlobals {
 	inline static bool RANDOM = false;
 	
 	inline static Urho3D::String DATABASE_NUMBER = "";
-	inline static Urho3D::String ACTION_AI_PATH[MAX_PLAYERS] = {Urho3D::String::EMPTY, Urho3D::String::EMPTY};
-	inline static Urho3D::String ORDER_AI_PATH[MAX_PLAYERS] = {Urho3D::String::EMPTY, Urho3D::String::EMPTY};
-	inline static Urho3D::String ORDER_THRESHOLD_PATH[MAX_PLAYERS] = {Urho3D::String::EMPTY, Urho3D::String::EMPTY};
+	inline static std::string ACTION_AI_PATH[MAX_PLAYERS] = {"", ""};
+	inline static std::string ORDER_AI_PATH[MAX_PLAYERS] = {"", ""};
+	inline static std::string ORDER_THRESHOLD_PATH[MAX_PLAYERS] = {"", ""};
 	inline static Urho3D::Vector2 CAMERA_START = Urho3D::Vector2::ZERO;
 
 } SIM_GLOBALS;
