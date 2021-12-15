@@ -135,4 +135,8 @@ void Possession::updateAndClean(const Resources& resources, const ObjectsInfo* s
 	freeWorkersNumber = std::ranges::count_if(workers, [](Unit* worker) {
 		return isInFreeState(worker->getState());
 	});
+
+	assert(validateSpan(__LINE__, __FILE__, unitsValuesAsSpan));
+	assert(validateSpan(__LINE__, __FILE__, freeArmyMetricsAsSpan));
+	assert(validateSpan(__LINE__, __FILE__, buildingsValuesAsSpan));
 }

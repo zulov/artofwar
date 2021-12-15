@@ -1,7 +1,7 @@
 #include "ActionMaker.h"
 
 
-#include "AiActionType.h"
+#include "AiTypes.h"
 #include "AiUtils.h"
 #include "Game.h"
 #include "commands/action/BuildingActionCommand.h"

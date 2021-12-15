@@ -523,7 +523,7 @@
     <ClInclude Include="src\utils\FileUtils.h" />
     <ClInclude Include="src\player\ai\threshold\Threshold.h" />
     <ClInclude Include="src\player\ai\threshold\ThresholdProvider.h" />
-    <ClInclude Include="src\player\ai\AiActionType.h" />
+    <ClInclude Include="src\player\ai\AiTypes.h" />
     <ClInclude Include="src\simulation\ObjectsInfo.h" />
     <ClInclude Include="src\simulation\SimInfo.h" />
     <ClInclude Include="src\simulation\FrameInfo.h" />

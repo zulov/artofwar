@@ -43,16 +43,22 @@ inline int biggestWithRand(std::span<float> v) {
 	return randFromThree(ids, vals, max);
 }
 
-inline void copyTo(std::span<float> dest, std::span<float> src1, std::span<float> src2) {
+inline std::span<float> copyTo(std::span<float> dest, std::span<float> src1, std::span<float> src2) {
 	assert(dest.size()>=src1.size()+src2.size());
 	std::ranges::copy(src1, dest.begin());
 	std::ranges::copy(src2, dest.begin() + src1.size());
+	assert(validateSpan(__LINE__, __FILE__, dest));
+	return dest;
 }
 
 
-inline void copyTo(std::span<float> dest, std::span<float> src1, std::span<float> src2, std::span<float> src3) {
+inline std::span<float> copyTo(std::span<float> dest, std::span<float> src1, std::span<float> src2,
+                               std::span<float> src3) {
 	assert(dest.size()>=src1.size()+src2.size()+src3.size());
 	std::ranges::copy(src1, dest.begin());
 	std::ranges::copy(src2, dest.begin() + src1.size());
-	std::ranges::copy(src3, dest.begin() + src1.size()+ src2.size());
+	std::ranges::copy(src3, dest.begin() + src1.size() + src2.size());
+	assert(validateSpan(__LINE__, __FILE__, dest));
+
+	return dest;
 }

@@ -41,73 +41,72 @@ AiInputProvider::AiInputProvider() {
 	wBuildingsSumInput[cast(BuildingMetric::PROD_BUILDING_ATTACK)] = 20000.f;
 }
 
+void AiInputProvider::applyWeights(std::span<float> dest, float* weights, size_t skip) {
+	std::transform(dest.begin() + skip, dest.end(), weights, dest.begin() + skip, std::divides<>());
+	assert(validateSpan(__LINE__, __FILE__, dest));
+}
+
 std::span<float> AiInputProvider::getResourceInput(char playerId) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 	auto& resources = player->getResources();
 	auto& possession = player->getPossession();
 
-	const auto basic = getBasicInput(playerId);
+	const auto basic = getBasicInput(player);
 	copyTo(resourceIdInputSpan, basic, resources.getGatherSpeeds(), resources.getValues());
 
 	resourceIdInputSpan[cast(ResourceInputType::FREE_WORKERS) + basic.size()] = possession.getFreeWorkersNumber();
 	resourceIdInputSpan[cast(ResourceInputType::WORKERS) + basic.size()] = possession.getWorkersNumber();
 
-	std::transform(resourceIdInputSpan.begin() + basic.size(), resourceIdInputSpan.end(), wResourceInput,
-	               resourceIdInputSpan.begin() + basic.size(), std::divides<>());
-	assert(validateSpan(__LINE__, __FILE__, resourceIdInputSpan));
+	applyWeights(resourceIdInputSpan, wResourceInput, basic.size());
+
 	return resourceIdInputSpan;
 }
 
 std::span<float> AiInputProvider::getUnitsInput(char playerId) {
-	const auto basic = getBasicInput(playerId);
-
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
+	const auto basic = getBasicInput(player);
 
 	copyTo(unitsInputSpan, basic, player->getPossession().getUnitsMetrics());
 
-	std::transform(unitsInputSpan.begin() + basic.size(), unitsInputSpan.end(), wUnitsSumInput,
-	               unitsInputSpan.begin() + basic.size(), std::divides<>());
-	assert(validateSpan(__LINE__, __FILE__, unitsInputSpan));
+	applyWeights(unitsInputSpan, wUnitsSumInput, basic.size());
+
 	return unitsInputSpan;
 }
 
 std::span<float> AiInputProvider::getBuildingsInput(char playerId) {
-	const auto basic = getBasicInput(playerId);
-
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
-	assert(validateSpan(__LINE__, __FILE__, player->getPossession().getBuildingsMetrics()));
+	const auto basic = getBasicInput(player);
+
 	copyTo(buildingsInputSpan, basic, player->getPossession().getBuildingsMetrics());
 
-	std::transform(buildingsInputSpan.begin() + basic.size(), buildingsInputSpan.end(), wBuildingsSumInput,
-	               buildingsInputSpan.begin() + basic.size(), std::divides<>());
-	assert(validateSpan(__LINE__, __FILE__, buildingsInputSpan));
-	
+	applyWeights(buildingsInputSpan, wBuildingsSumInput, basic.size());
+
 	return buildingsInputSpan;
 }
 
 std::span<float> AiInputProvider::getUnitsInputWithMetric(char playerId, const db_unit_metric* prop) {
-	copyTo(unitsWithMetricUnitSpan, getUnitsInput(playerId), prop->getParamsNorm());
-	assert(validateSpan(__LINE__, __FILE__, unitsWithMetricUnitSpan));
-	return unitsWithMetricUnitSpan;
+	return copyTo(unitsWithMetricUnitSpan, getUnitsInput(playerId), prop->getParamsNorm());
 }
 
 std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, const db_building_metric* prop) {
-	copyTo(basicWithMetricUnitSpan, getBuildingsInput(playerId), prop->getParamsNorm());
-	assert(validateSpan(__LINE__, __FILE__, basicWithMetricUnitSpan));
-	return basicWithMetricUnitSpan;
+	return copyTo(basicWithMetricUnitSpan, getBuildingsInput(playerId), prop->getParamsNorm());
 }
 
 std::span<float> AiInputProvider::getBasicInput(short id) {
-	char idEnemy = Game::getPlayersMan()->getEnemyFor(id);
+	return getBasicInput(Game::getPlayersMan()->getPlayer(id));
+}
 
-	update(id, basicInputSpan.data());
-	update(idEnemy, basicInputSpan.data() + magic_enum::enum_count<BasicInputType>());
+std::span<float> AiInputProvider::getBasicInput(Player* player) {
+	char idEnemy = Game::getPlayersMan()->getEnemyFor(player->getId());
+
+	updateBasic(player, basicInputSpan.data());
+	updateBasic(Game::getPlayersMan()->getPlayer(idEnemy),
+	            basicInputSpan.data() + magic_enum::enum_count<BasicInputType>());
 	assert(validateSpan(__LINE__, __FILE__, basicInputSpan));
 	return basicInputSpan;
 }
 
-void AiInputProvider::update(short id, float* data) {
-	auto player = Game::getPlayersMan()->getPlayer(id);
+void AiInputProvider::updateBasic(Player* player, float* data) {
 	data[cast(BasicInputType::RESULT)] = player->getScore();
 	data[cast(BasicInputType::UNIT_NUMBER)] = player->getPossession().getUnitsNumber();
 	data[cast(BasicInputType::BUILDING_NUMBER)] = player->getPossession().getBuildingsNumber();
