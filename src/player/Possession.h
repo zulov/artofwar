@@ -30,10 +30,11 @@ public:
 	float getUnitsVal(UnitMetric value) const;
 	float getBuildingsVal(BuildingMetric value) const;
 	void addKilled(Physical* physical);
-	
+
 	std::span<float> getUnitsMetrics() const { return unitsValuesAsSpan; }
 	std::span<float> getFreeArmyMetrics() const { return freeArmyMetricsAsSpan; }
 	std::span<float> getBuildingsMetrics() const { return buildingsValuesAsSpan; }
+	std::span<float> getWorkersStat();
 
 	const std::vector<Unit*>& getWorkers() const { return workers; }
 	std::vector<Unit*> getFreeArmy();
@@ -46,10 +47,13 @@ private:
 	int freeWorkersNumber = 0;
 	float resourcesSum = 0.f;
 	float resourcesDestroyed = 0.f;
-	
+
 	float data[magic_enum::enum_count<UnitMetric>() - 1
 		+ magic_enum::enum_count<UnitMetric>() - 1
 		+ magic_enum::enum_count<BuildingMetric>() - 1];
+
+	float workersStat[2]={0.f,0.f};
+	std::span<float> workersStatAsSpan = std::span{workersStat};
 
 	const std::span<float> unitsValuesAsSpan = std::span(data, magic_enum::enum_count<UnitMetric>() - 1);
 	const std::span<float> freeArmyMetricsAsSpan = std::span(data + magic_enum::enum_count<UnitMetric>() - 1,

@@ -81,6 +81,12 @@ void Possession::addKilled(Physical* physical) {
 	resourcesDestroyed += physical->getCostSum();
 }
 
+std::span<float> Possession::getWorkersStat() {
+	workersStat[0] = freeWorkersNumber;
+	workersStat[1] = workers.size();
+	return workersStatAsSpan;
+}
+
 std::vector<Unit*> Possession::getFreeArmy() {
 	std::vector<Unit*> army(units.size());
 

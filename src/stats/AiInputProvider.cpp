@@ -52,10 +52,7 @@ std::span<float> AiInputProvider::getResourceInput(char playerId) {
 	auto& possession = player->getPossession();
 
 	const auto basic = getBasicInput(player);
-	copyTo(resourceIdInputSpan, basic, resources.getGatherSpeeds(), resources.getValues());
-
-	resourceIdInputSpan[cast(ResourceInputType::FREE_WORKERS) + basic.size()] = possession.getFreeWorkersNumber();
-	resourceIdInputSpan[cast(ResourceInputType::WORKERS) + basic.size()] = possession.getWorkersNumber();
+	copyTo(resourceIdInputSpan, basic, resources.getGatherSpeeds(), resources.getValues(), possession.getWorkersStat());
 
 	applyWeights(resourceIdInputSpan, wResourceInput, basic.size());
 
