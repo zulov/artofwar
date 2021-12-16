@@ -78,10 +78,7 @@ void ActionMaker::action() {
 	const auto resResult = ifWorkerCreate->decide(resInput);
 	const auto unitsResult = ifUnitCreate->decide(unitsInput);
 	const auto buildingsResult = ifBuildingCreate->decide(buildingsInput);
-	if (isnan(resResult[0])) {
-		printSpan(resInput);
-	}
-	assert(!isnan(resResult[0]));
+
 	float res[] = {resResult[0], unitsResult[0], buildingsResult[0]};
 
 	auto decision = static_cast<AiActionType>(biggestWithRand(std::span(res)));
@@ -133,7 +130,7 @@ bool ActionMaker::createBuilding(db_building* building) {
 }
 
 db_building* ActionMaker::chooseBuilding(std::span<float> result) {
-	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
+	const auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;

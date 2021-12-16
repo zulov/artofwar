@@ -7,6 +7,7 @@
 #include "AFUtil.h"
 #include "Game.h"
 #include "Layer.h"
+#include "math/SpanUtils.h"
 #include "utils/DeleteUtils.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
@@ -51,8 +52,9 @@ const std::span<float> Brain::decide(std::span<float> data) {
 
 		setValues(layer, mult);
 	}
-
-	return allLayers.back()->getValues();
+	auto result = allLayers.back()->getValues();
+	assert(validateSpan(__LINE__, __FILE__, result));
+	return result;
 }
 
 std::string Brain::getName() const {
