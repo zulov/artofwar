@@ -8,7 +8,6 @@
 
 #include "db_basic_struct.h"
 #include "math/SpanUtils.h"
-#include "objects/Metrics.h"
 #include "objects/unit/state/UnitState.h"
 #include "simulation/SimGlobals.h"
 #include "stats/AiWeights.h"
@@ -22,37 +21,45 @@ struct db_building_level;
 struct db_cost;
 struct db_unit_level;
 
+#define UNIT_METRIC_NUMBER 10
+#define BUILDING_METRIC_NUMBER 10
+
 float inline safeDiv(float first, short second) {
 	second = second <= 0 ? 1 : second;
 	return first > 0.f ? first / second * FRAMES_IN_PERIOD : 0.f;
 }
 
 struct db_attack {
-	const float closeAttackVal;
-	const float rangeAttackVal;
-	const float chargeAttackVal;
-	const float buildingAttackVal;
+	const float collect;
 
-	const float armor;
+	const float attackMelee;
+	const short attackMeleeReload;
 
-	const short closeAttackReload;
-	const short rangeAttackReload;
+	const float attackRange;
+	const float attackRangeReload;
+	const short attackRangeRange;
+	const short sqAttackRangeRange;
 
-	const short closeAttackRange;
-	const short sqCloseAttackRange;
-	const short sqRangeAttackRange;
-	const float rangeAttackRange;
+	const float attackCharge;
 
-	const float interestRange;
-	const float sqInterestRange;
+	const bool typeInfantry;
+	const bool typeRange;
+	const bool typeCalvary;
+	const bool typeWorker;
+	const bool typeSpecial;
+	const bool typeMelee;
+	const bool typeHeavy;
+	const bool typeLight;
 
-	const bool canCloseAttack;
-	const bool canRangeAttack;
-	const bool canChargeAttack;
-	const bool canBuildingAttack;
-
-	const float collectSpeed;
-
+	const float bonusInfantry;
+	const float bonusRange;
+	const float bonusCalvary;
+	const float bonusWorker;
+	const float bonusSpecial;
+	const float bonusMelee;
+	const float bonusHeavy;
+	const float bonusLight;
+	const float bonusBuilding;
 
 	bool initFlag(float val) {
 		if (val > 0.f) {
@@ -61,25 +68,36 @@ struct db_attack {
 		return false;
 	}
 
-	db_attack(float closeAttackVal, float rangeAttackVal, float chargeAttackVal, float buildingAttackVal,
-	          short closeAttackReload, short rangeAttackReload, float rangeAttackRange, float armor, float collectSpeed,
-	          float interestRange)
-		: closeAttackVal(closeAttackVal),
-		  rangeAttackVal(rangeAttackVal),
-		  chargeAttackVal(chargeAttackVal),
-		  buildingAttackVal(buildingAttackVal),
-		  armor(armor),
-		  closeAttackReload(closeAttackReload),
-		  rangeAttackReload(rangeAttackReload),
-		  rangeAttackRange(rangeAttackRange), sqRangeAttackRange(rangeAttackRange * rangeAttackRange),
-		  closeAttackRange(1), sqCloseAttackRange(1),
-		  interestRange(interestRange),
-		  sqInterestRange(interestRange * interestRange),
-		  canCloseAttack(initFlag(closeAttackVal)),
-		  canRangeAttack(initFlag(rangeAttackVal)),
-		  canChargeAttack(initFlag(chargeAttackVal)),
-		  canBuildingAttack(initFlag(buildingAttackVal)),
-		  collectSpeed(collectSpeed) {
+	db_attack(float collect, float attackMelee, short attackMeleeReload, float attackRange, float attackRangeReload,
+	          short attackRangeRange, float attackCharge, bool typeInfantry, bool typeRange,
+	          bool typeCalvary, bool typeWorker, bool typeSpecial, bool typeMelee, bool typeHeavy, bool typeLight,
+	          float bonusInfantry, float bonusRange, float bonusCalvary, float bonusWorker, float bonusSpecial,
+	          float bonusMelee, float bonusHeavy, float bonusLight, float bonusBuilding)
+		: collect(collect),
+		  attackMelee(attackMelee),
+		  attackMeleeReload(attackMeleeReload),
+		  attackRange(attackRange),
+		  attackRangeReload(attackRangeReload),
+		  attackRangeRange(attackRangeRange),
+		  sqAttackRangeRange(attackRangeRange * attackRangeRange),
+		  attackCharge(attackCharge),
+		  typeInfantry(typeInfantry),
+		  typeRange(typeRange),
+		  typeCalvary(typeCalvary),
+		  typeWorker(typeWorker),
+		  typeSpecial(typeSpecial),
+		  typeMelee(typeMelee),
+		  typeHeavy(typeHeavy),
+		  typeLight(typeLight),
+		  bonusInfantry(bonusInfantry),
+		  bonusRange(bonusRange),
+		  bonusCalvary(bonusCalvary),
+		  bonusWorker(bonusWorker),
+		  bonusSpecial(bonusSpecial),
+		  bonusMelee(bonusMelee),
+		  bonusHeavy(bonusHeavy),
+		  bonusLight(bonusLight),
+		  bonusBuilding(bonusBuilding) {
 	}
 };
 
@@ -126,8 +144,8 @@ public:
 
 struct db_unit_metric : db_basic_metric {
 private:
-	float params[magic_enum::enum_count<UnitMetric>()];
-	float paramsNorm[magic_enum::enum_count<UnitMetric>()];
+	float params[UNIT_METRIC_NUMBER];
+	float paramsNorm[UNIT_METRIC_NUMBER];
 public:
 	db_unit_metric(float val1, float val2, float val3, float val4, float val5,
 	               float val6)
@@ -147,8 +165,8 @@ public:
 
 struct db_building_metric : db_basic_metric {
 private:
-	float params[magic_enum::enum_count<BuildingMetric>()];
-	float paramsNorm[magic_enum::enum_count<BuildingMetric>()];
+	float params[BUILDING_METRIC_NUMBER];
+	float paramsNorm[BUILDING_METRIC_NUMBER];
 public:
 	db_building_metric(float val1, float val2, float val3, float val4, float val5,
 	                   float val6, float val7, float val8)
@@ -183,9 +201,10 @@ struct db_sight {
 struct db_with_hp {
 	const unsigned short maxHp;
 	const float invMaxHp;
+	const float armor;
 
-	explicit db_with_hp(unsigned short maxHp)
-		: maxHp(maxHp), invMaxHp(1.f / maxHp) {
+	explicit db_with_hp(unsigned short maxHp, float armor)
+		: maxHp(maxHp), invMaxHp(1.f / maxHp), armor(armor) {
 	}
 };
 
@@ -218,32 +237,32 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 	const float maxForce;
 	const float sqMinSpeed;
 
-	const Urho3D::String nodeName;
+	const Urho3D::String node;
 
 	db_unit_metric* dbUnitMetric = nullptr;
 	bool possibleStates[magic_enum::enum_count<UnitState>()];
 	std::vector<unsigned char> ordersIds;
 
-	db_unit_level(short id, short level, short unit, char* name, float minDist, float maxSep, char* nodeName,
-	              float mass, short maxHp, float maxSpeed, float minSpeed, float collectSpeed,
-	              float maxForce, float closeAttackVal, float rangeAttackVal, float chargeAttackVal,
-	              float buildingAttackVal, short closeAttackSpeed, short rangeAttackSpeed, float rangeAttackRange,
-	              float armor, float interestRange, short buildSpeed, short upgradeSpeed):
+	db_unit_level(short id, short level, short unit, char* name, char* node, short buildTime, short upgradeTime,
+	              float minDist, float mass, float minSpeed, float maxSpeed, int maxForce, float sightRng,
+	              short maxHp, float armor, float collect, float atckM, short atckMRld, float atckR,
+	              float atckRRld, short atckRRng, float atckCH, bool tI, bool tR, bool tC, bool tW, bool tS, bool tM,
+	              bool tH, bool tL,
+	              float bI, float bR, float bC, float bW, float bS, float bM, float bH, float bL, float bB):
 		db_entity(id), db_level(level), db_with_name(name),
-		db_attack(closeAttackVal, rangeAttackVal, chargeAttackVal, buildingAttackVal,
-		          closeAttackSpeed, rangeAttackSpeed, rangeAttackRange, armor, collectSpeed, interestRange),
-		db_with_hp(maxHp), db_sight(10.f), db_build_upgrade(buildSpeed, upgradeSpeed),
+		db_attack(),
+		db_with_hp(maxHp, armor), db_sight(sightRng), db_build_upgrade(buildTime, upgradeTime),
 		unit(unit),
 		minDist(minDist),
 		maxSep(maxSep),
-		nodeName(nodeName),
+		node(node),
 		mass(mass),
 		invMass(1 / mass),
 		maxSpeed(maxSpeed),
 		minSpeed(minSpeed),
 		maxForce(maxForce),
 		sqMinSpeed(minSpeed * minSpeed),
-		canCollect(initFlag(collectSpeed)) {
+		canCollect(initFlag(collect)) {
 	}
 
 	void finish(float sumCreateCost) {
@@ -279,14 +298,6 @@ struct db_unit : db_with_name, db_with_cost, db_entity {
 			return levels.at(level);
 		}
 		return {};
-	}
-
-	float getSumVal(UnitMetric unitMetric) const {
-		float sum = 0.f;
-		for (auto level : levels) {
-			sum += level->dbUnitMetric->getParamsAsSpan()[cast(unitMetric)];
-		}
-		return sum;
 	}
 };
 
@@ -344,23 +355,7 @@ struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_s
 		for (int i = 0; i < unitsPerNation.size(); ++i) {
 			auto dbUnits = unitsPerNation.at(i);
 			if (dbUnits) {
-				float sums[magic_enum::enum_count<UnitMetric>()];
-				std::fill_n(sums, magic_enum::enum_count<UnitMetric>(), 0.f);
-				for (auto dbUnit : *dbUnits) {
-					constexpr auto& metrics = magic_enum::enum_values<UnitMetric>();
-					for (int j = 0; j < magic_enum::enum_count<UnitMetric>(); ++j) {
-						sums[cast(metrics[i])] += dbUnit->getSumVal(metrics[i]);
-					}
-				}
-				dbBuildingMetricPerNation[i] =
-					new db_building_metric(armor * maxHp,
-					                       safeDiv(rangeAttackVal, rangeAttackReload),
-					                       sums[cast(UnitMetric::DEFENCE)],
-					                       sums[cast(UnitMetric::DISTANCE_ATTACK)],
-					                       sums[cast(UnitMetric::CLOSE_ATTACK)],
-					                       sums[cast(UnitMetric::CHARGE_ATTACK)],
-					                       sums[cast(UnitMetric::BUILDING_ATTACK)],
-					                       dbBuilding->getSumCost());
+				
 			}
 		}
 	}

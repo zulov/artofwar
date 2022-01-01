@@ -2,7 +2,6 @@
 #include <magic_enum.hpp>
 #include <span>
 #include <vector>
-#include "objects/Metrics.h"
 
 
 class Physical;
@@ -27,8 +26,7 @@ public:
 	int getWorkersNumber() const;
 	int getFreeWorkersNumber() const;
 	std::vector<Building*>* getBuildings(short id);
-	float getUnitsVal(UnitMetric value) const;
-	float getBuildingsVal(BuildingMetric value) const;
+
 	void addKilled(Physical* physical);
 
 	std::span<float> getUnitsMetrics() const { return unitsValuesAsSpan; }
@@ -48,9 +46,7 @@ private:
 	float resourcesSum = 0.f;
 	float resourcesDestroyed = 0.f;
 
-	float data[magic_enum::enum_count<UnitMetric>() - 1
-		+ magic_enum::enum_count<UnitMetric>() - 1
-		+ magic_enum::enum_count<BuildingMetric>() - 1];
+	float data[?];
 
 	float workersStat[2]={0.f,0.f};
 	std::span<float> workersStatAsSpan = std::span{workersStat};

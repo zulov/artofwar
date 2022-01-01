@@ -69,10 +69,6 @@ std::vector<Building*>* Possession::getBuildings(short id) {
 	return buildingsPerId[id];
 }
 
-float Possession::getUnitsVal(UnitMetric value) const {
-	return unitsValuesAsSpan[cast(value)];
-}
-
 float Possession::getBuildingsVal(BuildingMetric value) const {
 	return buildingsValuesAsSpan[cast(value)];
 }

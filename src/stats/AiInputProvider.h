@@ -2,7 +2,7 @@
 #include <magic_enum.hpp>
 #include <span>
 #include "StatsEnums.h"
-#include "objects/Metrics.h"
+#include "database/db_strcut.h"
 
 class Player;
 struct db_unit_metric;
@@ -31,19 +31,19 @@ private:
 	//weights
 	float wBasic[magic_enum::enum_count<BasicInputType>()];
 	float wResourceInput[magic_enum::enum_count<ResourceInputType>()];
-	float wUnitsSumInput[magic_enum::enum_count<UnitMetric>() - 1];
-	float wBuildingsSumInput[magic_enum::enum_count<BuildingMetric>() - 1];
+	float wUnitsSumInput[UNIT_METRIC_NUMBER-1];
+	float wBuildingsSumInput[BUILDING_METRIC_NUMBER-1];
 
 	float basicInput[magic_enum::enum_count<BasicInputType>() * 2];
 	float resourceIdInput[magic_enum::enum_count<BasicInputType>() * 2 + magic_enum::enum_count<ResourceInputType>()];
-	float unitsInput[magic_enum::enum_count<BasicInputType>() * 2 + magic_enum::enum_count<UnitMetric>() - 1];
+	float unitsInput[magic_enum::enum_count<BasicInputType>() * 2 + UNIT_METRIC_NUMBER - 1];
 	//bez cost
-	float buildingsInput[magic_enum::enum_count<BasicInputType>() * 2 + magic_enum::enum_count<BuildingMetric>() - 1];
+	float buildingsInput[magic_enum::enum_count<BasicInputType>() * 2 + BUILDING_METRIC_NUMBER - 1];
 	//bez cost
 
-	float unitsWithMetric[magic_enum::enum_count<BasicInputType>() * 2 + magic_enum::enum_count<UnitMetric>() * 2 - 1];
+	float unitsWithMetric[magic_enum::enum_count<BasicInputType>() * 2 + UNIT_METRIC_NUMBER * 2 - 1];
 	float buildingsWithMetric[magic_enum::enum_count<BasicInputType>() * 2
-		+ magic_enum::enum_count<BuildingMetric>() * 2 - 1];
+		+ BUILDING_METRIC_NUMBER * 2 - 1];
 
 	std::span<float> basicInputSpan = std::span(basicInput);
 	std::span<float> resourceIdInputSpan = std::span(resourceIdInput);
