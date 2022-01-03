@@ -29,16 +29,39 @@ float inline safeDiv(float first, short second) {
 	return first > 0.f ? first / second * FRAMES_IN_PERIOD : 0.f;
 }
 
-struct db_attack {
+
+struct db_common_attack {
 	const float collect;
-
-	const float attackMelee;
-	const short attackMeleeReload;
-
 	const float attackRange;
 	const float attackRangeReload;
 	const short attackRangeRange;
 	const short sqAttackRangeRange;
+
+
+	db_common_attack(float collect, float attackRange, float attackRangeReload, short attackRangeRange)
+		: attackRange(attackRange),  attackRangeReload(attackRangeReload),
+		  attackRangeRange(attackRangeRange), collect(collect), sqAttackRangeRange(attackRangeRange * attackRangeRange) {}
+};
+
+
+struct db_building_attack : db_common_attack {
+	const bool typeDefence;
+	const bool typeResource;
+	const bool typeTechnology;
+	const bool typeCenter;
+
+	db_building_attack(float collect, float attackRange, float attackRangeReload, short attackRangeRange,
+		bool typeDefence, bool typeResource, bool typeTechnology, bool typeCenter)
+		: db_common_attack(collect, attackRange, attackRangeReload, attackRangeRange),
+		  typeDefence(typeDefence),
+		  typeResource(typeResource),
+		  typeTechnology(typeTechnology),
+		  typeCenter(typeCenter) {}
+};
+
+struct db_unit_attack : db_common_attack {
+	const float attackMelee;
+	const short attackMeleeReload;
 
 	const float attackCharge;
 
@@ -68,18 +91,14 @@ struct db_attack {
 		return false;
 	}
 
-	db_attack(float collect, float attackMelee, short attackMeleeReload, float attackRange, float attackRangeReload,
-	          short attackRangeRange, float attackCharge, bool typeInfantry, bool typeRange,
-	          bool typeCalvary, bool typeWorker, bool typeSpecial, bool typeMelee, bool typeHeavy, bool typeLight,
-	          float bonusInfantry, float bonusRange, float bonusCalvary, float bonusWorker, float bonusSpecial,
-	          float bonusMelee, float bonusHeavy, float bonusLight, float bonusBuilding)
-		: collect(collect),
+	db_unit_attack(float collect, float attackRange, float attackRangeReload, short attackRangeRange,  float attackMelee,
+		short attackMeleeReload, float attackCharge, bool typeInfantry, bool typeRange, bool typeCalvary,
+		bool typeWorker, bool typeSpecial, bool typeMelee, bool typeHeavy, bool typeLight, float bonusInfantry,
+		float bonusRange, float bonusCalvary, float bonusWorker, float bonusSpecial, float bonusMelee, float bonusHeavy,
+		float bonusLight, float bonusBuilding)
+		: db_common_attack(collect, attackRange, attackRangeReload, attackRangeRange),
 		  attackMelee(attackMelee),
 		  attackMeleeReload(attackMeleeReload),
-		  attackRange(attackRange),
-		  attackRangeReload(attackRangeReload),
-		  attackRangeRange(attackRangeRange),
-		  sqAttackRangeRange(attackRangeRange * attackRangeRange),
 		  attackCharge(attackCharge),
 		  typeInfantry(typeInfantry),
 		  typeRange(typeRange),
@@ -97,16 +116,14 @@ struct db_attack {
 		  bonusMelee(bonusMelee),
 		  bonusHeavy(bonusHeavy),
 		  bonusLight(bonusLight),
-		  bonusBuilding(bonusBuilding) {
-	}
+		  bonusBuilding(bonusBuilding) {}
 };
 
 struct db_static {
 	const Urho3D::IntVector2 size;
 
 	explicit db_static(const Urho3D::IntVector2& size)
-		: size(size) {
-	}
+		: size(size) { }
 };
 
 struct db_cost {
@@ -115,8 +132,7 @@ struct db_cost {
 	const short sum = 0;
 
 	db_cost(short food, short wood, short stone, short gold) : values({food, wood, stone, gold}),
-	                                                           sum(food + wood + stone + gold) {
-	}
+	                                                           sum(food + wood + stone + gold) { }
 };
 
 struct db_with_cost {
@@ -186,16 +202,7 @@ struct db_level {
 	const char level;
 
 	explicit db_level(char level)
-		: level(level) {
-	}
-};
-
-struct db_sight {
-	const float sightRadius;
-
-	explicit db_sight(float sightRadius)
-		: sightRadius(sightRadius) {
-	}
+		: level(level) { }
 };
 
 struct db_with_hp {
@@ -204,8 +211,17 @@ struct db_with_hp {
 	const float armor;
 
 	explicit db_with_hp(unsigned short maxHp, float armor)
-		: maxHp(maxHp), invMaxHp(1.f / maxHp), armor(armor) {
-	}
+		: maxHp(maxHp), invMaxHp(1.f / maxHp), armor(armor) { }
+};
+
+struct db_base : db_with_hp {
+	const float signRadius;
+	float resourceSum;
+
+	db_base(unsigned short maxHp, float armor, float signRadius)
+		: db_with_hp(maxHp, armor),
+		  signRadius(signRadius) {}
+
 };
 
 struct db_with_model {
@@ -217,11 +233,10 @@ struct db_build_upgrade {
 	short upgradeTime = -1;
 
 	db_build_upgrade(short buildTime, short upgradeTime)
-		: buildTime(buildTime), upgradeTime(upgradeTime) {
-	}
+		: buildTime(buildTime), upgradeTime(upgradeTime) { }
 };
 
-struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attack, db_with_hp, db_sight, db_with_model,
+struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_unit_attack, db_base, db_with_model,
                        db_build_upgrade {
 	const bool canCollect;
 	const unsigned short unit;
@@ -244,14 +259,14 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 	std::vector<unsigned char> ordersIds;
 
 	db_unit_level(short id, short level, short unit, char* name, char* node, short buildTime, short upgradeTime,
-	              float minDist, float mass, float minSpeed, float maxSpeed, int maxForce, float sightRng,
-	              short maxHp, float armor, float collect, float atckM, short atckMRld, float atckR,
+	              float minDist, float mass, float minSpeed, float maxSpeed, int maxForce, 
+	              short maxHp, float armor, float sightRng, float collect, float atckM, short atckMRld, float atckR,
 	              float atckRRld, short atckRRng, float atckCH, bool tI, bool tR, bool tC, bool tW, bool tS, bool tM,
 	              bool tH, bool tL,
 	              float bI, float bR, float bC, float bW, float bS, float bM, float bH, float bL, float bB):
 		db_entity(id), db_level(level), db_with_name(name),
-		db_attack(),
-		db_with_hp(maxHp, armor), db_sight(sightRng), db_build_upgrade(buildTime, upgradeTime),
+		db_unit_attack(collect, atckR,atckRRld),
+		db_base(maxHp, armor, sightRng), db_build_upgrade(buildTime, upgradeTime),
 		unit(unit),
 		minDist(minDist),
 		maxSep(maxSep),
@@ -262,16 +277,16 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 		minSpeed(minSpeed),
 		maxForce(maxForce),
 		sqMinSpeed(minSpeed * minSpeed),
-		canCollect(initFlag(collect)) {
-	}
+		canCollect(initFlag(collect)) { }
 
 	void finish(float sumCreateCost) {
-		dbUnitMetric = new db_unit_metric(armor * maxHp,
-		                                  safeDiv(rangeAttackVal, rangeAttackReload),
-		                                  safeDiv(closeAttackVal, closeAttackReload),
-		                                  chargeAttackVal,
-		                                  safeDiv(buildingAttackVal, closeAttackReload), //TODO jaki reload?
-		                                  sumCreateCost);
+		resourceSum = sumCreateCost;
+		// dbUnitMetric = new db_unit_metric(armor * maxHp,
+		//                                   safeDiv(rangeAttackVal, rangeAttackReload),
+		//                                   safeDiv(closeAttackVal, closeAttackReload),
+		//                                   chargeAttackVal,
+		//                                   safeDiv(buildingAttackVal, closeAttackReload), //TODO jaki reload?
+		//                                   sumCreateCost);
 	}
 
 	~db_unit_level() {
@@ -290,8 +305,7 @@ struct db_unit : db_with_name, db_with_cost, db_entity {
 	db_unit(short id, char* name, char* icon, short actionState)
 		: db_entity(id), db_with_name(name),
 		  icon(icon),
-		  actionState(UnitState(actionState)) {
-	}
+		  actionState(UnitState(actionState)) { }
 
 	std::optional<db_unit_level*> getLevel(short level) {
 		if (levels.size() > level) {
@@ -311,8 +325,7 @@ struct db_building : db_entity, db_with_name, db_with_cost, db_static {
 
 	db_building(short id, char* name, short sizeX, short sizeZ, char* icon)
 		: db_entity(id), db_with_name(name), db_static({sizeX, sizeZ}),
-		  icon(icon) {
-	}
+		  icon(icon) { }
 
 	std::optional<db_building_level*> getLevel(short level) {
 		if (levels.size() > level) {
@@ -322,7 +335,7 @@ struct db_building : db_entity, db_with_name, db_with_cost, db_static {
 	}
 };
 
-struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_sight, db_with_hp, db_attack,
+struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_base, db_building_attack,
                            db_with_model, db_build_upgrade {
 	const short building;
 	const short queueMaxCapacity;
@@ -339,10 +352,9 @@ struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_s
 	                  float rangeAttackVal, short rangeAttackSpeed, float rangeAttackRange, float armor, short maxHp,
 	                  short buildSpeed, short upgradeSpeed)
 		: db_entity(id), db_level(level), db_with_name(name),
-		  db_attack(0.f, rangeAttackVal, 0.f, 0.f, 0.f, rangeAttackSpeed, rangeAttackRange, armor, 0.f, 0.f),
-		  db_with_hp(maxHp), db_sight(15.f), db_build_upgrade(buildSpeed, upgradeSpeed),
-		  building(building), nodeName(nodeName), queueMaxCapacity(queueMaxCapacity) {
-	}
+		db_building_attack(),
+		  db_base(maxHp, armor, 15.f), db_build_upgrade(buildSpeed, upgradeSpeed),
+		  building(building), nodeName(nodeName), queueMaxCapacity(queueMaxCapacity) { }
 
 	~db_building_level() {
 		clear_vector(unitsPerNation);
@@ -354,9 +366,7 @@ struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_s
 		dbBuildingMetricPerNation.resize(unitsPerNation.size(), nullptr);
 		for (int i = 0; i < unitsPerNation.size(); ++i) {
 			auto dbUnits = unitsPerNation.at(i);
-			if (dbUnits) {
-				
-			}
+			if (dbUnits) { }
 		}
 	}
 };
@@ -373,8 +383,7 @@ struct db_nation : db_entity, db_with_name {
 		: db_entity(id), db_with_name(name),
 		  actionPrefix(split(actionPrefix, SPLIT_SIGN)),
 		  orderPrefix(split(orderPrefix, SPLIT_SIGN)),
-		  orderThresholdPrefix(split(orderThresholdPrefix, SPLIT_SIGN)) {
-	}
+		  orderThresholdPrefix(split(orderThresholdPrefix, SPLIT_SIGN)) { }
 
 	void refresh() {
 		assert(id<MAX_PLAYERS); //TODO BUG to sa troszke inne rzeczy
@@ -399,10 +408,9 @@ struct db_resource : db_with_name, db_static, db_with_hp, db_entity, db_with_mod
 
 	db_resource(short id, char* name, char* icon, unsigned short maxHp, char* nodeName, short sizeX,
 	            short sizeZ, short maxUsers, unsigned mini_map_color)
-		: db_entity(id), db_with_name(name), db_static({sizeX, sizeZ}), db_with_hp(maxHp),
+		: db_entity(id), db_with_name(name), db_static({sizeX, sizeZ}), db_with_hp(maxHp, 0.f),
 		  icon(icon),
 		  nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)),
 		  maxUsers(maxUsers),
-		  mini_map_color(mini_map_color) {
-	}
+		  mini_map_color(mini_map_color) { }
 };
