@@ -16,9 +16,8 @@ void ProjectileManager::update(float timeStep) {
 	}
 }
 
-void ProjectileManager::shoot(Physical* shooter, Physical* aim, float speed, char player,
-                              db_attack* dbAttack) {
-	findNext()->init(shooter, aim, speed, player, dbAttack);
+void ProjectileManager::shoot(Physical* shooter, Physical* aim, float speed, char player) {
+	findNext()->init(shooter, aim, speed, player);
 }
 
 ProjectileBase* ProjectileManager::findNext() {

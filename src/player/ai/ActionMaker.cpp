@@ -179,7 +179,7 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 }
 
 db_unit* ActionMaker::chooseUnit(std::span<float> result) {
-	auto pred = [this](db_unit* unit) { return !player->getLevelForUnit(unit->id)->canCollect; };
+	auto pred = [this](db_unit* unit) { return !player->getLevelForUnit(unit->id)->typeWorker; };
 	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
 	std::vector<db_unit*> unitsWithoutWorker;
 	unitsWithoutWorker.reserve(units.size());

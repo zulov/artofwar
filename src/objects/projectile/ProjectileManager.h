@@ -2,7 +2,6 @@
 #include <vector>
 
 struct ProjectileBase;
-struct db_attack;
 class Physical;
 
 namespace Urho3D {
@@ -13,7 +12,7 @@ namespace Urho3D {
 class ProjectileManager {
 public:
 	static void update(float timeStep);
-	static void shoot(Physical* shooter, Physical* aim, float speed, char player, db_attack* dbAttack);
+	static void shoot(Physical* shooter, Physical* aim, float speed, char player);
 	static ProjectileBase* findNext();
 	static void init();
 	static void dispose();

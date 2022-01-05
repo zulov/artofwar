@@ -161,7 +161,7 @@ std::vector<int> Static::getIndexesForRangeUse(Unit* user) const {
 	if (belowRangeLimit() <= 0) { return indexes; }
 
 	const std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(
-		getPosition(), user->getLevel()->rangeAttackRange);
+		getPosition(), user->getLevel()->attackRange);
 	auto cells = getOccupiedCells();
 
 	for (auto index : allIndexes) {

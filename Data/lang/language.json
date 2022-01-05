@@ -256,6 +256,6 @@
 		"pl":"\nZasobów: %d/%d\nUżytkowników: %d/%d"
 	},
 	"info_unit":{
-		"pl":"\nAtak: %s|%s|%s|%s\nObrona: %s\nZdrowie: %d/%d\nUżytkowników: %d/%d %d/%d\nStan: %s"
+		"pl":"\nAtak: %s|%s|%s\nObrona: %s\nZdrowie: %d/%d\nUżytkowników: %d/%d %d/%d\nStan: %s"
 	}
 }

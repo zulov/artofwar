@@ -93,7 +93,7 @@ Urho3D::String Building::getInfo() const {
 
 	return Urho3D::String(dbBuilding->name + " " + dbLevel->name)
 		.AppendWithFormat(l10n->Get("info_build").CString(),
-		                  asStringF(dbLevel->rangeAttackVal, 1).c_str(),
+		                  asStringF(dbLevel->attack, 1).c_str(),
 		                  asStringF(dbLevel->armor).c_str(),
 		                  (int)hp, dbLevel->maxHp,
 		                  closeUsers, getMaxCloseUsers(),
@@ -103,6 +103,10 @@ Urho3D::String Building::getInfo() const {
 
 const Urho3D::String& Building::getName() const {
 	return dbBuilding->name;
+}
+
+float Building::getAttackVal(Physical* aim) {
+	return dbLevel->attack;
 }
 
 void Building::action(BuildingActionType type, short id) const {
@@ -154,22 +158,22 @@ QueueElement* Building::updateQueue() const {
 void Building::updateAi() {
 	if (thingToInteract &&
 		(!thingToInteract->isAlive() || sqDistAs2D(thingToInteract->getPosition(), position) >
-			dbLevel->sqRangeAttackRange)) {
+			dbLevel->sqAttackRange)) {
 		thingToInteract = nullptr;
 		currentFrameState = 0;
 	}
-	if (ready && dbLevel->canRangeAttack) {
-		if (thingToInteract && currentFrameState >= dbLevel->rangeAttackReload) {
-			ProjectileManager::shoot(this, thingToInteract, 7, player, dbLevel);
+	if (ready && dbLevel->canAttack) {
+		if (thingToInteract && currentFrameState >= dbLevel->attackReload) {
+			ProjectileManager::shoot(this, thingToInteract, 7, player);
 			currentFrameState = 0;
 		} else {
 			if (thingToInteract) {
 				++currentFrameState;
 			} else {
 				const auto thingsToInteract = Game::getEnvironment()->getNeighboursFromTeamNotEq(
-					this, dbLevel->rangeAttackRange);
+					this, dbLevel->attackRange);
 				const auto closest = Game::getEnvironment()->closestPhysicalSimple(
-					this, thingsToInteract, dbLevel->rangeAttackRange);
+					this, thingsToInteract, dbLevel->attackRange);
 				thingToInteract = closest;
 			}
 		}

@@ -52,7 +52,8 @@ public:
 	virtual bool isIndexSlotOccupied(int indexToInteract) { return false; }
 	virtual bool indexChanged() const { return false; }
 
-	virtual void setOccupiedIndexSlot(char index, bool value) { }
+	virtual void setOccupiedIndexSlot(char index, bool value) {
+	}
 
 	virtual std::string getValues(int precision);
 	virtual bool isUsable() const { return isAlive(); }
@@ -66,6 +67,7 @@ public:
 	void upRange() { ++rangeUsers; }
 
 	virtual ObjectType getType() const = 0;
+	virtual float getAttackVal(Physical* aim) { return 0.f; }
 
 	float getHealthPercent() const { return hp * invMaxHp; }
 	signed char getTeam() const { return team; }
@@ -75,7 +77,8 @@ public:
 
 	int getMainGridIndex() const { return indexInMainGrid; }
 
-	virtual void populate() { }
+	virtual void populate() {
+	}
 
 	virtual bool isToDispose() const { return false; }
 
@@ -98,7 +101,8 @@ public:
 
 	virtual char getLevelNum();
 
-	virtual void addValues(std::span<float> vals) const { }
+	virtual void addValues(std::span<float> vals) const {
+	}
 
 	virtual unsigned char getMaxRangeUsers() const { return 128; }
 	virtual unsigned char getMaxCloseUsers() const { return 8; }

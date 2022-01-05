@@ -20,14 +20,10 @@ struct ProjectileBase {
 
 	ProjectileBase(const ProjectileBase&) = delete;
 
-	virtual void init(Physical* shooter, Physical* aim, float speed, char player, db_attack* dbAttack) {
+	virtual void init(Physical* shooter, Physical* aim, float speed, char player) {
 		this->aim = aim;
 		this->player = player;
-		if (aim->getType() == ObjectType::BUILDING) {
-			this->attackVal = dbAttack->buildingAttackVal;
-		} else {
-			this->attackVal = dbAttack->rangeAttackVal;
-		}
+		this->attackVal = shooter->getAttackVal(aim);
 
 		const auto start = shooter->getPosition();
 		const auto end = aim->getPosition();

@@ -94,7 +94,7 @@ std::vector<int> IndividualOrder::getIndexesToAct() const {
 	//TODO to coœ przemyœleæ
 	std::vector<int> indexes;
 	if (static_cast<UnitAction>(id) == UnitAction::ATTACK) {
-		if (unit->getLevel()->canRangeAttack) {
+		if (unit->getLevel()->typeRange) {
 			if (toUse->belowRangeLimit()) {
 				indexes = toUse->getIndexesForRangeUse(unit);
 			}

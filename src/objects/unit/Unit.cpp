@@ -24,7 +24,6 @@
 #include "player/Player.h"
 #include "utils/consts.h"
 #include "utils/Flags.h"
-
 #include "objects/NodeUtils.h"
 
 Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical(_position, true),
@@ -40,7 +39,7 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 		basic = model->GetMaterial(0);
 	}
 
-	if (dbLevel->canChargeAttack) {
+	if (dbLevel->typeCalvary) {
 		chargeData = new ChargeData(150, 2);
 	}
 }
@@ -162,7 +161,7 @@ std::pair<float, bool> Unit::absorbAttack(float attackCoef) {
 }
 
 bool Unit::toActionIfInRange(Physical* closest, UnitAction order) {
-	if (closest && sqDistAs2D(getPosition(), closest->getPosition()) < dbLevel->sqInterestRange) {
+	if (closest && sqDistAs2D(getPosition(), closest->getPosition()) < dbLevel->sightRadius) {
 		return toAction(closest, order);
 	}
 	return false;
@@ -260,10 +259,9 @@ Urho3D::String Unit::getInfo() const {
 	const auto l10n = Game::getLocalization();
 	return Urho3D::String(dbUnit->name + " " + dbLevel->name)
 		.AppendWithFormat(l10n->Get("info_unit").CString(),
-		                  asStringF(dbLevel->closeAttackVal, 1).c_str(),
-		                  asStringF(dbLevel->rangeAttackVal, 1).c_str(),
-		                  asStringF(dbLevel->chargeAttackVal, 1).c_str(),
-		                  asStringF(dbLevel->buildingAttackVal, 1).c_str(),
+		                  asStringF(dbLevel->attack, 1).c_str(),
+		                  asStringF(dbLevel->attackRange, 1).c_str(),
+		                  asStringF(dbLevel->attackReload, 1).c_str(),
 		                  asStringF(dbLevel->armor).c_str(),
 		                  (int)hp, dbLevel->maxHp,
 		                  closeUsers, getMaxCloseUsers(),
@@ -288,8 +286,9 @@ bool Unit::action(UnitAction unitAction, const ActionParameter& parameter) {
 	case UnitAction::CHARGE:
 		return StateManager::changeState(this, UnitState::CHARGE, parameter);
 	case UnitAction::ATTACK:
-		if (getLevel()->canRangeAttack) {
+		if (getLevel()->typeRange) {
 			//TODO perf chyba trzeba dodacparamter do actionParameter
+			//TODO zawsze strzelac? nawet z bliska
 			if (!parameter.thingToInteract->isInCloseRange(getMainGridIndex())) {
 				//jezeli nie jest in close range
 				return StateManager::changeState(this, UnitState::SHOT, parameter);
@@ -385,6 +384,16 @@ float Unit::getMaxHpBarSize() const {
 	return 0.4f;
 }
 
+float Unit::getAttackVal(Physical* aim) {
+	if (aim->getType() == ObjectType::BUILDING) {
+		return dbLevel->attack * (1.f + dbLevel->bonusBuilding);
+	}
+	if (aim->getType() == ObjectType::UNIT) {
+		return dbLevel->attack * (1.f + ((Unit*)aim)->getLevel()->getBonuses(dbLevel));
+	}
+	return dbLevel->attack;
+}
+
 void Unit::setFormation(short _formation) {
 	formation = _formation;
 }
@@ -454,15 +463,7 @@ void Unit::applyForce(float timeStep) {
 }
 
 float Unit::getAttackRange() const {
-	if (dbLevel->canRangeAttack) {
-		return dbLevel->rangeAttackRange;
-	}
-
-	if (dbLevel->canCloseAttack) {
-		return dbLevel->closeAttackRange;
-	}
-	assert(false);
-	return 2.f;
+	return dbLevel->attackRange;
 }
 
 float Unit::getMinimalDistance() const {
@@ -582,7 +583,7 @@ std::vector<int> Unit::getIndexesForRangeUse(Unit* user) const {
 	if (belowRangeLimit() <= 0) { return indexes; }
 
 	const std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(
-		getPosition(), user->getLevel()->rangeAttackRange);
+		getPosition(), user->getLevel()->attackRange);
 	const int mainIndex = getMainGridIndex();
 	const std::vector<short>& closeIndexes = Game::getEnvironment()->getCloseIndexs(mainIndex);
 

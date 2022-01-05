@@ -76,6 +76,7 @@ public:
 	void load(dbload_unit* unit);
 
 	ObjectType getType() const override { return ObjectType::UNIT; }
+	float getAttackVal(Physical* aim) override;
 	void setFormation(short _formation);
 	void resetFormation();
 	void setPositionInFormation(short _pos);

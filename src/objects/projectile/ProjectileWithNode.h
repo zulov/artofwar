@@ -25,8 +25,8 @@ struct ProjectileWithNode : public ProjectileBase {
 
 	ProjectileWithNode(const ProjectileWithNode&) = delete;
 
-	void init(Physical* shooter, Physical* aim, float speed, char player, db_attack* dbAttack) override {
-		ProjectileBase::init(shooter, aim, speed, player, dbAttack);
+	void init(Physical* shooter, Physical* aim, float speed, char player) override {
+		ProjectileBase::init(shooter, aim, speed, player);
 
 		const auto end = aim->getPosition();
 		const auto start = shooter->getPosition();

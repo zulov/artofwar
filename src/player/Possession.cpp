@@ -69,10 +69,6 @@ std::vector<Building*>* Possession::getBuildings(short id) {
 	return buildingsPerId[id];
 }
 
-float Possession::getBuildingsVal(BuildingMetric value) const {
-	return buildingsValuesAsSpan[cast(value)];
-}
-
 void Possession::addKilled(Physical* physical) {
 	resourcesDestroyed += physical->getCostSum();
 }

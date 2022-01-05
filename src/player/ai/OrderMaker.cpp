@@ -85,7 +85,7 @@ void OrderMaker::action() {
 							std::vector<Physical*> workers;
 							workers.resize(neights->size());
 							auto pred = [](const Physical* physical) {
-								return ((Unit*)physical)->getLevel()->canCollect;
+								return ((Unit*)physical)->getLevel()->typeWorker;
 							};
 							std::copy_if(neights->begin(), neights->end(), std::back_inserter(workers), pred);
 							semiCloseAttack(subArmy, workers);

@@ -1,6 +1,5 @@
 #pragma once
 #include <magic_enum.hpp>
-#include "objects/Metrics.h"
 
 inline struct AiWeights {
 	inline static float wUnitInput[magic_enum::enum_count<UnitMetric>()] = {
