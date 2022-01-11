@@ -225,11 +225,14 @@ struct db_with_hp {
 struct db_base : db_with_hp {
 	const float sightRadius;
 	const float sqSightRadius;
-	//TODO interestRange different that sight
+
+	const float interestRange;
+	const float sqInterestRange;
 	float resourceSum;
 
 	db_base(unsigned short maxHp, float armor, float sightRadius)
-		: db_with_hp(maxHp, armor), sightRadius(sightRadius), sqSightRadius(sightRadius * sightRadius) {
+		: db_with_hp(maxHp, armor), sightRadius(sightRadius), sqSightRadius(sightRadius * sightRadius),
+		  interestRange(sightRadius * 0.8f), sqInterestRange(interestRange * interestRange) {
 	}
 
 };

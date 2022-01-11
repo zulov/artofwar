@@ -165,15 +165,15 @@ void StateManager::initOrders(std::initializer_list<UnitAction> states) const {
 	for (auto level : Game::getDatabase()->getLevels()) {
 		if (level) {
 			level->ordersIds.insert(level->ordersIds.begin(), ids.begin(), ids.end());
-			if (level->canCollect) {
+			if (level->typeWorker) {
 				level->ordersIds.push_back(cast(UnitAction::COLLECT));
 			} else {
 				level->ordersIds.push_back(cast(UnitAction::DEFEND));
 			}
-			if (level->canChargeAttack) {
+			if (level->typeCalvary) {
 				level->ordersIds.push_back(cast(UnitAction::CHARGE));
 			}
-			if (level->canCloseAttack || level->canBuildingAttack || level->canRangeAttack || level->canChargeAttack) {
+			if (level->typeMelee || level->typeRange || level->typeCalvary) {
 				level->ordersIds.push_back(cast(UnitAction::ATTACK));
 			}
 			level->ordersIds.shrink_to_fit();
@@ -192,18 +192,18 @@ void StateManager::initStates(std::initializer_list<UnitState> states) const {
 	for (auto level : Game::getDatabase()->getLevels()) {
 		if (level) {
 			std::copy_n(possibleStates, SIZE, level->possibleStates);
-			if (level->canCollect) {
+			if (level->typeWorker) {
 				level->possibleStates[cast(UnitState::COLLECT)] = true;
 			} else {
 				level->possibleStates[cast(UnitState::DEFEND)] = true;
 			}
-			if (level->canChargeAttack) {
+			if (level->typeCalvary) {
 				level->possibleStates[cast(UnitState::CHARGE)] = true;
 			}
-			if (level->canRangeAttack) {
+			if (level->typeRange) {
 				level->possibleStates[cast(UnitState::SHOT)] = true;
 			}
-			if (level->canCloseAttack || level->canBuildingAttack || level->canRangeAttack || level->canChargeAttack) {
+			if (level->typeMelee || level->typeRange || level->typeCalvary) {
 				level->possibleStates[cast(UnitState::ATTACK)] = true;
 			}
 		}

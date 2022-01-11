@@ -9,6 +9,7 @@ InfluenceMapHistory::InfluenceMapHistory(unsigned short resolution, float size, 
 void InfluenceMapHistory::reset() {
 	const auto end = values + arraySize;
 	for (auto i = values; i < end; ++i) {
+		//TODO perf branchless??
 		if (*i < minimalThreshold) {
 			*i = 0.f;
 		} else {

@@ -161,7 +161,7 @@ std::pair<float, bool> Unit::absorbAttack(float attackCoef) {
 }
 
 bool Unit::toActionIfInRange(Physical* closest, UnitAction order) {
-	if (closest && sqDistAs2D(getPosition(), closest->getPosition()) < dbLevel->sightRadius) {
+	if (closest && sqDistAs2D(getPosition(), closest->getPosition()) < dbLevel->sqSightRadius) {
 		return toAction(closest, order);
 	}
 	return false;

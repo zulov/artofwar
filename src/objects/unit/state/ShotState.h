@@ -14,13 +14,12 @@ public:
 	~ShotState() = default;
 
 	void shot(Unit* unit) {
-		ProjectileManager::shoot(unit, unit->thingToInteract, 7, unit->getPlayer(),
-		                         unit->getLevel());
+		ProjectileManager::shoot(unit, unit->thingToInteract, 7, unit->getPlayer());
 		unit->currentFrameState = 0;
 	}
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
-		assert(unit->getLevel()->canRangeAttack);
+		assert(unit->getLevel()->typeRange);
 		if (parameter.isFirstThingAlive()) {
 			auto const indexesToUse = parameter.thingToInteract->getIndexesForRangeUse(unit);
 			return std::ranges::find(indexesToUse, unit->getMainGridIndex()) != indexesToUse.end()
@@ -44,7 +43,7 @@ public:
 	}
 
 	bool closeEnough(Unit* unit) const {
-		return sqDist(unit->getPosition(), unit->thingToInteract->getPosition()) < unit->dbLevel->sqRangeAttackRange;
+		return sqDist(unit->getPosition(), unit->thingToInteract->getPosition()) < unit->dbLevel->sqAttackRange;
 	}
 
 	void execute(Unit* unit, float timeStep) override {
@@ -52,7 +51,7 @@ public:
 
 		if (!unit->thingToInteract || !unit->thingToInteract->isAlive()) {
 			StateManager::toDefaultState(unit);
-		} else if (unit->currentFrameState >= unit->dbLevel->rangeAttackReload) {
+		} else if (unit->currentFrameState >= unit->dbLevel->attackReload) {
 			if (closeEnough(unit)) {
 				//TODO tu cos innego
 				shot(unit);

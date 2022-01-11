@@ -43,7 +43,8 @@ public:
 					if (unit->getTeam() != physical->getTeam()) {
 						const auto before = physical->getHealthPercent();
 
-						const auto [value, died] = physical->absorbAttack(unit->dbLevel->chargeAttackVal);
+						const auto [value, died] = physical->absorbAttack(
+							unit->getAttackVal(physical) / thingsToInteract.size());//TODO mo¿e nie dzieliæ uzale¿nic od czegoœ?
 						Game::getEnvironment()->addAttack(unit->getPlayer(), physical->getPosition(), value);
 						if (died) {
 							Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(physical);
