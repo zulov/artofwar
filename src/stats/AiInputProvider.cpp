@@ -63,7 +63,7 @@ std::span<float> AiInputProvider::getBasicInput(std::span<float> dest, Player* p
 	char idEnemy = Game::getPlayersMan()->getEnemyFor(player->getId());
 	auto& data = METRIC_DEFINITIONS.getBasicNorm(player, Game::getPlayersMan()->getPlayer(idEnemy));
 	assert(validateSpan(__LINE__, __FILE__, data));
-	std::copy(data.begin(), data.end(), dest.begin());
+	std::ranges::copy(data, dest.begin());
 
 	return std::span(dest.end(), dest.size() - data.size());
 }

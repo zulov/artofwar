@@ -130,9 +130,11 @@ struct db_building_metric : db_basic_metric {
 	                   const std::vector<float>& newValuesSmall) {
 		valuesNorm.insert(valuesNorm.end(), newValues.begin(), newValues.end());
 		valuesNormForSum.insert(valuesNormForSum.end(), newValuesForSum.begin(), newValuesForSum.end());
-		valuesNormForSum.insert(valuesNormSmall.end(), newValuesSmall.begin(), newValuesSmall.end());
+		valuesNormSmall.insert(valuesNormSmall.end(), newValuesSmall.begin(), newValuesSmall.end());
 
 		assert(validateSpan(__LINE__, __FILE__, valuesNorm));
+		assert(validateSpan(__LINE__, __FILE__, valuesNormForSum));
+		assert(validateSpan(__LINE__, __FILE__, valuesNormSmall));
 
 		paramsAString = join(valuesNorm);
 	}
@@ -188,9 +190,11 @@ struct db_unit_metric : db_basic_metric {
 	               const std::vector<float>& newValuesSmall) {
 		valuesNorm.insert(valuesNorm.end(), newValues.begin(), newValues.end());
 		valuesNormForSum.insert(valuesNormForSum.end(), newValuesForSum.begin(), newValuesForSum.end());
-		valuesNormForSum.insert(valuesNormSmall.end(), newValuesSmall.begin(), newValuesSmall.end());
+		valuesNormSmall.insert(valuesNormSmall.end(), newValuesSmall.begin(), newValuesSmall.end());
 
 		assert(validateSpan(__LINE__, __FILE__, valuesNorm));
+		assert(validateSpan(__LINE__, __FILE__, valuesNormForSum));
+		assert(validateSpan(__LINE__, __FILE__, valuesNormSmall));
 
 		paramsAString = join(valuesNorm);
 	}
@@ -236,9 +240,6 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_unit_
 
 	void finish(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
 	            const std::vector<float>& newValuesSmall) {
-		//const std::vector<float>& norm = METRIC_DEFINITIONS.getUnitNorm(unit, this);
-		//const std::vector<float>& norm1 = METRIC_DEFINITIONS.getUnitNormForSum(unit, this);
-		//const std::vector<float>& norm2 = METRIC_DEFINITIONS.getUnitNormSmall(unit, this);
 		dbUnitMetric = new db_unit_metric(newValues, newValuesForSum, newValuesSmall);
 	}
 
@@ -363,10 +364,6 @@ struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_b
 
 	void finish(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
 	            const std::vector<float>& newValuesSmall) {
-		//const std::vector<float>& norm = METRIC_DEFINITIONS.getBuildingNorm(building, this);
-		//const std::vector<float>& norm1 = METRIC_DEFINITIONS.getBuildingNormForSum(building, this);
-		//const std::vector<float>& norm2 = METRIC_DEFINITIONS.getBuildingNormSmall(building, this);
-
 		dbBuildingMetric = new db_building_metric(newValues, newValuesForSum, newValuesSmall);
 	}
 
