@@ -1,5 +1,4 @@
 #pragma once
-#include <magic_enum.hpp>
 #include <span>
 #include <vector>
 
@@ -29,10 +28,9 @@ public:
 
 	void addKilled(Physical* physical);
 
-	std::span<float> getUnitsMetrics() const { return unitsValuesAsSpan; }
-	std::span<float> getFreeArmyMetrics() const { return freeArmyMetricsAsSpan; }
-	std::span<float> getBuildingsMetrics() const { return buildingsValuesAsSpan; }
-	std::span<float> getWorkersStat();
+	std::span<float> getUnitsMetrics() const { return unitsSumAsSpan; }
+	std::span<float> getFreeArmyMetrics() const { return freeArmySumAsSpan; }
+	std::span<float> getBuildingsMetrics() const { return buildingsSumAsSpan; }
 
 	const std::vector<Unit*>& getWorkers() const { return workers; }
 	std::vector<Unit*> getFreeArmy();
@@ -46,15 +44,9 @@ private:
 	float resourcesSum = 0.f;
 	float resourcesDestroyed = 0.f;
 
-	float data[?];
-
-	float workersStat[2]={0.f,0.f};
-	std::span<float> workersStatAsSpan = std::span{workersStat};
-
-	const std::span<float> unitsValuesAsSpan = std::span(data, magic_enum::enum_count<UnitMetric>() - 1);
-	const std::span<float> freeArmyMetricsAsSpan = std::span(data + magic_enum::enum_count<UnitMetric>() - 1,
-	                                                         magic_enum::enum_count<UnitMetric>() - 1);
-	const std::span<float> buildingsValuesAsSpan = std::span(
-		data + (magic_enum::enum_count<UnitMetric>() - 1) * 2,
-		magic_enum::enum_count<BuildingMetric>() - 1);
+	float *data;
+	
+	std::span<float> unitsSumAsSpan;
+	std::span<float> freeArmySumAsSpan;
+	std::span<float> buildingsSumAsSpan;
 };

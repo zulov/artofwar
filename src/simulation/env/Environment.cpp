@@ -11,6 +11,7 @@
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
 #include "utils/consts.h"
+#include "utils/OtherUtils.h"
 
 
 Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolution):

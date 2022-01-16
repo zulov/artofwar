@@ -129,7 +129,7 @@ void Simulation::selfAI() const {
 					switch (unit->getActionState()) {
 					case UnitState::ATTACK:
 					case UnitState::SHOT:
-						tryToAttack(unit, getCondition(unit->getLevel()));
+						tryToAttack(unit, getCondition(unit->getDbUnit()));
 						break;
 					case UnitState::COLLECT:
 						tryToCollect(unit);
@@ -144,14 +144,14 @@ void Simulation::selfAI() const {
 	}
 }
 
-std::function<bool(Physical*)> Simulation::getCondition(db_unit_level* level) const {
-	if (level->canRangeAttack) {
-		if (level->canCloseAttack) {
-			return belowCloseOrRange;
+std::function<bool(Physical*)> Simulation::getCondition(db_unit* dbUnit) const {
+	if (dbUnit->typeRange) {
+		if (dbUnit->typeMelee) {
+			return belowCloseOrRange;//TODO bug? teraz to sie wyklucza?
 		}
 		return belowRange;
 	}
-	if (level->canCloseAttack) {
+	if (dbUnit->typeMelee) {
 		return belowClose;
 	}
 	return alwaysFalse;

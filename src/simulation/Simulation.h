@@ -63,7 +63,7 @@ private:
 	void levelUp(QueueElement* done, char player) const;
 	void updateBuildingQueues() const;
 	void updateQueues() const;
-	std::function<bool(Physical*)> getCondition(db_unit_level* level) const;
+	std::function<bool(Physical*)> getCondition(db_unit* dbUnit) const;
 	void selfAI() const;
 	void addTestEntities() const;
 

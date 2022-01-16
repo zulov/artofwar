@@ -219,12 +219,7 @@ std::vector<unsigned char> MenuPanel::getOrderForUnit(SelectedInfo* selectedInfo
 		const auto info = infoTypes.at(i);
 		if (!info->getData().empty()) {
 			const auto dbUnit = Game::getDatabase()->getUnit(i);
-			auto& levels = info->getLevels();
-			for (int level = 0; level < levels.size(); ++level) {
-				if (levels[level]) {
-					ids.push_back(&dbUnit->getLevel(level).value()->ordersIds);
-				}
-			}
+			ids.push_back(&dbUnit->ordersIds);
 		}
 	}
 	return intersection(ids);

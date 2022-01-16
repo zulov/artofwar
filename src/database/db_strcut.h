@@ -10,25 +10,21 @@
 #include "math/SpanUtils.h"
 #include "objects/unit/state/UnitState.h"
 #include "simulation/SimGlobals.h"
-#include "stats/AiWeights.h"
 #include "utils/DeleteUtils.h"
-#include "utils/OtherUtils.h"
 #include "utils/StringUtils.h"
 
+struct db_unit;
+struct db_unit_metric;
 struct db_nation;
 struct db_order;
 struct db_building_level;
 struct db_cost;
 struct db_unit_level;
 
-#define UNIT_METRIC_NUMBER 10
-#define BUILDING_METRIC_NUMBER 10
-
 float inline safeDiv(float first, short second) {
 	second = second <= 0 ? 1 : second;
 	return first > 0.f ? first / second * FRAMES_IN_PERIOD : 0.f;
 }
-
 
 struct db_common_attack {
 	const float collect;
@@ -49,33 +45,15 @@ struct db_common_attack {
 
 
 struct db_building_attack : db_common_attack {
-	const bool typeDefence;
-	const bool typeResource;
-	const bool typeTechnology;
-	const bool typeCenter;
-
 	const bool canAttack;
 
-	db_building_attack(float collect, float attack, float attackReload, short attackRange,
-	                   bool typeDefence, bool typeResource, bool typeTechnology, bool typeCenter)
+	db_building_attack(float collect, float attack, float attackReload, short attackRange)
 		: db_common_attack(collect, attack, attackReload, attackRange),
-		  typeDefence(typeDefence),
-		  typeResource(typeResource),
-		  typeTechnology(typeTechnology),
-		  typeCenter(typeCenter), canAttack(initFlag(attack)) {
+		  canAttack(initFlag(attack)) {
 	}
 };
 
 struct db_unit_attack : db_common_attack {
-	const bool typeInfantry;
-	const bool typeRange;
-	const bool typeCalvary;
-	const bool typeWorker;
-	const bool typeSpecial;
-	const bool typeMelee;
-	const bool typeHeavy;
-	const bool typeLight;
-
 	const float bonusInfantry;
 	const float bonusRange;
 	const float bonusCalvary;
@@ -87,19 +65,9 @@ struct db_unit_attack : db_common_attack {
 	const float bonusBuilding;
 
 	db_unit_attack(float collect, float attack, float attackReload, short attackRange,
-	               bool typeInfantry, bool typeRange, bool typeCalvary,
-	               bool typeWorker, bool typeSpecial, bool typeMelee, bool typeHeavy, bool typeLight,
 	               float bonusInfantry, float bonusRange, float bonusCalvary, float bonusWorker,
 	               float bonusSpecial, float bonusMelee, float bonusHeavy, float bonusLight, float bonusBuilding)
 		: db_common_attack(collect, attack, attackReload, attackRange),
-		  typeInfantry(typeInfantry),
-		  typeRange(typeRange),
-		  typeCalvary(typeCalvary),
-		  typeWorker(typeWorker),
-		  typeSpecial(typeSpecial),
-		  typeMelee(typeMelee),
-		  typeHeavy(typeHeavy),
-		  typeLight(typeLight),
 		  bonusInfantry(bonusInfantry),
 		  bonusRange(bonusRange),
 		  bonusCalvary(bonusCalvary),
@@ -109,17 +77,6 @@ struct db_unit_attack : db_common_attack {
 		  bonusHeavy(bonusHeavy),
 		  bonusLight(bonusLight),
 		  bonusBuilding(bonusBuilding) {
-	}
-
-	float getBonuses(db_unit_attack* dbLevel) {
-		return typeInfantry * dbLevel->bonusInfantry +
-			typeRange * dbLevel->bonusRange +
-			typeCalvary * dbLevel->bonusCalvary +
-			typeWorker * dbLevel->bonusWorker +
-			typeSpecial * dbLevel->bonusSpecial +
-			typeMelee * dbLevel->bonusMelee +
-			typeHeavy * dbLevel->bonusHeavy +
-			typeLight * dbLevel->bonusLight;
 	}
 };
 
@@ -156,51 +113,28 @@ struct db_with_cost {
 struct db_basic_metric {
 protected:
 	std::string paramsAString;
-	std::span<float> paramsAsSpan;
-	std::span<float> paramsNormAsSpan;
+
+	std::vector<float> valuesNorm;
+	std::vector<float> valuesNormForSum;
+	std::vector<float> valuesNormSmall;
 public:
-	const std::span<float> getParamsAsSpan() const { return paramsAsSpan; }
-	const std::span<float> getParamsNorm() const { return paramsNormAsSpan; }
+	const std::vector<float> getValuesNorm() const { return valuesNorm; }
+	const std::vector<float> getValuesNormForSum() const { return valuesNormForSum; }
+	const std::vector<float> getValuesNormSmall() const { return valuesNormSmall; }
 	const std::string& getParamsNormAsString() const { return paramsAString; }
 };
 
-struct db_unit_metric : db_basic_metric {
-private:
-	float params[UNIT_METRIC_NUMBER];
-	float paramsNorm[UNIT_METRIC_NUMBER];
-public:
-	db_unit_metric(float val1, float val2, float val3, float val4, float val5,
-	               float val6)
-		: params{val1, val2, val3, val4, val5, val6}, paramsNorm{val1, val2, val3, val4, val5, val6} {
-
-		paramsAsSpan = std::span{params};
-		paramsNormAsSpan = std::span{paramsNorm};
-		assert(validateSpan(__LINE__, __FILE__, params));
-		assert(paramsNormAsSpan.size()==AI_WEIGHTS.wUnitInputSpan.size());
-
-		std::transform(paramsNormAsSpan.begin(), paramsNormAsSpan.end(), AI_WEIGHTS.wUnitInputSpan.begin(),
-		               paramsNormAsSpan.begin(), std::divides<>());
-
-		paramsAString = join(paramsNormAsSpan);
-	}
-};
-
 struct db_building_metric : db_basic_metric {
-private:
-	float params[BUILDING_METRIC_NUMBER];
-	float paramsNorm[BUILDING_METRIC_NUMBER];
-public:
-	db_building_metric(float val1, float val2, float val3, float val4, float val5,
-	                   float val6, float val7, float val8)
-		: params{val1, val2, val3, val4, val5, val6, val7, val8},
-		  paramsNorm{val1, val2, val3, val4, val5, val6, val7, val8} {
-		paramsAsSpan = std::span{params};
-		paramsNormAsSpan = std::span{paramsNorm};
-		assert(validateSpan(__LINE__, __FILE__, params));
-		assert(paramsNormAsSpan.size()==AI_WEIGHTS.wBuildingInputSpan.size());
-		std::transform(paramsNormAsSpan.begin(), paramsNormAsSpan.end(), AI_WEIGHTS.wBuildingInputSpan.begin(),
-		               paramsNormAsSpan.begin(), std::divides<>());
-		paramsAString = join(paramsNormAsSpan);
+
+	db_building_metric(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
+	                   const std::vector<float>& newValuesSmall) {
+		valuesNorm.insert(valuesNorm.end(), newValues.begin(), newValues.end());
+		valuesNormForSum.insert(valuesNormForSum.end(), newValuesForSum.begin(), newValuesForSum.end());
+		valuesNormForSum.insert(valuesNormSmall.end(), newValuesSmall.begin(), newValuesSmall.end());
+
+		assert(validateSpan(__LINE__, __FILE__, valuesNorm));
+
+		paramsAString = join(valuesNorm);
 	}
 };
 
@@ -228,7 +162,6 @@ struct db_base : db_with_hp {
 
 	const float interestRange;
 	const float sqInterestRange;
-	float resourceSum;
 
 	db_base(unsigned short maxHp, float armor, float sightRadius)
 		: db_with_hp(maxHp, armor), sightRadius(sightRadius), sqSightRadius(sightRadius * sightRadius),
@@ -250,13 +183,21 @@ struct db_build_upgrade {
 	}
 };
 
+struct db_unit_metric : db_basic_metric {
+	db_unit_metric(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
+	               const std::vector<float>& newValuesSmall) {
+		valuesNorm.insert(valuesNorm.end(), newValues.begin(), newValues.end());
+		valuesNormForSum.insert(valuesNormForSum.end(), newValuesForSum.begin(), newValuesForSum.end());
+		valuesNormForSum.insert(valuesNormSmall.end(), newValuesSmall.begin(), newValuesSmall.end());
+
+		assert(validateSpan(__LINE__, __FILE__, valuesNorm));
+
+		paramsAString = join(valuesNorm);
+	}
+};
+
 struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_unit_attack, db_base, db_with_model,
                        db_build_upgrade {
-	// const bool canCollect;
-	// const bool canRangeAttack;
-	// const bool canCloseAttack;
-	// const bool canChargeAttack;
-
 	const unsigned short unit;
 
 	const float minDist;
@@ -272,18 +213,14 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_unit_
 
 	const Urho3D::String node;
 
-	db_unit_metric* dbUnitMetric = nullptr;
-	bool possibleStates[magic_enum::enum_count<UnitState>()];
-	std::vector<unsigned char> ordersIds;
+	db_unit_metric* dbUnitMetric = nullptr; //TODO jak to zrobic
 
 	db_unit_level(short id, short level, short unit, char* name, char* node, short buildTime, short upgradeTime,
 	              float minDist, float mass, float minSpeed, float maxSpeed, int maxForce,
 	              short maxHp, float armor, float sightRng, float collect, float atck, float atckRld, short atckRng,
-	              bool tI, bool tR, bool tC, bool tW, bool tS, bool tM, bool tH, bool tL,
 	              float bI, float bR, float bC, float bW, float bS, float bM, float bH, float bL, float bB):
 		db_entity(id), db_level(level), db_with_name(name),
-		db_unit_attack(collect, atck, atckRld, atckRng, tI, tR, tC, tW, tS, tM, tH, tL, bI,
-		               bR, bC, bW, bS, bM, bH, bL, bB),
+		db_unit_attack(collect, atck, atckRld, atckRng, bI, bR, bC, bW, bS, bM, bH, bL, bB),
 		db_base(maxHp, armor, sightRng), db_build_upgrade(buildTime, upgradeTime),
 		unit(unit),
 		minDist(minDist),
@@ -297,14 +234,12 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_unit_
 		sqMinSpeed(minSpeed * minSpeed) {
 	}
 
-	void finish(float sumCreateCost) {
-		resourceSum = sumCreateCost;
-		// dbUnitMetric = new db_unit_metric(armor * maxHp,
-		//                                   safeDiv(rangeAttackVal, rangeAttackReload),
-		//                                   safeDiv(closeAttackVal, closeAttackReload),
-		//                                   chargeAttackVal,
-		//                                   safeDiv(buildingAttackVal, closeAttackReload), //TODO jaki reload?
-		//                                   sumCreateCost);
+	void finish(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
+	            const std::vector<float>& newValuesSmall) {
+		//const std::vector<float>& norm = METRIC_DEFINITIONS.getUnitNorm(unit, this);
+		//const std::vector<float>& norm1 = METRIC_DEFINITIONS.getUnitNormForSum(unit, this);
+		//const std::vector<float>& norm2 = METRIC_DEFINITIONS.getUnitNormSmall(unit, this);
+		dbUnitMetric = new db_unit_metric(newValues, newValuesForSum, newValuesSmall);
 	}
 
 	~db_unit_level() {
@@ -317,14 +252,34 @@ struct db_unit : db_with_name, db_with_cost, db_entity {
 	const UnitState actionState;
 	const Urho3D::String icon;
 
+	const bool typeInfantry;
+	const bool typeRange;
+	const bool typeCalvary;
+	const bool typeWorker;
+	const bool typeSpecial;
+	const bool typeMelee;
+	const bool typeHeavy;
+	const bool typeLight;
+
 	std::vector<db_unit_level*> levels;
 
 	std::vector<db_nation*> nations;
+	std::vector<unsigned char> ordersIds;
+	bool possibleStates[magic_enum::enum_count<UnitState>()];
 
-	db_unit(short id, char* name, char* icon, short actionState)
-		: db_entity(id), db_with_name(name),
-		  icon(icon),
-		  actionState(UnitState(actionState)) {
+	db_unit(short id, char* name, char* icon, char actionState, bool typeInfantry, bool typeRange,
+	        bool typeCalvary, bool typeWorker, bool typeSpecial, bool typeMelee, bool typeHeavy, bool typeLight) :
+		db_with_name(name), db_entity(id),
+		actionState(UnitState(actionState)),
+		icon(icon),
+		typeInfantry(typeInfantry),
+		typeRange(typeRange),
+		typeCalvary(typeCalvary),
+		typeWorker(typeWorker),
+		typeSpecial(typeSpecial),
+		typeMelee(typeMelee),
+		typeHeavy(typeHeavy),
+		typeLight(typeLight) {
 	}
 
 	std::optional<db_unit_level*> getLevel(short level) {
@@ -333,19 +288,40 @@ struct db_unit : db_with_name, db_with_cost, db_entity {
 		}
 		return {};
 	}
+
+	float getBonuses(db_unit_attack* dbLevel) const {
+		return typeInfantry * dbLevel->bonusInfantry +
+			typeRange * dbLevel->bonusRange +
+			typeCalvary * dbLevel->bonusCalvary +
+			typeWorker * dbLevel->bonusWorker +
+			typeSpecial * dbLevel->bonusSpecial +
+			typeMelee * dbLevel->bonusMelee +
+			typeHeavy * dbLevel->bonusHeavy +
+			typeLight * dbLevel->bonusLight;
+	}
 };
 
-struct db_building : db_entity, db_with_name, db_with_cost, db_static {
 
+struct db_building : db_entity, db_with_name, db_with_cost, db_static {
 	const Urho3D::String icon;
+	bool typeDefence;
+	char typeResource;
+	char typeTechnology;
+	bool typeCenter;
+	char typeUnit;
 
 	std::vector<db_building_level*> levels;
 
 	std::vector<db_nation*> nations;
 
-	db_building(short id, char* name, short sizeX, short sizeZ, char* icon)
+	db_building(short id, char* name, char* icon, short sizeX, short sizeZ,
+	            bool typeDefence, char typeResource, char typeTechnology, bool typeCenter, char typeUnit)
 		: db_entity(id), db_with_name(name), db_static({sizeX, sizeZ}),
-		  icon(icon) {
+		  icon(icon), typeDefence(typeDefence),
+		  typeResource(typeResource),
+		  typeTechnology(typeTechnology),
+		  typeCenter(typeCenter),
+		  typeUnit(typeUnit) {
 	}
 
 	std::optional<db_building_level*> getLevel(short level) {
@@ -367,30 +343,31 @@ struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_b
 	std::vector<std::vector<db_unit*>*> unitsPerNation;
 	std::vector<std::vector<unsigned char>*> unitsPerNationIds; //TODO remember must be storted
 
-	std::vector<db_building_metric*> dbBuildingMetricPerNation;
+	//std::vector<db_building_metric*> dbBuildingMetricPerNation;
+	db_building_metric* dbBuildingMetric;
 
-	db_building_level(short id, short level, short building, char* name, char* nodeName, short buildSpeed,
-	                  short upgradeSpeed, short maxHp, float armor, short queueMaxCapacity,
-	                  float collect, float atckR, short atckRRld, float atckRRng, bool tD, bool tR, bool tT, bool tC)
+	db_building_level(short id, short level, short building, char* name, char* nodeName, short queueMaxCapacity,
+	                  short buildSpeed, short upgradeSpeed, short maxHp, float armor, float sightRng,
+	                  float collect, float atckR, short atckRRld, float atckRRng)
 		: db_entity(id), db_level(level), db_with_name(name),
-		  db_building_attack(collect, atckR, atckRRld, atckRRng, tD, tR, tT, tC),
-		  db_base(maxHp, armor, 15.f), db_build_upgrade(buildSpeed, upgradeSpeed),
+		  db_building_attack(collect, atckR, atckRRld, atckRRng),
+		  db_base(maxHp, armor, sightRng), db_build_upgrade(buildSpeed, upgradeSpeed),
 		  building(building), nodeName(nodeName), queueMaxCapacity(queueMaxCapacity) {
 	}
 
 	~db_building_level() {
 		clear_vector(unitsPerNation);
 		clear_vector(unitsPerNationIds);
-		clear_vector(dbBuildingMetricPerNation);
+		//clear_vector(dbBuildingMetricPerNation);
 	}
 
-	void finish(db_building* dbBuilding) {
-		dbBuildingMetricPerNation.resize(unitsPerNation.size(), nullptr);
-		for (int i = 0; i < unitsPerNation.size(); ++i) {
-			auto dbUnits = unitsPerNation.at(i);
-			if (dbUnits) {
-			}
-		}
+	void finish(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
+	            const std::vector<float>& newValuesSmall) {
+		//const std::vector<float>& norm = METRIC_DEFINITIONS.getBuildingNorm(building, this);
+		//const std::vector<float>& norm1 = METRIC_DEFINITIONS.getBuildingNormForSum(building, this);
+		//const std::vector<float>& norm2 = METRIC_DEFINITIONS.getBuildingNormSmall(building, this);
+
+		dbBuildingMetric = new db_building_metric(newValues, newValuesForSum, newValuesSmall);
 	}
 
 };

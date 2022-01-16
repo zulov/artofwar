@@ -4,109 +4,66 @@
 #include "math/SpanUtils.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
+#include "player/ai/AiMetric.h"
 #include "player/ai/AiUtils.h"
-#include "utils/OtherUtils.h"
 
-
-AiInputProvider::AiInputProvider() {
-	wBasic[cast(BasicInputType::RESULT)] = 1000.f;
-	wBasic[cast(BasicInputType::UNIT_NUMBER)] = 100.f;
-	wBasic[cast(BasicInputType::BUILDING_NUMBER)] = 100.f;
-
-	wResourceInput[cast(ResourceInputType::GOLD_SPEED)] = 10.f;
-	wResourceInput[cast(ResourceInputType::WOOD_SPEED)] = 10.f;
-	wResourceInput[cast(ResourceInputType::FOOD_SPEED)] = 10.f;
-	wResourceInput[cast(ResourceInputType::STONE_SPEED)] = 10.f;
-
-	wResourceInput[cast(ResourceInputType::GOLD_VALUE)] = 1000.f;
-	wResourceInput[cast(ResourceInputType::WOOD_VALUE)] = 1000.f;
-	wResourceInput[cast(ResourceInputType::FOOD_VALUE)] = 1000.f;
-	wResourceInput[cast(ResourceInputType::STONE_VALUE)] = 1000.f;
-
-	wResourceInput[cast(ResourceInputType::FREE_WORKERS)] = 100.f;
-	wResourceInput[cast(ResourceInputType::WORKERS)] = 100.f;
-
-	wUnitsSumInput[cast(UnitMetric::DEFENCE)] = 50000.f; //TODO to nie sa wartosci dla jednostki tylko dla sumy
-	wUnitsSumInput[cast(UnitMetric::DISTANCE_ATTACK)] = 10000.f;
-	wUnitsSumInput[cast(UnitMetric::CLOSE_ATTACK)] = 10000.f;
-	wUnitsSumInput[cast(UnitMetric::CHARGE_ATTACK)] = 1000.f;
-	wUnitsSumInput[cast(UnitMetric::BUILDING_ATTACK)] = 10000.f;
-
-	wBuildingsSumInput[cast(BuildingMetric::DEFENCE)] = 200000.f; //TODO to nie sa wartosci dla jednostki tylko dla sumy
-	wBuildingsSumInput[cast(BuildingMetric::DISTANCE_ATTACK)] = 10000.f;
-	wBuildingsSumInput[cast(BuildingMetric::PROD_DEFENCE)] = 20000.f;
-	wBuildingsSumInput[cast(BuildingMetric::PROD_DISTANCE_ATTACK)] = 20000.f;
-	wBuildingsSumInput[cast(BuildingMetric::PROD_CLOSE_ATTACK)] = 20000.f;
-	wBuildingsSumInput[cast(BuildingMetric::PROD_CHARGE_ATTACK)] = 20000.f;
-	wBuildingsSumInput[cast(BuildingMetric::PROD_BUILDING_ATTACK)] = 20000.f;
-}
-
-void AiInputProvider::applyWeights(std::span<float> dest, float* weights, size_t skip) {
-	std::transform(dest.begin() + skip, dest.end(), weights, dest.begin() + skip, std::divides<>());
-	assert(validateSpan(__LINE__, __FILE__, dest));
-}
 
 std::span<float> AiInputProvider::getResourceInput(char playerId) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
-	auto& resources = player->getResources();
-	auto& possession = player->getPossession();
+	auto newSpan = getBasicInput(resourceIdInputSpan, player);
+	auto& data = METRIC_DEFINITIONS.getResourceNorm(player->getResources(), player->getPossession());
+	std::ranges::copy(data, newSpan.begin());
 
-	const auto basic = getBasicInput(player);
-	copyTo(resourceIdInputSpan, basic, resources.getGatherSpeeds(), resources.getValues(), possession.getWorkersStat());
-
-	applyWeights(resourceIdInputSpan, wResourceInput, basic.size());
-
+	assert(validateSpan(__LINE__, __FILE__, resourceIdInputSpan));
 	return resourceIdInputSpan;
 }
 
 std::span<float> AiInputProvider::getUnitsInput(char playerId) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
-	const auto basic = getBasicInput(player);
+	auto newSpan = getBasicInput(unitsInputSpan, player);
 
-	copyTo(unitsInputSpan, basic, player->getPossession().getUnitsMetrics());
+	std::ranges::copy(player->getPossession().getUnitsMetrics(), newSpan.begin());
 
-	applyWeights(unitsInputSpan, wUnitsSumInput, basic.size());
-
+	assert(validateSpan(__LINE__, __FILE__, unitsInputSpan));
 	return unitsInputSpan;
 }
 
 std::span<float> AiInputProvider::getBuildingsInput(char playerId) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
-	const auto basic = getBasicInput(player);
 
-	copyTo(buildingsInputSpan, basic, player->getPossession().getBuildingsMetrics());
+	auto newSpan = getBasicInput(buildingsInputSpan, player);
 
-	applyWeights(buildingsInputSpan, wBuildingsSumInput, basic.size());
+	std::ranges::copy(player->getPossession().getBuildingsMetrics(), newSpan.begin());
 
+	assert(validateSpan(__LINE__, __FILE__, buildingsInputSpan));
 	return buildingsInputSpan;
 }
 
 std::span<float> AiInputProvider::getUnitsInputWithMetric(char playerId, const db_unit_metric* prop) {
-	return copyTo(unitsWithMetricUnitSpan, getUnitsInput(playerId), prop->getParamsNorm());
+	auto* player = Game::getPlayersMan()->getPlayer(playerId);
+	auto newSpan = getBasicInput(unitsWithMetricUnitSpan, player);
+
+	std::ranges::copy(prop->getValuesNormSmall(), newSpan.begin());
+
+	assert(validateSpan(__LINE__, __FILE__, unitsWithMetricUnitSpan));
+	return unitsWithMetricUnitSpan;
 }
 
 std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, const db_building_metric* prop) {
-	return copyTo(basicWithMetricUnitSpan, getBuildingsInput(playerId), prop->getParamsNorm());
+	auto* player = Game::getPlayersMan()->getPlayer(playerId);
+	auto newSpan = getBasicInput(basicWithMetricUnitSpan, player);
+
+	std::ranges::copy(prop->getValuesNormSmall(), newSpan.begin());
+
+	assert(validateSpan(__LINE__, __FILE__, basicWithMetricUnitSpan));
+	return basicWithMetricUnitSpan;
 }
 
-std::span<float> AiInputProvider::getBasicInput(short id) {
-	return getBasicInput(Game::getPlayersMan()->getPlayer(id));
-}
-
-std::span<float> AiInputProvider::getBasicInput(Player* player) {
+std::span<float> AiInputProvider::getBasicInput(std::span<float> dest, Player* player) {
 	char idEnemy = Game::getPlayersMan()->getEnemyFor(player->getId());
+	auto& data = METRIC_DEFINITIONS.getBasicNorm(player, Game::getPlayersMan()->getPlayer(idEnemy));
+	assert(validateSpan(__LINE__, __FILE__, data));
+	std::copy(data.begin(), data.end(), dest.begin());
 
-	updateBasic(player, basicInputSpan.data());
-	updateBasic(Game::getPlayersMan()->getPlayer(idEnemy),
-	            basicInputSpan.data() + magic_enum::enum_count<BasicInputType>());
-	assert(validateSpan(__LINE__, __FILE__, basicInputSpan));
-	return basicInputSpan;
-}
-
-void AiInputProvider::updateBasic(Player* player, float* data) {
-	data[cast(BasicInputType::RESULT)] = player->getScore();
-	data[cast(BasicInputType::UNIT_NUMBER)] = player->getPossession().getUnitsNumber();
-	data[cast(BasicInputType::BUILDING_NUMBER)] = player->getPossession().getBuildingsNumber();
-
-	std::transform(data, data + magic_enum::enum_count<BasicInputType>(), wBasic, data, std::divides<>());
+	return std::span(dest.end(), dest.size() - data.size());
 }

@@ -1,8 +1,13 @@
 #pragma once
-#include <magic_enum.hpp>
 #include <span>
-#include "StatsEnums.h"
 #include "database/db_strcut.h"
+#include "player/ai/AiMetric.h"
+
+#define BASIC_SIZE std::size(METRIC_DEFINITIONS.aiBasicMetric)
+#define UNIT_SIZE std::size(METRIC_DEFINITIONS.aiUnitMetric)
+#define BUILDING_SIZE std::size(METRIC_DEFINITIONS.aiBuildingMetric)
+#define SMALL_UNIT_SIZE std::size(METRIC_DEFINITIONS.aiSmallUnitMetric)
+#define SMALL_BUILDING_SIZE std::size(METRIC_DEFINITIONS.aiSmallBuildingMetric)
 
 class Player;
 struct db_unit_metric;
@@ -11,10 +16,8 @@ struct db_basic_metric;
 
 class AiInputProvider {
 public:
-	AiInputProvider();
+	AiInputProvider() = default;
 	AiInputProvider(const AiInputProvider&) = delete;
-
-	std::span<float> getBasicInput(short id);
 
 	std::span<float> getResourceInput(char playerId);
 	std::span<float> getUnitsInput(char playerId);
@@ -24,28 +27,16 @@ public:
 	std::span<float> getBuildingsInputWithMetric(char playerId, const db_building_metric* prop);
 private:
 	//TODO zastapic spany std::array
-	std::span<float> getBasicInput(Player* player);
-	void updateBasic(Player* player, float* data);
+	std::span<float> getBasicInput(std::span<float> dest, Player* player);
 	void applyWeights(std::span<float> dest, float* weights, size_t skip);
 
-	//weights
-	float wBasic[magic_enum::enum_count<BasicInputType>()];
-	float wResourceInput[magic_enum::enum_count<ResourceInputType>()];
-	float wUnitsSumInput[UNIT_METRIC_NUMBER-1];
-	float wBuildingsSumInput[BUILDING_METRIC_NUMBER-1];
+	float resourceIdInput[BASIC_SIZE + std::size(METRIC_DEFINITIONS.aiResourceMetric)];
+	float unitsInput[BASIC_SIZE + UNIT_SIZE];
+	float buildingsInput[BASIC_SIZE + BUILDING_SIZE];
 
-	float basicInput[magic_enum::enum_count<BasicInputType>() * 2];
-	float resourceIdInput[magic_enum::enum_count<BasicInputType>() * 2 + magic_enum::enum_count<ResourceInputType>()];
-	float unitsInput[magic_enum::enum_count<BasicInputType>() * 2 + UNIT_METRIC_NUMBER - 1];
-	//bez cost
-	float buildingsInput[magic_enum::enum_count<BasicInputType>() * 2 + BUILDING_METRIC_NUMBER - 1];
-	//bez cost
+	float unitsWithMetric[BASIC_SIZE + SMALL_UNIT_SIZE];
+	float buildingsWithMetric[BASIC_SIZE + SMALL_BUILDING_SIZE];
 
-	float unitsWithMetric[magic_enum::enum_count<BasicInputType>() * 2 + UNIT_METRIC_NUMBER * 2 - 1];
-	float buildingsWithMetric[magic_enum::enum_count<BasicInputType>() * 2
-		+ BUILDING_METRIC_NUMBER * 2 - 1];
-
-	std::span<float> basicInputSpan = std::span(basicInput);
 	std::span<float> resourceIdInputSpan = std::span(resourceIdInput);
 	std::span<float> unitsInputSpan = std::span(unitsInput);
 	std::span<float> buildingsInputSpan = std::span(buildingsInput);

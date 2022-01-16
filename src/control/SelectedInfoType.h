@@ -12,11 +12,8 @@ public:
 	void add(Physical* physical);
 
 	const std::vector<Physical*>& getData() const { return data; }
-	const std::array<bool, 6>& getLevels() const { return levels; }
 	unsigned short getId() const { return id; }
 private:
 	unsigned short id;
-
-	std::array<bool, 6> levels;
 	std::vector<Physical*> data;
 };

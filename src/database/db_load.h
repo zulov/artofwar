@@ -16,7 +16,10 @@ static db_container* getContainer(void* data) { return static_cast<db_container*
 
 int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
-	setEntity(getContainer(data)->units, new db_unit(atoi(argv[0]), argv[1], argv[2], atoi(argv[3])));
+	setEntity(getContainer(data)->units, new db_unit(atoi(argv[0]), argv[1], argv[2], atoi(argv[3]),
+	                                                 atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+	                                                 atoi(argv[8]), atoi(argv[9]), atoi(argv[10]),
+	                                                 atoi(argv[11])));
 	return 0;
 }
 
@@ -40,7 +43,8 @@ int static loadGraphSettings(void* data, int argc, char** argv, char** azColName
 int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	setEntity(getContainer(data)->buildings,
-	          new db_building(atoi(argv[0]), argv[1], atoi(argv[2]), atoi(argv[3]), argv[4]));
+	          new db_building(atoi(argv[0]), argv[1], argv[2], atoi(argv[3]), atoi(argv[4]),
+	                          atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9])));
 	return 0;
 }
 
@@ -134,8 +138,9 @@ int static loadBuildingLevels(void* data, int argc, char** argv, char** azColNam
 	if (argc == 0) { return 0; }
 	const auto xyz = getContainer(data);
 	auto level = new db_building_level(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), argv[3], argv[4],
-	                                   atoi(argv[5]), atof(argv[6]), atoi(argv[7]), atof(argv[8]),
-	                                   atof(argv[9]), atoi(argv[10]), atoi(argv[11]), atoi(argv[12]));
+	                                   atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]),
+	                                   atof(argv[9]), atof(argv[10]), atof(argv[11]), atof(argv[12]),
+	                                   atoi(argv[13]), atof(argv[14]));
 	setEntity(xyz->buildingsLevels, level);
 	xyz->buildings[level->building]->levels.push_back(level);
 	for (auto nation : xyz->nations) {
@@ -159,13 +164,12 @@ int static loadUnitLevels(void* data, int argc, char** argv, char** azColName) {
 	auto levelId = atoi(argv[0]);
 	int unitId = atoi(argv[2]);
 
-	auto level = new db_unit_level(levelId, atoi(argv[1]), atoi(argv[2]), 	 argv[3], 	 argv[4], atoi(argv[5]),
- atoi(argv[6]), atof(argv[7]), atof(argv[8]), atof(argv[9]), atof(argv[10]), 
- atoi(argv[11]), atoi(argv[12]), atof(argv[13]), atof(argv[14]), atof(argv[15]), 
- atof(argv[16]), atof(argv[17]), atoi(argv[18]), atoi(argv[19]), atoi(argv[20]), 
- atoi(argv[21]), atoi(argv[22]), atoi(argv[23]), atoi(argv[24]), atoi(argv[25]), 
- atoi(argv[26]), atof(argv[27]), atof(argv[28]), atof(argv[29]), atof(argv[30]), 
- atof(argv[31]), atof(argv[32]), atof(argv[33]), atof(argv[34]), atof(argv[35]));
+	auto level = new db_unit_level(levelId, atoi(argv[1]), atoi(argv[2]), argv[3], argv[4], atoi(argv[5]),
+	                               atoi(argv[6]), atof(argv[7]), atof(argv[8]), atof(argv[9]), atof(argv[10]),
+	                               atoi(argv[11]), atoi(argv[12]), atof(argv[13]), atof(argv[14]), atof(argv[15]),
+	                               atof(argv[16]), atof(argv[17]), atoi(argv[18]), atof(argv[19]), atof(argv[20]),
+	                               atof(argv[21]), atof(argv[22]), atof(argv[23]), atof(argv[24]), atof(argv[25]),
+	                               atof(argv[26]), atof(argv[27]));
 	setEntity(xyz->unitsLevels, level);
 	xyz->units[unitId]->levels.push_back(level);
 

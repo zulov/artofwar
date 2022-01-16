@@ -1,6 +1,7 @@
 #pragma once
 
 #include "db_strcut.h"
+#include "player/ai/AiMetric.h"
 #include "utils/DeleteUtils.h"
 
 struct db_hud_vars;
@@ -51,12 +52,18 @@ struct db_container {
 	}
 
 	void finish() {
-		for (auto* unitLevel : unitsLevels) {
-			unitLevel->finish(units[unitLevel->unit]->getSumCost());
+		for (auto* level : unitsLevels) {
+			const auto unit = units[level->unit];
+			level->finish(METRIC_DEFINITIONS.getUnitNorm(unit, level),
+			              METRIC_DEFINITIONS.getUnitNormForSum(unit, level),
+			              METRIC_DEFINITIONS.getUnitNormSmall(unit, level));
 		}
 
-		for (auto* buildingLevel : buildingsLevels) {
-			buildingLevel->finish(buildings[buildingLevel->building]);
+		for (auto* level : buildingsLevels) {
+			const auto building = buildings[level->building];
+			level->finish(METRIC_DEFINITIONS.getBuildingNorm(building, level),
+			              METRIC_DEFINITIONS.getBuildingNormForSum(building, level),
+			              METRIC_DEFINITIONS.getBuildingNormSmall(building, level));
 		}
 	}
 };

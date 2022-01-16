@@ -16,6 +16,7 @@
 #include "simulation/env/ContentInfo.h"
 #include "simulation/env/GridCalculatorProvider.h"
 #include "utils/AssertUtils.h"
+#include "utils/OtherUtils.h"
 
 
 InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain) {

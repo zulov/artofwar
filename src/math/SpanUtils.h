@@ -1,5 +1,6 @@
 #pragma once
 #include <span>
+#include <vector>
 #include <algorithm>
 #include <numeric>
 #include <iostream>
@@ -56,6 +57,10 @@ inline bool validateSpan(int line, std::string file, std::span<float> vec) {
 		assert(false);
 	}
 	return valid;
+}
+
+inline bool validateSpan(int line, std::string file, std::vector<float> vec) {
+	return validateSpan(line, file, std::span(vec.begin(), vec.size()));
 }
 
 inline float maxSpan(std::span<float> vec) {

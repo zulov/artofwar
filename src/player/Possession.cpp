@@ -1,6 +1,7 @@
 #include "Possession.h"
 #include "Game.h"
 #include "Resources.h"
+#include "ai/AiMetric.h"
 #include "database/DatabaseCache.h"
 #include "math/SpanUtils.h"
 #include "math/VectorUtils.h"
@@ -16,13 +17,23 @@ Possession::Possession(char nation) {
 		}
 		buildingsPerId[id] = new std::vector<Building*>();
 	}
-	resetSpan(unitsValuesAsSpan);
-	resetSpan(freeArmyMetricsAsSpan);
-	resetSpan(buildingsValuesAsSpan);
+	char unitSize = std::size(METRIC_DEFINITIONS.aiUnitMetric);
+	char buildingSize = std::size(METRIC_DEFINITIONS.aiBuildingMetric);
+
+	data = new float[unitSize * 2 + buildingSize];
+
+	unitsSumAsSpan = std::span<float>(data, unitSize);
+	freeArmySumAsSpan = std::span<float>(data + unitSize, unitSize);
+	buildingsSumAsSpan = std::span<float>(data + 2 * unitSize, buildingSize);
+
+	resetSpan(unitsSumAsSpan);
+	resetSpan(freeArmySumAsSpan);
+	resetSpan(buildingsSumAsSpan);
 }
 
 Possession::~Possession() {
 	clear_vector(buildingsPerId);
+	delete[]data;
 }
 
 
@@ -40,7 +51,7 @@ int Possession::getScore() const {
 	float unitsScore = 0.f;
 	float workerScore = 0.f;
 	for (auto unit : units) {
-		if (unit->getLevel()->canCollect) {
+		if (unit->getDbUnit()->typeWorker) {
 			workerScore += unit->getCostSum();
 		} else {
 			unitsScore += unit->getCostSum();
@@ -73,12 +84,6 @@ void Possession::addKilled(Physical* physical) {
 	resourcesDestroyed += physical->getCostSum();
 }
 
-std::span<float> Possession::getWorkersStat() {
-	workersStat[0] = freeWorkersNumber;
-	workersStat[1] = workers.size();
-	return workersStatAsSpan;
-}
-
 std::vector<Unit*> Possession::getFreeArmy() {
 	std::vector<Unit*> army(units.size());
 
@@ -97,7 +102,7 @@ void Possession::add(Building* building) {
 void Possession::add(Unit* unit) {
 	units.push_back(unit);
 
-	if (unit->getLevel()->canCollect) {
+	if (unit->getDbUnit()->typeWorker) {
 		workers.push_back(unit);
 	}
 }
@@ -114,18 +119,20 @@ void Possession::updateAndClean(const Resources& resources, const ObjectsInfo* s
 			}
 		}
 	}
-	resetSpan(unitsValuesAsSpan);
-	resetSpan(freeArmyMetricsAsSpan);
+	resetSpan(unitsSumAsSpan);
+	resetSpan(freeArmySumAsSpan);
+
+	//TODO perf zliczyc levele i tak to zsumowac
 	for (const auto unit : units) {
-		unit->addValues(unitsValuesAsSpan);
+		unit->addValues(unitsSumAsSpan);
 
 		if (isFreeSolider(unit)) {
-			unit->addValues(freeArmyMetricsAsSpan);
+			unit->addValues(freeArmySumAsSpan);
 		}
 	}
-	resetSpan(buildingsValuesAsSpan);
+	resetSpan(buildingsSumAsSpan);
 	for (const auto building : buildings) {
-		building->addValues(buildingsValuesAsSpan);
+		building->addValues(buildingsSumAsSpan);
 	}
 
 	resourcesSum = sumSpan(resources.getValues());
@@ -134,7 +141,7 @@ void Possession::updateAndClean(const Resources& resources, const ObjectsInfo* s
 		return isInFreeState(worker->getState());
 	});
 
-	assert(validateSpan(__LINE__, __FILE__, unitsValuesAsSpan));
-	assert(validateSpan(__LINE__, __FILE__, freeArmyMetricsAsSpan));
-	assert(validateSpan(__LINE__, __FILE__, buildingsValuesAsSpan));
+	assert(validateSpan(__LINE__, __FILE__, unitsSumAsSpan));
+	assert(validateSpan(__LINE__, __FILE__, freeArmySumAsSpan));
+	assert(validateSpan(__LINE__, __FILE__, buildingsSumAsSpan));
 }

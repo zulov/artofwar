@@ -25,9 +25,9 @@ inline bool isFree(Unit* unit) {
 }
 
 inline bool isFreeWorker(Unit* unit) {
-	return unit->getLevel()->typeWorker && isFree(unit);
+	return unit->getDbUnit()->typeWorker && isFree(unit);
 }
 
 inline bool isFreeSolider(Unit* unit) {
-	return !unit->getLevel()->typeWorker && isFree(unit);
+	return !unit->getDbUnit()->typeWorker && isFree(unit);
 }

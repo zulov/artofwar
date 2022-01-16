@@ -135,9 +135,8 @@ db_building* ActionMaker::chooseBuilding(std::span<float> result) {
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
 	diffs.reserve(buildings.size());
-	for (auto building : buildings) {
-		diffs.push_back(dist(
-			center, player->getLevelForBuilding(building->id)->dbBuildingMetricPerNation[player->getNation()]));
+	for (const auto building : buildings) {
+		diffs.push_back(dist(center, player->getLevelForBuilding(building->id)->dbBuildingMetric));
 	}
 	if (diffs.empty()) {
 		return nullptr;
@@ -179,7 +178,7 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 }
 
 db_unit* ActionMaker::chooseUnit(std::span<float> result) {
-	auto pred = [this](db_unit* unit) { return !player->getLevelForUnit(unit->id)->typeWorker; };
+	auto pred = [this](db_unit* unit) { return !unit->typeWorker; };
 	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
 	std::vector<db_unit*> unitsWithoutWorker;
 	unitsWithoutWorker.reserve(units.size());
@@ -232,7 +231,7 @@ db_unit_level* ActionMaker::chooseUnitLevelUp() {
 }
 
 float ActionMaker::dist(std::valarray<float>& center, const db_basic_metric* metric) {
-	auto span = metric->getParamsAsSpan();
+	auto span = metric->getValuesNorm();
 	std::valarray<float> aiAsArray(span.data(), span.size()); //TODO get as val array odrazu
 	auto diff = aiAsArray - center;
 	auto sq = diff * diff;
@@ -241,8 +240,7 @@ float ActionMaker::dist(std::valarray<float>& center, const db_basic_metric* met
 
 std::optional<Urho3D::Vector2> ActionMaker::findPosToBuild(db_building* building) const {
 	const auto input = Game::getAiInputProvider()->getBuildingsInputWithMetric(
-		player->getId(), player->getLevelForBuilding(building->id)
-		                       ->dbBuildingMetricPerNation[player->getNation()]);
+		player->getId(), player->getLevelForBuilding(building->id)->dbBuildingMetric);
 	const auto result = whereBuildingCreate->decide(input);
 
 	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);

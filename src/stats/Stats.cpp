@@ -9,6 +9,7 @@
 #include "commands/action/GeneralActionType.h"
 #include "commands/action/UnitActionCommand.h"
 #include "commands/creation/CreationCommand.h"
+#include "database/DatabaseCache.h"
 #include "objects/building/Building.h"
 #include "objects/unit/order/UnitOrder.h"
 #include "objects/unit/order/enums/UnitAction.h"
@@ -17,6 +18,7 @@
 #include "player/ai/AiUtils.h"
 #include "simulation/env/Environment.h"
 #include "utils/StringUtils.h"
+#include "utils/OtherUtils.h"
 
 Stats::Stats() {
 	clearCounters();
@@ -48,8 +50,8 @@ void Stats::add(GeneralActionCommand* command) {
 	if (!SIM_GLOBALS.AI_OUTPUT) { return; }
 	// upgrade buildingu
 	const auto playerId = command->player;
-
-	const std::string input = join(Game::getAiInputProvider()->getBasicInput(playerId));
+	assert(false);
+	//const std::string input = join(Game::getAiInputProvider()->getBasicInput(playerId));
 
 	if (command->action == GeneralActionType::BUILDING_LEVEL) {
 		// auto opt = Game::getPlayersMan()
@@ -67,8 +69,9 @@ void Stats::add(BuildingActionCommand* command) {
 
 	if (command->action == BuildingActionType::UNIT_CREATE) {
 		auto level = player->getLevelForUnit(command->id);
+		auto dbUnit = Game::getDatabase()->getUnit(command->id);
 		const std::string resInput = join(Game::getAiInputProvider()->getResourceInput(command->player));
-		if (level->canCollect) {
+		if (dbUnit->typeWorker) {
 			//TODO czy to worker
 			workersCreatedCount[command->player] += command->buildings.size();
 			for (auto building : command->buildings) {
@@ -98,7 +101,7 @@ void Stats::add(CreationCommand* command) {
 
 	const std::string input = join(Game::getAiInputProvider()->getBuildingsInput(command->player));
 
-	auto metric = player->getLevelForBuilding(command->id)->dbBuildingMetricPerNation[player->getNation()];
+	auto metric = player->getLevelForBuilding(command->id)->dbBuildingMetric;
 	++buildingsCreatedCount[command->player];
 
 	joinAndPush(whichBuildingCreate, command->player, input, metric->getParamsNormAsString());

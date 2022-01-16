@@ -39,7 +39,7 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 		basic = model->GetMaterial(0);
 	}
 
-	if (dbLevel->typeCalvary) {
+	if (dbUnit->typeCalvary) {
 		chargeData = new ChargeData(150, 2);
 	}
 }
@@ -286,7 +286,7 @@ bool Unit::action(UnitAction unitAction, const ActionParameter& parameter) {
 	case UnitAction::CHARGE:
 		return StateManager::changeState(this, UnitState::CHARGE, parameter);
 	case UnitAction::ATTACK:
-		if (getLevel()->typeRange) {
+		if (dbUnit->typeRange) {
 			//TODO perf chyba trzeba dodacparamter do actionParameter
 			//TODO zawsze strzelac? nawet z bliska
 			if (!parameter.thingToInteract->isInCloseRange(getMainGridIndex())) {
@@ -389,7 +389,7 @@ float Unit::getAttackVal(Physical* aim) {
 		return dbLevel->attack * (1.f + dbLevel->bonusBuilding);
 	}
 	if (aim->getType() == ObjectType::UNIT) {
-		return dbLevel->attack * (1.f + ((Unit*)aim)->getLevel()->getBonuses(dbLevel));
+		return dbLevel->attack * (1.f + ((Unit*)aim)->getDbUnit()->getBonuses(dbLevel));
 	}
 	return dbLevel->attack;
 }
@@ -494,24 +494,13 @@ void Unit::clean() {
 	}
 }
 
-void Unit::fillValues(std::span<float> weights) const {
-	assert(weights.size(), dbLevel->dbUnitMetric->getParamsNormAsSpan().size());
-	auto data = dbLevel->dbUnitMetric->getParamsAsSpan();
-	assert(validateSpan(__LINE__, __FILE__, data));
-	std::copy(data.begin(), data.end(), weights.begin());
-	auto percent = hp / dbLevel->maxHp;
-	for (auto& weight : weights) {
-		weight *= percent;
-	}
-}
-
 void Unit::addValues(std::span<float> vals) const {
 	const auto percent = hp * dbLevel->invMaxHp;
-	assert(vals.size()==dbLevel->dbUnitMetric->getParamsAsSpan().size()-1); //without cost
-	assert(validateSpan(__LINE__, __FILE__, dbLevel->dbUnitMetric->getParamsAsSpan()));
+	assert(vals.size()==dbLevel->dbUnitMetric->getValuesNorm().size());
+	assert(validateSpan(__LINE__, __FILE__, dbLevel->dbUnitMetric->getValuesNormForSum()));
 
 	for (int i = 0; i < vals.size(); ++i) {
-		vals[i] += percent * dbLevel->dbUnitMetric->getParamsAsSpan()[i];
+		vals[i] += percent * dbLevel->dbUnitMetric->getValuesNorm()[i];
 	}
 }
 

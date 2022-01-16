@@ -31,6 +31,11 @@ std::string join(std::span<T> span, char separator = ';') {
 	return join(span.begin(), span.end(), separator);
 }
 
+template <typename T>
+std::string join(std::vector<T> span, char separator = ';') {
+	return join(span.begin(), span.end(), separator);
+}
+
 
 inline std::string asStringF(float val, int precision = 2) {
 	std::stringstream ss;

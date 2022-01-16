@@ -17,6 +17,7 @@
 #include "objects/static/StaticStateUtils.h"
 #include "objects/unit/order/enums/UnitAction.h"
 #include "utils/consts.h"
+#include "utils/OtherUtils.h"
 
 StateManager* StateManager::instance = nullptr;
 
@@ -56,7 +57,7 @@ bool StateManager::toDefaultState(Unit* unit) {
 bool StateManager::canStartState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter,
                                  State* stateFrom, State* toState) {
 	return stateFrom->validateTransition(stateTo)
-		&& unit->getLevel()->possibleStates[cast(stateTo)]
+		&& unit->getDbUnit()->possibleStates[cast(stateTo)]
 		&& toState->canStart(unit, actionParameter);
 }
 
@@ -159,25 +160,26 @@ void StateManager::dispose() {
 
 void StateManager::initOrders(std::initializer_list<UnitAction> states) const {
 	std::vector<char> ids;
-	for (auto state : states) {
+	for (const auto state : states) {
 		ids.push_back(cast(state));
 	}
-	for (auto level : Game::getDatabase()->getLevels()) {
-		if (level) {
-			level->ordersIds.insert(level->ordersIds.begin(), ids.begin(), ids.end());
-			if (level->typeWorker) {
-				level->ordersIds.push_back(cast(UnitAction::COLLECT));
+	
+	for (auto unit : Game::getDatabase()->getUnits()) {
+		if (unit) {
+			unit->ordersIds.insert(unit->ordersIds.begin(), ids.begin(), ids.end());
+			if (unit->typeWorker) {
+				unit->ordersIds.push_back(cast(UnitAction::COLLECT));
 			} else {
-				level->ordersIds.push_back(cast(UnitAction::DEFEND));
+				unit->ordersIds.push_back(cast(UnitAction::DEFEND));
 			}
-			if (level->typeCalvary) {
-				level->ordersIds.push_back(cast(UnitAction::CHARGE));
+			if (unit->typeCalvary) {
+				unit->ordersIds.push_back(cast(UnitAction::CHARGE));
 			}
-			if (level->typeMelee || level->typeRange || level->typeCalvary) {
-				level->ordersIds.push_back(cast(UnitAction::ATTACK));
+			if (unit->typeMelee || unit->typeRange || unit->typeCalvary) {
+				unit->ordersIds.push_back(cast(UnitAction::ATTACK));
 			}
-			level->ordersIds.shrink_to_fit();
-			std::ranges::sort(level->ordersIds);
+			unit->ordersIds.shrink_to_fit();
+			std::ranges::sort(unit->ordersIds);
 		}
 	}
 }
@@ -189,22 +191,22 @@ void StateManager::initStates(std::initializer_list<UnitState> states) const {
 	for (auto state : states) {
 		possibleStates[cast(state)] = true;
 	}
-	for (auto level : Game::getDatabase()->getLevels()) {
-		if (level) {
-			std::copy_n(possibleStates, SIZE, level->possibleStates);
-			if (level->typeWorker) {
-				level->possibleStates[cast(UnitState::COLLECT)] = true;
+	for (const auto unit : Game::getDatabase()->getUnits()) {
+		if (unit) {
+			std::copy_n(possibleStates, SIZE, unit->possibleStates);
+			if (unit->typeWorker) {
+				unit->possibleStates[cast(UnitState::COLLECT)] = true;
 			} else {
-				level->possibleStates[cast(UnitState::DEFEND)] = true;
+				unit->possibleStates[cast(UnitState::DEFEND)] = true;
 			}
-			if (level->typeCalvary) {
-				level->possibleStates[cast(UnitState::CHARGE)] = true;
+			if (unit->typeCalvary) {
+				unit->possibleStates[cast(UnitState::CHARGE)] = true;
 			}
-			if (level->typeRange) {
-				level->possibleStates[cast(UnitState::SHOT)] = true;
+			if (unit->typeRange) {
+				unit->possibleStates[cast(UnitState::SHOT)] = true;
 			}
-			if (level->typeMelee || level->typeRange || level->typeCalvary) {
-				level->possibleStates[cast(UnitState::ATTACK)] = true;
+			if (unit->typeMelee || unit->typeRange || unit->typeCalvary) {
+				unit->possibleStates[cast(UnitState::ATTACK)] = true;
 			}
 		}
 	}

@@ -107,6 +107,7 @@ public:
 	bool isToDispose() const override { return state == UnitState::DISPOSE; }
 	bool hasAim() const { return aims.hasAim(); }
 	db_unit_level* getLevel() const { return dbLevel; }
+	db_unit* getDbUnit() const { return dbUnit; }
 	short getLastActionThingId() const { return lastActionThingId; }
 	float getAttackRange() const;
 
@@ -133,7 +134,6 @@ public:
 	bool isAlive() const override;
 	char getLevelNum() override;
 	void clean();
-	void fillValues(std::span<float> weights) const;
 	void addValues(std::span<float> vals) const override;
 	float getSightRadius() const override;
 	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;

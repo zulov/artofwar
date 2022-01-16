@@ -21,6 +21,7 @@
 #include "simulation/env/influence/CenterType.h"
 #include "threshold/Threshold.h"
 #include "threshold/ThresholdProvider.h"
+#include "utils/OtherUtils.h"
 
 constexpr float SEMI_CLOSE = 30.f;
 
@@ -85,7 +86,7 @@ void OrderMaker::action() {
 							std::vector<Physical*> workers;
 							workers.resize(neights->size());
 							auto pred = [](const Physical* physical) {
-								return ((Unit*)physical)->getLevel()->typeWorker;
+								return ((Unit*)physical)->getDbUnit()->typeWorker;
 							};
 							std::copy_if(neights->begin(), neights->end(), std::back_inserter(workers), pred);
 							semiCloseAttack(subArmy, workers);
