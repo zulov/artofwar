@@ -47,6 +47,6 @@ private:
 	float *data;
 	
 	std::span<float> unitsSumAsSpan;
-	std::span<float> freeArmySumAsSpan;
+	std::span<float> freeArmySumAsSpan; //TODO to dac jako któtkie
 	std::span<float> buildingsSumAsSpan;
 };

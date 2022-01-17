@@ -38,7 +38,6 @@ private:
 	bool levelUpBuilding();
 	bool createBuilding(db_building* building);
 	bool createBuilding(std::span<float> buildingsInput);
-	db_nation* getNation() const;
 	bool createUnit(std::span<float> unitsInput);
 	bool createWorker();
 

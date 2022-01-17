@@ -1,8 +1,6 @@
 #include "ActionMaker.h"
 
 #include <format>
-
-
 #include "AiTypes.h"
 #include "AiUtils.h"
 #include "Game.h"
@@ -10,8 +8,6 @@
 #include "commands/action/BuildingActionType.h"
 #include "commands/action/GeneralActionCommand.h"
 #include "commands/action/GeneralActionType.h"
-#include "database/DatabaseCache.h"
-#include "math/SpanUtils.h"
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
 #include "objects/building/Building.h"
@@ -47,7 +43,7 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 }
 
 bool ActionMaker::createWorker() {
-	const auto& units = getNation()->units;
+	const auto& units = nation->units;
 	for (const auto dbUnit : units) {
 		if (dbUnit->typeWorker) {
 			return createWorker(dbUnit);
@@ -139,7 +135,7 @@ bool ActionMaker::createBuilding(db_building* building) {
 }
 
 db_building* ActionMaker::chooseBuilding(std::span<float> result) {
-	const auto& buildings = getNation()->buildings;
+	const auto& buildings = nation->buildings;
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;

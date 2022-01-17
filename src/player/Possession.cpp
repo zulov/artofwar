@@ -126,7 +126,7 @@ void Possession::updateAndClean(const Resources& resources, const ObjectsInfo* s
 	for (const auto unit : units) {
 		unit->addValues(unitsSumAsSpan);
 
-		if (isFreeSolider(unit)) {
+		if (isFreeSolider(unit)) {//TODO to dac jako któtkie
 			unit->addValues(freeArmySumAsSpan);
 		}
 	}

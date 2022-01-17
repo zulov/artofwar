@@ -52,8 +52,8 @@ void OrderMaker::action() {
 	}
 	auto& possesion = player->getPossession();
 
-	bool ifAttack = attackThreshold->ifDo(possesion.getFreeArmyMetrics());
-	if (ifAttack && false) {
+	bool ifAttack = false && attackThreshold->ifDo(possesion.getFreeArmyMetrics());
+	if (ifAttack) {
 		char id = attackThreshold->getBest(possesion.getFreeArmyMetrics());
 		auto env = Game::getEnvironment();
 		const char enemy = Game::getPlayersMan()->getEnemyFor(player->getId());
