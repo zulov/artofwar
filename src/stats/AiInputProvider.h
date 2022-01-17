@@ -16,7 +16,7 @@ struct db_basic_metric;
 
 class AiInputProvider {
 public:
-	AiInputProvider() = default;
+	AiInputProvider();
 	AiInputProvider(const AiInputProvider&) = delete;
 
 	std::span<float> getResourceInput(char playerId);

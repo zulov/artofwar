@@ -200,7 +200,7 @@ void Building::addValues(std::span<float> vals) const {
 	auto data = dbLevel->dbBuildingMetric->getValuesNorm();
 	assert(validateSpan(__LINE__, __FILE__, data));
 
-	assert(vals.size()==data.size()-1); //without cost
+	assert(vals.size()==data.size());
 	for (int i = 0; i < vals.size(); ++i) {
 		vals[i] += percent * data[i];
 	}

@@ -8,6 +8,11 @@
 #include "player/ai/AiUtils.h"
 
 
+AiInputProvider::AiInputProvider() {
+	// std::cout << std::format("AI Sizes INPUT\t Res: {}, Unit: {}, Build: {}, UnitM: {}, BuildM: {}\n",
+	// 	resourceIdInputSpan.size(), unitsInputSpan.size(), buildingsInputSpan.size(), unitsWithMetricUnitSpan.size(), basicWithMetricUnitSpan.size());
+}
+
 std::span<float> AiInputProvider::getResourceInput(char playerId) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 	auto newSpan = getBasicInput(resourceIdInputSpan, player);
@@ -65,5 +70,5 @@ std::span<float> AiInputProvider::getBasicInput(std::span<float> dest, Player* p
 	assert(validateSpan(__LINE__, __FILE__, data));
 	std::ranges::copy(data, dest.begin());
 
-	return std::span(dest.end(), dest.size() - data.size());
+	return std::span(dest.begin() + data.size(), dest.size() - data.size());
 }

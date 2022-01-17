@@ -2,14 +2,12 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-#include <Urho3D/IO/Log.h>
 
 #include "AFUtil.h"
 #include "Game.h"
 #include "Layer.h"
 #include "math/SpanUtils.h"
 #include "utils/DeleteUtils.h"
-#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 
 Brain::Brain(const std::string& filename, std::vector<std::string>& lines): filename(filename) {
@@ -59,6 +57,10 @@ const std::span<float> Brain::decide(std::span<float> data) {
 
 std::string Brain::getName() const {
 	return filename;
+}
+
+short Brain::getOutputSize() const {
+	return allLayers.back()->getValues().size();
 }
 
 void Brain::setValues(Layer* layer, Eigen::MatrixXf& mult) const {

@@ -1,5 +1,7 @@
 #include "ActionMaker.h"
 
+#include <format>
+
 
 #include "AiTypes.h"
 #include "AiUtils.h"
@@ -20,7 +22,7 @@
 
 
 ActionMaker::ActionMaker(Player* player, db_nation* nation):
-	player(player),
+	player(player), nation(nation),
 	ifWorkerCreate(BrainProvider::get(nation->actionPrefix[0] + "ifWorkerCreate_w.csv")),
 	whereWorkerCreate(BrainProvider::get(nation->actionPrefix[1] + "whereWorkerCreate_w.csv")),
 
@@ -31,6 +33,11 @@ ActionMaker::ActionMaker(Player* player, db_nation* nation):
 	ifUnitCreate(BrainProvider::get(nation->actionPrefix[5] + "ifUnitCreate_w.csv")),
 	whichUnitCreate(BrainProvider::get(nation->actionPrefix[6] + "whichUnitCreate_w.csv")),
 	whereUnitCreate(BrainProvider::get(nation->actionPrefix[7] + "whereUnitCreate_w.csv")) {
+
+	// std::cout << std::format("AI Sizes OUTPUT\t Res: {}, Unit: {}, Build: {}, UnitM: {}, BuildM: {}\n",
+	//                          ifWorkerCreate->getOutputSize(), ifUnitCreate->getOutputSize(),
+	//                          ifBuildingCreate->getOutputSize(), whereUnitCreate->getOutputSize(),
+	//                          whereBuildingCreate->getOutputSize());
 }
 
 bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
@@ -40,12 +47,14 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 }
 
 bool ActionMaker::createWorker() {
-	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-	const auto unit = units[0]; //TODO lepiej wybrac
-	// for (auto dbUnit : units) {
-	// 	dbUnit->getLevel(0)->
-	// }
-	return createWorker(unit);
+	const auto& units = getNation()->units;
+	for (const auto dbUnit : units) {
+		if (dbUnit->typeWorker) {
+			return createWorker(dbUnit);
+		}
+	}
+	assert(false);
+	return false;
 }
 
 bool ActionMaker::createUnit(std::span<float> unitsInput) {
@@ -130,7 +139,7 @@ bool ActionMaker::createBuilding(db_building* building) {
 }
 
 db_building* ActionMaker::chooseBuilding(std::span<float> result) {
-	const auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
+	const auto& buildings = getNation()->buildings;
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
@@ -149,7 +158,7 @@ db_building* ActionMaker::chooseBuilding(std::span<float> result) {
 }
 
 db_building_level* ActionMaker::chooseBuildingLevelUp() {
-	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
+	auto& buildings = nation->buildings;
 	//auto result = decideFromBasic(buildingLevelUpId);
 
 	// std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
@@ -179,7 +188,7 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 
 db_unit* ActionMaker::chooseUnit(std::span<float> result) {
 	auto pred = [this](db_unit* unit) { return !unit->typeWorker; };
-	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
+	auto& units = nation->units;
 	std::vector<db_unit*> unitsWithoutWorker;
 	unitsWithoutWorker.reserve(units.size());
 	std::copy_if(units.begin(), units.end(), std::back_inserter(unitsWithoutWorker), pred);
@@ -202,7 +211,7 @@ db_unit* ActionMaker::chooseUnit(std::span<float> result) {
 }
 
 db_unit_level* ActionMaker::chooseUnitLevelUp() {
-	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
+	auto& units = nation->units;
 	//auto result = decideFromBasic(unitLevelUpId);
 
 	// std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
@@ -247,7 +256,7 @@ std::optional<Urho3D::Vector2> ActionMaker::findPosToBuild(db_building* building
 }
 
 std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId) const {
-	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
+	auto& buildings = nation->buildings;
 	std::vector<short> buildingIdsThatCanDeploy;
 	for (auto building : buildings) {
 		auto unitIds = player->getLevelForBuilding(building->id)->unitsPerNationIds[player->getNation()];
@@ -306,7 +315,7 @@ Building* ActionMaker::getBuildingClosestArea(std::vector<Building*>& allPossibl
 }
 
 Building* ActionMaker::getBuildingToLevelUpUnit(db_unit_level* level) {
-	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
+	auto& buildings = nation->buildings;
 	//std::vector<Building*> allPossible = getBuildingsCanDeploy(level->unit, buildings);
 	// if (allPossible.empty()) { return nullptr; }
 	// auto& result = inputWithParamsDecide(unitLevelUpPos, level->dbUnitMetricUp);

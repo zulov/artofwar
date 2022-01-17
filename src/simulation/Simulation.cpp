@@ -360,6 +360,7 @@ void Simulation::calculateForces() {
 			force.inCell(newForce, unit);
 			break;
 		case UnitState::ATTACK: {
+			//TODO improve getMaxSeparationDistance powino sie dodac jeszcze minimal dist
 			const auto neighbours = enviroment->getNeighboursWithCache(unit, unit->getMaxSeparationDistance());
 
 			force.separationUnits(newForce, unit, neighbours);
@@ -367,6 +368,7 @@ void Simulation::calculateForces() {
 		}
 		break;
 		default: {
+			//TODO improve getMaxSeparationDistance powino sie dodac jeszcze minimal dist
 			const auto neighbours = enviroment->getNeighboursWithCache(unit, unit->getMaxSeparationDistance());
 
 			force.separationUnits(newForce, unit, neighbours);

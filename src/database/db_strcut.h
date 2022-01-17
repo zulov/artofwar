@@ -228,7 +228,7 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_unit_
 		db_base(maxHp, armor, sightRng), db_build_upgrade(buildTime, upgradeTime),
 		unit(unit),
 		minDist(minDist),
-		maxSep(maxSep),
+		maxSep(1.f),
 		node(node),
 		mass(mass),
 		invMass(1 / mass),

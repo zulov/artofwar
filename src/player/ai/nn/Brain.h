@@ -15,6 +15,7 @@ public:
 
 	const std::span<float> decide(std::span<float> data);
 	std::string getName() const;
+	short getOutputSize() const;
 private:
 	void setValues(Layer* layer, Eigen::MatrixXf& mult) const;
 	std::vector<Layer*> allLayers;
