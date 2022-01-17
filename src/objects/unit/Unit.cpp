@@ -498,9 +498,9 @@ void Unit::addValues(std::span<float> vals) const {
 	const auto percent = hp * dbLevel->invMaxHp;
 	assert(vals.size()==dbLevel->dbUnitMetric->getValuesNorm().size());
 	assert(validateSpan(__LINE__, __FILE__, dbLevel->dbUnitMetric->getValuesNormForSum()));
-
+	auto metric = dbLevel->dbUnitMetric->getValuesNorm();
 	for (int i = 0; i < vals.size(); ++i) {
-		vals[i] += percent * dbLevel->dbUnitMetric->getValuesNorm()[i];
+		vals[i] += percent * metric[i];
 	}
 }
 

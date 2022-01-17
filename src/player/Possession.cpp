@@ -123,13 +123,29 @@ void Possession::updateAndClean(const Resources& resources, const ObjectsInfo* s
 	resetSpan(freeArmySumAsSpan);
 
 	//TODO perf zliczyc levele i tak to zsumowac
-	for (const auto unit : units) {
-		unit->addValues(unitsSumAsSpan);
+	auto levelsSize = Game::getDatabase()->getLevels().size();
 
-		if (isFreeSolider(unit)) {//TODO to dac jako któtkie
-			unit->addValues(freeArmySumAsSpan);
+	float* levels = new float[levelsSize];
+	std::fill_n(levels, levelsSize, 0.f);
+
+	for (const auto unit : units) {
+		levels[unit->getLevel()->id] += unit->getHealthPercent();
+		//unit->addValues(unitsSumAsSpan);
+
+		if (isFreeSolider(unit)) {
+			//TODO to dac jako któtkie
+			//	unit->addValues(freeArmySumAsSpan);
 		}
 	}
+	for (int i = 0; i < levelsSize; ++i) {
+		if (levels[i] > 0.f) {
+			auto metric = Game::getDatabase()->getLevels()[i]->dbUnitMetric->getValuesNorm();
+			for (int i = 0; i < unitsSumAsSpan.size(); ++i) {
+				unitsSumAsSpan[i] += levels[i] * metric[i];
+			}
+		}
+	}
+	delete []levels;
 	resetSpan(buildingsSumAsSpan);
 	for (const auto building : buildings) {
 		building->addValues(buildingsSumAsSpan);
