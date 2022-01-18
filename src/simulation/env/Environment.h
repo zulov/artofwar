@@ -134,7 +134,7 @@ public:
 	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
 	short getResolution() const { return calculator->getResolution(); }
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;
-	float getVisibilityScore(char player);
+	float getVisibilityScore(char player) const;
 
 	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
 	Urho3D::Terrain* getTerrain() { return terrain; }

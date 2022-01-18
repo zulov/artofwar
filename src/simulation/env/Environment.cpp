@@ -50,7 +50,7 @@ bool Environment::isVisible(char player, const Urho3D::Vector2& pos) const {
 	return influenceManager.isVisible(player, pos);
 }
 
-float Environment::getVisibilityScore(char player) {
+float Environment::getVisibilityScore(char player) const {
 	return influenceManager.getVisibilityScore(player);
 }
 
