@@ -44,6 +44,10 @@ private:
 	float resourcesSum = 0.f;
 	float resourcesDestroyed = 0.f;
 
+	int levelsSize;
+	float* levels;
+	float* levelsFree;
+
 	float *data;
 	
 	std::span<float> unitsSumAsSpan;

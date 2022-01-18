@@ -134,7 +134,7 @@ public:
 	bool isAlive() const override;
 	char getLevelNum() override;
 	void clean();
-	void addValues(std::span<float> vals) const override;
+
 	float getSightRadius() const override;
 	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;
 	short getCostSum() const override;

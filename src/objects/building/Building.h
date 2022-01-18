@@ -42,7 +42,6 @@ public:
 	float getMaxHpBarSize() const override;
 	float getHealthBarSize() const override;
 	char getLevelNum() override;
-	void addValues(std::span<float> vals) const override;
 	const Urho3D::IntVector2 getGridSize() const override;
 	void createDeploy();
 	void setDeploy(int cell);

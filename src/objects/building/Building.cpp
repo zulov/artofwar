@@ -193,19 +193,6 @@ std::string Building::getValues(int precision) {
 		+ std::to_string(deployIndex);
 }
 
-void Building::addValues(std::span<float> vals) const {
-	auto percent = hp / dbLevel->maxHp;
-	auto nation = Game::getPlayersMan()->getPlayer(player)->getNation();
-
-	auto data = dbLevel->dbBuildingMetric->getValuesNorm();
-	assert(validateSpan(__LINE__, __FILE__, data));
-
-	assert(vals.size()==data.size());
-	for (int i = 0; i < vals.size(); ++i) {
-		vals[i] += percent * data[i];
-	}
-}
-
 const Urho3D::IntVector2 Building::getGridSize() const {
 	return dbBuilding->size;
 }

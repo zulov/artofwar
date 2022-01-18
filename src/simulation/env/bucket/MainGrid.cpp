@@ -122,14 +122,8 @@ Urho3D::Vector2 MainGrid::getPositionInBucket(Unit* unit) {
 		}
 	}
 	const auto center = calculator->getCenter(index);
-	switch (max) {
-	case 1:
-		return center;
-	case 2:
-	case 3:
-	case 4:
-		return posInBucket4[ordinal] + center;
-	}
+	Urho3D::Vector2 tab[] = {center, posInBucket4[ordinal] + center};
+	return tab[max != 1];
 }
 
 unsigned char MainGrid::getRevertCloseIndex(int center, int gridIndex) const {

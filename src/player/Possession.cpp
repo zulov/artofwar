@@ -22,18 +22,26 @@ Possession::Possession(char nation) {
 
 	data = new float[unitSize * 2 + buildingSize];
 
-	unitsSumAsSpan = std::span<float>(data, unitSize);
-	freeArmySumAsSpan = std::span<float>(data + unitSize, unitSize);
-	buildingsSumAsSpan = std::span<float>(data + 2 * unitSize, buildingSize);
+	unitsSumAsSpan = std::span(data, unitSize);
+	freeArmySumAsSpan = std::span(data + unitSize, unitSize);
+	buildingsSumAsSpan = std::span(data + 2 * unitSize, buildingSize);
 
 	resetSpan(unitsSumAsSpan);
 	resetSpan(freeArmySumAsSpan);
 	resetSpan(buildingsSumAsSpan);
+
+	levelsSize = Urho3D::Max(Game::getDatabase()->getUnitLevels().size(),
+	                         Game::getDatabase()->getBuildingLevels().size());
+
+	levels = new float[levelsSize];
+	levelsFree = new float[levelsSize];
 }
 
 Possession::~Possession() {
 	clear_vector(buildingsPerId);
 	delete[]data;
+	delete[]levels;
+	delete[]levelsFree;
 }
 
 
@@ -122,33 +130,49 @@ void Possession::updateAndClean(const Resources& resources, const ObjectsInfo* s
 	resetSpan(unitsSumAsSpan);
 	resetSpan(freeArmySumAsSpan);
 
-	//TODO perf zliczyc levele i tak to zsumowac
-	auto levelsSize = Game::getDatabase()->getLevels().size();
-
-	float* levels = new float[levelsSize];
 	std::fill_n(levels, levelsSize, 0.f);
+	std::fill_n(levelsFree, levelsSize, 0.f);
 
 	for (const auto unit : units) {
-		levels[unit->getLevel()->id] += unit->getHealthPercent();
-		//unit->addValues(unitsSumAsSpan);
+		auto per = unit->getHealthPercent();
+		levels[unit->getLevel()->id] += per;
 
+		//TODO to dac jako któtkie
 		if (isFreeSolider(unit)) {
-			//TODO to dac jako któtkie
-			//	unit->addValues(freeArmySumAsSpan);
+			levelsFree[unit->getLevel()->id] += per;
 		}
 	}
+	auto& uLevels = Game::getDatabase()->getUnitLevels();
 	for (int i = 0; i < levelsSize; ++i) {
 		if (levels[i] > 0.f) {
-			auto metric = Game::getDatabase()->getLevels()[i]->dbUnitMetric->getValuesNorm();
-			for (int i = 0; i < unitsSumAsSpan.size(); ++i) {
-				unitsSumAsSpan[i] += levels[i] * metric[i];
+			auto &metric = uLevels[i]->dbUnitMetric->getValuesNormForSum();
+			assert(metric.size() == unitsSumAsSpan.size());
+			for (int j = 0; j < unitsSumAsSpan.size(); ++j) {
+				unitsSumAsSpan[j] += levels[i] * metric[j];
+			}
+			if (levelsFree[i] > 0.f) {
+				for (int j = 0; j < freeArmySumAsSpan.size(); ++j) {
+					freeArmySumAsSpan[j] += levelsFree[i] * metric[j];
+				}
 			}
 		}
 	}
-	delete []levels;
+
 	resetSpan(buildingsSumAsSpan);
+	std::fill_n(levels, levelsSize, 0.f);
+
 	for (const auto building : buildings) {
-		building->addValues(buildingsSumAsSpan);
+		levels[building->getLevel()->id] += building->getHealthPercent();
+	}
+	auto& bLevels = Game::getDatabase()->getBuildingLevels();
+	for (int i = 0; i < levelsSize; ++i) {
+		if (levels[i] > 0.f) {
+			auto &metric = bLevels[i]->dbBuildingMetric->getValuesNormForSum();
+			assert(metric.size() == buildingsSumAsSpan.size());
+			for (int j = 0; j < buildingsSumAsSpan.size(); ++j) {
+				buildingsSumAsSpan[j] += levels[i] * metric[j];
+			}
+		}
 	}
 
 	resourcesSum = sumSpan(resources.getValues());

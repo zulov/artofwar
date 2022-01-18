@@ -47,7 +47,8 @@ public:
 	std::vector<db_player_colors*>& getPlayerColors() const { return dbContainer->playerColors; }
 	db_player_colors* getPlayerColor(int i) const { return dbContainer->playerColors[i]; }
 
-	std::vector<db_unit_level*>& getLevels() const { return dbContainer->unitsLevels; }
+	const std::vector<db_unit_level*>& getUnitLevels() const { return dbContainer->unitsLevels; }
+	const std::vector<db_building_level*>& getBuildingLevels() const { return dbContainer->buildingsLevels; }
 
 	void executeSingleBasic(const std::string& name, const char* sql);
 	void setGraphSettings(int i, db_graph_settings* graphSettings);
