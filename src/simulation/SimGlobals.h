@@ -29,4 +29,9 @@ inline struct SimGlobals {
 	inline static std::string ORDER_THRESHOLD_PATH[MAX_PLAYERS] = {"", ""};
 	inline static Urho3D::Vector2 CAMERA_START = Urho3D::Vector2::ZERO;
 
+	inline static Urho3D::Vector<Urho3D::String> OUTPUT_NAMES;
+
+	inline static int CURRENT_RUN = 0;
+	inline static int MAX_RUNS = 0;
+
 } SIM_GLOBALS;

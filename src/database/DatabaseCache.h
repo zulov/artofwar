@@ -53,7 +53,7 @@ public:
 	void executeSingleBasic(const std::string& name, const char* sql);
 	void setGraphSettings(int i, db_graph_settings* graphSettings);
 	void setSettings(int i, db_settings* settings);
-	void refreshAfterParametersRead();
+	void refreshAfterParametersRead() const;
 
 private:
 	db_container* dbContainer;

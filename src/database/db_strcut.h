@@ -370,16 +370,20 @@ struct db_nation : db_entity, db_with_name {
 		  orderPrefix(split(orderPrefix, SPLIT_SIGN)),
 		  orderThresholdPrefix(split(orderThresholdPrefix, SPLIT_SIGN)) { }
 
+	std::vector<std::string> splitAi(std::string* param) const {
+		return split(split(param[id], SPLIT_SIGN_2)[SimGlobals::CURRENT_RUN], SPLIT_SIGN);
+	}
+
 	void refresh() {
 		assert(id<MAX_PLAYERS); //TODO BUG to sa troszke inne rzeczy
 		if (!SimGlobals::ACTION_AI_PATH[id].empty()) {
-			this->actionPrefix = split(SimGlobals::ACTION_AI_PATH[id], SPLIT_SIGN);
+			actionPrefix = splitAi(SimGlobals::ACTION_AI_PATH);
 		}
 		if (!SimGlobals::ORDER_AI_PATH[id].empty()) {
-			this->orderPrefix = split(SimGlobals::ORDER_AI_PATH[id], SPLIT_SIGN);
+			orderPrefix = splitAi(SimGlobals::ORDER_AI_PATH);
 		}
 		if (!SimGlobals::ORDER_THRESHOLD_PATH[id].empty()) {
-			this->orderThresholdPrefix = split(SimGlobals::ORDER_THRESHOLD_PATH[id], SPLIT_SIGN);
+			orderThresholdPrefix = splitAi(SimGlobals::ORDER_THRESHOLD_PATH);
 		}
 	}
 };

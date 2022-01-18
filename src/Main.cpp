@@ -92,8 +92,6 @@ void Main::Setup() {
 		engineParameters_[EP_LOG_NAME] = "logs/" + GetTypeName() + ".log";
 	}
 
-	Game::getDatabase()->refreshAfterParametersRead();
-
 	Game::setCache(GetSubsystem<ResourceCache>())
 		->setUI(GetSubsystem<UI>())
 		->setConsole(GetSubsystem<Console>())
@@ -118,6 +116,7 @@ void Main::Start() {
 
 	InitMouseMode(MM_RELATIVE);
 	changeState(GameState::LOADING);
+	simStart = std::chrono::system_clock::now();
 }
 
 void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>> funcs1,
@@ -144,14 +143,14 @@ void Main::writeOutput() const {
 	if (!outputName.Empty()) {
 		writeOutput(
 			{
-				[](Player* p) -> float{ return p->getScore(); }
+				[](Player* p) -> float { return p->getScore(); }
 			},
 			{
-				[](Player* p) -> std::span<float>{ return p->getResources().getValues(); },
-				[](Player* p) -> std::span<float>{ return p->getResources().getSumValues(); },
+				[](Player* p) -> std::span<float> { return p->getResources().getValues(); },
+				[](Player* p) -> std::span<float> { return p->getResources().getSumValues(); },
 
-				[](Player* p) -> std::span<float>{ return p->getPossession().getUnitsMetrics(); },
-				[](Player* p) -> std::span<float>{ return p->getPossession().getBuildingsMetrics(); }
+				[](Player* p) -> std::span<float> { return p->getPossession().getUnitsMetrics(); },
+				[](Player* p) -> std::span<float> { return p->getPossession().getBuildingsMetrics(); }
 			});
 	}
 }
@@ -171,8 +170,6 @@ void Main::setCameraPos() const {
 }
 
 void Main::Stop() {
-	writeOutput();
-
 	disposeScene();
 
 	delete hud;
@@ -183,12 +180,12 @@ void Main::Stop() {
 	ProjectileManager::dispose();
 
 	if (!SIM_GLOBALS.HEADLESS) { engine_->DumpResources(true); }
-	auto a = std::chrono::system_clock::now().time_since_epoch();
-	auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(a).count();
-	//std::cout << "End " << millis<< " ms" << std::endl;
+
 	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
 		std::chrono::system_clock::now() - start);
-	std::cout << "ENDED at " << duration.count() << " ms" << std::endl;
+	const auto duration1 = std::chrono::duration_cast<std::chrono::milliseconds>(
+		std::chrono::system_clock::now() - simStart);
+	std::cout << "ENDED at " << duration1.count() << "/" << duration.count() << " ms" << std::endl;
 }
 
 void Main::subscribeToUIEvents() {
@@ -225,7 +222,13 @@ void Main::running(const double timeStep) {
 	}
 
 	if (timeLimit != -1 && simInfo->getFrameInfo()->getSeconds() > timeLimit) {
-		engine_->Exit();
+		SimGlobals::CURRENT_RUN++;
+		if (SimGlobals::CURRENT_RUN < SimGlobals::MAX_RUNS) {
+			outputName = SimGlobals::OUTPUT_NAMES[SimGlobals::CURRENT_RUN]; 
+			changeState(GameState::CLOSING);
+		} else {
+			engine_->Exit();
+		}
 	}
 }
 
@@ -244,7 +247,8 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		break;
 	case GameState::CLOSING:
 		disposeScene();
-		changeState(GameState::MENU_MAIN);
+
+		changeState(GameState::LOADING);
 		break;
 	case GameState::NEW_GAME:
 		newGame(newGameForm, newGameProgress);
@@ -328,6 +332,7 @@ void Main::updateProgress(Loading& progress, std::string msg) const {
 void Main::load(const String& saveName, Loading& progress) {
 	switch (progress.currentStage) {
 	case 0: {
+		Game::getDatabase()->refreshAfterParametersRead();
 		setSimpleManagers();
 
 		loader.createLoad(saveName);
@@ -381,6 +386,7 @@ void Main::newGame(NewGameForm* form, Loading& progress) {
 	switch (progress.currentStage) {
 	case 0: {
 		disposeScene();
+		Game::getDatabase()->refreshAfterParametersRead();
 		setSimpleManagers();
 
 		levelBuilder = new LevelBuilder();
@@ -568,6 +574,7 @@ void Main::SetupViewport() {
 }
 
 void Main::disposeScene() {
+	writeOutput();
 	if (inited) {
 		Loading loading2(5, !SIM_GLOBALS.HEADLESS);
 		Game::getScene()->SetUpdateEnabled(false);
@@ -666,7 +673,9 @@ void Main::readParameters() {
 			} else if (argument == "savename") {
 				saveToLoad = value;
 			} else if (argument == "outputname" && !value.Empty()) {
-				outputName = value;
+				SimGlobals::OUTPUT_NAMES = value.Split('|');
+				SimGlobals::MAX_RUNS = SimGlobals::OUTPUT_NAMES.Size();
+				outputName = SimGlobals::OUTPUT_NAMES[0];
 				++i;
 			} else if (argument == "timelimit" && !value.Empty()) {
 				timeLimit = ToInt(value);
