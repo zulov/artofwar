@@ -52,12 +52,8 @@ URHO3D_DEFINE_APPLICATION_MAIN(Main)
 using namespace Urho3D;
 
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100),
-                               gameState(GameState::STARTING), loadingProgress(6),
-                               newGameProgress(6) {
+                               gameState(GameState::STARTING), loadingProgress(6) {
 	start = std::chrono::system_clock::now();
-	//auto a = std::chrono::system_clock::now().time_since_epoch();
-	//auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(a).count();
-	//std::cout << "Start " << millis<< " ms" << std::endl;
 	MySprite::RegisterObject(context);
 	Game::init();
 
@@ -181,11 +177,13 @@ void Main::Stop() {
 
 	if (!SIM_GLOBALS.HEADLESS) { engine_->DumpResources(true); }
 
-	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-		std::chrono::system_clock::now() - start);
-	const auto duration1 = std::chrono::duration_cast<std::chrono::milliseconds>(
-		std::chrono::system_clock::now() - simStart);
-	std::cout << "ENDED at " << duration1.count() << "/" << duration.count() << " ms" << std::endl;
+	const auto now = std::chrono::system_clock::now();
+	const auto duration3 = std::chrono::duration_cast<std::chrono::milliseconds>(now - SimGlobals::SUPER_START);
+	const auto duration2 = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
+	const auto duration1 = std::chrono::duration_cast<std::chrono::milliseconds>(now - simStart);
+
+	std::cout << "ENDED at " << duration1.count() << "/" << duration2.count() << "/" << duration3.count() << " ms" <<
+		std::endl;
 }
 
 void Main::subscribeToUIEvents() {
@@ -224,7 +222,7 @@ void Main::running(const double timeStep) {
 	if (timeLimit != -1 && simInfo->getFrameInfo()->getSeconds() > timeLimit) {
 		SimGlobals::CURRENT_RUN++;
 		if (SimGlobals::CURRENT_RUN < SimGlobals::MAX_RUNS) {
-			outputName = SimGlobals::OUTPUT_NAMES[SimGlobals::CURRENT_RUN]; 
+			outputName = SimGlobals::OUTPUT_NAMES[SimGlobals::CURRENT_RUN];
 			changeState(GameState::CLOSING);
 		} else {
 			engine_->Exit();
@@ -238,7 +236,7 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		//changeState(GameState::LOADING);
 		break;
 	case GameState::LOADING:
-		load(saveToLoad, loadingProgress);
+		load(saveToLoad, nullptr);
 		break;
 	case GameState::RUNNING:
 		running(eventData[SceneUpdate::P_TIMESTEP].GetDouble());
@@ -251,7 +249,7 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		changeState(GameState::LOADING);
 		break;
 	case GameState::NEW_GAME:
-		newGame(newGameForm, newGameProgress);
+		load(saveToLoad, newGameForm);
 		break;
 	case GameState::STARTING:
 		break;
@@ -329,81 +327,43 @@ void Main::updateProgress(Loading& progress, std::string msg) const {
 	}
 }
 
-void Main::load(const String& saveName, Loading& progress) {
-	switch (progress.currentStage) {
+void Main::load(const String& saveName, NewGameForm* form) {
+	switch (loadingProgress.currentStage) {
 	case 0: {
-		Game::getDatabase()->refreshAfterParametersRead();
-		setSimpleManagers();
-
-		loader.createLoad(saveName);
-		levelBuilder = new LevelBuilder();
-		controls = new Controls(GetSubsystem<Input>());
-		SetupViewport();
-
-		Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());
-		//Game::getStats()->init();
-
-		if (!engineParameters_[EP_HEADLESS].GetBool()) {
-			controls->init();
-			subscribeToUIEvents();
-		}
-		hud->resetLoading();
-		levelBuilder->createScene(loader);
-	}
-	break;
-	case 1: {
-		createEnv(loader.getConfig()->size);
-		Game::getStats()->init();
-		break;
-	}
-	case 2: {
-		Game::getEnvironment()->prepareGridToFind();
-		hud->createMiniMap();
-		break;
-	}
-	case 3:
-		createSimulation();
-		break;
-	case 4:
-		simulation->initScene(loader);
-		simulation->forceUpdateInfluenceMaps();
-		setCameraPos();
-		break;
-	case 5:
-		changeState(GameState::RUNNING);
-		loader.end();
-		inited = true;
-		break;
-	}
-	updateProgress(progress, Game::getLocalization()->Get("load_msg_" + String((int)progress.currentStage)).CString());
-}
-
-void Main::createEnv(unsigned short mainMapResolution) const {
-	Game::setEnvironment(new Environment(levelBuilder->getTerrain(), mainMapResolution));
-}
-
-void Main::newGame(NewGameForm* form, Loading& progress) {
-	switch (progress.currentStage) {
-	case 0: {
+		RandGen::reset(SIM_GLOBALS.RANDOM);
 		disposeScene();
 		Game::getDatabase()->refreshAfterParametersRead();
 		setSimpleManagers();
 
 		levelBuilder = new LevelBuilder();
-		controls = new Controls(GetSubsystem<Input>());
-		SetupViewport();
 
-		Game::getPlayersMan()->load(form);
-		//Game::getStats()->init();
-		controls->init();
+		if (form) {
+			Game::getPlayersMan()->load(form);
+		} else {
+			loader.createLoad(saveName);
+			Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());
+		}
 
+		if (!engineParameters_[EP_HEADLESS].GetBool()) {
+			SetupViewport();
+			controls = new Controls(GetSubsystem<Input>());
+			controls->init();
+		}
 		hud->resetLoading();
-
-		levelBuilder->createScene(form);
+		if (form) {
+			levelBuilder->createScene(form);
+		} else {
+			levelBuilder->createScene(loader);
+		}
 	}
 	break;
 	case 1: {
-		createEnv(form->size);
+		if (form) {
+			createEnv(form->size);
+		} else {
+			createEnv(loader.getConfig()->size);
+		}
+
 		Game::getStats()->init();
 		break;
 	}
@@ -416,19 +376,28 @@ void Main::newGame(NewGameForm* form, Loading& progress) {
 		createSimulation();
 		break;
 	case 4:
-		simulation->initScene(form);
+		if (form) {
+			simulation->initScene(form);
+		} else {
+			simulation->initScene(loader);
+		}
+
 		simulation->forceUpdateInfluenceMaps();
 		setCameraPos();
 		break;
 	case 5:
 		delete form; //TODO trzeba ustawic na null
-
+		loader.end();
 		changeState(GameState::RUNNING);
 		inited = true;
 		break;
 	}
-	updateProgress(
-		progress, Game::getLocalization()->Get("new_load_msg_" + String((int)progress.currentStage)).CString());
+	updateProgress(loadingProgress,
+	               Game::getLocalization()->Get("load_msg_" + String((int)loadingProgress.currentStage)).CString());
+}
+
+void Main::createEnv(unsigned short mainMapResolution) const {
+	Game::setEnvironment(new Environment(levelBuilder->getTerrain(), mainMapResolution));
 }
 
 void Main::changeState(GameState newState) {
@@ -560,29 +529,29 @@ void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
 }
 
 void Main::SetupViewport() {
-	if (!engineParameters_[EP_HEADLESS].GetBool()) {
-		auto v = new Viewport(context_, Game::getScene(), Game::getCameraManager()->getComponent());
-		SharedPtr<Viewport> viewport(v);
+	auto v = new Viewport(context_, Game::getScene(), Game::getCameraManager()->getComponent());
+	SharedPtr<Viewport> viewport(v);
 
-		//v->GetRenderPath()->Append(Game::getCache()->GetResource<XMLFile>("PostProcess/FXAA2.xml"));
+	//v->GetRenderPath()->Append(Game::getCache()->GetResource<XMLFile>("PostProcess/FXAA2.xml"));
 
-		const auto renderer = GetSubsystem<Renderer>();
-		if (renderer) {
-			GetSubsystem<Renderer>()->SetViewport(0, viewport);
-		}
+	const auto renderer = GetSubsystem<Renderer>();
+	if (renderer) {
+		renderer->SetViewport(0, viewport);
 	}
 }
 
 void Main::disposeScene() {
-	writeOutput();
 	if (inited) {
+		writeOutput();
 		Loading loading2(5, !SIM_GLOBALS.HEADLESS);
 		Game::getScene()->SetUpdateEnabled(false);
 
 		loading2.reset("dispose simulation");
-		simulation->clearNodesWithoutDelete();
-		delete simulation;
-		simulation = nullptr;
+		if (simulation) {
+			simulation->clearNodesWithoutDelete();
+			delete simulation;
+			simulation = nullptr;
+		}
 
 		loading2.inc("dispose managers");
 		delete Game::getCameraManager();
@@ -618,7 +587,6 @@ void Main::disposeScene() {
 	}
 	inited = false;
 	loadingProgress.reset();
-	newGameProgress.reset();
 }
 
 SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {

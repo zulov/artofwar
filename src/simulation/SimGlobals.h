@@ -1,4 +1,6 @@
 #pragma once
+#include <chrono>
+
 #include "utils/defines.h"
 constexpr bool FORCE_BENCHMARK_MODE = false;
 constexpr bool FORCE_TRAIN_MODE = false;
@@ -33,5 +35,6 @@ inline struct SimGlobals {
 
 	inline static int CURRENT_RUN = 0;
 	inline static int MAX_RUNS = 0;
+	inline static std::chrono::system_clock::time_point SUPER_START = std::chrono::system_clock::now();
 
 } SIM_GLOBALS;

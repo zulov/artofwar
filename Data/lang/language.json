@@ -230,24 +230,6 @@
 	},
 	"load_msg_5":{
 		"pl":"Kończenie ładowania"
-	},
-	"new_load_msg_0":{
-		"pl":"Ładowanie początkowe"
-	},
-	"new_load_msg_1":{
-		"pl":"Tworzenie środowiska"
-	},
-	"new_load_msg_2":{
-		"pl":"Tworzenie minimapy"
-	},
-	"new_load_msg_3":{
-		"pl":"Tworzenie symulacji"
-	},
-	"new_load_msg_4":{
-		"pl":"Inicjalizacja sceny"
-	},		
-	"new_load_msg_5":{
-		"pl":"Kończenie ładowania"
 	},		
 	"info_build":{
 		"pl":"\nAtak: %s\nObrona: %s\nZdrowie: %d/%d\nUżytkowników: %d/%d %d/%d\nStan: %s"

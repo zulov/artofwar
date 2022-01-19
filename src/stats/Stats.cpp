@@ -39,6 +39,7 @@ void Stats::clearCounters() {
 }
 
 void Stats::setInputs() {
+	if (!SIM_GLOBALS.AI_OUTPUT) { return; }
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		ifWorkersCreateInput[i] = join(Game::getAiInputProvider()->getResourceInput(i));
 		ifBuildingsCreatedInput[i] = join(Game::getAiInputProvider()->getBuildingsInput(i));

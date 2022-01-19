@@ -67,14 +67,13 @@ private:
 	void readParameters();
 	void miniReadParameters() const;
 	void changeCamera(CameraBehaviorType type);
-	void load(const Urho3D::String& saveName, Loading& progress);
+	void load(const Urho3D::String& saveName, NewGameForm* form);
 	void createEnv(unsigned short mainMapResolution) const;
 	void save(const Urho3D::String& name);
 	void running(double timeStep);
 	void createSimulation();
 	static void setSimpleManagers();
 	void updateProgress(Loading& progress, std::string msg) const;
-	void newGame(NewGameForm* form, Loading& progress);
 	void changeState(GameState newState);
 
 	void writeOutput(std::initializer_list<const std::function<float(Player*)>> funcs1,
@@ -92,7 +91,6 @@ private:
 	SceneSaver saver;
 	SceneLoader loader;
 	Loading loadingProgress;
-	Loading newGameProgress;
 	GameState gameState;
 	DebugManager debugManager;
 

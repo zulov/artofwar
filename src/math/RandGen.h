@@ -9,11 +9,14 @@ class RandGen {
 public:
 	static void init(bool isRandom);
 	static void dispose();
+	static void reset(bool isRandom);
 	static float nextRand(RandFloatType type, float max = 1.f);
 	static int nextRand(RandIntType type, int max = 255.f);
 private:
 	RandGen() = default;
 	~RandGen() = default;
+	static void resetIndexes();
+
 	static RandGen* instance;
 	int indexesFloat[magic_enum::enum_count<RandFloatType>()];
 	int indexesInt[magic_enum::enum_count<RandIntType>()];
