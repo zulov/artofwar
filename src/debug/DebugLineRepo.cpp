@@ -34,6 +34,12 @@ void DebugLineRepo::init(DebugLineType type, short batches) {
 	}
 }
 
+void DebugLineRepo::dispose() {
+	for (auto& customGeometries : geometry) {
+		customGeometries.clear();
+	}
+}
+
 DebugLineRepo::~DebugLineRepo() {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
@@ -51,7 +57,7 @@ void DebugLineRepo::commit(DebugLineType type, short batch) {
 		if (!SIM_GLOBALS.HEADLESS) {
 			auto* geom = geometry[cast(type)].at(batch);
 			switch (type) {
-			case DebugLineType::INFLUENCE: 
+			case DebugLineType::INFLUENCE:
 			case DebugLineType::MAIN_GRID:
 				geom->SetMaterial(Game::getColorPaletteRepo()->getInfluenceMaterial());
 				break;

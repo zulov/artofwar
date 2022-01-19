@@ -23,6 +23,7 @@
 #include "control/Controls.h"
 #include "database/DatabaseCache.h"
 #include "database/db_grah_structs.h"
+#include "debug/DebugLineRepo.h"
 #include "hud/Hud.h"
 #include "hud/HudData.h"
 #include "hud/MySprite.h"
@@ -220,9 +221,7 @@ void Main::running(const double timeStep) {
 	}
 
 	if (timeLimit != -1 && simInfo->getFrameInfo()->getSeconds() > timeLimit) {
-		SimGlobals::CURRENT_RUN++;
-		if (SimGlobals::CURRENT_RUN < SimGlobals::MAX_RUNS) {
-			outputName = SimGlobals::OUTPUT_NAMES[SimGlobals::CURRENT_RUN];
+		if (SimGlobals::CURRENT_RUN + 1 < SimGlobals::MAX_RUNS) {
 			changeState(GameState::CLOSING);
 		} else {
 			engine_->Exit();
@@ -331,7 +330,7 @@ void Main::load(const String& saveName, NewGameForm* form) {
 	switch (loadingProgress.currentStage) {
 	case 0: {
 		RandGen::reset(SIM_GLOBALS.RANDOM);
-		disposeScene();
+		//disposeScene();
 		Game::getDatabase()->refreshAfterParametersRead();
 		setSimpleManagers();
 
@@ -584,7 +583,13 @@ void Main::disposeScene() {
 		loading2.inc("dispose levelBuilder");
 		delete levelBuilder;
 		levelBuilder = nullptr;
+		DebugLineRepo::dispose();
 	}
+	SimGlobals::CURRENT_RUN++;
+	if (SimGlobals::CURRENT_RUN < SimGlobals::OUTPUT_NAMES.Size()) {
+		outputName = SimGlobals::OUTPUT_NAMES[SimGlobals::CURRENT_RUN];
+	}
+
 	inited = false;
 	loadingProgress.reset();
 }

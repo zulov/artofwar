@@ -29,6 +29,7 @@ public:
 	                         const Urho3D::Vector3& third, const Urho3D::Color& color = Urho3D::Color::WHITE, short batch =0);
 	static void init(DebugLineType type);
 	static void init(DebugLineType type, short batches);
+	static void dispose();
 private:
 	DebugLineRepo() = default;
 	static std::vector<Urho3D::CustomGeometry*> geometry[magic_enum::enum_count<DebugLineType>()];

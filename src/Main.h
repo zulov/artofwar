@@ -82,10 +82,10 @@ private:
 	void setCameraPos() const;
 
 	Urho3D::MouseMode useMouseMode_;
-	Simulation* simulation;
-	Hud* hud;
-	Controls* controls;
-	LevelBuilder* levelBuilder;
+	Simulation* simulation{};
+	Hud* hud{};
+	Controls* controls{};
+	LevelBuilder* levelBuilder{};
 
 	Benchmark benchmark;
 	SceneSaver saver;
