@@ -1,6 +1,5 @@
 #pragma once
 #include <Urho3D/Math/Vector3.h>
-#include <array>
 
 struct GridCalculator {
 
@@ -47,6 +46,7 @@ struct GridCalculator {
 		auto cord = getIndexes(i);
 
 		if (cord.y_ <= -halfResolution) {
+			//TODO bug sprawdzic poprawnoœæ tego co z zerem 
 			if (cord.x_ > 0) {
 				++cord.x_;
 			} else {
@@ -84,27 +84,18 @@ struct GridCalculator {
 	float getFieldSize() const { return fieldSize; }
 
 	unsigned short getValidLow(short val) const {
-		if (val < 0) {
-			return 0;
-		}
-		return val;
+		return val >= 0 ? val : 0;
 	}
 
 	unsigned short getValidHigh(short val) const {
-		if (val >= resolution) {
-			return resolution - 1;
-		}
-		return val;
+		return val < resolution ? val : resolution - 1;
 	}
 
 	unsigned short getValid(short val) const {
 		if (val < 0) {
 			return 0;
 		}
-		if (val >= resolution) {
-			return resolution - 1;
-		}
-		return val;
+		return getValidHigh(val);
 	}
 
 	unsigned short getResolution() const { return resolution; }

@@ -42,3 +42,11 @@ inline std::string asStringF(float val, int precision = 2) {
 	ss << std::fixed << std::setprecision(precision) << val;
 	return ss.str();
 }
+
+inline int fatoi(const char* str){
+	int val = 0;
+	while (*str) {
+		val = val * 10 + (*str++ - '0');
+	}
+	return val;
+}

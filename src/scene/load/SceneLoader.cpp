@@ -2,6 +2,7 @@
 #include "dbload_container.h"
 #include "database/db_utils.h"
 #include "scene/save/SQLConsts.h"
+#include "utils/StringUtils.h"
 
 
 SceneLoader::SceneLoader(): loadingState(5, false) {}
@@ -76,9 +77,9 @@ int static load_resources_entities(void* data, int argc, char** argv, char** azC
 	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
 	int p = xyz->precision;
-	xyz->resource_entities->push_back(new dbload_resource_entities(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[2]),
-	                                                               atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),
-	                                                               atoi(argv[6]), atoi(argv[7])));
+	xyz->resource_entities->push_back(new dbload_resource_entities(fatoi(argv[0]), atof(argv[1]) / p, -1,
+	                                                               -1, fatoi(argv[4]), fatoi(argv[5]),
+	                                                               fatoi(argv[6]), fatoi(argv[7])));
 
 	return 0;
 }

@@ -402,7 +402,7 @@ void MainGrid::updateNeighbors(const int current) const {
 	//}
 }
 
-float MainGrid::cost(Urho3D::IntVector2& centerParams, int next) const {
+float inline MainGrid::cost(const Urho3D::IntVector2& centerParams, int next) const {
 	return calculator->getDistance(centerParams, next);
 }
 
