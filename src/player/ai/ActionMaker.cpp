@@ -252,9 +252,9 @@ std::optional<Urho3D::Vector2> ActionMaker::findPosToBuild(db_building* building
 }
 
 std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId) const {
-	auto& buildings = nation->buildings;
+	const auto& buildings = nation->buildings;
 	std::vector<short> buildingIdsThatCanDeploy;
-	for (auto building : buildings) {
+	for (const auto building : buildings) {
 		auto unitIds = player->getLevelForBuilding(building->id)->unitsPerNationIds[player->getNation()];
 
 		if (std::ranges::find(*unitIds, unitId) != unitIds->end()) {
@@ -272,6 +272,7 @@ std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId) const {
 Building* ActionMaker::getBuildingToDeploy(db_unit* unit) const {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
 	if (allPossible.empty()) { return nullptr; }
+	if (allPossible.size() == 1) { return allPossible.at(0); }
 	const auto input = Game::getAiInputProvider()
 		->getUnitsInputWithMetric(player->getId(), player->getLevelForUnit(unit->id)->dbUnitMetric);
 	const auto result = whereUnitCreate->decide(input);
@@ -282,6 +283,7 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) const {
 Building* ActionMaker::getBuildingToDeployWorker(db_unit* unit) const {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
 	if (allPossible.empty()) { return nullptr; }
+	if (allPossible.size() == 1) { return allPossible.at(0); }
 	const auto input = Game::getAiInputProvider()->getResourceInput(player->getId());
 
 	const auto result = whereWorkerCreate->decide(input);
@@ -293,7 +295,7 @@ Building* ActionMaker::getBuildingClosestArea(std::vector<Building*>& allPossibl
 	auto centers = Game::getEnvironment()->getAreas(player->getId(), result, 10);
 	float closestVal = 99999;
 	Building* closest = allPossible[0];
-	for (auto possible : allPossible) {
+	for (const auto possible : allPossible) {
 		//TODO performance O(^2)
 		Urho3D::Vector2 pos = {possible->getPosition().x_, possible->getPosition().z_};
 		for (auto& center : centers) {

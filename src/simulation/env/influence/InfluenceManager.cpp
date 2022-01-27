@@ -23,13 +23,16 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 	unitsNumberPerPlayer.reserve(numberOfPlayers);
 	buildingsInfluencePerPlayer.reserve(numberOfPlayers);
 	unitsInfluencePerPlayer.reserve(numberOfPlayers);
-	gatherSpeed.reserve(numberOfPlayers);
-	gatherSpeed.reserve(numberOfPlayers);
+	foodGatherSpeed.reserve(numberOfPlayers);
+	woodGatherSpeed.reserve(numberOfPlayers);
+	stoneGatherSpeed.reserve(numberOfPlayers);
+	goldGatherSpeed.reserve(numberOfPlayers);
 	attackSpeed.reserve(numberOfPlayers);
-	unitsQuad.reserve(numberOfPlayers);
+	armyQuad.reserve(numberOfPlayers);
 	buildingsQuad.reserve(numberOfPlayers);
 	econQuad.reserve(numberOfPlayers);
 
+	mapsForAiArmyPerPlayer.reserve(numberOfPlayers);
 	mapsForAiPerPlayer.reserve(numberOfPlayers);
 	mapsForCentersPerPlayer.reserve(numberOfPlayers);
 
@@ -40,29 +43,43 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 		unitsInfluencePerPlayer.emplace_back(
 			new InfluenceMapFloat(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40));
 
-		gatherSpeed.emplace_back(
+		foodGatherSpeed.emplace_back(
+			new InfluenceMapHistory(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
+		woodGatherSpeed.emplace_back(
+			new InfluenceMapHistory(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
+		stoneGatherSpeed.emplace_back(
+			new InfluenceMapHistory(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
+		goldGatherSpeed.emplace_back(
 			new InfluenceMapHistory(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
 
 		attackSpeed.emplace_back(
 			new InfluenceMapHistory(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
-		unitsQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
+		armyQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
 		buildingsQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
 		econQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
 	}
 
 	resourceInfluence = new InfluenceMapFloat(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40);
 	for (int player = 0; player < numberOfPlayers; ++player) {
-		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 5>{
+		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 8>{
 			buildingsInfluencePerPlayer[player],
 			unitsInfluencePerPlayer[player],
-			resourceInfluence,
+			resourceInfluence, //TODO czy to jest ważne?
 			attackSpeed[player],
-			gatherSpeed[player]
-		}); //TODO more?
+			foodGatherSpeed[player],
+			woodGatherSpeed[player],
+			stoneGatherSpeed[player],
+			goldGatherSpeed[player],
+		});
+		mapsForAiArmyPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 3>{
+			buildingsInfluencePerPlayer[player],
+			unitsInfluencePerPlayer[player],
+			attackSpeed[player],
+		});
 		mapsForCentersPerPlayer.emplace_back(std::array<InfluenceMapQuad*, 3>{
 			econQuad[player],
 			buildingsQuad[player],
-			unitsQuad[player]
+			armyQuad[player]
 		});
 		assert(validSizes(mapsForAiPerPlayer.at(player)));
 	}
@@ -86,11 +103,15 @@ InfluenceManager::~InfluenceManager() {
 	clear_vector(buildingsInfluencePerPlayer);
 	clear_vector(unitsInfluencePerPlayer);
 
-	clear_vector(gatherSpeed);
+	clear_vector(foodGatherSpeed);
+	clear_vector(woodGatherSpeed);
+	clear_vector(stoneGatherSpeed);
+	clear_vector(goldGatherSpeed);
+
 	clear_vector(attackSpeed);
 	delete resourceInfluence;
 
-	clear_vector(unitsQuad);
+	clear_vector(armyQuad);
 	clear_vector(buildingsQuad);
 	clear_vector(econQuad);
 
@@ -114,7 +135,7 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 	MapsUtils::finalize(unitsInfluencePerPlayer);
 }
 
-void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
+void InfluenceManager::update(const std::vector<ResourceEntity*>* resources) const {
 	resourceInfluence->reset();
 	for (const auto resource : (*resources)) {
 		resourceInfluence->tempUpdate(resource->getIndexInInfluence(), resource->getHealthPercent());
@@ -122,14 +143,16 @@ void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
 	resourceInfluence->updateFromTemp();
 }
 
-void InfluenceManager::updateQuadUnits(std::vector<Unit*>* units) const {
-	MapsUtils::resetMaps(unitsQuad);
+void InfluenceManager::updateQuadUnits(const std::vector<Unit*>* units) const {
+	MapsUtils::resetMaps(armyQuad);
 	for (const auto unit : (*units)) {
-		unitsQuad[unit->getPlayer()]->updateInt(unit);
+		if (!unit->getDbUnit()->typeWorker) {
+			armyQuad[unit->getPlayer()]->updateInt(unit);
+		}
 	}
 }
 
-void InfluenceManager::update(std::vector<Building*>* buildings) const {
+void InfluenceManager::update(const std::vector<Building*>* buildings) const {
 	MapsUtils::resetMaps(buildingsInfluencePerPlayer);
 	MapsUtils::resetMaps(buildingsQuad);
 	for (const auto building : (*buildings)) {
@@ -142,10 +165,18 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 }
 
 void InfluenceManager::updateWithHistory() const {
-	MapsUtils::resetMaps(gatherSpeed);
+	MapsUtils::resetMaps(foodGatherSpeed);
+	MapsUtils::resetMaps(woodGatherSpeed);
+	MapsUtils::resetMaps(stoneGatherSpeed);
+	MapsUtils::resetMaps(goldGatherSpeed);
+
 	MapsUtils::resetMaps(attackSpeed);
 
-	MapsUtils::finalize(gatherSpeed);
+	MapsUtils::finalize(foodGatherSpeed);
+	MapsUtils::finalize(woodGatherSpeed);
+	MapsUtils::finalize(stoneGatherSpeed);
+	MapsUtils::finalize(goldGatherSpeed);
+
 	MapsUtils::finalize(attackSpeed);
 }
 
@@ -153,7 +184,8 @@ void InfluenceManager::updateQuadOther() const {
 	MapsUtils::resetMaps(econQuad);
 }
 
-void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units, std::vector<ResourceEntity*>* resources) const {
+void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
+                                        std::vector<ResourceEntity*>* resources) const {
 	visibilityManager->updateVisibility(buildings, units, resources);
 }
 
@@ -176,8 +208,17 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 	case InfluenceDataType::RESOURCE_INFLUENCE:
 		resourceInfluence->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 		break;
-	case InfluenceDataType::GATHER_SPEED:
-		MapsUtils::drawMap(currentDebugBatch, index, gatherSpeed);
+	case InfluenceDataType::FOOD_SPEED:
+		MapsUtils::drawMap(currentDebugBatch, index, foodGatherSpeed);
+		break;
+	case InfluenceDataType::WOOD_SPEED:
+		MapsUtils::drawMap(currentDebugBatch, index, woodGatherSpeed);
+		break;
+	case InfluenceDataType::STONE_SPEED:
+		MapsUtils::drawMap(currentDebugBatch, index, stoneGatherSpeed);
+		break;
+	case InfluenceDataType::GOLD_SPEED:
+		MapsUtils::drawMap(currentDebugBatch, index, goldGatherSpeed);
 		break;
 	case InfluenceDataType::ATTACK_SPEED:
 		MapsUtils::drawMap(currentDebugBatch, index, attackSpeed);
@@ -189,7 +230,7 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 		// 	drawMap(index, buildingsQuad);
 		// 	break;
 		// case InfluenceDataType::UNITS_QUAD:
-		// 	drawMap(index, unitsQuad);
+		// 	drawMap(index, armyQuad);
 		// 	break;
 	case InfluenceDataType::VISIBILITY:
 		visibilityManager->drawMaps(currentDebugBatch, index);
@@ -210,10 +251,13 @@ void InfluenceManager::drawAll() const {
 	MapsUtils::drawAll(unitsInfluencePerPlayer, "units");
 	resourceInfluence->print("resource_");
 
-	MapsUtils::drawAll(gatherSpeed, "gather");
+	MapsUtils::drawAll(foodGatherSpeed, "gatherFood");
+	MapsUtils::drawAll(woodGatherSpeed, "gatherWood");
+	MapsUtils::drawAll(stoneGatherSpeed, "gatherStone");
+	MapsUtils::drawAll(goldGatherSpeed, "gatherGold");
 	MapsUtils::drawAll(attackSpeed, "attack");
 
-	MapsUtils::drawAll(unitsQuad, "unitsQuad");
+	MapsUtils::drawAll(armyQuad, "armyQuad");
 	MapsUtils::drawAll(buildingsQuad, "buildingsQuad");
 	MapsUtils::drawAll(econQuad, "econQuad");
 }
@@ -265,7 +309,8 @@ std::array<float, 5>& InfluenceManager::getInfluenceDataAt(char player, const Ur
 }
 
 std::vector<int> InfluenceManager::getIndexesIterative(const std::span<float> result, float tolerance, int min,
-                                                       std::array<InfluenceMapFloat*, 5>& maps) const {
+                                                       std::span<InfluenceMapFloat*> maps) const {
+	assert(result.size() == maps.size());
 	int k = 0;
 	for (auto step : {0.0f, 0.05f, 0.1f}) {
 		tolerance += step;
@@ -291,10 +336,14 @@ std::vector<int> InfluenceManager::getIndexesIterative(const std::span<float> re
 
 std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span<float> result, char player,
                                                                  float tolerance, int min) {
-	auto& maps = mapsForAiPerPlayer[player];
-	assert(result.size()==maps.size());
-
-	return centersFromIndexes(getIndexesIterative(result, tolerance, min, maps));
+	//TODO better!!!
+	if (result.size() == 8) {
+		return centersFromIndexes(getIndexesIterative(result, tolerance, min, mapsForAiPerPlayer[player]));
+	}
+	if (result.size() == 3) {
+		return centersFromIndexes(getIndexesIterative(result, tolerance, min, mapsForAiArmyPerPlayer[player]));
+	} 
+	assert(false);	
 }
 
 std::vector<int>* InfluenceManager::getAreas(const std::span<float> result, char player) {
@@ -310,18 +359,31 @@ std::vector<int>* InfluenceManager::getAreas(const std::span<float> result, char
 	}
 	visibilityManager->removeUnseen(player, intersection);
 
-	const auto inx = sort_indexes(std::span(intersection, arraySize), 256);
+	const auto inx = sort_indexes(std::span(intersection, arraySize), 256);//TODO improve uwzglednic wielkosc mapy a nie 256
 	return centersFromIndexes(intersection, inx, 0.1f * times);
 }
 
-void InfluenceManager::addCollect(Unit* unit, float value) {
+void InfluenceManager::addCollect(Unit* unit, char resId, float value) {
 	const auto playerId = unit->getPlayer();
-	assert(gatherSpeed[playerId]->getResolution()==econQuad[playerId]->getResolution());
-	assert(gatherSpeed[playerId]->getResolution()==calculator->getResolution());
+	assert(foodGatherSpeed[playerId]->getResolution()==econQuad[playerId]->getResolution());
+	assert(foodGatherSpeed[playerId]->getResolution()==calculator->getResolution());
 
-	auto index = calculator->indexFromPosition(unit->getPosition());
-
-	gatherSpeed[playerId]->tempUpdate(index, value);
+	const auto index = calculator->indexFromPosition(unit->getPosition());
+	switch (resId) {
+		//TODO better!!!
+	case 0:
+		foodGatherSpeed[playerId]->tempUpdate(index, value);
+		break;
+	case 1:
+		woodGatherSpeed[playerId]->tempUpdate(index, value);
+		break;
+	case 2:
+		stoneGatherSpeed[playerId]->tempUpdate(index, value);
+		break;
+	case 3:
+		goldGatherSpeed[playerId]->tempUpdate(index, value);
+		break;
+	}
 	econQuad[playerId]->update(index, value);
 }
 

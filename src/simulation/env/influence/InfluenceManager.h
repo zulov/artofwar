@@ -32,13 +32,13 @@ struct content_info;
 
 class InfluenceManager {
 public:
-	explicit InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::Terrain * terrain);
+	explicit InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain);
 	~InfluenceManager();
 	void update(std::vector<Unit*>* units) const;
-	void update(std::vector<Building*>* buildings) const;
-	void update(std::vector<ResourceEntity*>* resources) const;
+	void update(const std::vector<Building*>* buildings) const;
+	void update(const std::vector<ResourceEntity*>* resources) const;
 
-	void updateQuadUnits(std::vector<Unit*>* units) const;
+	void updateQuadUnits(const std::vector<Unit*>* units) const;
 	void updateWithHistory() const;
 	void updateQuadOther() const;
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
@@ -51,14 +51,14 @@ public:
 	                             int activePlayer);
 	std::array<float, 5>& getInfluenceDataAt(char player, const Urho3D::Vector2& pos);
 	std::vector<int> getIndexesIterative(const std::span<float> result, float tolerance, int min,
-	                                     std::array<InfluenceMapFloat*, 5>& maps) const;
+	                                     std::span<InfluenceMapFloat*> maps) const;
 
 	std::vector<Urho3D::Vector2> getAreasIterative(const std::span<float> result, char player, float tolerance,
 	                                               int min);
 
 	float getFieldSize() const;
 	std::vector<int>* getAreas(const std::span<float> result, char player);
-	void addCollect(Unit* unit, float value);
+	void addCollect(Unit* unit, char resId, float value);
 	void addAttack(char player, const Urho3D::Vector3& position, float value);
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;
@@ -71,7 +71,11 @@ private:
 	std::vector<int>* centersFromIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
 	std::vector<Urho3D::Vector2> centersFromIndexes(const std::vector<int>& intersection) const;
 
-	std::vector<std::array<InfluenceMapFloat*, 5>> mapsForAiPerPlayer;
+	//TODO imprve nie vectory tylko obiekt z mapami per player
+
+	std::vector<std::array<InfluenceMapFloat*, 3>> mapsForAiArmyPerPlayer;
+	std::vector<std::array<InfluenceMapFloat*, 8>> mapsForAiPerPlayer;
+
 	std::vector<std::array<InfluenceMapQuad*, 3>> mapsForCentersPerPlayer;
 
 	std::vector<InfluenceMapInt*> unitsNumberPerPlayer;
@@ -80,12 +84,16 @@ private:
 	std::vector<InfluenceMapFloat*> unitsInfluencePerPlayer;
 	InfluenceMapFloat* resourceInfluence;
 
-	std::vector<InfluenceMapHistory*> gatherSpeed;
+	std::vector<InfluenceMapHistory*> foodGatherSpeed;
+	std::vector<InfluenceMapHistory*> woodGatherSpeed;
+	std::vector<InfluenceMapHistory*> stoneGatherSpeed;
+	std::vector<InfluenceMapHistory*> goldGatherSpeed;
+
 	std::vector<InfluenceMapHistory*> attackSpeed;
 
 	std::vector<InfluenceMapQuad*> econQuad;
 	std::vector<InfluenceMapQuad*> buildingsQuad;
-	std::vector<InfluenceMapQuad*> unitsQuad;
+	std::vector<InfluenceMapQuad*> armyQuad;
 
 	VisibilityManager* visibilityManager;
 

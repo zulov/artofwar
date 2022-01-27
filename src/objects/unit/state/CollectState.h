@@ -12,7 +12,8 @@ public:
 	CollectState(): State({
 		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
 		UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE
-	}) { }
+	}) {
+	}
 
 	~CollectState() = default;
 
@@ -51,7 +52,7 @@ public:
 			StateManager::toDefaultState(unit);
 			return;
 		}
-		auto first = unit->thingToInteract;
+		const auto first = unit->thingToInteract;
 		if (unit->indexChanged()) {
 			first->reduceClose();
 			unit->thingToInteract = nullptr;
@@ -69,7 +70,7 @@ public:
 		auto& resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
 		const auto resource = unit->thingToInteract;
 		const auto [value, died] = resource->absorbAttack(unit->dbLevel->collect * timeStep);
-		Game::getEnvironment()->addCollect(unit, value);
+		Game::getEnvironment()->addCollect(unit, resource->getId(), value);
 		resources.add(resource->getId(), value);
 	}
 };

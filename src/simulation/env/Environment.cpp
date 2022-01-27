@@ -36,14 +36,14 @@ Environment::~Environment() {
 std::vector<Physical*>* Environment::getNeighboursFromSparseSamePlayer(Physical* physical, const float radius,
                                                                        char player) {
 	return getNeighbours(physical, sparseUnitGrid, radius,
-	                     [player](const Physical* thing){ return thing->getPlayer() == player && thing->isAlive(); });
+	                     [player](const Physical* thing) { return thing->getPlayer() == player && thing->isAlive(); });
 }
 
 std::vector<Physical*>* Environment::getNeighboursFromTeamNotEq(Physical* physical, const float radius) {
 	auto player = physical->getPlayer();
 
 	return getNeighbours(physical, sparseUnitGrid, radius,
-	                     [player](const Physical* thing){ return thing->getPlayer() != player && thing->isAlive(); });
+	                     [player](const Physical* thing) { return thing->getPlayer() != player && thing->isAlive(); });
 }
 
 bool Environment::isVisible(char player, const Urho3D::Vector2& pos) const {
@@ -101,14 +101,14 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	const auto currentIdx = unit->getMainGridIndex();
 	assert(currentIdx>=0);
 	if (mainGrid.onlyOneInside(currentIdx)) {
-		return getNeighbours(unit, mainGrid, radius, [](Physical* physical){ return true; });
+		return getNeighbours(unit, mainGrid, radius, [](Physical* physical) { return true; });
 	}
 	const auto simpleNeght = mainGrid.getAllFromCache(currentIdx, radius);
 
 	const float sqRadius = radius * radius;
 
 	neights->clear();
-	auto pred = [sqRadius,unit](Physical* neight){
+	auto pred = [sqRadius,unit](Physical* neight) {
 		return (unit != neight && sqDistAs2D(unit->getPosition(), neight->getPosition()) < sqRadius);
 	};
 	std::ranges::copy_if(*simpleNeght, std::back_inserter(*neights), pred);
@@ -171,7 +171,7 @@ std::vector<Physical*>* Environment::getResources(const Urho3D::Vector3& center,
 std::vector<Physical*>*
 Environment::getBuildingsFromTeamNotEq(Physical* physical, int id, float radius) {
 	auto team = physical->getTeam();
-	auto condition = [id, team](const Physical* physical){
+	auto condition = [id, team](const Physical* physical) {
 		return (id < 0 || physical->getId() == id) && (physical->getTeam() != team || team < 0);
 	};
 	return getNeighbours(physical, buildingGrid, radius, condition);
@@ -390,8 +390,8 @@ std::vector<Urho3D::Vector2> Environment::getAreas(char player, const std::span<
 	return influenceManager.getAreasIterative(result, player, 0.1, min);
 }
 
-void Environment::addCollect(Unit* unit, float value) {
-	influenceManager.addCollect(unit, value);
+void Environment::addCollect(Unit* unit, char resId, float value) {
+	influenceManager.addCollect(unit, resId, value);
 }
 
 void Environment::addAttack(char player, const Urho3D::Vector3& position, float value) {
