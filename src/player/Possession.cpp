@@ -144,15 +144,17 @@ void Possession::updateAndClean(const Resources& resources, const ObjectsInfo* s
 	}
 	auto& uLevels = Game::getDatabase()->getUnitLevels();
 	for (int i = 0; i < levelsSize; ++i) {
-		if (levels[i] > 0.f) {
+		const auto val = levels[i];
+		if (val > 0.f) {
 			auto &metric = uLevels[i]->dbUnitMetric->getValuesNormForSum();
 			assert(metric.size() == unitsSumAsSpan.size());
 			for (int j = 0; j < unitsSumAsSpan.size(); ++j) {
-				unitsSumAsSpan[j] += levels[i] * metric[j];
+				unitsSumAsSpan[j] += val * metric[j];
 			}
-			if (levelsFree[i] > 0.f) {
+			const auto val2 = levelsFree[i];
+			if (val2 > 0.f) {
 				for (int j = 0; j < freeArmySumAsSpan.size(); ++j) {
-					freeArmySumAsSpan[j] += levelsFree[i] * metric[j];
+					freeArmySumAsSpan[j] += val2 * metric[j];
 				}
 			}
 		}

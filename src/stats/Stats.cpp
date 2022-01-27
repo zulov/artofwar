@@ -189,6 +189,7 @@ std::string Stats::getPosOutput(char player, Urho3D::Vector2& pos) const {
 }
 
 void Stats::add(UnitActionCommand* command) {
+	if (!SIM_GLOBALS.AI_OUTPUT) { return; }
 	const auto playerId = command->player;
 	//TODO czy tu wszystkie rozkazy czy tylko te wydane bez posrednio a nie same
 	if (command->order->getId() == cast(UnitAction::COLLECT)) {

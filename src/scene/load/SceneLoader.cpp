@@ -26,10 +26,11 @@ void SceneLoader::load() {
 int static load_config(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
-	xyz->config->precision = atoi(argv[0]);
+	xyz->precision = atoi(argv[0]);
+	xyz->config->precision = xyz->precision;
 	xyz->config->map = atoi(argv[1]);
 	xyz->config->size = atoi(argv[2]);
-	xyz->precision = atoi(argv[0]);
+
 	return 0;
 }
 

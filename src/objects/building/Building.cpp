@@ -148,14 +148,14 @@ Building* Building::load(dbload_building* dbloadBuilding) {
 }
 
 QueueElement* Building::updateQueue() const {
-	if(!ready) {
+	if (!ready) {
 		setShaderParam(node, "Progress", queue->getAt(0)->getProgress());
 	}
 
 	return queue->update();
 }
 
-void Building::updateAi() {
+void Building::updateAi(bool ifBuildingAction) {
 	if (thingToInteract &&
 		(!thingToInteract->isAlive() || sqDistAs2D(thingToInteract->getPosition(), position) >
 			dbLevel->sqAttackRange)) {
@@ -163,19 +163,19 @@ void Building::updateAi() {
 		currentFrameState = 0;
 	}
 	if (ready && dbLevel->canAttack) {
-		if (thingToInteract && currentFrameState >= dbLevel->attackReload) {
-			ProjectileManager::shoot(this, thingToInteract, 7, player);
-			currentFrameState = 0;
-		} else {
-			if (thingToInteract) {
-				++currentFrameState;
+		if (thingToInteract) {
+			if (currentFrameState >= dbLevel->attackReload) {
+				ProjectileManager::shoot(this, thingToInteract, 7, player);
+				currentFrameState = 0;
 			} else {
-				const auto thingsToInteract = Game::getEnvironment()->getNeighboursFromTeamNotEq(
-					this, dbLevel->attackRange);
-				const auto closest = Game::getEnvironment()->closestPhysicalSimple(
-					this, thingsToInteract, dbLevel->attackRange);
-				thingToInteract = closest;
+				++currentFrameState;
 			}
+		} else if (ifBuildingAction) {
+			const auto thingsToInteract = Game::getEnvironment()->getNeighboursFromTeamNotEq(
+				this, dbLevel->attackRange);
+			const auto closest = Game::getEnvironment()->closestPhysicalSimple(
+				this, thingsToInteract, dbLevel->attackRange);
+			thingToInteract = closest;
 		}
 	}
 

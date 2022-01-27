@@ -22,7 +22,7 @@ public:
 	Building* load(dbload_building* dbloadBuilding);
 
 	QueueElement* updateQueue() const;
-	void updateAi();
+	void updateAi(bool ifBuildingAction);
 
 	std::optional<int> getDeploy();
 

@@ -122,7 +122,8 @@ SimInfo* Simulation::update(float timeStep) {
 }
 
 void Simulation::selfAI() const {
-	if (PER_FRAME_ACTION.get(PerFrameAction::SELF_AI, currentFrame)) {
+	const bool ifSelfAction = PER_FRAME_ACTION.get(PerFrameAction::SELF_AI, currentFrame);
+	if (ifSelfAction) {
 		for (const auto unit : *units) {
 			if (isFree(unit)) {
 				if (StateManager::canChangeState(unit, unit->getActionState())) {
@@ -140,7 +141,7 @@ void Simulation::selfAI() const {
 		}
 	}
 	for (const auto building : *buildings) {
-		building->updateAi();
+		building->updateAi(ifSelfAction);
 	}
 }
 
