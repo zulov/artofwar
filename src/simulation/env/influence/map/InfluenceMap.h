@@ -12,6 +12,7 @@ public:
 
 	virtual float getValueAt(int index) const =0;
 	virtual void computeMinMax() = 0;
+	virtual void ensureReady() = 0;
 	void draw(short batch, short maxParts) const;
 	Urho3D::Vector3 getVertex(const Urho3D::Vector2 center, Urho3D::Vector2 vertex) const;
 	void drawCell(int index, short batch) const;

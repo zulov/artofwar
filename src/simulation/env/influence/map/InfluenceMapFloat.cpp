@@ -40,6 +40,7 @@ InfluenceMapFloat::~InfluenceMapFloat() {
 }
 
 void InfluenceMapFloat::update(Physical* thing, float value) {
+	assert(false);
 	auto& pos = thing->getPosition();
 	update(value, calculator->getIndex(pos.x_), calculator->getIndex(pos.z_));
 }
@@ -48,17 +49,13 @@ void InfluenceMapFloat::updateInt(Physical* thing, int value) {
 	assert(false);
 }
 
-void InfluenceMapFloat::tempUpdate(Physical* thing, float value) {
-	tempUpdate(calculator->indexFromPosition(thing->getPosition()), value);
-}
-
 void InfluenceMapFloat::tempUpdate(const Urho3D::Vector3& pos, float value) {
 	tempUpdate(calculator->indexFromPosition(pos), value);
 }
 
 void InfluenceMapFloat::tempUpdate(int index, float value) {
 	tempVals[index] += value;
-	tempComputedNeeded = true;
+	valuesCalculateNeeded = true;
 }
 
 void InfluenceMapFloat::update(int index, float value) const {
@@ -90,15 +87,18 @@ void InfluenceMapFloat::reset() {
 }
 
 float InfluenceMapFloat::getValueAt(int index) const {
+	assert(!valuesCalculateNeeded);
 	return values[index];
 }
 
 float InfluenceMapFloat::getValueAt(const Urho3D::Vector2& pos) const {
+	assert(!valuesCalculateNeeded);
 	return getValueAt(calculator->indexFromPosition(pos));
 }
 
 float InfluenceMapFloat::getValueAsPercent(const Urho3D::Vector2& pos) const {
 	assert(minMaxInited);
+	assert(!valuesCalculateNeeded);
 	const float diff = max - min;
 	if (diff != 0.f) {
 		return (getValueAt(pos) - min) / diff;
@@ -108,6 +108,7 @@ float InfluenceMapFloat::getValueAsPercent(const Urho3D::Vector2& pos) const {
 
 float InfluenceMapFloat::getValueAsPercent(int index) const {
 	assert(minMaxInited);
+	assert(!valuesCalculateNeeded);
 	const float diff = max - min;
 	if (diff != 0.f) {
 		return (getValueAt(index) - min) / diff;
@@ -124,8 +125,13 @@ void InfluenceMapFloat::computeMinMax() {
 	}
 }
 
-std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float tolerance) {
+void InfluenceMapFloat::ensureReady() {
 	computeMinMax();
+	updateFromTemp();
+}
+
+std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float tolerance) {
+	ensureReady();
 	const float diff = max - min;
 	auto minV = diff * (percent - tolerance) + min;
 	auto maxV = diff * (percent + tolerance) + min;
@@ -133,7 +139,7 @@ std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float t
 	float* iter = values;
 	std::vector<int> indexes;
 	indexes.reserve(16);
-	auto pred = [minV,maxV](float i){ return i >= minV && i <= maxV; };
+	auto pred = [minV,maxV](float i) { return i >= minV && i <= maxV; };
 	while ((iter = std::find_if(iter, values + arraySize, pred)) != values + arraySize) {
 		//TODO performance!!!	
 		indexes.push_back(iter - values);
@@ -143,7 +149,9 @@ std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float t
 }
 
 bool InfluenceMapFloat::getIndexesWithByValue(float percent, float* intersection) {
-	computeMinMax();
+	ensureReady();
+	assert(minMaxInited);
+	assert(!valuesCalculateNeeded);
 	float diff = max - min;
 
 	if (diff != 0.f) {
@@ -161,14 +169,8 @@ bool InfluenceMapFloat::getIndexesWithByValue(float percent, float* intersection
 	return false;
 }
 
-void InfluenceMapFloat::add(int* indexes, float* vals, int k, float val) const {
-	for (int j = 0; j < k; ++j) {
-		values[indexes[j]] += val * vals[j];
-	}
-}
-
 void InfluenceMapFloat::updateFromTemp() {
-	if (tempComputedNeeded) {
+	if (valuesCalculateNeeded) {
 		for (int i = 0; i < arraySize; ++i) {
 			const auto val = tempVals[i];
 			if (val > 0.f) {
@@ -176,6 +178,6 @@ void InfluenceMapFloat::updateFromTemp() {
 			}
 		}
 		std::fill_n(tempVals, arraySize, 0.f);
-		tempComputedNeeded = false;
+		valuesCalculateNeeded = false;
 	}
 }

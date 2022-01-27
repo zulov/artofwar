@@ -56,6 +56,10 @@ float InfluenceMapInt::getValueAt(int index) const {
 	return values[index];
 }
 
+void InfluenceMapInt::ensureReady() {
+	computeMinMax();
+}
+
 void InfluenceMapInt::computeMinMax() {
 	if (!minMaxInited) {
 		const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);

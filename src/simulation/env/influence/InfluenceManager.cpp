@@ -140,7 +140,7 @@ void InfluenceManager::update(const std::vector<ResourceEntity*>* resources) con
 	for (const auto resource : (*resources)) {
 		resourceInfluence->tempUpdate(resource->getIndexInInfluence(), resource->getHealthPercent());
 	}
-	resourceInfluence->updateFromTemp();
+	//resourceInfluence->updateFromTemp();
 }
 
 void InfluenceManager::updateQuadUnits(const std::vector<Unit*>* units) const {
@@ -302,7 +302,7 @@ std::array<float, 5>& InfluenceManager::getInfluenceDataAt(char player, const Ur
 	auto& array = mapsForAiPerPlayer[player];
 	assert(array.size()==dataFromPos.size());
 	for (int i = 0; i < array.size(); ++i) {
-		array[i]->computeMinMax();
+		array[i]->ensureReady();
 		dataFromPos[i] = array[i]->getValueAsPercent(pos);
 	}
 	return dataFromPos;
@@ -311,6 +311,9 @@ std::array<float, 5>& InfluenceManager::getInfluenceDataAt(char player, const Ur
 std::vector<int> InfluenceManager::getIndexesIterative(const std::span<float> result, float tolerance, int min,
                                                        std::span<InfluenceMapFloat*> maps) const {
 	assert(result.size() == maps.size());
+	for (auto map : maps) {
+		map->ensureReady();
+	}
 	int k = 0;
 	for (auto step : {0.0f, 0.05f, 0.1f}) {
 		tolerance += step;
@@ -342,8 +345,8 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span
 	}
 	if (result.size() == 3) {
 		return centersFromIndexes(getIndexesIterative(result, tolerance, min, mapsForAiArmyPerPlayer[player]));
-	} 
-	assert(false);	
+	}
+	assert(false);
 }
 
 std::vector<int>* InfluenceManager::getAreas(const std::span<float> result, char player) {
@@ -359,7 +362,8 @@ std::vector<int>* InfluenceManager::getAreas(const std::span<float> result, char
 	}
 	visibilityManager->removeUnseen(player, intersection);
 
-	const auto inx = sort_indexes(std::span(intersection, arraySize), 256);//TODO improve uwzglednic wielkosc mapy a nie 256
+	const auto inx = sort_indexes(std::span(intersection, arraySize), 256);
+	//TODO improve uwzglednic wielkosc mapy a nie 256
 	return centersFromIndexes(intersection, inx, 0.1f * times);
 }
 

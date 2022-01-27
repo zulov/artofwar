@@ -15,6 +15,7 @@ public:
 	float getValueAsPercent(const int index) const override;
 	float getValueAt(int index) const override;
 	void computeMinMax() override;
+	void ensureReady() override;
 
 private:
 	unsigned char* values;
