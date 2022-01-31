@@ -43,8 +43,7 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 }
 
 bool ActionMaker::createWorker() {
-	const auto& units = nation->units;
-	for (const auto dbUnit : units) {
+	for (const auto dbUnit : nation->units) {
 		if (dbUnit->typeWorker) {
 			return createWorker(dbUnit);
 		}
@@ -236,11 +235,10 @@ db_unit_level* ActionMaker::chooseUnitLevelUp() {
 }
 
 float ActionMaker::dist(std::valarray<float>& center, const db_basic_metric* metric) {
-	auto span = metric->getValuesNorm();
-	std::valarray<float> aiAsArray(span.data(), span.size()); //TODO get as val array odrazu
+	auto& aiAsArray = metric->getValuesNormAsVal();
 	auto diff = aiAsArray - center;
-	auto sq = diff * diff;
-	return sq.sum();
+	diff *= diff;
+	return diff.sum();
 }
 
 std::optional<Urho3D::Vector2> ActionMaker::findPosToBuild(db_building* building) const {

@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <functional>
+#include <valarray>
 #include <Urho3D/Math/Vector2.h>
 
 #include "db_basic_struct.h"
@@ -110,10 +111,13 @@ protected:
 	std::string paramsAString;
 
 	std::vector<float> valuesNorm;
+	std::valarray<float> valuesNormAsVal;
+
 	std::vector<float> valuesNormForSum;
 	std::vector<float> valuesNormSmall;
 public:
 	const std::vector<float>& getValuesNorm() const { return valuesNorm; }
+	const std::valarray<float>& getValuesNormAsVal() const { return valuesNormAsVal; }
 	const std::vector<float>& getValuesNormForSum() const { return valuesNormForSum; }
 	const std::vector<float>& getValuesNormSmall() const { return valuesNormSmall; }
 	const std::string& getParamsNormAsString() const { return paramsAString; }
@@ -126,6 +130,8 @@ struct db_building_metric : db_basic_metric {
 		valuesNorm.insert(valuesNorm.end(), newValues.begin(), newValues.end());
 		valuesNormForSum.insert(valuesNormForSum.end(), newValuesForSum.begin(), newValuesForSum.end());
 		valuesNormSmall.insert(valuesNormSmall.end(), newValuesSmall.begin(), newValuesSmall.end());
+
+		valuesNormAsVal = std::valarray(*valuesNorm.data(), valuesNorm.size());
 
 		assert(validateSpan(__LINE__, __FILE__, valuesNorm));
 		assert(validateSpan(__LINE__, __FILE__, valuesNormForSum));
@@ -182,6 +188,8 @@ struct db_unit_metric : db_basic_metric {
 		valuesNorm.insert(valuesNorm.end(), newValues.begin(), newValues.end());
 		valuesNormForSum.insert(valuesNormForSum.end(), newValuesForSum.begin(), newValuesForSum.end());
 		valuesNormSmall.insert(valuesNormSmall.end(), newValuesSmall.begin(), newValuesSmall.end());
+
+		valuesNormAsVal = std::valarray(*valuesNorm.data(), valuesNorm.size());
 
 		assert(validateSpan(__LINE__, __FILE__, valuesNorm));
 		assert(validateSpan(__LINE__, __FILE__, valuesNormForSum));
