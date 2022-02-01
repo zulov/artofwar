@@ -4,6 +4,8 @@
 #include <iostream>
 #include <span>
 
+#include "AFUtil.h"
+
 
 Layer::Layer(std::vector<float>& w, std::vector<float>& bias) {
 	prevSize = w.size() / bias.size();
@@ -27,4 +29,14 @@ Layer::~Layer() {
 void Layer::setValues(std::span<float> data) const {
 	assert(valuesSpan.size() == data.size());
 	std::ranges::copy(data, valuesSpan.begin());
+}
+
+void Layer::setValues(Eigen::MatrixXf& mult) const {
+	auto* bPtr = bias;
+	auto* vPtr = values;
+	for (int i = 0; i < mult.rows(); ++i, ++bPtr, ++vPtr) {
+		const double q = mult(i) + *bPtr;
+		const double newValue = tanh1(q);
+		*vPtr = newValue;
+	}
 }

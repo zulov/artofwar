@@ -1,9 +1,7 @@
 #include "Brain.h"
 
-#include <Eigen/Core>
 #include <Eigen/Geometry>
 
-#include "AFUtil.h"
 #include "Game.h"
 #include "Layer.h"
 #include "math/SpanUtils.h"
@@ -48,7 +46,7 @@ const std::span<float> Brain::decide(std::span<float> data) {
 
 		Eigen::MatrixXf mult = weightedMatrix * input;
 
-		setValues(layer, mult);
+		layer->setValues(mult);
 	}
 	auto result = allLayers.back()->getValues();
 	assert(validateSpan(__LINE__, __FILE__, result));
@@ -61,12 +59,4 @@ std::string Brain::getName() const {
 
 short Brain::getOutputSize() const {
 	return allLayers.back()->getValues().size();
-}
-
-void Brain::setValues(Layer* layer, Eigen::MatrixXf& mult) const {
-	for (int i = 0; i < mult.rows(); i++) {
-		const double q = mult(i) + layer->getBias(i);
-		const double newValue = tanh1(q);
-		layer->setValueAt(i, newValue);
-	}
 }

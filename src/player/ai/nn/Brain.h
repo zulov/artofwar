@@ -3,7 +3,6 @@
 #include <span>
 #include <string>
 #include <vector>
-#include <Eigen/Core>
 
 class Layer;
 
@@ -17,7 +16,6 @@ public:
 	std::string getName() const;
 	short getOutputSize() const;
 private:
-	void setValues(Layer* layer, Eigen::MatrixXf& mult) const;
 	std::vector<Layer*> allLayers;
 
 	std::string filename;

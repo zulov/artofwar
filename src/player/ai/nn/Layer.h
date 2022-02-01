@@ -1,6 +1,7 @@
 #pragma once
 #include <span>
 #include <vector>
+#include <Eigen/Core>
 
 class Layer {
 public:
@@ -8,6 +9,7 @@ public:
 	Layer(const Layer& rhs) = delete;
 	~Layer();
 	void setValues(std::span<float> data) const;
+	void setValues(Eigen::MatrixXf& mult) const;
 	std::span<float> getValues() const  { return valuesSpan; }
 
 	short getNumberOfValues() const { return valuesSpan.size(); }

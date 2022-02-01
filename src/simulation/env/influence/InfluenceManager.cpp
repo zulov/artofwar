@@ -123,15 +123,23 @@ InfluenceManager::~InfluenceManager() {
 }
 
 void InfluenceManager::update(std::vector<Unit*>* units) const {
-	MapsUtils::resetMaps(unitsNumberPerPlayer);
 	MapsUtils::resetMaps(unitsInfluencePerPlayer);
-
-	for (const auto unit : (*units)) {
-		const auto pId = unit->getPlayer();
-		const auto index = calculator->indexFromPosition(unit->getPosition());
-		unitsNumberPerPlayer[pId]->updateInt(index);
-		unitsInfluencePerPlayer[pId]->tempUpdate(index);
+	if (SIM_GLOBALS.HEADLESS) {
+		for (const auto unit : (*units)) {
+			const auto pId = unit->getPlayer();
+			const auto index = calculator->indexFromPosition(unit->getPosition());
+			unitsInfluencePerPlayer[pId]->tempUpdate(index);
+		}
+	} else {
+		MapsUtils::resetMaps(unitsNumberPerPlayer);
+		for (const auto unit : (*units)) {
+			const auto pId = unit->getPlayer();
+			const auto index = calculator->indexFromPosition(unit->getPosition());
+			unitsNumberPerPlayer[pId]->updateInt(index);
+			unitsInfluencePerPlayer[pId]->tempUpdate(index);
+		}
 	}
+
 	MapsUtils::finalize(unitsInfluencePerPlayer);
 }
 
@@ -223,15 +231,15 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 	case InfluenceDataType::ATTACK_SPEED:
 		MapsUtils::drawMap(currentDebugBatch, index, attackSpeed);
 		break;
-		// case InfluenceDataType::ECON_QUAD:
-		// 	drawMap(index, econQuad);
-		// 	break;
-		// case InfluenceDataType::BUILDINGS_QUAD:
-		// 	drawMap(index, buildingsQuad);
-		// 	break;
-		// case InfluenceDataType::UNITS_QUAD:
-		// 	drawMap(index, armyQuad);
-		// 	break;
+	// case InfluenceDataType::ECON_QUAD:
+	// 	drawMap(index, econQuad);
+	// 	break;
+	// case InfluenceDataType::BUILDINGS_QUAD:
+	// 	drawMap(index, buildingsQuad);
+	// 	break;
+	// case InfluenceDataType::UNITS_QUAD:
+	// 	drawMap(index, armyQuad);
+	// 	break;
 	case InfluenceDataType::VISIBILITY:
 		visibilityManager->drawMaps(currentDebugBatch, index);
 		break;
@@ -374,7 +382,7 @@ void InfluenceManager::addCollect(Unit* unit, char resId, float value) {
 
 	const auto index = calculator->indexFromPosition(unit->getPosition());
 	switch (resId) {
-		//TODO better!!!
+	//TODO better!!!
 	case 0:
 		foodGatherSpeed[playerId]->tempUpdate(index, value);
 		break;
