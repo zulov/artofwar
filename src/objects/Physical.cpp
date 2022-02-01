@@ -31,6 +31,7 @@ Physical::Physical(Urho3D::Vector3& _position, bool withNode):
 Physical::~Physical() {
 	if (node) {
 		node->Remove();
+		node = nullptr;
 	}
 
 	unSelect();
