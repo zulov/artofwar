@@ -35,8 +35,6 @@ void Layer::setValues(Eigen::MatrixXf& mult) const {
 	auto* bPtr = bias;
 	auto* vPtr = values;
 	for (int i = 0; i < mult.rows(); ++i, ++bPtr, ++vPtr) {
-		const double q = mult(i) + *bPtr;
-		const double newValue = tanh1(q);
-		*vPtr = newValue;
+		*vPtr = tanh1(mult(i) + *bPtr);
 	}
 }
