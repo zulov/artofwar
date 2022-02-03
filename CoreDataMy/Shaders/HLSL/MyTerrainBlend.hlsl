@@ -8,6 +8,7 @@
 uniform bool cGridEnable;
 uniform bool cSelectionEnable;
 uniform float4 cSelectionRect;
+//uniform float4 cRangeData;
 
 #ifndef D3D11
 
@@ -193,6 +194,14 @@ void PS(float2 iTexCoord : TEXCOORD0,
 			&& iWorldPos.z>cSelectionRect.y && iWorldPos.z<cSelectionRect.w){
 				diffColor = lerp (diffColor, float4(0,1,0,1),0.5);
 		} 
+	}
+	
+	float4 rangeData = float4(0.f,0.f,5.f,10.f);
+
+	if(distance(iWorldPos.xz,rangeData.xy)<rangeData.z){
+		diffColor = lerp (diffColor, float4(0.5, 0.5, 0.5, 0.5),0.5);
+	} else if(distance(iWorldPos.xz,rangeData.xy)<rangeData.w){
+		diffColor = lerp (diffColor, float4(0.3, 0.3, 0.3, 0.3),0.5);
 	}
 
     // Get material specular albedo

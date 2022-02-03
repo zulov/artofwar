@@ -70,6 +70,7 @@ public:
 		auto& resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
 		const auto resource = unit->thingToInteract;
 		const auto [value, died] = resource->absorbAttack(unit->dbLevel->collect * timeStep);
+		//resource->getIndexInInfluence()
 		Game::getEnvironment()->addCollect(unit, resource->getId(), value);
 		resources.add(resource->getId(), value);
 	}
