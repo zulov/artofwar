@@ -8,7 +8,11 @@
 uniform bool cGridEnable;
 uniform bool cSelectionEnable;
 uniform float4 cSelectionRect;
-//uniform float4 cRangeData;
+uniform float4 cRangeData0;
+uniform float4 cRangeData1;
+uniform float4 cRangeData2;
+uniform float4 cRangeData3;
+uniform float4 cRangeData4;
 
 #ifndef D3D11
 
@@ -43,6 +47,19 @@ SamplerState sDetailMap3 : register(s3);
 #endif
 
 #endif
+
+float4 circleColor(float2 cords, float4 diffColor, float4 rangeData){
+    float dist = distance(cords, rangeData.xy);
+    if (dist < rangeData.z) {
+        float a = dist / rangeData.z;
+        diffColor = lerp(diffColor, float4(1, 0.7, 0.0, 1), pow(a*.9,5));
+    }
+	else if (dist < rangeData.w) {
+		float a = dist / (rangeData.w);
+		//diffColor = lerp(diffColor, float4(1, 1, 0.0, 1), pow(a*.9,5));
+	}
+	return diffColor;
+}
 
 void VS(float4 iPos : POSITION,
     float3 iNormal : NORMAL,
@@ -196,13 +213,11 @@ void PS(float2 iTexCoord : TEXCOORD0,
 		} 
 	}
 	
-	float4 rangeData = float4(0.f,0.f,5.f,10.f);
-
-	if(distance(iWorldPos.xz,rangeData.xy)<rangeData.z){
-		diffColor = lerp (diffColor, float4(0.5, 0.5, 0.5, 0.5),0.5);
-	} else if(distance(iWorldPos.xz,rangeData.xy)<rangeData.w){
-		diffColor = lerp (diffColor, float4(0.3, 0.3, 0.3, 0.3),0.5);
-	}
+	diffColor = circleColor(iWorldPos.xz, diffColor, cRangeData0);
+	diffColor = circleColor(iWorldPos.xz, diffColor, cRangeData1);
+	diffColor = circleColor(iWorldPos.xz, diffColor, cRangeData2);
+	diffColor = circleColor(iWorldPos.xz, diffColor, cRangeData3);
+	diffColor = circleColor(iWorldPos.xz, diffColor, cRangeData4);
 
     // Get material specular albedo
     float3 specColor = cMatSpecColor.rgb;

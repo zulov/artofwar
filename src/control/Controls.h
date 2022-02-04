@@ -71,6 +71,7 @@ private:
 
 	void refreshSelected();
 	bool conditionToClean(const SimInfo* simulationInfo) const;
+	void setCircleSight(int i, Physical* ent);
 
 	bool clickDown(MouseButton& var) const;
 	void createBuilding(Urho3D::Vector2 pos) const;

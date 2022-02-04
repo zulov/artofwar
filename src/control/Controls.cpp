@@ -75,20 +75,26 @@ void Controls::updateAdditionalInfo() const {
 	}
 	break;
 	default:
-		for (auto mark : deployMark) {
+		for (const auto mark : deployMark) {
 			mark->SetEnabled(false);
 		}
 	}
 }
 
 void Controls::unSelectAll() {
-	for (auto& phy : selected) {
+	for (const auto& phy : selected) {
 		phy->unSelect();
 	}
 	billboardSetProvider.reset();
 	selected.clear();
 	selectedInfo->setSelectedType(ObjectType::NONE);
 	selectedInfo->reset();
+
+	Game::getEnvironment()->setTerrainShaderParam("RangeData0", Urho3D::Vector4());
+	Game::getEnvironment()->setTerrainShaderParam("RangeData1", Urho3D::Vector4());
+	Game::getEnvironment()->setTerrainShaderParam("RangeData2", Urho3D::Vector4());
+	Game::getEnvironment()->setTerrainShaderParam("RangeData3", Urho3D::Vector4());
+	Game::getEnvironment()->setTerrainShaderParam("RangeData4", Urho3D::Vector4());
 }
 
 void Controls::selectOne(Physical* entity, char player) {
@@ -420,13 +426,29 @@ bool Controls::conditionToClean(const SimInfo* simulationInfo) const {
 	return false;
 }
 
+void Controls::setCircleSight(int i, Physical* ent) {
+	Game::getEnvironment()->setTerrainShaderParam("RangeData" + Urho3D::String(i),
+	                                              Urho3D::Vector4(ent->getPosition().x_, ent->getPosition().z_,
+	                                                              ent->getSightRadius() * 0.8f,
+	                                                              ent->getSightRadius()));
+}
+
 void Controls::cleanAndUpdate(const SimInfo* simulationInfo) {
 	if (conditionToClean(simulationInfo)) {
 		refreshSelected();
 	}
-	for (auto physical : selected) {
+	int i = 0;
+	for (const auto physical : selected) {
 		physical->updateBillboards();
+		if (i < 5) {
+			setCircleSight(i, physical);
+			++i;
+		}
 	}
+	for (int i = 0; i < Urho3D::Min(selected.size(),5); ++i) {
+		
+	}
+
 	billboardSetProvider.commit();
 }
 
@@ -438,7 +460,7 @@ void Controls::updateSelection() const {
 		const float zScale = left.held.first->z_ - hitData.position.z_;
 		if ((xScale * xScale > clickDistance || zScale * zScale > clickDistance)
 			&& Game::getTime() - left.lastDown > 0.3f) {
-				Game::getEnvironment()->setTerrainShaderParam("SelectionEnable", true);
+			Game::getEnvironment()->setTerrainShaderParam("SelectionEnable", true);
 
 			std::pair<float, float> x = std::minmax(left.held.first->x_, hitData.position.x_);
 			std::pair<float, float> z = std::minmax(left.held.first->z_, hitData.position.z_);
@@ -566,7 +588,7 @@ void Controls::buildControl() {
 						color = Urho3D::Color(0.7, 0.4, 0.1);
 					}
 				} else {
-					color = Urho3D::Color(0.7,0.2,0.1);
+					color = Urho3D::Color(0.7, 0.2, 0.1);
 				}
 			} else {
 				color = Urho3D::Color::RED;
