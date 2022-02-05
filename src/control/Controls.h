@@ -35,6 +35,8 @@ public:
 	void init();
 
 	void updateAdditionalInfo() const;
+	void setCircle(int i, Urho3D::Vector4 val) const;
+	void resetCircles() const;
 	void select(const std::vector<Physical*>* entities);
 	void selectOne(Physical* entity, char player);
 	void unSelectAll();
@@ -71,7 +73,7 @@ private:
 
 	void refreshSelected();
 	bool conditionToClean(const SimInfo* simulationInfo) const;
-	void setCircleSight(int i, Physical* ent);
+	void setCircleSight(int i, const Urho3D::Vector3& position, float radius, Urho3D::Color color) const;
 
 	bool clickDown(MouseButton& var) const;
 	void createBuilding(Urho3D::Vector2 pos) const;

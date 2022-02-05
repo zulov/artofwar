@@ -218,7 +218,7 @@ void Building::complete() {
 }
 
 float Building::getSightRadius() const {
-	return dbLevel->sightRadius * (1 - 0.5f * !ready);
+	return dbLevel->sightRadius * (1 - 0.7f * !ready);
 }
 
 short Building::getCostSum() const {

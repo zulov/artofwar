@@ -52,12 +52,14 @@ float4 circleColor(float2 cords, float4 diffColor, float4 rangeData){
     float dist = distance(cords, rangeData.xy);
     if (dist < rangeData.z) {
         float a = dist / rangeData.z;
-        diffColor = lerp(diffColor, float4(1, 0.7, 0.0, 1), pow(a*.9,5));
+		const int x =(int) rangeData.w;
+		int b = (x>>16)%256;
+		int g = (x>>8)%256;
+		int r = x%256;
+		
+		diffColor = lerp(diffColor, float4(r/255.f, g/255.f, b/255.f, 1), pow(a*.9,5));
     }
-	else if (dist < rangeData.w) {
-		float a = dist / (rangeData.w);
-		//diffColor = lerp(diffColor, float4(1, 1, 0.0, 1), pow(a*.9,5));
-	}
+
 	return diffColor;
 }
 

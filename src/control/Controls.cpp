@@ -28,6 +28,8 @@
 #include "simulation/SimInfo.h"
 #include "utils/OtherUtils.h"
 
+#define CIRCLE_NUMBER 5
+
 Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectType::NONE) {
 	if (!SIM_GLOBALS.HEADLESS) {
 		selectedInfo = new SelectedInfo();
@@ -81,6 +83,20 @@ void Controls::updateAdditionalInfo() const {
 	}
 }
 
+void Controls::setCircle(int i, Urho3D::Vector4 val) const {
+	Game::getEnvironment()->setTerrainShaderParam("RangeData" + Urho3D::String(i), val);
+}
+
+void Controls::resetCircles() const {
+	for (int i = 0; i < CIRCLE_NUMBER; ++i) {
+		setCircle(i, Urho3D::Vector4());
+	}
+}
+void Controls::setCircleSight(int i, const Urho3D::Vector3& position, float radius, Urho3D::Color color) const {
+	color.a_ = 0;
+	setCircle(i, Urho3D::Vector4(position.x_, position.z_, radius, float(color.ToUInt())));
+}
+
 void Controls::unSelectAll() {
 	for (const auto& phy : selected) {
 		phy->unSelect();
@@ -89,12 +105,7 @@ void Controls::unSelectAll() {
 	selected.clear();
 	selectedInfo->setSelectedType(ObjectType::NONE);
 	selectedInfo->reset();
-
-	Game::getEnvironment()->setTerrainShaderParam("RangeData0", Urho3D::Vector4());
-	Game::getEnvironment()->setTerrainShaderParam("RangeData1", Urho3D::Vector4());
-	Game::getEnvironment()->setTerrainShaderParam("RangeData2", Urho3D::Vector4());
-	Game::getEnvironment()->setTerrainShaderParam("RangeData3", Urho3D::Vector4());
-	Game::getEnvironment()->setTerrainShaderParam("RangeData4", Urho3D::Vector4());
+	resetCircles();
 }
 
 void Controls::selectOne(Physical* entity, char player) {
@@ -278,6 +289,7 @@ void Controls::toBuild(HudData* hud) {
 	typeToCreate = ObjectType::BUILDING;
 	idToCreate = hud->getId();
 	tempBuildingNode->SetEnabled(false);
+	resetCircles();
 }
 
 BuildingActionType Controls::getBuildingActionType(ActionType type) {
@@ -426,27 +438,16 @@ bool Controls::conditionToClean(const SimInfo* simulationInfo) const {
 	return false;
 }
 
-void Controls::setCircleSight(int i, Physical* ent) {
-	Game::getEnvironment()->setTerrainShaderParam("RangeData" + Urho3D::String(i),
-	                                              Urho3D::Vector4(ent->getPosition().x_, ent->getPosition().z_,
-	                                                              ent->getSightRadius() * 0.8f,
-	                                                              ent->getSightRadius()));
-}
-
 void Controls::cleanAndUpdate(const SimInfo* simulationInfo) {
 	if (conditionToClean(simulationInfo)) {
 		refreshSelected();
 	}
-	int i = 0;
 	for (const auto physical : selected) {
 		physical->updateBillboards();
-		if (i < 5) {
-			setCircleSight(i, physical);
-			++i;
-		}
 	}
-	for (int i = 0; i < Urho3D::Min(selected.size(),5); ++i) {
-		
+	for (int i = 0; i < Urho3D::Min(selected.size(), 5); ++i) {
+		auto ent = selected.at(i);
+		setCircleSight(i, ent->getPosition(), ent->getSightRadius(), Urho3D::Color::RED);
 	}
 
 	billboardSetProvider.commit();
@@ -501,6 +502,7 @@ void Controls::toDefault() {
 	cleanMouse();
 	idToCreate = -1;
 	tempBuildingNode->SetEnabled(false);
+	resetCircles();
 }
 
 void Controls::unitFormation(short id) const {
@@ -565,10 +567,9 @@ void Controls::buildControl() {
 			auto hitPos = Urho3D::Vector2(hitData.position.x_, hitData.position.z_);
 
 			const auto validPos = env->getValidPosition(building->size, hitPos);
-
+			auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(idToCreate);
 			tempBuildingNode->SetPosition(env->getPosWithHeightAt(validPos.x_, validPos.y_));
 			if (!tempBuildingNode->IsEnabled()) {
-				auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(idToCreate);
 
 				tempBuildingNode->LoadXML(Game::getCache()
 				                          ->GetResource<Urho3D::XMLFile>("Objects/buildings/" + level->nodeName)->
@@ -593,6 +594,9 @@ void Controls::buildControl() {
 			} else {
 				color = Urho3D::Color::RED;
 			}
+
+			setCircleSight(0, tempBuildingNode->GetPosition(), level->sightRadius, Urho3D::Color::GREEN);
+
 			setShaderParam(tempBuildingNode, "MatDiffColor", color);
 		}
 	}
