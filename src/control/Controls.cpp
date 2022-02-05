@@ -445,10 +445,23 @@ void Controls::cleanAndUpdate(const SimInfo* simulationInfo) {
 	for (const auto physical : selected) {
 		physical->updateBillboards();
 	}
-	for (int i = 0; i < Urho3D::Min(selected.size(), 5); ++i) {
-		auto ent = selected.at(i);
-		setCircleSight(i, ent->getPosition(), ent->getSightRadius(), Urho3D::Color::RED);
+	switch (selectedInfo->getSelectedType()) {
+	case ObjectType::UNIT:
+		for (int i = 0; i < Urho3D::Min(selected.size(), 5); ++i) {
+			const auto ent = selected.at(i);
+			setCircleSight(i, ent->getPosition(), ent->getSightRadius(), Urho3D::Color::MAGENTA);
+		}
+		break;
+	case ObjectType::RESOURCE:
+		break;
+	case ObjectType::BUILDING:
+		for (int i = 0; i < Urho3D::Min(selected.size(), 5); ++i) {
+			const auto ent = selected.at(i);
+			setCircleSight(i, ent->getPosition(), ent->getSightRadius(), Urho3D::Color::CYAN);
+		}
 	}
+
+	
 
 	billboardSetProvider.commit();
 }

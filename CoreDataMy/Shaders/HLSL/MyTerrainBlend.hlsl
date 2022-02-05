@@ -48,11 +48,11 @@ SamplerState sDetailMap3 : register(s3);
 
 #endif
 
-float4 circleColor(float2 cords, float4 diffColor, float4 rangeData){
-    float dist = distance(cords, rangeData.xy);
-    if (dist < rangeData.z) {
-        float a = dist / rangeData.z;
-		const int x =(int) rangeData.w;
+float4 circleColor(float dist, float4 diffColor, float2 rangeData){
+	dist = dist * rangeData.x;
+    if (dist < rangeData.x) {
+        float a = dist / rangeData.x;
+		const int x =(int) rangeData.y;
 		int b = (x>>16)%256;
 		int g = (x>>8)%256;
 		int r = x%256;
@@ -215,11 +215,37 @@ void PS(float2 iTexCoord : TEXCOORD0,
 		} 
 	}
 	
-	diffColor = circleColor(iWorldPos.xz, diffColor, cRangeData0);
-	diffColor = circleColor(iWorldPos.xz, diffColor, cRangeData1);
-	diffColor = circleColor(iWorldPos.xz, diffColor, cRangeData2);
-	diffColor = circleColor(iWorldPos.xz, diffColor, cRangeData3);
-	diffColor = circleColor(iWorldPos.xz, diffColor, cRangeData4);
+	float ax[5];
+
+	ax[0] = distance(cRangeData0.xy, iWorldPos.xz) / cRangeData0.z;
+	ax[1] = distance(cRangeData1.xy, iWorldPos.xz) / cRangeData1.z;
+	ax[2] = distance(cRangeData2.xy, iWorldPos.xz) / cRangeData2.z;
+	ax[3] = distance(cRangeData3.xy, iWorldPos.xz) / cRangeData3.z;
+	ax[4] = distance(cRangeData4.xy, iWorldPos.xz) / cRangeData4.z;
+	
+	float min = ax[0]; 
+	for(int i=1;i<5;i++) { 
+		if(min>ax[i]) {
+			min=ax[i]; 
+		}
+	} 
+	if(min==ax[0]){
+		diffColor = circleColor(ax[0], diffColor, cRangeData0.zw);
+	} else if(min==ax[1]){
+		diffColor = circleColor(ax[1], diffColor, cRangeData1.zw);
+	} else if(min==ax[2]){
+		diffColor = circleColor(ax[2], diffColor, cRangeData2.zw);
+	} else if(min==ax[3]){
+		diffColor = circleColor(ax[3], diffColor, cRangeData3.zw);
+	} else {
+		diffColor = circleColor(ax[4], diffColor, cRangeData4.zw);
+	}  
+	
+	//diffColor = circleColor(iWorldPos.xz, diffColor, cRangeData0);
+	//diffColor = circleColor(iWorldPos.xz, diffColor, cRangeData1);
+	//diffColor = circleColor(iWorldPos.xz, diffColor, cRangeData2);
+	//diffColor = circleColor(iWorldPos.xz, diffColor, cRangeData3);
+	//diffColor = circleColor(iWorldPos.xz, diffColor, cRangeData4);
 
     // Get material specular albedo
     float3 specColor = cMatSpecColor.rgb;
