@@ -402,7 +402,7 @@ void Controls::actionUnit(short id, ActionType type) {
 }
 
 void Controls::refreshSelected() {
-	bool sizeBefore = selected.size();
+	const int sizeBefore = selected.size();
 	selected.erase(
 		std::remove_if(
 			selected.begin(), selected.end(),
@@ -415,8 +415,7 @@ void Controls::refreshSelected() {
 			}),
 		selected.end());
 
-	bool sizeAfter = selected.size();
-	if (sizeBefore != sizeAfter) {
+	if (sizeBefore != selected.size()) {
 		//TODO perf nie koniecznie resetowac ca³oœæ
 		selectedInfo->refresh(selected);
 	}
@@ -460,8 +459,6 @@ void Controls::cleanAndUpdate(const SimInfo* simulationInfo) {
 			setCircleSight(i, ent->getPosition(), ent->getSightRadius(), Urho3D::Color::CYAN);
 		}
 	}
-
-	
 
 	billboardSetProvider.commit();
 }
