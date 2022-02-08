@@ -15,7 +15,7 @@ BrainProvider::~BrainProvider() {
 }
 
 Brain* BrainProvider::get(const std::string name) {
-	for (auto brain : brains) {
+	for (const auto brain : brains) {
 		if (brain->getName() == name) {
 			return brain;
 		}

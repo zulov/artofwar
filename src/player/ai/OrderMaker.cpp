@@ -27,8 +27,12 @@ constexpr float SEMI_CLOSE = 30.f;
 
 OrderMaker::OrderMaker(Player* player, db_nation* nation)
 	: player(player),
+	  attackThreshold(ThresholdProvider::get(nation->orderThresholdPrefix[0] + "attack_t.csv")),
 	  whichResource(BrainProvider::get(nation->orderPrefix[0] + "whichResource_w.csv")),
-	  attackThreshold(ThresholdProvider::get(nation->orderThresholdPrefix[0] + "attack_t.csv")) {
+
+	  attackOrDefence(BrainProvider::get(nation->orderPrefix[1] + "attackOrDefence_w.csv")),
+	  whereAttack(BrainProvider::get(nation->orderPrefix[2] + "whereAttack_w.csv")),
+	  whereDefence(BrainProvider::get(nation->orderPrefix[3] + "whereDefence_w.csv")) {
 }
 
 void OrderMaker::semiCloseAttack(const std::vector<Unit*>& subArmy, const std::vector<Physical*>& things) {

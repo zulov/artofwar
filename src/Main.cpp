@@ -702,6 +702,7 @@ void Main::miniReadParameters() const {
 			if (argument == "databasename" && !value.Empty()) {
 				SimGlobals::DATABASE_NUMBER = value;
 				++i;
+				break;
 			}
 		}
 	}

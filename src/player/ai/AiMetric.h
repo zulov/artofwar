@@ -3,14 +3,14 @@
 #include "player/Player.h"
 
 
-#define UNITS_SUM_X 100
-#define BUILDINGS_SUM_X 10
+constexpr char UNITS_SUM_X = 100;
+constexpr char BUILDINGS_SUM_X = 10;
 
 struct AiMetric {
 	const float weight;
 	const float weightForSum;
 
-	AiMetric(float weight, float weightMultiplier) : weight(weight),   weightForSum(weight * weightMultiplier) {
+	AiMetric(float weight, float weightMultiplier) : weight(weight), weightForSum(weight * weightMultiplier) {
 	}
 };
 
@@ -173,7 +173,7 @@ inline struct MetricDefinitions {
 		{[](db_building* b, db_building_level* l) -> float { return b->typeUnit; }, 3, BUILDINGS_SUM_X}
 	};
 
-	
+
 	static inline AiBuildingMetric aiSmallBuildingMetric[] = {
 		{[](db_building* b, db_building_level* l) -> float { return b->typeDefence; }, 1, BUILDINGS_SUM_X},
 		{[](db_building* b, db_building_level* l) -> float { return b->typeResource; }, 4, BUILDINGS_SUM_X},
@@ -220,7 +220,7 @@ inline struct MetricDefinitions {
 	constexpr static std::span<AiResourceMetric> resourceInputSpan = std::span(aiResourceMetric);
 	constexpr static std::span<AiBasicMetric> basicInputSpan = std::span(aiBasicMetric);
 
-private: 
+private:
 	inline static std::vector<float> output; //TODO mem perf mozna zastapic czyms lzejszym
 	inline static std::vector<float> outputSum;
 	inline static std::vector<float> outputSmall;

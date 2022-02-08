@@ -24,6 +24,12 @@ private:
 	void collect(std::vector<Unit*>& freeWorkers);
 
 	Player* player;
-	Brain* whichResource;
 	Threshold* attackThreshold;
+
+	Brain* whichResource;
+
+	Brain* attackOrDefence;
+	Brain* whereAttack;
+	Brain* whereDefence;
+
 };

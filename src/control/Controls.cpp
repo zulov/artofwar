@@ -28,7 +28,7 @@
 #include "simulation/SimInfo.h"
 #include "utils/OtherUtils.h"
 
-#define CIRCLE_NUMBER 5
+constexpr char CIRCLE_NUMBER = 5;
 
 Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectType::NONE) {
 	if (!SIM_GLOBALS.HEADLESS) {

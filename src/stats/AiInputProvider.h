@@ -3,11 +3,11 @@
 #include "database/db_strcut.h"
 #include "player/ai/AiMetric.h"
 
-#define BASIC_SIZE std::size(METRIC_DEFINITIONS.aiBasicMetric)
-#define UNIT_SIZE std::size(METRIC_DEFINITIONS.aiUnitMetric)
-#define BUILDING_SIZE std::size(METRIC_DEFINITIONS.aiBuildingMetric)
-#define SMALL_UNIT_SIZE std::size(METRIC_DEFINITIONS.aiSmallUnitMetric)
-#define SMALL_BUILDING_SIZE std::size(METRIC_DEFINITIONS.aiSmallBuildingMetric)
+constexpr char BASIC_SIZE = std::size(METRIC_DEFINITIONS.aiBasicMetric);
+constexpr char UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiUnitMetric);
+constexpr char BUILDING_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingMetric);
+constexpr char SMALL_UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiSmallUnitMetric);
+constexpr char SMALL_BUILDING_SIZE = std::size(METRIC_DEFINITIONS.aiSmallBuildingMetric);
 
 class Player;
 struct db_unit_metric;
