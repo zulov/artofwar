@@ -102,6 +102,17 @@ std::vector<Unit*> Possession::getFreeArmy() {
 	return army;
 }
 
+float Possession::getAttackSum() const {
+	return unitsSumAsSpan[5];
+	//TODO hardcoded from AiUnitMetric {[](db_unit* u, db_unit_level* l) -> float { return l->attack; }, 10, UNITS_SUM_X},
+}
+
+float Possession::getDefenceAttackSum() {
+	return buildingsSumAsSpan[5];
+
+	//TODO hardcoded from AiBuildingMetric {[](db_building* b, db_building_level* l) -> float { return l->attack; }, 20, BUILDINGS_SUM_X},
+}
+
 void Possession::add(Building* building) {
 	buildings.push_back(building);
 	buildingsPerId[building->getId()]->push_back(building);
@@ -146,7 +157,7 @@ void Possession::updateAndClean(const Resources& resources, const ObjectsInfo* s
 	for (int i = 0; i < levelsSize; ++i) {
 		const auto val = levels[i];
 		if (val > 0.f) {
-			auto &metric = uLevels[i]->dbUnitMetric->getValuesNormForSum();
+			auto& metric = uLevels[i]->dbUnitMetric->getValuesNormForSum();
 			assert(metric.size() == unitsSumAsSpan.size());
 			for (int j = 0; j < unitsSumAsSpan.size(); ++j) {
 				unitsSumAsSpan[j] += val * metric[j];
@@ -169,7 +180,7 @@ void Possession::updateAndClean(const Resources& resources, const ObjectsInfo* s
 	auto& bLevels = Game::getDatabase()->getBuildingLevels();
 	for (int i = 0; i < levelsSize; ++i) {
 		if (levels[i] > 0.f) {
-			auto &metric = bLevels[i]->dbBuildingMetric->getValuesNormForSum();
+			auto& metric = bLevels[i]->dbBuildingMetric->getValuesNormForSum();
 			assert(metric.size() == buildingsSumAsSpan.size());
 			for (int j = 0; j < buildingsSumAsSpan.size(); ++j) {
 				buildingsSumAsSpan[j] += levels[i] * metric[j];

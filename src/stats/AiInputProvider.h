@@ -8,6 +8,8 @@ constexpr char UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiUnitMetric);
 constexpr char BUILDING_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingMetric);
 constexpr char SMALL_UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiSmallUnitMetric);
 constexpr char SMALL_BUILDING_SIZE = std::size(METRIC_DEFINITIONS.aiSmallBuildingMetric);
+constexpr char ATTACK_OR_DEFENCE_SIZE = std::size(METRIC_DEFINITIONS.aiAttackOrDefence);
+constexpr char RESOURCE_SIZE = std::size(METRIC_DEFINITIONS.aiResourceMetric);
 
 class Player;
 struct db_unit_metric;
@@ -19,20 +21,22 @@ public:
 	AiInputProvider();
 	AiInputProvider(const AiInputProvider&) = delete;
 
-	std::span<float> getResourceInput(char playerId);
-	std::span<float> getUnitsInput(char playerId);
-	std::span<float> getBuildingsInput(char playerId);
+	std::span<float> getResourceInput(char playerId) const;
+	std::span<float> getUnitsInput(char playerId) const;
+	std::span<float> getBuildingsInput(char playerId) const;
 
-	std::span<float> getUnitsInputWithMetric(char playerId, const db_unit_metric* prop);
-	std::span<float> getBuildingsInputWithMetric(char playerId, const db_building_metric* prop);
+	std::span<float> getUnitsInputWithMetric(char playerId, const db_unit_metric* prop) const;
+	std::span<float> getBuildingsInputWithMetric(char playerId, const db_building_metric* prop) const;
+
+	std::span<float> getAttackOrDefenceInput(char playerId) const;
 private:
-	//TODO zastapic spany std::array
-	std::span<float> getBasicInput(std::span<float> dest, Player* player);
-	void applyWeights(std::span<float> dest, float* weights, size_t skip);
+	std::span<float> getBasicInput(std::span<float> dest, Player* player) const;
 
-	float resourceIdInput[BASIC_SIZE + std::size(METRIC_DEFINITIONS.aiResourceMetric)];
+	float resourceIdInput[BASIC_SIZE + RESOURCE_SIZE];
 	float unitsInput[BASIC_SIZE + UNIT_SIZE];
 	float buildingsInput[BASIC_SIZE + BUILDING_SIZE];
+
+	float attackOfDefenceInput[ATTACK_OR_DEFENCE_SIZE];
 
 	float unitsWithMetric[BASIC_SIZE + SMALL_UNIT_SIZE];
 	float buildingsWithMetric[BASIC_SIZE + SMALL_BUILDING_SIZE];
@@ -41,6 +45,9 @@ private:
 	std::span<float> unitsInputSpan = std::span(unitsInput);
 	std::span<float> buildingsInputSpan = std::span(buildingsInput);
 
+	std::span<float> attackOfDefenceInputSpan = std::span(attackOfDefenceInput);
+
 	std::span<float> unitsWithMetricUnitSpan = std::span(unitsWithMetric);
 	std::span<float> basicWithMetricUnitSpan = std::span(buildingsWithMetric);
+
 };

@@ -54,8 +54,10 @@ void OrderMaker::action() {
 	if (!freeWorkers.empty()) {
 		collect(freeWorkers);
 	}
-	auto& possesion = player->getPossession();
+	auto & possesion = player->getPossession();
+	auto aoDInput =Game::getAiInputProvider()->getAttackOrDefenceInput(player->getId());
 
+	auto const resultAoD = attackOrDefence->decide(aoDInput);
 	bool ifAttack = false && attackThreshold->ifDo(possesion.getFreeArmyMetrics());
 	if (ifAttack) {
 		char id = attackThreshold->getBest(possesion.getFreeArmyMetrics());

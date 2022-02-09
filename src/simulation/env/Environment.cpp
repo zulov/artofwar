@@ -415,8 +415,18 @@ bool Environment::cellIsAttackable(int index) const {
 	return mainGrid.cellIsAttackable(index);
 }
 
-std::optional<Urho3D::Vector2> Environment::getCenterOf(CenterType id, char player) {
-	return influenceManager.getCenterOf(id, player);
+std::optional<Urho3D::Vector2> Environment::getCenterOf(CenterType type, char player) {
+	return influenceManager.getCenterOf(type, player);
+}
+
+float Environment::getDiffOfCenters(CenterType type1, char id1, CenterType type2, char id2, float dfVal) {
+	const auto optCenter1 = getCenterOf(type1, id1);
+	if (!optCenter1.has_value()) { return dfVal; }
+	const auto optCenter2 = getCenterOf(type2, id2);
+	if (!optCenter2.has_value()) { return dfVal; }
+
+	return (optCenter1.value() - optCenter2.value()).Length()
+		/ (calculator->getFieldSize() * calculator->getResolution());
 }
 
 bool Environment::anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const {

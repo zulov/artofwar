@@ -1,6 +1,9 @@
 #pragma once
 #include <functional>
 #include "player/Player.h"
+#include "simulation/env/Environment.h"
+#include "Game.h"
+#include "simulation/env/influence/CenterType.h"
 
 
 constexpr char UNITS_SUM_X = 100;
@@ -10,109 +13,129 @@ struct AiMetric {
 	const float weight;
 	const float weightForSum;
 
-	AiMetric(float weight, float weightMultiplier) : weight(weight), weightForSum(weight * weightMultiplier) {
-	}
+	AiMetric(float weight, float weightMultiplier) : weight(weight), weightForSum(weight * weightMultiplier) { }
 };
 
 struct AiUnitMetric : AiMetric {
 	const std::function<float(db_unit* unit, db_unit_level* level)> fn;
 
 	AiUnitMetric(const std::function<float(db_unit* unit, db_unit_level* level)>& fn, float weight,
-	             float weightMultiplier): fn(fn), AiMetric(weight, weightMultiplier) {
-	}
+	             float weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) { }
 };
 
 struct AiBuildingMetric : AiMetric {
 	const std::function<float(db_building* building, db_building_level* level)> fn;
 
 	AiBuildingMetric(const std::function<float(db_building* building, db_building_level* level)>& fn, float weight,
-	                 int weightMultiplier): fn(fn), AiMetric(weight, weightMultiplier) {
-	}
+	                 int weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) { }
 };
 
 struct AiResourceMetric : AiMetric {
 	const std::function<float(Resources& resources, Possession& possession)> fn;
 
 	AiResourceMetric(const std::function<float(const Resources& resources, const Possession& possession)>& fn,
-	                 float weight, float weightMultiplier): fn(fn), AiMetric(weight, weightMultiplier) {
-	}
+	                 float weight, float weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) { }
 };
 
 struct AiBasicMetric : AiMetric {
 	const std::function<float(Player* one, Player* two)> fn;
 
 	AiBasicMetric(const std::function<float(Player* one, Player* two)>& fn,
-	              float weight, float weightMultiplier): fn(fn), AiMetric(weight, weightMultiplier) {
-	}
+	              float weight, float weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) { }
 };
 
-inline struct MetricDefinitions {
+struct AiAttackOrDefence : AiMetric {
+	const std::function<float(Player* one, Player* two)> fn;
 
-	const std::vector<float>& getUnitNormSmall(db_unit* unit, db_unit_level* level) {
-		outputSmall.clear(); //TODO ensureSize once
-		for (auto& v : unitSmallInputSpan) {
+	AiAttackOrDefence(const std::function<float(Player* one, Player* two)>& fn,
+	                  float weight = 1.f, float weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) { }
+};
+
+const inline struct MetricDefinitions {
+
+	MetricDefinitions() {
+		const auto oSize = std::max({unitInputSpan.size(), buildingInputSpan.size(), resourceInputSpan.size(),
+			basicInputSpan.size(), attackOrDefenceInputSpan.size()});
+		const auto oSmallSize = std::max({unitSmallInputSpan.size(), buildingSmallInputSpan.size()});
+		const auto oSizeSum = std::max({unitInputSpan.size(), buildingInputSpan.size()});
+		output.reserve(oSize);
+		outputSmall.reserve(oSmallSize);
+		outputSum.reserve(oSizeSum);
+	}
+
+	const std::vector<float>& getUnitNormSmall(db_unit* unit, db_unit_level* level) const {
+		outputSmall.clear();
+		for (auto const& v : unitSmallInputSpan) {
 			outputSmall.push_back(v.fn(unit, level) / v.weight);
 		}
 		return outputSmall;
 	}
 
-	const std::vector<float>& getUnitNormForSum(db_unit* unit, db_unit_level* level) {
-		outputSum.clear(); //TODO ensureSize once
-		for (auto& v : unitInputSpan) {
+	const std::vector<float>& getUnitNormForSum(db_unit* unit, db_unit_level* level) const {
+		outputSum.clear();
+		for (auto const& v : unitInputSpan) {
 			outputSum.push_back(v.fn(unit, level) / v.weightForSum);
 		}
 		return outputSum;
 	}
 
-	const std::vector<float>& getUnitNorm(db_unit* unit, db_unit_level* level) {
-		output.clear(); //TODO ensureSize once
-		for (auto& v : unitInputSpan) {
+	const std::vector<float>& getUnitNorm(db_unit* unit, db_unit_level* level) const {
+		output.clear();
+		for (auto const& v : unitInputSpan) {
 			output.push_back(v.fn(unit, level) / v.weight);
 		}
 		return output;
 	}
 
-	const std::vector<float>& getBuildingNormSmall(db_building* building, db_building_level* level) {
-		outputSmall.clear(); //TODO ensureSize once
-		for (auto& v : buildingSmallInputSpan) {
+	const std::vector<float>& getBuildingNormSmall(db_building* building, db_building_level* level) const {
+		outputSmall.clear();
+		for (auto const& v : buildingSmallInputSpan) {
 			outputSmall.push_back(v.fn(building, level) / v.weight);
 		}
 		return outputSmall;
 	}
 
-	const std::vector<float>& getBuildingNorm(db_building* building, db_building_level* level) {
-		output.clear(); //TODO ensureSize once
-		for (auto& v : buildingInputSpan) {
+	const std::vector<float>& getBuildingNorm(db_building* building, db_building_level* level) const {
+		output.clear();
+		for (auto const& v : buildingInputSpan) {
 			output.push_back(v.fn(building, level) / v.weight);
 		}
 		return output;
 	}
 
-	const std::vector<float>& getBuildingNormForSum(db_building* building, db_building_level* level) {
-		outputSum.clear(); //TODO ensureSize once
-		for (auto& v : buildingInputSpan) {
+	const std::vector<float>& getBuildingNormForSum(db_building* building, db_building_level* level) const {
+		outputSum.clear();
+		for (auto const& v : buildingInputSpan) {
 			outputSum.push_back(v.fn(building, level) / v.weightForSum);
 		}
 		return outputSum;
 	}
 
-	const std::vector<float>& getResourceNorm(Resources& resources, Possession& possession) {
-		output.clear(); //TODO ensureSize once
-		for (auto& v : resourceInputSpan) {
+	const std::vector<float>& getResourceNorm(Resources& resources, Possession& possession) const {
+		output.clear();
+		for (auto const& v : resourceInputSpan) {
 			output.push_back(v.fn(resources, possession) / v.weight);
 		}
 		return output;
 	}
 
-	const std::vector<float>& getBasicNorm(Player* one, Player* two) {
-		output.clear(); //TODO ensureSize once
-		for (auto& v : basicInputSpan) {
+	const std::vector<float>& getBasicNorm(Player* one, Player* two) const {
+		output.clear();
+		for (auto const& v : basicInputSpan) {
 			output.push_back(v.fn(one, two) / v.weight);
 		}
 		return output;
 	}
 
-	//TODO perf suma tego to tak naprawde zliczenie levelów i pomno¿enie bo kazda jednostka ma te same wartosci per level
+	const std::vector<float>& getAttackOrDefenceNorm(Player* one, Player* two) const {
+		output.clear();
+		for (auto const& v : attackOrDefenceInputSpan) {
+			output.push_back(v.fn(one, two) / v.weight);
+		}
+		return output;
+	}
+
+
 	static inline AiUnitMetric aiUnitMetric[] = {
 		{[](db_unit* unit, db_unit_level* level) -> float { return unit->getSumCost(); }, 400, UNITS_SUM_X},
 		//TODO czy grupowe ma sens?
@@ -121,7 +144,7 @@ inline struct MetricDefinitions {
 		{[](db_unit* u, db_unit_level* l) -> float { return l->sightRadius; }, 20, UNITS_SUM_X},
 
 		{[](db_unit* u, db_unit_level* l) -> float { return l->collect; }, 1, UNITS_SUM_X},
-		{[](db_unit* u, db_unit_level* l) -> float { return l->attack; }, 10, UNITS_SUM_X},
+		{[](db_unit* u, db_unit_level* l) -> float { return l->attack; }, 10, UNITS_SUM_X}, //index 5
 		{[](db_unit* u, db_unit_level* l) -> float { return l->attackReload; }, 200, UNITS_SUM_X},
 		{[](db_unit* u, db_unit_level* l) -> float { return l->attackRange; }, 20, UNITS_SUM_X},
 
@@ -162,7 +185,7 @@ inline struct MetricDefinitions {
 		{[](db_building* b, db_building_level* l) -> float { return l->sightRadius; }, 50, BUILDINGS_SUM_X},
 
 		{[](db_building* b, db_building_level* l) -> float { return l->collect; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return l->attack; }, 20, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return l->attack; }, 20, BUILDINGS_SUM_X}, //index 5
 		{[](db_building* b, db_building_level* l) -> float { return l->attackReload; }, 200, BUILDINGS_SUM_X},
 		{[](db_building* b, db_building_level* l) -> float { return l->attackRange; }, 20, BUILDINGS_SUM_X},
 		//TODO suma tego nie ma sensu flaga ze to nie ma sensu albo ujemna wartoœæ
@@ -184,28 +207,38 @@ inline struct MetricDefinitions {
 
 	//TODO moze to zwracac od razy przedzia³em jakos
 	static inline AiResourceMetric aiResourceMetric[] = {
-		{[](const Resources& r, const Possession& p) -> float { return r.getGatherSpeeds()[0]; }, 10, 1},
-		{[](const Resources& r, const Possession& p) -> float { return r.getGatherSpeeds()[1]; }, 10, 1},
-		{[](const Resources& r, const Possession& p) -> float { return r.getGatherSpeeds()[2]; }, 10, 1},
-		{[](const Resources& r, const Possession& p) -> float { return r.getGatherSpeeds()[3]; }, 10, 1},
+		{[](const Resources& r, const Possession& p) -> float { return r.getGatherSpeeds()[0]; }, 10},
+		{[](const Resources& r, const Possession& p) -> float { return r.getGatherSpeeds()[1]; }, 10},
+		{[](const Resources& r, const Possession& p) -> float { return r.getGatherSpeeds()[2]; }, 10},
+		{[](const Resources& r, const Possession& p) -> float { return r.getGatherSpeeds()[3]; }, 10},
 
-		{[](const Resources& r, const Possession& p) -> float { return r.getValues()[0]; }, 1000, 1},
-		{[](const Resources& r, const Possession& p) -> float { return r.getValues()[1]; }, 1000, 1},
-		{[](const Resources& r, const Possession& p) -> float { return r.getValues()[2]; }, 1000, 1},
-		{[](const Resources& r, const Possession& p) -> float { return r.getValues()[3]; }, 1000, 1},
+		{[](const Resources& r, const Possession& p) -> float { return r.getValues()[0]; }, 1000},
+		{[](const Resources& r, const Possession& p) -> float { return r.getValues()[1]; }, 1000},
+		{[](const Resources& r, const Possession& p) -> float { return r.getValues()[2]; }, 1000},
+		{[](const Resources& r, const Possession& p) -> float { return r.getValues()[3]; }, 1000},
 
-		{[](const Resources& r, const Possession& p) -> float { return p.getFreeWorkersNumber(); }, 100, 1},
-		{[](const Resources& r, const Possession& p) -> float { return p.getWorkersNumber(); }, 100, 1},
+		{[](const Resources& r, const Possession& p) -> float { return p.getFreeWorkersNumber(); }, 100},
+		{[](const Resources& r, const Possession& p) -> float { return p.getWorkersNumber(); }, 100},
 	};
 
 	static inline AiBasicMetric aiBasicMetric[] = {
-		{[](Player* one, Player* two) -> float { return one->getScore(); }, 1000, 1},
-		{[](Player* one, Player* two) -> float { return one->getPossession().getUnitsNumber(); }, 100, 1},
-		{[](Player* one, Player* two) -> float { return one->getPossession().getBuildingsNumber(); }, 100, 1},
+		{[](Player* one, Player* two) -> float { return one->getScore(); }, 1000},
+		{[](Player* one, Player* two) -> float { return one->getPossession().getUnitsNumber(); }, 100},
+		{[](Player* one, Player* two) -> float { return one->getPossession().getBuildingsNumber(); }, 100},
 
-		{[](Player* one, Player* two) -> float { return two->getScore(); }, 1000, 1},
-		{[](Player* one, Player* two) -> float { return two->getPossession().getUnitsNumber(); }, 100, 1},
-		{[](Player* one, Player* two) -> float { return two->getPossession().getBuildingsNumber(); }, 100, 1}
+		{[](Player* one, Player* two) -> float { return two->getScore(); }, 1000},
+		{[](Player* one, Player* two) -> float { return two->getPossession().getUnitsNumber(); }, 100},
+		{[](Player* one, Player* two) -> float { return two->getPossession().getBuildingsNumber(); }, 100}
+	};
+
+
+	static inline AiAttackOrDefence aiAttackOrDefence[] = {
+		{[](Player* p1, Player* p2) -> float { return p1->getPossession().getAttackSum(); }, 1000},
+		{[](Player* p1, Player* p2) -> float { return p1->getPossession().getDefenceAttackSum(); }, 100},
+		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::BUILDING, p1->getId(), 0.f); }},
+		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::BUILDING, p2->getId(), 0.f); }},
+		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p2->getId(), CenterType::BUILDING, p1->getId(), 0.f); }},
+		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p2->getId(), CenterType::BUILDING, p2->getId(), 0.f); }},
 	};
 
 	constexpr static std::span<AiUnitMetric> unitSmallInputSpan = std::span(aiSmallUnitMetric);
@@ -219,6 +252,8 @@ inline struct MetricDefinitions {
 
 	constexpr static std::span<AiResourceMetric> resourceInputSpan = std::span(aiResourceMetric);
 	constexpr static std::span<AiBasicMetric> basicInputSpan = std::span(aiBasicMetric);
+
+	constexpr static std::span<AiAttackOrDefence> attackOrDefenceInputSpan = std::span(aiAttackOrDefence);
 
 private:
 	inline static std::vector<float> output; //TODO mem perf mozna zastapic czyms lzejszym

@@ -2,5 +2,5 @@
 enum class CenterType:char {
 	ECON=0,
 	BUILDING,
-	UNITS
+	ARMY
 };

@@ -129,7 +129,8 @@ public:
 	bool cellIsPassable(int index) const;
 	bool cellIsCollectable(int index) const;
 	bool cellIsAttackable(int index) const;
-	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
+	std::optional<Urho3D::Vector2> getCenterOf(CenterType type, char player);
+	float getDiffOfCenters(CenterType type1, char id1, CenterType type2, char id2, float dfVal);
 	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
 	short getResolution() const { return calculator->getResolution(); }
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;
