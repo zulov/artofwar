@@ -27,12 +27,12 @@ constexpr float SEMI_CLOSE = 30.f;
 
 OrderMaker::OrderMaker(Player* player, db_nation* nation)
 	: player(player),
-	  attackThreshold(ThresholdProvider::get(nation->orderThresholdPrefix[0] + "attack_t.csv")),
-	  whichResource(BrainProvider::get(nation->orderPrefix[0] + "whichResource_w.csv")),
+	  attackThreshold(ThresholdProvider::get(nation->orderThresholdPrefix[0] + "attack.csv")),
+	  whichResource(BrainProvider::get(nation->orderPrefix[0] + "whichResource.csv")),
 
-	  attackOrDefence(BrainProvider::get(nation->orderPrefix[1] + "attackOrDefence_w.csv")),
-	  whereAttack(BrainProvider::get(nation->orderPrefix[2] + "whereAttack_w.csv")),
-	  whereDefence(BrainProvider::get(nation->orderPrefix[3] + "whereDefence_w.csv")) {
+	  attackOrDefence(BrainProvider::get(nation->orderPrefix[1] + "attackOrDefence.csv")),
+	  whereAttack(BrainProvider::get(nation->orderPrefix[2] + "whereAttack.csv")),
+	  whereDefence(BrainProvider::get(nation->orderPrefix[3] + "whereDefence.csv")) {
 }
 
 void OrderMaker::semiCloseAttack(const std::vector<Unit*>& subArmy, const std::vector<Physical*>& things) {
@@ -55,9 +55,19 @@ void OrderMaker::action() {
 		collect(freeWorkers);
 	}
 	auto & possesion = player->getPossession();
-	auto aoDInput =Game::getAiInputProvider()->getAttackOrDefenceInput(player->getId());
+	const auto aoDInput = Game::getAiInputProvider()->getAttackOrDefenceInput(player->getId());
 
 	auto const resultAoD = attackOrDefence->decide(aoDInput);
+	std::span <float> whereGo;
+	if (randFromTwo(resultAoD[0])) {
+		auto resultAttackInput = Game::getAiInputProvider()->getWhereAttack(player->getId());
+		whereGo = whereAttack->decide(resultAttackInput);
+	}else {
+		auto resultDefendInput =Game::getAiInputProvider()->getWhereDefend(player->getId());
+		whereGo = whereDefence->decide(resultDefendInput);
+	};	
+	const CenterType centerType = static_cast<CenterType>(lowestWithRand(whereGo));
+	char Player toattack
 	bool ifAttack = false && attackThreshold->ifDo(possesion.getFreeArmyMetrics());
 	if (ifAttack) {
 		char id = attackThreshold->getBest(possesion.getFreeArmyMetrics());

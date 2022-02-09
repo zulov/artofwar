@@ -29,6 +29,8 @@ public:
 	std::span<float> getBuildingsInputWithMetric(char playerId, const db_building_metric* prop) const;
 
 	std::span<float> getAttackOrDefenceInput(char playerId) const;
+	std::span<float> getWhereAttack(char playerId);
+	std::span<float> getWhereDefend(char playerId);
 private:
 	std::span<float> getBasicInput(std::span<float> dest, Player* player) const;
 

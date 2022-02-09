@@ -3,6 +3,10 @@
 #include "math/VectorUtils.h"
 #include "ActionMakerLogger.h"
 
+inline bool randFromTwo(float val) {
+	return val < RandGen::nextRand(RandFloatType::AI, 1.f);
+}
+
 inline int randFromThree(int ids[3], float vals[3], float max) {
 	float rand = RandGen::nextRand(RandFloatType::AI, max);
 	float sumSoFar = 0;

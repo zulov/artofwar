@@ -236,9 +236,25 @@ const inline struct MetricDefinitions {
 		{[](Player* p1, Player* p2) -> float { return p1->getPossession().getAttackSum(); }, 1000},
 		{[](Player* p1, Player* p2) -> float { return p1->getPossession().getDefenceAttackSum(); }, 100},
 		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::BUILDING, p1->getId(), 0.f); }},
-		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::BUILDING, p2->getId(), 0.f); }},
-		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p2->getId(), CenterType::BUILDING, p1->getId(), 0.f); }},
+		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::BUILDING, p2->getId(), 1.f); }},
+		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p2->getId(), CenterType::BUILDING, p1->getId(), 1.f); }},
 		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p2->getId(), CenterType::BUILDING, p2->getId(), 0.f); }},
+	};
+
+	static inline AiAttackOrDefence aiWhereAttack[] = {
+		{[](Player* p1, Player* p2) -> float { return p1->getPossession().getAttackSum(); }, 1000},
+		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::ECON, p2->getId(), 1.f); }},
+		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::BUILDING, p2->getId(), 1.f); }},
+		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::ARMY, p2->getId(), 1.f); }},
+	};
+
+	static inline AiAttackOrDefence aiWhereDefend[] = {
+		{[](Player* p1, Player* p2) -> float { return p1->getPossession().getAttackSum(); }, 1000},
+		{[](Player* p1, Player* p2) -> float { return p1->getPossession().getDefenceAttackSum(); }, 100},
+		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::ECON, p1->getId(), 0.f); }},
+		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::BUILDING, p1->getId(), 0.f); }},
+		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::ARMY, p2->getId(), 1.f); }},
+		//TODO musi byæ do przeciwnika bo inaczej zawsze do siebie
 	};
 
 	constexpr static std::span<AiUnitMetric> unitSmallInputSpan = std::span(aiSmallUnitMetric);
@@ -254,6 +270,8 @@ const inline struct MetricDefinitions {
 	constexpr static std::span<AiBasicMetric> basicInputSpan = std::span(aiBasicMetric);
 
 	constexpr static std::span<AiAttackOrDefence> attackOrDefenceInputSpan = std::span(aiAttackOrDefence);
+	constexpr static std::span<AiAttackOrDefence> whereAttackInputSpan = std::span(aiWhereAttack);
+	constexpr static std::span<AiAttackOrDefence> whereDefendInputSpan = std::span(aiWhereDefend);
 
 private:
 	inline static std::vector<float> output; //TODO mem perf mozna zastapic czyms lzejszym

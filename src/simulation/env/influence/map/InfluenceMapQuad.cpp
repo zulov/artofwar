@@ -57,7 +57,7 @@ void InfluenceMapQuad::ensureReady() {
 }
 
 std::optional<Urho3D::Vector2> InfluenceMapQuad::getCenter() {
-	ensureReady();
+	ensureReady();//TODO performce remember center
 	bool hasData = std::ranges::any_of(maps[0], [](float v) { return v > 0.f; });
 	if (hasData) {
 		int index = std::distance(maps[0].begin(), std::ranges::max_element(maps[0]));

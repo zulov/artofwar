@@ -19,16 +19,16 @@
 
 ActionMaker::ActionMaker(Player* player, db_nation* nation):
 	player(player), nation(nation),
-	ifWorkerCreate(BrainProvider::get(nation->actionPrefix[0] + "ifWorkerCreate_w.csv")),
-	whereWorkerCreate(BrainProvider::get(nation->actionPrefix[1] + "whereWorkerCreate_w.csv")),
+	ifWorkerCreate(BrainProvider::get(nation->actionPrefix[0] + "ifWorkerCreate.csv")),
+	whereWorkerCreate(BrainProvider::get(nation->actionPrefix[1] + "whereWorkerCreate.csv")),
 
-	ifBuildingCreate(BrainProvider::get(nation->actionPrefix[2] + "ifBuildingCreate_w.csv")),
-	whichBuildingCreate(BrainProvider::get(nation->actionPrefix[3] + "whichBuildingCreate_w.csv")),
-	whereBuildingCreate(BrainProvider::get(nation->actionPrefix[4] + "whereBuildingCreate_w.csv")),
+	ifBuildingCreate(BrainProvider::get(nation->actionPrefix[2] + "ifBuildingCreate.csv")),
+	whichBuildingCreate(BrainProvider::get(nation->actionPrefix[3] + "whichBuildingCreate.csv")),
+	whereBuildingCreate(BrainProvider::get(nation->actionPrefix[4] + "whereBuildingCreate.csv")),
 
-	ifUnitCreate(BrainProvider::get(nation->actionPrefix[5] + "ifUnitCreate_w.csv")),
-	whichUnitCreate(BrainProvider::get(nation->actionPrefix[6] + "whichUnitCreate_w.csv")),
-	whereUnitCreate(BrainProvider::get(nation->actionPrefix[7] + "whereUnitCreate_w.csv")) {
+	ifUnitCreate(BrainProvider::get(nation->actionPrefix[5] + "ifUnitCreate.csv")),
+	whichUnitCreate(BrainProvider::get(nation->actionPrefix[6] + "whichUnitCreate.csv")),
+	whereUnitCreate(BrainProvider::get(nation->actionPrefix[7] + "whereUnitCreate.csv")) {
 
 	// std::cout << std::format("AI Sizes OUTPUT\t Res: {}, Unit: {}, Build: {}, UnitM: {}, BuildM: {}\n",
 	//                          ifWorkerCreate->getOutputSize(), ifUnitCreate->getOutputSize(),
