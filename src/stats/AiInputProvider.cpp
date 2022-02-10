@@ -15,56 +15,37 @@ AiInputProvider::AiInputProvider() {
 
 std::span<float> AiInputProvider::getResourceInput(char playerId) const {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
-	auto newSpan = getBasicInput(resourceIdInputSpan, player);
-	auto& data = METRIC_DEFINITIONS.getResourceNorm(player->getResources(), player->getPossession());
-	std::ranges::copy(data, newSpan.begin());
 
-	assert(validateSpan(__LINE__, __FILE__, resourceIdInputSpan));
-	return resourceIdInputSpan;
+	return combineWithBasic(resourceIdInputSpan,
+	                        METRIC_DEFINITIONS.getResourceNorm(player->getResources(), player->getPossession()),
+	                        player);
 }
 
 std::span<float> AiInputProvider::getUnitsInput(char playerId) const {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
-	auto newSpan = getBasicInput(unitsInputSpan, player);
 
-	std::ranges::copy(player->getPossession().getUnitsMetrics(), newSpan.begin());
-
-	assert(validateSpan(__LINE__, __FILE__, unitsInputSpan));
-	return unitsInputSpan;
+	return combineWithBasic(unitsInputSpan, player->getPossession().getUnitsMetrics(), player);
 }
 
 std::span<float> AiInputProvider::getBuildingsInput(char playerId) const {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
-	auto newSpan = getBasicInput(buildingsInputSpan, player);
-
-	std::ranges::copy(player->getPossession().getBuildingsMetrics(), newSpan.begin());
-
-	assert(validateSpan(__LINE__, __FILE__, buildingsInputSpan));
-	return buildingsInputSpan;
+	return combineWithBasic(buildingsInputSpan, player->getPossession().getBuildingsMetrics(), player);
 }
 
 std::span<float> AiInputProvider::getUnitsInputWithMetric(char playerId, const db_unit_metric* prop) const {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
-	auto newSpan = getBasicInput(unitsWithMetricUnitSpan, player);
 
-	std::ranges::copy(prop->getValuesNormSmall(), newSpan.begin());
-
-	assert(validateSpan(__LINE__, __FILE__, unitsWithMetricUnitSpan));
-	return unitsWithMetricUnitSpan;
+	return combineWithBasic(unitsWithMetricUnitSpan, prop->getValuesNormSmall(), player);
 }
 
 std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, const db_building_metric* prop) const {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
-	auto newSpan = getBasicInput(basicWithMetricUnitSpan, player);
 
-	std::ranges::copy(prop->getValuesNormSmall(), newSpan.begin());
-
-	assert(validateSpan(__LINE__, __FILE__, basicWithMetricUnitSpan));
-	return basicWithMetricUnitSpan;
+	return combineWithBasic(basicWithMetricUnitSpan, prop->getValuesNormSmall(), player);
 }
 
-std::span<float> AiInputProvider::getAttackOrDefenceInput(char playerId) const{
+std::span<float> AiInputProvider::getAttackOrDefenceInput(char playerId) const {
 	const auto plyMng = Game::getPlayersMan();
 	const char idEnemy = plyMng->getEnemyFor(playerId);
 
@@ -75,11 +56,46 @@ std::span<float> AiInputProvider::getAttackOrDefenceInput(char playerId) const{
 	return attackOfDefenceInputSpan;
 }
 
+std::span<float> AiInputProvider::getWhereAttack(char playerId) const{
+	const auto plyMng = Game::getPlayersMan();
+	auto* player = plyMng->getPlayer(playerId);
+	const char idEnemy = plyMng->getEnemyFor(playerId);
+
+	return combineWithBasic(whereAttackInputSpan,
+	                        METRIC_DEFINITIONS.getWhereAttackNorm(player, plyMng->getPlayer(idEnemy)), player);
+}
+
+std::span<float> AiInputProvider::getWhereDefend(char playerId) const {
+	const auto plyMng = Game::getPlayersMan();
+	auto* player = plyMng->getPlayer(playerId);
+	const char idEnemy = plyMng->getEnemyFor(playerId);
+
+	return combineWithBasic(whereDefendInputSpan,
+	                        METRIC_DEFINITIONS.getWhereDefendNorm(player, plyMng->getPlayer(idEnemy)), player);
+}
+
 std::span<float> AiInputProvider::getBasicInput(std::span<float> dest, Player* player) const {
-	char idEnemy = Game::getPlayersMan()->getEnemyFor(player->getId());
-	auto& data = METRIC_DEFINITIONS.getBasicNorm(player, Game::getPlayersMan()->getPlayer(idEnemy));
+	const auto plyMng = Game::getPlayersMan();
+	char idEnemy = plyMng->getEnemyFor(player->getId());
+	auto& data = METRIC_DEFINITIONS.getBasicNorm(player, plyMng->getPlayer(idEnemy));
 	assert(validateSpan(__LINE__, __FILE__, data));
 	std::ranges::copy(data, dest.begin());
 
 	return std::span(dest.begin() + data.size(), dest.size() - data.size());
+}
+
+std::span<float> AiInputProvider::combineWithBasic(const std::span<float> output, const std::span<float> toJoin,
+                                                   Player* player) const {
+	std::ranges::copy(toJoin, getBasicInput(output, player).begin());
+
+	assert(validateSpan(__LINE__, __FILE__, output));
+	return output;
+}
+
+std::span<float> AiInputProvider::combineWithBasic(const std::span<float> output, const std::vector<float>& toJoin,
+                                                   Player* player) const {
+	std::ranges::copy(toJoin, getBasicInput(output, player).begin());
+
+	assert(validateSpan(__LINE__, __FILE__, output));
+	return output;
 }

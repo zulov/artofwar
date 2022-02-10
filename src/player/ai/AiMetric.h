@@ -13,54 +13,64 @@ struct AiMetric {
 	const float weight;
 	const float weightForSum;
 
-	AiMetric(float weight, float weightMultiplier) : weight(weight), weightForSum(weight * weightMultiplier) { }
+	AiMetric(float weight, float weightMultiplier) : weight(weight), weightForSum(weight * weightMultiplier) {
+	}
 };
 
 struct AiUnitMetric : AiMetric {
 	const std::function<float(db_unit* unit, db_unit_level* level)> fn;
 
 	AiUnitMetric(const std::function<float(db_unit* unit, db_unit_level* level)>& fn, float weight,
-	             float weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) { }
+	             float weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) {
+	}
 };
 
 struct AiBuildingMetric : AiMetric {
 	const std::function<float(db_building* building, db_building_level* level)> fn;
 
 	AiBuildingMetric(const std::function<float(db_building* building, db_building_level* level)>& fn, float weight,
-	                 int weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) { }
+	                 int weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) {
+	}
 };
 
 struct AiResourceMetric : AiMetric {
 	const std::function<float(Resources& resources, Possession& possession)> fn;
 
 	AiResourceMetric(const std::function<float(const Resources& resources, const Possession& possession)>& fn,
-	                 float weight, float weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) { }
+	                 float weight, float weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) {
+	}
 };
 
-struct AiBasicMetric : AiMetric {
+struct AiPlayerMetric : AiMetric {
 	const std::function<float(Player* one, Player* two)> fn;
 
-	AiBasicMetric(const std::function<float(Player* one, Player* two)>& fn,
-	              float weight, float weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) { }
+	AiPlayerMetric(const std::function<float(Player* one, Player* two)>& fn,
+	               float weight = 1.f, float weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) {
+	}
 };
 
-struct AiAttackOrDefence : AiMetric {
-	const std::function<float(Player* one, Player* two)> fn;
-
-	AiAttackOrDefence(const std::function<float(Player* one, Player* two)>& fn,
-	                  float weight = 1.f, float weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) { }
-};
 
 const inline struct MetricDefinitions {
 
 	MetricDefinitions() {
 		const auto oSize = std::max({unitInputSpan.size(), buildingInputSpan.size(), resourceInputSpan.size(),
-			basicInputSpan.size(), attackOrDefenceInputSpan.size()});
+			basicInputSpan.size(), attackOrDefenceInputSpan.size(), whereAttackInputSpan.size(),
+			whereDefendInputSpan.size()});
 		const auto oSmallSize = std::max({unitSmallInputSpan.size(), buildingSmallInputSpan.size()});
 		const auto oSizeSum = std::max({unitInputSpan.size(), buildingInputSpan.size()});
+		basic.reserve(basicInputSpan.size());
 		output.reserve(oSize);
 		outputSmall.reserve(oSmallSize);
 		outputSum.reserve(oSizeSum);
+	}
+
+
+	const std::vector<float>& getAiPlayerMetricNorm(Player* one, Player* two, std::span<AiPlayerMetric> metric) const {
+		output.clear();
+		for (auto const& v : metric) {
+			output.push_back(v.fn(one, two) / v.weight);
+		}
+		return output;
 	}
 
 	const std::vector<float>& getUnitNormSmall(db_unit* unit, db_unit_level* level) const {
@@ -120,19 +130,23 @@ const inline struct MetricDefinitions {
 	}
 
 	const std::vector<float>& getBasicNorm(Player* one, Player* two) const {
-		output.clear();
+		basic.clear();
 		for (auto const& v : basicInputSpan) {
 			output.push_back(v.fn(one, two) / v.weight);
 		}
-		return output;
+		return basic;
 	}
 
 	const std::vector<float>& getAttackOrDefenceNorm(Player* one, Player* two) const {
-		output.clear();
-		for (auto const& v : attackOrDefenceInputSpan) {
-			output.push_back(v.fn(one, two) / v.weight);
-		}
-		return output;
+		return getAiPlayerMetricNorm(one, two, attackOrDefenceInputSpan);
+	}
+
+	const std::vector<float>& getWhereAttackNorm(Player* one, Player* two) const {
+		return getAiPlayerMetricNorm(one, two, whereAttackInputSpan);
+	}
+
+	const std::vector<float>& getWhereDefendNorm(Player* one, Player* two) const {
+		return getAiPlayerMetricNorm(one, two, whereDefendInputSpan);
 	}
 
 
@@ -221,7 +235,7 @@ const inline struct MetricDefinitions {
 		{[](const Resources& r, const Possession& p) -> float { return p.getWorkersNumber(); }, 100},
 	};
 
-	static inline AiBasicMetric aiBasicMetric[] = {
+	static inline AiPlayerMetric aiBasicMetric[] = {
 		{[](Player* one, Player* two) -> float { return one->getScore(); }, 1000},
 		{[](Player* one, Player* two) -> float { return one->getPossession().getUnitsNumber(); }, 100},
 		{[](Player* one, Player* two) -> float { return one->getPossession().getBuildingsNumber(); }, 100},
@@ -232,7 +246,7 @@ const inline struct MetricDefinitions {
 	};
 
 
-	static inline AiAttackOrDefence aiAttackOrDefence[] = {
+	static inline AiPlayerMetric aiAttackOrDefence[] = {
 		{[](Player* p1, Player* p2) -> float { return p1->getPossession().getAttackSum(); }, 1000},
 		{[](Player* p1, Player* p2) -> float { return p1->getPossession().getDefenceAttackSum(); }, 100},
 		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::BUILDING, p1->getId(), 0.f); }},
@@ -241,14 +255,14 @@ const inline struct MetricDefinitions {
 		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p2->getId(), CenterType::BUILDING, p2->getId(), 0.f); }},
 	};
 
-	static inline AiAttackOrDefence aiWhereAttack[] = {
+	static inline AiPlayerMetric aiWhereAttack[] = {
 		{[](Player* p1, Player* p2) -> float { return p1->getPossession().getAttackSum(); }, 1000},
 		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::ECON, p2->getId(), 1.f); }},
 		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::BUILDING, p2->getId(), 1.f); }},
 		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::ARMY, p2->getId(), 1.f); }},
 	};
 
-	static inline AiAttackOrDefence aiWhereDefend[] = {
+	static inline AiPlayerMetric aiWhereDefend[] = {
 		{[](Player* p1, Player* p2) -> float { return p1->getPossession().getAttackSum(); }, 1000},
 		{[](Player* p1, Player* p2) -> float { return p1->getPossession().getDefenceAttackSum(); }, 100},
 		{[](Player* p1, Player* p2) -> float { return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::ECON, p1->getId(), 0.f); }},
@@ -267,13 +281,14 @@ const inline struct MetricDefinitions {
 	constexpr static std::span<AiBuildingMetric> smallBuildingInputSpan = std::span(aiSmallBuildingMetric);
 
 	constexpr static std::span<AiResourceMetric> resourceInputSpan = std::span(aiResourceMetric);
-	constexpr static std::span<AiBasicMetric> basicInputSpan = std::span(aiBasicMetric);
+	constexpr static std::span<AiPlayerMetric> basicInputSpan = std::span(aiBasicMetric);
 
-	constexpr static std::span<AiAttackOrDefence> attackOrDefenceInputSpan = std::span(aiAttackOrDefence);
-	constexpr static std::span<AiAttackOrDefence> whereAttackInputSpan = std::span(aiWhereAttack);
-	constexpr static std::span<AiAttackOrDefence> whereDefendInputSpan = std::span(aiWhereDefend);
+	constexpr static std::span<AiPlayerMetric> attackOrDefenceInputSpan = std::span(aiAttackOrDefence);
+	constexpr static std::span<AiPlayerMetric> whereAttackInputSpan = std::span(aiWhereAttack);
+	constexpr static std::span<AiPlayerMetric> whereDefendInputSpan = std::span(aiWhereDefend);
 
 private:
+	inline static std::vector<float> basic;
 	inline static std::vector<float> output; //TODO mem perf mozna zastapic czyms lzejszym
 	inline static std::vector<float> outputSum;
 	inline static std::vector<float> outputSmall;

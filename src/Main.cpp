@@ -54,7 +54,6 @@ using namespace Urho3D;
 
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100),
                                gameState(GameState::STARTING), loadingProgress(6) {
-	start = std::chrono::system_clock::now();
 	MySprite::RegisterObject(context);
 	Game::init();
 
@@ -113,7 +112,6 @@ void Main::Start() {
 
 	InitMouseMode(MM_RELATIVE);
 	changeState(GameState::LOADING);
-	simStart = std::chrono::system_clock::now();
 }
 
 void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>> funcs1,
@@ -158,9 +156,9 @@ void Main::setCameraPos() const {
 			Game::getCameraManager()->changePositionInPercent(SIM_GLOBALS.CAMERA_START.x_,
 			                                                  SIM_GLOBALS.CAMERA_START.y_);
 		} else {
-			auto opt = Game::getEnvironment()->getCenterOf(CenterType::BUILDING,
-			                                               Game::getPlayersMan()->getActivePlayerID());
-			auto camPos = opt.value_or(Urho3D::Vector2::ZERO);
+			auto camPos = Game::getEnvironment()
+			              ->getCenterOf(CenterType::BUILDING, Game::getPlayersMan()->getActivePlayerID())
+			              .value_or(Urho3D::Vector2::ZERO);
 			Game::getCameraManager()->changePosition(camPos.x_, camPos.y_);
 		}
 	}
@@ -178,13 +176,10 @@ void Main::Stop() {
 
 	if (!SIM_GLOBALS.HEADLESS) { engine_->DumpResources(true); }
 
-	const auto now = std::chrono::system_clock::now();
-	const auto duration3 = std::chrono::duration_cast<std::chrono::milliseconds>(now - SimGlobals::SUPER_START);
-	const auto duration2 = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
-	const auto duration1 = std::chrono::duration_cast<std::chrono::milliseconds>(now - simStart);
+	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+		std::chrono::system_clock::now() - SimGlobals::SUPER_START);
 
-	std::cout << "ENDED at " << duration1.count() << "/" << duration2.count() << "/" << duration3.count() << " ms" <<
-		std::endl;
+	std::cout << "ENDED at " << duration.count() << " ms" << std::endl;
 }
 
 void Main::subscribeToUIEvents() {
