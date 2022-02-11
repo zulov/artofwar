@@ -247,11 +247,13 @@ bool PathFinder::validateIndex(const int current, int next) const {
 
 int PathFinder::getPassableEnd(int endIdx) const {
 	while (!complexData[endIdx].isPassable()) {
-		if (complexData[endIdx].allNeightOccupied()) {
-			endIdx = complexData[endIdx].getEscapeBucket();
+		auto& data = complexData[endIdx];
+		if (data.allNeightOccupied()) {
+			endIdx = data.getEscapeBucket();
+			assert(endIdx >= 0);
 		} else {
 			for (auto i : closeIndexes->getTabIndexes(endIdx)) {
-				if (complexData[endIdx].ifNeightIsFree(i)) {
+				if (data.ifNeightIsFree(i)) {
 					endIdx = endIdx + closeIndexes->getIndexAt(i); //TODO obliczyc lepszy, a nie pierwszy z brzegu
 					//TODO bug wyjscie pioza
 					break;

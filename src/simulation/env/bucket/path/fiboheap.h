@@ -57,7 +57,7 @@ public:
 
 	FibNode* getNode(const int pl, const float k) {
 		if (freePool.empty()) {
-			auto fn = new FibNode(k, pl);
+			const auto fn = new FibNode(k, pl);
 			allPool.push_back(fn);
 			return fn;
 		}
@@ -78,17 +78,9 @@ public:
 	}
 
 	void clear() {
-		// const auto end = pool.begin() + highestUsed;
-		// for (auto i = pool.begin(); i <= end; ++i) {
-		// 	(*i)->reset();
-		// }
-		// for (auto node : freePool) {
-		// 	node->reset();
-		// }
-
 		n = 0;
 		minNode = nullptr;
-		for (auto fibNode : allPool) {
+		for (const auto fibNode : allPool) {
 			resetNode(fibNode);
 		}
 		std::fill_n(temp.begin(), temp.size(), nullptr);
