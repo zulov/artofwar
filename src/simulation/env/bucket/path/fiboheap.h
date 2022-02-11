@@ -13,9 +13,9 @@ class FibHeap {
 public:
 	class FibNode {
 	public:
-		FibNode(const float k, const int pl, int id):
+		FibNode(const float k, const int pl):
 			left(nullptr), right(nullptr), child(nullptr),
-			key(k), payload(pl), id(id), degree(0) { }
+			key(k), payload(pl), degree(0) { }
 
 		~FibNode() = default;
 
@@ -37,63 +37,60 @@ public:
 		FibNode* child;
 		float key;
 		int payload;
-		int id;
 		unsigned short degree;
 	};
 
 	FibHeap() {
 		temp.resize(50, nullptr);
-		pool.resize(400, nullptr);
+		freePool.reserve(400);
+		allPool.reserve(400);
 		for (auto i = 0; i < 400; ++i) {
-			pool[i] = new FibNode(-1, -1, i);
+			auto fn = new FibNode(-1, -1);
+			freePool.push_back(fn);
+			allPool.push_back(fn);
 		}
 	}
 
 	~FibHeap() {
-		clear_vector(pool);
+		clear_vector(allPool);
 	}
 
 	FibNode* getNode(const int pl, const float k) {
-		for (auto i = lowestFree; i < pool.size(); ++i) {
-			auto* const fibNode = pool[i];
-			if (fibNode->isEmpty()) {
-				fibNode->payload = pl;
-				fibNode->key = k;
-				if (i > highestUsed) {
-					highestUsed = i;
-				}
-				lowestFree = i + 1;
-				return fibNode;
-			}
+		if (freePool.empty()) {
+			auto fn = new FibNode(k, pl);
+			allPool.push_back(fn);
+			return fn;
 		}
-		auto* const newNode = new FibNode(k, pl, pool.size() - 1);
+		const auto fibNode = freePool.back();
+		fibNode->payload = pl;
+		fibNode->key = k;
 
-		pool.push_back(newNode);
+		freePool.pop_back();
 
-		lowestFree = pool.size() - 1;
-		if (lowestFree > highestUsed) {
-			highestUsed = lowestFree;
-		}
-		return newNode;
+		return fibNode;
 	}
 
 	void resetNode(FibNode* node) {
-		if (lowestFree > node->id) {
-			lowestFree = node->id;
+		if(node->key>=0.f) {
+			freePool.push_back(node);
 		}
 		node->reset();
 	}
 
 	void clear() {
-		const auto end = pool.begin() + highestUsed;
-		for (auto i = pool.begin(); i <= end; ++i) {
-			(*i)->reset();
-		}
+		// const auto end = pool.begin() + highestUsed;
+		// for (auto i = pool.begin(); i <= end; ++i) {
+		// 	(*i)->reset();
+		// }
+		// for (auto node : freePool) {
+		// 	node->reset();
+		// }
 
-		lowestFree = 0;
-		highestUsed = 0;
 		n = 0;
 		minNode = nullptr;
+		for (auto fibNode : allPool) {
+			resetNode(fibNode);
+		}
 		std::fill_n(temp.begin(), temp.size(), nullptr);
 	}
 
@@ -176,18 +173,20 @@ public:
 		}
 
 		minNode = nullptr;
-		for (auto i = 0; i < max_degree; ++i) {
-			if (temp[i] != nullptr) {
+		auto tii = temp.begin();
+		for (auto i = 0; i < max_degree; ++i, ++tii) {
+			const auto ti = *tii;
+			if (ti != nullptr) {
 				if (minNode == nullptr) {
-					minNode = temp[i]->left = temp[i]->right = temp[i];
+					minNode = ti->left = ti->right = ti;
 				} else {
-					minNode->left->right = temp[i];
-					temp[i]->left = minNode->left;
-					minNode->left = temp[i];
-					temp[i]->right = minNode;
+					minNode->left->right = ti;
+					ti->left = minNode->left;
+					minNode->left = ti;
+					ti->right = minNode;
 
-					if (temp[i]->key < minNode->key) {
-						minNode = temp[i];
+					if (ti->key < minNode->key) {
+						minNode = ti;
 					}
 				}
 			}
@@ -251,11 +250,10 @@ public:
 
 	FibNode* minNode{nullptr};
 	std::vector<FibNode*> temp;
-	std::vector<FibNode*> pool;
+	std::vector<FibNode*> freePool;
+	std::vector<FibNode*> allPool;
 
 	int n{0};
-	int lowestFree = 0;
-	int highestUsed = 399;
 
 	static void initCache() {
 		const auto coef = 1 / log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2);

@@ -65,6 +65,7 @@ void OrderMaker::action() {
 				const auto dist = sqDist(centerLocal, center);
 
 				if (dist > SQ_SEMI_CLOSE) {
+					//Game::getEnvironment()->closestPhysical(subArmy.at(0), &things, belowClose, SQ_SEMI_CLOSE);
 					Game::getActionCenter()->addUnitAction(
 						new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::GO), center), player->getId());
 				} else {
