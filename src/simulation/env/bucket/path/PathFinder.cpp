@@ -79,45 +79,6 @@ void PathFinder::prepareToStart(int startIdx) {
 	updateCost(startIdx, 0.f);
 }
 
-std::vector<int>* PathFinder::realFindPath(int startIdx, int endIdx, int limit) {
-	prepareToStart(startIdx);
-	auto endCords = getCords(endIdx);
-	int steps = 0;
-	while (!frontier.empty()) {
-		++steps;
-		if (limit != -1 && steps > limit) {
-			break;
-		}
-		const auto current = frontier.get();
-
-		if (current == endIdx) {
-			//debug(startIdx, endIdx);
-			return reconstruct_simplify_path(startIdx, endIdx, came_from);
-		}
-
-		auto const& currentData = complexData[current];
-		for (auto i : closeIndexes->getTabIndexes(current)) {
-			if (currentData.ifNeightIsFree(i)) {
-				int next = current + closeIndexes->getIndexAt(i);
-				assert(validateIndex(current, next));
-				if (came_from[current] != next) {
-					const float new_cost = cost_so_far[current] + currentData.getCost(i);
-					auto const nextCost = cost_so_far[next];
-					if (nextCost < 0.f || new_cost < nextCost) {
-						updateCost(next, new_cost);
-						frontier.put(next, new_cost + heuristic(next, endCords));
-						//TODO perf najlepszego pushowac leniwie
-						came_from[next] = current;
-					}
-				}
-			}
-		}
-	}
-	//debug(startIdx, endIdx);
-	tempPath->clear();
-	return tempPath;
-}
-
 std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
 	prepareToStart(startIdx);
 	auto endCords = getCords(endIdxs);
@@ -130,18 +91,17 @@ std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>&
 		const auto current = frontier.get();
 		if (std::ranges::any_of(endIdxs, [current](int i) { return i == current; })) {
 			//debug(startIdx, endIdx);
-			//std::cout << steps << "|" << limit << " ";
 			return reconstruct_simplify_path(startIdx, current, came_from);
 		}
-		auto& closeTabIndx = closeIndexes->getTabIndexes(current);
 		auto const& currentData = complexData[current];
-		for (auto i : closeTabIndx) {
+		for (auto i : closeIndexes->getTabIndexes(current)) {
 			if (currentData.ifNeightIsFree(i)) {
 				int next = current + closeIndexes->getIndexAt(i);
 				assert(validateIndex(current, next));
 				if (came_from[current] != next) {
 					const float new_cost = cost_so_far[current] + currentData.getCost(i);
-					if (cost_so_far[next] < 0.f || new_cost < cost_so_far[next]) {
+					auto const nextCost = cost_so_far[next];
+					if (nextCost < 0.f || new_cost < nextCost) {
 						updateCost(next, new_cost);
 						frontier.put(next, new_cost + heuristic(next, endCords));
 						came_from[next] = current;
@@ -190,8 +150,8 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 
 	lastStartIdx = startIdx;
 	lastEndIdx = endIdx;
-
-	return realFindPath(startIdx, endIdx, limit);
+	const std::vector endIdxs = {endIdx};
+	return realFindPath(startIdx, endIdxs, limit);
 }
 
 std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
@@ -223,7 +183,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& end
 	const auto closePath = getClosePath2(startIdx, endIdx, closePass);
 	if (closePath) { return closePath; }
 
-	auto path = realFindPath(startIdx, newEndIndexes, limit);
+	const auto path = realFindPath(startIdx, newEndIndexes, limit);
 	if (path->empty()) {
 		invalidateCache();
 	} else {
@@ -233,16 +193,12 @@ std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& end
 	return path;
 }
 
-std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim, int limit) {
-	return findPath(startIdx, calculator->indexFromPosition(aim), limit);
-}
-
 bool PathFinder::validateIndex(const int current, int next) const {
-	if (!calculator->isValidIndex(next)) {
-		std::cout << current << "@@" << next << std::endl;
-		return false;
+	if (calculator->isValidIndex(next)) {
+		return true;
 	}
-	return true;
+	std::cout << current << "@@" << next << std::endl;
+	return false;
 }
 
 int PathFinder::getPassableEnd(int endIdx) const {
@@ -250,12 +206,11 @@ int PathFinder::getPassableEnd(int endIdx) const {
 		auto& data = complexData[endIdx];
 		if (data.allNeightOccupied()) {
 			endIdx = data.getEscapeBucket();
-			assert(endIdx >= 0);
+			assert(calculator->isValidIndex(endIdx));
 		} else {
 			for (auto i : closeIndexes->getTabIndexes(endIdx)) {
 				if (data.ifNeightIsFree(i)) {
 					endIdx = endIdx + closeIndexes->getIndexAt(i); //TODO obliczyc lepszy, a nie pierwszy z brzegu
-					//TODO bug wyjscie pioza
 					break;
 				}
 			}
@@ -287,7 +242,7 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 		}
 		if (!complexData[startIndex].allNeightOccupied()) {
 			complexData[startIndex].setEscapeThrough(-1);
-			break;
+			continue;
 		}
 
 		prepareToStart(startIndex);
@@ -324,7 +279,7 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 			}
 		}
 		std::vector<int>* path = reconstruct_path(startIndex, end, came_from);
-		if (path->size() >= 1) {
+		if (!path->empty()) {
 			int current2 = startIndex;
 			for (int i = 1; i < path->size(); ++i) {
 				complexData[current2].setEscapeThrough(path->at(i));

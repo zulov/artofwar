@@ -294,12 +294,12 @@ int MainGrid::closestPassableCell(int posIndex) const {
 void MainGrid::addStatic(Static* object) const {
 	const auto bucketPos = calculator->getIndexes(object->getMainGridIndex());
 
-	for (auto index : object->getOccupiedCells()) {
+	for (const auto index : object->getOccupiedCells()) {
 		complexData[index].setStatic(object);
 	}
 
 	std::vector<int> toRefresh;
-	toRefresh.reserve(4);
+	toRefresh.reserve(9);
 
 	const auto size = object->getGridSize();
 	const auto sizeX = calculateSize(size.x_, bucketPos.x_);
@@ -314,9 +314,10 @@ void MainGrid::addStatic(Static* object) const {
 	for (int i = iMin; i < iMax; ++i) {
 		int index = calculator->getNotSafeIndex(i, jMin);
 		for (int j = jMin; j < jMax; ++j) {
-			updateNeighbors(index);
-			if (complexData[index].isPassable()) {
-				complexData[index].setEscapeThrough(-1);
+			auto& data = complexData[index];
+			updateNeighbors(data, index);
+			if (data.isPassable()) {
+				data.setEscapeThrough(-1);
 			} else {
 				toRefresh.push_back(index);
 			}
@@ -327,13 +328,15 @@ void MainGrid::addStatic(Static* object) const {
 }
 
 void MainGrid::removeStatic(Static* object) const {
-	for (auto index : object->getOccupiedCells()) {
-		complexData[index].clear();
-		updateNeighbors(index);
+	for (const auto index : object->getOccupiedCells()) {
+		auto& data = complexData[index];
+		data.clear();
+		updateNeighbors(data, index);
 	}
-	for (auto index : object->getSurroundCells()) {
-		updateNeighbors(index);
+	for (const auto index : object->getSurroundCells()) {
+		updateNeighbors(complexData[index], index);
 	}
+	//TODO BUG remove deploy??
 }
 
 std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3D::Vector3& position) const {
@@ -388,9 +391,7 @@ Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const
 	return (center1 + center2) / 2;
 }
 
-void MainGrid::updateNeighbors(const int current) const {
-	//if (calculator->isValidIndex(current)) {
-	auto& data = complexData[current];
+void MainGrid::updateNeighbors(ComplexBucketData& data, const int current) const {
 	for (auto i : closeIndexes->getTabIndexes(current)) {
 		const int nI = current + closeIndexes->getIndexAt(i);
 		if (complexData[nI].isPassable()) {
@@ -399,15 +400,10 @@ void MainGrid::updateNeighbors(const int current) const {
 			data.setNeightOccupied(i);
 		}
 	}
-	//}
 }
 
 float inline MainGrid::cost(const Urho3D::IntVector2& centerParams, int next) const {
 	return calculator->getDistance(centerParams, next);
-}
-
-std::vector<int>* MainGrid::findPath(int startIdx, const Urho3D::Vector2& aim, int limit) const {
-	return pathFinder->findPath(startIdx, aim, limit);
 }
 
 std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, int limit) const {

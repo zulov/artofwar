@@ -98,40 +98,37 @@ void Force::destination(Urho3D::Vector2& newForce, Unit* unit, float factor) {
 
 void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 	assert(!unit->hasAim());
-	auto posOpt = Game::getFormationManager()->getPositionFor(unit); //TODO czasem jest niepassable
+	const auto formMng = Game::getFormationManager();
+
+	auto posOpt = formMng->getPositionFor(unit); //TODO czasem jest niepassable
 	if (posOpt.has_value()) {
-		const float priority = Game::getFormationManager()->getPriority(unit);
+		const float priority = formMng->getPriority(unit);
 		if (priority > 0) {
 			auto pos = posOpt.value();
-			const auto aimIndex = Game::getEnvironment()->getIndex(pos);
+			const auto env = Game::getEnvironment();
+
+			const auto aimIndex = env->getIndex(pos);
 			Urho3D::Vector2 force;
-			if (Game::getEnvironment()->isInLocalArea(unit->getMainGridIndex(), aimIndex)) {
+			if (env->isInLocalArea(unit->getMainGridIndex(), aimIndex)) {
 				force = dirTo(unit->getPosition(), pos);
 			} else {
-				int nextIndex = Game::getFormationManager()->getCachePath(unit, aimIndex);
+				int nextIndex = formMng->getCachePath(unit, aimIndex);
 				if (nextIndex >= 0) {
-					auto center = Game::getEnvironment()->getCenter(nextIndex);
-					force = dirTo(unit->getPosition(), center);
+					force = dirTo(unit->getPosition(), env->getCenter(nextIndex));
 				} else if (nextIndex == -1) {
-					auto* const path = Game::getEnvironment()->findPath(unit->getMainGridIndex(), aimIndex, 64);
-					//std::cout << unit->getMainCell() << "||" << aimIndex << "||" << path->size() << std::endl;
+					auto* const path = env->findPath(unit->getMainGridIndex(), aimIndex, 64);
 					if (!path->empty()) {
-						Game::getFormationManager()->addCachePath(unit, aimIndex, path->at(0));
-						auto center = Game::getEnvironment()->getCenter(path->at(0));
+						formMng->addCachePath(unit, aimIndex, path->at(0));
+						auto center = env->getCenter(path->at(0));
 						force = dirTo(unit->getPosition(), center);
 					} else {
-						Game::getFormationManager()->addCachePath(unit, aimIndex, -2);
-						// auto dist = sqDist(unit->getPosition(), pos);
-						// if (dist > 32 * 32) {
-						// 	unit->resetFormation();
-						// }
+						formMng->addCachePath(unit, aimIndex, -2);
 						Game::getLog()->Write(0, "brak drogi w formacji");
 					}
 				} else {
 					Game::getLog()->Write(0, "brak drogi w formacji");
 				}
 			}
-
 			force *= formationCoef * boostCoef * priority;
 
 			forceStats.addForm(force);

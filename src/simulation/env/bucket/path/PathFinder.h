@@ -24,8 +24,6 @@ public:
 	std::vector<int>* findPath(int startIdx, int endIdx, int limit);
 	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit);
 
-	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim, int limit);
-
 	void refreshWayOut(std::vector<int>& toRefresh);
 
 	void invalidateCache();
@@ -33,7 +31,6 @@ public:
 	void drawMap(Urho3D::Image* image) const;
 	void prepareGridToFind();
 private:
-	std::vector<int>* realFindPath(int startIdx, int endIdx, int limit);
 	std::vector<int>* realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit);
 	std::vector<int>* getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const;
 
