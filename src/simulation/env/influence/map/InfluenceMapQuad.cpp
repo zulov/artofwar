@@ -42,9 +42,12 @@ void InfluenceMapQuad::ensureReady() {
 				auto parent = maps[i + 1];
 				const int parentRes = sqrt(parent.size()); //TODO bug a co z zaokragleniem
 				const auto current = maps[i];
-				const int currentRes = sqrt(current.size());
-				for (int j = 0; j < parent.size(); ++j) {
-					if (parent[j] > 0.f) {
+				const int currentRes = parentRes / 2;
+
+				//TODO perf vector indeksów które zmieni³ siê poziom wy¿ej wiec tylko wtedy po nich iterowac
+				for (auto ptrParent = parent.begin(); ptrParent < parent.end(); ++ptrParent) {
+					if (*ptrParent > 0.f) {
+						auto j = ptrParent - parent.begin();
 						const int newIndex = getCordsInLower(currentRes, parentRes, j);
 						assert(newIndex<currentRes*currentRes);
 						current[newIndex] += parent[j];
@@ -57,7 +60,7 @@ void InfluenceMapQuad::ensureReady() {
 }
 
 std::optional<Urho3D::Vector2> InfluenceMapQuad::getCenter() {
-	ensureReady();//TODO performce remember center
+	ensureReady(); //TODO performce remember center
 	bool hasData = std::ranges::any_of(maps[0], [](float v) { return v > 0.f; });
 	if (hasData) {
 		int index = std::distance(maps[0].begin(), std::ranges::max_element(maps[0]));
@@ -141,4 +144,3 @@ void InfluenceMapQuad::print(const Urho3D::String name) {
 		print(name, map);
 	}
 }
-
