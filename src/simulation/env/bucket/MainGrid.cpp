@@ -44,7 +44,6 @@ void MainGrid::prepareGridToFind() const {
 			data.setCost(i, cost(centerParams, nI));
 		}
 	}
-	pathFinder->prepareGridToFind();
 }
 
 bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const {

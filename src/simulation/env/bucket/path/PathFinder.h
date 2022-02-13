@@ -29,7 +29,6 @@ public:
 	void invalidateCache();
 	void debug(int start, int end);
 	void drawMap(Urho3D::Image* image) const;
-	void prepareGridToFind();
 private:
 	std::vector<int>* realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit);
 	std::vector<int>* getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const;
@@ -64,7 +63,6 @@ private:
 	int lastEndIdx = -1;
 
 	const short resolution;
-	bool pathInited = false;
 	const float fieldSize;
 
 	int* came_from;

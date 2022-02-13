@@ -44,13 +44,12 @@ void InfluenceMapQuad::ensureReady() {
 				const auto current = maps[i];
 				const int currentRes = parentRes / 2;
 
-				//TODO perf vector indeksów które zmieni³ siê poziom wy¿ej wiec tylko wtedy po nich iterowac
 				for (auto ptrParent = parent.begin(); ptrParent < parent.end(); ++ptrParent) {
 					if (*ptrParent > 0.f) {
 						auto j = ptrParent - parent.begin();
 						const int newIndex = getCordsInLower(currentRes, parentRes, j);
 						assert(newIndex<currentRes*currentRes);
-						current[newIndex] += parent[j];
+						current[newIndex] += *ptrParent;
 					}
 				}
 			}

@@ -19,15 +19,20 @@ PathFinder::PathFinder(short resolution, float size, ComplexBucketData* complexD
 	tempPath = new std::vector<int>();
 	closePath = new std::vector<int>();
 	FibHeap::initCache();
+
+	auto sqRes = resolution * resolution;
+	came_from = new int[sqRes];
+	cost_so_far = new float[sqRes];
+	std::fill_n(came_from, sqRes, -1);
+	std::fill_n(cost_so_far, sqRes, -1.f);
 }
 
 PathFinder::~PathFinder() {
 	delete tempPath;
 	delete closePath;
-	if (pathInited) {
-		delete[]came_from;
-		delete[]cost_so_far;
-	}
+
+	delete[]came_from;
+	delete[]cost_so_far;
 }
 
 std::vector<int>* PathFinder::reconstruct_path(int start, int goal, const int came_from[]) const {
@@ -360,15 +365,6 @@ void PathFinder::drawMap(Urho3D::Image* image) const {
 			}
 		}
 	}
-}
-
-void PathFinder::prepareGridToFind() {
-	auto sqRes = resolution * resolution;
-	came_from = new int[sqRes];
-	cost_so_far = new float[sqRes];
-	std::fill_n(came_from, sqRes, -1);
-	std::fill_n(cost_so_far, sqRes, -1.f);
-	pathInited = true;
 }
 
 void PathFinder::updateCost(int idx, float x) {
