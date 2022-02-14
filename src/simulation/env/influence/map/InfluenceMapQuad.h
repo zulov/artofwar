@@ -14,7 +14,6 @@ public:
 	virtual ~InfluenceMapQuad();
 
 	std::optional<Urho3D::Vector2> getCenter();
-	void update(Physical* thing, float value = 1.f);
 	void update(int index, float value = 1.f);
 	void updateInt(Physical* thing, int value = 1);
 	void updateInt(int index, int value = 1);

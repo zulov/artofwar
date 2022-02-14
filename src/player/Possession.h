@@ -34,6 +34,7 @@ public:
 
 	const std::vector<Unit*>& getWorkers() const { return workers; }
 	std::vector<Unit*> getFreeArmy();
+	bool hasAnyFreeArmy() const;
 	float getAttackSum() const;
 	float getDefenceAttackSum();
 private:

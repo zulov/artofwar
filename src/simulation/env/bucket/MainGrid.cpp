@@ -20,11 +20,11 @@ MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
 	complexData(new ComplexBucketData[sqResolution]),
 	pathFinder(new PathFinder(resolution, size, complexData)) {
 
-	const auto quater = calculator->getFieldSize() / 4;
+	const auto quarter = calculator->getFieldSize() / 4;
 
 	posInBucket4 = {
-		Urho3D::Vector2(quater, quater), Urho3D::Vector2(-quater, -quater),
-		Urho3D::Vector2(quater, -quater), Urho3D::Vector2(-quater, quater)
+		Urho3D::Vector2(quarter, quarter), Urho3D::Vector2(-quarter, -quarter),
+		Urho3D::Vector2(quarter, -quarter), Urho3D::Vector2(-quarter, quarter)
 	};
 
 	DebugLineRepo::init(DebugLineType::MAIN_GRID);

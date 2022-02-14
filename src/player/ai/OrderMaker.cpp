@@ -43,54 +43,60 @@ void OrderMaker::action() {
 		collect(freeWorkers);
 	}
 	const auto aiInput = Game::getAiInputProvider();
+	if (player->getPossession().hasAnyFreeArmy()) {
+		auto const resultAoD = attackOrDefence->decide(aiInput->getAttackOrDefenceInput(player->getId()));
+		std::span<float> whereGo;
+		char playerToGo = player->getId();
+		if (randFromTwo(resultAoD[0])) {
+			playerToGo = Game::getPlayersMan()->getEnemyFor(player->getId());
+			whereGo = whereAttack->decide(aiInput->getWhereAttack(player->getId()));
+		} else {
+			whereGo = whereDefence->decide(aiInput->getWhereDefend(player->getId()));
+		}
+		const CenterType centerType = static_cast<CenterType>(lowestWithRand(whereGo));
+		const auto posOpt = Game::getEnvironment()->getCenterOf(centerType, playerToGo);
 
-	auto const resultAoD = attackOrDefence->decide(aiInput->getAttackOrDefenceInput(player->getId()));
-	std::span<float> whereGo;
-	char playerToGo = player->getId();
-	if (randFromTwo(resultAoD[0])) {
-		playerToGo = Game::getPlayersMan()->getEnemyFor(player->getId());
-		whereGo = whereAttack->decide(aiInput->getWhereAttack(player->getId()));
-	} else {
-		whereGo = whereDefence->decide(aiInput->getWhereDefend(player->getId()));
-	}
-	const CenterType centerType = static_cast<CenterType>(lowestWithRand(whereGo));
-	const auto posOpt = Game::getEnvironment()->getCenterOf(centerType, playerToGo);
+		if (posOpt.has_value()) {
+			std::vector<Unit*> army = player->getPossession().getFreeArmy();
+			auto center = posOpt.value();
+			for (auto& subArmy : divide(army)) {
+				if (!subArmy.empty()) {
+					auto centerLocal = computeLocalCenter(subArmy);
+					const auto dist = sqDist(centerLocal, center);
 
-	if (posOpt.has_value()) {
-		std::vector<Unit*> army = player->getPossession().getFreeArmy();
-		auto center = posOpt.value();
-		for (auto& subArmy : divide(army)) {
-			if (!subArmy.empty()) {
-				auto centerLocal = computeLocalCenter(subArmy);
-				const auto dist = sqDist(centerLocal, center);
-
-				if (dist > SQ_SEMI_CLOSE) {
-					//Game::getEnvironment()->closestPhysical(subArmy.at(0), &things, belowClose, SQ_SEMI_CLOSE);
-					Game::getActionCenter()->addUnitAction(
-						new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::GO), center), player->getId());
-				} else {
-					const auto unit = subArmy.at(0);
-
-					if (centerType == CenterType::BUILDING) {
-						const auto buildings = Game::getEnvironment()->getBuildingsFromTeamNotEq(unit, -1, SEMI_CLOSE);
-						semiCloseAttack(subArmy, *buildings);
-					} else if (centerType == CenterType::ECON) {
-						const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
-						//TODO perf wrzuciæ predykat do œrodka
-						std::vector<Physical*> workers;
-						workers.resize(neights->size());
-						auto pred = [](const Physical* physical) { return ((Unit*)physical)->getDbUnit()->typeWorker; };
-						std::copy_if(neights->begin(), neights->end(), std::back_inserter(workers), pred);
-						semiCloseAttack(subArmy, workers);
+					if (dist > SQ_SEMI_CLOSE) {
+						//Game::getEnvironment()->closestPhysical(subArmy.at(0), &things, belowClose, SQ_SEMI_CLOSE);
+						Game::getActionCenter()->addUnitAction(
+							new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::GO), center),
+							player->getId());
 					} else {
-						//CenterType::UNITS
-						const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
-						semiCloseAttack(subArmy, *neights);
+						const auto unit = subArmy.at(0);
+
+						if (centerType == CenterType::BUILDING) {
+							const auto buildings = Game::getEnvironment()->getBuildingsFromTeamNotEq(
+								unit, -1, SEMI_CLOSE);
+							semiCloseAttack(subArmy, *buildings);
+						} else if (centerType == CenterType::ECON) {
+							const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+							//TODO perf wrzuciæ predykat do œrodka
+							std::vector<Physical*> workers;
+							workers.resize(neights->size());
+							auto pred = [](const Physical* physical) {
+								return ((Unit*)physical)->getDbUnit()->typeWorker;
+							};
+							std::copy_if(neights->begin(), neights->end(), std::back_inserter(workers), pred);
+							semiCloseAttack(subArmy, workers);
+						} else {
+							//CenterType::UNITS
+							const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+							semiCloseAttack(subArmy, *neights);
+						}
 					}
 				}
 			}
 		}
 	}
+
 }
 
 void OrderMaker::semiCloseAttack(const std::vector<Unit*>& subArmy, const std::vector<Physical*>& things) const {

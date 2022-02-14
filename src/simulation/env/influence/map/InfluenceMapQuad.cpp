@@ -10,7 +10,6 @@
 #include "simulation/env/GridCalculator.h"
 #include "simulation/env/GridCalculatorProvider.h"
 
-//TODO check if center are calculate well and correct in eny frame
 InfluenceMapQuad::InfluenceMapQuad(unsigned short topResolution, float mapSize)
 	: calculator(GridCalculatorProvider::get(topResolution, mapSize)) {
 	dataSize = 0;
@@ -40,19 +39,19 @@ void InfluenceMapQuad::ensureReady() {
 		if (sum != 0.f) {
 			unsigned short parentRes = calculator->getResolution();
 			unsigned short currentRes = parentRes / 2;
-			for (int i = maps.size() - 2; i >= 0; --i) {
+			for (int i = maps.size() - 2; i >= 0; --i, parentRes /= 2, currentRes /= 2) {
 				auto parent = maps[i + 1];
 				const auto current = maps[i];
 
-				for (auto ptrParent = parent.begin(); ptrParent < parent.end(); ++ptrParent) {
-					if (*ptrParent > 0.f) {
-						const int newIndex = getCordsInLower(currentRes, parentRes, ptrParent - parent.begin());
+				int j =0;
+				for (float parent1 : parent) {
+					if (parent1 > 0.f) {
+						const int newIndex = getCordsInLower(currentRes, parentRes, j);
 						assert(newIndex<currentRes*currentRes);
-						current[newIndex] += *ptrParent;
+						current[newIndex] += parent1;
 					}
+				++j;
 				}
-				parentRes /= 2;
-				currentRes /= 2;
 			}
 		}
 		dataReady = true;
@@ -82,11 +81,6 @@ int InfluenceMapQuad::getMaxElement(const std::array<int, 4>& indexes, std::span
 
 unsigned short InfluenceMapQuad::getResolution() const {
 	return calculator->getResolution();
-}
-
-void InfluenceMapQuad::update(Physical* thing, float value) {
-	dataReady = false;
-	maps.back()[calculator->indexFromPosition(thing->getPosition())] += value;
 }
 
 void InfluenceMapQuad::update(int index, float value) {

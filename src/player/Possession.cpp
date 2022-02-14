@@ -102,6 +102,10 @@ std::vector<Unit*> Possession::getFreeArmy() {
 	return army;
 }
 
+bool Possession::hasAnyFreeArmy() const {
+	return std::ranges::any_of(units, [](Unit* unit)-> bool { return isFreeSolider(unit); });
+}
+
 float Possession::getAttackSum() const {
 	return unitsSumAsSpan[5];
 	//TODO hardcoded from AiUnitMetric {[](db_unit* u, db_unit_level* l) -> float { return l->attack; }, 10, UNITS_SUM_X},
