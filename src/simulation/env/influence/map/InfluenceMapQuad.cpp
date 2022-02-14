@@ -38,20 +38,21 @@ void InfluenceMapQuad::ensureReady() {
 		std::fill_n(data, dataSize - maps.back().size(), 0.f);
 		auto sum = sumSpan(maps.back());
 		if (sum != 0.f) {
+			unsigned short parentRes = calculator->getResolution();
+			unsigned short currentRes = parentRes / 2;
 			for (int i = maps.size() - 2; i >= 0; --i) {
 				auto parent = maps[i + 1];
-				const int parentRes = sqrt(parent.size()); //TODO bug a co z zaokragleniem
 				const auto current = maps[i];
-				const int currentRes = parentRes / 2;
 
 				for (auto ptrParent = parent.begin(); ptrParent < parent.end(); ++ptrParent) {
 					if (*ptrParent > 0.f) {
-						auto j = ptrParent - parent.begin();
-						const int newIndex = getCordsInLower(currentRes, parentRes, j);
+						const int newIndex = getCordsInLower(currentRes, parentRes, ptrParent - parent.begin());
 						assert(newIndex<currentRes*currentRes);
 						current[newIndex] += *ptrParent;
 					}
 				}
+				parentRes /= 2;
+				currentRes /= 2;
 			}
 		}
 		dataReady = true;

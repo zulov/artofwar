@@ -160,6 +160,6 @@ private:
 	Grid* grids[3] = {&mainGrid, &buildingGrid, &resourceStaticGrid};
 	GridCalculator* calculator;
 
-	std::vector<Physical*>* neights; //TODO tu bedzie trzeba tablica jesli beda watki
+	std::vector<Physical*>* neights;
 
 };

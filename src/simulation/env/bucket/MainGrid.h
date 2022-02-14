@@ -72,10 +72,9 @@ public:
 	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
 
 private:
+	ComplexBucketData* complexData;
 	PathFinder* pathFinder;
 
 	std::array<Urho3D::Vector2, 4> posInBucket4;
-
-	ComplexBucketData* complexData;
 	int counter = 0;
 };

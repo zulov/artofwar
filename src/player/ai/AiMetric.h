@@ -151,7 +151,7 @@ const inline struct MetricDefinitions {
 
 
 	static inline AiUnitMetric aiUnitMetric[] = {
-		{[](db_unit* unit, db_unit_level* level) -> float { return unit->getSumCost(); }, 400, UNITS_SUM_X},
+		{[](db_unit* u, db_unit_level* l) -> float { return u->getSumCost(); }, 400, UNITS_SUM_X},
 		//TODO czy grupowe ma sens?
 		{[](db_unit* u, db_unit_level* l) -> float { return l->maxHp; }, 300, UNITS_SUM_X},
 		{[](db_unit* u, db_unit_level* l) -> float { return l->armor; }, 1, UNITS_SUM_X},
