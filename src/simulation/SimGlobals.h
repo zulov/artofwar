@@ -29,7 +29,6 @@ inline struct SimGlobals {
 	inline static std::string ACTION_AI_PATH[MAX_PLAYERS] = {"", ""};
 	inline static std::string ORDER_AI_PATH[MAX_PLAYERS] = {"", ""};
 	inline static std::string ORDER_THRESHOLD_PATH[MAX_PLAYERS] = {"", ""};
-	inline static Urho3D::Vector2 CAMERA_START = Urho3D::Vector2::ZERO;
 
 	inline static Urho3D::Vector<Urho3D::String> OUTPUT_NAMES;
 

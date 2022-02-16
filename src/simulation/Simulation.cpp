@@ -148,7 +148,7 @@ void Simulation::selfAI() const {
 std::function<bool(Physical*)> Simulation::getCondition(db_unit* dbUnit) const {
 	if (dbUnit->typeRange) {
 		if (dbUnit->typeMelee) {
-			return belowCloseOrRange;//TODO bug? teraz to sie wyklucza?
+			return belowCloseOrRange; //TODO bug? teraz to sie wyklucza?
 		}
 		return belowRange;
 	}
@@ -354,7 +354,9 @@ void Simulation::calculateForces() {
 	DebugLineRepo::clear(DebugLineType::UNIT_LINES);
 	DebugLineRepo::beginGeometry(DebugLineType::UNIT_LINES);
 
-	for (auto unit : *units) {
+	for (const auto unit : *units) {
+		auto& stats = force.stats();
+		stats.vectorReset();
 		Urho3D::Vector2 newForce;
 		switch (unit->getState()) {
 		case UnitState::COLLECT:
@@ -379,7 +381,6 @@ void Simulation::calculateForces() {
 		}
 		}
 
-		auto& stats = force.stats();
 		stats.result();
 
 		unit->setAcceleration(newForce);

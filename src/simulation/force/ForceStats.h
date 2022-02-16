@@ -7,6 +7,14 @@ constexpr unsigned short FORCE_STATS_SIZE = 1000;
 constexpr bool FORCE_STATS_ENABLE = false;
 
 struct ForceStats {
+	void vectorReset() {
+		sepObstLast = {};
+		sepUnitLast = {};
+		destLast = {};
+		formLast = {};
+		escaLast = {};
+	}
+
 	void reset() {
 		sepObstStat = 0;
 		sepUnitStat = 0;

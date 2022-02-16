@@ -93,7 +93,7 @@ public:
 	void changeColor(SimColorMode mode);
 	void addOrder(IndividualOrder* aim);
 
-	void drawLineTo(const Urho3D::Vector3& second, const Urho3D::Color& color) const;
+	void drawLineTo(const Urho3D::Vector2& second, const Urho3D::Color& color) const;
 	void debug(DebugUnitType type, ForceStats& stats);
 	bool isFirstThingAlive() const;
 

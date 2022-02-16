@@ -152,15 +152,10 @@ void Main::writeOutput() const {
 
 void Main::setCameraPos() const {
 	if (!SIM_GLOBALS.HEADLESS) {
-		if (SIM_GLOBALS.CAMERA_START != Urho3D::Vector2::ZERO) {
-			Game::getCameraManager()->changePositionInPercent(SIM_GLOBALS.CAMERA_START.x_,
-			                                                  SIM_GLOBALS.CAMERA_START.y_);
-		} else {
-			auto camPos = Game::getEnvironment()
-			              ->getCenterOf(CenterType::BUILDING, Game::getPlayersMan()->getActivePlayerID())
-			              .value_or(Urho3D::Vector2::ZERO);
-			Game::getCameraManager()->changePosition(camPos.x_, camPos.y_);
-		}
+		auto camPos = Game::getEnvironment()
+		              ->getCenterOf(CenterType::BUILDING, Game::getPlayersMan()->getActivePlayerID())
+		              .value_or(Urho3D::Vector2::ZERO);
+		Game::getCameraManager()->changePosition(camPos.x_, camPos.y_);
 	}
 }
 
@@ -626,7 +621,7 @@ void Main::readParameters() {
 				engine_->SetMaxInactiveFps(0);
 			} else if (argument == "benchmark") {
 				SimGlobals::BENCHMARK_MODE = true;
-				engine_->SetMaxFps(0);
+				engine_->SetMaxFps(30);
 				engine_->SetMaxInactiveFps(0);
 			} else if (argument == "headless") {
 				SimGlobals::HEADLESS = true;
@@ -671,12 +666,6 @@ void Main::readParameters() {
 				++i;
 			} else if (argument == "orderthreshold2" && !value.Empty()) {
 				SimGlobals::ORDER_THRESHOLD_PATH[1] = value.CString();
-				++i;
-			} else if (argument == "camposx" && !value.Empty()) {
-				SimGlobals::CAMERA_START.x_ = ToInt(value);
-				++i;
-			} else if (argument == "camposy" && !value.Empty()) {
-				SimGlobals::CAMERA_START.y_ = ToInt(value);
 				++i;
 			} else if (argument == "random") {
 				SimGlobals::RANDOM = true;

@@ -1,6 +1,5 @@
 #pragma once
-enum class DebugUnitType : char
-{
+enum class DebugUnitType : char {
 	NONE=0,
 
 	VELOCITY,
@@ -16,5 +15,4 @@ enum class DebugUnitType : char
 
 	AIM,
 	INTERACT
-
 };
