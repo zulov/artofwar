@@ -22,12 +22,12 @@ class MainGrid : public Grid {
 public:
 	MainGrid(short resolution, float size, float maxQueryRadius);
 	MainGrid(const MainGrid& rhs) = delete;
-	~MainGrid();
+	~MainGrid() override;
 
 	void prepareGridToFind() const;
 	bool validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const;
 	bool validateAdd(const Urho3D::IntVector2& size, Urho3D::IntVector2 bucketCords) const;
-	void addStatic(Static* object) const;
+	void addStatic(Static* object);
 	void removeStatic(Static* object) const;
 	std::optional<Urho3D::Vector2> getDirectionFrom(int index, const Urho3D::Vector3& position) const;
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
@@ -36,13 +36,13 @@ public:
 	void updateNeighbors(ComplexBucketData& data, int current) const;
 	float cost(const Urho3D::IntVector2& centerParams, int next) const;
 
-	std::vector<int>* findPath(int startIdx, int endIdx, int limit) const;
-	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit) const;
+	std::vector<int>* findPath(int startIdx, int endIdx, int limit);
+	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit);
 
 	void drawComplex(Urho3D::Image* image, Urho3D::String prefix) const;
 
 	Urho3D::Vector2 repulseObstacle(Unit* unit) const;
-	void invalidatePathCache() const;
+	void invalidatePathCache();
 
 	Urho3D::Vector2 getPositionInBucket(Unit* unit);
 
@@ -73,7 +73,7 @@ public:
 
 private:
 	ComplexBucketData* complexData;
-	PathFinder* pathFinder;
+	PathFinder pathFinder;
 
 	std::array<Urho3D::Vector2, 4> posInBucket4;
 	int counter = 0;

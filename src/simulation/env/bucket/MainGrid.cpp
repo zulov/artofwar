@@ -18,7 +18,7 @@
 MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
 	Grid(resolution, size, true, maxQueryRadius),
 	complexData(new ComplexBucketData[sqResolution]),
-	pathFinder(new PathFinder(resolution, size, complexData)) {
+	pathFinder(resolution, size, complexData) {
 
 	const auto quarter = calculator->getFieldSize() / 4;
 
@@ -32,7 +32,6 @@ MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
 
 MainGrid::~MainGrid() {
 	delete[] complexData;
-	delete pathFinder;
 }
 
 void MainGrid::prepareGridToFind() const {
@@ -97,8 +96,8 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 	return -sum;
 }
 
-void MainGrid::invalidatePathCache() const {
-	pathFinder->invalidateCache();
+void MainGrid::invalidatePathCache() {
+	pathFinder.invalidateCache();
 }
 
 bool MainGrid::cellInState(int index, CellState state) const {
@@ -292,7 +291,7 @@ int MainGrid::closestPassableCell(int posIndex) const {
 	return posIndex; //TODO to zwrócic optional empty
 }
 
-void MainGrid::addStatic(Static* object) const {
+void MainGrid::addStatic(Static* object) {
 	const auto bucketPos = calculator->getIndexes(object->getMainGridIndex());
 
 	for (const auto index : object->getOccupiedCells()) {
@@ -325,7 +324,7 @@ void MainGrid::addStatic(Static* object) const {
 			++index;
 		}
 	}
-	pathFinder->refreshWayOut(toRefresh);
+	pathFinder.refreshWayOut(toRefresh);
 }
 
 void MainGrid::removeStatic(Static* object) const {
@@ -407,12 +406,12 @@ float inline MainGrid::cost(const Urho3D::IntVector2& centerParams, int next) co
 	return calculator->getDistance(centerParams, next);
 }
 
-std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, int limit) const {
-	return pathFinder->findPath(startIdx, endIdx, limit);
+std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, int limit) {
+	return pathFinder.findPath(startIdx, endIdx, limit);
 }
 
-std::vector<int>* MainGrid::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) const {
-	return pathFinder->findPath(startIdx, endIdxs, limit);
+std::vector<int>* MainGrid::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
+	return pathFinder.findPath(startIdx, endIdxs, limit);
 }
 
 void MainGrid::drawComplex(Urho3D::Image* image, const Urho3D::String prefix) const {

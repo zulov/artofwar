@@ -2,12 +2,13 @@
 
 #include <cassert>
 #include <cmath>
+#include <iostream>
 #include <vector>
 #include "utils/DeleteUtils.h"
 
 constexpr short CACHE_SIZE = 8192;
 
-static unsigned char degree_cache[CACHE_SIZE];
+static unsigned char DEGREE_CACHE[CACHE_SIZE];
 
 class FibHeap {
 public:
@@ -17,6 +18,7 @@ public:
 			left(nullptr), right(nullptr), child(nullptr),
 			key(k), payload(pl), degree(0) { }
 
+		FibNode(const FibNode& obj) = delete;
 		~FibNode() = default;
 
 		bool isEmpty() const {
@@ -40,22 +42,28 @@ public:
 		unsigned short degree;
 	};
 
-	FibHeap() {
-		temp.resize(50, nullptr);
-		freePool.reserve(400);
-		allPool.reserve(400);
-		for (auto i = 0; i < 400; ++i) {
+	FibHeap(): tempSize(100) {
+		temp = new FibNode*[tempSize];
+		const short initialSize = 1024;
+		freePool.reserve(initialSize);
+		allPool.reserve(initialSize);
+		for (auto i = 0; i < initialSize; ++i) {
 			auto fn = new FibNode(-1, -1);
 			freePool.push_back(fn);
 			allPool.push_back(fn);
 		}
 	}
 
+	FibHeap(const FibHeap& obj) = delete;
+
 	~FibHeap() {
+		delete[] temp;
 		clear_vector(allPool);
 	}
 
 	FibNode* getNode(const int pl, const float k) {
+		assert(pl >= 0);
+		assert(k >= 0.f);
 		if (freePool.empty()) {
 			const auto fn = new FibNode(k, pl);
 			allPool.push_back(fn);
@@ -65,13 +73,14 @@ public:
 		fibNode->payload = pl;
 		fibNode->key = k;
 
+
 		freePool.pop_back();
 
 		return fibNode;
 	}
 
 	void resetNode(FibNode* node) {
-		if(node->key>=0.f) {
+		if (node->key >= 0.f) {
 			freePool.push_back(node);
 		}
 		node->reset();
@@ -83,18 +92,20 @@ public:
 		for (const auto fibNode : allPool) {
 			resetNode(fibNode);
 		}
-		std::fill_n(temp.begin(), temp.size(), nullptr);
+		std::fill_n(temp, tempSize, nullptr);
 	}
 
 	void ensureSizeAndClear(unsigned int size) {
-		if (temp.size() < size) {
-			temp.resize(size);
+		if (tempSize < size) {
+			tempSize = size;
+			delete[] temp;
+			temp = new FibNode*[tempSize];
 		}
 
-		std::fill_n(temp.begin(), size, nullptr);
+		std::fill_n(temp, tempSize, nullptr);
 	}
 
-	FibNode* extract_min() {
+	FibNode* extractMin() {
 		const auto z = minNode;
 		if (z != nullptr) {
 			auto x = z->child;
@@ -138,16 +149,16 @@ public:
 			next = next->right;
 		} while (next != w);
 
-		const auto max_degree = degree_cache[n];
+		const auto maxDegree = DEGREE_CACHE[n];
 
-		const auto secondSize = max_degree + rootSize;
+		const auto secondSize = maxDegree + rootSize;
 		ensureSizeAndClear(secondSize);
 
-		for (int i = max_degree; i < secondSize; ++i) {
+		for (int i = maxDegree; i < secondSize; ++i) {
 			temp[i] = next;
 			next = next->right;
 		}
-		for (int i = max_degree; i < secondSize; ++i) {
+		for (int i = maxDegree; i < secondSize; ++i) {
 			w = temp[i];
 
 			auto x = w;
@@ -157,7 +168,7 @@ public:
 				if (x->key > y->key) {
 					std::swap(x, y);
 				}
-				fib_heap_link(y, x);
+				fibHeapLink(y, x);
 				temp[d] = nullptr;
 				++d;
 			}
@@ -165,8 +176,8 @@ public:
 		}
 
 		minNode = nullptr;
-		auto tii = temp.begin();
-		for (auto i = 0; i < max_degree; ++i, ++tii) {
+		auto tii = temp;
+		for (auto i = 0; i < maxDegree; ++i, ++tii) {
 			const auto ti = *tii;
 			if (ti != nullptr) {
 				if (minNode == nullptr) {
@@ -185,7 +196,7 @@ public:
 		}
 	}
 
-	static void fib_heap_link(FibNode* y, FibNode* x) {
+	static void fibHeapLink(FibNode* y, FibNode* x) {
 		y->left->right = y->right;
 		y->right->left = y->left;
 		if (x->child != nullptr) {
@@ -210,7 +221,7 @@ public:
 		if (empty()) {
 			return;
 		}
-		const auto x = extract_min();
+		const auto x = extractMin();
 		if (x) {
 			resetNode(x);
 		}
@@ -240,17 +251,18 @@ public:
 		++n;
 	}
 
-	FibNode* minNode{nullptr};
-	std::vector<FibNode*> temp;
+	FibNode* minNode{};
 	std::vector<FibNode*> freePool;
 	std::vector<FibNode*> allPool;
+	FibNode** temp;
+	unsigned short tempSize;
 
 	int n{0};
 
 	static void initCache() {
 		const auto coef = 1 / log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2);
 		for (auto i = 0; i < CACHE_SIZE; ++i) {
-			degree_cache[i] = static_cast<unsigned char>(floor(log(static_cast<double>(i)) * coef)) + 2;
+			DEGREE_CACHE[i] = static_cast<unsigned char>(floor(log(static_cast<double>(i)) * coef)) + 2;
 			// plus two both for indexing to max degree and so A[max_degree+1] == NIL 
 		}
 	}

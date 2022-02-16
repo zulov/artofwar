@@ -557,7 +557,7 @@ void Main::disposeScene() {
 		delete Game::getColorPaletteRepo();
 		Game::setColorPaletteRepo(nullptr);
 
-		loading2.inc("dispose enviroment");
+		loading2.inc("dispose environment");
 		delete Game::getEnvironment();
 		Game::setEnvironment(nullptr);
 

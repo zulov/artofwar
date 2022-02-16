@@ -55,8 +55,8 @@ public:
 	void update(Unit* unit) const;
 
 	void addNew(const std::vector<Unit*>& units);
-	void addNew(Building* building) const;
-	void addNew(ResourceEntity* resource, bool bulkAdd) const;
+	void addNew(Building* building);
+	void addNew(ResourceEntity* resource, bool bulkAdd);
 
 	void removeFromGrids(const std::vector<Unit*>& units) const;
 	void removeFromGrids(const std::vector<Building*>& buildingsToDispose,
@@ -71,24 +71,24 @@ public:
 	float getGroundHeightAt(const Urho3D::Vector3& pos) const;
 	Urho3D::Vector3 getPosWithHeightAt(float x, float z) const;
 	Urho3D::Vector3 getPosWithHeightAt(int index) const;
-
 	float getGroundHeightPercentScaled(float x, float z, float div) const;
+
 	bool validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const;
 	bool validateStatic(const Urho3D::IntVector2& size, const Urho3D::IntVector2 bucketCords) const;
 
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) const;
 
-	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim, int limit) const;
-	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit) const;
-	std::vector<int>* findPath(int startIdx, int endIdx, int limit) const;
+	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim, int limit);
+	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit);
+	std::vector<int>* findPath(int startIdx, int endIdx, int limit);
 
 	void prepareGridToFind() const;
 	content_info* getContentInfo(Urho3D::Vector2 centerPercent, bool checks[], int activePlayer);
 
 	Urho3D::Vector2 getPosFromPercent(float x, float z) const;
 	Physical* closestPhysical(Unit* unit, const std::vector<Physical*>* things,
-	                          const std::function<bool(Physical*)>& condition, int limit) const;
+	                          const std::function<bool(Physical*)>& condition, int limit);
 	Physical* closestPhysicalSimple(const Physical* physical, const std::vector<Physical*>* things, float range) const;
 
 	Urho3D::Vector2 getCenter(int index) const;
@@ -96,7 +96,7 @@ public:
 
 	Urho3D::Vector2 getPositionInBucket(Unit* unit);
 
-	void invalidatePathCache() const;
+	void invalidatePathCache();
 
 	int getIndex(Urho3D::Vector2& pos) const { return calculator->indexFromPosition(pos); }
 	int getIndex(short x, short z) const { return calculator->getIndex(x, z); }

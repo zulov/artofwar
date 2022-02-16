@@ -223,7 +223,7 @@ void Environment::invalidateCaches() {
 	sparseUnitGrid.invalidateCache();
 }
 
-void Environment::addNew(Building* building) const {
+void Environment::addNew(Building* building) {
 	mainGrid.addStatic(building);
 	buildingGrid.updateNew(building);
 
@@ -240,7 +240,7 @@ void Environment::addNew(Building* building) const {
 	mainGrid.addDeploy(building);
 }
 
-void Environment::addNew(ResourceEntity* resource, bool bulkAdd) const {
+void Environment::addNew(ResourceEntity* resource, bool bulkAdd) {
 	mainGrid.addStatic(resource);
 	resource->setIndexInInfluence(influenceManager.getIndex(resource->getPosition()));
 	resourceStaticGrid.updateStatic(resource, bulkAdd);
@@ -313,7 +313,7 @@ Urho3D::Vector2 Environment::getPositionInBucket(Unit* unit) {
 	return mainGrid.getPositionInBucket(unit);
 }
 
-void Environment::invalidatePathCache() const {
+void Environment::invalidatePathCache() {
 	mainGrid.invalidatePathCache();
 }
 
@@ -455,15 +455,15 @@ Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size,
 	return mainGrid.getValidPosition(size, getCenter(calculator->getIndex(bucketCords.x_, bucketCords.y_)));
 }
 
-std::vector<int>* Environment::findPath(int startIdx, const Urho3D::Vector2& aim, int limit) const {
+std::vector<int>* Environment::findPath(int startIdx, const Urho3D::Vector2& aim, int limit) {
 	return mainGrid.findPath(startIdx, calculator->indexFromPosition(aim), limit);
 }
 
-std::vector<int>* Environment::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) const {
+std::vector<int>* Environment::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
 	return mainGrid.findPath(startIdx, endIdxs, limit);
 }
 
-std::vector<int>* Environment::findPath(int startIdx, int endIdx, int limit) const {
+std::vector<int>* Environment::findPath(int startIdx, int endIdx, int limit) {
 	return mainGrid.findPath(startIdx, endIdx, limit);
 }
 
@@ -488,7 +488,7 @@ Urho3D::Vector2 Environment::getPosFromPercent(float x, float z) const {
 }
 
 Physical* Environment::closestPhysical(Unit* unit, const std::vector<Physical*>* things,
-                                       const std::function<bool(Physical*)>& condition, int limit) const {
+                                       const std::function<bool(Physical*)>& condition, int limit) {
 	if (things->empty()) {
 		return nullptr;
 	}
