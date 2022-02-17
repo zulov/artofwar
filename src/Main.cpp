@@ -621,7 +621,7 @@ void Main::readParameters() {
 				engine_->SetMaxInactiveFps(0);
 			} else if (argument == "benchmark") {
 				SimGlobals::BENCHMARK_MODE = true;
-				engine_->SetMaxFps(30);
+				engine_->SetMaxFps(0);
 				engine_->SetMaxInactiveFps(0);
 			} else if (argument == "headless") {
 				SimGlobals::HEADLESS = true;

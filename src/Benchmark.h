@@ -2,9 +2,9 @@
 
 #include <fstream>
 
-constexpr int BENCH_LENGTH = 100;
-constexpr int PERCENT = 10;
-constexpr int PERCENT2 = 90;
+constexpr int BENCH_LENGTH = 120;
+constexpr int PERCENT = 12;
+constexpr int PERCENT2 = 108;
 
 constexpr bool BENCH_SAVE = false;
 

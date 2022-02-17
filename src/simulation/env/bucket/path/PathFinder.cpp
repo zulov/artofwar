@@ -12,10 +12,9 @@
 #include "simulation/env/CloseIndexes.h"
 #include "simulation/env/CloseIndexesProvider.h"
 
-PathFinder::PathFinder(short resolution, float size, ComplexBucketData* complexData) :
+PathFinder::PathFinder(short resolution, float size) :
 	closeIndexes(CloseIndexesProvider::get(resolution)), calculator(GridCalculatorProvider::get(resolution, size)),
-	resolution(resolution), fieldSize(size / resolution), max_cost_to_ref(resolution * resolution - 1),
-	complexData(complexData) {
+	resolution(resolution), fieldSize(size / resolution), max_cost_to_ref(resolution * resolution - 1) {
 	tempPath = new std::vector<int>();
 	closePath = new std::vector<int>();
 	FibHeap::initCache();
@@ -33,6 +32,10 @@ PathFinder::~PathFinder() {
 
 	delete[]came_from;
 	delete[]cost_so_far;
+}
+
+void PathFinder::setComplexData(ComplexBucketData* complexData) {
+	this->complexData = complexData;
 }
 
 std::vector<int>* PathFinder::reconstruct_path(int start, int goal, const int came_from[]) const {
@@ -87,6 +90,8 @@ void PathFinder::prepareToStart(int startIdx) {
 std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
 	prepareToStart(startIdx);
 	auto endCords = getCords(endIdxs);
+	assert(!endCords.empty());
+
 	int steps = 0;
 	while (!frontier.empty()) {
 		++steps;
@@ -114,6 +119,9 @@ std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>&
 				}
 			}
 		}
+	}
+	if (startIdx == 8252) {
+		std::cout << startIdx << ";" << (endIdxs.at(0)) << std::endl;
 	}
 	//debug(startIdx, endIdx);
 	tempPath->clear();

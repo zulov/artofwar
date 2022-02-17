@@ -16,10 +16,9 @@
 
 
 MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
-	Grid(resolution, size, true, maxQueryRadius),
-	complexData(new ComplexBucketData[sqResolution]),
-	pathFinder(resolution, size, complexData) {
-
+	Grid(resolution, size, true, maxQueryRadius), pathFinder(resolution, size) {
+	complexData = new ComplexBucketData[sqResolution];
+	pathFinder.setComplexData(complexData);
 	const auto quarter = calculator->getFieldSize() / 4;
 
 	posInBucket4 = {

@@ -33,7 +33,7 @@ Game* Game::setGraphics(Urho3D::Graphics* _graphics) {
 	return instance;
 }
 
-Game* Game::setScene(const Urho3D::SharedPtr<Urho3D::Scene>& scene) {
+Game* Game::setScene(Urho3D::Scene* scene) {
 	instance->scene = scene;
 	return instance;
 }

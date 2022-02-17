@@ -26,12 +26,12 @@ public:
 		}
 
 		void reset() {
-			key = -1.f;
 			left = nullptr;
 			right = nullptr;
 			child = nullptr;
-			degree = 0;
+			key = -1.f;
 			payload = -1;
+			degree = 0;
 		}
 
 		FibNode* left;
@@ -44,7 +44,7 @@ public:
 
 	FibHeap(): tempSize(100) {
 		temp = new FibNode*[tempSize];
-		const short initialSize = 1024;
+		const short initialSize = 20;
 		freePool.reserve(initialSize);
 		allPool.reserve(initialSize);
 		for (auto i = 0; i < initialSize; ++i) {
@@ -70,11 +70,10 @@ public:
 			return fn;
 		}
 		const auto fibNode = freePool.back();
+		freePool.pop_back();
+
 		fibNode->payload = pl;
 		fibNode->key = k;
-
-
-		freePool.pop_back();
 
 		return fibNode;
 	}

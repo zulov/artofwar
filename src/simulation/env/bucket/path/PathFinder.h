@@ -15,9 +15,10 @@ class ComplexBucketData;
 //TODO perf zrobic takiego wstepnego findera o nizesz rozdzielczosci jezeli sa w jednym squere i tam nic niema to mozna isc prosto
 class PathFinder {
 public:
-	PathFinder(short resolution, float size, ComplexBucketData* complexData);
+	PathFinder(short resolution, float size);
 
 	~PathFinder();
+	void setComplexData(ComplexBucketData* complexData);
 	std::vector<int>* reconstruct_path(int start, int goal, const int came_from[]) const;
 	std::vector<int>* reconstruct_simplify_path(int start, int goal, const int came_from[]) const;
 

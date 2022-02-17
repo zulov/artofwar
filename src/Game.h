@@ -2,8 +2,7 @@
 #include <Urho3D/Container/Ptr.h>
 #include <Urho3D/Scene/Scene.h>
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class Console;
 	class Graphics;
 	class Context;
@@ -34,7 +33,7 @@ public:
 	static Game* setContext(Urho3D::Context* _context);
 	static Game* setUI(Urho3D::UI* _ui);
 	static Game* setGraphics(Urho3D::Graphics* _graphics);
-	static Game* setScene(const Urho3D::SharedPtr<Urho3D::Scene>& scene);
+	static Game* setScene(Urho3D::Scene* scene);
 	static Game* setConsole(Urho3D::Console* _console);
 	static Game* setLocalization(Urho3D::Localization* _localization);
 	static Game* setCameraManager(CameraManager* cameraManager);
@@ -50,7 +49,7 @@ public:
 	static void addTime(float time);
 
 	static Urho3D::Localization* getLocalization() { return instance->localization; }
-	static Urho3D::SharedPtr<Urho3D::Scene> getScene() { return instance->scene; }
+	static Urho3D::Scene* getScene() { return instance->scene; }
 	static Urho3D::Graphics* getGraphics() { return instance->graphics; }
 	static Urho3D::ResourceCache* getCache() { return instance->cache; }
 	static Urho3D::Context* getContext() { return instance->context; }
@@ -74,7 +73,7 @@ private:
 	Game();
 	static Game* instance;
 
-	Urho3D::SharedPtr<Urho3D::Scene> scene;
+	Urho3D::Scene* scene;
 	Urho3D::Localization* localization;
 	Urho3D::ResourceCache* cache;
 	Urho3D::Graphics* graphics;

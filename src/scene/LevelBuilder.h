@@ -21,7 +21,7 @@ public:
 	void createScene(NewGameForm* form);
 	Urho3D::Terrain* getTerrain() const;
 private:
-	Urho3D::SharedPtr<Urho3D::Scene> scene;
+	Urho3D::Scene * scene;
 	void createGround(const Urho3D::String& xmlName, int size);
 
 	Urho3D::Terrain* terrain{};
