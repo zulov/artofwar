@@ -15,11 +15,9 @@
 PathFinder::PathFinder(short resolution, float size) :
 	closeIndexes(CloseIndexesProvider::get(resolution)), calculator(GridCalculatorProvider::get(resolution, size)),
 	resolution(resolution), fieldSize(size / resolution), max_cost_to_ref(resolution * resolution - 1) {
-	tempPath = new std::vector<int>();
-	closePath = new std::vector<int>();
 	FibHeap::initCache();
 
-	auto sqRes = resolution * resolution;
+	const auto sqRes = resolution * resolution;
 	came_from = new int[sqRes];
 	cost_so_far = new float[sqRes];
 	std::fill_n(came_from, sqRes, -1);
@@ -27,18 +25,18 @@ PathFinder::PathFinder(short resolution, float size) :
 }
 
 PathFinder::~PathFinder() {
-	delete tempPath;
-	delete closePath;
-
 	delete[]came_from;
 	delete[]cost_so_far;
+
+	delete tempPath;
+	delete closePath;
 }
 
-void PathFinder::setComplexData(ComplexBucketData* complexData) {
+void PathFinder::setComplexBucketData(ComplexBucketData* complexData) {
 	this->complexData = complexData;
 }
 
-std::vector<int>* PathFinder::reconstruct_path(int start, int goal, const int came_from[]) const {
+const std::vector<int>* PathFinder::reconstructPath(int start, int goal, const int came_from[]) const {
 	tempPath->clear();
 	int current = goal;
 
@@ -52,7 +50,7 @@ std::vector<int>* PathFinder::reconstruct_path(int start, int goal, const int ca
 	return tempPath;
 }
 
-std::vector<int>* PathFinder::reconstruct_simplify_path(int start, int goal, const int came_from[]) const {
+const std::vector<int>* PathFinder::reconstructSimplifyPath(int start, int goal, const int came_from[]) const {
 	tempPath->clear();
 
 	int current = goal;
@@ -67,7 +65,7 @@ std::vector<int>* PathFinder::reconstruct_simplify_path(int start, int goal, con
 
 		int next = came_from[current];
 
-		if (next == current || next < 0) {
+		if (next == current || !calculator->isValidIndex(next)) {
 			assert(false);
 			break; //TODO BUG tu cos dziwnego sie dzieje
 		}
@@ -87,11 +85,18 @@ void PathFinder::prepareToStart(int startIdx) {
 	updateCost(startIdx, 0.f);
 }
 
-std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
+const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
 	prepareToStart(startIdx);
 	auto endCords = getCords(endIdxs);
 	assert(!endCords.empty());
-
+	//std::cout << startIdx << " " << endIdxs.at(0) << std::endl;
+	// if (startIdx == 52681) {
+	// 	 auto a = getCords(startIdx);
+	// 	
+	// 	 std::cout << a.x_ << " " << a.y_ << std::endl;
+	// 	tempPath->clear();
+	// 	return tempPath;
+	// }
 	int steps = 0;
 	while (!frontier.empty()) {
 		++steps;
@@ -101,7 +106,7 @@ std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>&
 		const auto current = frontier.get();
 		if (std::ranges::any_of(endIdxs, [current](int i) { return i == current; })) {
 			//debug(startIdx, endIdx);
-			return reconstruct_simplify_path(startIdx, current, came_from);
+			return reconstructSimplifyPath(startIdx, current, came_from);
 		}
 		auto const& currentData = complexData[current];
 		for (auto i : closeIndexes->getTabIndexes(current)) {
@@ -120,15 +125,12 @@ std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>&
 			}
 		}
 	}
-	if (startIdx == 8252) {
-		std::cout << startIdx << ";" << (endIdxs.at(0)) << std::endl;
-	}
 	//debug(startIdx, endIdx);
 	tempPath->clear();
 	return tempPath;
 }
 
-std::vector<int>* PathFinder::getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const {
+const std::vector<int>* PathFinder::getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const {
 	if (!closePass.empty()) {
 		for (auto pass : closePass) {
 			auto newPass = pass + startIdx;
@@ -145,7 +147,7 @@ std::vector<int>* PathFinder::getClosePath2(int startIdx, int endIdx, const std:
 	return nullptr;
 }
 
-std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
+const std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 	endIdx = getPassableEnd(endIdx); //TODO improve kolejnosc tego  i nize jest istotna?
 
 	if (ifInCache(startIdx, endIdx)) {
@@ -167,7 +169,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 	return realFindPath(startIdx, endIdxs, limit);
 }
 
-std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
+const std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
 	if (endIdxs.empty()) {
 		closePath->clear();
 		return closePath;
@@ -179,7 +181,6 @@ std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& end
 	auto newEndIndexes = getPassableIndexes(endIdxs);
 	if (newEndIndexes.empty()) {
 		Game::getLog()->WriteRaw("No TargetFound");
-		getPassableIndexes(endIdxs);
 		closePath->clear();
 		return closePath;
 	}
@@ -263,6 +264,7 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 		int end = startIndex;
 		while (!frontier.empty()) {
 			const auto current = frontier.get();
+			assert(calculator->isValidIndex(current));
 			auto& currentData = complexData[current];
 			if (!currentData.allNeightOccupied()) {
 				end = current;
@@ -272,7 +274,7 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 			for (auto i : closeIndexes->getTabIndexes(current)) {
 				if (!currentData.ifNeightIsFree(i)) {
 					int nI = current + closeIndexes->getIndexAt(i);
-					assert(nI >= 0 && nI < resolution* resolution);
+					assert(calculator->isValidIndex(nI));
 					if (!complexData[nI].allNeightOccupied()
 						&& std::ranges::find(refreshed, nI) != refreshed.end()) {
 						//TODO to chyba glupi warunek
@@ -291,15 +293,17 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 				}
 			}
 		}
-		std::vector<int>* path = reconstruct_path(startIndex, end, came_from);
+		const std::vector<int>* path = reconstructPath(startIndex, end, came_from);
 		if (!path->empty()) {
 			int current2 = startIndex;
 			for (int i = 1; i < path->size(); ++i) {
+				assert(calculator->isValidIndex(current2));
 				complexData[current2].setEscapeThrough(path->at(i));
 				refreshed.push_back(current2);
 				current2 = path->at(i);
 			}
 		} else {
+			assert(calculator->isValidIndex(startIndex));
 			refreshed.push_back(startIndex);
 			complexData[startIndex].setEscapeThrough(-1);
 		}
@@ -351,7 +355,7 @@ void PathFinder::debug(int start, int end) {
 	draw_grid_cost(cost_so_far, image, resolution);
 	image->SaveBMP("result/images/" + prefix + "3_grid_cost.bmp");
 
-	auto path = reconstruct_path(start, end, came_from);
+	auto path = reconstructPath(start, end, came_from);
 	draw_grid_path(path, image, resolution);
 
 	image->SaveBMP("result/images/" + prefix + "4_grid_path.bmp");
@@ -398,13 +402,14 @@ void PathFinder::resetPathArrays() {
 	assert(min_cost_to_ref != resolution * resolution - 1);
 	//std::fill_n(cost_so_far + min_cost_to_ref, max_cost_to_ref + 1 - min_cost_to_ref, -1.f);
 	std::fill(cost_so_far + min_cost_to_ref, cost_so_far + max_cost_to_ref + 1, -1.f);
+	//std::fill_n(cost_so_far, resolution * resolution, -1.f);
 
 	int x = -1;
 	int y = -1;
 	long long val = ((long long)x) << 32 | y;
 
 	memset(came_from + min_cost_to_ref / 2, val, (max_cost_to_ref + 2 - min_cost_to_ref) / 2);
-
+	//std::fill_n(came_from, resolution * resolution, -1);
 	min_cost_to_ref = resolution * resolution - 1;
 	max_cost_to_ref = 0;
 }

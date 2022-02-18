@@ -44,7 +44,7 @@ public:
 
 	FibHeap(): tempSize(100) {
 		temp = new FibNode*[tempSize];
-		const short initialSize = 20;
+		const short initialSize = 1024;
 		freePool.reserve(initialSize);
 		allPool.reserve(initialSize);
 		for (auto i = 0; i < initialSize; ++i) {

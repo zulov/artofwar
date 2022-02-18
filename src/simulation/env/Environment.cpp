@@ -455,15 +455,15 @@ Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size,
 	return mainGrid.getValidPosition(size, getCenter(calculator->getIndex(bucketCords.x_, bucketCords.y_)));
 }
 
-std::vector<int>* Environment::findPath(int startIdx, const Urho3D::Vector2& aim, int limit) {
+const std::vector<int>* Environment::findPath(int startIdx, const Urho3D::Vector2& aim, int limit) {
 	return mainGrid.findPath(startIdx, calculator->indexFromPosition(aim), limit);
 }
 
-std::vector<int>* Environment::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
+const std::vector<int>* Environment::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
 	return mainGrid.findPath(startIdx, endIdxs, limit);
 }
 
-std::vector<int>* Environment::findPath(int startIdx, int endIdx, int limit) {
+const std::vector<int>* Environment::findPath(int startIdx, int endIdx, int limit) {
 	return mainGrid.findPath(startIdx, endIdx, limit);
 }
 

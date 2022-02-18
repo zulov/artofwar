@@ -1,6 +1,7 @@
 #include "Force.h"
 #include <Urho3D/IO/Log.h>
 #include "Game.h"
+#include "database/db_strcut.h"
 #include "math/MathUtils.h"
 
 #include "math/RandGen.h"
@@ -26,12 +27,11 @@ void Force::separationObstacle(Urho3D::Vector2& newForce, Unit* unit) {
 	newForce += force;
 }
 
-void Force::randSepForce(Urho3D::Vector2& newForce) {
-	Urho3D::Vector2 force;
-	force.x_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE, 1.f) - 0.5f;
-	force.y_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE, 1.f) - 0.5f;
-	force *= boostCoef * sepCoef;
-	newForce += force;
+void Force::randSepForce(Urho3D::Vector2& diff) const {
+	diff.x_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE, 1.f) - 0.5f;
+	diff.y_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE, 1.f) - 0.5f;
+	diff.Normalize();
+	diff /= 1000;
 }
 
 void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Physical*>* neights) {
@@ -48,14 +48,14 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 
 		auto diff = dirTo(neight->getPosition(), unit->getPosition());
 
-		const float sqDistance = diff.LengthSquared();
+		float sqDistance = diff.LengthSquared();
 
 		if (sqDistance > sqSepDist //jezeli za dalko lub jest liderem a sasiad jest z tego samego
 			|| (isLeader && unit->getFormation() == neight->getFormation())) { continue; }
 
 		if (sqDistance == 0.f) {
-			randSepForce(newForce);
-			return;
+			randSepForce(diff);
+			sqDistance = diff.LengthSquared();
 		}
 		const float distance = sqrt(sqDistance);
 

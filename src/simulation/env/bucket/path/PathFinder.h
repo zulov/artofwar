@@ -18,12 +18,12 @@ public:
 	PathFinder(short resolution, float size);
 
 	~PathFinder();
-	void setComplexData(ComplexBucketData* complexData);
-	std::vector<int>* reconstruct_path(int start, int goal, const int came_from[]) const;
-	std::vector<int>* reconstruct_simplify_path(int start, int goal, const int came_from[]) const;
+	void setComplexBucketData(ComplexBucketData* complexData);
+	const std::vector<int>* reconstructPath(int start, int goal, const int came_from[]) const;
+	const std::vector<int>* reconstructSimplifyPath(int start, int goal, const int came_from[]) const;
 
-	std::vector<int>* findPath(int startIdx, int endIdx, int limit);
-	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit);
+	const std::vector<int>* findPath(int startIdx, int endIdx, int limit);
+	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit);
 
 	void refreshWayOut(std::vector<int>& toRefresh);
 
@@ -31,8 +31,8 @@ public:
 	void debug(int start, int end);
 	void drawMap(Urho3D::Image* image) const;
 private:
-	std::vector<int>* realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit);
-	std::vector<int>* getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const;
+	const std::vector<int>* realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit);
+	const std::vector<int>* getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const;
 
 	void prepareToStart(int startIdx);
 	bool validateIndex(int current, int next) const;
@@ -52,13 +52,17 @@ private:
 	bool isInLocalArea(int center, int indexOfAim) const;
 	bool isInLocal2Area(int center, int indexOfAim) const;
 	int isInLocalArea(int center, std::vector<int>& endIdxs) const;
-	void updateCost(int startIdx, float x);
+	void updateCost(int idx, float x);
+
+	
 
 	CloseIndexes* closeIndexes;
 	GridCalculator* calculator;
 
-	std::vector<int>* tempPath;
-	std::vector<int>* closePath;
+	FibHeap frontier;
+
+	std::vector<int>* tempPath = new std::vector<int>();
+	std::vector<int>* closePath = new std::vector<int>();
 
 	int lastStartIdx = -1;
 	int lastEndIdx = -1;
@@ -74,5 +78,4 @@ private:
 	int max_cost_to_ref;
 	unsigned short staticCounter = 0;
 
-	FibHeap frontier;
 };

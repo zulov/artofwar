@@ -30,7 +30,7 @@ public:
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->thingToInteract = parameter.thingToInteract;
-		shot(unit);
+		//shot(unit);// TODO bug a co to tu robi?
 		unit->thingToInteract->upRange();
 		unit->currentFrameState = 0;
 	}

@@ -87,9 +87,10 @@ public:
 			const auto val = unit->getAttackVal(unit);
 			const auto [value, died] = first->absorbAttack(val);
 			Game::getEnvironment()->addAttack(unit->getPlayer(), first->getPosition(), value);
-			if(died) {
+			if (died) {
 				Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(first);
 			}
+			unit->currentFrameState = 0;
 		}
 		++unit->currentFrameState;
 	}

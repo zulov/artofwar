@@ -16,12 +16,11 @@
 
 
 MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
-	Grid(resolution, size, true, maxQueryRadius), pathFinder(resolution, size) {
-	complexData = new ComplexBucketData[sqResolution];
-	pathFinder.setComplexData(complexData);
+	Grid(resolution, size, true, maxQueryRadius), complexData(new ComplexBucketData[sqResolution]),
+	pathFinder(resolution, size) {
 	const auto quarter = calculator->getFieldSize() / 4;
-
-	posInBucket4 = {
+	pathFinder.setComplexBucketData(complexData);
+	posInBucket = {
 		Urho3D::Vector2(quarter, quarter), Urho3D::Vector2(-quarter, -quarter),
 		Urho3D::Vector2(quarter, -quarter), Urho3D::Vector2(-quarter, quarter)
 	};
@@ -121,7 +120,7 @@ Urho3D::Vector2 MainGrid::getPositionInBucket(Unit* unit) {
 		}
 	}
 	const auto center = calculator->getCenter(index);
-	Urho3D::Vector2 tab[] = {center, posInBucket4[ordinal] + center};
+	Urho3D::Vector2 tab[] = {center, posInBucket[ordinal] + center};
 	return tab[max != 1];
 }
 
@@ -405,11 +404,11 @@ float inline MainGrid::cost(const Urho3D::IntVector2& centerParams, int next) co
 	return calculator->getDistance(centerParams, next);
 }
 
-std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, int limit) {
+const std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, int limit) {
 	return pathFinder.findPath(startIdx, endIdx, limit);
 }
 
-std::vector<int>* MainGrid::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
+const std::vector<int>* MainGrid::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
 	return pathFinder.findPath(startIdx, endIdxs, limit);
 }
 

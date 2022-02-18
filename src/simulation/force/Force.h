@@ -25,7 +25,7 @@ public:
 
 private:
 	float calculateCoef(float distance, float minDist) const;
-	void randSepForce(Urho3D::Vector2& newForce);
+	void randSepForce(Urho3D::Vector2& newForce) const;
 	float boostCoef = 100;
 
 	float sepCoef = 10;

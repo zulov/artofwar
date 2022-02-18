@@ -36,8 +36,8 @@ public:
 	void updateNeighbors(ComplexBucketData& data, int current) const;
 	float cost(const Urho3D::IntVector2& centerParams, int next) const;
 
-	std::vector<int>* findPath(int startIdx, int endIdx, int limit);
-	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit);
+	const std::vector<int>* findPath(int startIdx, int endIdx, int limit);
+	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit);
 
 	void drawComplex(Urho3D::Image* image, Urho3D::String prefix) const;
 
@@ -74,7 +74,7 @@ public:
 private:
 	ComplexBucketData* complexData;
 	PathFinder pathFinder;
+	std::array<Urho3D::Vector2, 4> posInBucket;
 
-	std::array<Urho3D::Vector2, 4> posInBucket4;
 	int counter = 0;
 };

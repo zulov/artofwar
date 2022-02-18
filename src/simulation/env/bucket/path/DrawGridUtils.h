@@ -10,7 +10,7 @@ inline Urho3D::IntVector2 getCords(const int index, const short resolution) {
 	return Urho3D::IntVector2(index / resolution, index % resolution);
 }
 
-void draw_grid_path(std::vector<int>* path, Urho3D::Image* image, short resolution) {
+void draw_grid_path(const std::vector<int>* path, Urho3D::Image* image, short resolution) {
 	auto data = (uint32_t*)image->GetData();
 	for (auto value : *path) {
 		Urho3D::IntVector2 a = getCords(value, resolution);
