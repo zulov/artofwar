@@ -50,18 +50,22 @@ public:
 	}
 
 	void onEnd(Unit* unit) override {
-		if (unit->isFirstThingAlive()) {
-			reduce(unit, unit->thingToInteract);
-		}
+		reduce(unit, unit->thingToInteract);
+
 		unit->maxSpeed = unit->dbLevel->maxSpeed;
-		unit->thingToInteract = nullptr;
-		unit->indexToInteract = -1;
-		Game::getEnvironment()->updateCell(unit->indexToInteract, -1, CellState::NONE);
 	}
 
 	void reduce(Unit* unit, Physical* first) {
-		first->reduceClose();
-		first->setOccupiedIndexSlot(unit->slotToInteract, false);
+		if (unit->isFirstThingAlive()) {
+			first->reduceClose();
+			first->setOccupiedIndexSlot(unit->slotToInteract, false);
+		}
+		if (unit->indexToInteract > 0) {
+			Game::getEnvironment()->updateCell(unit->indexToInteract, -1, CellState::NONE);
+		}
+
+		unit->thingToInteract = nullptr;
+		unit->indexToInteract = -1;
 	}
 
 	void execute(Unit* unit, float timeStep) override {
@@ -72,7 +76,6 @@ public:
 		const auto first = unit->thingToInteract;
 		if (unit->indexChanged() || first->indexChanged()) {
 			reduce(unit, first);
-			unit->thingToInteract = nullptr;
 
 			auto const indexesToUse = first->getIndexesForUse(unit);
 			const auto found = std::ranges::find(indexesToUse, unit->getMainGridIndex());

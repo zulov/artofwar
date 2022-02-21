@@ -103,6 +103,7 @@ bool MainGrid::cellInState(int index, CellState state) const {
 }
 
 void MainGrid::updateCell(int index, char val, CellState cellState) const {
+	assert(calculator->isValidIndex(index));
 	complexData[index].updateSize(val, cellState);
 }
 

@@ -31,7 +31,7 @@ bool BuildingActionCommand::expired() {
 }
 
 void BuildingActionCommand::execute() {
-	for (auto building : buildings) {
+	for (const auto building : buildings) {
 		building->action(action, id);
 	}
 }

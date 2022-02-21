@@ -18,7 +18,7 @@ Static::Static(Urho3D::Vector3& _position, int indexInGrid, bool withNode) : Phy
 }
 
 Static::~Static() {
-	delete data;
+	delete []data;
 }
 
 void Static::load(dbload_static* dbloadStatic) {
