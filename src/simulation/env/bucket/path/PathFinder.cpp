@@ -89,14 +89,7 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 	prepareToStart(startIdx);
 	auto endCords = getCords(endIdxs);
 	assert(!endCords.empty());
-	//std::cout << startIdx << " " << endIdxs.at(0) << std::endl;
-	// if (startIdx == 52681) {
-	// 	 auto a = getCords(startIdx);
-	// 	
-	// 	 std::cout << a.x_ << " " << a.y_ << std::endl;
-	// 	tempPath->clear();
-	// 	return tempPath;
-	// }
+
 	int steps = 0;
 	while (!frontier.empty()) {
 		++steps;

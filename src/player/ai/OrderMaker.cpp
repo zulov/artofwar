@@ -80,7 +80,7 @@ void OrderMaker::action() {
 							const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
 							//TODO perf wrzuciæ predykat do œrodka
 							std::vector<Physical*> workers;
-							workers.resize(neights->size());
+							workers.reserve(neights->size());
 							auto pred = [](const Physical* physical) {
 								return ((Unit*)physical)->getDbUnit()->typeWorker;
 							};

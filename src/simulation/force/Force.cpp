@@ -41,8 +41,10 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 	Urho3D::Vector2 force;
 	const bool isLeader = Game::getFormationManager()->isLeader(unit);
 
-	for (auto physical : *neights) {
-		auto neight = dynamic_cast<Unit*>(physical); //TODO perf rzutoac calosc vectoru
+	const std::span<Unit*> neights2 = std::span((Unit**)neights->data(), neights->size());
+	for (auto neight : neights2) {
+		//	for (auto physical : *neights) {
+		//	auto neight = dynamic_cast<Unit*>(physical); //TODO perf rzutoac calosc vectoru
 		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 
@@ -98,7 +100,7 @@ void Force::destination(Urho3D::Vector2& newForce, Unit* unit, float factor) {
 
 void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 	assert(!unit->hasAim());
-	if(unit->hasAim()) {
+	if (unit->hasAim()) {
 		Game::getLog()->Write(3, "ERROR unit still has aims");
 	}
 

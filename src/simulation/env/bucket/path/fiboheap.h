@@ -16,7 +16,7 @@ public:
 	public:
 		FibNode(const float k, const int pl):
 			left(nullptr), right(nullptr), child(nullptr),
-			key(k), payload(pl), degree(0) { }
+			key(k), payload(pl), degree(0), used(false) { }
 
 		FibNode(const FibNode& obj) = delete;
 		~FibNode() = default;
@@ -40,9 +40,10 @@ public:
 		float key;
 		int payload;
 		unsigned short degree;
+		bool used;
 	};
 
-	FibHeap(): tempSize(100) {
+	FibHeap(): tempSize(64) {
 		temp = new FibNode*[tempSize];
 		const short initialSize = 1024;
 		freePool.reserve(initialSize);
@@ -88,9 +89,12 @@ public:
 	void clear() {
 		n = 0;
 		minNode = nullptr;
-		for (const auto fibNode : allPool) {
+		for (const auto fibNode : usedPool) {
 			resetNode(fibNode);
+			fibNode->used = false;
 		}
+		assert(allPool.size() == freePool.size());
+		usedPool.clear();
 		std::fill_n(temp, tempSize, nullptr);
 	}
 
@@ -234,6 +238,11 @@ public:
 
 	void put(const int pl, const float k) {
 		const auto x = getNode(pl, k);
+		if (!x->used) {
+			usedPool.push_back(x);
+			x->used = true;
+		}
+
 		x->degree = 0;
 		//x->child = nullptr;
 		if (minNode == nullptr) {
@@ -253,6 +262,7 @@ public:
 	FibNode* minNode{};
 	std::vector<FibNode*> freePool;
 	std::vector<FibNode*> allPool;
+	std::vector<FibNode*> usedPool;
 	FibNode** temp;
 	unsigned short tempSize;
 
