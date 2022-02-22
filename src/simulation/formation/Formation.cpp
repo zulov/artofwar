@@ -364,7 +364,9 @@ void Formation::updateUnits() {
 			[this](Unit* unit) {
 				const bool ifErase = !unit->isAlive() || unit->getFormation() != id;
 				if (ifErase) {
-					unit->resetFormation();
+					if(unit->getFormation() == id) {
+						unit->resetFormation();
+					}
 					changed = true;
 				}
 				return ifErase;
