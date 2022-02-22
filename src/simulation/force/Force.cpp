@@ -98,6 +98,10 @@ void Force::destination(Urho3D::Vector2& newForce, Unit* unit, float factor) {
 
 void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 	assert(!unit->hasAim());
+	if(unit->hasAim()) {
+		Game::getLog()->Write(3, "ERROR unit still has aims");
+	}
+
 	const auto formMng = Game::getFormationManager();
 
 	auto posOpt = formMng->getPositionFor(unit); //TODO czasem jest niepassable

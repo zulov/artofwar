@@ -104,6 +104,9 @@ bool Unit::move(float timeStep, const CameraInfo* camInfo) {
 }
 
 bool Unit::ifVisible(bool hasMoved, const CameraInfo* camInfo) const {
+	if (SIM_GLOBALS.HEADLESS) {
+		return false;
+	}
 	if (!(camInfo->hasMoved || hasMoved)) {
 		return shouldUpdate;
 	}
@@ -181,6 +184,7 @@ void Unit::updateHeight(float y, double timeStep) {
 }
 
 void Unit::addOrder(IndividualOrder* aim) {
+	resetFormation();
 	aims.add(aim);
 }
 

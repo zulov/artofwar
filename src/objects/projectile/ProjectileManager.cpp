@@ -12,7 +12,7 @@ constexpr int MAX_PROJECTILE_NODES = 100;
 void ProjectileManager::update(float timeStep) {
 	for (const auto projectile : instance->projectiles) {
 		projectile->update(timeStep);
-		//TODO perf set lowest free
+		//TODO perf free pool
 	}
 }
 
