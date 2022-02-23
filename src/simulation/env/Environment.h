@@ -94,7 +94,7 @@ public:
 	Urho3D::Vector2 getCenter(int index) const;
 	Urho3D::Vector2 getCenter(short x, short z) const;
 
-	Urho3D::Vector2 getPositionInBucket(Unit* unit);
+	Urho3D::Vector2 getPositionInBucket(Unit* unit) const;
 
 	void invalidatePathCache();
 

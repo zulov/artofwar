@@ -308,7 +308,7 @@ Urho3D::Vector2 Environment::getCenter(short x, short z) const {
 	return getCenter(calculator->getIndex(x, z));
 }
 
-Urho3D::Vector2 Environment::getPositionInBucket(Unit* unit) {
+Urho3D::Vector2 Environment::getPositionInBucket(Unit* unit) const {
 	return mainGrid.getPositionInBucket(unit);
 }
 

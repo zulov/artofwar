@@ -24,6 +24,7 @@ public:
 	void changeCoef(int i, int wheel);
 
 private:
+	void turnIfAreOpposite(Urho3D::Vector2& newForce, Urho3D::Vector2& force) const;
 	float calculateCoef(float distance, float minDist) const;
 	void randSepForce(Urho3D::Vector2& newForce) const;
 	float boostCoef = 100;

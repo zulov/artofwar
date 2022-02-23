@@ -376,8 +376,9 @@ void Simulation::calculateForces() {
 
 			force.separationUnits(newForce, unit, neighbours);
 			force.separationObstacle(newForce, unit);
-			force.destOrFormation(newForce, unit);
 			force.escapeFromInvalidPosition(newForce, unit);
+
+			force.destOrFormation(newForce, unit);
 		}
 		}
 

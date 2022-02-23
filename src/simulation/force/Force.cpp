@@ -9,6 +9,7 @@
 #include "simulation/env/Environment.h"
 #include "simulation/formation/FormationManager.h"
 
+constexpr float CLOSEST_DIST = 0.00005f;
 
 void Force::separationObstacle(Urho3D::Vector2& newForce, Unit* unit) {
 	auto force = Game::getEnvironment()->repulseObstacle(unit);
@@ -31,7 +32,7 @@ void Force::randSepForce(Urho3D::Vector2& diff) const {
 	diff.x_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE, 1.f) - 0.5f;
 	diff.y_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE, 1.f) - 0.5f;
 	diff.Normalize();
-	diff /= 1000;
+	diff *= CLOSEST_DIST;
 }
 
 void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Physical*>* neights) {
@@ -44,7 +45,7 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 	const std::span<Unit*> neights2 = std::span((Unit**)neights->data(), neights->size());
 	for (auto neight : neights2) {
 		//	for (auto physical : *neights) {
-		//	auto neight = dynamic_cast<Unit*>(physical); //TODO perf rzutoac calosc vectoru
+		//	auto neight = dynamic_cast<Unit*>(physical);
 		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 
@@ -85,13 +86,20 @@ void Force::destOrFormation(Urho3D::Vector2& newForce, Unit* unit) {
 			destination(newForce, unit, 0.05f);
 		}
 	} else {
-		//aims.clearExpired();
 		formation(newForce, unit);
+	}
+}
+
+void Force::turnIfAreOpposite(Urho3D::Vector2& newForce, Urho3D::Vector2& force) const  {
+	if (!force.Equals(Urho3D::Vector2::ZERO) && (force.Normalized() + newForce.Normalized()).Equals(Urho3D::Vector2::ZERO)) {
+		force += force.Length() * 0.1f * Urho3D::Vector2(force.y_, -force.x_);
 	}
 }
 
 void Force::destination(Urho3D::Vector2& newForce, Unit* unit, float factor) {
 	auto force = unit->getDestination(boostCoef, aimCoef * factor);
+
+	turnIfAreOpposite(newForce, force);
 
 	forceStats.addDest(force);
 
@@ -137,6 +145,8 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 			}
 			force *= formationCoef * boostCoef * priority;
 
+			turnIfAreOpposite(newForce, force);
+
 			forceStats.addForm(force);
 
 			newForce += force;
@@ -156,7 +166,7 @@ void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit) {
 }
 
 void Force::inCell(Urho3D::Vector2& newForce, Unit* unit) const {
-	auto aim = Game::getEnvironment()->getPositionInBucket(unit);
+	const auto aim = Game::getEnvironment()->getPositionInBucket(unit);
 	auto force = dirTo(unit->getPosition(), aim);
 	//TODO czy to normalizacja?
 	force *= inCellCoef * boostCoef;
@@ -189,8 +199,8 @@ void Force::changeCoef(int i, int wheel) {
 
 float Force::calculateCoef(const float distance, const float minDist) const {
 	float parameter = distance - minDist / 2;
-	if (parameter <= 0.00005f) {
-		parameter = 0.00005f;
+	if (parameter <= CLOSEST_DIST) {
+		parameter = CLOSEST_DIST;
 	}
 	return 1 / parameter;
 }
