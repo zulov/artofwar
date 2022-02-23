@@ -174,7 +174,7 @@ std::vector<dbload_resource_entities*>* SceneLoader::loadResourcesEntities() {
 void SceneLoader::load(const std::string& sql, int (*load)(void*, int, char**, char**)) const {
 	char* error;
 	int rc = sqlite3_exec(database, sql.c_str(), load, dbLoad, &error);
-	ifError(rc, error);
+	ifError(rc, error, sql);
 }
 
 void SceneLoader::end() {

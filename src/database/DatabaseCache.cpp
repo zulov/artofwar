@@ -10,7 +10,7 @@
 void DatabaseCache::execute(const std::string& sql, int (*load)(void*, int, char**, char**)) const {
 	char* error;
 	const int rc = sqlite3_exec(database, sql.c_str(), load, dbContainer, &error);
-	ifError(rc, error);
+	ifError(rc, error, sql);
 }
 
 bool DatabaseCache::openDatabase(const std::string& name) {
@@ -20,7 +20,7 @@ bool DatabaseCache::openDatabase(const std::string& name) {
 		sqlite3_close_v2(database);
 		return true;
 	}
-	std::cout << "Database Opened: " << name << std::endl;
+	//std::cout << "Database Opened: " << name << std::endl;
 	return false;
 }
 

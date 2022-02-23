@@ -608,7 +608,7 @@ SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {
 }
 
 void Main::readParameters() {
-	auto const &arguments = GetArguments();
+	auto const& arguments = GetArguments();
 
 	for (unsigned i = 0; i < arguments.Size(); ++i) {
 		auto& current = arguments[i];
@@ -635,7 +635,7 @@ void Main::readParameters() {
 			} else if (argument == "aioutput") {
 				SimGlobals::AI_OUTPUT = true;
 			} else if (argument == "savename") {
-				saveToLoad = value;
+				saveToLoad = SIM_GLOBALS.DATABASE_NUMBER + value;
 			} else if (argument == "outputname" && !value.Empty()) {
 				SimGlobals::OUTPUT_NAMES = value.Split('|');
 				SimGlobals::MAX_RUNS = SimGlobals::OUTPUT_NAMES.Size();
@@ -677,13 +677,13 @@ void Main::readParameters() {
 }
 
 void Main::miniReadParameters() const {
-	auto const &arguments = GetArguments();
-	
+	auto const& arguments = GetArguments();
+
 	for (unsigned i = 0; i < arguments.Size(); ++i) {
 		if (arguments[i].Length() > 1 && arguments[i][0] == '-') {
 			String argument = arguments[i].Substring(1).ToLower();
 			const String value = i + 1 < arguments.Size() ? arguments[i + 1] : String::EMPTY;
-	
+
 			if (argument == "databasename" && !value.Empty()) {
 				SimGlobals::DATABASE_NUMBER = value;
 				++i;

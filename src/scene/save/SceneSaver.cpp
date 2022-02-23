@@ -22,7 +22,7 @@ void SceneSaver::createTable(const std::string& sql) const {
 	const char* charSql = (SQLConsts::CREATE_TABLE + sql).c_str();
 	char* error;
 	const int rc = sqlite3_exec(database, charSql, nullptr, nullptr, &error);
-	ifError(rc, error);
+	ifError(rc, error, sql);
 }
 
 void SceneSaver::createBuildingsTable() const {
@@ -82,11 +82,11 @@ void SceneSaver::executeInsert(std::string& sql) const {
 	sql[sql.size() - 1] = ';';
 	sqlite3_stmt* stmt;
 	const int rc = sqlite3_prepare(database, sql.c_str(), -1, &stmt, NULL);
-	ifError(rc, NULL);
+	ifError(rc, NULL, sql);
 	const int rc1 = sqlite3_step(stmt);
-	ifError(rc1, NULL);
+	ifError(rc1, NULL, sql);
 	const int rc2 = sqlite3_finalize(stmt);
-	ifError(rc2, NULL);
+	ifError(rc2, NULL, sql);
 }
 
 void SceneSaver::saveUnits(std::vector<Unit*>* units) {
