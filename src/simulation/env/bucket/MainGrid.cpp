@@ -107,20 +107,25 @@ void MainGrid::updateCell(int index, char val, CellState cellState) const {
 	complexData[index].updateSize(val, cellState);
 }
 
-Urho3D::Vector2 MainGrid::getPositionInBucket(Unit* unit) {
+Urho3D::Vector2 MainGrid::getPositionInBucket(Unit* unit) const {
 	const auto index = unit->getMainGridIndex();
 	char ordinal = -1;
 	char max = 0;
 	const auto state = unit->getState();
-	for (auto physical : buckets[index].getContent()) {
-		if (static_cast<Unit*>(physical)->getState() == state) {
+	const auto center = calculator->getCenter(index);
+	auto& content = buckets[index].getContentAsUnit();
+	if (content.size() == 1) {
+		return center;
+	}
+	for (const auto physical : content) {
+		if (physical->getState() == state) {
 			if (physical == unit && ordinal < 0) {
 				ordinal = max;
 			}
 			++max;
 		}
 	}
-	const auto center = calculator->getCenter(index);
+
 	Urho3D::Vector2 tab[] = {center, posInBucket[ordinal] + center};
 	return tab[max != 1];
 }

@@ -1,6 +1,8 @@
 #pragma once
+#include <span>
 #include <vector>
 
+class Unit;
 struct content_info;
 class Physical;
 
@@ -14,6 +16,11 @@ public:
 	void reserve(int i);
 
 	const std::vector<Physical*>& getContent() const { return content; }
+
+	const std::span<Unit*>& getContentAsUnit() const {
+		return std::span((Unit**)content.data(), content.size());
+	}
+
 	void add(Physical* entity);
 	void add(const std::vector<Physical*>& things);
 	void remove(Physical* entity);

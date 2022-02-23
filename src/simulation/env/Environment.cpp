@@ -160,7 +160,6 @@ Environment::getResources(const Urho3D::Vector3& center, int id, float radius, f
 		}
 	}
 
-
 	return neights;
 }
 
