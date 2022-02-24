@@ -63,9 +63,9 @@ Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE),
 void Main::Setup() {
 	miniReadParameters();
 	Game::setDatabaseCache(new DatabaseCache(SIM_GLOBALS.DATABASE_NUMBER.CString()));
-	db_settings* settings = Game::getDatabase()->getSettings();
-	db_graph_settings* graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
-	db_resolution* resolution = Game::getDatabase()->getResolution(settings->resolution);
+	const db_settings* settings = Game::getDatabase()->getSettings();
+	const db_graph_settings* graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
+	const db_resolution* resolution = Game::getDatabase()->getResolution(settings->resolution);
 	engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
 
 	engineParameters_[EP_FULL_SCREEN] = graphSettings->fullscreen;
@@ -124,8 +124,7 @@ void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>
 		}
 
 		for (auto& func : funcs2) {
-			auto vals = func(player);
-			for (const auto val : vals) {
+			for (const auto val : func(player)) {
 				outFile << ";" << val;
 			}
 		}
@@ -138,7 +137,9 @@ void Main::writeOutput() const {
 	if (!outputName.Empty()) {
 		writeOutput(
 			{
-				[](Player* p) -> float { return p->getScore(); }
+				[](Player* p) -> float { return p->getScore(); },
+				[](Player* p) -> float { return p->getPossession().getUnitsNumber(); },
+				[](Player* p) -> float { return p->getPossession().getBuildingsNumber(); }
 			},
 			{
 				[](Player* p) -> std::span<float> { return p->getResources().getValues(); },

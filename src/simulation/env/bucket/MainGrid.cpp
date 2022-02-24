@@ -352,7 +352,7 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 		//auto& neights = complexData[index].getNeightbours();
 		if (!data.allNeightOccupied()) {
 			float dist = 999999;
-			auto center = calculator->getCenter(index);
+			const auto center = calculator->getCenter(index);
 			for (auto i : closeIndexes->getTabIndexes(index)) {
 				if (data.ifNeightIsFree(i)) {
 					int ni = index + closeIndexes->getIndexAt(i);
