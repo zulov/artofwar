@@ -109,25 +109,18 @@ void MainGrid::updateCell(int index, char val, CellState cellState) const {
 
 Urho3D::Vector2 MainGrid::getPositionInBucket(Unit* unit) const {
 	const auto index = unit->getMainGridIndex();
-	char ordinal = -1;
-	char max = 0;
-	const auto state = unit->getState();
+
 	const auto center = calculator->getCenter(index);
-	auto& content = buckets[index].getContentAsUnit();
+
+	auto& content = buckets[index].getContent();
 	if (content.size() == 1) {
 		return center;
 	}
-	for (const auto physical : content) {
-		if (physical->getState() == state) {
-			if (physical == unit && ordinal < 0) {
-				ordinal = max;
-			}
-			++max;
-		}
-	}
 
-	Urho3D::Vector2 tab[] = {center, posInBucket[ordinal] + center};
-	return tab[max != 1];
+	const auto pos = std::ranges::find(content, unit);
+	const auto idx = pos - content.begin();
+	assert(idx >= 0 && idx <= 4);
+	return posInBucket[idx] + center;
 }
 
 unsigned char MainGrid::getRevertCloseIndex(int center, int gridIndex) const {

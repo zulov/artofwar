@@ -17,9 +17,9 @@ public:
 
 	const std::vector<Physical*>& getContent() const { return content; }
 
-	const std::span<Unit*>& getContentAsUnit() const {
-		return std::span((Unit**)content.data(), content.size());
-	}
+	//const std::span<Unit*>& getContentAsUnit() const {
+	//	return std::span((Unit**)content.data(), content.size());
+	//}
 
 	void add(Physical* entity);
 	void add(const std::vector<Physical*>& things);
