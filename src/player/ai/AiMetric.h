@@ -203,20 +203,36 @@ const inline struct MetricDefinitions {
 		{[](db_building* b, db_building_level* l) -> float { return l->attackReload; }, 200, BUILDINGS_SUM_X},
 		{[](db_building* b, db_building_level* l) -> float { return l->attackRange; }, 20, BUILDINGS_SUM_X},
 		//TODO suma tego nie ma sensu flaga ze to nie ma sensu albo ujemna wartoœæ
-		{[](db_building* b, db_building_level* l) -> float { return b->typeDefence; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeResource; }, 4, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeTechnology; }, 2, BUILDINGS_SUM_X},
 		{[](db_building* b, db_building_level* l) -> float { return b->typeCenter; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeUnit; }, 3, BUILDINGS_SUM_X}
+		{[](db_building* b, db_building_level* l) -> float { return b->typeHome; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeDefence; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeResourceFood; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeResourceWood; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeResourceStone; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeResourceGold; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeTechBlacksmith; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeTechUniversity; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeUnitBarracks; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeUnitRange; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeUnitCavalry; }, 1, BUILDINGS_SUM_X},
+
 	};
 
 
 	static inline AiBuildingMetric aiSmallBuildingMetric[] = {
-		{[](db_building* b, db_building_level* l) -> float { return b->typeDefence; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeResource; }, 4, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeTechnology; }, 2, BUILDINGS_SUM_X},
 		{[](db_building* b, db_building_level* l) -> float { return b->typeCenter; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeUnit; }, 3, BUILDINGS_SUM_X}
+		{[](db_building* b, db_building_level* l) -> float { return b->typeHome; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeDefence; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeResourceFood; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeResourceWood; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeResourceStone; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeResourceGold; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeTechBlacksmith; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeTechUniversity; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeUnitBarracks; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeUnitRange; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->typeUnitCavalry; }, 1, BUILDINGS_SUM_X},
+
 	};
 
 	//TODO moze to zwracac od razy przedzia³em jakos

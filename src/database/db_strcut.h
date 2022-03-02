@@ -334,12 +334,12 @@ struct db_building : db_entity, db_with_name, db_with_cost, db_static {
 	            bool typeCenter, bool typeHome, bool typeDefence, bool typeResourceFood, bool typeResourceWood,
 	            bool typeResourceStone, bool typeResourceGold, bool typeTechBlacksmith, bool typeTechUniversity,
 	            bool typeUnitBarracks, bool typeUnitRange, bool typeUnitCavalry)
-		: db_entity(id), db_with_name(name), db_static({sizeX, sizeZ}),
-		  icon(icon), typeDefence(typeDefence),
-		  typeResource(typeResource),
-		  typeTechnology(typeTechnology),
-		  typeCenter(typeCenter),
-		  typeUnit(typeUnit) {
+		: db_entity(id), db_with_name(name), db_static({sizeX, sizeZ}), icon(icon),
+		  typeCenter(typeCenter), typeHome(typeHome), typeDefence(typeDefence),
+		  typeResourceFood(typeResourceFood), typeResourceWood(typeResourceWood),
+		  typeResourceStone(typeResourceStone), typeResourceGold(typeResourceGold),
+		  typeTechBlacksmith(typeTechBlacksmith), typeTechUniversity(typeTechUniversity),
+		  typeUnitBarracks(typeUnitBarracks), typeUnitRange(typeUnitRange), typeUnitCavalry(typeUnitCavalry) {
 	}
 
 	std::optional<db_building_level*> getLevel(short level) {
