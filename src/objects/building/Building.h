@@ -55,6 +55,7 @@ public:
 
 	float getModelHeight() const override;
 	void setModelData(float modelHeight) const override;
+	db_building* getDbBuilding() const { return dbBuilding; }
 private:
 	int deployIndex = -1;
 	unsigned short currentFrameState = 0;

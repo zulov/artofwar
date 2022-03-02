@@ -92,6 +92,7 @@ void Controls::resetCircles() const {
 		setCircle(i, Urho3D::Vector4());
 	}
 }
+
 void Controls::setCircleSight(int i, const Urho3D::Vector3& position, float radius, Urho3D::Color color) const {
 	color.a_ = 0;
 	setCircle(i, Urho3D::Vector4(position.x_, position.z_, radius, float(color.ToUInt())));
@@ -456,7 +457,15 @@ void Controls::cleanAndUpdate(const SimInfo* simulationInfo) {
 	case ObjectType::BUILDING:
 		for (int i = 0; i < Urho3D::Min(selected.size(), 5); ++i) {
 			const auto ent = selected.at(i);
-			setCircleSight(i, ent->getPosition(), ent->getSightRadius(), Urho3D::Color::CYAN);
+			Building* build = (Building*)ent;
+			if (build->getDbBuilding()->typeDefence) {
+				setCircleSight(i, ent->getPosition(), ent->getSightRadius(), Urho3D::Color::GRAY);
+			} else if (build->getDbBuilding()->typeResourceGold) {
+				setCircleSight(i, ent->getPosition(), ent->getSightRadius(), Urho3D::Color::YELLOW);
+			} else {
+				setCircleSight(i, ent->getPosition(), ent->getSightRadius(), Urho3D::Color::CYAN);
+			}
+
 		}
 	}
 
