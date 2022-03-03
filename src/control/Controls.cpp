@@ -24,6 +24,7 @@
 #include "simulation/ObjectsInfo.h"
 #include "simulation/env/Environment.h"
 #include "objects/ActionType.h"
+#include "objects/PhysicalUtils.h"
 #include "player/Player.h"
 #include "simulation/FrameInfo.h"
 #include "simulation/SimInfo.h"
@@ -459,7 +460,7 @@ void Controls::cleanAndUpdate(const SimInfo* simulationInfo) {
 		for (int i = 0; i < Urho3D::Min(selected.size(), 5); ++i) {
 			const Building* build = (Building*)selected.at(i);
 
-			setCircleSight(i, build->getPosition(), build->getSightRadius(),
+			setCircleSight(i, build->getPosition(), getCircleSize(build),
 			               Game::getColorPaletteRepo()->getCircleColor(build->getDbBuilding()));
 		}
 	}
@@ -584,21 +585,21 @@ void Controls::buildControl() {
 			auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(idToCreate);
 			tempBuildingNode->SetPosition(env->getPosWithHeightAt(validPos.x_, validPos.y_));
 			if (!tempBuildingNode->IsEnabled()) {
-
 				tempBuildingNode->LoadXML(Game::getCache()
-				                          ->GetResource<Urho3D::XMLFile>("Objects/buildings/" + level->nodeName)->
-				                          GetRoot());
-				auto tempBuildingModel = tempBuildingNode->GetComponent<Urho3D::StaticModel>();
-				for (int i = 0; i < tempBuildingModel->GetNumGeometries(); ++i) {
-					tempBuildingModel->SetMaterial(i, tempBuildingModel->GetMaterial(i)->Clone());
+				                          ->GetResource<Urho3D::XMLFile>("Objects/buildings/" + level->nodeName)
+				                          ->GetRoot());
+				const auto model = tempBuildingNode->GetComponent<Urho3D::StaticModel>();
+				for (int i = 0; i < model->GetNumGeometries(); ++i) {
+					model->SetMaterial(i, model->GetMaterial(i)->Clone());
 				}
 				tempBuildingNode->SetEnabled(true);
 			}
 
 			setCircleSight(0, tempBuildingNode->GetPosition(), level->sightRadius,
-				Game::getColorPaletteRepo()->getCircleColor(building));
+			               Game::getColorPaletteRepo()->getCircleColor(building));
 
-			setShaderParam(tempBuildingNode, "MatDiffColor", Game::getColorPaletteRepo()->getColorForValidation(building, hitPos));
+			setShaderParam(tempBuildingNode, "MatDiffColor",
+			               Game::getColorPaletteRepo()->getColorForValidation(building, hitPos));
 		}
 	}
 

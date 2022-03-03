@@ -5,6 +5,7 @@
 #include "objects/unit/order/enums/UnitAction.h"
 #include "BillboardSetProvider.h"
 #include "database/db_strcut.h"
+#include "objects/building/Building.h"
 
 enum class ActionType : char;
 class SimInfo;

@@ -31,3 +31,17 @@ inline bool isFreeWorker(Unit* unit) {
 inline bool isFreeSolider(Unit* unit) {
 	return !unit->getDbUnit()->typeWorker && isFree(unit);
 }
+
+inline float getCircleSize(const Building* build) {
+	const auto dbBuilding = build->getDbBuilding();
+	const auto level = build->getLevel();
+
+	if (dbBuilding->typeDefence) {
+		return level->attackRange;
+	}
+	if (dbBuilding->typeResourceFood || dbBuilding->typeResourceWood
+		|| dbBuilding->typeResourceStone || dbBuilding->typeResourceGold) {
+		return level->resourceRange;
+	}
+	return level->sightRadius;
+}
