@@ -409,7 +409,7 @@ void Controls::refreshSelected() {
 	selected.erase(
 		std::remove_if(
 			selected.begin(), selected.end(),
-			[](Physical* physical) {
+			[](Physical* physical){
 				if (!physical->isAlive()) {
 					physical->unSelect();
 					return true;
@@ -460,7 +460,7 @@ void Controls::cleanAndUpdate(const SimInfo* simulationInfo) {
 		for (int i = 0; i < Urho3D::Min(selected.size(), 5); ++i) {
 			const Building* build = (Building*)selected.at(i);
 
-			setCircleSight(i, build->getPosition(), getCircleSize(build),
+			setCircleSight(i, build->getPosition(), getCircleSize(build->getDbBuilding(), build->getLevel()),
 			               Game::getColorPaletteRepo()->getCircleColor(build->getDbBuilding()));
 		}
 	}
@@ -594,8 +594,8 @@ void Controls::buildControl() {
 				}
 				tempBuildingNode->SetEnabled(true);
 			}
-
-			setCircleSight(0, tempBuildingNode->GetPosition(), level->sightRadius,
+			
+			setCircleSight(0, tempBuildingNode->GetPosition(), getCircleSize(building, level),
 			               Game::getColorPaletteRepo()->getCircleColor(building));
 
 			setShaderParam(tempBuildingNode, "MatDiffColor",
