@@ -4,6 +4,7 @@
 #include "MouseButton.h"
 #include "objects/unit/order/enums/UnitAction.h"
 #include "BillboardSetProvider.h"
+#include "database/db_strcut.h"
 
 enum class ActionType : char;
 class SimInfo;

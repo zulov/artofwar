@@ -3,6 +3,7 @@
 #include <Urho3D/IO/Log.h>
 #include "ControlsUtils.h"
 #include "SelectedInfo.h"
+#include "colors/ColorPaletteRepo.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
 #include "commands/action/GeneralActionCommand.h"
@@ -456,16 +457,10 @@ void Controls::cleanAndUpdate(const SimInfo* simulationInfo) {
 		break;
 	case ObjectType::BUILDING:
 		for (int i = 0; i < Urho3D::Min(selected.size(), 5); ++i) {
-			const auto ent = selected.at(i);
-			Building* build = (Building*)ent;
-			if (build->getDbBuilding()->typeDefence) {
-				setCircleSight(i, ent->getPosition(), ent->getSightRadius(), Urho3D::Color::GRAY);
-			} else if (build->getDbBuilding()->typeResourceGold) {
-				setCircleSight(i, ent->getPosition(), ent->getSightRadius(), Urho3D::Color::YELLOW);
-			} else {
-				setCircleSight(i, ent->getPosition(), ent->getSightRadius(), Urho3D::Color::CYAN);
-			}
+			const Building* build = (Building*)selected.at(i);
 
+			setCircleSight(i, build->getPosition(), build->getSightRadius(),
+			               Game::getColorPaletteRepo()->getCircleColor(build->getDbBuilding()));
 		}
 	}
 
@@ -599,24 +594,11 @@ void Controls::buildControl() {
 				}
 				tempBuildingNode->SetEnabled(true);
 			}
-			Urho3D::Color color;
-			if (env->validateStatic(building->size, hitPos)) {
-				if (env->isVisible(Game::getPlayersMan()->getActivePlayerID(), hitPos)) {
-					if (Game::getPlayersMan()->getActivePlayer()->getResources().hasEnough(building->costs)) {
-						color = Urho3D::Color::GREEN;
-					} else {
-						color = Urho3D::Color(0.7, 0.4, 0.1);
-					}
-				} else {
-					color = Urho3D::Color(0.7, 0.2, 0.1);
-				}
-			} else {
-				color = Urho3D::Color::RED;
-			}
 
-			setCircleSight(0, tempBuildingNode->GetPosition(), level->sightRadius, Urho3D::Color::GREEN);
+			setCircleSight(0, tempBuildingNode->GetPosition(), level->sightRadius,
+				Game::getColorPaletteRepo()->getCircleColor(building));
 
-			setShaderParam(tempBuildingNode, "MatDiffColor", color);
+			setShaderParam(tempBuildingNode, "MatDiffColor", Game::getColorPaletteRepo()->getColorForValidation(building, hitPos));
 		}
 	}
 

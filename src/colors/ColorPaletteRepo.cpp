@@ -4,9 +4,13 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include "ColorPallet.h"
 #include "Game.h"
+#include "database/db_strcut.h"
 #include "math/MathUtils.h"
 #include "objects/CellState.h"
+#include "player/Player.h"
+#include "player/PlayersManager.h"
 #include "simulation/SimGlobals.h"
+#include "simulation/env/Environment.h"
 #include "utils/OtherUtils.h"
 
 ColorPaletteRepo::ColorPaletteRepo() {
@@ -64,7 +68,7 @@ Urho3D::Material* ColorPaletteRepo::getInfluenceMaterial() const {
 	return influenceMaterial;
 }
 
-std::tuple<bool, Urho3D::Color> ColorPaletteRepo::getInfoForGrid(CellState state) {
+std::tuple<bool, Urho3D::Color> ColorPaletteRepo::getInfoForGrid(CellState state) const {
 	switch (state) {
 	case CellState::NONE: return {false, Urho3D::Color(0, 0, 0, 0)};
 	case CellState::ATTACK: return {true, Urho3D::Color::RED};
@@ -74,4 +78,34 @@ std::tuple<bool, Urho3D::Color> ColorPaletteRepo::getInfoForGrid(CellState state
 	case CellState::DEPLOY: return {true, Urho3D::Color::CYAN};
 	default: ;
 	}
+}
+
+Urho3D::Color ColorPaletteRepo::getCircleColor(db_building* dbBuilding) const {
+	if (dbBuilding->typeDefence) {
+		return Urho3D::Color::BLACK;
+	}
+	if (dbBuilding->typeResourceWood) {
+		return Urho3D::Color(0x00654321, Urho3D::Color::ARGB);
+	}
+	if (dbBuilding->typeResourceStone) {
+		return Urho3D::Color::GRAY;
+	}
+	if (dbBuilding->typeResourceGold) {
+		return Urho3D::Color::YELLOW;
+	}
+	return Urho3D::Color::CYAN;
+}
+
+Urho3D::Color ColorPaletteRepo::getColorForValidation(const db_building* building, Urho3D::Vector2& hitPos) const{
+	const Environment* env = Game::getEnvironment();
+	if (env->validateStatic(building->size, hitPos)) {
+		if (env->isVisible(Game::getPlayersMan()->getActivePlayerID(), hitPos)) {
+			if (Game::getPlayersMan()->getActivePlayer()->getResources().hasEnough(building->costs)) {
+				return Urho3D::Color::GREEN;
+			} 
+			return Urho3D::Color(0.7, 0.4, 0.1);
+		} 
+		return Urho3D::Color(0.7, 0.2, 0.1);
+	} 
+	return Urho3D::Color::RED;
 }
