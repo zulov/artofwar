@@ -14,9 +14,9 @@ InfluenceMap::InfluenceMap(unsigned short resolution, float size, float valueThr
 	calculator(GridCalculatorProvider::get(resolution, size)) {}
 
 
-void InfluenceMap::draw(short batch, short maxParts) const {
+void InfluenceMap::draw(short batch, short maxParts) {
 	auto size = arraySize / maxParts;
-
+	ensureReady();
 	for (int i = batch * size; i < arraySize && i < (batch + 1) * size; ++i) {
 		drawCell(i, batch);
 	}

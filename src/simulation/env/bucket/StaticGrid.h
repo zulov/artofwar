@@ -2,7 +2,6 @@
 #include <vector>
 
 #include "Grid.h"
-#include "objects/resource/ResourceEntity.h"
 
 class StaticGrid : public Grid {
 public:
@@ -10,13 +9,9 @@ public:
 	StaticGrid(const StaticGrid& rhs) = delete;
 	~StaticGrid() override;
 
-	//void updateSparse(Unit* unit, char team) const override;
-	//void remove(Unit* unit, char team) const override;
-	//int updateNew(Physical* unit) const override;
 	int update(Physical* physical, int currentIndex) const override;
 	void remove(Physical* physical) const;
 
-	//void remove(Physical* physical) const override;
 	void updateStatic(Static* staticObj, bool bulkAdd) const;
 
 	void ensureInited(int index, int centerIndex);

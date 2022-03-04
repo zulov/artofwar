@@ -16,6 +16,7 @@
 #include "simulation/env/Environment.h"
 #include "simulation/env/GridCalculatorProvider.h"
 #include "utils/OtherUtils.h"
+#include "objects/resource/ResourceEntity.h"
 
 
 VisibilityManager::VisibilityManager(char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain) {

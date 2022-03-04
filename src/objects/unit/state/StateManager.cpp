@@ -14,6 +14,7 @@
 #include "StopState.h"
 #include "database/DatabaseCache.h"
 #include "objects/building/Building.h"
+#include "objects/resource/ResourceEntity.h"
 #include "objects/static/StaticStateUtils.h"
 #include "objects/unit/order/enums/UnitAction.h"
 #include "utils/consts.h"
