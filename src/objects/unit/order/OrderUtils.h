@@ -1,7 +1,7 @@
 #pragma once
 #include "database/db_strcut.h"
 #include "Game.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include "objects/PhysicalUtils.h"
 
 template <typename T>

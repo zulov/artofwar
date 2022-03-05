@@ -15,7 +15,7 @@
 #include "order/IndividualOrder.h"
 #include "order/enums/UnitAction.h"
 #include "scene/load/dbload_container.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include "simulation/force/ForceStats.h"
 #include "simulation/formation/FormationManager.h"
 #include "state/StateManager.h"

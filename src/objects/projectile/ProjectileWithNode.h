@@ -6,7 +6,7 @@
 #include "ProjectileBase.h"
 #include "math/RandGen.h"
 #include "player/Player.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 
 struct ProjectileWithNode : public ProjectileBase {
 	Urho3D::Node* node;

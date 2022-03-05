@@ -19,7 +19,7 @@
 #include "math/SpanUtils.h"
 #include "objects/projectile/ProjectileManager.h"
 #include "objects/queue/QueueElement.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 
 
 Building::Building(Urho3D::Vector3 _position, int id, int player, int level, int indexInGrid, bool withNode):

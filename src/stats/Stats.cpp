@@ -16,7 +16,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/ai/AiUtils.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include "utils/StringUtils.h"
 #include "utils/OtherUtils.h"
 

@@ -4,7 +4,7 @@
 #include <numeric>
 #include "math/MathUtils.h"
 #include "objects/Physical.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 
 InfluenceMapFloat::
 InfluenceMapFloat(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug):

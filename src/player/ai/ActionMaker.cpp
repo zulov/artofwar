@@ -13,7 +13,7 @@
 #include "objects/building/Building.h"
 #include "player/Player.h"
 #include "player/ai/ActionCenter.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include "stats/AiInputProvider.h"
 
 

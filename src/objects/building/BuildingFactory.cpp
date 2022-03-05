@@ -3,7 +3,7 @@
 #include "database/DatabaseCache.h"
 #include "objects/building/Building.h"
 #include "scene/load/dbload_container.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 
 Building* BuildingFactory::create(int id, const Urho3D::IntVector2& bucketCords, int level, int player) const {
 	const auto db_building = Game::getDatabase()->getBuilding(id);

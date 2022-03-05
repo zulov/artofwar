@@ -11,7 +11,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "scene/load/dbload_container.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 
 
 SimulationObjectManager::SimulationObjectManager() {

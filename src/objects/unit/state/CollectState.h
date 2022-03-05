@@ -4,7 +4,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include "objects/CellState.h"
 
 class CollectState : public State {

@@ -2,7 +2,7 @@
 #include <vector>
 #include <objects/unit/Unit.h>
 #include <Game.h>
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 
 inline bool addToGroup(std::vector<std::vector<int>>& groupedIndexes, int current) {
 	for (auto& groupedIndex : groupedIndexes) {

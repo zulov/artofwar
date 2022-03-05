@@ -13,8 +13,8 @@
 #include "math/MathUtils.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimGlobals.h"
-#include "simulation/env/Environment.h"
-#include "simulation/env/GridCalculatorProvider.h"
+#include "env/Environment.h"
+#include "env/GridCalculatorProvider.h"
 #include "utils/OtherUtils.h"
 #include "objects/resource/ResourceEntity.h"
 

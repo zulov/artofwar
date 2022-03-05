@@ -4,7 +4,7 @@
 #include "objects/ObjectEnums.h"
 #include "database/DatabaseCache.h"
 #include "player/PlayersManager.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include "player/Player.h"
 
 

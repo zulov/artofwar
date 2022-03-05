@@ -9,7 +9,7 @@
 #include "objects/unit/order/FormationOrder.h"
 #include "objects/unit/order/OrderUtils.h"
 #include "objects/unit/state/StateManager.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include "utils/OtherUtils.h"
 
 constexpr float THRESHOLD_MIN = 0.3f;

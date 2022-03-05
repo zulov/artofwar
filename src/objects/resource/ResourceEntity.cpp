@@ -11,7 +11,7 @@
 #include "objects/unit/order/enums/UnitAction.h"
 #include "objects/unit/state/StateManager.h"
 #include "scene/load/dbload_container.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 
 
 ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, int id, int level, int indexInGrid, bool withNode)

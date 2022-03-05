@@ -11,8 +11,8 @@
 #include "math/MathUtils.h"
 #include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
-#include "simulation/env/CloseIndexes.h"
-#include "simulation/env/Environment.h"
+#include "env/CloseIndexes.h"
+#include "env/Environment.h"
 
 
 MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):

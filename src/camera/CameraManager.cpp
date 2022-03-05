@@ -4,7 +4,7 @@
 #include "RtsCameraBehave.h"
 #include "TopCameraBehave.h"
 #include "CameraEnums.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Input/Input.h>
 

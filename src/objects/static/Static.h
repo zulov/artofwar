@@ -2,7 +2,7 @@
 #include <unordered_set>
 #include "../Physical.h"
 #include "StaticState.h"
-#include "simulation/env/influence/map/VisibilityType.h"
+#include "env/influence/map/VisibilityType.h"
 
 struct dbload_static;
 enum class CellState : char;

@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-#include "simulation/env/GridCalculator.h"
+#include "env/GridCalculator.h"
 
 struct GridCalculator;
 constexpr char RES_SEP_DIST = 120;

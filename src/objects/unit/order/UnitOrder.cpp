@@ -4,7 +4,7 @@
 #include "objects/Physical.h"
 #include "objects/unit/aim/FollowAim.h"
 #include "objects/unit/aim/TargetAim.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include "utils/consts.h"
 
 UnitOrder::UnitOrder(short id, bool append, Urho3D::Vector2& vector):

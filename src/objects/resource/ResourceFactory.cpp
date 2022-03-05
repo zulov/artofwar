@@ -3,7 +3,7 @@
 #include "ResourceEntity.h"
 #include "database/DatabaseCache.h"
 #include "scene/load/dbload_container.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 
 ResourceEntity* ResourceFactory::create(int id, Urho3D::IntVector2 bucketCords, int level) const {
 	db_resource* db_resource = Game::getDatabase()->getResource(id);

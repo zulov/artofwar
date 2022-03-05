@@ -4,7 +4,7 @@
 #include "../Unit.h"
 #include "Game.h"
 #include "math/MathUtils.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 
 
 TargetAim::TargetAim(std::vector<int> _path) :

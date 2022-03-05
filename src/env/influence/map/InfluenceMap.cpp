@@ -4,9 +4,9 @@
 
 #include "Game.h"
 #include "debug/DebugLineRepo.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include "colors/ColorPaletteRepo.h"
-#include "simulation/env/GridCalculatorProvider.h"
+#include "env/GridCalculatorProvider.h"
 
 
 InfluenceMap::InfluenceMap(unsigned short resolution, float size, float valueThresholdDebug):

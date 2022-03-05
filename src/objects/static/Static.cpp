@@ -8,7 +8,7 @@
 #include "database/db_strcut.h"
 #include "objects/NodeUtils.h"
 #include "scene/load/dbload_container.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include "utils/OtherUtils.h"
 
 Static::Static(Urho3D::Vector3& _position, int indexInGrid, bool withNode) : Physical(_position, withNode),

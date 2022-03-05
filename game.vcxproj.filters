@@ -13,10 +13,10 @@
     <ClCompile Include="src\camera\FreeCameraBehave.cpp">
       <Filter>camera\behave</Filter>
     </ClCompile>
-    <ClCompile Include="src\simulation\env\bucket\Bucket.cpp">
+    <ClCompile Include="src\env\bucket\Bucket.cpp">
       <Filter>simulation\env\bucket</Filter>
     </ClCompile>
-    <ClCompile Include="src\simulation\env\bucket\BucketIterator.cpp">
+    <ClCompile Include="src\env\bucket\BucketIterator.cpp">
       <Filter>simulation\env\bucket</Filter>
     </ClCompile>
     <ClCompile Include="src\objects\building\Building.cpp">
@@ -99,11 +99,11 @@
     <ClCompile Include="src\simulation\force\Force.cpp">
       <Filter>simulation\force</Filter>
     </ClCompile>
-    <ClCompile Include="src\simulation\env\bucket\MainGrid.cpp" />
-    <ClCompile Include="src\simulation\env\bucket\Grid.cpp">
+    <ClCompile Include="src\env\bucket\MainGrid.cpp" />
+    <ClCompile Include="src\env\bucket\Grid.cpp">
       <Filter>simulation\env\bucket</Filter>
     </ClCompile>
-    <ClCompile Include="src\simulation\env\bucket\ComplexBucketData.cpp" />
+    <ClCompile Include="src\env\bucket\ComplexBucketData.cpp" />
     <ClCompile Include="src\hud\window\loading\LoadingPanel.cpp" />
     <ClCompile Include="src\hud\window\in_game_menu\InGameMenuPanel.cpp" />
     <ClCompile Include="src\scene\save\SceneSaver.cpp" />
@@ -145,16 +145,16 @@
     </ClCompile>
     <ClCompile Include="src\objects\unit\state\State.cpp" />
     <ClCompile Include="src\objects\static\Static.cpp" />
-    <ClCompile Include="src\simulation\env\Environment.cpp">
+    <ClCompile Include="src\env\Environment.cpp">
       <Filter>simulation\env</Filter>
     </ClCompile>
     <ClCompile Include="src\colors\ColorPaletteRepo.cpp" />
-    <ClCompile Include="src\simulation\env\bucket\path\PathFinder.cpp" />
+    <ClCompile Include="src\env\bucket\path\PathFinder.cpp" />
     <ClCompile Include="src\hud\window\top\info\TopInfoPanel.cpp" />
-    <ClCompile Include="src\simulation\env\influence\InfluenceManager.cpp" />
-    <ClCompile Include="src\simulation\env\influence\map\InfluenceMapInt.cpp" />
-    <ClCompile Include="src\simulation\env\influence\map\InfluenceMap.cpp" />
-    <ClCompile Include="src\simulation\env\influence\map\InfluenceMapFloat.cpp" />
+    <ClCompile Include="src\env\influence\InfluenceManager.cpp" />
+    <ClCompile Include="src\env\influence\map\InfluenceMapInt.cpp" />
+    <ClCompile Include="src\env\influence\map\InfluenceMap.cpp" />
+    <ClCompile Include="src\env\influence\map\InfluenceMapFloat.cpp" />
     <ClCompile Include="src\objects\resource\ResourceEntity.cpp" />
     <ClCompile Include="src\objects\resource\ResourceFactory.cpp" />
     <ClCompile Include="src\player\Resources.cpp" />
@@ -184,18 +184,18 @@
     <ClCompile Include="src\commands\action\GeneralActionCommand.cpp" />
     <ClCompile Include="src\player\ai\OrderMaker.cpp" />
     <ClCompile Include="src\control\BillboardSetProvider.cpp" />
-    <ClCompile Include="src\simulation\env\influence\map\InfluenceMapHistory.cpp" />
-    <ClCompile Include="src\simulation\env\influence\map\InfluenceMapQuad.cpp" />
-    <ClCompile Include="src\simulation\env\GridCalculatorProvider.cpp" />
+    <ClCompile Include="src\env\influence\map\InfluenceMapHistory.cpp" />
+    <ClCompile Include="src\env\influence\map\InfluenceMapQuad.cpp" />
+    <ClCompile Include="src\env\GridCalculatorProvider.cpp" />
     <ClCompile Include="src\stats\AiInputProvider.cpp" />
     <ClCompile Include="src\hud\window\SimplePanel.cpp">
       <Filter>hud\windows</Filter>
     </ClCompile>
     <ClCompile Include="src\hud\window\EventPanel.cpp" />
-    <ClCompile Include="src\simulation\env\bucket\levels\LevelCache.cpp" />
-    <ClCompile Include="src\simulation\env\bucket\levels\LevelCacheProvider.cpp" />
-    <ClCompile Include="src\simulation\env\CloseIndexes.cpp" />
-    <ClCompile Include="src\simulation\env\CloseIndexesProvider.cpp" />
+    <ClCompile Include="src\env\bucket\levels\LevelCache.cpp" />
+    <ClCompile Include="src\env\bucket\levels\LevelCacheProvider.cpp" />
+    <ClCompile Include="src\env\CloseIndexes.cpp" />
+    <ClCompile Include="src\env\CloseIndexesProvider.cpp" />
     <ClCompile Include="src\player\ai\nn\BrainProvider.cpp" />
     <ClCompile Include="src\player\ai\threshold\Threshold.cpp" />
     <ClCompile Include="src\player\ai\threshold\ThresholdProvider.cpp" />
@@ -203,12 +203,12 @@
     <ClCompile Include="src\simulation\SimInfo.cpp" />
     <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
     <ClCompile Include="src\objects\queue\SimpleQueueManager.cpp" />
-    <ClCompile Include="src\simulation\env\influence\map\VisibilityMap.cpp" />
-    <ClCompile Include="src\simulation\env\bucket\StaticGrid.cpp" />
+    <ClCompile Include="src\env\influence\map\VisibilityMap.cpp" />
+    <ClCompile Include="src\env\bucket\StaticGrid.cpp" />
     <ClCompile Include="src\objects\SelectedObject.cpp" />
     <ClCompile Include="src\objects\projectile\ProjectileManager.cpp" />
     <ClCompile Include="src\objects\projectile\ProjectileBase.h" />
-    <ClCompile Include="src\simulation\env\influence\VisibilityManager.cpp" />
+    <ClCompile Include="src\env\influence\VisibilityManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -233,10 +233,10 @@
     <ClInclude Include="src\commands\CommandList.h">
       <Filter>command\list</Filter>
     </ClInclude>
-    <ClInclude Include="src\simulation\env\bucket\Bucket.h">
+    <ClInclude Include="src\env\bucket\Bucket.h">
       <Filter>simulation\env\bucket</Filter>
     </ClInclude>
-    <ClInclude Include="src\simulation\env\bucket\BucketIterator.h">
+    <ClInclude Include="src\env\bucket\BucketIterator.h">
       <Filter>simulation\env\bucket</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\building\Building.h">
@@ -351,16 +351,16 @@
     <ClInclude Include="src\simulation\force\Force.h">
       <Filter>simulation\force</Filter>
     </ClInclude>
-    <ClInclude Include="src\simulation\env\bucket\MainGrid.h" />
-    <ClInclude Include="src\simulation\env\bucket\Grid.h">
+    <ClInclude Include="src\env\bucket\MainGrid.h" />
+    <ClInclude Include="src\env\bucket\Grid.h">
       <Filter>simulation\env\bucket</Filter>
     </ClInclude>
-    <ClInclude Include="src\simulation\env\bucket\ComplexBucketData.h" />
+    <ClInclude Include="src\env\bucket\ComplexBucketData.h" />
     <ClInclude Include="src\control\HitData.h" />
     <ClInclude Include="src\hud\window\loading\LoadingPanel.h" />
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\Loading.h" />
-    <ClInclude Include="src\simulation\env\ContentInfo.h" />
+    <ClInclude Include="src\env\ContentInfo.h" />
     <ClInclude Include="src\hud\window\in_game_menu\InGameMenuPanel.h" />
     <ClInclude Include="src\scene\save\SceneSaver.h" />
     <ClInclude Include="src\scene\load\SceneLoader.h" />
@@ -426,26 +426,26 @@
     <ClInclude Include="src\objects\static\StaticState.h" />
     <ClInclude Include="src\objects\static\StaticStateUtils.h" />
     <ClInclude Include="src\objects\unit\state\CollectState.h" />
-    <ClInclude Include="src\simulation\env\Environment.h">
+    <ClInclude Include="src\env\Environment.h">
       <Filter>simulation\env</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\projectile\ProjectileWithNode.h" />
     <ClInclude Include="src\objects\ActionType.h" />
     <ClInclude Include="src\colors\ColorPaletteRepo.h" />
-    <ClInclude Include="src\simulation\env\bucket\path\PathFinder.h" />
-    <ClInclude Include="src\simulation\env\bucket\path\fiboheap.h" />
-    <ClInclude Include="src\simulation\env\bucket\path\DrawGridUtils.h" />
+    <ClInclude Include="src\env\bucket\path\PathFinder.h" />
+    <ClInclude Include="src\env\bucket\path\fiboheap.h" />
+    <ClInclude Include="src\env\bucket\path\DrawGridUtils.h" />
     <ClInclude Include="src\hud\window\top\info\TopInfoPanel.h" />
-    <ClInclude Include="src\simulation\env\influence\InfluenceManager.h" />
-    <ClInclude Include="src\simulation\env\influence\map\InfluenceMapInt.h" />
-    <ClInclude Include="src\simulation\env\influence\map\InfluenceMap.h" />
-    <ClInclude Include="src\simulation\env\influence\map\InfluenceMapFloat.h" />
+    <ClInclude Include="src\env\influence\InfluenceManager.h" />
+    <ClInclude Include="src\env\influence\map\InfluenceMapInt.h" />
+    <ClInclude Include="src\env\influence\map\InfluenceMap.h" />
+    <ClInclude Include="src\env\influence\map\InfluenceMapFloat.h" />
     <ClInclude Include="src\objects\resource\ResourceEntity.h" />
     <ClInclude Include="src\objects\resource\ResourceFactory.h" />
     <ClInclude Include="src\player\Resources.h" />
     <ClInclude Include="src\camera\RtsCameraBehave.h" />
-    <ClInclude Include="src\simulation\env\GridCalculator.h" />
-    <ClInclude Include="src\simulation\env\EnvConsts.h" />
+    <ClInclude Include="src\env\GridCalculator.h" />
+    <ClInclude Include="src\env\EnvConsts.h" />
     <ClInclude Include="src\debug\DebugLineRepo.h" />
     <ClInclude Include="src\debug\DebugUnitType.h" />
     <ClInclude Include="src\debug\DebugManager.h" />
@@ -496,10 +496,10 @@
     <ClInclude Include="src\player\ai\ActionMakerLogger.h" />
     <ClInclude Include="src\player\ai\OrderMaker.h" />
     <ClInclude Include="src\control\BillboardSetProvider.h" />
-    <ClInclude Include="src\simulation\env\influence\map\InfluenceMapHistory.h" />
-    <ClInclude Include="src\simulation\env\influence\map\InfluenceMapQuad.h" />
-    <ClInclude Include="src\simulation\env\influence\map\InfluenceMapI.h" />
-    <ClInclude Include="src\simulation\env\GridCalculatorProvider.h" />
+    <ClInclude Include="src\env\influence\map\InfluenceMapHistory.h" />
+    <ClInclude Include="src\env\influence\map\InfluenceMapQuad.h" />
+    <ClInclude Include="src\env\influence\map\InfluenceMapI.h" />
+    <ClInclude Include="src\env\GridCalculatorProvider.h" />
     <ClInclude Include="src\player\ai\InfluenceDataType.h" />
     <ClInclude Include="src\objects\queue\QueueUtils.h" />
     <ClInclude Include="src\objects\Metrics.h" />
@@ -509,11 +509,11 @@
     </ClInclude>
     <ClInclude Include="src\hud\window\EventPanel.h" />
     <ClInclude Include="src\utils\AssertUtils.h" />
-    <ClInclude Include="src\simulation\env\bucket\levels\LevelCache.h" />
-    <ClInclude Include="src\simulation\env\bucket\levels\LevelCacheProvider.h" />
-    <ClInclude Include="src\simulation\env\CloseIndexes.h" />
-    <ClInclude Include="src\simulation\env\CloseIndexesProvider.h" />
-    <ClInclude Include="src\simulation\env\influence\CenterType.h" />
+    <ClInclude Include="src\env\bucket\levels\LevelCache.h" />
+    <ClInclude Include="src\env\bucket\levels\LevelCacheProvider.h" />
+    <ClInclude Include="src\env\CloseIndexes.h" />
+    <ClInclude Include="src\env\CloseIndexesProvider.h" />
+    <ClInclude Include="src\env\influence\CenterType.h" />
     <ClInclude Include="src\utils\OtherUtils.h" />
     <ClInclude Include="src\player\ai\nn\BrainProvider.h" />
     <ClInclude Include="src\simulation\PerFrameAction.h" />
@@ -536,15 +536,15 @@
     <ClInclude Include="src\utils\Flags.h" />
     <ClInclude Include="src\objects\queue\SimpleQueueManager.h" />
     <ClInclude Include="src\objects\queue\AbstractQueueManager.h" />
-    <ClInclude Include="src\simulation\env\influence\map\VisibilityMap.h" />
-    <ClInclude Include="src\simulation\env\influence\map\VisibilityType.h" />
-    <ClInclude Include="src\simulation\env\bucket\StaticGrid.h" />
+    <ClInclude Include="src\env\influence\map\VisibilityMap.h" />
+    <ClInclude Include="src\env\influence\map\VisibilityType.h" />
+    <ClInclude Include="src\env\bucket\StaticGrid.h" />
     <ClInclude Include="src\objects\SelectedObject.h" />
     <ClInclude Include="src\objects\unit\state\StateUtils.h" />
     <ClInclude Include="src\objects\projectile\ProjectileManager.h" />
-    <ClInclude Include="src\simulation\env\influence\VisibilityManager.h" />
-    <ClInclude Include="src\simulation\env\influence\MapsUtils.h" />
-    <ClInclude Include="src\simulation\env\influence\VisibilityMode.h" />
+    <ClInclude Include="src\env\influence\VisibilityManager.h" />
+    <ClInclude Include="src\env\influence\MapsUtils.h" />
+    <ClInclude Include="src\env\influence\VisibilityMode.h" />
     <ClInclude Include="src\player\ai\AiMetric.h" />
   </ItemGroup>
   <ItemGroup>

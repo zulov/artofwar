@@ -13,8 +13,8 @@
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
-#include "simulation/env/ContentInfo.h"
-#include "simulation/env/GridCalculatorProvider.h"
+#include "env/ContentInfo.h"
+#include "env/GridCalculatorProvider.h"
 #include "utils/AssertUtils.h"
 #include "utils/OtherUtils.h"
 

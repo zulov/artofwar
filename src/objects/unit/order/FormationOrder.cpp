@@ -4,7 +4,7 @@
 #include "objects/unit/Unit.h"
 #include "enums/UnitAction.h"
 #include "simulation/formation/Formation.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 
 FormationOrder::FormationOrder(Formation* formation, short action,
                                Urho3D::Vector2& vector, bool append):

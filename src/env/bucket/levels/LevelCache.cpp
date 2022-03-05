@@ -2,7 +2,7 @@
 
 #include <algorithm>
 #include <iostream>
-#include "simulation/env/GridCalculator.h"
+#include "env/GridCalculator.h"
 
 LevelCache::LevelCache(float maxDistance, bool initCords, GridCalculator* calculator)
 	: maxDistance(maxDistance), invDiff(RES_SEP_DIST / maxDistance), calculator(calculator) {

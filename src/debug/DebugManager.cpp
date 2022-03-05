@@ -3,7 +3,7 @@
 #include <Urho3D/IO/Log.h>
 #include "Game.h"
 #include "simulation/Simulation.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include "utils/OtherUtils.h"
 #include "simulation/SimGlobals.h"
 

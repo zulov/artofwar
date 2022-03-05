@@ -1,6 +1,6 @@
 #pragma once
 #include "InfluenceMapI.h"
-#include "simulation/env/GridCalculator.h"
+#include "env/GridCalculator.h"
 
 struct GridCalculator;
 class Physical;

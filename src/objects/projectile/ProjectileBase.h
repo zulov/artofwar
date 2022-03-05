@@ -3,7 +3,7 @@
 #include "math/MathUtils.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include "Game.h"
 
 struct ProjectileBase {

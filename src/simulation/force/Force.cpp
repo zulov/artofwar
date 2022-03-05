@@ -6,7 +6,7 @@
 
 #include "math/RandGen.h"
 #include "objects/unit/Unit.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include "simulation/formation/FormationManager.h"
 
 constexpr float CLOSEST_DIST = 0.00005f;

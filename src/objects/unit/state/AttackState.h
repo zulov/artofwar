@@ -9,7 +9,7 @@
 #include "UnitState.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 
 
 class AttackState : public State {

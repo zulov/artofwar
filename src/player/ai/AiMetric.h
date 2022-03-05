@@ -1,9 +1,9 @@
 #pragma once
 #include <functional>
 #include "player/Player.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include "Game.h"
-#include "simulation/env/influence/CenterType.h"
+#include "env/influence/CenterType.h"
 
 
 constexpr char UNITS_SUM_X = 100;

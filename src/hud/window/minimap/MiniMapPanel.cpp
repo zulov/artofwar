@@ -10,8 +10,8 @@
 #include "hud/UiUtils.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "simulation/env/ContentInfo.h"
-#include "simulation/env/Environment.h"
+#include "env/ContentInfo.h"
+#include "env/Environment.h"
 
 
 MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style)

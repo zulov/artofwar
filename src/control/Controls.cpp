@@ -22,7 +22,7 @@
 #include "player/PlayersManager.h"
 #include "player/ai/ActionCenter.h"
 #include "simulation/ObjectsInfo.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include "objects/ActionType.h"
 #include "objects/PhysicalUtils.h"
 #include "player/Player.h"

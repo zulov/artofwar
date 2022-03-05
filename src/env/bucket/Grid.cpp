@@ -3,11 +3,11 @@
 #include "levels/LevelCache.h"
 #include "levels/LevelCacheProvider.h"
 #include "objects/unit/Unit.h"
-#include "simulation/env/CloseIndexes.h"
-#include "simulation/env/CloseIndexesProvider.h"
-#include "simulation/env/ContentInfo.h"
-#include "simulation/env/GridCalculator.h"
-#include "simulation/env/GridCalculatorProvider.h"
+#include "env/CloseIndexes.h"
+#include "env/CloseIndexesProvider.h"
+#include "env/ContentInfo.h"
+#include "env/GridCalculator.h"
+#include "env/GridCalculatorProvider.h"
 #include "utils/consts.h"
 
 Grid::Grid(short resolution, float size, bool initCords, float maxQueryRadius)

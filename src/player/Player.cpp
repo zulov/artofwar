@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "database/DatabaseCache.h"
 #include "objects/queue/QueueActionType.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 
 
 Player::Player(int nationId, char team, char id, int color, Urho3D::String name, bool active):

@@ -7,8 +7,8 @@
 #include "math/MathUtils.h"
 #include "math/SpanUtils.h"
 #include "objects/Physical.h"
-#include "simulation/env/GridCalculator.h"
-#include "simulation/env/GridCalculatorProvider.h"
+#include "env/GridCalculator.h"
+#include "env/GridCalculatorProvider.h"
 
 InfluenceMapQuad::InfluenceMapQuad(unsigned short topResolution, float mapSize)
 	: calculator(GridCalculatorProvider::get(topResolution, mapSize)) {

@@ -6,11 +6,11 @@
 #include "DrawGridUtils.h"
 #include "Game.h"
 #include "../ComplexBucketData.h"
-#include "simulation/env/GridCalculator.h"
-#include "simulation/env/GridCalculatorProvider.h"
+#include "env/GridCalculator.h"
+#include "env/GridCalculatorProvider.h"
 
-#include "simulation/env/CloseIndexes.h"
-#include "simulation/env/CloseIndexesProvider.h"
+#include "env/CloseIndexes.h"
+#include "env/CloseIndexesProvider.h"
 
 PathFinder::PathFinder(short resolution, float size) :
 	closeIndexes(CloseIndexesProvider::get(resolution)), calculator(GridCalculatorProvider::get(resolution, size)),

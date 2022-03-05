@@ -10,7 +10,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimGlobals.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 #include "utils/OtherUtils.h"
 
 ColorPaletteRepo::ColorPaletteRepo() {

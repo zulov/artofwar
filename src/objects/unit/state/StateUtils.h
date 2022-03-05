@@ -1,7 +1,7 @@
 #pragma once
 #include "Game.h"
 #include "objects/unit/Unit.h"
-#include "simulation/env/Environment.h"
+#include "env/Environment.h"
 
 
 inline void setStartData(Unit* unit, int index, Physical* toUse) {
