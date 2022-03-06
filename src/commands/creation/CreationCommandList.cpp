@@ -48,7 +48,6 @@ CreationCommand* CreationCommandList::addResource(int id, Urho3D::Vector2& posit
 
 CreationCommand*
 CreationCommandList::addBuildingForce(int id, Urho3D::Vector2& position, char player, int level) const {
-	Resources& resources = Game::getPlayersMan()->getPlayer(player)->getResources();
 	db_building* building = Game::getDatabase()->getBuilding(id);
 	const auto env = Game::getEnvironment();
 

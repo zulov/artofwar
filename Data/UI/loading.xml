@@ -1,42 +1,42 @@
 <element type="LoadingWindow" style="MyWindow">
-	<attribute name="Horiz Alignment" value="Center" />
-	<attribute name="Vert Alignment" value="Center" />		
-	<attribute name="Layout Spacing" value="{spaceX}" />
-	<attribute name="Layout Border" value="{iconX} {spaceY} {iconX} {spaceY}" />
+	<attribute name="Horiz Alignment" value="Center"/>
+	<attribute name="Vert Alignment" value="Center"/>	
+	<attribute name="Layout Spacing" value="{spaceX}"/>
+	<attribute name="Layout Border" value="{iconX} {spaceY} {iconX} {spaceY}"/>
 	<attribute name="Min Size" value="{resX/2} {resY/2}"/>
 	<attribute name="Max Size" value="{bigX} {bigY}"/>
 </element>
 
 <element type="LargeProgressBar" style="ProgressBar">
-	<attribute name="Texture" value="Texture2D;Textures/hud/progress-bar.png" />
-	<attribute name="Blend Mode" value="alpha" />
+	<attribute name="Texture" value="Texture2D;Textures/hud/progress-bar.png"/>
+	<attribute name="Blend Mode" value="alpha"/>
 
-	<attribute name="Min Size" value="{bigX/2} {iconX}" />
-	<attribute name="Max Size" value="{bigX} {iconX}" />
-	<attribute name="Image Rect" value="0 0 32 32" />
-	<attribute name="Border" value="8 8 8 8" />
-	<attribute name="Show Percent Text" value="true" />
-	<attribute name="Opacity" value="0.8" />
-	<attribute name="Horiz Alignment" value="Center" />
-	<attribute name="Vert Alignment" value="Center" />
-			
+	<attribute name="Min Size" value="{bigX/2} {iconX}"/>
+	<attribute name="Max Size" value="{bigX} {iconX}"/>
+	<attribute name="Image Rect" value="0 0 32 32"/>
+	<attribute name="Border" value="8 8 8 8"/>
+	<attribute name="Show Percent Text" value="true"/>
+	<attribute name="Opacity" value="0.8"/>
+	<attribute name="Horiz Alignment" value="Center"/>
+	<attribute name="Vert Alignment" value="Center"/>
+		
 	<element type="BorderImage" internal="true">
-		<attribute name="Texture" value="Texture2D;Textures/hud/bar.png" />
-		<attribute name="Blend Mode" value="alpha" />
-		<attribute name="Image Rect" value="0 0 8 8" />
-		<attribute name="Border" value="2 2 2 2" />
-		<attribute name="Hover Image Offset" value="0 0" />
-		<attribute name="Tiled" value="true" />
+		<attribute name="Texture" value="Texture2D;Textures/hud/bar.png"/>
+		<attribute name="Blend Mode" value="alpha"/>
+		<attribute name="Image Rect" value="0 0 8 8"/>
+		<attribute name="Border" value="2 2 2 2"/>
+		<attribute name="Hover Image Offset" value="0 0"/>
+		<attribute name="Tiled" value="true"/>
 	</element>
 </element>
 
-<element type="Background" >
-	<attribute name="Texture" value="Texture2D;Textures/hud/board_small.png" />
-	<attribute name="Blend Mode" value="alpha" />
-	<attribute name="Size" value="{resX/2-iconX} {resY/3}" />
-	<attribute name="Vert Alignment" value="Center" />
-	<attribute name="Horiz Alignment" value="Center" />
-	<attribute name="Tiled" value="false" />
-	<attribute name="Opacity" value="0.6" />	
+<element type="Background">
+	<attribute name="Texture" value="Texture2D;Textures/hud/board_small.png"/>
+	<attribute name="Blend Mode" value="alpha"/>
+	<attribute name="Size" value="{resX/2-iconX} {resY/3}"/>
+	<attribute name="Vert Alignment" value="Center"/>
+	<attribute name="Horiz Alignment" value="Center"/>
+	<attribute name="Tiled" value="false"/>
+	<attribute name="Opacity" value="0.6"/>
 </element>
 

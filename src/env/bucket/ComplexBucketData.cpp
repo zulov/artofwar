@@ -18,6 +18,9 @@ void ComplexBucketData::setStatic(Static* object) {
 		state = CellState::RESOURCE;
 		additionalInfo = object->getId();
 	}
+	for (auto& resourceBonus : resourceBonuses) {
+		std::fill_n(resourceBonus, RESOURCES_SIZE, 1.f);
+	}
 }
 
 void ComplexBucketData::clear() {
@@ -56,11 +59,29 @@ void ComplexBucketData::updateSize(char val, CellState cellState) {
 	} //to jakies takie nie 
 }
 
+void ComplexBucketData::setResBonuses(char player, const std::vector<char>& resIds, float bonus) {
+	auto& vals = resourceBonuses[player];
+	for (const char resId : resIds) {
+		auto& val = vals[resId];
+		if (val < bonus) {
+			val = bonus;
+		}
+	}
+}
+
+void ComplexBucketData::resetResBonuses(char player, char resId) {
+	resourceBonuses[player][resId] = 1.f;
+}
+
+float ComplexBucketData::getResBonus(char player, short resId) const {
+	return resourceBonuses[player][resId];
+}
+
 bool ComplexBucketData::belowCellLimit() const {
 	return size < 2;
 }
 
-void ComplexBucketData::setDeploy(Building* building) {
+void ComplexBucketData::setDeploy() {
 	state = CellState::DEPLOY;
 }
 

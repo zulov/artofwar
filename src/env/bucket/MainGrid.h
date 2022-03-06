@@ -3,6 +3,7 @@
 #include <optional>
 #include "ComplexBucketData.h"
 #include "Grid.h"
+#include "objects/resource/ResourceEntity.h"
 #include "path/PathFinder.h"
 
 
@@ -59,6 +60,8 @@ public:
 	bool isPassable(int inx) const;
 	bool isBuildable(int inx) const;
 	int closestPassableCell(int posIndex) const;
+	void addResourceBonuses(Building* building) const;
+	void removeResourceBonuses(Static* object) const;
 
 	CellState getCellAt(float x, float z) const;
 	int getAdditionalInfoAt(float x, float z) const;
@@ -70,6 +73,8 @@ public:
 	bool cellIsAttackable(int index) const;
 	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
 	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
+	void reAddBonuses(std::vector<Building*>* buildings, char player, char resId) const;
+	float getBonuses(char player, ResourceEntity* resource);
 
 private:
 	ComplexBucketData* complexData;

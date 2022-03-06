@@ -76,6 +76,14 @@ void Environment::nextVisibilityType() {
 	influenceManager.nextVisibilityType();
 }
 
+void Environment::reAddBonuses(std::vector<Building*>* buildings, char player, char resId) const {
+	mainGrid.reAddBonuses(buildings,player, resId);
+}
+
+float Environment::getBonuses(char player, ResourceEntity* resource) {
+	return mainGrid.getBonuses( player, resource);
+}
+
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
                                                    const std::function<bool(Physical*)>& condition) const {
 	neights->clear();
@@ -224,6 +232,7 @@ void Environment::invalidateCaches() {
 
 void Environment::addNew(Building* building) {
 	mainGrid.addStatic(building);
+	mainGrid.addResourceBonuses(building);
 	buildingGrid.updateNew(building);
 
 	building->setIndexInInfluence(influenceManager.getIndex(building->getPosition()));
@@ -338,6 +347,7 @@ void Environment::removeFromGrids(const std::vector<Building*>& buildingsToDispo
 		mainGrid.removeDeploy(building);
 		buildingGrid.remove(building);
 	}
+
 	for (const auto resource : resourceToDispose) {
 		mainGrid.removeStatic(resource);
 		resourceStaticGrid.remove(resource);

@@ -83,6 +83,7 @@ int Possession::getWorkersNumber() const {
 }
 
 int Possession::getFreeWorkersNumber() const { return freeWorkersNumber; }
+int Possession::getFreeArmyNumber() const { return freeArmyNumber; }
 
 std::vector<Building*>* Possession::getBuildings(short id) {
 	return buildingsPerId[id];
@@ -196,6 +197,10 @@ void Possession::updateAndClean(const Resources& resources, const ObjectsInfo* s
 
 	freeWorkersNumber = std::ranges::count_if(workers, [](Unit* worker) {
 		return isInFreeState(worker->getState());
+	});
+
+	freeArmyNumber = std::ranges::count_if(units, [](Unit* worker) {
+		return isFreeSolider(worker);
 	});
 
 	assert(validateSpan(__LINE__, __FILE__, unitsSumAsSpan));

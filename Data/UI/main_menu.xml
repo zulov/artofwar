@@ -1,253 +1,253 @@
 <element type="MainMenuWindow" style="MyWindow">
-	<attribute name="Vert Alignment" value="Center" />
-	<attribute name="Horiz Alignment" value="Left" />
-	<attribute name="Position" value="{iconX*1.5} 0" />
-	<attribute name="Layout Mode" value="Vertical" />
-	<attribute name="Layout Spacing" value="{iconY/2}" />
-	<attribute name="Layout Border" value="{iconX} {iconY} {iconX} {iconY}" />
+	<attribute name="Vert Alignment" value="Center"/>
+	<attribute name="Horiz Alignment" value="Left"/>
+	<attribute name="Position" value="{iconX*1.5} 0"/>
+	<attribute name="Layout Mode" value="Vertical"/>
+	<attribute name="Layout Spacing" value="{iconY/2}"/>
+	<attribute name="Layout Border" value="{iconX} {iconY} {iconX} {iconY}"/>
 	<attribute name="Min Size" value="{iconX*6} {bigY/2}"/>
 	<attribute name="Max Size" value="{iconX*9} {bigY}"/>
 </element>
 
 <element type="MainMenuDetailsWindow" style="MyWindow">
-	<attribute name="Vert Alignment" value="Center" />
-	<attribute name="Horiz Alignment" value="Right" />
-	<attribute name="Position" value="{-iconX*1.5} 0" />
-	<attribute name="Layout Spacing" value="{spaceY}" />
-	<attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+	<attribute name="Vert Alignment" value="Center"/>
+	<attribute name="Horiz Alignment" value="Right"/>
+	<attribute name="Position" value="{-iconX*1.5} 0"/>
+	<attribute name="Layout Spacing" value="{spaceY}"/>
+	<attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}"/>
 	<attribute name="Min Size" value="{bigX+iconX*3} {bigY}"/>
 	<attribute name="Max Size" value="{bigX+iconX*3} {bigY*1.5}"/>
 </element>
 
 <element type="MainMenuSprite">
-	<attribute name="Vert Alignment" value="Center" />
-	<attribute name="Horiz Alignment" value="Left" />
-	<attribute name="My Size" value="{iconX-2*spaceX} {iconY-2*spaceY}" />
-	<attribute name="Percent HotSpot" value="0.0 0.5" />
+	<attribute name="Vert Alignment" value="Center"/>
+	<attribute name="Horiz Alignment" value="Left"/>
+	<attribute name="My Size" value="{iconX-2*spaceX} {iconY-2*spaceY}"/>
+	<attribute name="Percent HotSpot" value="0.0 0.5"/>
 	<attribute name="Position" value="{spaceX} 0"/>
 </element>
 
-<element type="MainMenuButton"  style="Button" >
-	<attribute name="Horiz Alignment" value="Center" />
-	<attribute name="Min Size" value="{iconX*4} {iconY}" />
-	<attribute name="Max Size" value="{iconX*4} {iconY}" />
+<element type="MainMenuButton"  style="Button">
+	<attribute name="Horiz Alignment" value="Center"/>
+	<attribute name="Min Size" value="{iconX*4} {iconY}"/>
+	<attribute name="Max Size" value="{iconX*4} {iconY}"/>
 </element>
 
-<element type="MainMenuText" style="MyText" >
-	<attribute name="Text Alignment" value="Right" />
-	<attribute name="Horiz Alignment" value="Center" />
-	<attribute name="Vert Alignment" value="Center" />
+<element type="MainMenuText" style="MyText">
+	<attribute name="Text Alignment" value="Right"/>
+	<attribute name="Horiz Alignment" value="Center"/>
+	<attribute name="Vert Alignment" value="Center"/>
 </element>
 
-	<element type="MainMenuTitle" style="MyText" >
-	<attribute name="Font Size" value="{fontSize*1.5}" />
-	<attribute name="Vert Alignment" value="Top" />
-	<attribute name="Horiz Alignment" value="Center" />
+	<element type="MainMenuTitle" style="MyText">
+	<attribute name="Font Size" value="{fontSize*1.5}"/>
+	<attribute name="Vert Alignment" value="Top"/>
+	<attribute name="Horiz Alignment" value="Center"/>
 	<attribute name="Position" value="0 {iconY} "/>
 </element>
 
 <element type="MainMenuMock">
-	<attribute name="Vert Alignment" value="Top" />
-	<attribute name="Horiz Alignment" value="Center" />
-	<attribute name="Min Size" value="{100} {0}" />
-	<attribute name="Max Size" value="{1000} {1000}" />
+	<attribute name="Vert Alignment" value="Top"/>
+	<attribute name="Horiz Alignment" value="Center"/>
+	<attribute name="Min Size" value="{100} {0}"/>
+	<attribute name="Max Size" value="{1000} {1000}"/>
 	<attribute name="Position" value="0 {iconY*3}"/>
-	<attribute name="Layout Mode" value="Vertical" />
-	<attribute name="Layout Spacing" value="{spaceY}" />
+	<attribute name="Layout Mode" value="Vertical"/>
+	<attribute name="Layout Spacing" value="{spaceY}"/>
 </element>
 
 <element type="MainMenuHelpMock" style="MainMenuMock">
-	<attribute name="Layout Mode" value="Horizontal" />
+	<attribute name="Layout Mode" value="Horizontal"/>
 </element>
 
-<element type="HelpList" style="ListView" >
+<element type="HelpList" style="ListView">
 
-	<attribute name="Min Size" value="{iconX*4} {bigY/2}" />
-	<attribute name="Max Size" value="{iconX*4} {bigY-iconY*4}" />
+	<attribute name="Min Size" value="{iconX*4} {bigY/2}"/>
+	<attribute name="Max Size" value="{iconX*4} {bigY-iconY*4}"/>
 
-	<attribute name="Horiz Alignment" value="Left" />
-	<attribute name="Vert Alignment" value="Center" />
+	<attribute name="Horiz Alignment" value="Left"/>
+	<attribute name="Vert Alignment" value="Center"/>
 	<attribute name="Position" value="{iconX} 0"/>
 </element>
 
-<element type="HelpContent" style="ScrollView" >
-	<attribute name="Min Size" value="{bigX-iconX*4} {bigY-iconY*4}" />
-	<attribute name="Max Size" value="{bigX-iconX*4} {bigY-iconY*4}" />
-	<attribute name="Horiz Alignment" value="Right" />
-	<attribute name="Vert Alignment" value="Center" />
+<element type="HelpContent" style="ScrollView">
+	<attribute name="Min Size" value="{bigX-iconX*4} {bigY-iconY*4}"/>
+	<attribute name="Max Size" value="{bigX-iconX*4} {bigY-iconY*4}"/>
+	<attribute name="Horiz Alignment" value="Right"/>
+	<attribute name="Vert Alignment" value="Center"/>
 	<attribute name="Position" value="{-iconX} 0"/>
 </element>
 
-<element type="HelpContentText" style="MyText" >
-	<attribute name="Word Wrap" value="true" />
-	<attribute name="Horiz Alignment" value="Center" />
-	<attribute name="Vert Alignment" value="Center" />
+<element type="HelpContentText" style="MyText">
+	<attribute name="Word Wrap" value="true"/>
+	<attribute name="Horiz Alignment" value="Center"/>
+	<attribute name="Vert Alignment" value="Center"/>
 </element>
 
-<element type="HelpListButton" style="Button" >
+<element type="HelpListButton" style="Button">
 	<attribute name="Min Size" value="{iconX*2} {iconY*2/3}"/>
 	<attribute name="Max Size" value="{iconX*4} {iconY*2/3}"/>
 </element>
 
-<element type="HelpListText" style="MyText" >
-	<attribute name="Font Size" value="{fontSize}" />
-	<attribute name="Vert Alignment" value="Center" />
-	<attribute name="Horiz Alignment" value="Center" />
+<element type="HelpListText" style="MyText">
+	<attribute name="Font Size" value="{fontSize}"/>
+	<attribute name="Vert Alignment" value="Center"/>
+	<attribute name="Horiz Alignment" value="Center"/>
 </element>
 
 <element type="MainMenuNewGameMock" style="MainMenuMock">
-	<attribute name="Layout Mode" value="Vertical" />
+	<attribute name="Layout Mode" value="Vertical"/>
 </element>
 
-<element type="MainMenuNewGameRow" style="BorderImage" >
-	<attribute name="Horiz Alignment" value="Center" />
-	<attribute name="Layout Mode" value="Horizontal" />
-	<attribute name="Layout Spacing" value="{spaceX}" />
+<element type="MainMenuNewGameRow" style="BorderImage">
+	<attribute name="Horiz Alignment" value="Center"/>
+	<attribute name="Layout Mode" value="Horizontal"/>
+	<attribute name="Layout Spacing" value="{spaceX}"/>
 	<attribute name="Min Size" value="{bigX/2} {iconY/2}"/>
 	<attribute name="Max Size" value="{bigX/2} {iconY}"/>
-	<attribute name="Image Rect" value="48 0 64 16" />
-	<attribute name="Border" value="4 4 4 4" />
-	<attribute name="Resize Border" value="4 4 4 4" />
+	<attribute name="Image Rect" value="48 0 64 16"/>
+	<attribute name="Border" value="4 4 4 4"/>
+	<attribute name="Resize Border" value="4 4 4 4"/>
 </element>
 
-<element type="MainMenuNewGameDropDownList" style="DropDownList" >
-	<attribute name="Resize Popup" value="true" />
+<element type="MainMenuNewGameDropDownList" style="DropDownList">
+	<attribute name="Resize Popup" value="true"/>
 	<attribute name="Min Size" value="{iconX*2} {iconY/2}"/>
 	<attribute name="Max Size" value="{iconX*2} {iconY/2}"/>
 </element>
 
 <element type="MainMenuNewGameButton" style="Button">
-	<attribute name="Min Size" value="{iconX*3} {iconY}" />
-	<attribute name="Max Size" value="{iconX*3} {iconY}" />
+	<attribute name="Min Size" value="{iconX*3} {iconY}"/>
+	<attribute name="Max Size" value="{iconX*3} {iconY}"/>
 </element>
 
 <element type="MainMenuNewGameButtonText" style="MyText">
-	<attribute name="Horiz Alignment" value="Center" />
-	<attribute name="Vert Alignment" value="Center" />
+	<attribute name="Horiz Alignment" value="Center"/>
+	<attribute name="Vert Alignment" value="Center"/>
 </element>
 
 <element type="MainMenuNewGameButtonLabel" style="MyText">
-	<attribute name="Max Size" value="{iconX*3} {iconY}" />
+	<attribute name="Max Size" value="{iconX*3} {iconY}"/>
 </element>
 
 <element type="MainMenuLoadMock" style="MainMenuMock">
-	<attribute name="Layout Mode" value="Vertical" />
+	<attribute name="Layout Mode" value="Vertical"/>
 </element>
 
-<element type="LoadList" style="ListView" >
-	<attribute name="Min Size" value="{iconX*5} {bigY/2}" />
-	<attribute name="Max Size" value="{iconX*5} {bigY-iconY*4}" />
+<element type="LoadList" style="ListView">
+	<attribute name="Min Size" value="{iconX*5} {bigY/2}"/>
+	<attribute name="Max Size" value="{iconX*5} {bigY-iconY*4}"/>
 
-	<attribute name="Horiz Alignment" value="Center" />
+	<attribute name="Horiz Alignment" value="Center"/>
 </element>
 
-<element type="LoadContent" style="ScrollView" >
-	<attribute name="Min Size" value="{bigX/2} {bigY-iconY*4}" />
-	<attribute name="Max Size" value="{bigX/2} {bigY-iconY*4}" />
-	<attribute name="Horiz Alignment" value="Right" />
-	<attribute name="Vert Alignment" value="Center" />
+<element type="LoadContent" style="ScrollView">
+	<attribute name="Min Size" value="{bigX/2} {bigY-iconY*4}"/>
+	<attribute name="Max Size" value="{bigX/2} {bigY-iconY*4}"/>
+	<attribute name="Horiz Alignment" value="Right"/>
+	<attribute name="Vert Alignment" value="Center"/>
 	<attribute name="Position" value="{-iconX} 0"/>
 </element>
 
-<element type="LoadListButton" style="Button" >
+<element type="LoadListButton" style="Button">
 	<attribute name="Min Size" value="{iconX*2} {iconY*2/3}"/>
 	<attribute name="Max Size" value="{iconX*5} {iconY*2/3}"/>
 </element>
 
-<element type="LoadListText" style="MyText" >
-	<attribute name="Font Size" value="{fontSize}" />
-	<attribute name="Vert Alignment" value="Center" />
-	<attribute name="Horiz Alignment" value="Center" />
+<element type="LoadListText" style="MyText">
+	<attribute name="Font Size" value="{fontSize}"/>
+	<attribute name="Vert Alignment" value="Center"/>
+	<attribute name="Horiz Alignment" value="Center"/>
 </element>
 
 <element type="LoadButton" style="Button">
-	<attribute name="Min Size" value="{iconX*3} {iconY}" />
-	<attribute name="Max Size" value="{iconX*4} {iconY}" />
-	<attribute name="Horiz Alignment" value="Center" />
+	<attribute name="Min Size" value="{iconX*3} {iconY}"/>
+	<attribute name="Max Size" value="{iconX*4} {iconY}"/>
+	<attribute name="Horiz Alignment" value="Center"/>
 </element>
 
-<element type="LoadButtonText" style="MyText" >
-	<attribute name="Font Size" value="{fontSize*1.2}" />
-	<attribute name="Vert Alignment" value="Center" />
-	<attribute name="Horiz Alignment" value="Center" />
+<element type="LoadButtonText" style="MyText">
+	<attribute name="Font Size" value="{fontSize*1.2}"/>
+	<attribute name="Vert Alignment" value="Center"/>
+	<attribute name="Horiz Alignment" value="Center"/>
 </element>
 
 <element type="LoadLeftMock">
-	<attribute name="Min Size" value="{iconX*5} {bigY/2}" />
-	<attribute name="Max Size" value="{iconX*5} {bigY-iconY*4}" />
+	<attribute name="Min Size" value="{iconX*5} {bigY/2}"/>
+	<attribute name="Max Size" value="{iconX*5} {bigY-iconY*4}"/>
 
-	<attribute name="Horiz Alignment" value="Left" />
-	<attribute name="Vert Alignment" value="Center" />
+	<attribute name="Horiz Alignment" value="Left"/>
+	<attribute name="Vert Alignment" value="Center"/>
 	<attribute name="Position" value="{iconX} 0"/>
-	<attribute name="Layout Mode" value="Vertical" />
-	<attribute name="Layout Spacing" value="{iconY/2}" />
+	<attribute name="Layout Mode" value="Vertical"/>
+	<attribute name="Layout Spacing" value="{iconY/2}"/>
 </element>
 
 <element type="MainMenuCloseMock" style="MainMenuMock">
-	<attribute name="Layout Mode" value="Vertical" />
-	<attribute name="Layout Spacing" value="{spaceY}" />
+	<attribute name="Layout Mode" value="Vertical"/>
+	<attribute name="Layout Spacing" value="{spaceY}"/>
 </element>
 
-<element type="CloseText" style="MyText" >
-	<attribute name="Font Size" value="{fontSize}" />
-	<attribute name="Horiz Alignment" value="Center" />
-	<attribute name="Text Alignment" value="Center" />
+<element type="CloseText" style="MyText">
+	<attribute name="Font Size" value="{fontSize}"/>
+	<attribute name="Horiz Alignment" value="Center"/>
+	<attribute name="Text Alignment" value="Center"/>
 </element>
 
 <element type="MiniWindow" style="MyWindow">
-	<attribute name="Vert Alignment" value="Center" />
-	<attribute name="Horiz Alignment" value="Center" />
-	<attribute name="Layout Mode" value="Vertical" />
-	<attribute name="Layout Spacing" value="{iconY}" />
-	<attribute name="Layout Border" value="{iconX} {iconY} {iconX} {iconY}" />
+	<attribute name="Vert Alignment" value="Center"/>
+	<attribute name="Horiz Alignment" value="Center"/>
+	<attribute name="Layout Mode" value="Vertical"/>
+	<attribute name="Layout Spacing" value="{iconY}"/>
+	<attribute name="Layout Border" value="{iconX} {iconY} {iconX} {iconY}"/>
 	<attribute name="Min Size" value="{iconX*7} {iconY*4}"/>
 	<attribute name="Max Size" value="{iconX*7} {iconY*4}"/>
 </element>
 
-<element type="MainMenuCloseRow" style="UIElement" >
-	<attribute name="Horiz Alignment" value="Center" />
-	<attribute name="Layout Mode" value="Horizontal" />
-	<attribute name="Layout Spacing" value="{spaceX}" />
+<element type="MainMenuCloseRow" style="UIElement">
+	<attribute name="Horiz Alignment" value="Center"/>
+	<attribute name="Layout Mode" value="Horizontal"/>
+	<attribute name="Layout Spacing" value="{spaceX}"/>
 	<attribute name="Max Size" value="{iconX*4} {iconY}"/>
 </element>
 
-<element type="MainMenuBackground" >
-	<attribute name="Texture" value="Texture2D;Textures/hud/background.png" />
-	<attribute name="Blend Mode" value="alpha" />
-	<attribute name="Size" value="{resX} {resY}" />
-	<attribute name="Vert Alignment" value="Center" />
-	<attribute name="Horiz Alignment" value="Center" />
-	<attribute name="Tiled" value="false" />	
+<element type="MainMenuBackground">
+	<attribute name="Texture" value="Texture2D;Textures/hud/background.png"/>
+	<attribute name="Blend Mode" value="alpha"/>
+	<attribute name="Size" value="{resX} {resY}"/>
+	<attribute name="Vert Alignment" value="Center"/>
+	<attribute name="Horiz Alignment" value="Center"/>
+	<attribute name="Tiled" value="false"/>
 </element>
 
-<element type="MainMenuSettingsRow" style="BorderImage" >
-	<attribute name="Horiz Alignment" value="Center" />
-	<attribute name="Layout Mode" value="Horizontal" />
-	<attribute name="Layout Spacing" value="{spaceX}" />
+<element type="MainMenuSettingsRow" style="BorderImage">
+	<attribute name="Horiz Alignment" value="Center"/>
+	<attribute name="Layout Mode" value="Horizontal"/>
+	<attribute name="Layout Spacing" value="{spaceX}"/>
 	<attribute name="Min Size" value="{bigX/2} {iconY/2}"/>
 	<attribute name="Max Size" value="{bigX/2} {iconY}"/>
-	<attribute name="Image Rect" value="48 0 64 16" />
-	<attribute name="Border" value="4 4 4 4" />
-	<attribute name="Resize Border" value="4 4 4 4" />
+	<attribute name="Image Rect" value="48 0 64 16"/>
+	<attribute name="Border" value="4 4 4 4"/>
+	<attribute name="Resize Border" value="4 4 4 4"/>
 </element>
 
 <element type="MainMenuSettingsMock" style="MainMenuMock">
-	<attribute name="Layout Mode" value="Vertical" />
+	<attribute name="Layout Mode" value="Vertical"/>
 </element>
 
 <element type="MainMenuSettingsLabel" style="MyText">
-	<attribute name="Max Size" value="{iconX*3} {iconY}" />
+	<attribute name="Max Size" value="{iconX*3} {iconY}"/>
 </element>
 
 <element type="MainMenuSettingsButton" style="Button">
-	<attribute name="Min Size" value="{iconX*3} {iconY}" />
-	<attribute name="Max Size" value="{iconX*4} {iconY}" />
-	<attribute name="Horiz Alignment" value="Center" />
+	<attribute name="Min Size" value="{iconX*3} {iconY}"/>
+	<attribute name="Max Size" value="{iconX*4} {iconY}"/>
+	<attribute name="Horiz Alignment" value="Center"/>
 </element>
 
-<element type="MainMenuSettingsButtonText" style="MyText" >
-	<attribute name="Font Size" value="{fontSize*1.2}" />
-	<attribute name="Vert Alignment" value="Center" />
-	<attribute name="Horiz Alignment" value="Center" />
+<element type="MainMenuSettingsButtonText" style="MyText">
+	<attribute name="Font Size" value="{fontSize*1.2}"/>
+	<attribute name="Vert Alignment" value="Center"/>
+	<attribute name="Horiz Alignment" value="Center"/>
 </element>
 

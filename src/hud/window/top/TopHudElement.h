@@ -20,10 +20,11 @@ public:
 	~TopHudElement() = default;
 	void hide() const;
 	void show() const;
-	void setText(const Urho3D::String& msg) const;
+	void setText(const Urho3D::String& msg, const Urho3D::String& msg1) const;
 private:
 	MySprite* icon;
 	Urho3D::Button* button;
 	Urho3D::Text* value;
+	Urho3D::Text* value1;
 	Urho3D::ToolTip* toolTip;
 };

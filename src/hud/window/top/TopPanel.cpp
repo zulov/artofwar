@@ -7,6 +7,7 @@
 #include "../../UiUtils.h"
 #include "database/DatabaseCache.h"
 #include "info/TopInfoPanel.h"
+#include "objects/unit/Unit.h"
 #include "player/Player.h"
 #include "player/Possession.h"
 #include "player/Resources.h"
@@ -25,9 +26,10 @@ TopPanel::~TopPanel() {
 }
 
 void TopPanel::createBody() {
-	const auto textureHuman = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/top/human.png");
-	const auto textureWorker = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/top/worker.png");
-	const auto textureName = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/top/helmet.png");
+	const Urho3D::String path = "textures/hud/icon/top/";
+	const auto textureHuman = Game::getCache()->GetResource<Urho3D::Texture2D>(path + "human.png");
+	const auto textureWorker = Game::getCache()->GetResource<Urho3D::Texture2D>(path + "worker.png");
+	const auto textureName = Game::getCache()->GetResource<Urho3D::Texture2D>(path + "helmet.png");
 	name = new TopHudElement(window, style, textureName);
 	units = new TopHudElement(window, style, textureHuman, "TopButtonsNarrow");
 	workers = new TopHudElement(window, style, textureWorker, "TopButtonsNarrow");
@@ -45,21 +47,27 @@ void TopPanel::createBody() {
 }
 
 void TopPanel::update(Player* player) const {
-	auto& possession = player->getPossession();
+	const auto& possession = player->getPossession();
 
-	units->setText(Urho3D::String(possession.getUnitsNumber()));
-	workers->setText(Urho3D::String(possession.getWorkersNumber()));
-	name->setText(Urho3D::String(player->getName()));
+	units->setText(Urho3D::String(possession.getFreeArmyNumber()) + "/", Urho3D::String(possession.getUnitsNumber()));
+	workers->setText(Urho3D::String(possession.getFreeWorkersNumber())+"/", Urho3D::String(possession.getWorkersNumber()));
+	name->setText(Urho3D::String(player->getName()), "");
 
 	auto& resources = player->getResources();
-	if (resources.hasChanged()) {
-		auto vals = resources.getValues();
-
-		for (int i = 0; i < vals.size(); ++i) {
-			elements[i]->setText(Urho3D::String((int)vals[i]));
+	unsigned short workersPerRes[RESOURCES_SIZE] = {0, 0, 0, 0};
+	for (const auto worker : possession.getWorkers()) {
+		const auto id = worker->getThingToInterActId();
+		if (id >= 0 && worker->getState() == UnitState::COLLECT) {
+			++workersPerRes[id];
 		}
-		resources.hasBeenUpdatedDrawn();
 	}
+
+	auto vals = resources.getValues();
+	for (int i = 0; i < vals.size(); ++i) {
+		elements[i]->setText(
+			Urho3D::String((int)vals[i])+"|", Urho3D::String(workersPerRes[i]));
+	}
+
 }
 
 void TopPanel::setVisible(bool enable) {

@@ -6,6 +6,7 @@
 #include "Bucket.h"
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"
+#include "database/db_strcut.h"
 #include "debug/DebugLineRepo.h"
 #include "levels/LevelCache.h"
 #include "math/MathUtils.h"
@@ -141,10 +142,10 @@ unsigned char MainGrid::getRevertCloseIndex(int center, int gridIndex) const {
 }
 
 void MainGrid::addDeploy(Building* building) const {
-	auto optDeployIndex = building->getDeploy();
+	const auto optDeployIndex = building->getDeploy();
 
 	if (optDeployIndex.has_value()) {
-		complexData[optDeployIndex.value()].setDeploy(building);
+		complexData[optDeployIndex.value()].setDeploy();
 	}
 }
 
@@ -257,6 +258,29 @@ std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector3& center, floa
 	return allIndexes;
 }
 
+void MainGrid::reAddBonuses(std::vector<Building*>* buildings, char player, char resId) const {
+	for (int i = 0; i < sqResolution; ++i) {
+		complexData[i].resetResBonuses(player, resId);
+	}
+	for (const auto building : *buildings) {
+		const auto dbBuilding = building->getDbBuilding();
+		if (building->getPlayer() == player && dbBuilding->hasResourceType[resId]) {
+			addResourceBonuses(building);
+		}
+	}
+}
+
+float MainGrid::getBonuses(char player, ResourceEntity* resource) {
+	float best = .0f;
+	for (const int cell : resource->getOccupiedCells()) {
+		const float val = complexData[cell].getResBonus(player, resource->getId());
+		if (val > best) {
+			best = val;
+		}
+	}
+	return best;
+}
+
 bool MainGrid::isInLocalArea(const int center, int indexOfAim) const {
 	return closeIndexes->isInLocalArea(center, indexOfAim);
 }
@@ -286,6 +310,42 @@ int MainGrid::closestPassableCell(int posIndex) const {
 		}
 	}
 	return posIndex; //TODO to zwrócic optional empty
+}
+
+void MainGrid::addResourceBonuses(Building* building) const {
+	const auto [dbBuilding, level] = building->getData();
+
+	if (dbBuilding->typeResourceAny) {
+		auto const [levels, cords] = levelCache->getBoth(level->resourceRange);
+
+		std::vector<int> indexes;
+		indexes.reserve(levels->size() * building->getOccupiedCells().size());
+		for (const int cell : building->getOccupiedCells()) {
+			const auto centerCords = calculator->getIndexes(cell);
+			auto ptrIdx = levels->begin();
+			for (const auto& shiftCords : *cords) {
+				if (calculator->isValidIndex(shiftCords.x_ + centerCords.x_, shiftCords.y_ + centerCords.y_)) {
+					auto newIndex = cell + *ptrIdx;
+					indexes.push_back(newIndex);
+				}
+				++ptrIdx;
+			}
+		}
+		std::ranges::sort(indexes);
+		indexes.erase(std::unique(indexes.begin(), indexes.end()), indexes.end());
+		for (const int index : indexes) {
+			complexData[index].setResBonuses(building->getPlayer(), dbBuilding->resourceTypes, level->collect);
+		}
+	}
+}
+
+void MainGrid::removeResourceBonuses(Static* object) const {
+	if (object->getType() == ObjectType::BUILDING) {
+		const Building* building = (Building*)object;
+		const auto [dbBuilding, level] = building->getData();
+
+		if (dbBuilding->typeResourceAny) { }
+	}
 }
 
 void MainGrid::addStatic(Static* object) {
@@ -333,6 +393,7 @@ void MainGrid::removeStatic(Static* object) const {
 	for (const auto index : object->getSurroundCells()) {
 		updateNeighbors(complexData[index], index);
 	}
+	removeResourceBonuses(object);
 	//TODO BUG remove deploy??
 }
 

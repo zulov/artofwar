@@ -105,22 +105,13 @@ void Player::add(Building* building) {
 int Player::getScore() {
 	if (score < 0) {
 		const float visibilityPercent = Game::getEnvironment()->getVisibilityScore(id);
-		score = possession.getScore()
-			+ visibilityPercent * 1000.f;
+		score = possession.getScore() + visibilityPercent * 1000.f;
 	}
 	return score;
 }
 
 int Player::getWorkersNumber() const {
 	return possession.getWorkersNumber();
-}
-
-void Player::deactivate() {
-	resources.change();
-}
-
-void Player::activate() {
-	resources.change();
 }
 
 QueueElement* Player::updateQueue() const {

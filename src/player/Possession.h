@@ -24,6 +24,7 @@ public:
 	int getBuildingsNumber() const;
 	int getWorkersNumber() const;
 	int getFreeWorkersNumber() const;
+	int getFreeArmyNumber() const;
 	std::vector<Building*>* getBuildings(short id);
 
 	void addKilled(Physical* physical);
@@ -44,6 +45,7 @@ private:
 	std::vector<Unit*> units;
 	std::vector<Unit*> workers;
 	int freeWorkersNumber = 0;
+	int freeArmyNumber = 0;
 	float resourcesSum = 0.f;
 	float resourcesDestroyed = 0.f;
 

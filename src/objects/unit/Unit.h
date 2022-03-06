@@ -96,6 +96,7 @@ public:
 	void drawLineTo(const Urho3D::Vector2& second, const Urho3D::Color& color) const;
 	void debug(DebugUnitType type, ForceStats& stats);
 	bool isFirstThingAlive() const;
+	short getThingToInterActId() const { return thingToInteract ? thingToInteract->getId() : -1; }
 
 	float getMaxSeparationDistance() const;
 	short getPositionInFormation() const { return posInFormation; }

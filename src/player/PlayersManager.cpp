@@ -58,9 +58,7 @@ std::vector<Player*>& PlayersManager::getTeam(short i) {
 }
 
 void PlayersManager::changeActive(short i) {
-	activePlayer->deactivate();
 	activePlayer = allPlayers[i];
-	activePlayer->activate();
 }
 
 void PlayersManager::save(SceneSaver& saver) {

@@ -20,18 +20,15 @@ public:
 	bool reduce(const db_cost* costs);
 	bool hasEnough(const db_cost* costs) const;
 	void add(int id, float value);
-	bool hasChanged() const { return changed; }
 
 	std::span<float> getValues() const { return values; }
 	std::span<float> getGatherSpeeds() const { return gatherSpeeds; }
 	std::span<float> getSumValues() const { return sumValues; }
 
-	void hasBeenUpdatedDrawn();
 	int getSum() const;
 
 	std::string getValues(int precision, int player) const;
 	void setValue(int id, float amount);
-	void change();
 
 	void resetStats() const;
 private:
@@ -41,6 +38,4 @@ private:
 	std::span<float> gatherSpeeds;
 	std::span<float> sumGatherSpeed;
 	std::span<float> sumValues;
-
-	bool changed;
 };

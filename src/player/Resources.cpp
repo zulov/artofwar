@@ -24,16 +24,13 @@ void Resources::init(float valueForAll) {
 	resetSpan(gatherSpeeds);
 	resetSpan(sumGatherSpeed);
 	resetSpan(sumValues);
-
-	changed = true;
 }
 
 bool Resources::reduce(const db_cost* costs) {
 	if (hasEnough(costs)) {
 		for (int i = 0; i < costs->values.size(); ++i) {
-			values[i]-=costs->values[i];
+			values[i] -= costs->values[i];
 		}
-		changed = true;
 		return true;
 	}
 	return false;
@@ -52,12 +49,8 @@ void Resources::add(int id, float value) {
 	values[id] += value;
 	sumGatherSpeed[id] += value;
 	sumValues[id] += value;
-	changed = true;
 }
 
-void Resources::hasBeenUpdatedDrawn() {
-	changed = false;
-}
 
 int Resources::getSum() const {
 	return sumSpan(values);
@@ -74,11 +67,6 @@ std::string Resources::getValues(int precision, int player) const {
 
 void Resources::setValue(int id, float amount) {
 	values[id] = amount;
-	changed = true;
-}
-
-void Resources::change() {
-	changed = true;
 }
 
 void Resources::resetStats() const {

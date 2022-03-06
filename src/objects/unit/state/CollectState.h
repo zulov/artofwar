@@ -6,14 +6,14 @@
 #include "player/Resources.h"
 #include "env/Environment.h"
 #include "objects/CellState.h"
+#include "objects/resource/ResourceEntity.h"
 
 class CollectState : public State {
 public:
 	CollectState(): State({
 		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
 		UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE
-	}) {
-	}
+	}) { }
 
 	~CollectState() = default;
 
@@ -68,8 +68,9 @@ public:
 		}
 
 		auto& resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
-		const auto resource = unit->thingToInteract;
-		const auto [value, died] = resource->absorbAttack(unit->dbLevel->collect * timeStep);
+		const auto resource = (ResourceEntity*)unit->thingToInteract;
+		const auto bonus = Game::getEnvironment()->getBonuses(unit->player, resource);
+		const auto [value, died] = resource->absorbAttack(unit->dbLevel->collect * bonus * timeStep);
 		//resource->getIndexInInfluence()
 		Game::getEnvironment()->addCollect(unit, resource->getId(), value);
 		resources.add(resource->getId(), value);

@@ -1,5 +1,9 @@
 #pragma once
+#include <vector>
+
 #include "objects/CellState.h"
+#include "objects/resource/ResourceEntity.h"
+#include "utils/defines.h"
 #include "utils/Flags.h"
 
 //enum class CellState : char;
@@ -40,7 +44,11 @@ public:
 
 	void updateSize(char val, CellState cellState);
 
-	void setDeploy(Building* building);
+	void setResBonuses(char player, const std::vector<char>& resIds, float bonus);
+	void resetResBonuses(char player, char resId);
+	float getResBonus(char player, short resId) const;
+
+	void setDeploy();
 	bool cellIsCollectable() const;
 	bool cellIsAttackable() const;
 	bool isPassable() const { return state <= CellState::DEPLOY; }
@@ -52,6 +60,7 @@ private:
 	unsigned char isNeightOccupied = 255; //na poczatku wszystko zajête
 	int escapeBucketIndex = -1;//TODO moze zrezygnowac z tego ca³kiem
 	float costToNeight[8] = {0.f};
+	float resourceBonuses[MAX_PLAYERS][RESOURCES_SIZE];
 	//float cost{};
 
 

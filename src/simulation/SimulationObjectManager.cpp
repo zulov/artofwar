@@ -177,9 +177,32 @@ void SimulationObjectManager::findToDisposeResources() {
 	}
 }
 
+void SimulationObjectManager::refreshResBonuses() {
+	//TODO perf ugly, refresh ca³oœci
+	bool resourceBuildingChanged[MAX_PLAYERS][RESOURCES_SIZE] =
+	{{false, false, false, false},
+		{false, false, false, false}};
+	for (const auto building : buildingsToDispose) {
+		auto& vals = resourceBuildingChanged[building->getPlayer()];
+		for (const char resId : building->getDbBuilding()->resourceTypes) {
+			vals[resId] = true;
+		}
+	}
+	for (char p = 0; p < MAX_PLAYERS; ++p) {
+		const auto& perPlayer = resourceBuildingChanged[p];
+		for (char r = 0; r < RESOURCES_SIZE; ++r) {
+			if (perPlayer[r]) {
+				Game::getEnvironment()->reAddBonuses(buildings, p, r);
+			}
+		}
+	}
+}
+
 void SimulationObjectManager::dispose() {
 	Game::getEnvironment()->removeFromGrids(unitsToDispose);
 	Game::getEnvironment()->removeFromGrids(buildingsToDispose, resourcesToDispose);
+
+	refreshResBonuses();
 
 	clear_vector(unitsToDispose);
 	clear_vector(buildingsToDispose);

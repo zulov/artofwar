@@ -41,6 +41,7 @@ private:
 	void findToDisposeUnits();
 	void findToDisposeBuildings();
 	void findToDisposeResources();
+	void refreshResBonuses();
 
 	UnitFactory unitFactory;
 	BuildingFactory buildingFactory;

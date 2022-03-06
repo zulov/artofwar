@@ -315,9 +315,14 @@ struct db_building : db_entity, db_with_name, db_with_cost, db_static {
 	bool typeUnitRange;
 	bool typeUnitCavalry;
 
+	bool typeResourceAny;
+	std::vector<char> resourceTypes;
+	bool hasResourceType[RESOURCES_SIZE];
+
 	std::vector<db_building_level*> levels;
 
 	std::vector<db_nation*> nations;
+
 
 	db_building(short id, char* name, char* icon, short sizeX, short sizeZ,
 	            bool typeCenter, bool typeHome, bool typeDefence, bool typeResourceFood, bool typeResourceWood,
@@ -328,7 +333,17 @@ struct db_building : db_entity, db_with_name, db_with_cost, db_static {
 		  typeResourceFood(typeResourceFood), typeResourceWood(typeResourceWood),
 		  typeResourceStone(typeResourceStone), typeResourceGold(typeResourceGold),
 		  typeTechBlacksmith(typeTechBlacksmith), typeTechUniversity(typeTechUniversity),
-		  typeUnitBarracks(typeUnitBarracks), typeUnitRange(typeUnitRange), typeUnitCavalry(typeUnitCavalry) { }
+		  typeUnitBarracks(typeUnitBarracks), typeUnitRange(typeUnitRange), typeUnitCavalry(typeUnitCavalry),
+		  typeResourceAny(typeResourceFood || typeResourceWood || typeResourceStone || typeResourceGold) {
+		hasResourceType[0] = typeResourceFood;
+		hasResourceType[1] = typeResourceWood;
+		hasResourceType[2] = typeResourceStone;
+		hasResourceType[3] = typeResourceGold;
+		if (typeResourceFood) { resourceTypes.push_back(0); }
+		if (typeResourceWood) { resourceTypes.push_back(1); }
+		if (typeResourceStone) { resourceTypes.push_back(2); }
+		if (typeResourceGold) { resourceTypes.push_back(3); }
+	}
 
 	std::optional<db_building_level*> getLevel(short level) {
 		if (levels.size() > level) {

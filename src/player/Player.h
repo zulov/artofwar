@@ -39,8 +39,6 @@ public:
 
 	int getWorkersNumber() const;
 
-	void deactivate();
-	void activate();
 	QueueElement* updateQueue() const;
 	QueueManager* getQueue() const;
 	db_unit_level* getLevelForUnit(short id) const;

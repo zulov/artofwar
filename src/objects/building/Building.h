@@ -56,6 +56,7 @@ public:
 	float getModelHeight() const override;
 	void setModelData(float modelHeight) const override;
 	db_building* getDbBuilding() const { return dbBuilding; }
+	std::pair<db_building*, db_building_level*> getData() const { return {dbBuilding, dbLevel}; }//TODO getUniT DATA i resource
 private:
 	int deployIndex = -1;
 	unsigned short currentFrameState = 0;
