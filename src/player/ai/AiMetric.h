@@ -193,15 +193,16 @@ const inline struct MetricDefinitions {
 	};
 
 	static inline AiBuildingMetric aiBuildingMetric[] = {
-		{[](db_building* b, db_building_level* l) -> float { return b->getSumCost(); }, 40, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return b->getSumCost(); }, 400, BUILDINGS_SUM_X},
 		{[](db_building* b, db_building_level* l) -> float { return l->maxHp; }, 500, BUILDINGS_SUM_X},
 		{[](db_building* b, db_building_level* l) -> float { return l->armor; }, 1, BUILDINGS_SUM_X},
 		{[](db_building* b, db_building_level* l) -> float { return l->sightRadius; }, 50, BUILDINGS_SUM_X},
 
-		{[](db_building* b, db_building_level* l) -> float { return l->collect; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return l->collect; }, 2, BUILDINGS_SUM_X},
 		{[](db_building* b, db_building_level* l) -> float { return l->attack; }, 20, BUILDINGS_SUM_X}, //index 5
 		{[](db_building* b, db_building_level* l) -> float { return l->attackReload; }, 200, BUILDINGS_SUM_X},
 		{[](db_building* b, db_building_level* l) -> float { return l->attackRange; }, 20, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return l->resourceRange; }, 20, BUILDINGS_SUM_X},
 		//TODO suma tego nie ma sensu flaga ze to nie ma sensu albo ujemna wartoœæ
 		{[](db_building* b, db_building_level* l) -> float { return b->typeCenter; }, 1, BUILDINGS_SUM_X},
 		{[](db_building* b, db_building_level* l) -> float { return b->typeHome; }, 1, BUILDINGS_SUM_X},
@@ -292,9 +293,6 @@ const inline struct MetricDefinitions {
 
 	constexpr static std::span<AiBuildingMetric> buildingSmallInputSpan = std::span(aiSmallBuildingMetric);
 	constexpr static std::span<AiBuildingMetric> buildingInputSpan = std::span(aiBuildingMetric);
-
-	constexpr static std::span<AiUnitMetric> smallUnitInputSpan = std::span(aiSmallUnitMetric);
-	constexpr static std::span<AiBuildingMetric> smallBuildingInputSpan = std::span(aiSmallBuildingMetric);
 
 	constexpr static std::span<AiResourceMetric> resourceInputSpan = std::span(aiResourceMetric);
 	constexpr static std::span<AiPlayerMetric> basicInputSpan = std::span(aiBasicMetric);
