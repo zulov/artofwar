@@ -1,74 +1,19 @@
 #pragma once
 #include <functional>
+
+#include "AiConsts.h"
 #include "player/Player.h"
 #include "env/Environment.h"
 #include "Game.h"
 #include "env/influence/CenterType.h"
 
 
-constexpr char UNITS_SUM_X = 100;
-constexpr char BUILDINGS_SUM_X = 10;
-
-struct AiMetric {
-	const float weight;
-	const float weightForSum;
-
-	AiMetric(float weight, float weightMultiplier) : weight(weight), weightForSum(weight * weightMultiplier) {
-	}
-};
-
-struct AiUnitMetric : AiMetric {
-	const std::function<float(db_unit* unit, db_unit_level* level)> fn;
-
-	AiUnitMetric(const std::function<float(db_unit* unit, db_unit_level* level)>& fn, float weight,
-	             float weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) {
-	}
-};
-
-struct AiBuildingMetric : AiMetric {
-	const std::function<float(db_building* building, db_building_level* level)> fn;
-
-	AiBuildingMetric(const std::function<float(db_building* building, db_building_level* level)>& fn, float weight,
-	                 int weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) {
-	}
-};
-
-struct AiResourceMetric : AiMetric {
-	const std::function<float(Resources& resources, Possession& possession)> fn;
-
-	AiResourceMetric(const std::function<float(const Resources& resources, const Possession& possession)>& fn,
-	                 float weight, float weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) {
-	}
-};
-
-struct AiPlayerMetric : AiMetric {
-	const std::function<float(Player* one, Player* two)> fn;
-
-	AiPlayerMetric(const std::function<float(Player* one, Player* two)>& fn,
-	               float weight = 1.f, float weightMultiplier = 1.f): fn(fn), AiMetric(weight, weightMultiplier) {
-	}
-};
-
-
 const inline struct MetricDefinitions {
-
-	MetricDefinitions() {
-		const auto oSize = std::max({unitInputSpan.size(), buildingInputSpan.size(), resourceInputSpan.size(),
-			basicInputSpan.size(), attackOrDefenceInputSpan.size(), whereAttackInputSpan.size(),
-			whereDefendInputSpan.size()});
-		const auto oSmallSize = std::max({unitSmallInputSpan.size(), buildingSmallInputSpan.size()});
-		const auto oSizeSum = std::max({unitInputSpan.size(), buildingInputSpan.size()});
-		basic.reserve(basicInputSpan.size());
-		output.reserve(oSize);
-		outputSmall.reserve(oSmallSize);
-		outputSum.reserve(oSizeSum);
-	}
-
 
 	const std::vector<float>& getAiPlayerMetricNorm(Player* one, Player* two, std::span<AiPlayerMetric> metric) const {
 		output.clear();
 		for (auto const& v : metric) {
-			output.push_back(v.fn(one, two) / v.weight);
+			output.push_back(v.fn(one, two) * v.weight);
 		}
 		return output;
 	}
@@ -76,7 +21,7 @@ const inline struct MetricDefinitions {
 	const std::vector<float>& getUnitNormSmall(db_unit* unit, db_unit_level* level) const {
 		outputSmall.clear();
 		for (auto const& v : unitSmallInputSpan) {
-			outputSmall.push_back(v.fn(unit, level) / v.weight);
+			outputSmall.push_back(v.fn(unit, level) * v.weight);
 		}
 		return outputSmall;
 	}
@@ -84,7 +29,7 @@ const inline struct MetricDefinitions {
 	const std::vector<float>& getUnitNormForSum(db_unit* unit, db_unit_level* level) const {
 		outputSum.clear();
 		for (auto const& v : unitInputSpan) {
-			outputSum.push_back(v.fn(unit, level) / v.weightForSum);
+			outputSum.push_back(v.fn(unit, level) * v.weightForSum);
 		}
 		return outputSum;
 	}
@@ -92,23 +37,15 @@ const inline struct MetricDefinitions {
 	const std::vector<float>& getUnitNorm(db_unit* unit, db_unit_level* level) const {
 		output.clear();
 		for (auto const& v : unitInputSpan) {
-			output.push_back(v.fn(unit, level) / v.weight);
+			output.push_back(v.fn(unit, level) * v.weight);
 		}
 		return output;
-	}
-
-	const std::vector<float>& getBuildingNormSmall(db_building* building, db_building_level* level) const {
-		outputSmall.clear();
-		for (auto const& v : buildingSmallInputSpan) {
-			outputSmall.push_back(v.fn(building, level) / v.weight);
-		}
-		return outputSmall;
 	}
 
 	const std::vector<float>& getBuildingNorm(db_building* building, db_building_level* level) const {
 		output.clear();
 		for (auto const& v : buildingInputSpan) {
-			output.push_back(v.fn(building, level) / v.weight);
+			output.push_back(v.fn(building, level) * v.weight);
 		}
 		return output;
 	}
@@ -116,7 +53,7 @@ const inline struct MetricDefinitions {
 	const std::vector<float>& getBuildingNormForSum(db_building* building, db_building_level* level) const {
 		outputSum.clear();
 		for (auto const& v : buildingInputSpan) {
-			outputSum.push_back(v.fn(building, level) / v.weightForSum);
+			outputSum.push_back(v.fn(building, level) * v.weightForSum);
 		}
 		return outputSum;
 	}
@@ -124,7 +61,7 @@ const inline struct MetricDefinitions {
 	const std::vector<float>& getResourceNorm(Resources& resources, Possession& possession) const {
 		output.clear();
 		for (auto const& v : resourceInputSpan) {
-			output.push_back(v.fn(resources, possession) / v.weight);
+			output.push_back(v.fn(resources, possession) * v.weight);
 		}
 		return output;
 	}
@@ -132,7 +69,7 @@ const inline struct MetricDefinitions {
 	const std::vector<float>& getBasicNorm(Player* one, Player* two) const {
 		basic.clear();
 		for (auto const& v : basicInputSpan) {
-			output.push_back(v.fn(one, two) / v.weight);
+			output.push_back(v.fn(one, two) * v.weight);
 		}
 		return basic;
 	}
@@ -203,37 +140,70 @@ const inline struct MetricDefinitions {
 		{[](db_building* b, db_building_level* l) -> float { return l->attackReload; }, 200, BUILDINGS_SUM_X},
 		{[](db_building* b, db_building_level* l) -> float { return l->attackRange; }, 20, BUILDINGS_SUM_X},
 		{[](db_building* b, db_building_level* l) -> float { return l->resourceRange; }, 20, BUILDINGS_SUM_X},
-		//TODO suma tego nie ma sensu flaga ze to nie ma sensu albo ujemna wartoœæ
-		{[](db_building* b, db_building_level* l) -> float { return b->typeCenter; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeHome; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeDefence; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeResourceFood; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeResourceWood; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeResourceStone; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeResourceGold; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeTechBlacksmith; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeTechUniversity; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeUnitBarracks; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeUnitRange; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeUnitCavalry; }, 1, BUILDINGS_SUM_X},
 
+		METRICS_OBJECTS.buildingTypeCenter,
+		METRICS_OBJECTS.buildingTypeHome,
+		METRICS_OBJECTS.buildingTypeDefence,
+		METRICS_OBJECTS.buildingTypeResourceFood,
+		METRICS_OBJECTS.buildingTypeResourceWood,
+		METRICS_OBJECTS.buildingTypeResourceStone,
+		METRICS_OBJECTS.buildingTypeResourceGold,
+		METRICS_OBJECTS.buildingTypeTechBlacksmith,
+		METRICS_OBJECTS.buildingTypeTechUniversity,
+		METRICS_OBJECTS.buildingTypeUnitBarracks,
+		METRICS_OBJECTS.buildingTypeUnitRange,
+		METRICS_OBJECTS.buildingTypeUnitCavalry,
 	};
 
+	static inline AiBuildingMetric aiBuildingOtherMetric[] = { //TODO moze cos wiecej?
+		METRICS_OBJECTS.buildingTypeCenter,
+		METRICS_OBJECTS.buildingTypeHome,
+	};
+
+	static inline AiBuildingMetric aiBuildingUnitsMetric[] = { //TODO moze cos wiecej?
+				METRICS_OBJECTS.buildingTypeUnitBarracks,
+		METRICS_OBJECTS.buildingTypeUnitRange,
+		METRICS_OBJECTS.buildingTypeUnitCavalry,
+	};
+
+	static inline AiBuildingMetric aiBuildingTechMetric[] = { //TODO moze cos wiecej?
+				METRICS_OBJECTS.buildingTypeTechBlacksmith,
+		METRICS_OBJECTS.buildingTypeTechUniversity,
+	};
+
+	static inline AiBuildingMetric aiBuildingResMetric[] = {
+		{[](db_building* b, db_building_level* l) -> float { return l->collect; }, 2, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return l->resourceRange; }, 20, BUILDINGS_SUM_X},
+		METRICS_OBJECTS.buildingTypeResourceFood,
+		METRICS_OBJECTS.buildingTypeResourceWood,
+		METRICS_OBJECTS.buildingTypeResourceStone,
+		METRICS_OBJECTS.buildingTypeResourceGold,
+	};
+
+	static inline AiBuildingMetric aiBuildingDefMetric[] = {
+		{[](db_building* b, db_building_level* l) -> float { return b->getSumCost(); }, 400, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return l->maxHp; }, 500, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return l->armor; }, 1, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return l->sightRadius; }, 50, BUILDINGS_SUM_X},
+
+		{[](db_building* b, db_building_level* l) -> float { return l->attack; }, 20, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return l->attackReload; }, 200, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return l->attackRange; }, 20, BUILDINGS_SUM_X},
+	};
 
 	static inline AiBuildingMetric aiSmallBuildingMetric[] = {
-		{[](db_building* b, db_building_level* l) -> float { return b->typeCenter; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeHome; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeDefence; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeResourceFood; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeResourceWood; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeResourceStone; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeResourceGold; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeTechBlacksmith; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeTechUniversity; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeUnitBarracks; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeUnitRange; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return b->typeUnitCavalry; }, 1, BUILDINGS_SUM_X},
-
+		METRICS_OBJECTS.buildingTypeCenter,
+		METRICS_OBJECTS.buildingTypeHome,
+		METRICS_OBJECTS.buildingTypeDefence,
+		METRICS_OBJECTS.buildingTypeResourceFood,
+		METRICS_OBJECTS.buildingTypeResourceWood,
+		METRICS_OBJECTS.buildingTypeResourceStone,
+		METRICS_OBJECTS.buildingTypeResourceGold,
+		METRICS_OBJECTS.buildingTypeTechBlacksmith,
+		METRICS_OBJECTS.buildingTypeTechUniversity,
+		METRICS_OBJECTS.buildingTypeUnitBarracks,
+		METRICS_OBJECTS.buildingTypeUnitRange,
+		METRICS_OBJECTS.buildingTypeUnitCavalry,
 	};
 
 	//TODO moze to zwracac od razy przedzia³em jakos
@@ -261,7 +231,6 @@ const inline struct MetricDefinitions {
 		{[](Player* one, Player* two) -> float { return two->getPossession().getUnitsNumber(); }, 100},
 		{[](Player* one, Player* two) -> float { return two->getPossession().getBuildingsNumber(); }, 100}
 	};
-
 
 	static inline AiPlayerMetric aiAttackOrDefence[] = {
 		{[](Player* p1, Player* p2) -> float { return p1->getPossession().getAttackSum(); }, 1000},
@@ -291,7 +260,14 @@ const inline struct MetricDefinitions {
 	constexpr static std::span<AiUnitMetric> unitSmallInputSpan = std::span(aiSmallUnitMetric);
 	constexpr static std::span<AiUnitMetric> unitInputSpan = std::span(aiUnitMetric);
 
+	constexpr static std::span<AiBuildingMetric> aiBuildingDefInputSpan = std::span(aiBuildingDefMetric);
+	constexpr static std::span<AiBuildingMetric> aiBuildingResInputSpan = std::span(aiBuildingResMetric);
+	constexpr static std::span<AiBuildingMetric> aiBuildingTechInputSpan = std::span(aiBuildingTechMetric);
+	constexpr static std::span<AiBuildingMetric> aiBuildingUnitsInputSpan = std::span(aiBuildingUnitsMetric);
+	constexpr static std::span<AiBuildingMetric> aiBuildingOtherInputSpan = std::span(aiBuildingOtherMetric);
+
 	constexpr static std::span<AiBuildingMetric> buildingSmallInputSpan = std::span(aiSmallBuildingMetric);
+
 	constexpr static std::span<AiBuildingMetric> buildingInputSpan = std::span(aiBuildingMetric);
 
 	constexpr static std::span<AiResourceMetric> resourceInputSpan = std::span(aiResourceMetric);

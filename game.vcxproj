@@ -415,6 +415,7 @@
     <ClInclude Include="src\math\SpanUtils.h" />
     <ClInclude Include="src\objects\unit\GroupUtils.h" />
     <ClInclude Include="src\objects\unit\state\StateUtils.h" />
+    <ClInclude Include="src\player\ai\AiConsts.h" />
     <ClInclude Include="src\player\ai\AiMetric.h" />
     <ClInclude Include="src\scene\save\SQLConsts.h" />
     <ClInclude Include="src\env\influence\MapsUtils.h" />

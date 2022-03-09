@@ -61,15 +61,15 @@ private:
 	Player* player;
 	db_nation* nation;
 
-	Brain* ifWorkerCreate;
-	Brain* whereWorkerCreate;
+	Brain* ifWorker;
+	Brain* whereWorker;
 
-	Brain* ifBuildingCreate;
-	Brain* whichBuildingCreate;
-	Brain* whereBuildingCreate;
+	Brain* ifBuilding;
+	Brain* whichBuilding;
+	Brain* whereBuilding;
 
-	Brain* ifUnitCreate;
-	Brain* whichUnitCreate;
-	Brain* whereUnitCreate;
+	Brain* ifUnit;
+	Brain* whichUnit;
+	Brain* whereUnit;
 
 };

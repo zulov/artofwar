@@ -546,6 +546,7 @@
     <ClInclude Include="src\env\influence\MapsUtils.h" />
     <ClInclude Include="src\env\influence\VisibilityMode.h" />
     <ClInclude Include="src\player\ai\AiMetric.h" />
+    <ClInclude Include="src\player\ai\AiConsts.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
