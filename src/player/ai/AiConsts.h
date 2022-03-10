@@ -46,6 +46,18 @@ struct AiPlayerMetric : AiMetric {
 };
 
 const inline struct MetricsObjects {
+
+	static inline AiBuildingMetric buildingSumCost = {[](db_building* b, db_building_level* l) -> float { return b->getSumCost(); }, 400, BUILDINGS_SUM_X};
+	static inline AiBuildingMetric buildingMaxHp =	{[](db_building* b, db_building_level* l) -> float { return l->maxHp; }, 500, BUILDINGS_SUM_X};
+	static inline AiBuildingMetric buildingArmor =	{[](db_building* b, db_building_level* l) -> float { return l->armor; }, 1, BUILDINGS_SUM_X};
+	static inline AiBuildingMetric buildingSightRadius=	{[](db_building* b, db_building_level* l) -> float { return l->sightRadius; }, 50, BUILDINGS_SUM_X};
+
+	static inline AiBuildingMetric buildingCollect =	{[](db_building* b, db_building_level* l) -> float { return l->collect; }, 2, BUILDINGS_SUM_X};
+	static inline AiBuildingMetric buildingAttack =	{[](db_building* b, db_building_level* l) -> float { return l->attack; }, 20, BUILDINGS_SUM_X};
+	static inline AiBuildingMetric buildingAttackReload =	{[](db_building* b, db_building_level* l) -> float { return l->attackReload; }, 200, BUILDINGS_SUM_X};
+	static inline AiBuildingMetric buildingAttackRange =	{[](db_building* b, db_building_level* l) -> float { return l->attackRange; }, 20, BUILDINGS_SUM_X};
+	static inline AiBuildingMetric buildingResourceRange =	{[](db_building* b, db_building_level* l) -> float { return l->resourceRange; }, 20, BUILDINGS_SUM_X};
+
 	static inline AiBuildingMetric buildingTypeCenter = {
 		[](db_building* b, db_building_level* l) -> float { return b->typeCenter; }, 1, BUILDINGS_SUM_X};
 	static inline AiBuildingMetric buildingTypeHome = {

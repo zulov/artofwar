@@ -403,6 +403,7 @@
     <ClCompile Include="src\env\influence\VisibilityManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\objects\building\BuildingType.h" />
     <ClInclude Include="src\objects\projectile\ProjectileManager.h" />
     <ClInclude Include="src\objects\SelectedObject.h" />
     <ClInclude Include="src\objects\queue\AbstractQueueManager.h" />

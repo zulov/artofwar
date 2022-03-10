@@ -5,6 +5,7 @@
 #include <vector>
 
 
+enum class ParentBuildingType : char;
 struct db_nation;
 enum class AiActionType : char;
 
@@ -48,7 +49,7 @@ private:
 
 	float dist(std::valarray<float>& center, const db_basic_metric* metric);
 
-	db_building* chooseBuilding(std::span<float> result);
+	db_building* chooseBuilding(std::span<float> result, ParentBuildingType type);
 	db_building_level* chooseBuildingLevelUp();
 	db_unit* chooseUnit(std::span<float> result);
 	db_unit_level* chooseUnitLevelUp();
@@ -65,7 +66,12 @@ private:
 	Brain* whereWorker;
 
 	Brain* ifBuilding;
-	Brain* whichBuilding;
+	Brain* whichBuildingType;
+	Brain* whichBuildingTypeOther;
+	Brain* whichBuildingTypeDefence;
+	Brain* whichBuildingTypeResource;
+	Brain* whichBuildingTypeTech;
+	Brain* whichBuildingTypeUnits;
 	Brain* whereBuilding;
 
 	Brain* ifUnit;

@@ -130,16 +130,16 @@ const inline struct MetricDefinitions {
 	};
 
 	static inline AiBuildingMetric aiBuildingMetric[] = {
-		{[](db_building* b, db_building_level* l) -> float { return b->getSumCost(); }, 400, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return l->maxHp; }, 500, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return l->armor; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return l->sightRadius; }, 50, BUILDINGS_SUM_X},
+		METRICS_OBJECTS.buildingSumCost,
+		METRICS_OBJECTS.buildingMaxHp,
+		METRICS_OBJECTS.buildingArmor,
+		METRICS_OBJECTS.buildingSightRadius,
 
-		{[](db_building* b, db_building_level* l) -> float { return l->collect; }, 2, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return l->attack; }, 20, BUILDINGS_SUM_X}, //index 5
-		{[](db_building* b, db_building_level* l) -> float { return l->attackReload; }, 200, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return l->attackRange; }, 20, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return l->resourceRange; }, 20, BUILDINGS_SUM_X},
+		METRICS_OBJECTS.buildingCollect,
+		METRICS_OBJECTS.buildingAttack,//index5
+		METRICS_OBJECTS.buildingAttackReload,
+		METRICS_OBJECTS.buildingAttackRange,
+		METRICS_OBJECTS.buildingResourceRange,
 
 		METRICS_OBJECTS.buildingTypeCenter,
 		METRICS_OBJECTS.buildingTypeHome,
@@ -161,19 +161,20 @@ const inline struct MetricDefinitions {
 	};
 
 	static inline AiBuildingMetric aiBuildingUnitsMetric[] = { //TODO moze cos wiecej?
-				METRICS_OBJECTS.buildingTypeUnitBarracks,
+		METRICS_OBJECTS.buildingTypeUnitBarracks,
 		METRICS_OBJECTS.buildingTypeUnitRange,
 		METRICS_OBJECTS.buildingTypeUnitCavalry,
 	};
 
 	static inline AiBuildingMetric aiBuildingTechMetric[] = { //TODO moze cos wiecej?
-				METRICS_OBJECTS.buildingTypeTechBlacksmith,
+		METRICS_OBJECTS.buildingTypeTechBlacksmith,
 		METRICS_OBJECTS.buildingTypeTechUniversity,
 	};
 
 	static inline AiBuildingMetric aiBuildingResMetric[] = {
-		{[](db_building* b, db_building_level* l) -> float { return l->collect; }, 2, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return l->resourceRange; }, 20, BUILDINGS_SUM_X},
+		METRICS_OBJECTS.buildingCollect,
+		METRICS_OBJECTS.buildingResourceRange,
+
 		METRICS_OBJECTS.buildingTypeResourceFood,
 		METRICS_OBJECTS.buildingTypeResourceWood,
 		METRICS_OBJECTS.buildingTypeResourceStone,
@@ -181,14 +182,14 @@ const inline struct MetricDefinitions {
 	};
 
 	static inline AiBuildingMetric aiBuildingDefMetric[] = {
-		{[](db_building* b, db_building_level* l) -> float { return b->getSumCost(); }, 400, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return l->maxHp; }, 500, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return l->armor; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return l->sightRadius; }, 50, BUILDINGS_SUM_X},
+		METRICS_OBJECTS.buildingSumCost,
+		METRICS_OBJECTS.buildingMaxHp,
+		METRICS_OBJECTS.buildingArmor,
+		METRICS_OBJECTS.buildingSightRadius,
 
-		{[](db_building* b, db_building_level* l) -> float { return l->attack; }, 20, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return l->attackReload; }, 200, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return l->attackRange; }, 20, BUILDINGS_SUM_X},
+		METRICS_OBJECTS.buildingAttack,
+		METRICS_OBJECTS.buildingAttackReload,
+		METRICS_OBJECTS.buildingAttackRange,
 	};
 
 	static inline AiBuildingMetric aiSmallBuildingMetric[] = {

@@ -14,21 +14,27 @@
 #include "player/Player.h"
 #include "player/ai/ActionCenter.h"
 #include "env/Environment.h"
+#include "objects/building/BuildingType.h"
 #include "stats/AiInputProvider.h"
 
 
 ActionMaker::ActionMaker(Player* player, db_nation* nation):
 	player(player), nation(nation),
-	ifWorker(BrainProvider::get(nation->actionPrefix[0] + "ifWorkerCreate.csv")),
-	whereWorker(BrainProvider::get(nation->actionPrefix[1] + "whereWorkerCreate.csv")),
+	ifWorker(BrainProvider::get(nation->actionPrefix[0] + "ifWorker.csv")),
+	whereWorker(BrainProvider::get(nation->actionPrefix[1] + "whereWorker.csv")),
 
-	ifBuilding(BrainProvider::get(nation->actionPrefix[2] + "ifBuildingCreate.csv")),
-	whichBuilding(BrainProvider::get(nation->actionPrefix[3] + "whichBuildingCreate.csv")),
-	whereBuilding(BrainProvider::get(nation->actionPrefix[4] + "whereBuildingCreate.csv")),
+	ifBuilding(BrainProvider::get(nation->actionPrefix[2] + "ifBuilding.csv")),
+	whichBuildingType(BrainProvider::get(nation->actionPrefix[3] + "whichBuildingType.csv")),
+	whichBuildingTypeOther(BrainProvider::get(nation->actionPrefix[4] + "whichBuildingTypeOther.csv")),
+	whichBuildingTypeDefence(BrainProvider::get(nation->actionPrefix[5] + "whichBuildingTypeDefence.csv")),
+	whichBuildingTypeResource(BrainProvider::get(nation->actionPrefix[6] + "whichBuildingTypeResource.csv")),
+	whichBuildingTypeTech(BrainProvider::get(nation->actionPrefix[7] + "whichBuildingTypeTech.csv")),
+	whichBuildingTypeUnits(BrainProvider::get(nation->actionPrefix[8] + "whichBuildingTypeUnits.csv")),
+	whereBuilding(BrainProvider::get(nation->actionPrefix[9] + "whereBuilding.csv")),
 
-	ifUnit(BrainProvider::get(nation->actionPrefix[5] + "ifUnitCreate.csv")),
-	whichUnit(BrainProvider::get(nation->actionPrefix[6] + "whichUnitCreate.csv")),
-	whereUnit(BrainProvider::get(nation->actionPrefix[7] + "whereUnitCreate.csv")) {
+	ifUnit(BrainProvider::get(nation->actionPrefix[10] + "ifUnit.csv")),
+	whichUnit(BrainProvider::get(nation->actionPrefix[11] + "whichUnit.csv")),
+	whereUnit(BrainProvider::get(nation->actionPrefix[12] + "whereUnit.csv")) {
 
 	// std::cout << std::format("AI Sizes OUTPUT\t Res: {}, Unit: {}, Build: {}, UnitM: {}, BuildM: {}\n",
 	//                          ifWorker->getOutputSize(), ifUnit->getOutputSize(),
@@ -37,8 +43,34 @@ ActionMaker::ActionMaker(Player* player, db_nation* nation):
 }
 
 bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
-	const auto whichOutput = whichBuilding->decide(buildingsInput);
-	const auto building = chooseBuilding(whichOutput);
+	const auto aiInput = Game::getAiInputProvider();
+	const auto whichTypeOutput = whichBuildingType->decide(buildingsInput);
+	ParentBuildingType type = chooseBuildingType(whichTypeOutput);
+	switch (type) {
+
+	case ParentBuildingType::OTHER: {
+		std::span<float> input = aiInput->getBuildingsOtherTypeInput();
+		std::span<float> input = whichBuildingTypeOther->decide(input);
+
+	}
+	break;
+	case ParentBuildingType::DEFENCE: {
+
+	}
+	break;
+	case ParentBuildingType::RESOURCE: {
+	}
+	break;
+	case ParentBuildingType::TECHNOLOGY: {
+	}
+	break;
+	case ParentBuildingType::UNITS: {
+	}
+	break;
+	default: ;
+	}
+
+	const auto building = chooseBuilding();
 	return createBuilding(building);
 }
 
@@ -74,7 +106,7 @@ bool ActionMaker::execute(const std::span<float> unitsInput, const std::span<flo
 }
 
 void ActionMaker::action() {
-	auto aiInput = Game::getAiInputProvider();
+	const auto aiInput = Game::getAiInputProvider();
 	const auto resInput = aiInput->getResourceInput(player->getId());
 	const auto unitsInput = aiInput->getUnitsInput(player->getId()); //TODO czy cokolwiek?
 	const auto buildingsInput = aiInput->getBuildingsInput(player->getId());
@@ -133,8 +165,12 @@ bool ActionMaker::createBuilding(db_building* building) {
 	return false;
 }
 
-db_building* ActionMaker::chooseBuilding(std::span<float> result) {
-	const auto& buildings = nation->buildings;
+db_building* ActionMaker::chooseBuilding(std::span<float> result, ParentBuildingType type) {
+	 nation->buildings;
+	std::vector<db_building*> buildings;
+	for (auto dbBuilding : nation->buildings) {
+		
+	}
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
