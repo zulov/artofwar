@@ -5,6 +5,7 @@
 #include <vector>
 
 
+struct db_building_metric;
 enum class ParentBuildingType : char;
 struct db_nation;
 enum class AiActionType : char;
@@ -38,6 +39,7 @@ private:
 	bool levelUpUnit();
 	bool levelUpBuilding();
 	bool createBuilding(db_building* building);
+	std::vector<db_building*> getBuildingsInType(ParentBuildingType type);
 	bool createBuilding(std::span<float> buildingsInput);
 	bool createUnit(std::span<float> unitsInput);
 	bool createWorker();
@@ -48,6 +50,7 @@ private:
 	std::vector<Building*> getBuildingsCanDeploy(short unitId) const;
 
 	float dist(std::valarray<float>& center, const db_basic_metric* metric);
+	float dist(std::valarray<float>& center, , const db_building_metric* metric, ParentBuildingType type);
 
 	db_building* chooseBuilding(std::span<float> result, ParentBuildingType type);
 	db_building_level* chooseBuildingLevelUp();

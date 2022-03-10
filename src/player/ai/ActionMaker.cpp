@@ -45,33 +45,30 @@ ActionMaker::ActionMaker(Player* player, db_nation* nation):
 bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	const auto aiInput = Game::getAiInputProvider();
 	const auto whichTypeOutput = whichBuildingType->decide(buildingsInput);
+	db_building* choosen = nullptr;
+	std::span<float> output;
 	ParentBuildingType type = chooseBuildingType(whichTypeOutput);
 	switch (type) {
 
-	case ParentBuildingType::OTHER: {
-		std::span<float> input = aiInput->getBuildingsOtherTypeInput();
-		std::span<float> input = whichBuildingTypeOther->decide(input);
-
-	}
-	break;
-	case ParentBuildingType::DEFENCE: {
-
-	}
-	break;
-	case ParentBuildingType::RESOURCE: {
-	}
-	break;
-	case ParentBuildingType::TECHNOLOGY: {
-	}
-	break;
-	case ParentBuildingType::UNITS: {
-	}
-	break;
-	default: ;
+	case ParentBuildingType::OTHER:
+		output = whichBuildingTypeOther->decide(aiInput->getBuildingsOtherTypeInput());
+		break;
+	case ParentBuildingType::DEFENCE:
+		output = whichBuildingTypeDefence->decide(aiInput->getBuildingsDefenceTypeInput());
+		break;
+	case ParentBuildingType::RESOURCE:
+		output = whichBuildingTypeResource->decide(aiInput->getBuildingsResourceTypeInput());
+		break;
+	case ParentBuildingType::TECHNOLOGY:
+		output = whichBuildingTypeTech->decide(aiInput->getBuildingsTechnologyTypeInput());
+		break;
+	case ParentBuildingType::UNITS:
+		output = whichBuildingTypeUnits->decide(aiInput->getBuildingsUnitsTypeInput());
+		break;
 	}
 
-	const auto building = chooseBuilding();
-	return createBuilding(building);
+	choosen = chooseBuilding(output, type);
+	return createBuilding(choosen);
 }
 
 bool ActionMaker::createWorker() {
@@ -165,14 +162,20 @@ bool ActionMaker::createBuilding(db_building* building) {
 	return false;
 }
 
-db_building* ActionMaker::chooseBuilding(std::span<float> result, ParentBuildingType type) {
-	 nation->buildings;
+std::vector<db_building*> ActionMaker::getBuildingsInType(ParentBuildingType type) {
 	std::vector<db_building*> buildings;
 	for (auto dbBuilding : nation->buildings) {
-		
+		if (dbBuilding->parentType[cast(type)]) {
+			buildings.push_back(dbBuilding);
+		}
 	}
+	return buildings;
+}
 
-	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
+db_building* ActionMaker::chooseBuilding(std::span<float> result, ParentBuildingType type) {
+	const auto buildings = getBuildingsInType(type);
+
+	std::valarray<float> center(result.data(), result.size());
 	std::vector<float> diffs;
 	diffs.reserve(buildings.size());
 	for (const auto building : buildings) {
@@ -271,8 +274,14 @@ db_unit_level* ActionMaker::chooseUnitLevelUp() {
 }
 
 float ActionMaker::dist(std::valarray<float>& center, const db_basic_metric* metric) {
-	auto& aiAsArray = metric->getValuesNormAsVal();
-	auto diff = aiAsArray - center;
+	auto diff = metric->getValuesNormAsVal() - center;
+	diff *= diff;
+	return diff.sum();
+}
+
+float ActionMaker::dist(std::valarray<float>& center, const db_building_metric* metric, ParentBuildingType type) {
+	std::valarray<float> diff = metric->getValuesNormAsValForType(type) - center;
+
 	diff *= diff;
 	return diff.sum();
 }
