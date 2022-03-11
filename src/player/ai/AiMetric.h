@@ -131,7 +131,11 @@ const inline struct MetricDefinitions {
 		return getAiPlayerMetricNorm(one, two, whereDefendInputSpan);
 	}
 
-	std::span<float> getBuildingOtherIdxs() const { return aiBuildingOtherIdxsSpan; }
+	const std::span<unsigned char> getBuildingOtherIdxs() const { return aiBuildingOtherIdxsSpan; }
+	const std::span<unsigned char> getBuildingDefenceIdxs() const { return aiBuildingDefIdxsSpan; }
+	const std::span<unsigned char> getBuildingResourceIdxs() const { return aiBuildingResIdxsSpan; }
+	const std::span<unsigned char> getBuildingTechIdxs() const { return aiBuildingTechIdxsSpan; }
+	const std::span<unsigned char> getBuildingUnitsIdxs() const { return aiBuildingUnitsIdxsSpan; }
 
 
 	static inline AiUnitMetric aiUnitMetric[] = {

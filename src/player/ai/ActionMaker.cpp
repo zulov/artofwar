@@ -47,7 +47,8 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	const auto whichTypeOutput = whichBuildingType->decide(buildingsInput);
 	db_building* choosen = nullptr;
 	std::span<float> output;
-	ParentBuildingType type = chooseBuildingType(whichTypeOutput);
+
+	ParentBuildingType type =static_cast<ParentBuildingType>(biggestWithRand(whichTypeOutput));
 	switch (type) {
 
 	case ParentBuildingType::OTHER:

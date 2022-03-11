@@ -7,7 +7,12 @@ constexpr char BASIC_SIZE = std::size(METRIC_DEFINITIONS.aiBasicMetric);
 constexpr char UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiUnitMetric);
 constexpr char BUILDING_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingMetric);
 constexpr char SMALL_UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiSmallUnitMetric);
-constexpr char SMALL_BUILDING_SIZE = std::size(METRIC_DEFINITIONS.aiSmallBuildingMetric);
+
+constexpr char BUILDING_OTHER_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingOtherIdxs);
+constexpr char BUILDING_DEF_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingDefIdxs);
+constexpr char BUILDING_RES_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingResIdxs);
+constexpr char BUILDING_TECH_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingTechIdxs);
+constexpr char BUILDING_UNITS_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingUnitsIdxs);
 
 constexpr char RESOURCE_AI_SIZE = std::size(METRIC_DEFINITIONS.aiResourceMetric);
 
@@ -35,6 +40,7 @@ public:
 	std::span<float> getAttackOrDefenceInput(char playerId) const;
 	std::span<float> getWhereAttack(char playerId) const;
 	std::span<float> getWhereDefend(char playerId) const;
+	std::span<float> getBuildingsOtherTypeInput(char playerId) const;
 private:
 	std::span<float> getBasicInput(std::span<float> dest, Player* player) const;
 	std::span<float> combineWithBasic(const std::span<float> output, const std::span<float> toJoin,
@@ -51,7 +57,12 @@ private:
 	float whereDefendInput[BASIC_SIZE + WHERE_DEFEND_SIZE];
 
 	float unitsWithMetric[BASIC_SIZE + SMALL_UNIT_SIZE];
-	float buildingsWithMetric[BASIC_SIZE + SMALL_BUILDING_SIZE];
+
+	float buildingsOtherInput[BASIC_SIZE + BUILDING_OTHER_SIZE];
+	float buildingsDefenceInput[BASIC_SIZE + BUILDING_DEF_SIZE];
+	float buildingsResInput[BASIC_SIZE + BUILDING_RES_SIZE];
+	float buildingsTechInput[BASIC_SIZE + BUILDING_TECH_SIZE];
+	float buildingsUnitsInput[BASIC_SIZE + BUILDING_UNITS_SIZE];
 
 	std::span<float> resourceIdInputSpan = std::span(resourceIdInput);
 	std::span<float> unitsInputSpan = std::span(unitsInput);
@@ -62,5 +73,10 @@ private:
 	std::span<float> whereDefendInputSpan = std::span(whereDefendInput);
 
 	std::span<float> unitsWithMetricUnitSpan = std::span(unitsWithMetric);
-	std::span<float> basicWithMetricUnitSpan = std::span(buildingsWithMetric);
+
+	std::span<float> buildingsOtherInputSpan = std::span(buildingsOtherInput);
+	std::span<float> buildingsDefenceInputSpan = std::span(buildingsDefenceInput);
+	std::span<float> buildingsResInputSpan = std::span(buildingsResInput);
+	std::span<float> buildingsTechInputSpan = std::span(buildingsTechInput);
+	std::span<float> buildingsUnitsInputSpan = std::span(buildingsUnitsInput);
 };

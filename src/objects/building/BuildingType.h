@@ -1,20 +1,5 @@
 #pragma once
 
-enum class BuildingType: char {
-	CENTER = 0,
-	HOME,
-	DEFENCE,
-	RES_FOOD,
-	RES_WOOD,
-	RES_STONE,
-	RES_GOLD,
-	TECH_BLACKSMITH,
-	TECH_UNIVERSITY,
-	UNITS_BARRACKS,
-	UNITS_RANGE,
-	UNITS_CAVALRY
-};
-
 enum class ParentBuildingType: char {
 	OTHER = 0,
 	DEFENCE,

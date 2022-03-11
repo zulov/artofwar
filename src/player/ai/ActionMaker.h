@@ -50,7 +50,7 @@ private:
 	std::vector<Building*> getBuildingsCanDeploy(short unitId) const;
 
 	float dist(std::valarray<float>& center, const db_basic_metric* metric);
-	float dist(std::valarray<float>& center, , const db_building_metric* metric, ParentBuildingType type);
+	float dist(std::valarray<float>& center, const db_building_metric* metric, ParentBuildingType type);
 
 	db_building* chooseBuilding(std::span<float> result, ParentBuildingType type);
 	db_building_level* chooseBuildingLevelUp();

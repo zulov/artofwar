@@ -74,6 +74,12 @@ std::span<float> AiInputProvider::getWhereDefend(char playerId) const {
 	                        METRIC_DEFINITIONS.getWhereDefendNorm(player, plyMng->getPlayer(idEnemy)), player);
 }
 
+std::span<float> AiInputProvider::getBuildingsOtherTypeInput(char playerId, const db_building_metric* prop) const {
+	auto* player = Game::getPlayersMan()->getPlayer(playerId);
+
+	return combineWithBasic(buildingsOtherInput,prop->getValuesNormSumAsValForType(ParentBuildingType::OTHER)   , player);
+}
+
 std::span<float> AiInputProvider::getBasicInput(std::span<float> dest, Player* player) const {
 	const auto plyMng = Game::getPlayersMan();
 	char idEnemy = plyMng->getEnemyFor(player->getId());
