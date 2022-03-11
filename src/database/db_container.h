@@ -61,9 +61,11 @@ struct db_container {
 
 		for (auto* level : buildingsLevels) {
 			const auto building = buildings[level->building];
-			level->finish(METRIC_DEFINITIONS.getBuildingNorm(building, level),
-			              METRIC_DEFINITIONS.getBuildingNormForSum(building, level)
-			...);//kolejne 
+			level->finish(
+				METRIC_DEFINITIONS.getBuildingNorm(building, level), METRIC_DEFINITIONS.getBuildingNormForSum(building, level),
+				METRIC_DEFINITIONS.getBuildingOtherIdxs(), METRIC_DEFINITIONS.getBuildingDefenceIdxs(),
+				METRIC_DEFINITIONS.getBuildingResourceIdxs(), METRIC_DEFINITIONS.getBuildingTechIdxs(),
+				METRIC_DEFINITIONS.getBuildingUnitsIdxs());
 		}
 	}
 };

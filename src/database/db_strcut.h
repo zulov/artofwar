@@ -38,8 +38,7 @@ struct db_common_attack {
 
 	db_common_attack(float collect, float attack, float attackReload, short attackRange)
 		: attack(attack), attackReload(attackReload), attackRange(attackRange), collect(collect),
-		  sqAttackRange(attackRange * attackRange) {
-	}
+		  sqAttackRange(attackRange * attackRange) { }
 
 	bool initFlag(float val) const {
 		return val > 0.f;
@@ -52,8 +51,7 @@ struct db_building_attack : db_common_attack {
 
 	db_building_attack(float collect, float attack, float attackReload, short attackRange)
 		: db_common_attack(collect, attack, attackReload, attackRange),
-		  canAttack(initFlag(attack)) {
-	}
+		  canAttack(initFlag(attack)) { }
 };
 
 struct db_unit_attack : db_common_attack {
@@ -79,16 +77,14 @@ struct db_unit_attack : db_common_attack {
 		  bonusMelee(bonusMelee),
 		  bonusHeavy(bonusHeavy),
 		  bonusLight(bonusLight),
-		  bonusBuilding(bonusBuilding) {
-	}
+		  bonusBuilding(bonusBuilding) { }
 };
 
 struct db_static {
 	const Urho3D::IntVector2 size;
 
 	explicit db_static(const Urho3D::IntVector2& size)
-		: size(size) {
-	}
+		: size(size) { }
 };
 
 struct db_cost {
@@ -97,8 +93,7 @@ struct db_cost {
 	const short sum = 0;
 
 	db_cost(short food, short wood, short stone, short gold) : values({food, wood, stone, gold}),
-	                                                           sum(food + wood + stone + gold) {
-	}
+	                                                           sum(food + wood + stone + gold) { }
 };
 
 struct db_with_cost {
@@ -121,21 +116,19 @@ protected:
 	std::valarray<float> valuesNormAsVal;
 
 	std::vector<float> valuesNormForSum;
-	//std::vector<float> valuesNormSmall;
 public:
 	const std::vector<float>& getValuesNorm() const { return valuesNorm; }
 	const std::valarray<float>& getValuesNormAsVal() const { return valuesNormAsVal; }
 	const std::vector<float>& getValuesNormForSum() const { return valuesNormForSum; }
-	//const std::vector<float>& getValuesNormSmall() const { return valuesNormSmall; }
 	const std::string& getParamsNormAsString() const { return paramsAString; }
 };
 
 struct db_building_metric : db_basic_metric {
-	std::vector<float> valuesOtherNorm;
-	std::vector<float> valuesDefenceNorm;
-	std::vector<float> valuesResourceNorm;
-	std::vector<float> valuesTechNorm;
-	std::vector<float> valuesUnitsNorm;
+	//std::vector<float> valuesOtherNorm;
+	//std::vector<float> valuesDefenceNorm;
+	//std::vector<float> valuesResourceNorm;
+	//std::vector<float> valuesTechNorm;
+	//std::vector<float> valuesUnitsNorm;
 
 	std::valarray<float> valuesOtherNormAsVal;
 	std::valarray<float> valuesDefenceNormAsVal;
@@ -144,17 +137,23 @@ struct db_building_metric : db_basic_metric {
 	std::valarray<float> valuesUnitsNormAsVal;
 
 	db_building_metric(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
-	                   const std::vector<float>& newValuesSmall
-	) {
+	                   std::vector<float>& valuesOtherNorm, std::vector<float>& valuesDefenceNorm,
+	                   std::vector<float>& valuesResourceNorm, std::vector<float>& valuesTechNorm,
+	                   std::vector<float>& valuesUnitsNorm) {
 		valuesNorm.insert(valuesNorm.end(), newValues.begin(), newValues.end());
 		valuesNormForSum.insert(valuesNormForSum.end(), newValuesForSum.begin(), newValuesForSum.end());
 
 
 		valuesNormAsVal = std::valarray(*valuesNorm.data(), valuesNorm.size());
+		valuesOtherNormAsVal = std::valarray(*valuesOtherNorm.data(), valuesOtherNorm.size());
+		valuesDefenceNormAsVal = std::valarray(*valuesDefenceNorm.data(), valuesDefenceNorm.size());
+		valuesResourceNormAsVal = std::valarray(*valuesResourceNorm.data(), valuesResourceNorm.size());
+		valuesTechNormAsVal = std::valarray(*valuesTechNorm.data(), valuesTechNorm.size());
+		valuesUnitsNormAsVal = std::valarray(*valuesUnitsNorm.data(), valuesUnitsNorm.size());
 
 		assert(validateSpan(__LINE__, __FILE__, valuesNorm));
 		assert(validateSpan(__LINE__, __FILE__, valuesNormForSum));
-		assert(validateSpan(__LINE__, __FILE__, valuesNormSmall));
+		//assert(validateSpan(__LINE__, __FILE__, valuesNormSmall));
 
 		paramsAString = join(valuesNorm);
 	}
@@ -180,8 +179,7 @@ struct db_level {
 	const char level;
 
 	explicit db_level(char level)
-		: level(level) {
-	}
+		: level(level) { }
 };
 
 struct db_with_hp {
@@ -190,8 +188,7 @@ struct db_with_hp {
 	const float armor;
 
 	explicit db_with_hp(unsigned short maxHp, float armor)
-		: maxHp(maxHp), invMaxHp(1.f / maxHp), armor(armor) {
-	}
+		: maxHp(maxHp), invMaxHp(1.f / maxHp), armor(armor) { }
 };
 
 struct db_base : db_with_hp {
@@ -203,8 +200,7 @@ struct db_base : db_with_hp {
 
 	db_base(unsigned short maxHp, float armor, float sightRadius)
 		: db_with_hp(maxHp, armor), sightRadius(sightRadius), sqSightRadius(sightRadius * sightRadius),
-		  interestRange(sightRadius * 0.8f), sqInterestRange(interestRange * interestRange) {
-	}
+		  interestRange(sightRadius * 0.8f), sqInterestRange(interestRange * interestRange) { }
 
 };
 
@@ -217,11 +213,15 @@ struct db_build_upgrade {
 	short upgradeTime = -1;
 
 	db_build_upgrade(short buildTime, short upgradeTime)
-		: buildTime(buildTime), upgradeTime(upgradeTime) {
-	}
+		: buildTime(buildTime), upgradeTime(upgradeTime) { }
 };
 
 struct db_unit_metric : db_basic_metric {
+
+	std::vector<float> valuesNormSmall;
+
+	const std::vector<float>& getValuesNormSmall() const { return valuesNormSmall; }
+
 	db_unit_metric(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
 	               const std::vector<float>& newValuesSmall) {
 		valuesNorm.insert(valuesNorm.end(), newValues.begin(), newValues.end());
@@ -273,8 +273,7 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_unit_
 		maxSpeed(maxSpeed),
 		minSpeed(minSpeed),
 		maxForce(maxForce),
-		sqMinSpeed(minSpeed * minSpeed) {
-	}
+		sqMinSpeed(minSpeed * minSpeed) { }
 
 	void finish(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
 	            const std::vector<float>& newValuesSmall) {
@@ -318,8 +317,7 @@ struct db_unit : db_with_name, db_with_cost, db_entity {
 		typeSpecial(typeSpecial),
 		typeMelee(typeMelee),
 		typeHeavy(typeHeavy),
-		typeLight(typeLight) {
-	}
+		typeLight(typeLight) { }
 
 	std::optional<db_unit_level*> getLevel(short level) {
 		if (levels.size() > level) {
@@ -424,8 +422,7 @@ struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_b
 		: db_entity(id), db_level(level), db_with_name(name),
 		  db_building_attack(collect, atckR, atckRRld, atckRRng),
 		  db_base(maxHp, armor, sightRng), db_build_upgrade(buildSpeed, upgradeSpeed),
-		  building(building), nodeName(nodeName), queueMaxCapacity(queueMaxCapacity), resourceRange(resourceRng) {
-	}
+		  building(building), nodeName(nodeName), queueMaxCapacity(queueMaxCapacity), resourceRange(resourceRng) { }
 
 	~db_building_level() {
 		clear_vector(unitsPerNation);
@@ -434,8 +431,11 @@ struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_b
 	}
 
 	void finish(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
-	            const std::vector<float>& newValuesSmall) {
-		dbBuildingMetric = new db_building_metric(newValues, newValuesForSum, newValuesSmall);
+	            std::vector<float>& valuesOtherNorm, std::vector<float>& valuesDefenceNorm,
+	            std::vector<float>& valuesResourceNorm, std::vector<float>& valuesTechNorm,
+	            std::vector<float>& valuesUnitsNorm) {
+		dbBuildingMetric = new db_building_metric(newValues, newValuesForSum, valuesOtherNorm, valuesDefenceNorm,
+		                                          valuesResourceNorm, valuesTechNorm, valuesUnitsNorm);
 	}
 
 };
@@ -452,8 +452,7 @@ struct db_nation : db_entity, db_with_name {
 		: db_entity(id), db_with_name(name),
 		  actionPrefix(split(actionPrefix, SPLIT_SIGN)),
 		  orderPrefix(split(orderPrefix, SPLIT_SIGN)),
-		  orderThresholdPrefix(split(orderThresholdPrefix, SPLIT_SIGN)) {
-	}
+		  orderThresholdPrefix(split(orderThresholdPrefix, SPLIT_SIGN)) { }
 
 	std::vector<std::string> splitAi(std::string* param) const {
 		return split(split(param[id], SPLIT_SIGN_2)[SimGlobals::CURRENT_RUN], SPLIT_SIGN);
@@ -486,6 +485,5 @@ struct db_resource : db_with_name, db_static, db_with_hp, db_entity, db_with_mod
 		  icon(icon),
 		  nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)),
 		  maxUsers(maxUsers),
-		  mini_map_color(mini_map_color) {
-	}
+		  mini_map_color(mini_map_color) { }
 };
