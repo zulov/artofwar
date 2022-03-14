@@ -2,15 +2,14 @@
 #include <magic_enum.hpp>
 #include <span>
 #include <vector>
-#include <algorithm>
 #include <functional>
 #include <valarray>
 #include <Urho3D/Math/Vector2.h>
-
+#include "objects/building/ParentBuildingType.h"
+#include "objects/unit/state/UnitState.h"
 #include "db_basic_struct.h"
 #include "math/SpanUtils.h"
-#include "objects/building/BuildingType.h"
-#include "objects/unit/state/UnitState.h"
+#include "player/ai/ActionMaker.h"
 #include "simulation/SimGlobals.h"
 #include "utils/DeleteUtils.h"
 #include "utils/OtherUtils.h"
@@ -135,26 +134,14 @@ struct db_building_metric : db_basic_metric {
 	std::valarray<float> techNormAsVal;
 	std::valarray<float> unitsNormAsVal;
 
-	std::valarray<float> otherNormSumAsVal;
-	std::valarray<float> defenceNormSumAsVal;
-	std::valarray<float> resourceNormSumAsVal;
-	std::valarray<float> techNormSumAsVal;
-	std::valarray<float> unitsNormSumAsVal;
-
-	void setValarray(std::valarray<float>& valarray, std::valarray<float>& valarraySum,
-	                 const std::span<unsigned char>& idxs) {
+	void setValarray(std::valarray<float>& valarray, const std::span<unsigned char>& idxs) {
 		std::vector<float> temp;
-		std::vector<float> temp1;
 		temp.clear();
 		temp.reserve(idxs.size());
-		temp1.clear();
-		temp1.reserve(idxs.size());
-		for (unsigned char idx : idxs) {
+		for (const unsigned char idx : idxs) {
 			temp.push_back(valuesNorm[idx]);
-			temp1.push_back(valuesNormForSum[idx]);
 		}
 		valarray = std::valarray(*temp.data(), temp.size());
-		valarraySum = std::valarray(*temp1.data(), temp1.size());
 	}
 
 	db_building_metric(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
@@ -166,11 +153,11 @@ struct db_building_metric : db_basic_metric {
 
 		valuesNormAsVal = std::valarray(*valuesNorm.data(), valuesNorm.size());
 
-		setValarray(otherNormAsVal, otherNormSumAsVal, otherIdxs); //TODO bug czy to jest zainicjowane
-		setValarray(defenceNormAsVal, defenceNormSumAsVal, defenceIdxs);
-		setValarray(resourceNormAsVal, resourceNormSumAsVal, resourceIdxs);
-		setValarray(techNormAsVal, techNormSumAsVal, techIdxs);
-		setValarray(unitsNormAsVal, unitsNormSumAsVal, unitsIdxs);
+		setValarray(otherNormAsVal, otherIdxs); //TODO bug czy to jest zainicjowane
+		setValarray(defenceNormAsVal, defenceIdxs);
+		setValarray(resourceNormAsVal, resourceIdxs);
+		setValarray(techNormAsVal, techIdxs);
+		setValarray(unitsNormAsVal,  unitsIdxs);
 
 		assert(otherNormAsVal.size(), otherIdxs.size());
 
@@ -181,22 +168,6 @@ struct db_building_metric : db_basic_metric {
 		paramsAString = join(valuesNorm);
 	}
 
-	const std::valarray<float>& getValuesNormSumAsValForType(ParentBuildingType type) const {
-		switch (type) {
-		case ParentBuildingType::OTHER:
-			return otherNormSumAsVal;
-		case ParentBuildingType::DEFENCE:
-			return defenceNormSumAsVal;
-		case ParentBuildingType::RESOURCE:
-			return resourceNormSumAsVal;
-		case ParentBuildingType::TECHNOLOGY:
-			return techNormSumAsVal;
-		case ParentBuildingType::UNITS:
-			return unitsNormSumAsVal;
-		default: ;
-		}
-	};
-
 	const std::valarray<float>& getValuesNormAsValForType(ParentBuildingType type) const {
 		switch (type) {
 		case ParentBuildingType::OTHER:
@@ -205,7 +176,7 @@ struct db_building_metric : db_basic_metric {
 			return defenceNormAsVal;
 		case ParentBuildingType::RESOURCE:
 			return resourceNormAsVal;
-		case ParentBuildingType::TECHNOLOGY:
+		case ParentBuildingType::TECH:
 			return techNormAsVal;
 		case ParentBuildingType::UNITS:
 			return unitsNormAsVal;
@@ -433,7 +404,7 @@ struct db_building : db_entity, db_with_name, db_with_cost, db_static {
 		parentType[cast(ParentBuildingType::DEFENCE)] = typeDefence;
 		parentType[cast(ParentBuildingType::RESOURCE)]
 			= typeResourceFood || typeResourceWood || typeResourceStone || typeResourceGold;
-		parentType[cast(ParentBuildingType::TECHNOLOGY)] = typeTechBlacksmith || typeTechUniversity;
+		parentType[cast(ParentBuildingType::TECH)] = typeTechBlacksmith || typeTechUniversity;
 		parentType[cast(ParentBuildingType::UNITS)] = typeUnitBarracks || typeUnitRange || typeUnitCavalry;
 	}
 

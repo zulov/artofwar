@@ -395,7 +395,6 @@
     <ClCompile Include="src\commands\upgrade\UpgradeCommand.cpp" />
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
     <ClCompile Include="src\hud\window\top\info\TopInfoPanel.cpp" />
-    <ClCompile Include="src\stats\Stats.cpp" />
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
     <ClCompile Include="src\player\ai\threshold\ThresholdProvider.cpp" />
     <ClCompile Include="src\env\influence\map\VisibilityMap.cpp" />
@@ -403,7 +402,7 @@
     <ClCompile Include="src\env\influence\VisibilityManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\objects\building\BuildingType.h" />
+    <ClInclude Include="src\objects\building\ParentBuildingType.h" />
     <ClInclude Include="src\objects\projectile\ProjectileManager.h" />
     <ClInclude Include="src\objects\SelectedObject.h" />
     <ClInclude Include="src\objects\queue\AbstractQueueManager.h" />
@@ -622,7 +621,6 @@
     <ClInclude Include="src\commands\upgrade\UpgradeCommand.h" />
     <ClInclude Include="src\commands\upgrade\UpgradeCommandList.h" />
     <ClInclude Include="src\hud\window\top\info\TopInfoPanel.h" />
-    <ClInclude Include="src\stats\Stats.h" />
     <ClInclude Include="src\math\VectorUtils.h" />
     <ClInclude Include="src\objects\unit\order\UnitOrder.h" />
     <ClInclude Include="src\player\ai\threshold\ThresholdProvider.h" />

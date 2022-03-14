@@ -88,11 +88,6 @@ Game* Game::setAiInputProvider(AiInputProvider* _aiInputProvider) {
 	return instance;
 }
 
-Game* Game::setStats(Stats* _stats) {
-	instance->stats = _stats;
-	return instance;
-}
-
 Game* Game::setActionCenter(ActionCenter* _actionCenter) {
 	instance->actionCenter = _actionCenter;
 	return instance;

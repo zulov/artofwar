@@ -7,6 +7,7 @@
 #include "math/VectorUtils.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/building/Building.h"
+#include "objects/building/ParentBuildingType.h"
 #include "simulation/ObjectsInfo.h"
 
 Possession::Possession(char nation) {
@@ -91,6 +92,17 @@ std::vector<Building*>* Possession::getBuildings(short id) {
 
 void Possession::addKilled(Physical* physical) {
 	resourcesDestroyed += physical->getCostSum();
+}
+
+std::span<float> Possession::getBuildingsMetrics(ParentBuildingType type) const {
+	switch (type) {
+	case ParentBuildingType::OTHER: return buildingsOtherInputSpan;
+	case ParentBuildingType::DEFENCE: return buildingsDefenceInputSpan;
+	case ParentBuildingType::RESOURCE:return buildingsResInputSpan;
+	case ParentBuildingType::TECH: return buildingsTechInputSpan;
+	case ParentBuildingType::UNITS: return buildingsUnitsInputSpan;
+	default: ;
+	}
 }
 
 std::vector<Unit*> Possession::getFreeArmy() {

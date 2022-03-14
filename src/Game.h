@@ -1,5 +1,4 @@
 #pragma once
-#include <Urho3D/Container/Ptr.h>
 #include <Urho3D/Scene/Scene.h>
 
 namespace Urho3D {
@@ -13,7 +12,6 @@ namespace Urho3D {
 	class Engine;
 }
 
-class Stats;
 class Environment;
 class DatabaseCache;
 class CameraManager;
@@ -44,7 +42,6 @@ public:
 	static Game* setColorPaletteRepo(ColorPaletteRepo* _colorPaletteRepo);
 	static Game* setLog(Urho3D::Log* _log);
 	static Game* setAiInputProvider(AiInputProvider* _aiInputProvider);
-	static Game* setStats(Stats* _stats);
 	static Game* setActionCenter(ActionCenter* _actionCenter);
 	static void addTime(float time);
 
@@ -64,7 +61,6 @@ public:
 	static PlayersManager* getPlayersMan() { return instance->playersManager; }
 	static Environment* getEnvironment() { return instance->environment; }
 	static AiInputProvider* getAiInputProvider() { return instance->aiInputProvider; }
-	static Stats* getStats() { return instance->stats; }
 	static ActionCenter* getActionCenter() { return instance->actionCenter; }
 
 	static float getTime() { return instance->accumTime; }
@@ -90,7 +86,6 @@ private:
 	Environment* environment;
 
 	AiInputProvider* aiInputProvider;
-	Stats* stats;
 	ActionCenter* actionCenter;
 
 	float accumTime = 0;

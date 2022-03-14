@@ -21,7 +21,6 @@
 #include "scene/load/SceneLoader.h"
 #include "scene/save/SceneSaver.h"
 #include "simulation/formation/FormationManager.h"
-#include "stats/Stats.h"
 #include "PerFrameAction.h"
 #include "SimInfo.h"
 #include "objects/projectile/ProjectileManager.h"
@@ -111,7 +110,6 @@ SimInfo* Simulation::update(float timeStep) {
 
 		Game::getPlayersMan()->update(simInfo->getObjectsInfo());
 		Game::getFormationManager()->update();
-		Game::getStats()->save(PER_FRAME_ACTION.get(PerFrameAction::STAT_SAVE, currentFrame, secondsElapsed));
 
 		accumulateTime -= TIME_PER_UPDATE;
 

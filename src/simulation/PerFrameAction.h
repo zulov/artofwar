@@ -13,7 +13,6 @@ enum class PerFrameAction:char {
 	INFLUENCE_OTHER,
 	INFLUENCE_QUAD_OTHER,
 	SELF_AI,
-	STAT_SAVE,
 	AI_ACTION,
 	AI_ORDER,
 	QUEUE_HUD,
@@ -64,11 +63,6 @@ private:
 			0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
 			0, 0, 0, 1, 0, 0, 0, 0, 0, 1
 		}, //SELF_AI
-		{
-			10, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		}, //STAT_SAVE
 		{
 			0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

@@ -14,7 +14,7 @@
 #include "player/Player.h"
 #include "player/ai/ActionCenter.h"
 #include "env/Environment.h"
-#include "objects/building/BuildingType.h"
+#include "objects/building/ParentBuildingType.h"
 #include "stats/AiInputProvider.h"
 
 
@@ -49,27 +49,28 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	std::span<float> output;
 
 	ParentBuildingType type =static_cast<ParentBuildingType>(biggestWithRand(whichTypeOutput));
+	const auto aiTypeInput =  aiInput->getBuildingsTypeInput(player->getId(), type);
 	switch (type) {
 
 	case ParentBuildingType::OTHER:
-		output = whichBuildingTypeOther->decide(aiInput->getBuildingsOtherTypeInput());
+		output = whichBuildingTypeOther->decide(aiTypeInput);
 		break;
 	case ParentBuildingType::DEFENCE:
-		output = whichBuildingTypeDefence->decide(aiInput->getBuildingsDefenceTypeInput());
+		output = whichBuildingTypeDefence->decide(aiTypeInput);
 		break;
 	case ParentBuildingType::RESOURCE:
-		output = whichBuildingTypeResource->decide(aiInput->getBuildingsResourceTypeInput());
+		output = whichBuildingTypeResource->decide(aiTypeInput);
 		break;
-	case ParentBuildingType::TECHNOLOGY:
-		output = whichBuildingTypeTech->decide(aiInput->getBuildingsTechnologyTypeInput());
+	case ParentBuildingType::TECH:
+		output = whichBuildingTypeTech->decide(aiTypeInput);
 		break;
 	case ParentBuildingType::UNITS:
-		output = whichBuildingTypeUnits->decide(aiInput->getBuildingsUnitsTypeInput());
+		output = whichBuildingTypeUnits->decide(aiTypeInput);
 		break;
 	}
 
 	choosen = chooseBuilding(output, type);
-	return createBuilding(choosen);
+	return createBuilding(choosen, type);
 }
 
 bool ActionMaker::createWorker() {
@@ -153,9 +154,9 @@ bool ActionMaker::enoughResources(db_with_cost* withCosts) const {
 	return withCosts && player->getResources().hasEnough(withCosts->costs);
 }
 
-bool ActionMaker::createBuilding(db_building* building) {
+bool ActionMaker::createBuilding(db_building* building, ParentBuildingType type) {
 	if (enoughResources(building)) {
-		auto pos = findPosToBuild(building);
+		auto pos = findPosToBuild(building, type);
 		if (pos.has_value()) {
 			return Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId(), false);
 		}
@@ -287,9 +288,9 @@ float ActionMaker::dist(std::valarray<float>& center, const db_building_metric* 
 	return diff.sum();
 }
 
-std::optional<Urho3D::Vector2> ActionMaker::findPosToBuild(db_building* building) const {
+std::optional<Urho3D::Vector2> ActionMaker::findPosToBuild(db_building* building, ParentBuildingType type) const {
 	const auto input = Game::getAiInputProvider()->getBuildingsInputWithMetric(
-		player->getId(), player->getLevelForBuilding(building->id)->dbBuildingMetric);
+		player->getId(), player->getLevelForBuilding(building->id)->dbBuildingMetric, type);
 	const auto result = whereBuilding->decide(input);
 
 	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);

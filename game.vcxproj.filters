@@ -165,7 +165,6 @@
     <ClCompile Include="src\hud\window\score\ScorePanel.cpp" />
     <ClCompile Include="src\player\ai\nn\Layer.cpp" />
     <ClCompile Include="src\player\ai\nn\Brain.cpp" />
-    <ClCompile Include="src\stats\Stats.cpp" />
     <ClCompile Include="src\commands\action\UnitActionCommand.cpp">
       <Filter>command\action</Filter>
     </ClCompile>
@@ -456,7 +455,6 @@
     <ClInclude Include="src\player\ai\nn\Layer.h" />
     <ClInclude Include="src\player\ai\nn\Brain.h" />
     <ClInclude Include="src\player\ai\nn\AFUtil.h" />
-    <ClInclude Include="src\stats\Stats.h" />
     <ClInclude Include="src\objects\ObjectEnums.h">
       <Filter>objects</Filter>
     </ClInclude>
@@ -546,7 +544,7 @@
     <ClInclude Include="src\env\influence\MapsUtils.h" />
     <ClInclude Include="src\env\influence\VisibilityMode.h" />
     <ClInclude Include="src\player\ai\AiMetric.h" />
-    <ClInclude Include="src\objects\building\BuildingType.h" />
+    <ClInclude Include="src\objects\building\ParentBuildingType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

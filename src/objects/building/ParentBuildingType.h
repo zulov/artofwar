@@ -1,9 +1,8 @@
 #pragma once
-
-enum class ParentBuildingType: char {
+enum class ParentBuildingType : char {
 	OTHER = 0,
 	DEFENCE,
 	RESOURCE,
-	TECHNOLOGY,
+	TECH,
 	UNITS
 };

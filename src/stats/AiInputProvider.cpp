@@ -6,6 +6,7 @@
 #include "player/PlayersManager.h"
 #include "player/ai/AiMetric.h"
 #include "player/ai/AiUtils.h"
+#include "objects/building/ParentBuildingType.h"
 
 
 AiInputProvider::AiInputProvider() {
@@ -39,11 +40,18 @@ std::span<float> AiInputProvider::getUnitsInputWithMetric(char playerId, const d
 	return combineWithBasic(unitsWithMetricUnitSpan, prop->getValuesNormSmall(), player);
 }
 
-std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, const db_building_metric* prop) const {
+std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, const db_building_metric* prop,
+	ParentBuildingType type) const {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
-	return combineWithBasic(basicWithMetricUnitSpan, prop->getValuesNormSmall(), player);
+	return combineWithBasic(unitsWithMetricUnitSpan, prop->getTypesVal(), player);
 }
+
+// std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, const db_building_metric* prop, ParentBuildingType type) const {
+// 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
+//
+// 	return combineWithBasic(basicWithMetricUnitSpan, prop->getValuesNormSmall(), player);
+// }
 
 std::span<float> AiInputProvider::getAttackOrDefenceInput(char playerId) const {
 	const auto plyMng = Game::getPlayersMan();
@@ -56,7 +64,7 @@ std::span<float> AiInputProvider::getAttackOrDefenceInput(char playerId) const {
 	return attackOfDefenceInputSpan;
 }
 
-std::span<float> AiInputProvider::getWhereAttack(char playerId) const{
+std::span<float> AiInputProvider::getWhereAttack(char playerId) const {
 	const auto plyMng = Game::getPlayersMan();
 	auto* player = plyMng->getPlayer(playerId);
 	const char idEnemy = plyMng->getEnemyFor(playerId);
@@ -74,10 +82,22 @@ std::span<float> AiInputProvider::getWhereDefend(char playerId) const {
 	                        METRIC_DEFINITIONS.getWhereDefendNorm(player, plyMng->getPlayer(idEnemy)), player);
 }
 
-std::span<float> AiInputProvider::getBuildingsOtherTypeInput(char playerId, const db_building_metric* prop) const {
-	auto* player = Game::getPlayersMan()->getPlayer(playerId);
+std::span<float> AiInputProvider::getBuildingInputSpan(ParentBuildingType type) const {
+	switch (type) {
+	case ParentBuildingType::OTHER: return buildingsOtherInputSpan;
+	case ParentBuildingType::DEFENCE: return buildingsDefenceInputSpan;
+	case ParentBuildingType::RESOURCE: return buildingsResInputSpan;
+	case ParentBuildingType::TECH: return buildingsTechInputSpan;
+	case ParentBuildingType::UNITS: return buildingsUnitsInputSpan;
+	default: ;
+	}
+}
 
-	return combineWithBasic(buildingsOtherInput,prop->getValuesNormSumAsValForType(ParentBuildingType::OTHER)   , player);
+std::span<float> AiInputProvider::getBuildingsTypeInput(char playerId, ParentBuildingType type) const {
+	auto* player = Game::getPlayersMan()->getPlayer(playerId);
+	const std::span<float> data = player->getPossession().getBuildingsMetrics(type);
+
+	return combineWithBasic(getBuildingInputSpan(type), data, player);
 }
 
 std::span<float> AiInputProvider::getBasicInput(std::span<float> dest, Player* player) const {

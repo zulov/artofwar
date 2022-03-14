@@ -211,13 +211,14 @@ const inline struct MetricDefinitions {
 	static inline unsigned char aiBuildingTechIdxs[] = {16, 17}; //TODO moze cos wiecej?
 	static inline unsigned char aiBuildingResIdxs[] = {4, 8, 12, 13, 14, 15};
 	static inline unsigned char aiBuildingDefIdxs[] = {0, 1, 2, 3, 5, 6, 7};
-	//static inline unsigned char aiSmallBuildingIdx[] = {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+	static inline unsigned char aiBuildingTypesIdxs[] = {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 
 	constexpr static std::span<unsigned char> aiBuildingOtherIdxsSpan = std::span(aiBuildingOtherIdxs);
 	constexpr static std::span<unsigned char> aiBuildingUnitsIdxsSpan = std::span(aiBuildingUnitsIdxs);
 	constexpr static std::span<unsigned char> aiBuildingTechIdxsSpan = std::span(aiBuildingTechIdxs);
 	constexpr static std::span<unsigned char> aiBuildingResIdxsSpan = std::span(aiBuildingResIdxs);
 	constexpr static std::span<unsigned char> aiBuildingDefIdxsSpan = std::span(aiBuildingDefIdxs);
+	constexpr static std::span<unsigned char> aiBuildingTypesIdxsSpan = std::span(aiBuildingTypesIdxs);
 
 	//TODO moze to zwracac od razy przedzia³em jakos
 	static inline AiResourceMetric aiResourceMetric[] = {
@@ -289,3 +290,23 @@ private:
 	inline static std::vector<float> outputSmall;
 
 } METRIC_DEFINITIONS;
+
+constexpr char BASIC_SIZE = std::size(METRIC_DEFINITIONS.aiBasicMetric);
+constexpr char UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiUnitMetric);
+constexpr char BUILDING_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingMetric);
+constexpr char SMALL_UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiSmallUnitMetric);
+
+constexpr char BUILDING_OTHER_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingOtherIdxs);
+constexpr char BUILDING_DEF_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingDefIdxs);
+constexpr char BUILDING_RES_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingResIdxs);
+constexpr char BUILDING_TECH_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingTechIdxs);
+constexpr char BUILDING_UNITS_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingUnitsIdxs);
+
+constexpr char BUILDING_TYPES_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingTypesIdxs);
+
+
+constexpr char RESOURCE_AI_SIZE = std::size(METRIC_DEFINITIONS.aiResourceMetric);
+
+constexpr char ATTACK_OR_DEFENCE_SIZE = std::size(METRIC_DEFINITIONS.aiAttackOrDefence);
+constexpr char WHERE_ATTACK_SIZE = std::size(METRIC_DEFINITIONS.aiWhereAttack);
+constexpr char WHERE_DEFEND_SIZE = std::size(METRIC_DEFINITIONS.aiWhereDefend);

@@ -45,7 +45,6 @@
 #include "env/influence/CenterType.h"
 #include "simulation/formation/FormationManager.h"
 #include "stats/AiInputProvider.h"
-#include "stats/Stats.h"
 
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
@@ -304,7 +303,6 @@ void Main::setSimpleManagers() {
 		->setFormationManager(new FormationManager())
 		->setPlayersManager(new PlayersManager())
 		->setAiInputProvider(new AiInputProvider())
-		->setStats(new Stats())
 		->setColorPaletteRepo(new ColorPaletteRepo());
 }
 
@@ -354,7 +352,6 @@ void Main::load(const String& saveName, NewGameForm* form) {
 			createEnv(loader.getConfig()->size);
 		}
 
-		Game::getStats()->init();
 		break;
 	}
 	case 2: {
@@ -564,8 +561,6 @@ void Main::disposeScene() {
 		loading2.inc("dispose Stats & AIinput");
 		delete Game::getAiInputProvider();
 		Game::setAiInputProvider(nullptr);
-		delete Game::getStats();
-		Game::setStats(nullptr);
 
 		loading2.inc("dispose controls");
 		delete controls;
@@ -633,8 +628,6 @@ void Main::readParameters() {
 				SimGlobals::ALL_PLAYER_AI = true;
 			} else if (argument == "noplayerai") {
 				SimGlobals::NO_PLAYER_AI = true;
-			} else if (argument == "aioutput") {
-				SimGlobals::AI_OUTPUT = true;
 			} else if (argument == "savename") {
 				saveToLoad = SIM_GLOBALS.DATABASE_NUMBER + value;
 			} else if (argument == "outputname" && !value.Empty()) {

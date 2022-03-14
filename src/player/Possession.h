@@ -3,6 +3,7 @@
 #include <vector>
 
 
+enum class ParentBuildingType : char;
 class Physical;
 class Player;
 class ObjectsInfo;
@@ -32,6 +33,7 @@ public:
 	std::span<float> getUnitsMetrics() const { return unitsSumAsSpan; }
 	std::span<float> getFreeArmyMetrics() const { return freeArmySumAsSpan; }
 	std::span<float> getBuildingsMetrics() const { return buildingsSumAsSpan; }
+	std::span<float> getBuildingsMetrics(ParentBuildingType type) const;
 
 	const std::vector<Unit*>& getWorkers() const { return workers; }
 	std::vector<Unit*> getFreeArmy();
@@ -58,4 +60,17 @@ private:
 	std::span<float> unitsSumAsSpan;
 	std::span<float> freeArmySumAsSpan; //TODO to dac jako któtkie
 	std::span<float> buildingsSumAsSpan;
+
+	//float buildingsOtherInput[BASIC_SIZE + BUILDING_OTHER_SIZE];
+	//float buildingsDefenceInput[BASIC_SIZE + BUILDING_DEF_SIZE];
+	//float buildingsResInput[BASIC_SIZE + BUILDING_RES_SIZE];
+	//float buildingsTechInput[BASIC_SIZE + BUILDING_TECH_SIZE];
+	//float buildingsUnitsInput[BASIC_SIZE + BUILDING_UNITS_SIZE];
+
+	std::span<float> buildingsOtherInputSpan;
+	std::span<float> buildingsDefenceInputSpan;
+	std::span<float> buildingsResInputSpan;
+	std::span<float> buildingsTechInputSpan;
+	std::span<float> buildingsUnitsInputSpan;
+
 };

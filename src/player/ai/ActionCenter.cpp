@@ -8,7 +8,6 @@
 #include "commands/upgrade/UpgradeCommand.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "stats/Stats.h"
 
 ActionCenter::ActionCenter(SimulationObjectManager* simulationObjectManager):
 	creation(simulationObjectManager), upgrade(simulationObjectManager) {
@@ -23,26 +22,21 @@ void ActionCenter::add(ResourceActionCommand* command) {
 }
 
 void ActionCenter::add(BuildingActionCommand* command) {
-	Game::getStats()->add(command);
 	action.add(command);
 }
 
 void ActionCenter::addUnitAction(UnitOrder* first, char player) {
 	auto com = new UnitActionCommand(first, player);
-	Game::getStats()->add(com);
 	action.add(com);
 }
 
 void ActionCenter::addUnitAction(UnitOrder* first, UnitOrder* second, char player) {
 	auto com1 = new UnitActionCommand(first, player);
 	auto com2 = new UnitActionCommand(second, player);
-	Game::getStats()->add(com1);
-	Game::getStats()->add(com2);
 	action.add(com1, com2);
 }
 
 void ActionCenter::add(GeneralActionCommand* command) {
-	Game::getStats()->add(command);
 	action.add(command);
 }
 
@@ -83,7 +77,6 @@ bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player, i
 	}
 
 	if (command) {
-		Game::getStats()->add(command); //TODO to dodaæ przez z jak¹œ kolejkê
 		creation.add(command);
 		return true;
 	}
