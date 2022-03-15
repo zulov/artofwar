@@ -65,7 +65,7 @@ struct db_container {
 				METRIC_DEFINITIONS.getBuildingNorm(building, level), METRIC_DEFINITIONS.getBuildingNormForSum(building, level),
 				METRIC_DEFINITIONS.getBuildingOtherIdxs(), METRIC_DEFINITIONS.getBuildingDefenceIdxs(),
 				METRIC_DEFINITIONS.getBuildingResourceIdxs(), METRIC_DEFINITIONS.getBuildingTechIdxs(),
-				METRIC_DEFINITIONS.getBuildingUnitsIdxs());
+				METRIC_DEFINITIONS.getBuildingUnitsIdxs(), METRIC_DEFINITIONS.getBuildingTypesIdxs());
 		}
 	}
 };

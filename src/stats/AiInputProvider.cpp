@@ -44,7 +44,7 @@ std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, con
 	ParentBuildingType type) const {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
-	return combineWithBasic(unitsWithMetricUnitSpan, prop->getTypesVal(), player);
+	return combineWithBasic(buildingsWhereInputSpan, prop->getTypesVal(), player);
 }
 
 // std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, const db_building_metric* prop, ParentBuildingType type) const {
@@ -110,7 +110,7 @@ std::span<float> AiInputProvider::getBasicInput(std::span<float> dest, Player* p
 	return std::span(dest.begin() + data.size(), dest.size() - data.size());
 }
 
-std::span<float> AiInputProvider::combineWithBasic(const std::span<float> output, const std::span<float> toJoin,
+std::span<float> AiInputProvider::combineWithBasic(const std::span<float> output, const std::span<const float> toJoin,
                                                    Player* player) const {
 	std::ranges::copy(toJoin, getBasicInput(output, player).begin());
 

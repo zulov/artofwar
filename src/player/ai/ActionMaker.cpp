@@ -25,11 +25,11 @@ ActionMaker::ActionMaker(Player* player, db_nation* nation):
 
 	ifBuilding(BrainProvider::get(nation->actionPrefix[2] + "ifBuilding.csv")),
 	whichBuildingType(BrainProvider::get(nation->actionPrefix[3] + "whichBuildingType.csv")),
-	whichBuildingTypeOther(BrainProvider::get(nation->actionPrefix[4] + "whichBuildingTypeOther.csv")),
-	whichBuildingTypeDefence(BrainProvider::get(nation->actionPrefix[5] + "whichBuildingTypeDefence.csv")),
-	whichBuildingTypeResource(BrainProvider::get(nation->actionPrefix[6] + "whichBuildingTypeResource.csv")),
-	whichBuildingTypeTech(BrainProvider::get(nation->actionPrefix[7] + "whichBuildingTypeTech.csv")),
-	whichBuildingTypeUnits(BrainProvider::get(nation->actionPrefix[8] + "whichBuildingTypeUnits.csv")),
+	whichBuildingTypeOther(BrainProvider::get(nation->actionPrefix[4] + "whichBuildTypeOther.csv")),
+	whichBuildingTypeDefence(BrainProvider::get(nation->actionPrefix[5] + "whichBuildTypeDefence.csv")),
+	whichBuildingTypeResource(BrainProvider::get(nation->actionPrefix[6] + "whichBuildTypeResource.csv")),
+	whichBuildingTypeTech(BrainProvider::get(nation->actionPrefix[7] + "whichBuildTypeTech.csv")),
+	whichBuildingTypeUnits(BrainProvider::get(nation->actionPrefix[8] + "whichBuildTypeUnits.csv")),
 	whereBuilding(BrainProvider::get(nation->actionPrefix[9] + "whereBuilding.csv")),
 
 	ifUnit(BrainProvider::get(nation->actionPrefix[10] + "ifUnit.csv")),
@@ -48,8 +48,8 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	db_building* choosen = nullptr;
 	std::span<float> output;
 
-	ParentBuildingType type =static_cast<ParentBuildingType>(biggestWithRand(whichTypeOutput));
-	const auto aiTypeInput =  aiInput->getBuildingsTypeInput(player->getId(), type);
+	ParentBuildingType type = static_cast<ParentBuildingType>(biggestWithRand(whichTypeOutput));
+	const auto aiTypeInput = aiInput->getBuildingsTypeInput(player->getId(), type);
 	switch (type) {
 
 	case ParentBuildingType::OTHER:
@@ -176,12 +176,18 @@ std::vector<db_building*> ActionMaker::getBuildingsInType(ParentBuildingType typ
 
 db_building* ActionMaker::chooseBuilding(std::span<float> result, ParentBuildingType type) {
 	const auto buildings = getBuildingsInType(type);
+	if (buildings.empty()) {
+		return nullptr;
+	}
+	if (buildings.size() == 1) {
+		return buildings.at(1);
+	}
 
 	std::valarray<float> center(result.data(), result.size());
 	std::vector<float> diffs;
 	diffs.reserve(buildings.size());
 	for (const auto building : buildings) {
-		diffs.push_back(dist(center, player->getLevelForBuilding(building->id)->dbBuildingMetric));
+		diffs.push_back(dist(center, player->getLevelForBuilding(building->id)->dbBuildingMetric, type));
 	}
 	if (diffs.empty()) {
 		return nullptr;

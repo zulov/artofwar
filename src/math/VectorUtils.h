@@ -72,33 +72,3 @@ static std::vector<unsigned char> intersection(std::vector<std::vector<unsigned 
 	}
 	return common;
 }
-
-static float getBestThree(int ids[3], float vals[3], std::span<float> v) {
-	auto sortedIdx = sort_indexes_desc(v);
-
-	for (int i = 0; i < 3; ++i) {
-		ids[i] = sortedIdx[i];
-		vals[i] = v[sortedIdx[i]];
-		if (vals[i] < 0) {
-			vals[i] = 0;
-		}
-	}
-	return std::accumulate(vals, vals + 3, 0.f);
-}
-
-static float getLowestThree(int ids[3], float vals[3], std::span<float> v) {
-	auto sortedIdx = sort_indexes(v);
-	for (int i = 0; i < 3; ++i) {
-		ids[i] = sortedIdx[i];
-		vals[i] = v[sortedIdx[i]];
-	}
-
-	return std::accumulate(vals, vals + 3, 0.f);
-}
-
-static float mirror(float vals[3], float sum) {
-	for (int i = 0; i < 3; ++i) {
-		vals[i] = sum - vals[i];
-	}
-	return std::accumulate(vals, vals + 3, 0.f);
-}

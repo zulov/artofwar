@@ -59,6 +59,21 @@ inline bool validateSpan(int line, std::string file, std::span<float> vec) {
 	return valid;
 }
 
+inline bool allPositive(int line, std::string file, std::span<float> vec) {
+	bool valid = true;
+	for (const auto val : vec) {
+		if (val < 0.f) {
+			valid = false;
+		}
+	}
+	if (!valid) {
+		std::cerr << line << " at " << file << std::endl;
+		printSpan(vec);
+		assert(false);
+	}
+	return valid;
+}
+
 inline bool validateSpan(int line, std::string file, std::vector<float> vec) {
 	return validateSpan(line, file, std::span(vec.begin(), vec.size()));
 }

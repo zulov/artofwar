@@ -27,7 +27,7 @@ public:
 	std::span<float> getBuildingsTypeInput(char playerId, ParentBuildingType type) const;
 private:
 	std::span<float> getBasicInput(std::span<float> dest, Player* player) const;
-	std::span<float> combineWithBasic(const std::span<float> output, const std::span<float> toJoin,
+	std::span<float> combineWithBasic(const std::span<float> output, const std::span<const float> toJoin,
 	                                  Player* player) const;
 	std::span<float> combineWithBasic(const std::span<float> output, const std::vector<float>& toJoin,
 	                                  Player* player) const;
