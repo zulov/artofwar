@@ -40,7 +40,7 @@ private:
 	float whereAttackInput[BASIC_SIZE + WHERE_ATTACK_SIZE];
 	float whereDefendInput[BASIC_SIZE + WHERE_DEFEND_SIZE];
 
-	float unitsWithMetric[BASIC_SIZE + SMALL_UNIT_SIZE];
+	float unitsWithMetric[BASIC_SIZE + UNIT_TYPES_SIZE];
 
 	float buildingsOtherInput[BASIC_SIZE + BUILDING_OTHER_SIZE];
 	float buildingsDefenceInput[BASIC_SIZE + BUILDING_DEF_SIZE];

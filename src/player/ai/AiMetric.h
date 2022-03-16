@@ -55,14 +55,14 @@ const inline struct MetricDefinitions {
 		}
 		return output;
 	}
-
-	const std::vector<float>& getUnitNormSmall(db_unit* unit, db_unit_level* level) const {
-		outputSmall.clear();
-		for (auto const& v : unitSmallInputSpan) {
-			outputSmall.push_back(v.fn(unit, level) * v.weight);
-		}
-		return outputSmall;
-	}
+	//
+	// const std::vector<float>& getUnitNormSmall(db_unit* unit, db_unit_level* level) const {
+	// 	outputSmall.clear();
+	// 	for (auto const& v : unitSmallInputSpan) {
+	// 		outputSmall.push_back(v.fn(unit, level) * v.weight);
+	// 	}
+	// 	return outputSmall;
+	// }
 
 	const std::vector<float>& getUnitNormForSum(db_unit* unit, db_unit_level* level) const {
 		outputSum.clear();
@@ -131,6 +131,8 @@ const inline struct MetricDefinitions {
 		return getAiPlayerMetricNorm(one, two, whereDefendInputSpan);
 	}
 
+	const std::span<unsigned char> getUnitTypesIdxs() const { return aiUnitTypesIdxsSpan; }
+
 	const std::span<unsigned char> getBuildingOtherIdxs() const { return aiBuildingOtherIdxsSpan; }
 	const std::span<unsigned char> getBuildingDefenceIdxs() const { return aiBuildingDefIdxsSpan; }
 	const std::span<unsigned char> getBuildingResourceIdxs() const { return aiBuildingResIdxsSpan; }
@@ -158,7 +160,7 @@ const inline struct MetricDefinitions {
 		{[](db_unit* u, db_unit_level* l) -> float { return u->typeSpecial; }, 1, UNITS_SUM_X},
 		{[](db_unit* u, db_unit_level* l) -> float { return u->typeMelee; }, 1, UNITS_SUM_X},
 		{[](db_unit* u, db_unit_level* l) -> float { return u->typeHeavy; }, 1, UNITS_SUM_X},
-		{[](db_unit* u, db_unit_level* l) -> float { return u->typeLight; }, 1, UNITS_SUM_X},
+		{[](db_unit* u, db_unit_level* l) -> float { return u->typeLight; }, 1, UNITS_SUM_X},//15
 
 		{[](db_unit* u, db_unit_level* l) -> float { return l->bonusInfantry; }, 1, UNITS_SUM_X},
 		{[](db_unit* u, db_unit_level* l) -> float { return l->bonusRange; }, 1, UNITS_SUM_X},
@@ -168,17 +170,6 @@ const inline struct MetricDefinitions {
 		{[](db_unit* u, db_unit_level* l) -> float { return l->bonusMelee; }, 1, UNITS_SUM_X},
 		{[](db_unit* u, db_unit_level* l) -> float { return l->bonusHeavy; }, 1, UNITS_SUM_X},
 		{[](db_unit* u, db_unit_level* l) -> float { return l->bonusLight; }, 1, UNITS_SUM_X},
-	};
-
-	static inline AiUnitMetric aiSmallUnitMetric[] = {
-		{[](db_unit* u, db_unit_level* l) -> float { return u->typeInfantry; }, 1, UNITS_SUM_X},
-		{[](db_unit* u, db_unit_level* l) -> float { return u->typeRange; }, 1, UNITS_SUM_X},
-		{[](db_unit* u, db_unit_level* l) -> float { return u->typeCalvary; }, 1, UNITS_SUM_X},
-		{[](db_unit* u, db_unit_level* l) -> float { return u->typeWorker; }, 1, UNITS_SUM_X},
-		{[](db_unit* u, db_unit_level* l) -> float { return u->typeSpecial; }, 1, UNITS_SUM_X},
-		{[](db_unit* u, db_unit_level* l) -> float { return u->typeMelee; }, 1, UNITS_SUM_X},
-		{[](db_unit* u, db_unit_level* l) -> float { return u->typeHeavy; }, 1, UNITS_SUM_X},
-		{[](db_unit* u, db_unit_level* l) -> float { return u->typeLight; }, 1, UNITS_SUM_X}
 	};
 
 	static inline AiBuildingMetric aiBuildingMetric[] = {
@@ -206,6 +197,8 @@ const inline struct MetricDefinitions {
 		{[](db_building* b, db_building_level* l) -> float { return b->typeUnitRange; }, 1, BUILDINGS_SUM_X},
 		{[](db_building* b, db_building_level* l) -> float { return b->typeUnitCavalry; }, 1, BUILDINGS_SUM_X},
 	};
+
+	static inline unsigned char aiUnitsTypesIdxs[] = {8,9,10,11,12,12,13,14,15};
 
 	static inline unsigned char aiBuildingOtherIdxs[] = {9, 10}; //TODO moze cos wiecej?
 	static inline unsigned char aiBuildingUnitsIdxs[] = {18, 19, 20}; //TODO moze cos wiecej?
@@ -272,7 +265,7 @@ const inline struct MetricDefinitions {
 	constexpr static std::span<unsigned char> aiBuildingDefIdxsSpan = std::span(aiBuildingDefIdxs);
 	constexpr static std::span<unsigned char> aiBuildingTypesIdxsSpan = std::span(aiBuildingTypesIdxs);
 
-	constexpr static std::span<AiUnitMetric> unitSmallInputSpan = std::span(aiSmallUnitMetric);
+	constexpr static std::span<unsigned char> aiUnitTypesIdxsSpan = std::span(aiUnitsTypesIdxs);
 	constexpr static std::span<AiUnitMetric> unitInputSpan = std::span(aiUnitMetric);
 
 	constexpr static std::span<AiBuildingMetric> buildingInputSpan = std::span(aiBuildingMetric);
@@ -288,14 +281,14 @@ private:
 	inline static std::vector<float> basic;
 	inline static std::vector<float> output; //TODO mem perf mozna zastapic czyms lzejszym
 	inline static std::vector<float> outputSum;
-	inline static std::vector<float> outputSmall;
+	//inline static std::vector<float> outputSmall;
 
 } METRIC_DEFINITIONS;
 
 constexpr char BASIC_SIZE = std::size(METRIC_DEFINITIONS.aiBasicMetric);
 constexpr char UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiUnitMetric);
 constexpr char BUILDING_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingMetric);
-constexpr char SMALL_UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiSmallUnitMetric);
+constexpr char UNIT_TYPES_SIZE = std::size(METRIC_DEFINITIONS.aiUnitsTypesIdxs);
 
 constexpr char BUILDING_OTHER_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingOtherIdxs);
 constexpr char BUILDING_DEF_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingDefIdxs);

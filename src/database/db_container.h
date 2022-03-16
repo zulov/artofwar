@@ -56,7 +56,7 @@ struct db_container {
 			const auto unit = units[level->unit];
 			level->finish(METRIC_DEFINITIONS.getUnitNorm(unit, level),
 			              METRIC_DEFINITIONS.getUnitNormForSum(unit, level),
-			              METRIC_DEFINITIONS.getUnitNormSmall(unit, level));
+			              METRIC_DEFINITIONS.getUnitTypesIdxs());
 		}
 
 		for (auto* level : buildingsLevels) {
