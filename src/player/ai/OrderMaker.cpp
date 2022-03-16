@@ -53,7 +53,7 @@ void OrderMaker::action() {
 		} else {
 			whereGo = whereDefence->decide(aiInput->getWhereDefend(player->getId()));
 		}
-		const CenterType centerType = static_cast<CenterType>(lowestWithRand(whereGo));
+		const CenterType centerType = static_cast<CenterType>(biggestWithRand(whereGo));
 		const auto posOpt = Game::getEnvironment()->getCenterOf(centerType, playerToGo);
 
 		if (posOpt.has_value()) {
