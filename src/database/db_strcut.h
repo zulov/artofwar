@@ -114,7 +114,7 @@ struct db_with_cost {
 
 struct db_basic_metric {
 protected:
-	std::vector<float> valuesNorm;
+	//std::vector<float> valuesNorm;
 	std::valarray<float> valuesNormAsVal;
 	std::valarray<float> typesNormAsVal;
 
@@ -125,13 +125,13 @@ protected:
 		temp.clear();
 		temp.reserve(idxs.size());
 		for (const unsigned char idx : idxs) {
-			temp.push_back(valuesNorm[idx]);
+			temp.push_back(valuesNormAsVal[idx]);
 		}
 		valarray = std::valarray(*temp.data(), temp.size());
 	}
 
 public:
-	const std::vector<float>& getValuesNorm() const { return valuesNorm; }
+	//const std::vector<float>& getValuesNorm() const { return valuesNorm; }
 	const std::valarray<float>& getValuesNormAsVal() const { return valuesNormAsVal; }
 	const std::vector<float>& getValuesNormForSum() const { return valuesNormForSum; }
 
@@ -147,17 +147,16 @@ struct db_building_metric : db_basic_metric {
 	std::valarray<float> techNormAsVal;
 	std::valarray<float> unitsNormAsVal;
 
-	std::valarray<float> typesNormAsVal;
-
-
 	db_building_metric(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
 	                   std::span<unsigned char> otherIdxs, std::span<unsigned char> defenceIdxs,
 	                   std::span<unsigned char> resourceIdxs, std::span<unsigned char> techIdxs,
 	                   std::span<unsigned char> unitsIdxs, std::span<unsigned char> typesIdxs) {
-		valuesNorm.insert(valuesNorm.end(), newValues.begin(), newValues.end());
+		assert(validateSpan(__LINE__, __FILE__, newValues));
+		assert(validateSpan(__LINE__, __FILE__, newValuesForSum));
+
 		valuesNormForSum.insert(valuesNormForSum.end(), newValuesForSum.begin(), newValuesForSum.end());
 
-		valuesNormAsVal = std::valarray(*valuesNorm.data(), valuesNorm.size());
+		valuesNormAsVal = std::valarray(*newValues.data(), newValues.size());
 
 		setValarray(otherNormAsVal, otherIdxs); //TODO bug czy to jest zainicjowane
 		setValarray(defenceNormAsVal, defenceIdxs);
@@ -165,11 +164,6 @@ struct db_building_metric : db_basic_metric {
 		setValarray(techNormAsVal, techIdxs);
 		setValarray(unitsNormAsVal, unitsIdxs);
 		setValarray(typesNormAsVal, typesIdxs);
-
-		assert(otherNormAsVal.size(), otherIdxs.size());
-
-		assert(validateSpan(__LINE__, __FILE__, valuesNorm));
-		assert(validateSpan(__LINE__, __FILE__, valuesNormForSum));
 	}
 
 	const std::valarray<float>& getValuesNormAsValForType(ParentBuildingType type) const {
@@ -237,17 +231,14 @@ struct db_build_upgrade {
 
 struct db_unit_metric : db_basic_metric {
 
-
 	db_unit_metric(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
 	               std::span<unsigned char> typesIdxs) {
-		valuesNorm.insert(valuesNorm.end(), newValues.begin(), newValues.end());
+		assert(validateSpan(__LINE__, __FILE__, newValues));
+		assert(validateSpan(__LINE__, __FILE__, newValuesForSum));
+
 		valuesNormForSum.insert(valuesNormForSum.end(), newValuesForSum.begin(), newValuesForSum.end());
+		valuesNormAsVal = std::valarray(*newValues.data(), newValues.size());
 		setValarray(typesNormAsVal, typesIdxs);
-
-		valuesNormAsVal = std::valarray(*valuesNorm.data(), valuesNorm.size());
-
-		assert(validateSpan(__LINE__, __FILE__, valuesNorm));
-		assert(validateSpan(__LINE__, __FILE__, valuesNormForSum));
 	}
 };
 

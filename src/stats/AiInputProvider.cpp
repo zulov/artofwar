@@ -37,7 +37,7 @@ std::span<float> AiInputProvider::getBuildingsInput(char playerId) const {
 std::span<float> AiInputProvider::getUnitsInputWithMetric(char playerId, const db_unit_metric* prop) const {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
-	return combineWithBasic(unitsWithMetricUnitSpan, prop->getValuesNormSmall(), player);
+	return combineWithBasic(unitsWithMetricUnitSpan, prop->getTypesVal(), player);
 }
 
 std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, const db_building_metric* prop,
