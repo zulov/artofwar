@@ -43,14 +43,14 @@ void InfluenceMapQuad::ensureReady() {
 				auto parent = maps[i + 1];
 				const auto current = maps[i];
 
-				int j =0;
+				int j = 0;
 				for (float parent1 : parent) {
 					if (parent1 > 0.f) {
 						const int newIndex = getCordsInLower(currentRes, parentRes, j);
 						assert(newIndex<currentRes*currentRes);
 						current[newIndex] += parent1;
 					}
-				++j;
+					++j;
 				}
 			}
 		}
@@ -63,10 +63,11 @@ std::optional<Urho3D::Vector2> InfluenceMapQuad::getCenter() {
 	bool hasData = std::ranges::any_of(maps[0], [](float v) { return v > 0.f; });
 	if (hasData) {
 		int index = std::distance(maps[0].begin(), std::ranges::max_element(maps[0]));
-
+		unsigned short res = sqrt(maps[0].size());
 		for (int i = 1; i < maps.size(); ++i) {
-			std::array<int, 4> indexes = getCordsInHigher(sqrt(maps[i - 1].size()), index);
+			std::array<int, 4> indexes = getCordsInHigher(res, index);
 			index = getMaxElement(indexes, maps[i]);
+			res *= 4;//TODO celowy b³ad
 		}
 		return calculator->getCenter(index);
 	}

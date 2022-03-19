@@ -42,18 +42,19 @@ void OrderMaker::action() {
 	if (!freeWorkers.empty()) {
 		collect(freeWorkers);
 	}
-	const auto aiInput = Game::getAiInputProvider();
+
 	if (player->getPossession().hasAnyFreeArmy()) {
+		const auto aiInput = Game::getAiInputProvider();
 		auto const resultAoD = attackOrDefence->decide(aiInput->getAttackOrDefenceInput(player->getId()));
 		std::span<float> whereGo;
 		char playerToGo = player->getId();
-		if (randFromTwo(resultAoD[0])) {
+		if (randFromTwo(resultAoD[0]) || true) {
 			playerToGo = Game::getPlayersMan()->getEnemyFor(player->getId());
 			whereGo = whereAttack->decide(aiInput->getWhereAttack(player->getId()));
 		} else {
 			whereGo = whereDefence->decide(aiInput->getWhereDefend(player->getId()));
 		}
-		const CenterType centerType = static_cast<CenterType>(biggestWithRand(whereGo));
+		const CenterType centerType = CenterType::ECON;//static_cast<CenterType>(biggestWithRand(whereGo));
 		const auto posOpt = Game::getEnvironment()->getCenterOf(centerType, playerToGo);
 
 		if (posOpt.has_value()) {
@@ -69,6 +70,7 @@ void OrderMaker::action() {
 						Game::getActionCenter()->addUnitAction(
 							new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::GO), center),
 							player->getId());
+						//if one teh idnivudal
 					} else {
 						const auto unit = subArmy.at(0);
 
