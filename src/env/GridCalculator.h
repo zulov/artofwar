@@ -1,12 +1,14 @@
 #pragma once
 #include <Urho3D/Math/Vector3.h>
+#include <vector>
 
 struct GridCalculator {
 
 	explicit GridCalculator(unsigned short resolution, float size)
 		: sqResolution(resolution * resolution), resolution(resolution), halfResolution(resolution / 2),
 		  halfSize(size * 0.5f), invFieldSize(static_cast<float>(resolution) / size),
-		  fieldSize(size / static_cast<float>(resolution)), sqFieldSize(fieldSize * fieldSize) { }
+		  fieldSize(size / static_cast<float>(resolution)), sqFieldSize(fieldSize * fieldSize) {
+	}
 
 	GridCalculator(const GridCalculator&) = delete;
 
@@ -110,6 +112,29 @@ struct GridCalculator {
 
 	float getDistance(int first, int next) const {
 		return getDistance(getIndexes(first), next);
+	}
+
+	int getBiggestDiff(int first, int next) const {
+		auto a = getIndexes(first);
+		auto b = getIndexes(next);
+		const auto dx = (a.x_ - b.x_);
+		const auto dy = (a.y_ - b.y_);
+		return Urho3D::Max(Urho3D::Abs(dx), Urho3D::Abs(dy));
+	}
+
+	int getBiggestDiff(int first, const std::vector<int>& endIdxs) const {
+		auto a = getIndexes(first);
+		int max = 0;
+		for (const int idx : endIdxs) {
+			auto b = getIndexes(idx);
+			const auto dx = (a.x_ - b.x_);
+			const auto dy = (a.y_ - b.y_);
+			const auto val = Urho3D::Max(Urho3D::Abs(dx), Urho3D::Abs(dy));
+			if (val > max) {
+				max = val;
+			}
+		}
+		return max;
 	}
 
 	float getSize() const {

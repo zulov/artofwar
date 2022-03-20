@@ -34,7 +34,7 @@ GroupOrder::GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, s
 
 void GroupOrder::addUnits(const std::vector<Physical*>& entities) {
 	units.reserve(entities.size());
-	for (auto unit : entities) {
+	for (const auto unit : entities) {
 		this->units.emplace_back(reinterpret_cast<Unit*>(unit));
 	}
 }

@@ -1,5 +1,6 @@
 #include "PathFinder.h"
 
+#include <chrono>
 #include <iostream>
 #include <Urho3D/IO/Log.h>
 
@@ -86,6 +87,7 @@ void PathFinder::prepareToStart(int startIdx) {
 }
 
 const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
+	assert(limit>0);
 	prepareToStart(startIdx);
 	auto endCords = getCords(endIdxs);
 	assert(!endCords.empty());
@@ -93,7 +95,7 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 	int steps = 0;
 	while (!frontier.empty()) {
 		++steps;
-		if (limit != -1 && steps > limit) {
+		if (steps > limit) {
 			break;
 		}
 		const auto current = frontier.get();

@@ -77,11 +77,11 @@ void Environment::nextVisibilityType() {
 }
 
 void Environment::reAddBonuses(std::vector<Building*>* buildings, char player, char resId) const {
-	mainGrid.reAddBonuses(buildings,player, resId);
+	mainGrid.reAddBonuses(buildings, player, resId);
 }
 
 float Environment::getBonuses(char player, ResourceEntity* resource) {
-	return mainGrid.getBonuses( player, resource);
+	return mainGrid.getBonuses(player, resource);
 }
 
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
@@ -464,12 +464,16 @@ Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size,
 	return mainGrid.getValidPosition(size, getCenter(calculator->getIndex(bucketCords.x_, bucketCords.y_)));
 }
 
-const std::vector<int>* Environment::findPath(int startIdx, const Urho3D::Vector2& aim, int limit) {
-	return mainGrid.findPath(startIdx, calculator->indexFromPosition(aim), limit);
+const std::vector<int>* Environment::findPath(int startIdx, const Urho3D::Vector2& aim) {
+	auto end = calculator->indexFromPosition(aim);
+	auto dist = calculator->getBiggestDiff(startIdx, end);
+	return mainGrid.findPath(startIdx, end, dist * sqrt(dist));
 }
 
-const std::vector<int>* Environment::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
-	return mainGrid.findPath(startIdx, endIdxs, limit);
+const std::vector<int>* Environment::findPath(int startIdx, const std::vector<int>& endIdxs) {
+	auto dist = calculator->getBiggestDiff(startIdx, endIdxs);
+
+	return mainGrid.findPath(startIdx, endIdxs, dist * sqrt(dist));
 }
 
 const std::vector<int>* Environment::findPath(int startIdx, int endIdx, int limit) {

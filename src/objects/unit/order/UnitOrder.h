@@ -38,6 +38,7 @@ protected:
 private:
 	TargetAim* getTargetAimPtr(int startInx, const std::vector<int>& endIdxs) const;
 	TargetAim* getTargetAimPtr(int startInx, const Urho3D::Vector2& to) const;
+	TargetAim* getAimFromPath(const std::vector<int>* path) const;
 
 	virtual void addCollectAim() =0;
 	virtual void addTargetAim() =0;

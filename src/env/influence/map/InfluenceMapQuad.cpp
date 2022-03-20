@@ -67,7 +67,7 @@ std::optional<Urho3D::Vector2> InfluenceMapQuad::getCenter() {
 		for (int i = 1; i < maps.size(); ++i) {
 			std::array<int, 4> indexes = getCordsInHigher(res, index);
 			index = getMaxElement(indexes, maps[i]);
-			res *= 4;//TODO celowy b³ad
+			res *= 2;
 		}
 		return calculator->getCenter(index);
 	}

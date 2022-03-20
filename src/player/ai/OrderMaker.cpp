@@ -54,7 +54,7 @@ void OrderMaker::action() {
 		} else {
 			whereGo = whereDefence->decide(aiInput->getWhereDefend(player->getId()));
 		}
-		const CenterType centerType = CenterType::ECON;//static_cast<CenterType>(biggestWithRand(whereGo));
+		const CenterType centerType = CenterType::ECON; //static_cast<CenterType>(biggestWithRand(whereGo));
 		const auto posOpt = Game::getEnvironment()->getCenterOf(centerType, playerToGo);
 
 		if (posOpt.has_value()) {
@@ -67,9 +67,15 @@ void OrderMaker::action() {
 
 					if (dist > SQ_SEMI_CLOSE) {
 						//Game::getEnvironment()->closestPhysical(subArmy.at(0), &things, belowClose, SQ_SEMI_CLOSE);
-						Game::getActionCenter()->addUnitAction(
-							new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::GO), center),
-							player->getId());
+						if (subArmy.size() > 1) {
+							Game::getActionCenter()->addUnitAction(
+								new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::GO), center),
+								player->getId());
+						} else {
+							Game::getActionCenter()->addUnitAction(
+								new IndividualOrder(subArmy.at(0), UnitAction::GO, center), player->getId());
+						}
+
 						//if one teh idnivudal
 					} else {
 						const auto unit = subArmy.at(0);
