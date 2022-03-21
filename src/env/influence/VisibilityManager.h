@@ -30,7 +30,7 @@ public:
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units, std::vector<ResourceEntity*>* resources);
 	void drawMaps(short currentDebugBatch, char index) const;
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;
-	float getVisibilityScore(char player);
+	float getVisibilityScore(char player) const;
 	void removeUnseen(char player, float* intersection);
 	void nextVisibilityType();
 private:

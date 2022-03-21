@@ -196,11 +196,12 @@ void Possession::updateAndClean(const Resources& resources, const ObjectsInfo* s
 	}
 	auto& bLevels = Game::getDatabase()->getBuildingLevels();
 	for (int i = 0; i < levelsSize; ++i) {
-		if (levels[i] > 0.f) {
+		auto lVal = levels[i];
+		if (lVal > 0.f) {
 			auto& metric = bLevels[i]->dbBuildingMetric->getValuesNormForSum();
 			assert(metric.size() == buildingsSumAsSpan.size());
 			for (int j = 0; j < buildingsSumAsSpan.size(); ++j) {
-				buildingsSumAsSpan[j] += levels[i] * metric[j];
+				buildingsSumAsSpan[j] += lVal * metric[j];
 			}
 		}
 	}

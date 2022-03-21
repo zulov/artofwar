@@ -151,7 +151,7 @@ bool VisibilityManager::isVisible(char player, const Urho3D::Vector2& pos) const
 	return visibilityPerPlayer[player]->getValueAt(pos) == static_cast<char>(VisibilityType::VISIBLE);
 }
 
-float VisibilityManager::getVisibilityScore(char player) {
+float VisibilityManager::getVisibilityScore(char player) const {
 	return visibilityPerPlayer[player]->getPercent();
 }
 
