@@ -3,10 +3,6 @@
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Octree.h>
 #include <Urho3D/Graphics/Terrain.h>
-#include <Urho3D/Graphics/TerrainPatch.h>
-#include <Urho3D/Graphics/Geometry.h>
-
-#include "colors/ColorPaletteRepo.h"
 #include "database/DatabaseCache.h"
 #include "database/db_other_struct.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
@@ -23,6 +19,7 @@ LevelBuilder::LevelBuilder() {
 
 LevelBuilder::~LevelBuilder() {
 	scene->Remove();
+	scene = nullptr;
 	Game::setScene(nullptr);
 }
 

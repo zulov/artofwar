@@ -44,7 +44,7 @@ inline void printSpan(std::span<T> vec, int cols) {
 	std::cerr << std::endl;
 }
 
-inline bool validateSpan(int line, std::string file, std::span<float> vec) {
+inline bool validateSpan(int line, std::string file, std::span<const float> vec) {
 	bool valid = true;
 	for (const auto val : vec) {
 		if (isnan(val) || isinf(val)) {

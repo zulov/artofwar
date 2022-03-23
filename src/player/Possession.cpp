@@ -18,14 +18,24 @@ Possession::Possession(char nation) {
 		}
 		buildingsPerId[id] = new std::vector<Building*>();
 	}
-	char unitSize = std::size(METRIC_DEFINITIONS.aiUnitMetric);
-	char buildingSize = std::size(METRIC_DEFINITIONS.aiBuildingMetric);
 
-	data = new float[unitSize * 2 + buildingSize];
+	data = new float[UNIT_SIZE * 2 + BUILDING_SIZE
+		+ BUILDING_OTHER_SIZE + BUILDING_DEF_SIZE
+		+ BUILDING_RES_SIZE + BUILDING_TECH_SIZE
+		+ BUILDING_UNITS_SIZE];
 
-	unitsSumAsSpan = std::span(data, unitSize);
-	freeArmySumAsSpan = std::span(data + unitSize, unitSize);
-	buildingsSumAsSpan = std::span(data + 2 * unitSize, buildingSize);
+	unitsSumAsSpan = std::span(data, UNIT_SIZE);
+	auto a  = unitsSumAsSpan.begin() + unitsSumAsSpan.size();
+	freeArmySumAsSpan = std::span(unitsSumAsSpan.begin() + unitsSumAsSpan.size(), UNIT_SIZE);
+	buildingsSumAsSpan = std::span(freeArmySumAsSpan.begin() + freeArmySumAsSpan.size(), BUILDING_SIZE);
+
+	buildingsOtherSumSpan = std::span(buildingsSumAsSpan.begin() + buildingsSumAsSpan.size(), BUILDING_OTHER_SIZE);
+	buildingsDefenceSumSpan = std::span(buildingsOtherSumSpan.begin() + buildingsOtherSumSpan.size(),
+	                                    BUILDING_DEF_SIZE);
+	buildingsResSumSpan = std::span(buildingsDefenceSumSpan.begin() + buildingsDefenceSumSpan.size(),
+	                                BUILDING_RES_SIZE);
+	buildingsTechSumSpan = std::span(buildingsResSumSpan.begin() + buildingsResSumSpan.size(), BUILDING_TECH_SIZE);
+	buildingsUnitsSumSpan = std::span(buildingsTechSumSpan.begin() + buildingsTechSumSpan.size(), BUILDING_UNITS_SIZE);
 
 	resetSpan(unitsSumAsSpan);
 	resetSpan(freeArmySumAsSpan);
@@ -44,7 +54,6 @@ Possession::~Possession() {
 	delete[]levels;
 	delete[]levelsFree;
 }
-
 
 int Possession::getScore() const {
 	float buildingScore = 0.f;
@@ -94,13 +103,26 @@ void Possession::addKilled(Physical* physical) {
 	resourcesDestroyed += physical->getCostSum();
 }
 
+std::span<float> Possession::refreshBuildingSum(const std::span<unsigned char> idxs, std::span<float> out) const {
+	assert(idxs.size() == out.size());
+	for (int i = 0; i < idxs.size(); ++i) {
+		out[i] = buildingsSumAsSpan[idxs[i]];
+	}
+	return out;
+}
+
 std::span<float> Possession::getBuildingsMetrics(ParentBuildingType type) const {
 	switch (type) {
-	case ParentBuildingType::OTHER: return buildingsOtherInputSpan;
-	case ParentBuildingType::DEFENCE: return buildingsDefenceInputSpan;
-	case ParentBuildingType::RESOURCE:return buildingsResInputSpan;
-	case ParentBuildingType::TECH: return buildingsTechInputSpan;
-	case ParentBuildingType::UNITS: return buildingsUnitsInputSpan;
+	case ParentBuildingType::OTHER:
+		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingOtherIdxs(), buildingsOtherSumSpan);
+	case ParentBuildingType::DEFENCE:
+		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingDefenceIdxs(), buildingsDefenceSumSpan);
+	case ParentBuildingType::RESOURCE:
+		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingResourceIdxs(), buildingsResSumSpan);
+	case ParentBuildingType::TECH:
+		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingTechIdxs(), buildingsTechSumSpan);
+	case ParentBuildingType::UNITS:
+		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingUnitsIdxs(), buildingsUnitsSumSpan);
 	default: ;
 	}
 }

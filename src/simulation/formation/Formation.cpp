@@ -350,6 +350,7 @@ void Formation::semiReset() {
 	notWellFormed = 1;
 	notWellFormedExact = 1;
 	changed = true;
+	assert(unitOrders.empty());
 	unitOrders.clear();
 	delete pendingOrder;
 	pendingOrder = nullptr;

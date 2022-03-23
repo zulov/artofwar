@@ -96,7 +96,7 @@ std::span<float> AiInputProvider::getBuildingInputSpan(ParentBuildingType type) 
 std::span<float> AiInputProvider::getBuildingsTypeInput(char playerId, ParentBuildingType type) const {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 	const std::span<float> data = player->getPossession().getBuildingsMetrics(type);
-
+	assert(data.size() > 0);
 	return combineWithBasic(getBuildingInputSpan(type), data, player);
 }
 
@@ -114,7 +114,9 @@ std::span<float> AiInputProvider::combineWithBasic(const std::span<float> output
                                                    Player* player) const {
 	std::ranges::copy(toJoin, getBasicInput(output, player).begin());
 
+	assert(validateSpan(__LINE__, __FILE__, toJoin));
 	assert(validateSpan(__LINE__, __FILE__, output));
+	assert(output.size() == BASIC_SIZE + toJoin.size());
 	return output;
 }
 

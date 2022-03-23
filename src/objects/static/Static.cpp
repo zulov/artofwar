@@ -102,7 +102,7 @@ void Static::populate() {
 		surroundCells1.end());
 	occupiedCellsSize = occupiedCells1.size();
 	surroundCellsSize = surroundCells1.size();
-
+	delete[] data;
 	data = new int[occupiedCellsSize + surroundCellsSize];
 	auto occupiedCells = getOccupiedCells();
 	auto surroundCells = getSurroundCells();

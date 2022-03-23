@@ -2,7 +2,6 @@
 #include <span>
 #include <vector>
 
-
 enum class ParentBuildingType : char;
 class Physical;
 class Player;
@@ -41,6 +40,7 @@ public:
 	float getAttackSum() const;
 	float getDefenceAttackSum();
 private:
+	std::span<float> refreshBuildingSum(const std::span<unsigned char> idxs, std::span<float> out) const;
 	std::vector<Building*> buildings;
 	std::vector<std::vector<Building*>*> buildingsPerId;
 
@@ -61,16 +61,10 @@ private:
 	std::span<float> freeArmySumAsSpan; //TODO to dac jako któtkie
 	std::span<float> buildingsSumAsSpan;
 
-	//float buildingsOtherInput[BASIC_SIZE + BUILDING_OTHER_SIZE];
-	//float buildingsDefenceInput[BASIC_SIZE + BUILDING_DEF_SIZE];
-	//float buildingsResInput[BASIC_SIZE + BUILDING_RES_SIZE];
-	//float buildingsTechInput[BASIC_SIZE + BUILDING_TECH_SIZE];
-	//float buildingsUnitsInput[BASIC_SIZE + BUILDING_UNITS_SIZE];
-
-	std::span<float> buildingsOtherInputSpan;
-	std::span<float> buildingsDefenceInputSpan;
-	std::span<float> buildingsResInputSpan;
-	std::span<float> buildingsTechInputSpan;
-	std::span<float> buildingsUnitsInputSpan;
+	std::span<float> buildingsOtherSumSpan;
+	std::span<float> buildingsDefenceSumSpan;
+	std::span<float> buildingsResSumSpan;
+	std::span<float> buildingsTechSumSpan;
+	std::span<float> buildingsUnitsSumSpan;
 
 };
