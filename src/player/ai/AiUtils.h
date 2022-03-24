@@ -8,6 +8,7 @@ inline bool randFromTwo(float val) {
 }
 
 inline int biggestWithRand(std::span<float> vals) {
+	assert(validateSpan(__LINE__, __FILE__, vals));
 	assert(!vals.empty());
 	for (float& val : vals) {
 		if (val < 0) {

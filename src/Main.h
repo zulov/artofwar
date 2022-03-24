@@ -73,7 +73,7 @@ private:
 	void running(double timeStep);
 	void createSimulation();
 	static void setSimpleManagers();
-	void updateProgress(Loading& progress, std::string msg) const;
+	void updateProgress(Loading& progress) const;
 	void changeState(GameState newState);
 
 	void writeOutput(std::initializer_list<const std::function<float(Player*)>> funcs1,

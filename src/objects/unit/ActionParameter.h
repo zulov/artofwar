@@ -13,7 +13,7 @@ struct ActionParameter {
 		: thingToInteract(thing) {
 	}
 
-	bool isFirstThingAlive() const;
+	bool isThingAlive() const;
 	void reset(const ActionParameter& actionParameter);
 	void resetUsed();
 

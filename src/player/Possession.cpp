@@ -18,28 +18,24 @@ Possession::Possession(char nation) {
 		}
 		buildingsPerId[id] = new std::vector<Building*>();
 	}
-
-	data = new float[UNIT_SIZE * 2 + BUILDING_SIZE
+	int dataSize = UNIT_SIZE * 2 + BUILDING_SIZE
 		+ BUILDING_OTHER_SIZE + BUILDING_DEF_SIZE
 		+ BUILDING_RES_SIZE + BUILDING_TECH_SIZE
-		+ BUILDING_UNITS_SIZE];
+		+ BUILDING_UNITS_SIZE;
+	data = new float[dataSize];
 
+	int begin = 0;
 	unitsSumAsSpan = std::span(data, UNIT_SIZE);
-	auto a  = unitsSumAsSpan.begin() + unitsSumAsSpan.size();
-	freeArmySumAsSpan = std::span(unitsSumAsSpan.begin() + unitsSumAsSpan.size(), UNIT_SIZE);
-	buildingsSumAsSpan = std::span(freeArmySumAsSpan.begin() + freeArmySumAsSpan.size(), BUILDING_SIZE);
+	freeArmySumAsSpan = std::span(data + (begin += UNIT_SIZE), UNIT_SIZE);
+	buildingsSumAsSpan = std::span(data + (begin += UNIT_SIZE), BUILDING_SIZE);
 
-	buildingsOtherSumSpan = std::span(buildingsSumAsSpan.begin() + buildingsSumAsSpan.size(), BUILDING_OTHER_SIZE);
-	buildingsDefenceSumSpan = std::span(buildingsOtherSumSpan.begin() + buildingsOtherSumSpan.size(),
-	                                    BUILDING_DEF_SIZE);
-	buildingsResSumSpan = std::span(buildingsDefenceSumSpan.begin() + buildingsDefenceSumSpan.size(),
-	                                BUILDING_RES_SIZE);
-	buildingsTechSumSpan = std::span(buildingsResSumSpan.begin() + buildingsResSumSpan.size(), BUILDING_TECH_SIZE);
-	buildingsUnitsSumSpan = std::span(buildingsTechSumSpan.begin() + buildingsTechSumSpan.size(), BUILDING_UNITS_SIZE);
+	buildingsOtherSumSpan = std::span(data + (begin += BUILDING_SIZE), BUILDING_OTHER_SIZE);
+	buildingsDefenceSumSpan = std::span(data + (begin += BUILDING_OTHER_SIZE), BUILDING_DEF_SIZE);
+	buildingsResSumSpan = std::span(data + (begin += BUILDING_DEF_SIZE), BUILDING_RES_SIZE);
+	buildingsTechSumSpan = std::span(data + (begin += BUILDING_RES_SIZE), BUILDING_TECH_SIZE);
+	buildingsUnitsSumSpan = std::span(data + (begin += BUILDING_TECH_SIZE), BUILDING_UNITS_SIZE);
 
-	resetSpan(unitsSumAsSpan);
-	resetSpan(freeArmySumAsSpan);
-	resetSpan(buildingsSumAsSpan);
+	std::fill_n(data, dataSize, 0.f);
 
 	levelsSize = Urho3D::Max(Game::getDatabase()->getUnitLevels().size(),
 	                         Game::getDatabase()->getBuildingLevels().size());

@@ -22,7 +22,7 @@ public:
 	~AttackState() = default;
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
-		if (parameter.isFirstThingAlive()) {
+		if (parameter.isThingAlive()) {
 			auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
 			return std::ranges::find(indexesToUse, unit->getMainGridIndex()) != indexesToUse.end()
 				&& parameter.thingToInteract->belowCloseLimit() > 0;

@@ -76,7 +76,7 @@ std::pair<float, bool> Building::absorbAttack(float attackCoef) {
 	if (hp <= 0) {
 		return {0.f, false};
 	}
-	const auto val = (attackCoef + attackCoef * ready) * (1 - dbLevel->armor);
+	const auto val = (attackCoef + attackCoef * !ready) * (1 - dbLevel->armor);
 	hp -= val;
 
 	updateHealthBar();

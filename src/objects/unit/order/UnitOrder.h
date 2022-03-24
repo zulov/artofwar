@@ -31,7 +31,6 @@ protected:
 	const short id;
 	const bool append;
 
-
 	ActionParameter getTargetAim(int startInx, Urho3D::Vector2& to);
 	ActionParameter getFollowAim(int startInx, const std::vector<int>& endIdxs);
 	ActionParameter getChargeAim(Urho3D::Vector2& charge);

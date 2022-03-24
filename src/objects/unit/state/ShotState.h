@@ -20,7 +20,7 @@ public:
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
 		assert(unit->getDbUnit()->typeRange);
-		if (parameter.isFirstThingAlive()) {
+		if (parameter.isThingAlive()) {
 			auto const indexesToUse = parameter.thingToInteract->getIndexesForRangeUse(unit);
 			return std::ranges::find(indexesToUse, unit->getMainGridIndex()) != indexesToUse.end()
 				&& parameter.thingToInteract->belowRangeLimit() > 0;

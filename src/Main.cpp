@@ -80,11 +80,12 @@ void Main::Setup() {
 
 	readParameters();
 	RandGen::init(SIM_GLOBALS.RANDOM);
-	if (SIM_GLOBALS.HEADLESS) {
+	if (SIM_GLOBALS.HEADLESS && false) {
 		engineParameters_[EP_LOG_NAME] = "";
 		GetSubsystem<Log>()->SetLevel(LOG_NONE);
 	} else {
-		engineParameters_[EP_LOG_NAME] = "logs/" + GetTypeName() + ".log";
+		engineParameters_[EP_LOG_NAME] = "";
+		//engineParameters_[EP_LOG_NAME] = "logs/" + GetTypeName() + ".log";
 	}
 
 	Game::setCache(GetSubsystem<ResourceCache>())
@@ -306,8 +307,10 @@ void Main::setSimpleManagers() {
 		->setColorPaletteRepo(new ColorPaletteRepo());
 }
 
-void Main::updateProgress(Loading& progress, std::string msg) const {
+void Main::updateProgress(Loading& progress) const {
 	if (!SIM_GLOBALS.HEADLESS) {
+		std::string msg = Game::getLocalization()->Get("load_msg_" +
+			String((int)loadingProgress.currentStage)).CString();
 		progress.inc(std::move(msg));
 		hud->updateLoading(progress.getProgress());
 	} else {
@@ -379,8 +382,7 @@ void Main::load(const String& saveName, NewGameForm* form) {
 		inited = true;
 		break;
 	}
-	updateProgress(loadingProgress,
-	               Game::getLocalization()->Get("load_msg_" + String((int)loadingProgress.currentStage)).CString());
+	updateProgress(loadingProgress);
 }
 
 void Main::createEnv(unsigned short mainMapResolution) const {
