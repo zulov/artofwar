@@ -21,6 +21,4 @@ struct ActionParameter {
 		Aim* aim = nullptr;
 		Physical* thingToInteract;
 	};
-
-	//int index = -1;
 };

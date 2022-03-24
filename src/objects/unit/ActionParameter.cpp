@@ -9,7 +9,9 @@ bool ActionParameter::isThingAlive() const {
 }
 
 void ActionParameter::reset(const ActionParameter& actionParameter) {
-	delete aim;
+	if(aim) {
+		delete aim;
+	}
 	this->aim = actionParameter.aim;
 	this->thingToInteract = actionParameter.thingToInteract;
 }

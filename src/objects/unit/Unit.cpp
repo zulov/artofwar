@@ -283,6 +283,7 @@ const Urho3D::String& Unit::getName() const {
 }
 
 bool Unit::action(UnitAction unitAction) {
+	assert(unitAction == UnitAction::STOP || unitAction == UnitAction::DEAD || unitAction == UnitAction::DEFEND);
 	return action(unitAction, Consts::EMPTY_ACTION_PARAMETER);
 }
 
@@ -421,8 +422,8 @@ void Unit::clearAims() {
 }
 
 void Unit::setNextState(UnitState stateTo, const ActionParameter& actionParameter) {
-	nextState = stateTo;
 	nextActionParameter.reset(actionParameter);
+	nextState = stateTo;
 	stateChangePending = true;
 }
 

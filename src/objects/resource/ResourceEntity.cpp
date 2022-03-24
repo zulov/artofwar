@@ -88,7 +88,6 @@ void ResourceEntity::action(ResourceActionType type, char player) {
 		StateManager::changeState(this, StaticState::FREE);
 		break;
 	}
-
 }
 
 bool ResourceEntity::canUse(int index) const {
