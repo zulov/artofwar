@@ -26,7 +26,7 @@
 #include "utils/Flags.h"
 #include "objects/NodeUtils.h"
 
-Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical(_position, true),
+Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical(_position, !SIM_GLOBALS.HEADLESS),
                                                                         state(UnitState::STOP),
                                                                         nextState(UnitState::STOP) {
 	dbUnit = Game::getDatabase()->getUnit(id);
