@@ -8,8 +8,8 @@ bool ActionParameter::isThingAlive() const {
 		&& thingToInteract->isUsable();
 }
 
-void ActionParameter::reset(const ActionParameter& actionParameter) {
-	if(aim) {
+void ActionParameter::reset(const ActionParameter& actionParameter, bool withDelete) {
+	if (aim && withDelete) {
 		delete aim;
 	}
 	this->aim = actionParameter.aim;

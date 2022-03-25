@@ -422,7 +422,8 @@ void Unit::clearAims() {
 }
 
 void Unit::setNextState(UnitState stateTo, const ActionParameter& actionParameter) {
-	nextActionParameter.reset(actionParameter);
+	const bool mayHaveAim = nextState == UnitState::GO || nextState == UnitState::CHARGE || nextState == UnitState::FOLLOW;
+	nextActionParameter.reset(actionParameter, mayHaveAim);
 	nextState = stateTo;
 	stateChangePending = true;
 }

@@ -14,7 +14,7 @@ struct ActionParameter {
 	}
 
 	bool isThingAlive() const;
-	void reset(const ActionParameter& actionParameter);
+	void reset(const ActionParameter& actionParameter, bool withDelete);
 	void resetUsed();
 
 	union {

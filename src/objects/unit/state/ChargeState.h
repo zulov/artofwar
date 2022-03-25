@@ -17,6 +17,10 @@ public:
 
 	~ChargeState() = default;
 
+	bool canStart(Unit* unit, const ActionParameter& parameter) override {
+		return parameter.aim != nullptr;
+	}
+
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->setAim(parameter.aim); //TODO Storzyc charge data tutaj
 		// unit->thingsToInteract.clear();
