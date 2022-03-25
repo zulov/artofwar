@@ -101,9 +101,10 @@ void StateManager::executeChange(std::vector<Unit*>* units) {
 					stateFrom->onEnd(unit);
 					unit->setState(unit->getNextState());
 					toState->onStart(unit, unit->getNextActionParameter());
-					
+				} else {
+					tutaj reset z potencajlnym delete
 				}
-				unit->setState(unit->getState());
+				unit->setState(unit->getState());?? czy to cos robi poza ustawieniem flagi
 				unit->getNextActionParameter().resetUsed();
 			}
 		}
