@@ -350,8 +350,7 @@ void Formation::semiReset() {
 	notWellFormed = 1;
 	notWellFormedExact = 1;
 	changed = true;
-	assert(unitOrders.empty());
-	unitOrders.clear();
+	clear_vector(unitOrders);
 	delete pendingOrder;
 	pendingOrder = nullptr;
 	std::fill_n(levelOfReach, units.size(), 0);

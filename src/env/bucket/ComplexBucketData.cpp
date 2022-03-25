@@ -50,13 +50,18 @@ bool ComplexBucketData::isBuildable() const {
 		|| state == CellState::COLLECT;
 }
 
-void ComplexBucketData::updateSize(char val, CellState cellState) {
+void ComplexBucketData::updateSize(char val, CellState cellState) {//TODO przemyslec to 
 	size += val;
 	if (size <= 0) {
-		state = CellState::NONE;
+		size = 0;
+		if (state == CellState::ATTACK || state == CellState::COLLECT) {
+			state = CellState::NONE;
+		}
 	} else {
-		state = cellState;
-	} //to jakies takie nie 
+		if (state == CellState::NONE || state == CellState::ATTACK || state == CellState::COLLECT) {
+			state = cellState;
+		}
+	}
 }
 
 void ComplexBucketData::setResBonuses(char player, const std::vector<char>& resIds, float bonus) {

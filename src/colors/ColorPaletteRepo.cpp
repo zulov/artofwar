@@ -98,7 +98,7 @@ Urho3D::Color ColorPaletteRepo::getCircleColor(db_building* dbBuilding) const {
 
 Urho3D::Color ColorPaletteRepo::getColorForValidation(const db_building* building, Urho3D::Vector2& hitPos) const{
 	const Environment* env = Game::getEnvironment();
-	if (env->validateStatic(building->size, hitPos)) {
+	if (env->validateStatic(building->size, hitPos, true)) {
 		if (env->isVisible(Game::getPlayersMan()->getActivePlayerID(), hitPos)) {
 			if (Game::getPlayersMan()->getActivePlayer()->getResources().hasEnough(building->costs)) {
 				return Urho3D::Color::GREEN;

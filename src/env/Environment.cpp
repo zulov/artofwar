@@ -301,12 +301,12 @@ float Environment::getGroundHeightPercentScaled(float x, float z, float div) con
 	return 0.f;
 }
 
-bool Environment::validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const {
-	return mainGrid.validateAdd(size, pos);
+bool Environment::validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos, bool isBuilding) const {
+	return mainGrid.validateAdd(size, {calculator->getIndex(pos.x_), calculator->getIndex(pos.y_)}, isBuilding);
 }
 
-bool Environment::validateStatic(const Urho3D::IntVector2& size, const Urho3D::IntVector2 bucketCords) const {
-	return mainGrid.validateAdd(size, bucketCords);
+bool Environment::validateStatic(const Urho3D::IntVector2& size, const Urho3D::IntVector2 bucketCords, bool isBuilding) const {
+	return mainGrid.validateAdd(size, bucketCords, isBuilding);
 }
 
 Urho3D::Vector2 Environment::getCenter(int index) const {
@@ -387,7 +387,7 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building
 		for (const auto index : mainGrid.getCloseCenters(center, ratio)) {
 			//ten index jest widoczny
 			auto gridCenter = calculator->getCenter(index);
-			if (validateStatic(building->size, gridCenter) && influenceManager.isVisible(player, gridCenter)) {
+			if (validateStatic(building->size, gridCenter, true) && influenceManager.isVisible(player, gridCenter)) {
 				return gridCenter;
 			}
 		}

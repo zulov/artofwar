@@ -26,8 +26,7 @@ public:
 	~MainGrid() override;
 
 	void prepareGridToFind() const;
-	bool validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const;
-	bool validateAdd(const Urho3D::IntVector2& size, Urho3D::IntVector2 bucketCords) const;
+	bool validateAdd(const Urho3D::IntVector2& size, Urho3D::IntVector2 bucketCords, bool isBuilding) const;
 	void addStatic(Static* object);
 	void removeStatic(Static* object) const;
 	std::optional<Urho3D::Vector2> getDirectionFrom(int index, const Urho3D::Vector3& position) const;

@@ -7,12 +7,10 @@ DebugPanel::DebugPanel(Urho3D::XMLFile* _style) : SimplePanel(_style, "MyDebugHu
 }
 
 
-void DebugPanel::setText(float getLastFps, float getAverageFps, unsigned int seconds, float avgLow, float avgMiddle,
+void DebugPanel::setText(unsigned int seconds, float avgLow, float avgMiddle,
                          float avgHighest, const Urho3D::String& camInfo) {
 	msg.Clear();
-	msg.Append("FPS: ").Append(Urho3D::String(getLastFps))
-	   .Append("\nAVG FPS: ").Append(Urho3D::String(getAverageFps))
-	   .Append("\nPercentiles ")
+	msg .Append("FPS: ")
 	   .Append(Urho3D::String(avgLow)).Append("|")
 	   .Append(Urho3D::String(avgMiddle)).Append("|")
 	   .Append(Urho3D::String(avgHighest)).Append("|")

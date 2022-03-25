@@ -46,11 +46,8 @@ void MainGrid::prepareGridToFind() const {
 	}
 }
 
-bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const {
-	return validateAdd(size, {calculator->getIndex(pos.x_), calculator->getIndex(pos.y_)});
-}
-
-bool MainGrid::validateAdd(const Urho3D::IntVector2& size, const Urho3D::IntVector2 bucketCords) const {
+bool MainGrid::validateAdd(const Urho3D::IntVector2& size, const Urho3D::IntVector2 bucketCords,
+                           bool isBuilding) const {
 	const auto sizeX = calculateSize(size.x_, bucketCords.x_);
 	const auto sizeZ = calculateSize(size.y_, bucketCords.y_);
 	//WARN to troche złe użycie tego ale działa
@@ -67,7 +64,24 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, const Urho3D::IntVect
 			++index;
 		}
 	}
-	//TODO bug validate deploy przynajmniej jeden
+	if (isBuilding) {
+		auto x1 = calculator->getValidLow(sizeX.x_ - 1);
+		auto x2 = calculator->getValidHigh(sizeX.y_);
+
+		auto z1 = calculator->getValidLow(sizeZ.x_ - 1);
+		auto z2 = calculator->getValidHigh(sizeZ.y_);
+
+		for (int i = x1; i <= x2; ++i) {
+			for (int j = z1; j <= z2; ++j) {
+				if ((i < sizeX.x_ || i >= sizeX.y_) || (j < sizeZ.x_ || j >= sizeZ.y_)) {
+					if (isBuildable(calculator->getNotSafeIndex(i, j))) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 
 	return true;
 }
@@ -344,7 +358,9 @@ void MainGrid::removeResourceBonuses(Static* object) const {
 		const Building* building = (Building*)object;
 		const auto [dbBuilding, level] = building->getData();
 
-		if (dbBuilding->typeResourceAny) { }
+		if (dbBuilding->typeResourceAny) {
+			//TODO tu czegoś brakuje
+		}
 	}
 }
 

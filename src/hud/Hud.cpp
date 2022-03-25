@@ -167,7 +167,7 @@ void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInf
                  SimInfo* simInfo) const {
 	updateSelected(selectedInfo, simInfo);
 
-	debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), simInfo->getFrameInfo()->getSeconds(),
+	debugPanel->setText(simInfo->getFrameInfo()->getSeconds(),
 	                    benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
 	                    cameraManager->getPosInfo());
 	if (PER_FRAME_ACTION.get(PerFrameAction::HUD_UPDATE, simInfo->getFrameInfo())) {
