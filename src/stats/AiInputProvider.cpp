@@ -124,6 +124,8 @@ std::span<float> AiInputProvider::combineWithBasic(const std::span<float> output
                                                    Player* player) const {
 	std::ranges::copy(toJoin, getBasicInput(output, player).begin());
 
+	assert(validateSpan(__LINE__, __FILE__, toJoin));
 	assert(validateSpan(__LINE__, __FILE__, output));
+	assert(output.size() == BASIC_SIZE + toJoin.size());
 	return output;
 }

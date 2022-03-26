@@ -154,6 +154,7 @@ public:
 	}
 
 	unsigned char getMaxRangeUsers() const { return 16; }
+	void resetStateChangePending();
 
 private:
 	void changeColor(float value, float maxValue) const;

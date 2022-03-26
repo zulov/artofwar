@@ -16,6 +16,7 @@ public:
 	static ProjectileBase* findNext();
 	static void init();
 	static void dispose();
+	static void reset();
 
 private:
 	ProjectileManager() = default;

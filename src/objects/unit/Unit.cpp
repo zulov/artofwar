@@ -356,6 +356,10 @@ void Unit::setVisibility(VisibilityType type) {
 	}
 }
 
+void Unit::resetStateChangePending() {
+	stateChangePending = false;
+}
+
 void Unit::changeColor(float value, float maxValue) const {
 	changeMaterial(Game::getColorPaletteRepo()->getColor(ColorPallet::RED, value, maxValue), model);
 }
@@ -377,7 +381,6 @@ void Unit::changeColor(SimColorMode mode) {
 
 void Unit::setState(UnitState _state) {
 	state = _state;
-	stateChangePending = false;
 }
 
 void Unit::load(dbload_unit* unit) {
@@ -422,7 +425,8 @@ void Unit::clearAims() {
 }
 
 void Unit::setNextState(UnitState stateTo, const ActionParameter& actionParameter) {
-	const bool mayHaveAim = nextState == UnitState::GO || nextState == UnitState::CHARGE || nextState == UnitState::FOLLOW;
+	const bool mayHaveAim = nextState == UnitState::GO || nextState == UnitState::CHARGE || nextState ==
+		UnitState::FOLLOW;
 	nextActionParameter.reset(actionParameter, mayHaveAim);
 	nextState = stateTo;
 	stateChangePending = true;

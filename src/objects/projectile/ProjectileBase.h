@@ -65,5 +65,4 @@ struct ProjectileBase {
 		return active;
 	}
 
-
 };

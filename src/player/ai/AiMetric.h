@@ -55,14 +55,6 @@ const inline struct MetricDefinitions {
 		}
 		return output;
 	}
-	//
-	// const std::vector<float>& getUnitNormSmall(db_unit* unit, db_unit_level* level) const {
-	// 	outputSmall.clear();
-	// 	for (auto const& v : unitSmallInputSpan) {
-	// 		outputSmall.push_back(v.fn(unit, level) * v.weight);
-	// 	}
-	// 	return outputSmall;
-	// }
 
 	const std::vector<float>& getUnitNormForSum(db_unit* unit, db_unit_level* level) const {
 		outputSum.clear();
@@ -114,7 +106,7 @@ const inline struct MetricDefinitions {
 	const std::vector<float>& getBasicNorm(Player* one, Player* two) const {
 		basic.clear();
 		for (auto const& v : basicInputSpan) {
-			output.push_back(v.fn(one, two) * v.weight);
+			basic.push_back(v.fn(one, two) * v.weight);
 		}
 		return basic;
 	}

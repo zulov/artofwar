@@ -16,6 +16,13 @@ void ActionParameter::reset(const ActionParameter& actionParameter, bool withDel
 	this->thingToInteract = actionParameter.thingToInteract;
 }
 
+void ActionParameter::reset(bool withDelete) {
+	if (aim && withDelete) {
+		delete aim;
+	}
+	resetUsed();
+}
+
 void ActionParameter::resetUsed() {
 	this->aim = nullptr;
 	this->thingToInteract = nullptr;

@@ -33,6 +33,7 @@ Brain::~Brain() {
 }
 
 const std::span<float> Brain::decide(std::span<float> data) {
+	assert(validateSpan(__LINE__, __FILE__, data));
 	allLayers.front()->setValues(data);
 	for (int i = 1; i < allLayers.size(); i++) {
 		Layer* layer = allLayers.at(i);

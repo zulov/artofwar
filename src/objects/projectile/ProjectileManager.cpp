@@ -51,6 +51,12 @@ void ProjectileManager::dispose() {
 	instance = nullptr;
 }
 
+void ProjectileManager::reset() {
+	for (auto projectile : instance->projectiles) {
+		projectile->reset();
+	}
+}
+
 
 ProjectileManager::~ProjectileManager() {
 	clear_vector(projectiles);

@@ -1,6 +1,7 @@
 #include "RandGen.h"
 
 #include <ctime>
+#include <iostream>
 #include <random>
 
 #include "utils/OtherUtils.h"
@@ -43,7 +44,7 @@ void RandGen::dispose() {
 void RandGen::reset(bool isRandom) {
 	if (isRandom) {
 		init(true);
-	}else {
+	} else {
 		resetIndexes();
 	}
 }

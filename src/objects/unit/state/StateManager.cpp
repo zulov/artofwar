@@ -94,18 +94,23 @@ void StateManager::executeChange(std::vector<Unit*>* units) {
 		instance->unitHasChanged = false;
 		for (const auto unit : *units) {
 			if (unit->hasStateChangePending()) {
+				const auto nextState = unit->getNextState();
 				State* stateFrom = instance->states[cast(unit->getState())];
-				State* toState = instance->states[cast(unit->getNextState())];
+				State* toState = instance->states[cast(nextState)];
 				//assert(canStartState(unit, unit->getNextState(), unit->getNextActionParameter(), stateFrom, toState));
-				if (canStartState(unit, unit->getNextState(), unit->getNextActionParameter(), stateFrom, toState)) {
+
+				if (canStartState(unit, nextState, unit->getNextActionParameter(), stateFrom, toState)) {
 					stateFrom->onEnd(unit);
-					unit->setState(unit->getNextState());
+					unit->setState(nextState);
 					toState->onStart(unit, unit->getNextActionParameter());
+					unit->getNextActionParameter().resetUsed();
 				} else {
-					tutaj reset z potencajlnym delete
+					const bool mayHaveAim = nextState == UnitState::GO || nextState == UnitState::CHARGE || nextState ==
+						UnitState::FOLLOW;
+					unit->getNextActionParameter().reset(mayHaveAim);
 				}
-				unit->setState(unit->getState());?? czy to cos robi poza ustawieniem flagi
-				unit->getNextActionParameter().resetUsed();
+				unit->resetStateChangePending();
+			
 			}
 		}
 	}

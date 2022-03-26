@@ -80,12 +80,11 @@ void Main::Setup() {
 
 	readParameters();
 	RandGen::init(SIM_GLOBALS.RANDOM);
-	if (SIM_GLOBALS.HEADLESS && false) {
+	if (SIM_GLOBALS.HEADLESS) {
 		engineParameters_[EP_LOG_NAME] = "";
 		GetSubsystem<Log>()->SetLevel(LOG_NONE);
 	} else {
-		engineParameters_[EP_LOG_NAME] = "";
-		//engineParameters_[EP_LOG_NAME] = "logs/" + GetTypeName() + ".log";
+		engineParameters_[EP_LOG_NAME] = "logs/" + GetTypeName() + ".log";
 	}
 
 	Game::setCache(GetSubsystem<ResourceCache>())
@@ -322,6 +321,7 @@ void Main::load(const String& saveName, NewGameForm* form) {
 	switch (loadingProgress.currentStage) {
 	case 0: {
 		RandGen::reset(SIM_GLOBALS.RANDOM);
+		ProjectileManager::reset();
 		//disposeScene();
 		Game::getDatabase()->refreshAfterParametersRead();
 		setSimpleManagers();

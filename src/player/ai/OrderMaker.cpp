@@ -48,13 +48,13 @@ void OrderMaker::action() {
 		auto const resultAoD = attackOrDefence->decide(aiInput->getAttackOrDefenceInput(player->getId()));
 		std::span<float> whereGo;
 		char playerToGo = player->getId();
-		if (randFromTwo(resultAoD[0]) || true) {
+		if (randFromTwo(resultAoD[0])) {
 			playerToGo = Game::getPlayersMan()->getEnemyFor(player->getId());
 			whereGo = whereAttack->decide(aiInput->getWhereAttack(player->getId()));
 		} else {
 			whereGo = whereDefence->decide(aiInput->getWhereDefend(player->getId()));
 		}
-		const CenterType centerType = CenterType::ECON; //static_cast<CenterType>(biggestWithRand(whereGo));
+		const CenterType centerType = static_cast<CenterType>(biggestWithRand(whereGo));
 		const auto posOpt = Game::getEnvironment()->getCenterOf(centerType, playerToGo);
 
 		if (posOpt.has_value()) {
