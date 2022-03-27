@@ -55,12 +55,17 @@ void SimulationObjectManager::addUnits(unsigned number, int id, Urho3D::Vector2&
 void SimulationObjectManager::addBuilding(int id, const Urho3D::IntVector2& _bucketCords, char level,
                                           char player) const {
 	auto* building = buildingFactory.create(id, _bucketCords, level, player);
-	building->postCreate();
-	addBuilding(building);
+	if(building) {
+		building->postCreate();
+		addBuilding(building);
+	}
 }
 
 void SimulationObjectManager::addResource(int id, const Urho3D::IntVector2& _bucketCords, char level) const {
-	addResource(resourceFactory.create(id, _bucketCords, level), false);
+	auto res = resourceFactory.create(id, _bucketCords, level);
+	if(res) {
+		addResource(res, false);
+	}
 }
 
 void SimulationObjectManager::findToDispose() {
