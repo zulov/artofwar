@@ -1,13 +1,11 @@
 #pragma once
 
+#include <vector>
+#include <Urho3D/Container/Str.h>
+
 #include "Loading.h"
-#include "vector"
 
 struct dbload_config;
-
-namespace Urho3D {
-	class String;
-}
 
 class sqlite3;
 struct dbload_building;
@@ -20,7 +18,7 @@ struct dbload_unit;
 
 class SceneLoader {
 public:
-	SceneLoader();
+	SceneLoader() = default;
 	~SceneLoader();
 
 	void load();
@@ -39,7 +37,7 @@ public:
 private:
 	void load(const std::string& sql, int (*load)(void*, int, char**, char**)) const;
 
-	Loading loadingState;
 	sqlite3* database{};
 	dbload_container* dbLoad{};
+	Urho3D::String lastLoad = "";
 };

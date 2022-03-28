@@ -5,9 +5,6 @@
 #include "utils/StringUtils.h"
 
 
-SceneLoader::SceneLoader(): loadingState(5, false) {}
-
-
 SceneLoader::~SceneLoader() {
 	end();
 }
@@ -98,7 +95,6 @@ void SceneLoader::reset() {
 	database = nullptr;
 	delete dbLoad;
 	dbLoad = new dbload_container();
-	loadingState.reset("start loading");
 }
 
 dbload_container* SceneLoader::getData() const {
@@ -108,14 +104,13 @@ dbload_container* SceneLoader::getData() const {
 
 void SceneLoader::createLoad(const Urho3D::String& fileName) {
 	reset();
-
+	lastLoad
 	std::string name = std::string("saves/") + fileName.CString();
 	int rc = sqlite3_open_v2(name.c_str(), &database, SQLITE_OPEN_READONLY, nullptr);
 	if (rc) {
 		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
 		sqlite3_close_v2(database);
 	}
-	loadingState.inc("load config");
 	load(SQLConsts::SELECT + "config", load_config);
 }
 
@@ -127,7 +122,6 @@ std::vector<dbload_player*>* SceneLoader::loadPlayers() {
 	if (dbLoad->players) { return dbLoad->players; }
 	dbLoad->players = new std::vector<dbload_player*>();
 
-	loadingState.inc("load players");
 	load(SQLConsts::SELECT + "players", load_players);
 	return dbLoad->players;
 }
@@ -136,7 +130,6 @@ std::vector<dbload_resource*>* SceneLoader::loadResources() {
 	if (dbLoad->resources) { return dbLoad->resources; }
 	dbLoad->resources = new std::vector<dbload_resource*>();
 
-	loadingState.inc("load resources");
 	load(SQLConsts::SELECT + "resources", load_resources);
 	return dbLoad->resources;
 }
@@ -145,7 +138,6 @@ std::vector<dbload_unit*>* SceneLoader::loadUnits() {
 	if (dbLoad->units) { return dbLoad->units; }
 	dbLoad->units = new std::vector<dbload_unit*>();
 
-	loadingState.inc("load units");
 	load(SQLConsts::SELECT + "units", load_units);
 	return dbLoad->units;
 }
@@ -154,7 +146,6 @@ std::vector<dbload_building*>* SceneLoader::loadBuildings() {
 	if (dbLoad->buildings) { return dbLoad->buildings; }
 	dbLoad->buildings = new std::vector<dbload_building*>();
 
-	loadingState.inc("load buildings");
 	load(SQLConsts::SELECT + "buildings", load_buildings);
 	return dbLoad->buildings;
 }
@@ -165,8 +156,6 @@ std::vector<dbload_resource_entities*>* SceneLoader::loadResourcesEntities() {
 	
 	load(SQLConsts::COUNT + "resource_entities", load_resources_entities_size);
 	load(SQLConsts::SELECT + "resource_entities", load_resources_entities);
-	
-	loadingState.inc("load resource_entities");
 	
 	return dbLoad->resource_entities;
 }
@@ -181,7 +170,6 @@ void SceneLoader::end() {
 	close();
 	delete dbLoad;
 	dbLoad = nullptr;
-	loadingState.inc("");
 }
 
 void SceneLoader::close() {
