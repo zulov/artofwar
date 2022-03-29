@@ -25,7 +25,7 @@ LevelBuilder::~LevelBuilder() {
 
 void LevelBuilder::createScene(SceneLoader& loader) {
 	loader.load();
-	createMap(loader.getData()->config->map, loader.getConfig()->size);
+	createMap(loader.getConfig()->map, loader.getConfig()->size);
 }
 
 void LevelBuilder::createMap(int mapId, int size) {

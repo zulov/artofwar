@@ -101,10 +101,13 @@ dbload_container* SceneLoader::getData() const {
 	return dbLoad;
 }
 
-
-void SceneLoader::createLoad(const Urho3D::String& fileName) {
+void SceneLoader::createLoad(const Urho3D::String& fileName, bool tryReuse) {
+	if(fileName == lastLoad && tryReuse) {
+		return;
+	}
 	reset();
-	lastLoad
+	
+	lastLoad = fileName;
 	std::string name = std::string("saves/") + fileName.CString();
 	int rc = sqlite3_open_v2(name.c_str(), &database, SQLITE_OPEN_READONLY, nullptr);
 	if (rc) {
@@ -168,8 +171,8 @@ void SceneLoader::load(const std::string& sql, int (*load)(void*, int, char**, c
 
 void SceneLoader::end() {
 	close();
-	delete dbLoad;
-	dbLoad = nullptr;
+	//delete dbLoad;
+	//dbLoad = nullptr;
 }
 
 void SceneLoader::close() {

@@ -331,7 +331,7 @@ void Main::load(const String& saveName, NewGameForm* form) {
 		if (form) {
 			Game::getPlayersMan()->load(form);
 		} else {
-			loader.createLoad(saveName);
+			loader.createLoad(saveName, SIM_GLOBALS.CURRENT_RUN > 0);
 			Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());
 		}
 
