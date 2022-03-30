@@ -83,6 +83,7 @@ void InfluenceMapFloat::update(float value, const unsigned short centerX, const 
 }
 
 void InfluenceMapFloat::reset() {
+	minMaxInited = false;
 	std::fill_n(values, arraySize, 0.f);
 }
 

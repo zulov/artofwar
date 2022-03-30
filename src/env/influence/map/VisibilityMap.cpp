@@ -50,6 +50,7 @@ void VisibilityMap::updateInt(int index, int value) const {
 void VisibilityMap::reset() {
 	valuesForInfluenceReady = false;
 	percentReady = false;
+	minMaxInited = false;
 	char* end = (char*)values + arraySize;
 	for (char* i = (char*)values; i < end; i++) {
 		*i &= 1;

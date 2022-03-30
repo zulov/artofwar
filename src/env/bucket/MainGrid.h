@@ -73,7 +73,7 @@ public:
 	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
 	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
 	void reAddBonuses(std::vector<Building*>* buildings, char player, char resId) const;
-	float getBonuses(char player, ResourceEntity* resource);
+	float getBonuses(char player, ResourceEntity* resource) const;
 
 private:
 	ComplexBucketData* complexData;

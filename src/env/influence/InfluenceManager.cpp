@@ -377,8 +377,8 @@ std::vector<int>* InfluenceManager::getAreas(const std::span<float> result, char
 
 void InfluenceManager::addCollect(Unit* unit, char resId, float value) {
 	const auto playerId = unit->getPlayer();
-	assert(foodGatherSpeed[playerId]->getResolution()==econQuad[playerId]->getResolution());
-	assert(foodGatherSpeed[playerId]->getResolution()==calculator->getResolution());
+
+	assert(foodGatherSpeed[playerId]->getResolution() == calculator->getResolution());
 
 	const auto index = calculator->indexFromPosition(unit->getPosition());
 	switch (resId) {

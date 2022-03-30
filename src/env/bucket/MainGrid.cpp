@@ -284,7 +284,7 @@ void MainGrid::reAddBonuses(std::vector<Building*>* buildings, char player, char
 	}
 }
 
-float MainGrid::getBonuses(char player, ResourceEntity* resource) {
+float MainGrid::getBonuses(char player, ResourceEntity* resource) const {
 	float best = .0f;
 	for (const int cell : resource->getOccupiedCells()) {
 		const float val = complexData[cell].getResBonus(player, resource->getId());

@@ -29,6 +29,7 @@ void InfluenceMapInt::updateInt(int index, int value) const {
 
 void InfluenceMapInt::reset() {
 	std::fill_n(values, arraySize, 0);
+	minMaxInited = false;
 }
 
 char InfluenceMapInt::getValueAt(const Urho3D::Vector2& pos) const {

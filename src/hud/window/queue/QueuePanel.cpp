@@ -28,7 +28,7 @@ QueuePanel::~QueuePanel() {
 }
 
 void QueuePanel::update(AbstractQueueManager* queue, short& j) const {
-	const short size = queue->getSize();
+	const short size = Urho3D::Min(queue->getSize(), MAX_ICON_SELECTION);
 	for (int i = 0; i < size; ++i) {
 		QueueElement* element = queue->getAt(i);
 		elements[j]->show();

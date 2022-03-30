@@ -57,6 +57,7 @@ void InfluenceMap::print(Urho3D::String name) {
 	const auto resolution = getResolution();
 	image->SetSize(resolution, resolution, 4);
 	computeMinMax();
+	ensureReady();
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
 			const int index = calculator->getNotSafeIndex(x, y);

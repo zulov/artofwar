@@ -80,7 +80,7 @@ void Environment::reAddBonuses(std::vector<Building*>* buildings, char player, c
 	mainGrid.reAddBonuses(buildings, player, resId);
 }
 
-float Environment::getBonuses(char player, ResourceEntity* resource) {
+float Environment::getBonuses(char player, ResourceEntity* resource) const {
 	return mainGrid.getBonuses(player, resource);
 }
 
