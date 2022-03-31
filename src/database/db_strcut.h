@@ -122,7 +122,7 @@ protected:
 		for (const unsigned char idx : idxs) {
 			temp.push_back(valuesNormAsVal[idx]);
 		}
-		valarray = std::valarray(*temp.data(), temp.size());
+		valarray = std::valarray<float>(temp.data(), temp.size());
 	}
 
 public:
@@ -151,7 +151,7 @@ struct db_building_metric : db_basic_metric {
 
 		valuesNormForSum.insert(valuesNormForSum.end(), newValuesForSum.begin(), newValuesForSum.end());
 
-		valuesNormAsVal = std::valarray(*newValues.data(), newValues.size());
+		valuesNormAsVal = std::valarray(newValues.data(), newValues.size());
 
 		setValarray(otherNormAsVal, otherIdxs); //TODO bug czy to jest zainicjowane
 		setValarray(defenceNormAsVal, defenceIdxs);
@@ -228,7 +228,7 @@ struct db_unit_metric : db_basic_metric {
 		assert(validateSpan(__LINE__, __FILE__, newValuesForSum));
 
 		valuesNormForSum.insert(valuesNormForSum.end(), newValuesForSum.begin(), newValuesForSum.end());
-		valuesNormAsVal = std::valarray(*newValues.data(), newValues.size());
+		valuesNormAsVal = std::valarray(newValues.data(), newValues.size());
 		setValarray(typesNormAsVal, typesIdxs);
 	}
 };

@@ -35,23 +35,15 @@ ActionMaker::ActionMaker(Player* player, db_nation* nation):
 	ifUnit(BrainProvider::get(nation->actionPrefix[10] + "ifUnit.csv")),
 	whichUnit(BrainProvider::get(nation->actionPrefix[11] + "whichUnit.csv")),
 	whereUnit(BrainProvider::get(nation->actionPrefix[12] + "whereUnit.csv")) {
-
-	// std::cout << std::format("AI Sizes OUTPUT\t Res: {}, Unit: {}, Build: {}, UnitM: {}, BuildM: {}\n",
-	//                          ifWorker->getOutputSize(), ifUnit->getOutputSize(),
-	//                          ifBuilding->getOutputSize(), whereUnit->getOutputSize(),
-	//                          whereBuilding->getOutputSize());
 }
 
 bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
-	const auto aiInput = Game::getAiInputProvider();
 	const auto whichTypeOutput = whichBuildingType->decide(buildingsInput);
-	db_building* choosen = nullptr;
 	std::span<float> output;
 
 	ParentBuildingType type = static_cast<ParentBuildingType>(biggestWithRand(whichTypeOutput));
-	const auto aiTypeInput = aiInput->getBuildingsTypeInput(player->getId(), type);
+	const auto aiTypeInput = Game::getAiInputProvider()->getBuildingsTypeInput(player->getId(), type);
 	switch (type) {
-
 	case ParentBuildingType::OTHER:
 		output = whichBuildingTypeOther->decide(aiTypeInput);
 		break;
@@ -69,7 +61,7 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 		break;
 	}
 
-	choosen = chooseBuilding(output, type);
+	db_building* choosen = chooseBuilding(output, type);
 	return createBuilding(choosen, type);
 }
 
