@@ -183,10 +183,12 @@ int static loadUnitToNation(void* data, int argc, char** argv, char** azColName)
 	if (argc == 0) { return 0; }
 	const auto xyz = getContainer(data);
 
-	//std::cerr << "(u" << atoi(argv[0]) << "@n" << atoi(argv[1]) << ") ";
 	auto unit = xyz->units[atoi(argv[0])];
 	auto nation = xyz->nations[atoi(argv[1])];
 	nation->units.push_back(unit);
+	if (unit->typeWorker) {
+		nation->workers.push_back(unit);
+	}
 	unit->nations.push_back(nation);
 	return 0;
 }

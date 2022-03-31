@@ -4,7 +4,7 @@
 #include "ActionMakerLogger.h"
 
 inline bool randFromTwo(float val) {
-	return val < RandGen::nextRand(RandFloatType::AI, 1.f);
+	return val > RandGen::nextRand(RandFloatType::AI, 1.f);
 }
 
 inline int biggestWithRand(std::span<float> vals) {

@@ -73,14 +73,10 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	return createBuilding(choosen, type);
 }
 
-bool ActionMaker::createWorker() {
-	for (const auto dbUnit : nation->units) {
-		if (dbUnit->typeWorker) {
-			return createWorker(dbUnit);
-		}
-	}
-	assert(false);
-	return false;
+bool ActionMaker::createWorker() const {
+	assert(!nation->workers.empty());
+	
+	return createWorker(nation->workers.at(0)); //TODO get better
 }
 
 bool ActionMaker::createUnit(std::span<float> unitsInput) {
@@ -106,19 +102,27 @@ bool ActionMaker::execute(const std::span<float> unitsInput, const std::span<flo
 
 void ActionMaker::action() {
 	const auto aiInput = Game::getAiInputProvider();
-	const auto resInput = aiInput->getResourceInput(player->getId());
-	const auto unitsInput = aiInput->getUnitsInput(player->getId()); //TODO czy cokolwiek?
-	const auto buildingsInput = aiInput->getBuildingsInput(player->getId());
+	const bool enoughResToWorker = isEnoughResToWorker();
+	if (enoughResToWorker) {
+		const auto resInput = aiInput->getResourceInput(player->getId());
+		const auto resResult = ifWorker->decide(resInput);
+		if (randFromTwo(resResult[0])) {
+			createWorker();
+		}
+	}
 
-	const auto resResult = ifWorker->decide(resInput);
+	const auto unitsInput = aiInput->getUnitsInput(player->getId());
 	const auto unitsResult = ifUnit->decide(unitsInput);
+	if (randFromTwo(unitsResult[0])) {
+		createUnit(unitsInput);
+	}
+	
+	const auto buildingsInput = aiInput->getBuildingsInput(player->getId());
 	const auto buildingsResult = ifBuilding->decide(buildingsInput);
-
-	float res[] = {resResult[0], unitsResult[0], buildingsResult[0]};
-
-	auto decision = static_cast<AiActionType>(biggestWithRand(std::span(res)));
-	execute(unitsInput, buildingsInput, decision);
-
+	if (randFromTwo(buildingsResult[0])) {
+		createBuilding(buildingsInput);
+	}
+	
 	//return levelUpUnit();
 	//return levelUpBuilding();
 }
@@ -400,6 +404,16 @@ bool ActionMaker::levelUpUnit() {
 		if (building) {
 			Game::getActionCenter()->add(
 				new BuildingActionCommand(building, BuildingActionType::UNIT_LEVEL, level->unit, player->getId()));
+			return true;
+		}
+	}
+	return false;
+}
+
+
+bool ActionMaker::isEnoughResToWorker() const {
+	for (auto worker : nation->workers) {
+		if (enoughResources(worker)) {
 			return true;
 		}
 	}

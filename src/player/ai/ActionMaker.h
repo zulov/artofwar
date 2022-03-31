@@ -42,7 +42,7 @@ private:
 	std::vector<db_building*> getBuildingsInType(ParentBuildingType type);
 	bool createBuilding(std::span<float> buildingsInput);
 	bool createUnit(std::span<float> unitsInput);
-	bool createWorker();
+	bool createWorker() const;
 
 	bool execute(const std::span<float> unitsInput, const std::span<float> buildingsInput, AiActionType decision);
 
@@ -61,6 +61,8 @@ private:
 	Building* getBuildingToDeployWorker(db_unit* unit) const;
 	Building* getBuildingToLevelUpUnit(db_unit_level* level);
 	Building* getBuildingClosestArea(std::vector<Building*>& allPossible, std::span<float> result) const;
+
+	bool isEnoughResToWorker() const;
 
 	Player* player;
 	db_nation* nation;
@@ -82,3 +84,4 @@ private:
 	Brain* whereUnit;
 
 };
+

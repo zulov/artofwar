@@ -33,8 +33,7 @@ Physical::~Physical() {
 		node->Remove();
 		node = nullptr;
 	}
-
-	unSelect();
+	clearSelection();
 }
 
 void Physical::clearNodeWithOutDelete() {
@@ -114,13 +113,17 @@ void Physical::select(SelectedObject* selectedObject) {
 }
 
 
-void Physical::unSelect() {
-	setShaderParam(node, "OutlineEnable", false);
-
+void Physical::clearSelection() {
 	if (selectedObject) {
 		selectedObject->disableBillboards();
 		selectedObject = nullptr;
 	}
+}
+
+void Physical::unSelect() {
+	setShaderParam(node, "OutlineEnable", false);
+
+	clearSelection();
 }
 
 

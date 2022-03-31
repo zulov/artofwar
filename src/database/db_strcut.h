@@ -438,6 +438,7 @@ struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_b
 
 struct db_nation : db_entity, db_with_name {
 	std::vector<db_unit*> units;
+	std::vector<db_unit*> workers;
 	std::vector<db_building*> buildings;
 
 	std::vector<std::string> actionPrefix;
