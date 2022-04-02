@@ -360,19 +360,23 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span
 std::vector<int>* InfluenceManager::getAreas(const std::span<float> result, char player) {
 	auto& maps = mapsForAiPerPlayer[player];
 	assert(result.size() == maps.size());
-	//assert(arraySize * 4 == visibilityPerPlayer[player]->getResolution()* visibilityPerPlayer[player]->getResolution());
 
-	std::fill_n(intersection, arraySize, 0.f);
-	int times = 0;
-	for (char i = 0; i < maps.size(); ++i) {
-		const auto ok = maps[i]->getIndexesWithByValue(result[i], intersection);
-		times += ok;
+	std::fill_n(intersection, arraySize, 0.f); //TODO perf move to removeunsean
+	const int noOfVisible = visibilityManager->removeUnseen(player, intersection);
+
+	for (const auto map : maps) {
+		map->ensureReady();
 	}
-	visibilityManager->removeUnseen(player, intersection);
+	char numberOfNotEmptyMap = 0;
+	for (char i = 0; i < maps.size(); ++i) {
+		const auto ok = maps[i]->cumulateErros(result[i], intersection);
+		numberOfNotEmptyMap += ok;
+	}
 
-	const auto inx = sort_indexes(std::span(intersection, arraySize), 256);
-	//TODO improve uwzglednic wielkosc mapy a nie 256
-	return centersFromIndexes(intersection, inx, 0.1f * times);
+	const int size = Urho3D::Min(noOfVisible, calculator->getResolution() * calculator->getResolution() / 8);
+	const auto idx = sort_indexes(std::span(intersection, arraySize), size);
+
+	return centersFromIndexes(intersection, idx, 0.1f * numberOfNotEmptyMap);
 }
 
 void InfluenceManager::addCollect(Unit* unit, char resId, float value) {

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <numeric>
 #include <iostream>
+#include <functional>
 
 inline float minSpan(std::span<float> vec) {
 	return *std::ranges::min_element(vec);
@@ -27,6 +28,16 @@ template <typename T>
 inline void printSpan(std::span<T> vec) {
 	for (auto val : vec) {
 		std::cerr << val << ";";
+	}
+	std::cerr << std::endl;
+}
+
+template <typename T>
+inline void printSpan(std::span<T> vec, std::function<bool(T)> condition) {
+	for (auto val : vec) {
+		if (condition(val)) {
+			std::cerr << val << ";";
+		}
 	}
 	std::cerr << std::endl;
 }

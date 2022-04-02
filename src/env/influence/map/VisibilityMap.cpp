@@ -98,14 +98,17 @@ void VisibilityMap::computeMinMax() {
 	}
 }
 
-void VisibilityMap::removeUnseen(float* intersection) {
+int VisibilityMap::removeUnseen(float* intersection) {
 	ensureReady();
+	int notSeen = 0;
 	const auto end = valuesForInfluence + arraySize / 4;
 	for (auto ptrI = valuesForInfluence; ptrI < end; ++ptrI, ++intersection) {
 		if (!(*ptrI)) {
+			++notSeen;
 			*intersection = std::numeric_limits<float>::max();
 		}
 	}
+	return arraySize / 4 - notSeen;
 }
 
 float VisibilityMap::getPercent() {

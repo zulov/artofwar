@@ -31,7 +31,7 @@ public:
 	void drawMaps(short currentDebugBatch, char index) const;
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;
 	float getVisibilityScore(char player) const;
-	void removeUnseen(char player, float* intersection);
+	int removeUnseen(char player, float* intersection) const;
 	void nextVisibilityType();
 private:
 	std::vector<VisibilityMap*> visibilityPerPlayer;

@@ -37,6 +37,7 @@ static std::vector<unsigned int> sort_indexes(std::span<T> v, _Pr pred, int size
 	//stable_sort(idx.begin(), idx.end(), pred);
 	if (size != -1) {
 		std::partial_sort(idx.begin(), idx.begin() + size, idx.end(), pred);
+		idx.resize(size);
 	} else {
 		stable_sort(idx.begin(), idx.end(), pred);
 	}

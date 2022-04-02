@@ -25,7 +25,7 @@ public:
 	void ensureReady() override;
 
 	std::vector<int> getIndexesWithByValue(float percent, float tolerance);
-	bool getIndexesWithByValue(float percent, float* intersection);
+	bool cumulateErros(float percent, float* intersection) const;
 
 	void updateFromTemp();
 

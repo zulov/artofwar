@@ -42,6 +42,7 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	std::span<float> output;
 
 	ParentBuildingType type = static_cast<ParentBuildingType>(biggestWithRand(whichTypeOutput));
+	type = ParentBuildingType::RESOURCE;
 	const auto aiTypeInput = Game::getAiInputProvider()->getBuildingsTypeInput(player->getId(), type);
 	switch (type) {
 	case ParentBuildingType::OTHER:
@@ -185,9 +186,7 @@ db_building* ActionMaker::chooseBuilding(std::span<float> result, ParentBuilding
 	for (const auto building : buildings) {
 		diffs.push_back(dist(center, player->getLevelForBuilding(building->id)->dbBuildingMetric, type));
 	}
-	if (diffs.empty()) {
-		return nullptr;
-	}
+
 	auto inx = lowestWithRand(diffs);
 
 	const auto building = buildings[inx];

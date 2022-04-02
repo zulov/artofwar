@@ -8,11 +8,13 @@ constexpr bool FORCE_STATS_ENABLE = false;
 
 struct ForceStats {
 	void vectorReset() {
-		sepObstLast = {};
-		sepUnitLast = {};
-		destLast = {};
-		formLast = {};
-		escaLast = {};
+		if constexpr (DEBUG_LINES_ENABLED) {
+			sepObstLast = {};
+			sepUnitLast = {};
+			destLast = {};
+			formLast = {};
+			escaLast = {};
+		}
 	}
 
 	void reset() {
