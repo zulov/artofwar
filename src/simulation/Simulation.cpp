@@ -354,7 +354,10 @@ void Simulation::calculateForces() {
 
 	for (const auto unit : *units) {
 		auto& stats = force.stats();
-		stats.vectorReset();
+		if (!SIM_GLOBALS.HEADLESS) {
+			stats.vectorReset();
+		}
+
 		Urho3D::Vector2 newForce;
 		switch (unit->getState()) {
 		case UnitState::COLLECT:
@@ -383,7 +386,9 @@ void Simulation::calculateForces() {
 		stats.result();
 
 		unit->setAcceleration(newForce);
-		unit->debug(DebugUnitType::AIM, stats); //TODO przeniesc do Controls
+		if(!SIM_GLOBALS.HEADLESS) {
+			unit->debug(DebugUnitType::AIM, stats); //TODO przeniesc do Controls
+		}
 	}
 	DebugLineRepo::commit(DebugLineType::UNIT_LINES);
 }

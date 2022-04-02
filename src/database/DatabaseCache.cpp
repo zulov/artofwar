@@ -28,8 +28,10 @@ DatabaseCache::DatabaseCache(std::string postfix) {
 	dbContainer = new db_container();
 
 	pathStr = std::string("Data/");
-
-	loadBasic("Database/base" + postfix + ".db");
+	if(!SIM_GLOBALS.HEADLESS) {
+		loadBasic("Database/base" + postfix + ".db");
+	}
+	
 	loadData("Database/data" + postfix + ".db");
 	loadMaps("map/maps" + postfix + ".db");
 }

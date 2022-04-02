@@ -62,21 +62,24 @@ Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE),
 void Main::Setup() {
 	miniReadParameters();
 	Game::setDatabaseCache(new DatabaseCache(SIM_GLOBALS.DATABASE_NUMBER.CString()));
-	const db_settings* settings = Game::getDatabase()->getSettings();
-	const db_graph_settings* graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
-	const db_resolution* resolution = Game::getDatabase()->getResolution(settings->resolution);
-	engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
+	if (!SIM_GLOBALS.HEADLESS) {
+		const db_settings* settings = Game::getDatabase()->getSettings();
+		const db_graph_settings* graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
+		const db_resolution* resolution = Game::getDatabase()->getResolution(settings->resolution);
+		engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
 
-	engineParameters_[EP_FULL_SCREEN] = graphSettings->fullscreen;
+		engineParameters_[EP_FULL_SCREEN] = graphSettings->fullscreen;
 
-	engineParameters_[EP_SOUND] = false;
-	engineParameters_[EP_WINDOW_WIDTH] = resolution->x;
-	engineParameters_[EP_WINDOW_HEIGHT] = resolution->y;
+		engineParameters_[EP_SOUND] = false;
+		engineParameters_[EP_WINDOW_WIDTH] = resolution->x;
+		engineParameters_[EP_WINDOW_HEIGHT] = resolution->y;
+
+		engine_->SetMaxFps(graphSettings->max_fps);
+		engine_->SetMinFps(graphSettings->min_fps);
+	}
+
 	engineParameters_[EP_RESOURCE_PATHS] = "Data;CoreData;CoreDataMy";
 	engineParameters_[EP_RESOURCE_PREFIX_PATHS] = " ;../";
-
-	engine_->SetMaxFps(graphSettings->max_fps);
-	engine_->SetMinFps(graphSettings->min_fps);
 
 	readParameters();
 	RandGen::init(SIM_GLOBALS.RANDOM);
@@ -683,7 +686,8 @@ void Main::miniReadParameters() const {
 			if (argument == "databasename" && !value.Empty()) {
 				SimGlobals::DATABASE_NUMBER = value;
 				++i;
-				break;
+			} else if (argument == "headless") {
+				SimGlobals::HEADLESS = true;
 			}
 		}
 	}
