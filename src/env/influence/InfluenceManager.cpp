@@ -427,7 +427,7 @@ int InfluenceManager::getIndex(const Urho3D::Vector3& position) const {
 	return calculator->indexFromPosition(position);
 }
 
-void InfluenceManager::nextVisibilityType() {
+void InfluenceManager::nextVisibilityType() const {
 	visibilityManager->nextVisibilityType();
 }
 
@@ -435,7 +435,7 @@ std::vector<int>* InfluenceManager::centersFromIndexes(float* values, const std:
                                                        float minVal) const {
 	tempIndexes->clear();
 
-	for (auto ptr = indexes.begin(); (ptr < indexes.begin() + 256 && ptr < indexes.end()); ++ptr) {
+	for (auto ptr = indexes.begin();  ptr < indexes.end(); ++ptr) {
 		if (values[*ptr] > minVal) {
 			break;
 		}

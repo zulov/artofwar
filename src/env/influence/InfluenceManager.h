@@ -65,7 +65,7 @@ public:
 	Urho3D::Vector2 getCenter(int index) const;
 	float getVisibilityScore(char player) const;
 	int getIndex(const Urho3D::Vector3& position) const;
-	void nextVisibilityType();
+	void nextVisibilityType() const;
 
 private:
 	std::vector<int>* centersFromIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
