@@ -35,31 +35,26 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 	mapsForAiArmyPerPlayer.reserve(numberOfPlayers);
 	mapsForAiPerPlayer.reserve(numberOfPlayers);
 	mapsForCentersPerPlayer.reserve(numberOfPlayers);
-
+	unsigned short resolution = mapSize / INF_GRID_FIELD_SIZE;
 	for (int player = 0; player < numberOfPlayers; ++player) {
-		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(mapSize / INF_GRID_FIELD_SIZE, mapSize, 40));
+		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(resolution, mapSize, 40));
 		buildingsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 2));
+			new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 2));
 		unitsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40));
+			new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 40));
 
-		foodGatherSpeed.emplace_back(
-			new InfluenceMapHistory(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
-		woodGatherSpeed.emplace_back(
-			new InfluenceMapHistory(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
-		stoneGatherSpeed.emplace_back(
-			new InfluenceMapHistory(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
-		goldGatherSpeed.emplace_back(
-			new InfluenceMapHistory(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
+		foodGatherSpeed.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
+		woodGatherSpeed.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
+		stoneGatherSpeed.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
+		goldGatherSpeed.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
 
-		attackSpeed.emplace_back(
-			new InfluenceMapHistory(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
-		armyQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
-		buildingsQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
+		attackSpeed.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
+		armyQuad.emplace_back(new InfluenceMapQuad(resolution, mapSize));
+		buildingsQuad.emplace_back(new InfluenceMapQuad(resolution, mapSize));
 		econQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
 	}
 
-	resourceInfluence = new InfluenceMapFloat(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40);
+	resourceInfluence = new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 40);
 	for (int player = 0; player < numberOfPlayers; ++player) {
 		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 8>{
 			buildingsInfluencePerPlayer[player],
@@ -81,11 +76,18 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 			buildingsQuad[player],
 			armyQuad[player]
 		});
+
+		mapsGatherSpeedPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 4>{
+			foodGatherSpeed[player],
+			woodGatherSpeed[player],
+			stoneGatherSpeed[player],
+			goldGatherSpeed[player],
+		});
 		assert(validSizes(mapsForAiPerPlayer.at(player)));
 	}
 	visibilityManager = new VisibilityManager(numberOfPlayers, mapSize, terrain);
 
-	calculator = GridCalculatorProvider::get(mapSize / INF_GRID_FIELD_SIZE, mapSize);
+	calculator = GridCalculatorProvider::get(resolution, mapSize);
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUENCE, MAX_DEBUG_PARTS_INFLUENCE);
 
@@ -231,15 +233,15 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 	case InfluenceDataType::ATTACK_SPEED:
 		MapsUtils::drawMap(currentDebugBatch, index, attackSpeed);
 		break;
-	// case InfluenceDataType::ECON_QUAD:
-	// 	drawMap(index, econQuad);
-	// 	break;
-	// case InfluenceDataType::BUILDINGS_QUAD:
-	// 	drawMap(index, buildingsQuad);
-	// 	break;
-	// case InfluenceDataType::UNITS_QUAD:
-	// 	drawMap(index, armyQuad);
-	// 	break;
+		// case InfluenceDataType::ECON_QUAD:
+		// 	drawMap(index, econQuad);
+		// 	break;
+		// case InfluenceDataType::BUILDINGS_QUAD:
+		// 	drawMap(index, buildingsQuad);
+		// 	break;
+		// case InfluenceDataType::UNITS_QUAD:
+		// 	drawMap(index, armyQuad);
+		// 	break;
 	case InfluenceDataType::VISIBILITY:
 		visibilityManager->drawMaps(currentDebugBatch, index);
 		break;
@@ -386,7 +388,7 @@ void InfluenceManager::addCollect(Unit* unit, char resId, float value) {
 
 	const auto index = calculator->indexFromPosition(unit->getPosition());
 	switch (resId) {
-	//TODO better!!!
+		//TODO better!!!
 	case 0:
 		foodGatherSpeed[playerId]->tempUpdate(index, value);
 		break;
@@ -435,7 +437,7 @@ std::vector<int>* InfluenceManager::centersFromIndexes(float* values, const std:
                                                        float minVal) const {
 	tempIndexes->clear();
 
-	for (auto ptr = indexes.begin();  ptr < indexes.end(); ++ptr) {
+	for (auto ptr = indexes.begin(); ptr < indexes.end(); ++ptr) {
 		if (values[*ptr] > minVal) {
 			break;
 		}

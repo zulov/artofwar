@@ -75,6 +75,7 @@ private:
 
 	std::vector<std::array<InfluenceMapFloat*, 3>> mapsForAiArmyPerPlayer;
 	std::vector<std::array<InfluenceMapFloat*, 8>> mapsForAiPerPlayer;
+	std::vector<std::array<InfluenceMapFloat*, 4>> mapsGatherSpeedPerPlayer;
 
 	std::vector<std::array<InfluenceMapQuad*, 3>> mapsForCentersPerPlayer;
 
