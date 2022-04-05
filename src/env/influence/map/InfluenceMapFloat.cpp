@@ -118,6 +118,7 @@ float InfluenceMapFloat::getValueAsPercent(int index) const {
 }
 
 void InfluenceMapFloat::computeMinMax() {
+	assert(!valuesCalculateNeeded);
 	if (!minMaxInited) {
 		const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);
 		min = *minIdx;
@@ -127,8 +128,8 @@ void InfluenceMapFloat::computeMinMax() {
 }
 
 void InfluenceMapFloat::ensureReady() {
-	computeMinMax();
 	updateFromTemp();
+	computeMinMax();
 }
 
 std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float tolerance) {
