@@ -305,7 +305,8 @@ bool Environment::validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2
 	return mainGrid.validateAdd(size, {calculator->getIndex(pos.x_), calculator->getIndex(pos.y_)}, isBuilding);
 }
 
-bool Environment::validateStatic(const Urho3D::IntVector2& size, const Urho3D::IntVector2 bucketCords, bool isBuilding) const {
+bool Environment::validateStatic(const Urho3D::IntVector2& size, const Urho3D::IntVector2 bucketCords,
+                                 bool isBuilding) const {
 	return mainGrid.validateAdd(size, bucketCords, isBuilding);
 }
 
@@ -377,9 +378,9 @@ std::array<float, 5>& Environment::getInfluenceDataAt(char player, const Urho3D:
 	return influenceManager.getInfluenceDataAt(player, pos);
 }
 
-std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player,
-                                                           const std::span<float> result) {
-	const std::vector<int>* indexes = influenceManager.getAreas(result, player);
+std::optional<Urho3D::Vector2> Environment::getPosToCreate(const std::span<float> result,ParentBuildingType type, db_building* building,
+                                                           char player) {
+	const std::vector<int>* indexes = influenceManager.getAreas(result, type, player);
 
 	const float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
 	for (const auto centerIndex : *indexes) {

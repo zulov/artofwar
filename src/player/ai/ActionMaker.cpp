@@ -31,10 +31,11 @@ ActionMaker::ActionMaker(Player* player, db_nation* nation):
 	whichBuildingTypeTech(BrainProvider::get(nation->actionPrefix[7] + "whichBuildTypeTech.csv")),
 	whichBuildingTypeUnits(BrainProvider::get(nation->actionPrefix[8] + "whichBuildTypeUnits.csv")),
 	whereBuilding(BrainProvider::get(nation->actionPrefix[9] + "whereBuilding.csv")),
+	whereResBuilding(BrainProvider::get(nation->actionPrefix[10] + "whereResBuilding.csv")),
 
-	ifUnit(BrainProvider::get(nation->actionPrefix[10] + "ifUnit.csv")),
-	whichUnit(BrainProvider::get(nation->actionPrefix[11] + "whichUnit.csv")),
-	whereUnit(BrainProvider::get(nation->actionPrefix[12] + "whereUnit.csv")) {
+	ifUnit(BrainProvider::get(nation->actionPrefix[11] + "ifUnit.csv")),
+	whichUnit(BrainProvider::get(nation->actionPrefix[12] + "whichUnit.csv")),
+	whereUnit(BrainProvider::get(nation->actionPrefix[13] + "whereUnit.csv")) {
 }
 
 bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
@@ -68,7 +69,7 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 
 bool ActionMaker::createWorker() const {
 	assert(!nation->workers.empty());
-	
+
 	return createWorker(nation->workers.at(0)); //TODO get better
 }
 
@@ -109,13 +110,13 @@ void ActionMaker::action() {
 	if (randFromTwo(unitsResult[0])) {
 		createUnit(unitsInput);
 	}
-	
+
 	const auto buildingsInput = aiInput->getBuildingsInput(player->getId());
 	const auto buildingsResult = ifBuilding->decide(buildingsInput);
 	if (randFromTwo(buildingsResult[0])) {
 		createBuilding(buildingsInput);
 	}
-	
+
 	//return levelUpUnit();
 	//return levelUpBuilding();
 }
@@ -292,9 +293,14 @@ float ActionMaker::dist(std::valarray<float>& center, const db_building_metric* 
 std::optional<Urho3D::Vector2> ActionMaker::findPosToBuild(db_building* building, ParentBuildingType type) const {
 	const auto input = Game::getAiInputProvider()->getBuildingsInputWithMetric(
 		player->getId(), player->getLevelForBuilding(building->id)->dbBuildingMetric, type);
-	const auto result = whereBuilding->decide(input);
+	std::span<float> result;
+	if (type == ParentBuildingType::RESOURCE) {
+		result = whereResBuilding->decide(input);
+	} else {
+		result = whereBuilding->decide(input);
+	}
+	return Game::getEnvironment()->getPosToCreate(result,type, building, player->getId());
 
-	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
 }
 
 std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId) const {

@@ -8,6 +8,7 @@
 
 #include "player/ai/InfluenceDataType.h"
 
+enum class ParentBuildingType : char;
 class VisibilityManager;
 class VisibilityMap;
 enum class CenterType:char;
@@ -57,7 +58,8 @@ public:
 	                                               int min);
 
 	float getFieldSize() const;
-	std::vector<int>* getAreas(const std::span<float> result, char player);
+	std::vector<int>* getAreas( const std::span<float> result,ParentBuildingType type,  char player);
+
 	void addCollect(Unit* unit, char resId, float value);
 	void addAttack(char player, const Urho3D::Vector3& position, float value);
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
@@ -68,6 +70,8 @@ public:
 	void nextVisibilityType() const;
 
 private:
+	std::vector<int>* getAreas(std::span<InfluenceMapFloat*>maps, const std::span<float> result, char player) const;
+
 	std::vector<int>* centersFromIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
 	std::vector<Urho3D::Vector2> centersFromIndexes(const std::vector<int>& intersection) const;
 

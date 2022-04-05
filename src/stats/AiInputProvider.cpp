@@ -41,17 +41,13 @@ std::span<float> AiInputProvider::getUnitsInputWithMetric(char playerId, const d
 }
 
 std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, const db_building_metric* prop,
-	ParentBuildingType type) const {
+                                                              ParentBuildingType type) const {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
-
+	if (type == ParentBuildingType::RESOURCE) {
+		return combineWithBasic(buildingsResWhereInputSpan, prop->getValuesNormAsValForType(type), player);
+	} 
 	return combineWithBasic(buildingsWhereInputSpan, prop->getTypesVal(), player);
 }
-
-// std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, const db_building_metric* prop, ParentBuildingType type) const {
-// 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
-//
-// 	return combineWithBasic(basicWithMetricUnitSpan, prop->getValuesNormSmall(), player);
-// }
 
 std::span<float> AiInputProvider::getAttackOrDefenceInput(char playerId) const {
 	const auto plyMng = Game::getPlayersMan();

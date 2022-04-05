@@ -78,6 +78,7 @@ private:
 	Brain* whichBuildingTypeTech;
 	Brain* whichBuildingTypeUnits;
 	Brain* whereBuilding;
+	Brain* whereResBuilding;
 
 	Brain* ifUnit;
 	Brain* whichUnit;

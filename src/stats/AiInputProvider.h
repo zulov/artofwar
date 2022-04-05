@@ -49,6 +49,7 @@ private:
 	float buildingsUnitsInput[BASIC_SIZE + BUILDING_UNITS_SIZE];
 
 	float buildingsWhereInput[BASIC_SIZE + BUILDING_TYPES_SIZE];
+	float buildingsResWhereInput[BASIC_SIZE + BUILDING_RES_SIZE];
 
 	std::span<float> resourceIdInputSpan = std::span(resourceIdInput);
 	std::span<float> unitsInputSpan = std::span(unitsInput);
@@ -61,6 +62,7 @@ private:
 	std::span<float> unitsWithMetricUnitSpan = std::span(unitsWithMetric);
 
 	std::span<float> buildingsWhereInputSpan = std::span(buildingsWhereInput);
+	std::span<float> buildingsResWhereInputSpan = std::span(buildingsResWhereInput);
 
 	std::span<float> buildingsOtherInputSpan = std::span(buildingsOtherInput);
 	std::span<float> buildingsDefenceInputSpan = std::span(buildingsDefenceInput);

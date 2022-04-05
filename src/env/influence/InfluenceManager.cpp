@@ -233,15 +233,15 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 	case InfluenceDataType::ATTACK_SPEED:
 		MapsUtils::drawMap(currentDebugBatch, index, attackSpeed);
 		break;
-		// case InfluenceDataType::ECON_QUAD:
-		// 	drawMap(index, econQuad);
-		// 	break;
-		// case InfluenceDataType::BUILDINGS_QUAD:
-		// 	drawMap(index, buildingsQuad);
-		// 	break;
-		// case InfluenceDataType::UNITS_QUAD:
-		// 	drawMap(index, armyQuad);
-		// 	break;
+	// case InfluenceDataType::ECON_QUAD:
+	// 	drawMap(index, econQuad);
+	// 	break;
+	// case InfluenceDataType::BUILDINGS_QUAD:
+	// 	drawMap(index, buildingsQuad);
+	// 	break;
+	// case InfluenceDataType::UNITS_QUAD:
+	// 	drawMap(index, armyQuad);
+	// 	break;
 	case InfluenceDataType::VISIBILITY:
 		visibilityManager->drawMaps(currentDebugBatch, index);
 		break;
@@ -359,8 +359,16 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span
 	assert(false);
 }
 
-std::vector<int>* InfluenceManager::getAreas(const std::span<float> result, char player) {
-	auto& maps = mapsForAiPerPlayer[player];
+std::vector<int>*
+InfluenceManager::getAreas(const std::span<float> result, ParentBuildingType type, char player) {
+	if (type == ParentBuildingType::RESOURCE) {
+		return getAreas(mapsGatherSpeedPerPlayer[player], result, player);
+	}
+	return getAreas(mapsForAiPerPlayer[player], result, player);
+}
+
+std::vector<int>*
+InfluenceManager::getAreas(std::span<InfluenceMapFloat*> maps, const std::span<float> result, char player) const {
 	assert(result.size() == maps.size());
 
 	std::fill_n(intersection, arraySize, 0.f); //TODO perf move to removeunsean
@@ -388,7 +396,7 @@ void InfluenceManager::addCollect(Unit* unit, char resId, float value) {
 
 	const auto index = calculator->indexFromPosition(unit->getPosition());
 	switch (resId) {
-		//TODO better!!!
+	//TODO better!!!
 	case 0:
 		foodGatherSpeed[playerId]->tempUpdate(index, value);
 		break;
