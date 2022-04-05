@@ -12,6 +12,7 @@
 #include "objects/unit/state/StateManager.h"
 #include "scene/load/dbload_container.h"
 #include "env/Environment.h"
+#include "player/PlayersManager.h"
 
 
 ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, int id, int level, int indexInGrid, bool withNode)
@@ -42,10 +43,10 @@ float ResourceEntity::getMaxHpBarSize() const {
 
 Urho3D::String ResourceEntity::getInfo() const {
 	const auto l10n = Game::getLocalization();
-
+	const auto bonus = Game::getEnvironment()->getBonuses(Game::getPlayersMan()->getActivePlayerID(), this);
 	return Urho3D::String(dbResource->name)
 		.AppendWithFormat(l10n->Get("info_resource").CString(),
-		                  (int)hp, dbResource->maxHp,
+		                  (int)hp, dbResource->maxHp, asStringF(bonus, 1).c_str(),
 		                  closeUsers, getMaxCloseUsers());
 }
 

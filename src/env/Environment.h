@@ -142,7 +142,7 @@ public:
 	void flipTerrainShaderParam(const Urho3D::String& name) const;
 	void nextVisibilityType();
 	void reAddBonuses(std::vector<Building*>* buildings, char player, char resId) const;
-	float getBonuses(char player, ResourceEntity* resource) const;
+	float getBonuses(char player,const ResourceEntity* resource) const;
 private:
 	//std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius,

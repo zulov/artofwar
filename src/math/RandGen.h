@@ -3,6 +3,8 @@
 #include <magic_enum.hpp>
 #include "RandType.h"
 
+constexpr short RAND_TAB_SIZE = 1024 * 2;
+
 enum class RandType : char;
 
 class RandGen {
@@ -20,7 +22,7 @@ private:
 	static RandGen* instance;
 	int indexesFloat[magic_enum::enum_count<RandFloatType>()];
 	int indexesInt[magic_enum::enum_count<RandIntType>()];
-	std::vector<float> dataFloat[magic_enum::enum_count<RandFloatType>()];
-	std::vector<int> dataInt[magic_enum::enum_count<RandIntType>()];
+	float dataFloat[RAND_TAB_SIZE];
+	int dataInt[RAND_TAB_SIZE];
 };
 

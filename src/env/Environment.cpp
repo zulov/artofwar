@@ -80,7 +80,7 @@ void Environment::reAddBonuses(std::vector<Building*>* buildings, char player, c
 	mainGrid.reAddBonuses(buildings, player, resId);
 }
 
-float Environment::getBonuses(char player, ResourceEntity* resource) const {
+float Environment::getBonuses(char player, const ResourceEntity* resource) const {
 	return mainGrid.getBonuses(player, resource);
 }
 
@@ -379,7 +379,7 @@ std::array<float, 5>& Environment::getInfluenceDataAt(char player, const Urho3D:
 
 std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player,
                                                            const std::span<float> result) {
-	std::vector<int>* indexes = influenceManager.getAreas(result, player);
+	const std::vector<int>* indexes = influenceManager.getAreas(result, player);
 
 	const float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
 	for (const auto centerIndex : *indexes) {
