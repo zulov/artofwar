@@ -443,13 +443,11 @@ struct db_nation : db_entity, db_with_name {
 
 	std::vector<std::string> actionPrefix;
 	std::vector<std::string> orderPrefix;
-	std::vector<std::string> orderThresholdPrefix;
 
-	db_nation(short id, char* name, char* actionPrefix, char* orderPrefix, char* orderThresholdPrefix)
+	db_nation(short id, char* name, char* actionPrefix, char* orderPrefix)
 		: db_entity(id), db_with_name(name),
 		  actionPrefix(split(actionPrefix, SPLIT_SIGN)),
-		  orderPrefix(split(orderPrefix, SPLIT_SIGN)),
-		  orderThresholdPrefix(split(orderThresholdPrefix, SPLIT_SIGN)) { }
+		  orderPrefix(split(orderPrefix, SPLIT_SIGN)) { }
 
 	std::vector<std::string> splitAi(std::string* param) const {
 		return split(split(param[id], SPLIT_SIGN_2)[SimGlobals::CURRENT_RUN], SPLIT_SIGN);
@@ -462,9 +460,6 @@ struct db_nation : db_entity, db_with_name {
 		}
 		if (!SimGlobals::ORDER_AI_PATH[id].empty()) {
 			orderPrefix = splitAi(SimGlobals::ORDER_AI_PATH);
-		}
-		if (!SimGlobals::ORDER_THRESHOLD_PATH[id].empty()) {
-			orderThresholdPrefix = splitAi(SimGlobals::ORDER_THRESHOLD_PATH);
 		}
 	}
 };

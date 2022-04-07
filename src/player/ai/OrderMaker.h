@@ -7,7 +7,6 @@ class Player;
 class Unit;
 class Physical;
 class Brain;
-class Threshold;
 
 class OrderMaker {
 public:
@@ -24,7 +23,6 @@ private:
 	void collect(std::vector<Unit*>& freeWorkers);
 
 	Player* player;
-	Threshold* attackThreshold;
 
 	Brain* whichResource;
 

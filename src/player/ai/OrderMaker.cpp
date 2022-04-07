@@ -19,8 +19,6 @@
 #include "objects/unit/order/GroupOrder.h"
 #include "objects/unit/order/enums/UnitActionType.h"
 #include "env/influence/CenterType.h"
-#include "threshold/Threshold.h"
-#include "threshold/ThresholdProvider.h"
 #include "utils/OtherUtils.h"
 
 constexpr float SEMI_CLOSE = 30.f;
@@ -28,7 +26,6 @@ constexpr float SQ_SEMI_CLOSE = SEMI_CLOSE * SEMI_CLOSE;
 
 OrderMaker::OrderMaker(Player* player, db_nation* nation)
 	: player(player),
-	  attackThreshold(ThresholdProvider::get(nation->orderThresholdPrefix[0] + "attack.csv")),
 	  whichResource(BrainProvider::get(nation->orderPrefix[0] + "whichResource.csv")),
 
 	  attackOrDefence(BrainProvider::get(nation->orderPrefix[1] + "attackOrDefence.csv")),

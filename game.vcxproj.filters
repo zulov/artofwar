@@ -196,8 +196,6 @@
     <ClCompile Include="src\env\CloseIndexes.cpp" />
     <ClCompile Include="src\env\CloseIndexesProvider.cpp" />
     <ClCompile Include="src\player\ai\nn\BrainProvider.cpp" />
-    <ClCompile Include="src\player\ai\threshold\Threshold.cpp" />
-    <ClCompile Include="src\player\ai\threshold\ThresholdProvider.cpp" />
     <ClCompile Include="src\simulation\ObjectsInfo.cpp" />
     <ClCompile Include="src\simulation\SimInfo.cpp" />
     <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
@@ -517,8 +515,6 @@
     <ClInclude Include="src\simulation\PerFrameAction.h" />
     <ClInclude Include="src\simulation\SimGlobals.h" />
     <ClInclude Include="src\utils\FileUtils.h" />
-    <ClInclude Include="src\player\ai\threshold\Threshold.h" />
-    <ClInclude Include="src\player\ai\threshold\ThresholdProvider.h" />
     <ClInclude Include="src\player\ai\AiTypes.h" />
     <ClInclude Include="src\simulation\ObjectsInfo.h" />
     <ClInclude Include="src\simulation\SimInfo.h" />

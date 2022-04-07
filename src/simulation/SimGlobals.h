@@ -28,7 +28,6 @@ inline struct SimGlobals {
 	inline static Urho3D::String DATABASE_NUMBER = "";
 	inline static std::string ACTION_AI_PATH[MAX_PLAYERS] = {"", ""};
 	inline static std::string ORDER_AI_PATH[MAX_PLAYERS] = {"", ""};
-	inline static std::string ORDER_THRESHOLD_PATH[MAX_PLAYERS] = {"", ""};
 
 	inline static Urho3D::Vector<Urho3D::String> OUTPUT_NAMES;
 

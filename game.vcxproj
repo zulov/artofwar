@@ -284,7 +284,6 @@
     <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
     <ClCompile Include="src\simulation\SimInfo.cpp" />
     <ClCompile Include="src\player\ai\nn\BrainProvider.cpp" />
-    <ClCompile Include="src\player\ai\threshold\Threshold.cpp" />
     <ClCompile Include="src\env\CloseIndexesProvider.cpp" />
     <ClCompile Include="src\env\bucket\levels\LevelCacheProvider.cpp" />
     <ClCompile Include="src\env\bucket\levels\LevelCache.cpp" />
@@ -396,7 +395,6 @@
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
     <ClCompile Include="src\hud\window\top\info\TopInfoPanel.cpp" />
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
-    <ClCompile Include="src\player\ai\threshold\ThresholdProvider.cpp" />
     <ClCompile Include="src\env\influence\map\VisibilityMap.cpp" />
     <ClCompile Include="src\env\bucket\StaticGrid.cpp" />
     <ClCompile Include="src\env\influence\VisibilityManager.cpp" />
@@ -424,7 +422,6 @@
     <ClInclude Include="src\simulation\SimInfo.h" />
     <ClInclude Include="src\player\ai\AiTypes.h" />
     <ClInclude Include="src\player\ai\nn\BrainProvider.h" />
-    <ClInclude Include="src\player\ai\threshold\Threshold.h" />
     <ClInclude Include="src\env\CloseIndexesProvider.h" />
     <ClInclude Include="src\env\bucket\levels\LevelCacheProvider.h" />
     <ClInclude Include="src\env\bucket\levels\LevelCache.h" />
@@ -623,7 +620,6 @@
     <ClInclude Include="src\hud\window\top\info\TopInfoPanel.h" />
     <ClInclude Include="src\math\VectorUtils.h" />
     <ClInclude Include="src\objects\unit\order\UnitOrder.h" />
-    <ClInclude Include="src\player\ai\threshold\ThresholdProvider.h" />
     <ClInclude Include="src\env\influence\map\VisibilityMap.h" />
     <ClInclude Include="src\env\bucket\StaticGrid.h" />
     <ClInclude Include="src\env\influence\VisibilityManager.h" />

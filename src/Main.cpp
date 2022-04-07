@@ -661,12 +661,6 @@ void Main::readParameters() {
 			} else if (argument == "orderaipath2" && !value.Empty()) {
 				SimGlobals::ORDER_AI_PATH[1] = value.CString();
 				++i;
-			} else if (argument == "orderthreshold1" && !value.Empty()) {
-				SimGlobals::ORDER_THRESHOLD_PATH[0] = value.CString();
-				++i;
-			} else if (argument == "orderthreshold2" && !value.Empty()) {
-				SimGlobals::ORDER_THRESHOLD_PATH[1] = value.CString();
-				++i;
 			} else if (argument == "random") {
 				SimGlobals::RANDOM = true;
 				++i;
