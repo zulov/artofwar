@@ -59,7 +59,7 @@ void InfluenceMapFloat::tempUpdate(int index, float value) {
 }
 
 void InfluenceMapFloat::update(int index, float value) const {
-	auto [centerX,centerZ] = calculator->getIndexes(index);
+	auto [centerX, centerZ] = calculator->getIndexes(index);
 	update(value, centerX, centerZ);
 }
 
@@ -160,7 +160,7 @@ bool InfluenceMapFloat::cumulateErros(float percent, float* intersection) const 
 		const auto centerVal = percent * diff + min;
 		diff = 1.f / diff;
 		const auto endV = values + arraySize;
-		const auto maxVal = std::numeric_limits<float>::max() - 1.f;
+		constexpr auto maxVal = std::numeric_limits<float>::max() - 1.f;
 
 		for (auto ptrV = values; ptrV < endV; ++ptrV, ++intersection) {
 			if (*intersection < maxVal) {

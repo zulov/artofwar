@@ -426,6 +426,16 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 		} else if (key == KEY_F6) {
 			saveToLoad = "quicksave.db";
 			changeState(GameState::CLOSING);
+		} else if (key == KEY_H) {
+			auto& possession = Game::getPlayersMan()->getActivePlayer()->getPossession();
+			for (auto building : possession.getBuildings()) {
+				//TODO perf
+				if (building->getDbBuilding()->typeCenter) {
+					auto pos = building->getPosition();
+					Game::getCameraManager()->changePosition(pos.x_, pos.z_);
+				}
+			}
+
 		}
 	}
 }

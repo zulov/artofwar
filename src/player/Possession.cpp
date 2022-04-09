@@ -95,6 +95,10 @@ std::vector<Building*>* Possession::getBuildings(short id) {
 	return buildingsPerId[id];
 }
 
+const std::vector<Building*>& Possession::getBuildings() {
+	return buildings;
+}
+
 void Possession::addKilled(Physical* physical) {
 	resourcesDestroyed += physical->getCostSum();
 }

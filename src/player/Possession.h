@@ -26,6 +26,7 @@ public:
 	int getFreeWorkersNumber() const;
 	int getFreeArmyNumber() const;
 	std::vector<Building*>* getBuildings(short id);
+	const std::vector<Building*>& getBuildings();
 
 	void addKilled(Physical* physical);
 
