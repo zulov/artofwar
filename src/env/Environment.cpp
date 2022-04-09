@@ -378,7 +378,7 @@ std::array<float, 5>& Environment::getInfluenceDataAt(char player, const Urho3D:
 	return influenceManager.getInfluenceDataAt(player, pos);
 }
 
-std::optional<Urho3D::Vector2> Environment::getPosToCreate(const std::span<float> result,ParentBuildingType type, db_building* building,
+std::optional<Urho3D::Vector2> Environment::getPosToCreate(const std::span<float> result, ParentBuildingType type, db_building* building,
                                                            char player) {
 	const std::vector<int>* indexes = influenceManager.getAreas(result, type, player);
 
