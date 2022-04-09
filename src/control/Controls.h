@@ -63,6 +63,7 @@ public:
 	void orderControl();
 
 	void control();
+	const std::vector<Physical*>& getSelected() const { return selected; }
 
 	SelectedInfo* getInfo() const { return selectedInfo; }
 private:

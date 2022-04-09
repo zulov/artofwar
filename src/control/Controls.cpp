@@ -409,7 +409,7 @@ void Controls::refreshSelected() {
 	selected.erase(
 		std::remove_if(
 			selected.begin(), selected.end(),
-			[](Physical* physical){
+			[](Physical* physical) {
 				if (!physical->isAlive()) {
 					physical->unSelect();
 					return true;
@@ -444,6 +444,7 @@ void Controls::cleanAndUpdate(const SimInfo* simulationInfo) {
 	if (conditionToClean(simulationInfo)) {
 		refreshSelected();
 	}
+	auto camera = Game::getCameraManager()->getComponent();
 	for (const auto physical : selected) {
 		physical->updateBillboards();
 	}
@@ -594,7 +595,7 @@ void Controls::buildControl() {
 				}
 				tempBuildingNode->SetEnabled(true);
 			}
-			
+
 			setCircleSight(0, tempBuildingNode->GetPosition(), getCircleSize(building, level),
 			               Game::getColorPaletteRepo()->getCircleColor(building));
 

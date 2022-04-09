@@ -5,6 +5,7 @@
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
 #include <Urho3D/Engine/EngineDefs.h>
+#include <Urho3D/Graphics/Camera.h>
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Graphics/Renderer.h>
 #include <Urho3D/Input/Input.h>
@@ -435,7 +436,6 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 					Game::getCameraManager()->changePosition(pos.x_, pos.z_);
 				}
 			}
-
 		}
 	}
 }
@@ -615,6 +615,13 @@ SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {
 	Game::getCameraManager()->translate(cursorPos, input, timeStep);
 
 	controls->cleanAndUpdate(simulationInfo);
+	auto camera = Game::getCameraManager()->getComponent();
+	for (auto selected : controls->getSelected()) {
+		IntVector2 pixel{ VectorRoundToInt(
+           Vector2(Game::getGraphics()->GetSize()) * camera->WorldToScreenPoint(selected->getPosition())) };
+
+		std::cout << pixel.x_ << ";" << pixel.y_ << std::endl;
+	}
 	return controls->getInfo();
 }
 
