@@ -31,7 +31,6 @@ public:
 	virtual bool isAlive() const;
 	short getId() const { return id; }
 
-	void updateHealthBar() const;
 	virtual float getHealthBarSize() const;
 
 	void setBucket(int _bucketIndex) {
@@ -87,11 +86,11 @@ public:
 	virtual std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(Unit* user) = 0;
 	std::optional<Urho3D::Vector2> getPosToUseBy(Unit* follower);
 
-	virtual float getMaxHpBarSize() const = 0;
+	virtual unsigned short getMaxHpBarSize() const = 0;
 
 	virtual std::pair<float, bool> absorbAttack(float attackCoef) = 0;
 
-	void select(SelectedObject* selectedObject);
+	void select();
 	void clearSelection();
 	virtual short getCostSum() const = 0;
 
@@ -111,14 +110,14 @@ public:
 	virtual const Urho3D::String& getName() const = 0;
 	virtual float getModelHeight() const =0;
 	virtual void setVisibility(VisibilityType type) = 0;
-
+	virtual unsigned char getHealthBarThick() const { return 5; }
 protected:
 	virtual void setModelData(float modelHeight) const =0;
 
 	virtual Urho3D::Color getColor(db_player_colors* col) const = 0;
 	void loadXml(const Urho3D::String& xmlName);
 	void setPlayerAndTeam(int player);
-	virtual float getHealthBarThick() const { return 0.12f; }
+
 	Urho3D::Node* node{};
 	Urho3D::Vector3 position;
 
@@ -136,6 +135,5 @@ protected:
 
 	bool shouldUpdate = false;
 
-	SelectedObject* selectedObject{};
-
+	bool selected = false;
 };

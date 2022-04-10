@@ -131,7 +131,7 @@ public:
 	Urho3D::String getInfo() const override;
 	const Urho3D::String& getName() const override;
 
-	float getMaxHpBarSize() const override;
+	unsigned short getMaxHpBarSize() const override;
 	bool isAlive() const override;
 	char getLevelNum() override;
 	void clean();

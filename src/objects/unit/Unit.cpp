@@ -154,8 +154,6 @@ std::pair<float, bool> Unit::absorbAttack(float attackCoef) {
 	auto val = attackCoef * (1 - dbLevel->armor);
 	hp -= val;
 
-	updateHealthBar();
-
 	if (hp <= 0) {
 		StateManager::changeState(this, UnitState::DEAD);
 		return {val, true};
@@ -203,7 +201,7 @@ void Unit::drawLineTo(const Urho3D::Vector2& second,
 
 void Unit::debug(DebugUnitType type, ForceStats& stats) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		if (selectedObject) {
+		if (selected) {
 			switch (type) {
 			case DebugUnitType::NONE:
 				break;
@@ -393,7 +391,7 @@ char Unit::getLevelNum() {
 	return dbLevel->level;
 }
 
-float Unit::getMaxHpBarSize() const {
+unsigned short Unit::getMaxHpBarSize() const {
 	return 0.4f;
 }
 

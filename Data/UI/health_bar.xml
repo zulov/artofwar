@@ -1,0 +1,27 @@
+<element type="HealthBar" style="ProgressBar">
+	<attribute name="Size" value="{iconX/2} {spaceY*2}"/>
+	<attribute name="Image Rect" value="48 0 64 16"/>
+	<attribute name="Border" value="4 4 4 4"/>
+	<attribute name="Show Percent Text" value="false"/>
+	<attribute name="Opacity" value="0.7"/>
+	
+	<element type="BorderImage" internal="true">
+		<attribute name="Image Rect" value="160 64 176 80"/>
+		<attribute name="Border" value="4 4 4 4"/>
+		<attribute name="Hover Image Offset" value="0 0"/>
+	</element>
+</element>
+
+<element type="ResHealthBar" style="ProgressBar">
+	<attribute name="Size" value="{iconX} {spaceY*2}"/>
+	<attribute name="Image Rect" value="48 0 64 16"/>
+	<attribute name="Border" value="4 4 4 4"/>
+	<attribute name="Show Percent Text" value="false"/>
+	<attribute name="Opacity" value="0.6"/>
+	
+	<element type="BorderImage" internal="true">
+		<attribute name="Image Rect" value="160 64 176 80"/>
+		<attribute name="Border" value="4 4 4 4"/>
+		<attribute name="Hover Image Offset" value="0 0"/>
+	</element>
+</element>

@@ -3,7 +3,7 @@
 #include "ControlsState.h"
 #include "MouseButton.h"
 #include "objects/unit/order/enums/UnitAction.h"
-#include "BillboardSetProvider.h"
+#include "HealthBarProvider.h"
 #include "database/db_strcut.h"
 #include "objects/building/Building.h"
 
@@ -114,8 +114,6 @@ private:
 	Urho3D::Node* tempBuildingNode{};
 
 	SelectedInfo* selectedInfo{};
-
-	BillboardSetProvider billboardSetProvider;
 
 	float clickDistance = 2 * 2;
 	short idToCreate = -1;

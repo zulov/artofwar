@@ -93,4 +93,5 @@ private:
 	db_graph_settings* graphSettings;
 	db_resolution* resolution;
 	Urho3D::XMLFile* style;
+	Urho3D::UIElement* root;
 };

@@ -39,7 +39,7 @@ public:
 	float getAttackVal(Physical* aim) override;
 	void action(BuildingActionType type, short id) const;
 	std::string getValues(int precision) override;
-	float getMaxHpBarSize() const override;
+	unsigned short getMaxHpBarSize() const override;
 	float getHealthBarSize() const override;
 	char getLevelNum() override;
 	const Urho3D::IntVector2 getGridSize() const override;

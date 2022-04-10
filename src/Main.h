@@ -5,6 +5,7 @@
 #include "Benchmark.h"
 #include "GameState.h"
 #include "Loading.h"
+#include "control/HealthBarProvider.h"
 #include "debug/DebugManager.h"
 #include "scene/load/SceneLoader.h"
 #include "scene/save/SceneSaver.h"
@@ -93,6 +94,7 @@ private:
 	Loading loadingProgress;
 	GameState gameState;
 	DebugManager debugManager;
+	HealthBarProvider healthBarProvider;
 
 	bool inited = false;
 	short coefToEdit = 0;
@@ -102,4 +104,5 @@ private:
 	Urho3D::String saveToLoad = "quicksave.db";
 
 	Urho3D::String outputName = "test.txt";
+
 };

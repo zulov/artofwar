@@ -18,6 +18,8 @@
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
 #include <Urho3D/Graphics/RenderPath.h>
+#include <Urho3D/UI/ProgressBar.h>
+
 #include "camera/CameraEnums.h"
 #include "camera/CameraManager.h"
 #include "colors/ColorPaletteRepo.h"
@@ -44,6 +46,7 @@
 #include "simulation/Simulation.h"
 #include "env/Environment.h"
 #include "env/influence/CenterType.h"
+#include "hud/UiUtils.h"
 #include "simulation/formation/FormationManager.h"
 #include "stats/AiInputProvider.h"
 
@@ -90,7 +93,6 @@ void Main::Setup() {
 	} else {
 		engineParameters_[EP_LOG_NAME] = "logs/" + GetTypeName() + ".log";
 	}
-
 	Game::setCache(GetSubsystem<ResourceCache>())
 		->setUI(GetSubsystem<UI>())
 		->setConsole(GetSubsystem<Console>())
@@ -110,6 +112,7 @@ void Main::Start() {
 	if (!engineParameters_[EP_HEADLESS].GetBool()) {
 		hud->prepareUrho(engine_);
 		hud->createMyPanels();
+		healthBarProvider.init();
 		subscribeToUIEvents();
 	}
 
@@ -597,7 +600,7 @@ void Main::disposeScene() {
 
 SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {
 	const IntVector2 cursorPos = Game::getUI()->GetCursorPosition();
-	UIElement* element = Game::getUI()->GetElementAt(cursorPos, false);
+	UIElement* element = Game::getUI()->GetElementAt(cursorPos, true);
 
 	if (element) {
 		controls->deactivate();
@@ -616,12 +619,25 @@ SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {
 
 	controls->cleanAndUpdate(simulationInfo);
 	auto camera = Game::getCameraManager()->getComponent();
+	healthBarProvider.reset();
 	for (auto selected : controls->getSelected()) {
-		IntVector2 pixel{ VectorRoundToInt(
-           Vector2(Game::getGraphics()->GetSize()) * camera->WorldToScreenPoint(selected->getPosition())) };
+		auto progressBar = healthBarProvider.getNext(selected->getType());
 
-		std::cout << pixel.x_ << ";" << pixel.y_ << std::endl;
+		if (progressBar) {
+			auto pos = selected->getPosition();
+			pos.y_ += selected->getModelHeight() * 1.3f;
+			IntVector2 pixel{
+				VectorRoundToInt(Vector2(Game::getGraphics()->GetSize()) * camera->WorldToScreenPoint(pos))};
+
+			auto halfSize = progressBar->GetSize().x_ / 2;
+			pixel.x_ -= halfSize;
+			progressBar->SetPosition(pixel);
+			progressBar->SetValue(selected->getHealthPercent());
+			progressBar->SetVisible(true);
+			progressBar->SetEnabled(true);
+		}
 	}
+
 	return controls->getInfo();
 }
 

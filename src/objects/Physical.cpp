@@ -45,23 +45,14 @@ bool Physical::isAlive() const {
 }
 
 void Physical::updateBillboards() const {
-	if (selectedObject) {
-		auto const healthBar = selectedObject->getHealthBar();
-		if (healthBar) {
-			healthBar->position_ = node->GetPosition() + Urho3D::Vector3{0, getModelHeight() * 1.3f, 0};
-			healthBar->size_ = {getHealthBarSize(), getHealthBarThick()};
-			healthBar->enabled_ = true;
-		}
-	}
-}
-
-void Physical::updateHealthBar() const {
-	if (selectedObject) {
-		auto const healthBar = selectedObject->getHealthBar();
-		if (healthBar) {
-			healthBar->size_ = Urho3D::Vector2(getHealthBarSize(), getHealthBarThick());
-		}
-	}
+	// if (selected) {
+	// 	auto const healthBar = selectedObject->getHealthBar();
+	// 	if (healthBar) {
+	// 		healthBar->position_ = node->GetPosition() + Urho3D::Vector3{0, getModelHeight() * 1.3f, 0};
+	// 		healthBar->size_ = {getHealthBarSize(), getHealthBarThick()};
+	// 		healthBar->enabled_ = true;
+	// 	}
+	// }
 }
 
 std::optional<Urho3D::Vector2> Physical::getPosToUseBy(Unit* follower) {
@@ -78,7 +69,7 @@ float Physical::getHealthBarSize() const {
 }
 
 bool Physical::isSelected() const {
-	return selectedObject;
+	return selected;
 }
 
 void Physical::load(dbload_physical* dbloadPhysical) {
@@ -101,23 +92,17 @@ int Physical::belowCloseLimit() const {
 	return Urho3D::Max(getMaxCloseUsers() - closeUsers, 0);
 }
 
-void Physical::select(SelectedObject* selectedObject) {
-	assert(this->selectedObject == nullptr);
+void Physical::select() {
+	assert(!selected);
 
-	this->selectedObject = selectedObject;
+	selected = true;
 
 	setShaderParam(node, "OutlineEnable", true);
-
-	updateBillboards();
-	updateHealthBar();
 }
 
 
 void Physical::clearSelection() {
-	if (selectedObject) {
-		selectedObject->disableBillboards();
-		selectedObject = nullptr;
-	}
+	selected = false;
 }
 
 void Physical::unSelect() {
@@ -165,7 +150,6 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 	}
 
 	populate();
-	updateBillboards();
 }
 
 

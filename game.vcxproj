@@ -292,7 +292,7 @@
     <ClCompile Include="src\env\GridCalculatorProvider.cpp" />
     <ClCompile Include="src\env\influence\map\InfluenceMapQuad.cpp" />
     <ClCompile Include="src\env\influence\map\InfluenceMapHistory.cpp" />
-    <ClCompile Include="src\control\BillboardSetProvider.cpp" />
+    <ClCompile Include="src\control\HealthBarProvider.cpp" />
     <ClCompile Include="src\player\ai\OrderMaker.cpp" />
     <ClCompile Include="src\commands\action\GeneralActionCommand.cpp" />
     <ClCompile Include="src\math\RandGen.cpp" />
@@ -436,7 +436,7 @@
     <ClInclude Include="src\env\influence\map\InfluenceMapI.h" />
     <ClInclude Include="src\env\influence\map\InfluenceMapQuad.h" />
     <ClInclude Include="src\env\influence\map\InfluenceMapHistory.h" />
-    <ClInclude Include="src\control\BillboardSetProvider.h" />
+    <ClInclude Include="src\control\HealthBarProvider.h" />
     <ClInclude Include="src\player\ai\OrderMaker.h" />
     <ClInclude Include="src\commands\action\GeneralActionCommand.h" />
     <ClInclude Include="src\commands\action\GeneralActionType.h" />

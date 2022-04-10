@@ -43,7 +43,7 @@ void Building::postCreate() {
 	setShaderParam(node, "Progress", 0.0);
 }
 
-float Building::getMaxHpBarSize() const {
+unsigned short Building::getMaxHpBarSize() const {
 	const auto gridSize = getGridSize();
 	return Urho3D::Max(gridSize.x_, gridSize.y_) * 0.5f;
 }
@@ -78,8 +78,6 @@ std::pair<float, bool> Building::absorbAttack(float attackCoef) {
 	}
 	const auto val = (attackCoef + attackCoef * !ready) * (1 - dbLevel->armor);
 	hp -= val;
-
-	updateHealthBar();
 
 	if (hp <= 0) {
 		StateManager::changeState(this, StaticState::DEAD);

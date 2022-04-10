@@ -21,7 +21,7 @@ public:
 	char getPlayer() const override { return -1; }
 	const Urho3D::IntVector2 getGridSize() const override;
 
-	float getMaxHpBarSize() const override;
+	unsigned short getMaxHpBarSize() const override;
 	Urho3D::String getInfo() const override;
 	const Urho3D::String& getName() const override;
 

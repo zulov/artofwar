@@ -61,7 +61,7 @@ Controls::~Controls() {
 }
 
 void Controls::init() {
-	billboardSetProvider.init();
+	//billboardSetProvider.init();
 }
 
 void Controls::updateAdditionalInfo() const {
@@ -104,7 +104,7 @@ void Controls::unSelectAll() {
 	for (const auto& phy : selected) {
 		phy->unSelect();
 	}
-	billboardSetProvider.reset();
+
 	selected.clear();
 	selectedInfo->setSelectedType(ObjectType::NONE);
 	selectedInfo->reset();
@@ -119,8 +119,8 @@ void Controls::selectOne(Physical* entity, char player) {
 	if (!entity->isSelected() && entity->isAlive()
 		&& (entity->getPlayer() < 0 || entity->getPlayer() == player)) {
 
-		entity->select(billboardSetProvider.getNext(entity->getType(), entity->getPlayer(), entity->getId()));
-
+		entity->select();
+		
 		selected.push_back(entity);
 
 		selectedInfo->setSelectedType(entityType);
@@ -134,7 +134,6 @@ void Controls::select(const std::vector<Physical*>* entities) {
 	for (auto physical : *entities) {
 		selectOne(physical, player);
 	}
-	billboardSetProvider.commit();
 	updateAdditionalInfo();
 }
 
@@ -147,8 +146,6 @@ void Controls::leftClick(hit_data& hitData) {
 	} else {
 		selectOne(hitData.clicked, Game::getPlayersMan()->getActivePlayerID());
 	}
-
-	billboardSetProvider.commit();
 	updateAdditionalInfo();
 }
 
@@ -465,8 +462,6 @@ void Controls::cleanAndUpdate(const SimInfo* simulationInfo) {
 			               Game::getColorPaletteRepo()->getCircleColor(build->getDbBuilding()));
 		}
 	}
-
-	billboardSetProvider.commit();
 }
 
 void Controls::updateSelection() const {

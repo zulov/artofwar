@@ -78,7 +78,7 @@ void Hud::createCursor() const {
 
 void Hud::createMyPanels() {
 	panels = {
-		selectedHudPanel = new SelectedHudPanel(style),
+		selectedHudPanel = new SelectedHudPanel(root, style),
 		debugPanel = new DebugPanel(style),
 		topPanel = new TopPanel(style),
 		menuPanel = new MenuPanel(style),
@@ -135,7 +135,7 @@ Hud::Hud() : Object(Game::getContext()) {
 		db_settings* settings = Game::getDatabase()->getSettings();
 		graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
 		resolution = Game::getDatabase()->getResolution(settings->resolution);
-
+		root = Game::getUI()->GetRoot()->CreateChild<Urho3D::UIElement>();
 		prepareStyle();
 	}
 	std::ranges::fill(panels, nullptr);

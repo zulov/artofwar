@@ -7,7 +7,6 @@ namespace Urho3D
 
 class SelectedObject {
 public:
-	void disableBillboard(Urho3D::Billboard* billboard);
 	void disableBillboards();
 	Urho3D::Billboard* getHealthBar() const { return healthBar; }
 	void set(Urho3D::Billboard* bar);

@@ -44,9 +44,10 @@ public:
 	bool isInCloseRange(int index) const override;
 	Urho3D::Color getColor(db_player_colors* col) const override;
 	void setVisibility(VisibilityType type) override;
+	unsigned char getHealthBarThick() const override { return 6; }
 protected:
 	void populate() override;
-	float getHealthBarThick() const override { return 0.15f; }
+	
 
 	unsigned short indexInInfluence;
 	StaticState state, nextState;

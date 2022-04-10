@@ -37,7 +37,7 @@ void ResourceEntity::populate() {
 	id = dbResource->id;
 }
 
-float ResourceEntity::getMaxHpBarSize() const {
+unsigned short ResourceEntity::getMaxHpBarSize() const {
 	return 1;
 }
 
@@ -106,7 +106,6 @@ void ResourceEntity::setModelData(float modelHeight) const {
 std::pair<float, bool> ResourceEntity::absorbAttack(float collectSpeed) {
 	if (hp - collectSpeed >= 0) {
 		hp -= collectSpeed;
-		updateHealthBar();
 		return {collectSpeed, false};
 	}
 
