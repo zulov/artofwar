@@ -24,6 +24,7 @@
 #include "camera/CameraManager.h"
 #include "colors/ColorPaletteRepo.h"
 #include "control/Controls.h"
+#include "control/SelectedInfo.h"
 #include "database/DatabaseCache.h"
 #include "database/db_grah_structs.h"
 #include "debug/DebugLineRepo.h"
@@ -619,7 +620,7 @@ SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {
 
 	controls->cleanAndUpdate(simulationInfo);
 	auto camera = Game::getCameraManager()->getComponent();
-	healthBarProvider.reset();
+	healthBarProvider.reset(controls->getSelected().size(), controls->getInfo()->getSelectedType());
 	for (auto selected : controls->getSelected()) {
 		auto progressBar = healthBarProvider.getNext(selected->getType());
 

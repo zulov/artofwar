@@ -14,7 +14,7 @@ public:
 	HealthBarProvider(const HealthBarProvider& rhs) = delete;
 	~HealthBarProvider();
 	void init();
-	void reset();
+	void reset(int size, ObjectType type);
 	void hide(Urho3D::ProgressBar* bar);
 	Urho3D::ProgressBar* createNew(const Urho3D::String& style);
 
