@@ -46,8 +46,7 @@ void HealthBarProvider::hide(Urho3D::ProgressBar* bar) {
 }
 
 Urho3D::ProgressBar* HealthBarProvider::createNew(const Urho3D::String& style) {
-	Urho3D::ProgressBar* nowy = createElement<Urho3D::ProgressBar>(root, Game::getUI()->GetRoot()->GetDefaultStyle(),
-	                                                               style);
+	Urho3D::ProgressBar* nowy = createElement<Urho3D::ProgressBar>(root, root->GetDefaultStyle(), style);
 	hide(nowy);
 	return nowy;
 }

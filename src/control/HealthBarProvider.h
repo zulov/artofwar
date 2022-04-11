@@ -15,6 +15,7 @@ public:
 	~HealthBarProvider();
 	void init();
 	void reset();
+	void hide(Urho3D::ProgressBar* bar);
 	Urho3D::ProgressBar* createNew(const Urho3D::String& style);
 
 	Urho3D::ProgressBar* getNext(ObjectType type);
