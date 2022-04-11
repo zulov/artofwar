@@ -12,7 +12,6 @@
 
 
 enum class VisibilityType : char;
-class SelectedObject;
 
 namespace Urho3D {
 	class Node;
@@ -41,8 +40,6 @@ public:
 			indexHasChanged = true;
 		}
 	}
-
-	void updateBillboards() const;
 
 	void setTeam(unsigned char team) { this->team = team; }
 	void setPlayer(unsigned char player) { this->player = player; }

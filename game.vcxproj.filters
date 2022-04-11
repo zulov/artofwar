@@ -202,7 +202,6 @@
     <ClCompile Include="src\objects\queue\SimpleQueueManager.cpp" />
     <ClCompile Include="src\env\influence\map\VisibilityMap.cpp" />
     <ClCompile Include="src\env\bucket\StaticGrid.cpp" />
-    <ClCompile Include="src\objects\SelectedObject.cpp" />
     <ClCompile Include="src\objects\projectile\ProjectileManager.cpp" />
     <ClCompile Include="src\objects\projectile\ProjectileBase.h" />
     <ClCompile Include="src\env\influence\VisibilityManager.cpp" />
@@ -533,7 +532,6 @@
     <ClInclude Include="src\env\influence\map\VisibilityMap.h" />
     <ClInclude Include="src\env\influence\map\VisibilityType.h" />
     <ClInclude Include="src\env\bucket\StaticGrid.h" />
-    <ClInclude Include="src\objects\SelectedObject.h" />
     <ClInclude Include="src\objects\unit\state\StateUtils.h" />
     <ClInclude Include="src\objects\projectile\ProjectileManager.h" />
     <ClInclude Include="src\env\influence\VisibilityManager.h" />

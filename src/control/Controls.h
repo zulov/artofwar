@@ -34,8 +34,6 @@ public:
 	explicit Controls(Urho3D::Input* _input);
 	~Controls();
 
-	void init();
-
 	void updateAdditionalInfo() const;
 	void setCircle(int i, Urho3D::Vector4 val) const;
 	void resetCircles() const;

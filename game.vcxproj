@@ -279,7 +279,6 @@
   <ItemGroup>
     <ClCompile Include="src\objects\projectile\ProjectileBase.h" />
     <ClCompile Include="src\objects\projectile\ProjectileManager.cpp" />
-    <ClCompile Include="src\objects\SelectedObject.cpp" />
     <ClCompile Include="src\objects\queue\SimpleQueueManager.cpp" />
     <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
     <ClCompile Include="src\simulation\SimInfo.cpp" />
@@ -402,7 +401,6 @@
   <ItemGroup>
     <ClInclude Include="src\objects\building\ParentBuildingType.h" />
     <ClInclude Include="src\objects\projectile\ProjectileManager.h" />
-    <ClInclude Include="src\objects\SelectedObject.h" />
     <ClInclude Include="src\objects\queue\AbstractQueueManager.h" />
     <ClInclude Include="src\objects\queue\SimpleQueueManager.h" />
     <ClInclude Include="src\camera\CameraInfo.h" />

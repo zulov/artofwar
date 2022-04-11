@@ -346,7 +346,6 @@ void Main::load(const String& saveName, NewGameForm* form) {
 		if (!engineParameters_[EP_HEADLESS].GetBool()) {
 			SetupViewport();
 			controls = new Controls(GetSubsystem<Input>());
-			controls->init();
 		}
 		hud->resetLoading();
 		if (form) {

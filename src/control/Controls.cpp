@@ -60,10 +60,6 @@ Controls::~Controls() {
 	}
 }
 
-void Controls::init() {
-	//billboardSetProvider.init();
-}
-
 void Controls::updateAdditionalInfo() const {
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::BUILDING: {
@@ -419,7 +415,6 @@ void Controls::refreshSelected() {
 		//TODO perf nie koniecznie resetowac ca³oœæ
 		selectedInfo->refresh(selected);
 	}
-	//TODO bug billboard beda zajete
 }
 
 bool Controls::conditionToClean(const SimInfo* simulationInfo) const {
@@ -440,10 +435,6 @@ bool Controls::conditionToClean(const SimInfo* simulationInfo) const {
 void Controls::cleanAndUpdate(const SimInfo* simulationInfo) {
 	if (conditionToClean(simulationInfo)) {
 		refreshSelected();
-	}
-	auto camera = Game::getCameraManager()->getComponent();
-	for (const auto physical : selected) {
-		physical->updateBillboards();
 	}
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::UNIT:

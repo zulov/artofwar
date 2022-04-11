@@ -1,6 +1,5 @@
 #include "objects/Physical.h"
 
-#include <Urho3D/Graphics/BillboardSet.h>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
@@ -9,7 +8,6 @@
 #include <Urho3D/Scene/Scene.h>
 #include "Game.h"
 #include "NodeUtils.h"
-#include "SelectedObject.h"
 #include "database/DatabaseCache.h"
 #include "database/db_other_struct.h"
 #include "player/Player.h"
@@ -42,17 +40,6 @@ void Physical::clearNodeWithOutDelete() {
 
 bool Physical::isAlive() const {
 	return true;
-}
-
-void Physical::updateBillboards() const {
-	// if (selected) {
-	// 	auto const healthBar = selectedObject->getHealthBar();
-	// 	if (healthBar) {
-	// 		healthBar->position_ = node->GetPosition() + Urho3D::Vector3{0, getModelHeight() * 1.3f, 0};
-	// 		healthBar->size_ = {getHealthBarSize(), getHealthBarThick()};
-	// 		healthBar->enabled_ = true;
-	// 	}
-	// }
 }
 
 std::optional<Urho3D::Vector2> Physical::getPosToUseBy(Unit* follower) {
