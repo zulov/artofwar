@@ -13,7 +13,7 @@ class MainMenuDetailsPanel;
 
 class MainMenuPanel : public EventPanel {
 public:
-	explicit MainMenuPanel(Urho3D::XMLFile* _style);
+	explicit MainMenuPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style);
 	~MainMenuPanel();
 	void action(short id) const;
 	void close() const;

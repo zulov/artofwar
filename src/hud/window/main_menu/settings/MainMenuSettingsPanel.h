@@ -15,7 +15,7 @@ struct SettingsForm;
 
 class MainMenuSettingsPanel : public MainMenuDetailsPanel {
 public:
-	MainMenuSettingsPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title);
+	MainMenuSettingsPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style, const Urho3D::String& _title);
 	~MainMenuSettingsPanel();
 	void setValues(int graphID) const;
 private:

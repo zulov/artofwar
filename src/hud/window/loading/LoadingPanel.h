@@ -8,7 +8,7 @@ namespace Urho3D {
 
 class LoadingPanel : public SimplePanel {
 public:
-	explicit LoadingPanel(Urho3D::XMLFile* _style);
+	explicit LoadingPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style);
 	~LoadingPanel() = default;
 	void show();
 	void update(float progres) const;

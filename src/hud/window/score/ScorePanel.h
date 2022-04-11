@@ -11,7 +11,7 @@ class Player;
 
 class ScorePanel : public SimplePanel {
 public:
-	explicit ScorePanel(Urho3D::XMLFile* _style);
+	explicit ScorePanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style);
 	~ScorePanel() = default;
 	void update(const std::vector<Player*>& players) const;
 private:

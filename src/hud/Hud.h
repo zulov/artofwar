@@ -71,6 +71,7 @@ URHO3D_OBJECT(Hud, Object)
 	Urho3D::Button* getNewGameProceed() const { return mainMenuPanel->getNewGameProceed(); }
 	Urho3D::Button* getLoadButton() const { return mainMenuPanel->getLoadButton(); }
 	Urho3D::Button* getCloseButton() const { return mainMenuPanel->getCloseButton(); }
+	Urho3D::UIElement* getRoot() const { return root; }
 private:
 
 	void replaceVariables(std::string& xml, int hudSizeId) const;

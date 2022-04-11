@@ -13,7 +13,7 @@ class SelectedHudElement;
 
 class SelectedHudPanel : public SimplePanel {
 public:
-	explicit SelectedHudPanel(Urho3D::XMLFile* _style);
+	explicit SelectedHudPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style);
 	~SelectedHudPanel();
 	void update(SelectedInfo* selectedInfo);
 

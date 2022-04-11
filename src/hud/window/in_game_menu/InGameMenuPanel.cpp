@@ -9,10 +9,9 @@
 #include "middle/FilePanel.h"
 #include "utils/DeleteUtils.h"
 
-InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style)
-	: EventPanel(_style, "InGameMenuWindow",
-	                      {GameState::RUNNING, GameState::PAUSE}) {
-}
+InGameMenuPanel::InGameMenuPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style)
+	: EventPanel(root, _style, "InGameMenuWindow",
+	             {GameState::RUNNING, GameState::PAUSE}) {}
 
 InGameMenuPanel::~InGameMenuPanel() {
 	toggleButton->Remove();
@@ -70,11 +69,11 @@ void InGameMenuPanel::createBody() {
 	}
 
 	auto l10n = Game::getLocalization();
-	additionalPanels[0] = new FilePanel(style, l10n->Get("igm_0"));
-	additionalPanels[1] = new FilePanel(style, l10n->Get("igm_1"));
-	additionalPanels[2] = new AbstractMiddlePanel(style, l10n->Get("igm_2"));
-	additionalPanels[3] = new AbstractMiddlePanel(style, l10n->Get("igm_3"));
-	additionalPanels[4] = new AbstractMiddlePanel(style, l10n->Get("igm_4"));
+	additionalPanels[0] = new FilePanel(root, style, l10n->Get("igm_0"));
+	additionalPanels[1] = new FilePanel(root, style, l10n->Get("igm_1"));
+	additionalPanels[2] = new AbstractMiddlePanel(root, style, l10n->Get("igm_2"));
+	additionalPanels[3] = new AbstractMiddlePanel(root, style, l10n->Get("igm_3"));
+	additionalPanels[4] = new AbstractMiddlePanel(root, style, l10n->Get("igm_4"));
 	for (auto addionalPanel : additionalPanels) {
 		addionalPanel->createWindow();
 	}

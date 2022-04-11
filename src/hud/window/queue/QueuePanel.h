@@ -8,7 +8,7 @@ class QueueHudElement;
 
 class QueuePanel : public EventPanel {
 public:
-	explicit QueuePanel(Urho3D::XMLFile* _style);
+	explicit QueuePanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style);
 	~QueuePanel();
 
 	void show(SelectedInfo* selectedInfo);

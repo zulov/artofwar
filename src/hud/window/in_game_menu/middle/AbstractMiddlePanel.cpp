@@ -5,8 +5,8 @@
 
 
 AbstractMiddlePanel::
-AbstractMiddlePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title):
-	EventPanel(_style, "AdditionalInGameWindow", {}) {
+AbstractMiddlePanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style, const Urho3D::String& _title):
+	EventPanel(root, _style, "AdditionalInGameWindow", {}) {
 	msg = _title;
 }
 

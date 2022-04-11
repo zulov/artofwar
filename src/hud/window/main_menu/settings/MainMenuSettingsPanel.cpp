@@ -8,7 +8,7 @@
 #include "hud/UiUtils.h"
 
 MainMenuSettingsPanel::
-MainMenuSettingsPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): MainMenuDetailsPanel(_style, _title) {
+MainMenuSettingsPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style, const Urho3D::String& _title): MainMenuDetailsPanel(root, _style, _title) {
 	bodyStyle = "MainMenuSettingsMock";
 }
 

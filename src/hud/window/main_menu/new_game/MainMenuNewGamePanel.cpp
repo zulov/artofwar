@@ -11,7 +11,7 @@
 #include "database/db_other_struct.h"
 
 MainMenuNewGamePanel::
-MainMenuNewGamePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): MainMenuDetailsPanel(_style, _title) {
+MainMenuNewGamePanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style, const Urho3D::String& _title): MainMenuDetailsPanel(root, _style, _title) {
 	bodyStyle = "MainMenuNewGameMock";
 }
 

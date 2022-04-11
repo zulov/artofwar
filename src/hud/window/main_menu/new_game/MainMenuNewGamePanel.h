@@ -17,7 +17,7 @@ constexpr char NEW_GAME_ROWS_NUMBER = 5;
 
 class MainMenuNewGamePanel : public MainMenuDetailsPanel {
 public:
-	MainMenuNewGamePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title);
+	MainMenuNewGamePanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style, const Urho3D::String& _title);
 	~MainMenuNewGamePanel();
 	Urho3D::Button* getProceed() const;
 

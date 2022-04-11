@@ -14,7 +14,7 @@ constexpr char MINI_MAP_BUTTON_NUMBER = 5;
 class MiniMapPanel : public EventPanel {
 public:
 	void initColors();
-	explicit MiniMapPanel(Urho3D::XMLFile* _style);
+	explicit MiniMapPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style);
 	~MiniMapPanel();
 	void createEmpty(int parts);
 	void changeValue(uint32_t* data, bool& changed, unsigned val) const;

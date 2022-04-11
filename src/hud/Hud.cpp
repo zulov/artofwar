@@ -10,6 +10,7 @@
 #include "Benchmark.h"
 #include "Game.h"
 #include "HudData.h"
+#include "UiUtils.h"
 #include "camera/CameraManager.h"
 #include "control/SelectedInfo.h"
 #include "database/DatabaseCache.h"
@@ -79,15 +80,15 @@ void Hud::createCursor() const {
 void Hud::createMyPanels() {
 	panels = {
 		selectedHudPanel = new SelectedHudPanel(root, style),
-		debugPanel = new DebugPanel(style),
-		topPanel = new TopPanel(style),
-		menuPanel = new MenuPanel(style),
-		queuePanel = new QueuePanel(style),
-		loadingPanel = new LoadingPanel(style),
-		inGameMenuPanel = new InGameMenuPanel(style),
-		mainMenuPanel = new MainMenuPanel(style),
-		miniMapPanel = new MiniMapPanel(style),
-		scorePanel = new ScorePanel(style)
+		debugPanel = new DebugPanel(root, style),
+		topPanel = new TopPanel(root, style),
+		menuPanel = new MenuPanel(root, style),
+		queuePanel = new QueuePanel(root, style),
+		loadingPanel = new LoadingPanel(root, style),
+		inGameMenuPanel = new InGameMenuPanel(root, style),
+		mainMenuPanel = new MainMenuPanel(root, style),
+		miniMapPanel = new MiniMapPanel(root, style),
+		scorePanel = new ScorePanel(root, style)
 	};
 
 	for (auto panel : panels) {
@@ -135,8 +136,12 @@ Hud::Hud() : Object(Game::getContext()) {
 		db_settings* settings = Game::getDatabase()->getSettings();
 		graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
 		resolution = Game::getDatabase()->getResolution(settings->resolution);
-		root = Game::getUI()->GetRoot()->CreateChild<Urho3D::UIElement>();
 		prepareStyle();
+		//root = Game::getUI()->GetRoot();
+		//root = Game::getUI()->GetRoot()->CreateChild<Urho3D::UIElement>();
+		auto r = Game::getUI()->GetRoot();
+	
+		root = createElement<Urho3D::UIElement>(Game::getUI()->GetRoot(), style, "rootMock");
 	}
 	std::ranges::fill(panels, nullptr);
 }

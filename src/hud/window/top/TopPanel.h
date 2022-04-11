@@ -10,7 +10,7 @@ class TopHudElement;
 
 class TopPanel : public SimplePanel {
 public:
-	explicit TopPanel(Urho3D::XMLFile* style);
+	explicit TopPanel(Urho3D::UIElement* root, Urho3D::XMLFile* style);
 	~TopPanel();
 	void update(Player * player) const;
 	void setVisible(bool enable) override;

@@ -6,13 +6,14 @@
 
 namespace Urho3D
 {
+	class UIElement;
 	class Window;
 	class XMLFile;
 }
 
 class SimplePanel {
 public:
-	SimplePanel(Urho3D::XMLFile* _style, Urho3D::String styleName,
+	SimplePanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style, Urho3D::String styleName,
 	            std::initializer_list<GameState> active);
 	virtual ~SimplePanel();
 	void createWindow();
@@ -22,6 +23,7 @@ public:
 protected:
 	Urho3D::XMLFile* style;
 	Urho3D::Window* window;
+	Urho3D::UIElement* root;
 	Urho3D::String styleName, bodyStyle;
 
 	bool visibleAt[magic_enum::enum_count<GameState>()];

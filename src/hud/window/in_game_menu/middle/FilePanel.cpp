@@ -7,7 +7,7 @@
 #include "Game.h"
 #include "hud/UiUtils.h"
 
-FilePanel::FilePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): AbstractMiddlePanel(_style, _title) {
+FilePanel::FilePanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style, const Urho3D::String& _title): AbstractMiddlePanel(root, _style, _title) {
 	data = nullptr;
 }
 

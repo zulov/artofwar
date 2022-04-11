@@ -11,7 +11,7 @@ class HudData;
 
 class LeftMenuInfoPanel : public SimplePanel {
 public:
-	explicit LeftMenuInfoPanel(Urho3D::XMLFile* _style);
+	explicit LeftMenuInfoPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style);
 	~LeftMenuInfoPanel() = default;
 	void updateSelected(SelectedInfo* selectedInfo);
 	void setHoverInfo(HudData* hudData);

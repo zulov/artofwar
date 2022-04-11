@@ -13,7 +13,7 @@
 #include "player/Resources.h"
 
 
-TopPanel::TopPanel(Urho3D::XMLFile* style) : SimplePanel(style, "TopWindow",
+TopPanel::TopPanel(Urho3D::UIElement* root, Urho3D::XMLFile* style) : SimplePanel(root, style, "TopWindow",
                                                          {GameState::RUNNING, GameState::PAUSE}) {}
 
 
@@ -41,7 +41,7 @@ void TopPanel::createBody() {
 
 		elements[i] = new TopHudElement(window, style, texture);
 	}
-	infoPanel = new TopInfoPanel(style);
+	infoPanel = new TopInfoPanel(root, style);
 	infoPanel->createWindow();
 	infoPanel->setVisible(true);
 }

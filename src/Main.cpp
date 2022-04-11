@@ -600,7 +600,7 @@ void Main::disposeScene() {
 
 SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {
 	const IntVector2 cursorPos = Game::getUI()->GetCursorPosition();
-	UIElement* element = Game::getUI()->GetElementAt(cursorPos, true);
+	UIElement* element = Game::getUI()->GetElementAt(hud->getRoot(), cursorPos, true);
 
 	if (element) {
 		controls->deactivate();

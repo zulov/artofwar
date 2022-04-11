@@ -4,8 +4,8 @@
 #include "player/Player.h"
 
 
-ScorePanel::ScorePanel(Urho3D::XMLFile* _style)
-	: SimplePanel(_style, "ScorePanel", {
+ScorePanel::ScorePanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style)
+	: SimplePanel(root, _style, "ScorePanel", {
 		                      GameState::RUNNING, GameState::PAUSE
 	                      }) {}
 

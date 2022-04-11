@@ -7,7 +7,7 @@ namespace Urho3D {
 
 class TopInfoPanel : public SimplePanel {
 public:
-	explicit TopInfoPanel(Urho3D::XMLFile* _style);
+	explicit TopInfoPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style);
 	~TopInfoPanel() = default;
 
 	void hoverOn();

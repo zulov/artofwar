@@ -12,7 +12,7 @@
 #include "settings/MainMenuSettingsPanel.h"
 
 
-MainMenuPanel::MainMenuPanel(Urho3D::XMLFile* _style): EventPanel(_style, "MainMenuWindow",
+MainMenuPanel::MainMenuPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style): EventPanel(root, _style, "MainMenuWindow",
                                                                            {GameState::MENU_MAIN}) {}
 
 
@@ -64,11 +64,11 @@ void MainMenuPanel::createBody() {
 	window->SetPriority(1);
 
 	auto l10n = Game::getLocalization();
-	detailsPanels[0] = new MainMenuNewGamePanel(style, l10n->Get("menu_0"));
-	detailsPanels[1] = new MainMenuLoadPanel(style, l10n->Get("menu_1"));
-	detailsPanels[2] = new MainMenuSettingsPanel(style, l10n->Get("menu_2"));
-	detailsPanels[3] = new MainMenuHelpPanel(style, l10n->Get("menu_3"));
-	detailsPanels[4] = new MainMenuClosePanel(style, l10n->Get("menu_4"));
+	detailsPanels[0] = new MainMenuNewGamePanel(root, style, l10n->Get("menu_0"));
+	detailsPanels[1] = new MainMenuLoadPanel(root, style, l10n->Get("menu_1"));
+	detailsPanels[2] = new MainMenuSettingsPanel(root, style, l10n->Get("menu_2"));
+	detailsPanels[3] = new MainMenuHelpPanel(root, style, l10n->Get("menu_3"));
+	detailsPanels[4] = new MainMenuClosePanel(root, style, l10n->Get("menu_4"));
 	for (auto detailsPanel : detailsPanels) {
 		detailsPanel->createWindow();
 		detailsPanel->setVisible(false);

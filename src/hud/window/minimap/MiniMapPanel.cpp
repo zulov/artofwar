@@ -14,8 +14,8 @@
 #include "env/Environment.h"
 
 
-MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style)
-	: EventPanel(_style, "MiniMapWindow", {GameState::RUNNING, GameState::PAUSE}) {
+MiniMapPanel::MiniMapPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style)
+	: EventPanel(root, _style, "MiniMapWindow", {GameState::RUNNING, GameState::PAUSE}) {
 	std::fill_n(checks, MINI_MAP_BUTTON_NUMBER, true);
 }
 

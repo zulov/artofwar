@@ -16,7 +16,7 @@
 #include "objects/queue/QueueElement.h"
 
 
-QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : EventPanel(_style, "QueueWindow",
+QueuePanel::QueuePanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style) : EventPanel(root, _style, "QueueWindow",
                                                                       {GameState::RUNNING, GameState::PAUSE}) {
 	elements = new QueueHudElement*[MAX_ICON_SELECTION];
 }

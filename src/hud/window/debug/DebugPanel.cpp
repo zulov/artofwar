@@ -2,7 +2,7 @@
 #include "hud/UiUtils.h"
 #include <Urho3D/UI/Window.h>
 
-DebugPanel::DebugPanel(Urho3D::XMLFile* _style) : SimplePanel(_style, "MyDebugHudWindow",
+DebugPanel::DebugPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style) : SimplePanel(root, _style, "MyDebugHudWindow",
                                                               {GameState::RUNNING, GameState::PAUSE}) {
 }
 

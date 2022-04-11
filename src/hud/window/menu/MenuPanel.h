@@ -24,7 +24,7 @@ class MySprite;
 
 class MenuPanel : public EventPanel {
 public:
-	explicit MenuPanel(Urho3D::XMLFile* _style);
+	explicit MenuPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style);
 	~MenuPanel();
 	void removeHoverInfo() const;
 	void refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo);

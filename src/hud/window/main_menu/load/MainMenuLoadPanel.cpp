@@ -8,7 +8,7 @@
 
 
 MainMenuLoadPanel::
-MainMenuLoadPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): MainMenuDetailsPanel(_style, _title) {
+MainMenuLoadPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style, const Urho3D::String& _title): MainMenuDetailsPanel(root, _style, _title) {
 	bodyStyle = "MainMenuLoadMock";
 }
 

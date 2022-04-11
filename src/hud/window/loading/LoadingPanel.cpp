@@ -4,7 +4,7 @@
 #include <Urho3D/UI/Window.h>
 #include "hud/UiUtils.h"
 
-LoadingPanel::LoadingPanel(Urho3D::XMLFile* _style) : SimplePanel(_style, "LoadingWindow",
+LoadingPanel::LoadingPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style) : SimplePanel(root, _style, "LoadingWindow",
                                                                           {GameState::LOADING, GameState::NEW_GAME}) {}
 
 void LoadingPanel::show() {
@@ -22,8 +22,8 @@ void LoadingPanel::createBody() {
 	background->SetVisible(true);
 
 	bar = createElement<Urho3D::ProgressBar>(background, style, "LargeProgressBar");
-	bar->SetRange(1);
-	bar->SetValue(0);
+	bar->SetRange(1.f);
+	bar->SetValue(0.f);
 	bar->SetVisible(true);
 }
 

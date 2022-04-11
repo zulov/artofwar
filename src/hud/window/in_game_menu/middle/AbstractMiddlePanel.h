@@ -11,7 +11,7 @@ constexpr char MIDDLE_LIST_ROW_NUMBER = 3;
 
 class AbstractMiddlePanel : public EventPanel {
 public:
-	AbstractMiddlePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title);
+	AbstractMiddlePanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style, const Urho3D::String& _title);
 	virtual ~AbstractMiddlePanel();
 
 	void createBody() override;

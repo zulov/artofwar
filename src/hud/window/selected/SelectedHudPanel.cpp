@@ -11,8 +11,8 @@
 #include "objects/NamesCache.h"
 
 
-SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style)
-	: SimplePanel(_style, "SelectedInfoWindow",
+SelectedHudPanel::SelectedHudPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style)
+	: SimplePanel(root, _style, "SelectedInfoWindow",
 	                      {GameState::RUNNING, GameState::PAUSE}) {
 }
 

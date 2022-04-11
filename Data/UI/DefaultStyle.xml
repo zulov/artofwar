@@ -482,3 +482,10 @@
 	<attribute name="Opacity" value="0.8"/>
 </element>
 
+
+<element type="rootMock">
+	<attribute name="Min Size" value="{resX} {resy}"/>
+	<attribute name="Max Size" value="{resX} {resy}"/>
+</element>
+
+

@@ -10,7 +10,7 @@ namespace Urho3D {
 
 class MainMenuLoadPanel : public MainMenuDetailsPanel {
 public:
-	MainMenuLoadPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title);
+	MainMenuLoadPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style, const Urho3D::String& _title);
 	~MainMenuLoadPanel() = default;
 	void HandleLoadClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 	Urho3D::Button* getLoadButton() const;

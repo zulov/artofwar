@@ -19,7 +19,7 @@
 #include "math/VectorUtils.h"
 
 
-MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : EventPanel(_style, "LeftMenuWindow",
+MenuPanel::MenuPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style) : EventPanel(root, _style, "LeftMenuWindow",
                                                            {GameState::RUNNING, GameState::PAUSE}) {
 }
 
@@ -86,7 +86,7 @@ void MenuPanel::updateMode(LeftMenuMode mode) {
 }
 
 void MenuPanel::createBody() {
-	infoPanel = new LeftMenuInfoPanel(style);
+	infoPanel = new LeftMenuInfoPanel(root, style);
 	infoPanel->createWindow();
 	removeHoverInfo();
 
