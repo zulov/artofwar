@@ -187,6 +187,5 @@ private:
 	char slotToInteract = -1;
 	unsigned char useSockets = 0;
 	char lastActionThingId = -1; //TODO reset po jakimœ czasie
-	char posInCell = -1;
 	ActionParameter nextActionParameter;
 };
