@@ -18,32 +18,38 @@ HealthBarProvider::~HealthBarProvider() {
 
 void HealthBarProvider::init() {
 	root = Game::getUI()->GetRoot()->CreateChild<Urho3D::UIElement>();
-	resourceBars = createSet("ResHealthBar", RESOURCE_SIZE);
-	playerBars = createSet("HealthBar", PLAYER_SIZE);
+	resourceBars = createSet(RESOURCE_SIZE);
+	playerBars = createSet(PLAYER_SIZE);
 }
 
-Urho3D::ProgressBar**
-HealthBarProvider::createSet(Urho3D::String style, int size) const {
+Urho3D::ProgressBar** HealthBarProvider::createSet(int size) const {
 	auto data = new Urho3D::ProgressBar*[size];
+	std::fill_n(data, size, nullptr);
 
-	for (int i = 0; i < size; ++i) {
-		data[i] = createElement<Urho3D::ProgressBar>(root, Game::getUI()->GetRoot()->GetDefaultStyle(), style);
-		data[i]->SetEnabled(false);
-		data[i]->SetVisible(false);
-	}
 	return data;
 }
 
 void HealthBarProvider::reset() {
-	for (int i = 0; i < Urho3D::Min(idx, PLAYER_SIZE); ++i) {
-		playerBars[i]->SetEnabled(false);
-		playerBars[i]->SetVisible(false);
+	for (int i = 0; i < Urho3D::Min(playerIdx, PLAYER_SIZE); ++i) {
+		hide(playerBars[i]);
 	}
-	for (int i = 0; i < Urho3D::Min(idx, RESOURCE_SIZE); ++i) {
-		resourceBars[i]->SetEnabled(false);
-		resourceBars[i]->SetVisible(false);
+	for (int i = 0; i < Urho3D::Min(resIdx, RESOURCE_SIZE); ++i) {
+		hide(resourceBars[i]);
 	}
-	idx = 0;
+	resIdx = 0;
+	playerIdx = 0;
+}
+
+void HealthBarProvider::hide(Urho3D::ProgressBar* bar) {
+	bar->SetEnabled(false);
+	bar->SetVisible(false);
+}
+
+Urho3D::ProgressBar* HealthBarProvider::createNew(const Urho3D::String& style) {
+	Urho3D::ProgressBar* nowy = createElement<Urho3D::ProgressBar>(root, Game::getUI()->GetRoot()->GetDefaultStyle(),
+	                                                               style);
+	hide(nowy);
+	return nowy;
 }
 
 Urho3D::ProgressBar* HealthBarProvider::getNext(ObjectType type) {
@@ -51,15 +57,22 @@ Urho3D::ProgressBar* HealthBarProvider::getNext(ObjectType type) {
 	switch (type) {
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
-		if (idx < PLAYER_SIZE) {
-			toReturn = playerBars[idx];
+		if (playerIdx < PLAYER_SIZE) {
+			if (!playerBars[playerIdx]) {
+				playerBars[playerIdx] = createNew("HealthBar");
+			}
+			toReturn = playerBars[playerIdx];
 		}
+		++playerIdx;
 		break;
 	case ObjectType::RESOURCE:
-		if (idx < RESOURCE_SIZE) {
-			toReturn = resourceBars[idx];
+		if (resIdx < RESOURCE_SIZE) {
+			if (!resourceBars[resIdx]) {
+				resourceBars[resIdx] = createNew("ResHealthBar");
+			}
+			toReturn = resourceBars[resIdx];
 		}
+		++resIdx;
 	}
-	++idx;
 	return toReturn;
 }
