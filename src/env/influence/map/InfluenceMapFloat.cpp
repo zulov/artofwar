@@ -152,19 +152,25 @@ std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float t
 bool InfluenceMapFloat::cumulateErros(float percent, float* intersection) const {
 	assert(minMaxInited);
 	assert(!valuesCalculateNeeded);
-	if (percent < 0.f) { return false; }
-	float diff = max - min;
+
+	const float diff = max - min;
 
 	if (diff != 0.f) {
 		percent = fixValue(percent, 1.f);
-		const auto centerVal = percent * diff + min;
-		diff = 1.f / diff;
+		//const auto centerVal = percent * diff + min;
+		const auto invDiff = 1.f / diff;
 		const auto endV = values + arraySize;
 		constexpr auto maxVal = std::numeric_limits<float>::max() - 1.f;
 
 		for (auto ptrV = values; ptrV < endV; ++ptrV, ++intersection) {
 			if (*intersection < maxVal) {
-				const auto val = (centerVal - (*ptrV)) * diff;
+				float val;
+				if(percent<0.f) {
+					val = *ptrV - min;
+				}else {
+					val = max - *ptrV;
+				}
+				val *= invDiff*percent;
 				*intersection += val * val;
 			}
 		}

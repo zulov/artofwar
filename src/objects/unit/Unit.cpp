@@ -363,6 +363,7 @@ void Unit::changeColor(float value, float maxValue) const {
 }
 
 void Unit::changeColor(SimColorMode mode) {
+	//TODO change to shader
 	switch (mode) {
 	case SimColorMode::BASIC:
 		return changeMaterial(basic, model);
