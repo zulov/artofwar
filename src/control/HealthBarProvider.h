@@ -23,8 +23,8 @@ public:
 private:
 	Urho3D::ProgressBar** createSet(int size) const;
 
-	Urho3D::ProgressBar** resourceBars;
-	Urho3D::ProgressBar** playerBars;
+	Urho3D::ProgressBar** resourceBars{};
+	Urho3D::ProgressBar** playerBars{};
 	Urho3D::UIElement* root;
 
 	int playerIdx = 0;
