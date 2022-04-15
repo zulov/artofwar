@@ -82,7 +82,7 @@ private:
 	void writeOutput() const;
 	void setCameraPos() const;
 
-	Urho3D::MouseMode useMouseMode_;
+
 	Simulation* simulation{};
 	Hud* hud{};
 	Controls* controls{};
@@ -92,9 +92,11 @@ private:
 	SceneSaver saver;
 	SceneLoader loader;
 	Loading loadingProgress;
-	GameState gameState;
-	DebugManager debugManager;
 	HealthBarProvider healthBarProvider;
+	DebugManager debugManager;
+	
+	GameState gameState;
+	Urho3D::MouseMode useMouseMode_;
 
 	bool inited = false;
 	short coefToEdit = 0;

@@ -696,7 +696,6 @@ void Main::readParameters() {
 				++i;
 			} else if (argument == "random") {
 				SimGlobals::RANDOM = true;
-				++i;
 			}
 		}
 	}
