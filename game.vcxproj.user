@@ -8,7 +8,7 @@
     <LocalDebuggerCommandArguments>-benchmark -allplayerai -random</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>-benchmark -allplayerai</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-benchmark -allplayerai -random</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-ltcg|x64'">

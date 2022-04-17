@@ -152,7 +152,7 @@ const inline struct MetricDefinitions {
 		{[](db_unit* u, db_unit_level* l) -> float { return u->typeSpecial; }, 1, UNITS_SUM_X},
 		{[](db_unit* u, db_unit_level* l) -> float { return u->typeMelee; }, 1, UNITS_SUM_X},
 		{[](db_unit* u, db_unit_level* l) -> float { return u->typeHeavy; }, 1, UNITS_SUM_X},
-		{[](db_unit* u, db_unit_level* l) -> float { return u->typeLight; }, 1, UNITS_SUM_X},//15
+		{[](db_unit* u, db_unit_level* l) -> float { return u->typeLight; }, 1, UNITS_SUM_X}, //15
 
 		{[](db_unit* u, db_unit_level* l) -> float { return l->bonusInfantry; }, 1, UNITS_SUM_X},
 		{[](db_unit* u, db_unit_level* l) -> float { return l->bonusRange; }, 1, UNITS_SUM_X},
@@ -174,7 +174,7 @@ const inline struct MetricDefinitions {
 		{[](db_building* b, db_building_level* l) -> float { return l->attack; }, 20, BUILDINGS_SUM_X}, //5
 		{[](db_building* b, db_building_level* l) -> float { return l->attackReload; }, 200, BUILDINGS_SUM_X},
 		{[](db_building* b, db_building_level* l) -> float { return l->attackRange; }, 20, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float { return l->resourceRange; }, 20, BUILDINGS_SUM_X},
+		{[](db_building* b, db_building_level* l) -> float { return l->resourceRange; }, 20, BUILDINGS_SUM_X},//TODO stad duzo wyrzuciæ
 
 		{[](db_building* b, db_building_level* l) -> float { return b->typeCenter; }, 1, BUILDINGS_SUM_X}, //9
 		{[](db_building* b, db_building_level* l) -> float { return b->typeHome; }, 1, BUILDINGS_SUM_X},
@@ -190,7 +190,7 @@ const inline struct MetricDefinitions {
 		{[](db_building* b, db_building_level* l) -> float { return b->typeUnitCavalry; }, 1, BUILDINGS_SUM_X},
 	};
 
-	static inline unsigned char aiUnitsTypesIdxs[] = {8,9,10,11,12,12,13,14,15};
+	static inline unsigned char aiUnitsTypesIdxs[] = {8, 9, 10, 11, 12, 12, 13, 14, 15};
 
 	static inline unsigned char aiBuildingOtherIdxs[] = {9, 10}; //TODO moze cos wiecej?
 	static inline unsigned char aiBuildingUnitsIdxs[] = {18, 19, 20}; //TODO moze cos wiecej?
@@ -217,12 +217,10 @@ const inline struct MetricDefinitions {
 
 	static inline AiPlayerMetric aiBasicMetric[] = {
 		{[](Player* one, Player* two) -> float { return one->getScore(); }, 1000},
-		{[](Player* one, Player* two) -> float { return one->getPossession().getUnitsNumber(); }, 100},
-		{[](Player* one, Player* two) -> float { return one->getPossession().getBuildingsNumber(); }, 100},
+		{[](Player* one, Player* two) -> float { return one->getPossession().getUnitsNumber(); }, 200},
+		{[](Player* one, Player* two) -> float { return one->getPossession().getBuildingsNumber(); }, 50},
 
-		{[](Player* one, Player* two) -> float { return two->getScore(); }, 1000},
-		{[](Player* one, Player* two) -> float { return two->getPossession().getUnitsNumber(); }, 100},
-		{[](Player* one, Player* two) -> float { return two->getPossession().getBuildingsNumber(); }, 100}
+		{[](Player* one, Player* two) -> float { return two->getScore(); }, 1000}
 	};
 
 	static inline AiPlayerMetric aiAttackOrDefence[] = {

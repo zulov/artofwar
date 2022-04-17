@@ -57,7 +57,6 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	const auto whichTypeOutput = whichBuildingType->decide(buildingsInput);
 
 	ParentBuildingType type = static_cast<ParentBuildingType>(biggestWithRand(whichTypeOutput));
-	type = ParentBuildingType::RESOURCE;
 	const auto aiTypeInput = Game::getAiInputProvider()->getBuildingsTypeInput(player->getId(), type);
 	auto output = getWhichBuilding(type, aiTypeInput);
 
