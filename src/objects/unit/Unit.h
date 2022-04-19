@@ -166,8 +166,6 @@ private:
 	db_unit* dbUnit;
 	db_unit_level* dbLevel;
 
-	Urho3D::Material* basic{};
-
 	ChargeData* chargeData{};
 
 	Physical* thingToInteract{}; //TODO jak to wczytac :O

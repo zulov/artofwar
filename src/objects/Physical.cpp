@@ -123,6 +123,7 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 			auto mat = model->GetMaterial(i);
 			mat->SetShaderParameter("OutlineEnable", false);
 			mat->SetShaderParameter("SemiHide", false);
+			mat->SetShaderParameter("ColorPercent", 2.0);
 			mat->SetShaderParameter("Progress", 2.0);
 			mat->SetShaderParameter("VerticalPos",
 			                        Urho3D::Vector2(getPosition().y_, getPosition().y_ + getModelHeight()));

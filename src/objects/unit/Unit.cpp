@@ -36,7 +36,6 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 
 	if (!SIM_GLOBALS.HEADLESS) {
 		model = node->GetComponent<Urho3D::StaticModel>();
-		basic = model->GetMaterial(0);
 	}
 
 	if (dbUnit->typeCalvary) {
@@ -358,22 +357,20 @@ void Unit::resetStateChangePending() {
 	stateChangePending = false;
 }
 
-void Unit::changeColor(float value, float maxValue) const {
-	changeMaterial(Game::getColorPaletteRepo()->getColor(ColorPallet::RED, value, maxValue), model);
-}
-
 void Unit::changeColor(SimColorMode mode) {
-	//TODO change to shader
 	switch (mode) {
 	case SimColorMode::BASIC:
-		return changeMaterial(basic, model);
+		setShaderParam(node, "ColorPercent", 2.f);
+		break;
 	case SimColorMode::VELOCITY:
-		return changeColor(velocity.LengthSquared(), maxSpeed * maxSpeed);
+		setShaderParam(node, "ColorPercent", velocity.LengthSquared() / maxSpeed * maxSpeed);
+		break;
 	case SimColorMode::STATE:
-		return changeMaterial(Game::getColorPaletteRepo()->getColor(state), model);
+		setShaderParam(node, "ColorPercent", ((float)state )/ magic_enum::enum_count<UnitState>());
+		break;
 	case SimColorMode::FORMATION:
 		if (formation != -1) {
-			changeColor(Game::getFormationManager()->getPriority(this), 3.0f);
+			setShaderParam(node, "ColorPercent", Game::getFormationManager()->getPriority(this) / 3.f);
 		}
 	}
 }

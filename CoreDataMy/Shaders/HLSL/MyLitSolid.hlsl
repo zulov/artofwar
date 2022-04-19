@@ -8,6 +8,7 @@
 uniform bool cSemiHide;
 uniform float cProgress;
 uniform float2 cVerticalPos;
+uniform float cColorPercent;
 
 void VS(float4 iPos : POSITION,
     #if !defined(BILLBOARD) && !defined(TRAILFACECAM)
@@ -188,15 +189,16 @@ void PS(
 	float4 newMatDiffColor = cMatDiffColor;
 	if(cSemiHide){
 		newMatDiffColor.rgb /= 4;
-	} else if(cProgress < 1.0) {
+	} else if(cProgress < 1.f) {
 		float diff = cVerticalPos.y - cVerticalPos.x;
 		diff *= cProgress;
 		
 		if(iWorldPos.y > cVerticalPos.x + diff){
 			newMatDiffColor.rgb *= cProgress*cProgress;
-			newMatDiffColor.r*=2;
+			newMatDiffColor.r *= 2;
 		}
-		
+	} else if (cColorPercent < 1.f){
+		newMatDiffColor *= cColorPercent;
 	}
     // Get material diffuse albedo
     #ifdef DIFFMAP
