@@ -34,10 +34,6 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 	setPlayerAndTeam(player);
 	loadXml("Objects/units/" + dbLevel->node);
 
-	if (!SIM_GLOBALS.HEADLESS) {
-		model = node->GetComponent<Urho3D::StaticModel>();
-	}
-
 	if (dbUnit->typeCalvary) {
 		chargeData = new ChargeData(150, 2);
 	}
