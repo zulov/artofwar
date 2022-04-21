@@ -98,6 +98,9 @@ void Physical::unSelect() {
 	clearSelection();
 }
 
+bool Physical::isNodeEnabled() const {
+	return node && node->IsEnabled();
+}
 
 void Physical::loadXml(const Urho3D::String& xmlName) {
 	Urho3D::String name;

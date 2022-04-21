@@ -108,6 +108,7 @@ public:
 	virtual float getModelHeight() const =0;
 	virtual void setVisibility(VisibilityType type) = 0;
 	virtual unsigned char getHealthBarThick() const { return 5; }
+	bool isNodeEnabled() const;
 protected:
 	virtual void setModelData(float modelHeight) const =0;
 

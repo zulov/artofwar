@@ -109,6 +109,9 @@ void Controls::unSelectAll() {
 
 void Controls::selectOne(Physical* entity, char player) {
 	const auto entityType = entity->getType();
+	if(!entity->isNodeEnabled()) {
+		return;
+	}
 	if (entity == nullptr || entityType != selectedInfo->getSelectedType()) {
 		unSelectAll();
 	}
