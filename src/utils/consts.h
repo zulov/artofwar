@@ -1,21 +1,20 @@
 #pragma once
-#include "objects/queue/QueueManager.h"
 #include "objects/unit/ActionParameter.h"
 
 struct Consts {
 	inline static Urho3D::Vector2 circleCords[8] =
 	{
-		{0, 1},
-		{0.71, 0.71},
+		{0.f, 1.f},
+		{0.71f, 0.71f},
 		{1, 0},
-		{-0.71, -0.71},
-		{0, -1},
-		{-0.71, -0.71},
-		{-1, 0},
-		{-0.71, 0.71}
+		{-0.71f, -0.71f},
+		{0.f, -1.f},
+		{-0.71f, -0.71f},
+		{-1.f, 0.f},
+		{-0.71f, 0.71f}
 	};
 
-	inline const static ActionParameter EMPTY_ACTION_PARAMETER = ActionParameter();
+	inline constexpr static ActionParameter EMPTY_ACTION_PARAMETER = ActionParameter();
 
 	inline const static std::vector<Physical*> EMPTY_PHYSICAL;
 

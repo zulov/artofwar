@@ -1,7 +1,6 @@
 #pragma once
 #include <Urho3D/Graphics/Terrain.h>
 #include <Urho3D/Math/Color.h>
-#include "objects/unit/state/UnitState.h"
 
 struct db_building;
 enum class VisibilityType : char;

@@ -45,7 +45,6 @@ bool GroupOrder::add() {
 		execute();
 		break;
 	case UnitActionType::FORMATION: {
-		int a = 5;
 	}
 	break;
 	default: ;

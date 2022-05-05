@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <Urho3D/Container/Str.h>
 
 #include "Loading.h"

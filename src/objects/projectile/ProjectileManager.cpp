@@ -27,7 +27,6 @@ ProjectileBase* ProjectileManager::findNext() {
 		}
 	}
 
-	Urho3D::Node* node = nullptr;
 	ProjectileBase* projectile;
 	if (instance->projectiles.size() < MAX_PROJECTILE_NODES && !SIM_GLOBALS.HEADLESS) {
 		projectile = new ProjectileWithNode(createNode("Objects/projectiles/arrow.xml"));

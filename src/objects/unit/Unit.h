@@ -157,7 +157,6 @@ public:
 	void resetStateChangePending();
 
 private:
-	void changeColor(float value, float maxValue) const;
 	void setAim(Aim* aim);
 	Urho3D::Vector2 velocity, acceleration;
 	Aims aims;

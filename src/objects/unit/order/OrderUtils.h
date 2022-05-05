@@ -38,7 +38,7 @@ inline void tryToAttack(Unit* unit,
 
 inline void tryToCollect(Unit* unit) {
 	const auto id = unit->getLastActionThingId();
-	std::vector<Physical*>* list = nullptr;
+	std::vector<Physical*>* list;
 
 	bool result = false;
 	if (id >= 0) {

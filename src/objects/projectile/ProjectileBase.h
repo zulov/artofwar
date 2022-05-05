@@ -1,3 +1,4 @@
+#pragma once
 #include "database/db_strcut.h"
 #include "objects/Physical.h"
 #include "math/MathUtils.h"

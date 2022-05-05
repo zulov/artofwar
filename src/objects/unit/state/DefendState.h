@@ -7,5 +7,5 @@ public:
 	DefendState() : State({UnitState::STOP, UnitState::DEAD}) {
 	}
 
-	~DefendState() = default;
+	~DefendState() override = default;
 };

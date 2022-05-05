@@ -12,6 +12,6 @@ public:
 	}) {
 	}
 
-	~MoveState() = default;
+	~MoveState() override = default;
 
 };

@@ -7,5 +7,5 @@ public:
 	DisposeState(): State({}) {
 	}
 
-	~DisposeState() = default;
+	~DisposeState() override = default;
 };

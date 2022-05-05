@@ -20,7 +20,7 @@ enum class PerFrameAction:char {
 	VISIBILITY
 };
 
-const inline struct PerFrameActionData {
+constexpr inline struct PerFrameActionData {
 private:
 	inline static const std::array<unsigned char, FRAMES_IN_PERIOD> ONCE_PER_SECOND = {
 		1, 0, 0, 0, 0, 0, 0, 0, 0, 0,

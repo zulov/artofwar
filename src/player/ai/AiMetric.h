@@ -46,7 +46,7 @@ struct AiPlayerMetric : AiMetric {
 };
 
 
-const inline struct MetricDefinitions {
+constexpr inline struct MetricDefinitions {
 
 	const std::vector<float>& getAiPlayerMetricNorm(Player* one, Player* two, std::span<AiPlayerMetric> metric) const {
 		output.clear();

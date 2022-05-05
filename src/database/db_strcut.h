@@ -2,7 +2,6 @@
 #include <magic_enum.hpp>
 #include <span>
 #include <vector>
-#include <functional>
 #include <valarray>
 #include <Urho3D/Math/Vector2.h>
 #include "objects/building/ParentBuildingType.h"

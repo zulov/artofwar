@@ -12,6 +12,6 @@ public:
 	}) {
 	}
 
-	~StopState() = default;
+	~StopState() override = default;
 
 };

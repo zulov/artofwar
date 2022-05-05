@@ -2,7 +2,6 @@
 
 #include <string>
 #include <span>
-#include <vector>
 
 #include "utils/defines.h"
 

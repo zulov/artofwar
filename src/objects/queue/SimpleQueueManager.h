@@ -5,7 +5,7 @@ class QueueElement;
 class SimpleQueueManager : public AbstractQueueManager {
 public:
 	SimpleQueueManager() = default;
-	~SimpleQueueManager();
+	~SimpleQueueManager() override;
 	void add(short number, QueueActionType type, short id, unsigned short localMaxCapacity) override;
 	QueueElement* update() override;
 	short getSize() const override;

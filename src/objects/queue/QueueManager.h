@@ -9,7 +9,7 @@ class QueueElement;
 class QueueManager : public AbstractQueueManager {
 public:
 	explicit QueueManager(unsigned short maxCapacity);
-	~QueueManager();
+	virtual ~QueueManager();
 
 	void add(short number, QueueActionType type, short id, unsigned short localMaxCapacity) override;
 	QueueElement* update() override;

@@ -1,5 +1,8 @@
 #pragma once
-#include <Urho3D/UI/UIElement.h>
+
+namespace Urho3D {
+	class UIElement;
+}
 
 enum class ActionType : char;
 

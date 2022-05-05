@@ -137,9 +137,6 @@ Hud::Hud() : Object(Game::getContext()) {
 		graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
 		resolution = Game::getDatabase()->getResolution(settings->resolution);
 		prepareStyle();
-		//root = Game::getUI()->GetRoot();
-		//root = Game::getUI()->GetRoot()->CreateChild<Urho3D::UIElement>();
-		auto r = Game::getUI()->GetRoot();
 	
 		root = createElement<Urho3D::UIElement>(Game::getUI()->GetRoot(), style, "rootMock");
 	}

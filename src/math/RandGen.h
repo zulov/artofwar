@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 #include <magic_enum.hpp>
 #include "RandType.h"
 

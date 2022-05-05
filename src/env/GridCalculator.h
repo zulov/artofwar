@@ -5,9 +5,9 @@
 struct GridCalculator {
 
 	explicit GridCalculator(unsigned short resolution, float size)
-		: sqResolution(resolution * resolution), resolution(resolution), halfResolution(resolution / 2),
-		  halfSize(size * 0.5f), invFieldSize(static_cast<float>(resolution) / size),
-		  fieldSize(size / static_cast<float>(resolution)), sqFieldSize(fieldSize * fieldSize) {
+		: resolution(resolution), halfResolution(resolution / 2), sqResolution(resolution * resolution),
+		  fieldSize(size / static_cast<float>(resolution)), halfSize(size * 0.5f),
+		  invFieldSize(static_cast<float>(resolution) / size), sqFieldSize(fieldSize * fieldSize) {
 	}
 
 	GridCalculator(const GridCalculator&) = delete;
