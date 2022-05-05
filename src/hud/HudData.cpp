@@ -2,6 +2,7 @@
 
 #include <Urho3D/UI/UIEvents.h>
 #include <utility>
+#include <Urho3D/UI/UIElement.h>
 
 HudData::HudData(Urho3D::UIElement* _uiParent) : parent(_uiParent) {
 }

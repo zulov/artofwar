@@ -8,7 +8,7 @@ namespace Urho3D {
 
 class InfluenceMapI {
 public:
-	virtual ~InfluenceMapI();
+	virtual ~InfluenceMapI() = default;
 	virtual void update(Physical* thing, float value = 1.f) =0;
 	virtual void updateInt(Physical* thing, int value = 1) =0;
 	virtual void reset() =0;

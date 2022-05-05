@@ -41,24 +41,24 @@ private:
 	void setChecks(int val);
 
 	void ChangeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
-	void setNext(int& k, const Urho3D::String& texture, int id, ActionType menuAction, Urho3D::String text);
+	void setNext(int& k, const Urho3D::String& texture, int id, ActionType menuAction, Urho3D::String text) const;
 
 	void basicUnit(SelectedInfo* selectedInfo);
 	void levelUnit(SelectedInfo* selectedInfo);
 
-	void basicBuilding();
-	void levelBuilding();
+	void basicBuilding(char page);
+	void levelBuilding(char page);
 
-	void basicOrder(SelectedInfo* selectedInfo);
-	void formationOrder();
+	void basicOrder(SelectedInfo* selectedInfo, char page);
+	void formationOrder(char page);
 
-	void buildingMenu();
+	void buildingMenu(char page);
 
-	void unitMenu(SelectedInfo* selectedInfo);
-	void orderMenu(SelectedInfo* selectedInfo);
-	void basicResource(SelectedInfo* selectedInfo);
-	void resourceMenu(SelectedInfo* selectedInfo);
-	void updateButtons(SelectedInfo* selectedInfo);
+	void unitMenu(SelectedInfo* selectedInfo, char page);
+	void orderMenu(SelectedInfo* selectedInfo, char page);
+	void basicResource(SelectedInfo* selectedInfo, char page);
+	void resourceMenu(SelectedInfo* selectedInfo, char page);
+	void updateButtons(SelectedInfo* selectedInfo, char page);
 
 	void resetRestButtons(int from);
 

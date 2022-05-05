@@ -1,0 +1,4 @@
+<material>
+	<technique name="Techniques/DiffOutline.xml" />
+	<texture name="Textures/buildings/granary.png" unit="diffuse" />
+</material>

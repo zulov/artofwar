@@ -1,6 +1,8 @@
 #pragma once
+#include <Urho3D/Core/Variant.h>
 
 namespace Urho3D {
+	class String;
 	class UIElement;
 }
 
