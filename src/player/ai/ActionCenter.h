@@ -2,13 +2,12 @@
 #include "commands/creation/CreationCommandList.h"
 #include "commands/upgrade/UpgradeCommandList.h"
 
-class UnitOrder;
-enum class QueueActionType : char;
-
 namespace Urho3D {
 	class Vector2;
 }
 
+enum class QueueActionType : char;
+class UnitOrder;
 class GeneralActionCommand;
 class BuildingActionCommand;
 class ResourceActionCommand;

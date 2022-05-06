@@ -46,7 +46,7 @@ public:
 
 	void updateInfluenceResources(std::vector<ResourceEntity*>* resources) const;
 
-	void updateInfluenceOther(std::vector<Building*>* buildings) const;
+	void updateInfluenceOther(std::vector<Building*>* buildings, std::vector<Unit*>* units) const;
 	void updateQuadOther() const;
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
 	                      std::vector<ResourceEntity*>* resources) const;
@@ -120,8 +120,11 @@ public:
 	const std::vector<short>& getCloseIndexs(int center) const;
 	const std::vector<unsigned char>& getCloseTabIndexes(int center) const;
 	std::array<float, 5>& getInfluenceDataAt(char player, const Urho3D::Vector2& pos);
+	std::optional<Urho3D::Vector2> getPosFromIndexes(db_building* building, char player, const std::vector<int>* indexes);
 
-	std::optional<Urho3D::Vector2> getPosToCreate( const std::span<float> result,ParentBuildingType type,db_building* building, char player);
+	std::optional<Urho3D::Vector2> getPosToCreate(const std::span<float> result, ParentBuildingType type,
+	                                              db_building* building, char player);
+	std::optional<Urho3D::Vector2> getPosToCreateResBonus(db_building* building, char player);
 	std::vector<Urho3D::Vector2> getAreas(char player, const std::span<float>, int min);
 	void addCollect(Unit* unit, char resId, float value);
 	void addAttack(char player, const Urho3D::Vector3& position, float value);
@@ -142,7 +145,7 @@ public:
 	void flipTerrainShaderParam(const Urho3D::String& name) const;
 	void nextVisibilityType();
 	void reAddBonuses(std::vector<Building*>* buildings, char player, char resId) const;
-	float getBonuses(char player,const ResourceEntity* resource) const;
+	float getBonuses(char player, const ResourceEntity* resource) const;
 private:
 	//std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius,

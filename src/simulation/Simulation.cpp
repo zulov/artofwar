@@ -53,7 +53,7 @@ void Simulation::forceUpdateInfluenceMaps() const {
 	enviroment->updateInfluenceUnits1(units);
 	enviroment->updateInfluenceUnits2(units);
 	enviroment->updateInfluenceResources(resources);
-	enviroment->updateInfluenceOther(buildings);
+	enviroment->updateInfluenceOther(buildings, units);
 	enviroment->updateQuadOther();
 	enviroment->updateVisibility(buildings, units, resources);
 }
@@ -69,7 +69,7 @@ void Simulation::updateInfluenceMaps() const {
 		enviroment->updateInfluenceResources(resources);
 	}
 	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_OTHER, currentFrame, secondsElapsed)) {
-		enviroment->updateInfluenceOther(buildings);
+		enviroment->updateInfluenceOther(buildings, units);
 	}
 	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_QUAD_OTHER, currentFrame, secondsElapsed)) {
 		enviroment->updateQuadOther();

@@ -23,10 +23,17 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 	unitsNumberPerPlayer.reserve(numberOfPlayers);
 	buildingsInfluencePerPlayer.reserve(numberOfPlayers);
 	unitsInfluencePerPlayer.reserve(numberOfPlayers);
+
 	foodGatherSpeed.reserve(numberOfPlayers);
 	woodGatherSpeed.reserve(numberOfPlayers);
 	stoneGatherSpeed.reserve(numberOfPlayers);
 	goldGatherSpeed.reserve(numberOfPlayers);
+
+	foodNotInBonus.reserve(numberOfPlayers);
+	woodNotInBonus.reserve(numberOfPlayers);
+	stoneNotInBonus.reserve(numberOfPlayers);
+	goldNotInBonus.reserve(numberOfPlayers);
+
 	attackSpeed.reserve(numberOfPlayers);
 	armyQuad.reserve(numberOfPlayers);
 	buildingsQuad.reserve(numberOfPlayers);
@@ -47,6 +54,11 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 		woodGatherSpeed.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
 		stoneGatherSpeed.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
 		goldGatherSpeed.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
+
+		foodNotInBonus.emplace_back(new InfluenceMapInt(resolution, mapSize, 5));
+		woodNotInBonus.emplace_back(new InfluenceMapInt(resolution, mapSize, 5));
+		stoneNotInBonus.emplace_back(new InfluenceMapInt(resolution, mapSize, 5));
+		goldNotInBonus.emplace_back(new InfluenceMapInt(resolution, mapSize, 5));
 
 		attackSpeed.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
 		armyQuad.emplace_back(new InfluenceMapQuad(resolution, mapSize));
@@ -83,6 +95,12 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 			stoneGatherSpeed[player],
 			goldGatherSpeed[player],
 		});
+		mapsResNotInBonusPerPlayer.emplace_back(std::array<InfluenceMapInt*, 4>{
+			foodNotInBonus[player],
+			woodNotInBonus[player],
+			stoneNotInBonus[player],
+			goldNotInBonus[player],
+		});
 		assert(validSizes(mapsForAiPerPlayer.at(player)));
 	}
 	visibilityManager = new VisibilityManager(numberOfPlayers, mapSize, terrain);
@@ -109,6 +127,11 @@ InfluenceManager::~InfluenceManager() {
 	clear_vector(woodGatherSpeed);
 	clear_vector(stoneGatherSpeed);
 	clear_vector(goldGatherSpeed);
+
+	clear_vector(foodNotInBonus);
+	clear_vector(woodNotInBonus);
+	clear_vector(stoneNotInBonus);
+	clear_vector(goldNotInBonus);
 
 	clear_vector(attackSpeed);
 	delete resourceInfluence;
@@ -188,6 +211,22 @@ void InfluenceManager::updateWithHistory() const {
 	MapsUtils::finalize(goldGatherSpeed);
 
 	MapsUtils::finalize(attackSpeed);
+}
+
+void InfluenceManager::updateNotInBonus(std::vector<Unit*>* units) const {
+	MapsUtils::resetMaps(foodNotInBonus);
+	MapsUtils::resetMaps(woodNotInBonus);
+	MapsUtils::resetMaps(stoneNotInBonus);
+	MapsUtils::resetMaps(goldNotInBonus);
+
+	//TODO perf tylko workerów sprawdzić
+	for (const auto unit : *units) {
+		if (unit->getDbUnit()->typeWorker && unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
+			auto res = (ResourceEntity*)unit->getThingToInteract();
+			//TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
+			mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getId()]->updateInt(res);
+		}
+	}
 }
 
 void InfluenceManager::updateQuadOther() const {
@@ -367,6 +406,11 @@ InfluenceManager::getAreas(const std::span<float> result, ParentBuildingType typ
 	return getAreas(mapsForAiPerPlayer[player], result, player);
 }
 
+std::vector<int>* InfluenceManager::getAreasResBonus(char id, char player) {
+	tempIndexes->clear();
+	mapsResNotInBonusPerPlayer[player][id]->getMaxInx();
+}
+
 std::vector<int>*
 InfluenceManager::getAreas(std::span<InfluenceMapFloat*> maps, const std::span<float> result, char player) const {
 	assert(result.size() == maps.size());
@@ -386,7 +430,7 @@ InfluenceManager::getAreas(std::span<InfluenceMapFloat*> maps, const std::span<f
 	const int size = Urho3D::Min(noOfVisible, calculator->getResolution() * calculator->getResolution() / 8);
 	const auto idx = sort_indexes(std::span(intersection, arraySize), size);
 
-	return centersFromIndexes(intersection, idx, 0.1f * numberOfNotEmptyMap);
+	return bestIndexes(intersection, idx, 0.1f * numberOfNotEmptyMap);
 }
 
 void InfluenceManager::addCollect(Unit* unit, char resId, float value) {
@@ -441,7 +485,7 @@ void InfluenceManager::nextVisibilityType() const {
 	visibilityManager->nextVisibilityType();
 }
 
-std::vector<int>* InfluenceManager::centersFromIndexes(float* values, const std::vector<unsigned>& indexes,
+std::vector<int>* InfluenceManager::bestIndexes(float* values, const std::vector<unsigned>& indexes,
                                                        float minVal) const {
 	tempIndexes->clear();
 

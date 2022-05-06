@@ -31,7 +31,7 @@ ActionMaker::ActionMaker(Player* player, db_nation* nation):
 	whichBuildingTypeTech(BrainProvider::get(nation->actionPrefix[7] + "whichBuildTypeTech.csv")),
 	whichBuildingTypeUnits(BrainProvider::get(nation->actionPrefix[8] + "whichBuildTypeUnits.csv")),
 	whereBuilding(BrainProvider::get(nation->actionPrefix[9] + "whereBuilding.csv")),
-	whereResBuilding(BrainProvider::get(nation->actionPrefix[10] + "whereResBuilding.csv")),
+	ifFarmBuild(BrainProvider::get(nation->actionPrefix[10] + "ifFarmBuild.csv")),
 
 	ifUnit(BrainProvider::get(nation->actionPrefix[11] + "ifUnit.csv")),
 	whichUnit(BrainProvider::get(nation->actionPrefix[12] + "whichUnit.csv")),
@@ -290,13 +290,11 @@ float ActionMaker::dist(std::valarray<float>& center, const db_building_metric* 
 std::optional<Urho3D::Vector2> ActionMaker::findPosToBuild(db_building* building, ParentBuildingType type) const {
 	const auto input = Game::getAiInputProvider()->getBuildingsInputWithMetric(
 		player->getId(), player->getLevelForBuilding(building->id)->dbBuildingMetric, type);
-	std::span<float> result;
+
 	if (type == ParentBuildingType::RESOURCE) {
-		result = whereResBuilding->decide(input);
-	} else {
-		result = whereBuilding->decide(input);
+		return Game::getEnvironment()->getPosToCreateResBonus(building, player->getId());
 	}
-	return Game::getEnvironment()->getPosToCreate(result,type, building, player->getId());
+	return Game::getEnvironment()->getPosToCreate(whereBuilding->decide(input), type, building, player->getId());
 }
 
 std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId) const {

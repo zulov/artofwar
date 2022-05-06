@@ -155,6 +155,7 @@ public:
 
 	unsigned char getMaxRangeUsers() const { return 16; }
 	void resetStateChangePending();
+	Physical* getThingToInteract() const { return thingToInteract; }
 
 private:
 	void setAim(Aim* aim);

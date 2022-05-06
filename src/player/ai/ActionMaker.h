@@ -5,18 +5,18 @@
 #include <vector>
 
 
-struct db_building_metric;
-enum class ParentBuildingType : char;
-struct db_nation;
-enum class AiActionType : char;
-
 namespace Urho3D {
 	class Vector2;
 }
 
-struct db_basic_metric;
+enum class ParentBuildingType : char;
+enum class AiActionType : char;
+
 class Player;
 class Building;
+struct db_building_metric;
+struct db_nation;
+struct db_basic_metric;
 struct db_with_cost;
 struct db_building;
 struct db_unit_level;
@@ -79,7 +79,7 @@ private:
 	Brain* whichBuildingTypeTech;
 	Brain* whichBuildingTypeUnits;
 	Brain* whereBuilding;
-	Brain* whereResBuilding;
+	Brain* ifFarmBuild;
 
 	Brain* ifUnit;
 	Brain* whichUnit;

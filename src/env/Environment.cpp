@@ -196,9 +196,10 @@ void Environment::updateInfluenceResources(std::vector<ResourceEntity*>* resourc
 	influenceManager.update(resources);
 }
 
-void Environment::updateInfluenceOther(std::vector<Building*>* buildings) const {
+void Environment::updateInfluenceOther(std::vector<Building*>* buildings, std::vector<Unit*>* units) const {
 	influenceManager.update(buildings);
 	influenceManager.updateWithHistory();
+	influenceManager.updateNotInBonus(units);
 }
 
 void Environment::updateQuadOther() const {
@@ -378,10 +379,8 @@ std::array<float, 5>& Environment::getInfluenceDataAt(char player, const Urho3D:
 	return influenceManager.getInfluenceDataAt(player, pos);
 }
 
-std::optional<Urho3D::Vector2> Environment::getPosToCreate(const std::span<float> result, ParentBuildingType type, db_building* building,
-                                                           char player) {
-	const std::vector<int>* indexes = influenceManager.getAreas(result, type, player);
-
+std::optional<Urho3D::Vector2> Environment::getPosFromIndexes(db_building* building, char player,
+                                                              const std::vector<int>* indexes) {
 	const float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
 	for (const auto centerIndex : *indexes) {
 		Urho3D::Vector2 center = influenceManager.getCenter(centerIndex);
@@ -394,6 +393,24 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(const std::span<float
 		}
 	}
 	return {};
+}
+
+std::optional<Urho3D::Vector2> Environment::getPosToCreate(const std::span<float> result, ParentBuildingType type,
+                                                           db_building* building,
+                                                           char player) {
+	const std::vector<int>* indexes = influenceManager.getAreas(result, type, player);
+
+	return getPosFromIndexes(building, player, indexes);
+}
+
+std::optional<Urho3D::Vector2> Environment::getPosToCreateResBonus(db_building* building, char player) {
+	std::vector<int> allIndexes;
+	for (const char id : building->resourceTypes) {
+		const std::vector<int>* indexes = influenceManager.getAreasResBonus(id, player);
+		allIndexes.insert(allIndexes.end(), indexes->begin(), indexes->end());
+	}
+
+	return getPosFromIndexes(building, player, &allIndexes);
 }
 
 std::vector<Urho3D::Vector2> Environment::getAreas(char player, const std::span<float> result, int min) {

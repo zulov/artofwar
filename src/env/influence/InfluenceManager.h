@@ -41,6 +41,7 @@ public:
 
 	void updateQuadUnits(const std::vector<Unit*>* units) const;
 	void updateWithHistory() const;
+	void updateNotInBonus(std::vector<Unit*>* units) const;
 	void updateQuadOther() const;
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
 	                      std::vector<ResourceEntity*>* resources) const;
@@ -58,7 +59,8 @@ public:
 	                                               int min);
 
 	float getFieldSize() const;
-	std::vector<int>* getAreas( const std::span<float> result,ParentBuildingType type,  char player);
+	std::vector<int>* getAreas(const std::span<float> result, ParentBuildingType type, char player);
+	std::vector<int>* getAreasResBonus(char id, char player);
 
 	void addCollect(Unit* unit, char resId, float value);
 	void addAttack(char player, const Urho3D::Vector3& position, float value);
@@ -70,9 +72,9 @@ public:
 	void nextVisibilityType() const;
 
 private:
-	std::vector<int>* getAreas(std::span<InfluenceMapFloat*>maps, const std::span<float> result, char player) const;
+	std::vector<int>* getAreas(std::span<InfluenceMapFloat*> maps, const std::span<float> result, char player) const;
 
-	std::vector<int>* centersFromIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
+	std::vector<int>* bestIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
 	std::vector<Urho3D::Vector2> centersFromIndexes(const std::vector<int>& intersection) const;
 
 	//TODO imprve nie vectory tylko obiekt z mapami per player
@@ -80,6 +82,8 @@ private:
 	std::vector<std::array<InfluenceMapFloat*, 3>> mapsForAiArmyPerPlayer;
 	std::vector<std::array<InfluenceMapFloat*, 8>> mapsForAiPerPlayer;
 	std::vector<std::array<InfluenceMapFloat*, 4>> mapsGatherSpeedPerPlayer;
+
+	std::vector<std::array<InfluenceMapInt*, 4>> mapsResNotInBonusPerPlayer;
 
 	std::vector<std::array<InfluenceMapQuad*, 3>> mapsForCentersPerPlayer;
 
@@ -93,6 +97,11 @@ private:
 	std::vector<InfluenceMapHistory*> woodGatherSpeed;
 	std::vector<InfluenceMapHistory*> stoneGatherSpeed;
 	std::vector<InfluenceMapHistory*> goldGatherSpeed;
+
+	std::vector<InfluenceMapInt*> foodNotInBonus;
+	std::vector<InfluenceMapInt*> woodNotInBonus;
+	std::vector<InfluenceMapInt*> stoneNotInBonus;
+	std::vector<InfluenceMapInt*> goldNotInBonus;
 
 	std::vector<InfluenceMapHistory*> attackSpeed;
 
