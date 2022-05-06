@@ -1,10 +1,9 @@
 #pragma once
 #include "db_basic_struct.h"
 
-struct db_hud_size : db_entity, db_with_name {
+struct db_hud_size : db_with_name {
 
-	db_hud_size(short id, char* name)
-		: db_entity(id), db_with_name(name) {
+	db_hud_size(short id, char* name) : db_with_name(id, name) {
 	}
 };
 
@@ -23,9 +22,7 @@ struct db_resolution : db_entity {
 	const short y;
 
 	db_resolution(short id, short x, short y)
-		: db_entity(id),
-		  x(x),
-		  y(y) {
+		: db_entity(id), x(x), y(y) {
 	}
 };
 
@@ -55,13 +52,11 @@ struct db_graph_settings : db_entity {
 	}
 };
 
-struct db_hud_vars : db_entity, db_with_name {
+struct db_hud_vars : db_with_name {
 	const short hud_size;
 	float value;
 
 	db_hud_vars(short id, short hudSize, char* name, float value)
-		: db_entity(id), db_with_name(name),
-		  hud_size(hudSize),
-		  value(value) {
+		: db_with_name(id, name), hud_size(hudSize), value(value) {
 	}
 };

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "LeftMenuModes.h"
+#include "database/db_basic_struct.h"
 #include "hud/window/EventPanel.h"
 
 
@@ -11,9 +12,10 @@ namespace Urho3D {
 	class UIElement;
 }
 
-constexpr char LEFT_MENU_ROWS_NUMBER = 4;
-constexpr char LEFT_MENU_CHECKS_NUMBER = 3;
-constexpr char LEFT_MENU_BUTTON_PER_ROW = 4;
+constexpr char ROWS_NUMBER = 4;
+constexpr char CHECKS_NUMBER = 3;
+constexpr char BUTTONS_PER_ROW = 4;
+constexpr char BUTTONS_NUMBER = BUTTONS_PER_ROW * (ROWS_NUMBER - 1);
 
 enum class ActionType : char;
 enum class LeftMenuMode : char;
@@ -38,44 +40,47 @@ private:
 	void setCheckVisibility(std::initializer_list<bool> active);
 	void updateMode(LeftMenuMode mode);
 	void createBody() override;
-	void setChecks(int val);
+	void setChecks(char val);
 
 	void ChangeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
-	void setNext(int& k, const Urho3D::String& texture, int id, ActionType menuAction, Urho3D::String text) const;
+	void NextPage(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
+	void setNext(int& k, const Urho3D::String& texture, short id, ActionType menuAction, Urho3D::String text = "") const;
 
 	void basicUnit(SelectedInfo* selectedInfo);
 	void levelUnit(SelectedInfo* selectedInfo);
 
-	void basicBuilding(char page);
-	void levelBuilding(char page);
+	void basicBuilding();
+	void levelBuilding();
 
-	void basicOrder(SelectedInfo* selectedInfo, char page);
-	void formationOrder(char page);
+	void basicOrder(SelectedInfo* selectedInfo);
+	void formationOrder();
 
-	void buildingMenu(char page);
+	void buildingMenu();
 
-	void unitMenu(SelectedInfo* selectedInfo, char page);
-	void orderMenu(SelectedInfo* selectedInfo, char page);
-	void basicResource(SelectedInfo* selectedInfo, char page);
-	void resourceMenu(SelectedInfo* selectedInfo, char page);
-	void updateButtons(SelectedInfo* selectedInfo, char page);
+	void unitMenu(SelectedInfo* selectedInfo);
+	void orderMenu(SelectedInfo* selectedInfo);
+	void basicResource(SelectedInfo* selectedInfo);
+	void resourceMenu(SelectedInfo* selectedInfo);
+	void updateButtons(SelectedInfo* selectedInfo);
 
-	void resetRestButtons(int from);
+	void resetRestButtons(int from) const;
 
 	std::vector<unsigned char> getUnitInBuilding(SelectedInfo* selectedInfo) const;
 	std::vector<unsigned char> getOrderForUnit(SelectedInfo* selectedInfo) const;
+	template <typename T>
+	void setIcons(const std::vector<T*>& icons, Urho3D::String path, ActionType type);
 
-	Urho3D::UIElement* rows[LEFT_MENU_ROWS_NUMBER];
-	Urho3D::Button* buttons[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];
+	Urho3D::Button* buttons[BUTTONS_NUMBER];
 	std::vector<HudData*> hudElements;
-	MySprite* sprites[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];
+	MySprite* sprites[BUTTONS_NUMBER];
 
-	Urho3D::CheckBox* checks[LEFT_MENU_CHECKS_NUMBER];
+	Urho3D::CheckBox* checks[CHECKS_NUMBER];
 
 	LeftMenuInfoPanel* infoPanel;
 	SelectedInfo* lastSelectedInfo = nullptr;
 
 	char page = 0;
+	char maxPage = 1;
 	LeftMenuMode mode = LeftMenuMode::UNIT;
 	LeftMenuSubMode subMode = LeftMenuSubMode::BASIC;
 

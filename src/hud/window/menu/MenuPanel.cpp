@@ -39,6 +39,7 @@ void MenuPanel::refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo) {
 		mode = _mode;
 		updateMode(mode);
 		subMode = LeftMenuSubMode::BASIC;
+		page = 0;
 	}
 	updateButtons(lastSelectedInfo);
 }
@@ -92,27 +93,28 @@ void MenuPanel::createBody() {
 	removeHoverInfo();
 
 	const auto mock = createElement<Urho3D::UIElement>(window, style, "LeftMenuMock");
-
+	Urho3D::UIElement* rows[ROWS_NUMBER];
 	for (auto& row : rows) {
 		row = createElement<Urho3D::UIElement>(mock, style, "LeftMenuListRow");
 	}
-	for (int i = 0; i < LEFT_MENU_CHECKS_NUMBER; ++i) {
+	for (int i = 0; i < CHECKS_NUMBER; ++i) {
 		const auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>(
 			"textures/hud/icon/lm/lm" + Urho3D::String(i) + ".png");
 
-		checks[i] = createElement<Urho3D::CheckBox>(rows[LEFT_MENU_ROWS_NUMBER - 1], style, "LeftMenuCheckBox");
+		checks[i] = createElement<Urho3D::CheckBox>(rows[ROWS_NUMBER - 1], style, "LeftMenuCheckBox");
 		checks[i]->SetVar("Num", i);
 		createSprite(checks[i], texture, style, "LeftMenuSmallSprite");
 		SubscribeToEvent(checks[i], Urho3D::E_CLICK, URHO3D_HANDLER(MenuPanel, ChangeModeButton));
 	}
 	const auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/lm/lm3.png");
-	const auto nextButton = createElement<Urho3D::Button>(rows[LEFT_MENU_ROWS_NUMBER - 1], style, "LeftMenuIcon");
+	const auto nextButton = createElement<Urho3D::Button>(rows[ROWS_NUMBER - 1], style, "LeftMenuIcon");
+	SubscribeToEvent(nextButton, Urho3D::E_CLICK, URHO3D_HANDLER(MenuPanel, NextPage));
 	createSprite(nextButton, texture, style, "LeftMenuSmallSprite");
 
 	int k = 0;
-	for (int i = 0; i < LEFT_MENU_ROWS_NUMBER - 1; ++i) {
+	for (int i = 0; i < ROWS_NUMBER - 1; ++i) {
 		const auto row = rows[i];
-		for (int j = 0; j < LEFT_MENU_BUTTON_PER_ROW; ++j) {
+		for (int j = 0; j < BUTTONS_PER_ROW; ++j) {
 			buttons[k] = createElement<Urho3D::Button>(row, style, "LeftMenuBigIcon");
 			sprites[k] = createElement<MySprite>(buttons[k], style, "LeftMenuSprite");
 			hudElements.push_back(new HudData(buttons[k]));
@@ -124,11 +126,16 @@ void MenuPanel::createBody() {
 	}
 }
 
-void MenuPanel::setChecks(int val) {
+void MenuPanel::setChecks(char val) {
 	for (const auto check : checks) {
 		check->SetChecked(false);
 	}
 	checks[val]->SetChecked(true);
+}
+
+void MenuPanel::NextPage(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+	page = (page + 1) % maxPage;
+	updateButtons(lastSelectedInfo);
 }
 
 void MenuPanel::ChangeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
@@ -137,42 +144,44 @@ void MenuPanel::ChangeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMa
 	auto newSubMode = static_cast<LeftMenuSubMode>(element->GetVar("Num").GetInt());
 	if (newSubMode != subMode) {
 		subMode = newSubMode;
+		page = 0;
 		updateButtons(lastSelectedInfo);
 	}
 }
 
-void MenuPanel::setNext(int& k, const Urho3D::String& texture, int id, ActionType menuAction,
+void MenuPanel::setNext(int& k, const Urho3D::String& texture, short id, ActionType menuAction,
                         Urho3D::String text) const {
 	setTextureToSprite(sprites[k], Game::getCache()->GetResource<Urho3D::Texture2D>(ICONS_PATH + texture));
 
 	buttons[k]->SetVisible(true);
 
 	hudElements[k]->set(id, menuAction, std::move(text));
-	k++;
+	++k;
 }
 
-void MenuPanel::basicBuilding(char site) {
+void MenuPanel::basicBuilding() {
+	const short nation = Game::getPlayersMan()->getActivePlayer()->getNation();
+
+	setIcons(Game::getDatabase()->getNation(nation)->buildings, "building/", ActionType::BUILDING_CREATE);
+}
+
+void MenuPanel::levelBuilding() {
 	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
 	int k = 0;
+	std::vector<db_building_level*> levels;
+	const auto player = Game::getPlayersMan()->getActivePlayer();
 	for (const auto building : Game::getDatabase()->getNation(nation)->buildings) {
-		if (k >= LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)) {
-			continue;
-		}
-		setNext(k, "building/" + building->icon, building->id, ActionType::BUILDING_CREATE, "");
-
-	}
-	resetRestButtons(k);
-}
-
-void MenuPanel::levelBuilding(char site) {
-	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
-	int k = 0;
-	for (auto building : Game::getDatabase()->getNation(nation)->buildings) {
-		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextLevelForBuilding(building->id);
+		auto opt = player->getNextLevelForBuilding(building->id);
 		if (opt.has_value()) {
-			setNext(k, "building/levels/" + Urho3D::String(opt.value()->level) + "/" + building->icon,
-			        building->id, ActionType::BUILDING_LEVEL, "");
+			levels.push_back(opt.value());
 		}
+	}
+
+	for (int i = page * BUTTONS_NUMBER; i < levels.size() && i < (page + 1) * BUTTONS_NUMBER; ++ i) {
+		const auto level = levels[i];
+		const db_building* building = Game::getDatabase()->getBuilding(level->building);
+		setNext(k, "building/levels/" + Urho3D::String(level->level) + "/" + building->icon,
+		        building->id, ActionType::BUILDING_LEVEL);
 	}
 	resetRestButtons(k);
 }
@@ -192,26 +201,34 @@ std::vector<unsigned char> MenuPanel::getUnitInBuilding(SelectedInfo* selectedIn
 }
 
 void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
-	int k = 0;
+	std::vector<db_with_icon*> units;
 	for (auto id : getUnitInBuilding(selectedInfo)) {
 		db_unit* unit = Game::getDatabase()->getUnit(id);
 		if (unit) {
-			setNext(k, "textures/hud/icon/unit/" + unit->icon, unit->id, ActionType::UNIT_CREATE, "");
+			units.push_back(unit);
 		}
 	}
-	resetRestButtons(k);
+
+	setIcons(units, "unit/", ActionType::UNIT_CREATE);
 }
 
 void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
-	int k = 0;
+	std::vector<db_unit_level*> levels;
 	for (auto id : getUnitInBuilding(selectedInfo)) {
 		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextLevelForUnit(id);
 		if (opt.has_value()) {
-			db_unit* unit = Game::getDatabase()->getUnit(id);
-			setNext(k, "unit/levels/" + Urho3D::String(opt.value()->level) + "/" + unit->icon,
-			        unit->id, ActionType::UNIT_LEVEL, "");
+			levels.push_back(opt.value());
 		}
 	}
+	int k = 0;
+	maxPage = levels.size() / BUTTONS_NUMBER + 1;
+	for (int i = page * BUTTONS_NUMBER; i < levels.size() && i < (page + 1) * BUTTONS_NUMBER; ++i) {
+		auto level = levels[i];
+
+		db_unit* unit = Game::getDatabase()->getUnit(level->unit);
+		setNext(k, "unit/levels/" + Urho3D::String(level->level) + "/" + unit->icon, unit->id, ActionType::UNIT_LEVEL);
+	}
+
 	resetRestButtons(k);
 }
 
@@ -231,51 +248,63 @@ std::vector<unsigned char> MenuPanel::getOrderForUnit(SelectedInfo* selectedInfo
 	return intersection(ids);
 }
 
-
-void MenuPanel::basicOrder(SelectedInfo* selectedInfo, char page) {
+template <typename T>
+void MenuPanel::setIcons(const std::vector<T*>& icons, Urho3D::String path, ActionType type) {
 	int k = 0;
+	maxPage = icons.size() / BUTTONS_NUMBER + 1;
+	for (int i = page * BUTTONS_NUMBER; i < icons.size() && i < (page + 1) * BUTTONS_NUMBER; ++i) {
+		auto icon = icons[i];
 
-	for (auto id : getOrderForUnit(selectedInfo)) {
-		db_order* order = Game::getDatabase()->getOrder(id);
-		if (order) {
-			setNext(k, "textures/hud/icon/orders/" + order->icon, order->id, ActionType::ORDER, "");
-		}
+		setNext(k, path + icon->icon, icon->id, type);
 	}
 	resetRestButtons(k);
 }
 
-void MenuPanel::formationOrder(char page) {
+void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
+	std::vector<db_with_icon*> orders;
+	for (auto id : getOrderForUnit(selectedInfo)) {
+		db_order* order = Game::getDatabase()->getOrder(id);
+		if (order) {
+			orders.push_back(order);
+		}
+	}
+
+	setIcons(orders, "orders/", ActionType::ORDER);
+}
+
+void MenuPanel::formationOrder() {
 	int k = 0;
-	auto l10n = Game::getLocalization();
+	const auto l10n = Game::getLocalization();
 	setNext(k, "formation/none.png", 0, ActionType::FORMATION, l10n->Get("form_none"));
 	setNext(k, "formation/square.png", 1, ActionType::FORMATION, l10n->Get("form_square"));
+	maxPage = 1;
 
 	resetRestButtons(k);
 }
 
-void MenuPanel::resetRestButtons(int from) {
-	for (int i = from; i < LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1); ++i) {
+void MenuPanel::resetRestButtons(int from) const {
+	for (int i = from; i < BUTTONS_PER_ROW * (ROWS_NUMBER - 1); ++i) {
 		setTextureToSprite(sprites[i], nullptr);
 		buttons[i]->SetVisible(false);
 	}
 }
 
-void MenuPanel::updateButtons(SelectedInfo* selectedInfo, char page) {
-	setChecks(static_cast<int>(subMode));
+void MenuPanel::updateButtons(SelectedInfo* selectedInfo) {
+	setChecks(cast(subMode));
 	switch (mode) {
 	case LeftMenuMode::BUILDING:
-		return buildingMenu(page);
+		return buildingMenu();
 	case LeftMenuMode::UNIT:
-		return unitMenu(selectedInfo, page);
+		return unitMenu(selectedInfo);
 	case LeftMenuMode::ORDER:
-		return orderMenu(selectedInfo, page);
+		return orderMenu(selectedInfo);
 	case LeftMenuMode::RESOURCE:
-		return resourceMenu(selectedInfo, page);
+		return resourceMenu(selectedInfo);
 	default: ;
 	}
 }
 
-void MenuPanel::unitMenu(SelectedInfo* selectedInfo, char page) {
+void MenuPanel::unitMenu(SelectedInfo* selectedInfo) {
 	switch (subMode) {
 	case LeftMenuSubMode::BASIC:
 		return basicUnit(selectedInfo);
@@ -284,39 +313,39 @@ void MenuPanel::unitMenu(SelectedInfo* selectedInfo, char page) {
 	}
 }
 
-void MenuPanel::buildingMenu(char page) {
+void MenuPanel::buildingMenu() {
 	switch (subMode) {
 	case LeftMenuSubMode::BASIC:
-		return basicBuilding(page);
+		return basicBuilding();
 	case LeftMenuSubMode::LEVEL:
-		return levelBuilding(page);
+		return levelBuilding();
 	}
 }
 
-void MenuPanel::orderMenu(SelectedInfo* selectedInfo, char page) {
+void MenuPanel::orderMenu(SelectedInfo* selectedInfo) {
 	switch (subMode) {
 	case LeftMenuSubMode::BASIC:
-		return basicOrder(selectedInfo, page);
+		return basicOrder(selectedInfo);
 	case LeftMenuSubMode::LEVEL:
-		return formationOrder(page);
+		return formationOrder();
 	}
 }
 
-void MenuPanel::resourceMenu(SelectedInfo* selectedInfo, char page) {
+void MenuPanel::resourceMenu(SelectedInfo* selectedInfo) {
 	switch (subMode) {
 	case LeftMenuSubMode::BASIC:
-		return basicResource(selectedInfo, page);
+		return basicResource(selectedInfo);
 	}
 }
 
-void MenuPanel::basicResource(SelectedInfo* selectedInfo, char page) {
+void MenuPanel::basicResource(SelectedInfo* selectedInfo) {
 	int k = 0;
-	auto l10n = Game::getLocalization();
+	const auto l10n = Game::getLocalization();
 
-	setNext(k, "resource_action/get_worker.png", int(ResourceActionType::COLLECT),
+	setNext(k, "resource_action/get_worker.png", cast(ResourceActionType::COLLECT),
 	        ActionType::RESOURCE, l10n->Get("res_act_get_worker"));
-	setNext(k, "resource_action/remove_workers.png", int(ResourceActionType::CANCEL),
+	setNext(k, "resource_action/remove_workers.png", cast(ResourceActionType::CANCEL),
 	        ActionType::RESOURCE, l10n->Get("res_act_cancel_worker"));
-
+	maxPage = 1;
 	resetRestButtons(k);
 }

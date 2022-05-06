@@ -11,10 +11,19 @@ struct db_entity {
 	}
 };
 
-struct db_with_name {
+struct db_with_name : db_entity {
 	const Urho3D::String name;
 
-	explicit db_with_name(const Urho3D::String& name) : name(name) {
+	db_with_name(short id, const Urho3D::String name)
+		: db_entity(id), name(name) {
+	}
+};
+
+struct db_with_icon : db_with_name {
+	const Urho3D::String icon;
+
+	db_with_icon(short id, const Urho3D::String name, const Urho3D::String icon)
+		: db_with_name(id, name),  icon(icon) {
 	}
 };
 
