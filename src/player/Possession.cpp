@@ -216,9 +216,10 @@ void Possession::updateAndClean(const Resources& resources, const ObjectsInfo* s
 	for (const auto building : buildings) {
 		levels[building->getLevel()->id] += building->getHealthPercent();
 	}
+
 	auto& bLevels = Game::getDatabase()->getBuildingLevels();
 	for (int i = 0; i < levelsSize; ++i) {
-		auto lVal = levels[i];
+		const auto lVal = levels[i];
 		if (lVal > 0.f) {
 			auto& metric = bLevels[i]->dbBuildingMetric->getValuesNormForSum();
 			assert(metric.size() == buildingsSumAsSpan.size());

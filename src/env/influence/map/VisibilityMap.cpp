@@ -91,9 +91,11 @@ float VisibilityMap::getValueAt(int index) const {
 
 void VisibilityMap::computeMinMax() {
 	if (!minMaxInited) {
-		const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);
-		min = cast(*minIdx);
-		max = cast(*maxIdx);
+		const auto [minPtr, maxPtr] = std::minmax_element(values, values + arraySize);
+		min = cast(*minPtr);
+		max = cast(*maxPtr);
+		minIdx = std::distance(values, minPtr);
+		maxIdx = std::distance(values, maxPtr);
 		minMaxInited = true;
 	}
 }

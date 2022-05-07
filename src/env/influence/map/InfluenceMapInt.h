@@ -16,6 +16,7 @@ public:
 	float getValueAt(int index) const override;
 	void computeMinMax() override;
 	void ensureReady() override;
+	int getMaxIdx();
 
 private:
 	unsigned char* values;

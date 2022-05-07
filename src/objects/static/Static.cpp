@@ -54,13 +54,13 @@ void Static::setVisibility(VisibilityType type) {
 			if (!node->IsEnabled()) {
 				node->SetEnabled(true);
 			}
-			setShaderParam(node, "SemiHide", true);
+			setShaderParam(this, "SemiHide", true);
 			break;
 		case VisibilityType::VISIBLE: {
 			if (!node->IsEnabled()) {
 				node->SetEnabled(true);
 			}
-			setShaderParam(node, "SemiHide", false);
+			setShaderParam(this, "SemiHide", false);
 		}
 		break;
 		}

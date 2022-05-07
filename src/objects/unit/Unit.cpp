@@ -356,17 +356,17 @@ void Unit::resetStateChangePending() {
 void Unit::changeColor(SimColorMode mode) {
 	switch (mode) {
 	case SimColorMode::BASIC:
-		setShaderParam(node, "ColorPercent", 2.f);
+		setShaderParam(this, "ColorPercent", 2.f);
 		break;
 	case SimColorMode::VELOCITY:
-		setShaderParam(node, "ColorPercent", velocity.LengthSquared() / maxSpeed * maxSpeed);
+		setShaderParam(this, "ColorPercent", velocity.LengthSquared() / maxSpeed * maxSpeed);
 		break;
 	case SimColorMode::STATE:
-		setShaderParam(node, "ColorPercent", ((float)state )/ magic_enum::enum_count<UnitState>());
+		setShaderParam(this, "ColorPercent", ((float)state )/ magic_enum::enum_count<UnitState>());
 		break;
 	case SimColorMode::FORMATION:
 		if (formation != -1) {
-			setShaderParam(node, "ColorPercent", Game::getFormationManager()->getPriority(this) / 3.f);
+			setShaderParam(this, "ColorPercent", Game::getFormationManager()->getPriority(this) / 3.f);
 		}
 	}
 }

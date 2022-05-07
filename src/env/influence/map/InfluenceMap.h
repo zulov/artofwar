@@ -30,6 +30,8 @@ protected:
 
 	float min;
 	float max;
+	int minIdx;
+	int maxIdx;
 
 	unsigned short counter = 0;
 

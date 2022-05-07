@@ -61,11 +61,18 @@ void InfluenceMapInt::ensureReady() {
 	computeMinMax();
 }
 
+int InfluenceMapInt::getMaxIdx() {
+	computeMinMax();
+	return maxIdx;
+}
+
 void InfluenceMapInt::computeMinMax() {
 	if (!minMaxInited) {
-		const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);
-		min = *minIdx;
-		max = *maxIdx;
+		const auto [minPtr, maxPtr] = std::minmax_element(values, values + arraySize);
+		min = *minPtr;
+		max = *maxPtr;
+		minIdx = std::distance(values, minPtr);
+		maxIdx = std::distance(values, maxPtr);
 		minMaxInited = true;
 	}
 }

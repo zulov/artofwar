@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <Urho3D/Core/Variant.h>
+#include <Urho3D/Graphics/Material.h>
 
 #include "database/db_other_struct.h"
 #include "objects/ObjectEnums.h"
@@ -13,7 +14,8 @@
 
 enum class VisibilityType : char;
 
-namespace Urho3D {
+namespace Urho3D
+{
 	class Node;
 	class StaticModel;
 }
@@ -48,8 +50,7 @@ public:
 	virtual bool isIndexSlotOccupied(int indexToInteract) { return false; }
 	virtual bool indexChanged() const { return false; }
 
-	virtual void setOccupiedIndexSlot(char index, bool value) {
-	}
+	virtual void setOccupiedIndexSlot(char index, bool value) { }
 
 	virtual std::string getValues(int precision);
 	virtual bool isUsable() const { return isAlive(); }
@@ -73,8 +74,7 @@ public:
 
 	int getMainGridIndex() const { return indexInMainGrid; }
 
-	virtual void populate() {
-	}
+	virtual void populate() { }
 
 	virtual bool isToDispose() const { return false; }
 
@@ -98,8 +98,7 @@ public:
 
 	virtual char getLevelNum();
 
-	virtual void addValues(std::span<float> vals) const {
-	}
+	virtual void addValues(std::span<float> vals) const { }
 
 	virtual unsigned char getMaxRangeUsers() const { return 128; }
 	virtual unsigned char getMaxCloseUsers() const { return 8; }
@@ -109,6 +108,9 @@ public:
 	virtual void setVisibility(VisibilityType type) = 0;
 	virtual unsigned char getHealthBarThick() const { return 5; }
 	bool isNodeEnabled() const;
+	void setDefaultShader(Urho3D::Material* mat) const;
+	void ensureMaterialCloned();
+	Urho3D::Node* getNode() { return node; }
 protected:
 	virtual void setModelData(float modelHeight) const =0;
 
@@ -134,4 +136,5 @@ protected:
 	bool shouldUpdate = false;
 
 	bool selected = false;
+	bool materialCloned = false;
 };

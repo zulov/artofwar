@@ -84,7 +84,7 @@ void Physical::select() {
 
 	selected = true;
 
-	setShaderParam(node, "OutlineEnable", true);
+	setShaderParam(this, "OutlineEnable", true);
 }
 
 
@@ -93,7 +93,7 @@ void Physical::clearSelection() {
 }
 
 void Physical::unSelect() {
-	setShaderParam(node, "OutlineEnable", false);
+	setShaderParam(this, "OutlineEnable", false);
 
 	clearSelection();
 }
@@ -102,18 +102,19 @@ bool Physical::isNodeEnabled() const {
 	return node && node->IsEnabled();
 }
 
-void Physical::loadXml(const Urho3D::String& xmlName) {
-	Urho3D::String name;
-	if (SIM_GLOBALS.HEADLESS) {
-		name = "";
-	} else {
-		name = xmlName;
-	}
+void Physical::setDefaultShader(Urho3D::Material* mat) const {
+	mat->SetShaderParameter("OutlineEnable", false);
+	mat->SetShaderParameter("SemiHide", false);
+	mat->SetShaderParameter("ColorPercent", 2.0);
+	mat->SetShaderParameter("Progress", 2.0);
+	mat->SetShaderParameter("VerticalPos",
+	                        Urho3D::Vector2(getPosition().y_, getPosition().y_ + getModelHeight()));
+}
 
-	//node->RemoveAllChildren();
-	if (!name.Empty()) {
-		node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(name)->GetRoot());
-		node->SetVar("link", this);
+void Physical::loadXml(const Urho3D::String& xmlName) {
+	if (!SIM_GLOBALS.HEADLESS) {
+		node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(xmlName)->GetRoot());
+
 		const auto model = node->GetComponent<Urho3D::StaticModel>();
 		if (getModelHeight() < 0.f) {
 			const auto boundingBox = model->GetModel()->GetBoundingBox().Size() * node->GetScale();
@@ -122,29 +123,34 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 		}
 
 		for (int i = 0; i < model->GetNumGeometries(); ++i) {
-			model->SetMaterial(i, model->GetMaterial(i)->Clone()); //TODO memory
-			auto mat = model->GetMaterial(i);
-			mat->SetShaderParameter("OutlineEnable", false);
-			mat->SetShaderParameter("SemiHide", false);
-			mat->SetShaderParameter("ColorPercent", 2.0);
-			mat->SetShaderParameter("Progress", 2.0);
-			mat->SetShaderParameter("VerticalPos",
-			                        Urho3D::Vector2(getPosition().y_, getPosition().y_ + getModelHeight()));
-			if (mat->GetShaderParameter("OutlineColor").IsEmpty()) {
-				if (player >= 0) {
-					auto colorId = Game::getPlayersMan()->getPlayer(player)->getColor();
-					db_player_colors* col = Game::getDatabase()->getPlayerColor(colorId);
-					mat->SetShaderParameter("OutlineColor", getColor(col));
-				}
-			}
+			setDefaultShader(model->GetMaterial(i));
 		}
 	}
 
 	populate();
 }
 
-
 void Physical::setPlayerAndTeam(int player) {
 	setPlayer(player);
 	setTeam(Game::getPlayersMan()->getPlayer(player)->getTeam());
+}
+
+void Physical::ensureMaterialCloned() {
+	if (node && !materialCloned) {
+		if(getType()==ObjectType::BUILDING) {
+			std::cout << "test";
+		}
+		const auto model = node->GetComponent<Urho3D::StaticModel>();
+		for (int i = 0; i < model->GetNumGeometries(); ++i) {
+			model->SetMaterial(i, model->GetMaterial(i)->Clone());
+			auto mat = model->GetMaterial(i);
+			setDefaultShader(mat);
+			if (player >= 0 && mat->GetShaderParameter("OutlineColor").IsEmpty()) {
+				auto colorId = Game::getPlayersMan()->getPlayer(player)->getColor();
+				db_player_colors* col = Game::getDatabase()->getPlayerColor(colorId);
+				mat->SetShaderParameter("OutlineColor", getColor(col));
+			}
+		}
+		materialCloned = true;
+	}
 }

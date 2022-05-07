@@ -6,6 +6,8 @@
 #include <Urho3D/Scene/Scene.h>
 #include <Urho3D/Graphics/Material.h>
 
+#include "Physical.h"
+
 
 inline Urho3D::Node* createNode(const Urho3D::String& name) {
 	const auto node = Game::getScene()->CreateChild();
@@ -33,4 +35,9 @@ inline void setShaderParam(Urho3D::Node * node, const Urho3D::String& name, cons
 			}
 		}
 	}
+}
+
+inline void setShaderParam(Physical* phy, const Urho3D::String& name, const Urho3D::Variant& value) {
+	phy->ensureMaterialCloned();
+	setShaderParam(phy->getNode(), name, value);
 }

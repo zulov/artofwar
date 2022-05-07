@@ -40,7 +40,7 @@ Building::~Building() {
 void Building::postCreate() {
 	ready = false;
 	queue->add(1, QueueActionType::BUILDING_CREATE, getId(), 1);
-	setShaderParam(node, "Progress", 0.0);
+	setShaderParam(this, "Progress", 0.0);
 }
 
 unsigned short Building::getMaxHpBarSize() const {
@@ -145,9 +145,9 @@ Building* Building::load(dbload_building* dbloadBuilding) {
 	return this;
 }
 
-QueueElement* Building::updateQueue() const {
+QueueElement* Building::updateQueue() {
 	if (!ready) {
-		setShaderParam(node, "Progress", queue->getAt(0)->getProgress());
+		setShaderParam(this, "Progress", queue->getAt(0)->getProgress());
 	}
 
 	return queue->update();
@@ -210,9 +210,10 @@ void Building::setDeploy(int cell) {
 
 void Building::complete() {
 	ready = true;
-	const int hpTemp = hp;
-	loadXml("Objects/buildings/" + dbLevel->nodeName);
-	hp = hpTemp;
+	setShaderParam(this, "Progress", 2.0);
+	//const int hpTemp = hp;
+	//loadXml("Objects/buildings/" + dbLevel->nodeName);
+	//hp = hpTemp;
 }
 
 float Building::getSightRadius() const {

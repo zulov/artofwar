@@ -113,7 +113,6 @@ struct db_with_cost {
 
 struct db_basic_metric {
 protected:
-	//std::vector<float> valuesNorm;
 	std::valarray<float> valuesNormAsVal;
 	std::valarray<float> typesNormAsVal;
 

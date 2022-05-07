@@ -408,7 +408,9 @@ InfluenceManager::getAreas(const std::span<float> result, ParentBuildingType typ
 
 std::vector<int>* InfluenceManager::getAreasResBonus(char id, char player) {
 	tempIndexes->clear();
-	mapsResNotInBonusPerPlayer[player][id]->getMaxInx();
+	const int maxIdx = mapsResNotInBonusPerPlayer[player][id]->getMaxIdx();
+	tempIndexes->push_back(maxIdx);
+	return tempIndexes;
 }
 
 std::vector<int>*
