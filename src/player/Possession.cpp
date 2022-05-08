@@ -31,7 +31,7 @@ Possession::Possession(char nation) {
 
 	buildingsOtherSumSpan = std::span(data + (begin += BUILDING_SIZE), BUILDING_OTHER_SIZE);
 	buildingsDefenceSumSpan = std::span(data + (begin += BUILDING_OTHER_SIZE), BUILDING_DEF_SIZE);
-	buildingsResSumSpan = std::span(data + (begin += BUILDING_DEF_SIZE), BUILDING_RES_SIZE);
+
 	buildingsTechSumSpan = std::span(data + (begin += BUILDING_RES_SIZE), BUILDING_TECH_SIZE);
 	buildingsUnitsSumSpan = std::span(data + (begin += BUILDING_TECH_SIZE), BUILDING_UNITS_SIZE);
 
@@ -111,6 +111,14 @@ std::span<float> Possession::refreshBuildingSum(const std::span<unsigned char> i
 	return out;
 }
 
+std::span<float> Possession::refreshResource(const std::span<unsigned char> idxs, std::span<float> out) const {
+	assert(idxs.size() == out.size());
+	for (int i = 0; i < idxs.size(); ++i) {
+		out[i] = buildingsSumAsSpan[idxs[i]];
+	}
+	return out;
+}
+
 std::span<float> Possession::getBuildingsMetrics(ParentBuildingType type) const {
 	switch (type) {
 	case ParentBuildingType::OTHER:
@@ -118,7 +126,8 @@ std::span<float> Possession::getBuildingsMetrics(ParentBuildingType type) const 
 	case ParentBuildingType::DEFENCE:
 		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingDefenceIdxs(), buildingsDefenceSumSpan);
 	case ParentBuildingType::RESOURCE:
-		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingResourceIdxs(), buildingsResSumSpan);
+		assert(false);			
+		//return refreshResource(METRIC_DEFINITIONS.getResWithoutBonusIdxs(), buildingsResSumSpan);
 	case ParentBuildingType::TECH:
 		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingTechIdxs(), buildingsTechSumSpan);
 	case ParentBuildingType::UNITS:

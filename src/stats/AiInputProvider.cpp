@@ -45,7 +45,7 @@ std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, con
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 	if (type == ParentBuildingType::RESOURCE) {
 		return combineWithBasic(buildingsResWhereInputSpan, prop->getValuesNormAsValForType(type), player);
-	} 
+	}
 	return combineWithBasic(buildingsWhereInputSpan, prop->getTypesVal(), player);
 }
 
@@ -91,9 +91,14 @@ std::span<float> AiInputProvider::getBuildingInputSpan(ParentBuildingType type) 
 
 std::span<float> AiInputProvider::getBuildingsTypeInput(char playerId, ParentBuildingType type) const {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
-	const std::span<float> data = player->getPossession().getBuildingsMetrics(type);
-	assert(data.size() > 0);
-	return combineWithBasic(getBuildingInputSpan(type), data, player);
+
+	if (type == ParentBuildingType::RESOURCE) {
+		return combineWithBasic(getBuildingInputSpan(type),
+		                        METRIC_DEFINITIONS.getResourceNorm(player->getResources(), player->getPossession(),
+		                                                           METRIC_DEFINITIONS.aiResWithoutBonusIdxsSpan),
+		                        player);
+	}
+	return combineWithBasic(getBuildingInputSpan(type), player->getPossession().getBuildingsMetrics(type), player);
 }
 
 std::span<float> AiInputProvider::getBasicInput(std::span<float> dest, Player* player) const {
@@ -109,7 +114,7 @@ std::span<float> AiInputProvider::getBasicInput(std::span<float> dest, Player* p
 std::span<float> AiInputProvider::combineWithBasic(const std::span<float> output, const std::span<const float> toJoin,
                                                    Player* player) const {
 	std::ranges::copy(toJoin, getBasicInput(output, player).begin());
-
+	assert(toJoin.size() > 0);
 	assert(validateSpan(__LINE__, __FILE__, toJoin));
 	assert(validateSpan(__LINE__, __FILE__, output));
 	assert(output.size() == BASIC_SIZE + toJoin.size());
@@ -119,7 +124,7 @@ std::span<float> AiInputProvider::combineWithBasic(const std::span<float> output
 std::span<float> AiInputProvider::combineWithBasic(const std::span<float> output, const std::vector<float>& toJoin,
                                                    Player* player) const {
 	std::ranges::copy(toJoin, getBasicInput(output, player).begin());
-
+	assert(toJoin.size() > 0);
 	assert(validateSpan(__LINE__, __FILE__, toJoin));
 	assert(validateSpan(__LINE__, __FILE__, output));
 	assert(output.size() == BASIC_SIZE + toJoin.size());

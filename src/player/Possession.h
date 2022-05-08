@@ -25,6 +25,7 @@ public:
 	int getWorkersNumber() const;
 	int getFreeWorkersNumber() const;
 	int getFreeArmyNumber() const;
+	int getResWithOutBonus() const;
 	std::vector<Building*>* getBuildings(short id);
 	const std::vector<Building*>& getBuildings();
 
@@ -42,6 +43,7 @@ public:
 	float getDefenceAttackSum();
 private:
 	std::span<float> refreshBuildingSum(const std::span<unsigned char> idxs, std::span<float> out) const;
+	std::span<float> refreshResource(const std::span<unsigned char> idxs, std::span<float> out) const;
 	std::vector<Building*> buildings;
 	std::vector<std::vector<Building*>*> buildingsPerId;
 
@@ -64,7 +66,7 @@ private:
 
 	std::span<float> buildingsOtherSumSpan;
 	std::span<float> buildingsDefenceSumSpan;
-	std::span<float> buildingsResSumSpan;
+	std::span<float> resWithoutBonus;
 	std::span<float> buildingsTechSumSpan;
 	std::span<float> buildingsUnitsSumSpan;
 

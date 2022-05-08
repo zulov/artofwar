@@ -102,6 +102,15 @@ constexpr inline struct MetricDefinitions {
 		}
 		return output;
 	}
+	
+	const std::vector<float> getResourceNorm(Resources& resources, Possession& possession, std::span<unsigned char> idxs) const {
+		output.clear();
+		for (auto idx : idxs) {
+			auto& v = resourceInputSpan[idx];
+			output.push_back(v.fn(resources, possession) * v.weight);
+		}
+		return output;
+	}
 
 	const std::vector<float>& getBasicNorm(Player* one, Player* two) const {
 		basic.clear();
@@ -131,6 +140,8 @@ constexpr inline struct MetricDefinitions {
 	const std::span<unsigned char> getBuildingTechIdxs() const { return aiBuildingTechIdxsSpan; }
 	const std::span<unsigned char> getBuildingUnitsIdxs() const { return aiBuildingUnitsIdxsSpan; }
 	const std::span<unsigned char> getBuildingTypesIdxs() const { return aiBuildingTypesIdxsSpan; }
+	
+	const std::span<unsigned char> getResWithoutBonusIdxs() const { return aiResWithoutBonusIdxsSpan; }
 
 
 	static inline AiUnitMetric aiUnitMetric[] = {
@@ -198,6 +209,8 @@ constexpr inline struct MetricDefinitions {
 	static inline unsigned char aiBuildingResIdxs[] = {4, 8, 12, 13, 14, 15};
 	static inline unsigned char aiBuildingDefIdxs[] = {0, 1, 2, 3, 5, 6, 7};
 	static inline unsigned char aiBuildingTypesIdxs[] = {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+	
+	static inline unsigned char aiResWithoutBonusIdxs[] = {10, 11, 12, 13};
 
 	//TODO moze to zwracac od razy przedzia³em jakos
 	static inline AiResourceMetric aiResourceMetric[] = {
@@ -213,6 +226,10 @@ constexpr inline struct MetricDefinitions {
 
 		{[](const Resources& r, const Possession& p) -> float { return p.getFreeWorkersNumber(); }, 100},
 		{[](const Resources& r, const Possession& p) -> float { return p.getWorkersNumber(); }, 100},
+		{[](const Resources& r, const Possession& p) -> float { return r.getResWithOutBonus()[0]; }, 10},//10
+		{[](const Resources& r, const Possession& p) -> float { return r.getResWithOutBonus()[1]; }, 10},
+		{[](const Resources& r, const Possession& p) -> float { return r.getResWithOutBonus()[2]; }, 10},
+		{[](const Resources& r, const Possession& p) -> float { return r.getResWithOutBonus()[3]; }, 10},
 	};
 
 	static inline AiPlayerMetric aiBasicMetric[] = {
@@ -254,6 +271,8 @@ constexpr inline struct MetricDefinitions {
 	constexpr static std::span<unsigned char> aiBuildingResIdxsSpan = std::span(aiBuildingResIdxs);
 	constexpr static std::span<unsigned char> aiBuildingDefIdxsSpan = std::span(aiBuildingDefIdxs);
 	constexpr static std::span<unsigned char> aiBuildingTypesIdxsSpan = std::span(aiBuildingTypesIdxs);
+	
+	constexpr static std::span<unsigned char> aiResWithoutBonusIdxsSpan = std::span(aiResWithoutBonusIdxs);
 
 	constexpr static std::span<unsigned char> aiUnitTypesIdxsSpan = std::span(aiUnitsTypesIdxs);
 	constexpr static std::span<AiUnitMetric> unitInputSpan = std::span(aiUnitMetric);

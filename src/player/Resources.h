@@ -23,6 +23,7 @@ public:
 	std::span<float> getValues() const { return values; }
 	std::span<float> getGatherSpeeds() const { return gatherSpeeds; }
 	std::span<float> getSumValues() const { return sumValues; }
+	std::span<float> getResWithOutBonus() const { return resWithoutBonus; }
 
 	int getSum() const;
 
@@ -31,10 +32,11 @@ public:
 
 	void resetStats() const;
 private:
-	float data[RESOURCES_SIZE * RESOURCES_SIZE];
+	float data[RESOURCES_SIZE * 5];
 
 	std::span<float> values;
 	std::span<float> gatherSpeeds;
 	std::span<float> sumGatherSpeed;
 	std::span<float> sumValues;
+	std::span<float> resWithoutBonus;
 };

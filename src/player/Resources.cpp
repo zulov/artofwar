@@ -19,11 +19,13 @@ void Resources::init(float valueForAll) {
 	gatherSpeeds = std::span(data + RESOURCES_SIZE, RESOURCES_SIZE);
 	sumGatherSpeed = std::span(data + 2 * RESOURCES_SIZE, RESOURCES_SIZE);
 	sumValues = std::span(data + 3 * RESOURCES_SIZE, RESOURCES_SIZE);
+	resWithoutBonus = std::span(data + 4 * RESOURCES_SIZE, RESOURCES_SIZE);
 
 	resetSpan(values, valueForAll);
 	resetSpan(gatherSpeeds);
 	resetSpan(sumGatherSpeed);
 	resetSpan(sumValues);
+	resetSpan(resWithoutBonus);
 }
 
 bool Resources::reduce(const db_cost* costs) {
@@ -50,7 +52,6 @@ void Resources::add(int id, float value) {
 	sumGatherSpeed[id] += value;
 	sumValues[id] += value;
 }
-
 
 int Resources::getSum() const {
 	return sumSpan(values);

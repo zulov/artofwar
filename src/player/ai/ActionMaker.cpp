@@ -35,21 +35,20 @@ ActionMaker::ActionMaker(Player* player, db_nation* nation):
 
 	ifUnit(BrainProvider::get(nation->actionPrefix[11] + "ifUnit.csv")),
 	whichUnit(BrainProvider::get(nation->actionPrefix[12] + "whichUnit.csv")),
-	whereUnit(BrainProvider::get(nation->actionPrefix[13] + "whereUnit.csv")) {
-}
+	whereUnit(BrainProvider::get(nation->actionPrefix[13] + "whereUnit.csv")) {}
 
 std::span<float> ActionMaker::getWhichBuilding(ParentBuildingType type, const std::span<float> aiTypeInput) const {
 	switch (type) {
 	case ParentBuildingType::OTHER:
 		return whichBuildingTypeOther->decide(aiTypeInput);
 	case ParentBuildingType::DEFENCE:
-		return  whichBuildingTypeDefence->decide(aiTypeInput);
+		return whichBuildingTypeDefence->decide(aiTypeInput);
 	case ParentBuildingType::RESOURCE:
-		return  whichBuildingTypeResource->decide(aiTypeInput);
+		return whichBuildingTypeResource->decide(aiTypeInput);
 	case ParentBuildingType::TECH:
-		return  whichBuildingTypeTech->decide(aiTypeInput);
+		return whichBuildingTypeTech->decide(aiTypeInput);
 	case ParentBuildingType::UNITS:
-		return  whichBuildingTypeUnits->decide(aiTypeInput);
+		return whichBuildingTypeUnits->decide(aiTypeInput);
 	}
 }
 
@@ -222,7 +221,7 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 }
 
 db_unit* ActionMaker::chooseUnit(std::span<float> result) {
-	auto pred = [this](db_unit* unit) { return !unit->typeWorker; };
+	auto pred = [this](db_unit* unit){ return !unit->typeWorker; };
 	auto& units = nation->units;
 	std::vector<db_unit*> unitsWithoutWorker;
 	unitsWithoutWorker.reserve(units.size());
@@ -310,7 +309,7 @@ std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId) const {
 	std::vector<Building*> allPossible;
 	for (auto thatCanDeploy : buildingIdsThatCanDeploy) {
 		std::ranges::copy_if(*player->getPossession().getBuildings(thatCanDeploy),
-		                     std::back_inserter(allPossible), [](Building* b) { return b->isReady(); });
+		                     std::back_inserter(allPossible), [](Building* b){ return b->isReady(); });
 	}
 	return allPossible;
 }
