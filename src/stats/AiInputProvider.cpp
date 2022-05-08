@@ -18,7 +18,7 @@ std::span<float> AiInputProvider::getResourceInput(char playerId) const {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
 	return combineWithBasic(resourceIdInputSpan,
-	                        METRIC_DEFINITIONS.getResourceNorm(player->getResources(), player->getPossession()),
+	                        METRIC_DEFINITIONS.getResourceNorm(player->getResources(), player->getPossession(),METRIC_DEFINITIONS.aiResInputIdxs),
 	                        player);
 }
 
