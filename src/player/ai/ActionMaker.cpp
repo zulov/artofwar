@@ -35,7 +35,8 @@ ActionMaker::ActionMaker(Player* player, db_nation* nation):
 
 	ifUnit(BrainProvider::get(nation->actionPrefix[11] + "ifUnit.csv")),
 	whichUnit(BrainProvider::get(nation->actionPrefix[12] + "whichUnit.csv")),
-	whereUnit(BrainProvider::get(nation->actionPrefix[13] + "whereUnit.csv")) {}
+	whereUnit(BrainProvider::get(nation->actionPrefix[13] + "whereUnit.csv")) {
+}
 
 std::span<float> ActionMaker::getWhichBuilding(ParentBuildingType type, const std::span<float> aiTypeInput) const {
 	switch (type) {
@@ -59,8 +60,7 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	const auto aiTypeInput = Game::getAiInputProvider()->getBuildingsTypeInput(player->getId(), type);
 	auto output = getWhichBuilding(type, aiTypeInput);
 
-	db_building* choosen = chooseBuilding(output, type);
-	return createBuilding(choosen, type);
+	return createBuilding(chooseBuilding(output, type), type);
 }
 
 bool ActionMaker::createWorker() const {
@@ -176,6 +176,13 @@ db_building* ActionMaker::chooseBuilding(std::span<float> result, ParentBuilding
 	if (buildings.size() == 1) {
 		return buildings.at(1);
 	}
+	if (type == ParentBuildingType::RESOURCE) {
+		int res = biggestWithRand(result);
+		for (auto building : buildings) {
+			if (building->hasResourceType[res]) { return building; }
+		}
+		return nullptr;
+	}
 
 	std::valarray<float> center(result.data(), result.size());
 	std::vector<float> diffs;
@@ -221,7 +228,7 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 }
 
 db_unit* ActionMaker::chooseUnit(std::span<float> result) {
-	auto pred = [this](db_unit* unit){ return !unit->typeWorker; };
+	auto pred = [this](db_unit* unit) { return !unit->typeWorker; };
 	auto& units = nation->units;
 	std::vector<db_unit*> unitsWithoutWorker;
 	unitsWithoutWorker.reserve(units.size());
@@ -309,7 +316,7 @@ std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId) const {
 	std::vector<Building*> allPossible;
 	for (auto thatCanDeploy : buildingIdsThatCanDeploy) {
 		std::ranges::copy_if(*player->getPossession().getBuildings(thatCanDeploy),
-		                     std::back_inserter(allPossible), [](Building* b){ return b->isReady(); });
+		                     std::back_inserter(allPossible), [](Building* b) { return b->isReady(); });
 	}
 	return allPossible;
 }

@@ -18,7 +18,8 @@ std::span<float> AiInputProvider::getResourceInput(char playerId) const {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
 	return combineWithBasic(resourceIdInputSpan,
-	                        METRIC_DEFINITIONS.getResourceNorm(player->getResources(), player->getPossession(),METRIC_DEFINITIONS.aiResInputIdxs),
+	                        METRIC_DEFINITIONS.getResourceNorm(player->getResources(), player->getPossession(),
+	                                                           METRIC_DEFINITIONS.aiResInputIdxs),
 	                        player);
 }
 
@@ -82,7 +83,8 @@ std::span<float> AiInputProvider::getBuildingInputSpan(ParentBuildingType type) 
 	switch (type) {
 	case ParentBuildingType::OTHER: return buildingsOtherInputSpan;
 	case ParentBuildingType::DEFENCE: return buildingsDefenceInputSpan;
-	case ParentBuildingType::RESOURCE: return buildingsResInputSpan;
+	case ParentBuildingType::RESOURCE: assert(false);
+		return buildingsResInputSpan;
 	case ParentBuildingType::TECH: return buildingsTechInputSpan;
 	case ParentBuildingType::UNITS: return buildingsUnitsInputSpan;
 	default: ;
@@ -93,7 +95,7 @@ std::span<float> AiInputProvider::getBuildingsTypeInput(char playerId, ParentBui
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
 	if (type == ParentBuildingType::RESOURCE) {
-		return combineWithBasic(getBuildingInputSpan(type),
+		return combineWithBasic(buildingsResInputSpan,
 		                        METRIC_DEFINITIONS.getResourceNorm(player->getResources(), player->getPossession(),
 		                                                           METRIC_DEFINITIONS.aiResWithoutBonusIdxsSpan),
 		                        player);

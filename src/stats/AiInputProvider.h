@@ -44,7 +44,7 @@ private:
 
 	float buildingsOtherInput[BASIC_SIZE + BUILDING_OTHER_SIZE];
 	float buildingsDefenceInput[BASIC_SIZE + BUILDING_DEF_SIZE];
-	float buildingsResInput[BASIC_SIZE + BUILDING_RES_SIZE];
+	float buildingsResInput[BASIC_SIZE + BUILDING_RES_BONUS_SIZE];
 	float buildingsTechInput[BASIC_SIZE + BUILDING_TECH_SIZE];
 	float buildingsUnitsInput[BASIC_SIZE + BUILDING_UNITS_SIZE];
 
