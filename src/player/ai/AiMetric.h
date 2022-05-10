@@ -234,10 +234,10 @@ constexpr inline struct MetricDefinitions {
 
 		{[](const Resources& r, const Possession& p) -> float { return p.getFreeWorkersNumber(); }, 100},
 		{[](const Resources& r, const Possession& p) -> float { return p.getWorkersNumber(); }, 100},
-		{[](const Resources& r, const Possession& p) -> float { return r.getResWithOutBonus()[0]; }, 10}, //10
-		{[](const Resources& r, const Possession& p) -> float { return r.getResWithOutBonus()[1]; }, 10},
-		{[](const Resources& r, const Possession& p) -> float { return r.getResWithOutBonus()[2]; }, 10},
-		{[](const Resources& r, const Possession& p) -> float { return r.getResWithOutBonus()[3]; }, 10},
+		{[](const Resources& r, const Possession& p) -> float { return p.getResWithOutBonus()[0]; }, 20}, //10
+		{[](const Resources& r, const Possession& p) -> float { return p.getResWithOutBonus()[1]; }, 20},
+		{[](const Resources& r, const Possession& p) -> float { return p.getResWithOutBonus()[2]; }, 20},
+		{[](const Resources& r, const Possession& p) -> float { return p.getResWithOutBonus()[3]; }, 20},
 	};
 
 	static inline AiPlayerMetric aiBasicMetric[] = {

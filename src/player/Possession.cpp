@@ -20,8 +20,8 @@ Possession::Possession(char nation) {
 	}
 	int dataSize = UNIT_SIZE * 2 + BUILDING_SIZE
 		+ BUILDING_OTHER_SIZE + BUILDING_DEF_SIZE
-		+ BUILDING_RES_SIZE + BUILDING_TECH_SIZE
-		+ BUILDING_UNITS_SIZE;
+		+ BUILDING_TECH_SIZE
+		+ BUILDING_UNITS_SIZE + RESOURCES_SIZE;
 	data = new float[dataSize];
 
 	int begin = 0;
@@ -32,8 +32,9 @@ Possession::Possession(char nation) {
 	buildingsOtherSumSpan = std::span(data + (begin += BUILDING_SIZE), BUILDING_OTHER_SIZE);
 	buildingsDefenceSumSpan = std::span(data + (begin += BUILDING_OTHER_SIZE), BUILDING_DEF_SIZE);
 
-	buildingsTechSumSpan = std::span(data + (begin += BUILDING_RES_SIZE), BUILDING_TECH_SIZE);
+	buildingsTechSumSpan = std::span(data + (begin += BUILDING_DEF_SIZE), BUILDING_TECH_SIZE);
 	buildingsUnitsSumSpan = std::span(data + (begin += BUILDING_TECH_SIZE), BUILDING_UNITS_SIZE);
+	resWithoutBonus = std::span(data + (begin += BUILDING_UNITS_SIZE), RESOURCES_SIZE);
 
 	std::fill_n(data, dataSize, 0.f);
 
@@ -126,8 +127,8 @@ std::span<float> Possession::getBuildingsMetrics(ParentBuildingType type) const 
 	case ParentBuildingType::DEFENCE:
 		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingDefenceIdxs(), buildingsDefenceSumSpan);
 	case ParentBuildingType::RESOURCE:
-		assert(false);			
-		//return refreshResource(METRIC_DEFINITIONS.getResWithoutBonusIdxs(), buildingsResSumSpan);
+		assert(false);
+	//return refreshResource(METRIC_DEFINITIONS.getResWithoutBonusIdxs(), buildingsResSumSpan);
 	case ParentBuildingType::TECH:
 		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingTechIdxs(), buildingsTechSumSpan);
 	case ParentBuildingType::UNITS:
@@ -247,6 +248,18 @@ void Possession::updateAndClean(const Resources& resources, const ObjectsInfo* s
 	freeArmyNumber = std::ranges::count_if(units, [](Unit* worker) {
 		return isFreeSolider(worker);
 	});
+
+	resetSpan(resWithoutBonus);
+	for (const auto worker : workers) {
+		if (worker->getState() == UnitState::COLLECT && worker->isFirstThingAlive()) {
+			auto res = (ResourceEntity*)worker->getThingToInteract();
+			//TODO przechowac w resource
+			const auto bonus = Game::getEnvironment()->getBonuses(worker->getPlayer(), res);
+			if (bonus <= 1.f) {
+				resWithoutBonus[res->getId()] += 1;
+			}
+		}
+	}
 
 	assert(validateSpan(__LINE__, __FILE__, unitsSumAsSpan));
 	assert(validateSpan(__LINE__, __FILE__, freeArmySumAsSpan));

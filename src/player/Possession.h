@@ -25,7 +25,7 @@ public:
 	int getWorkersNumber() const;
 	int getFreeWorkersNumber() const;
 	int getFreeArmyNumber() const;
-	int getResWithOutBonus() const;
+	std::span<float> getResWithOutBonus() const  { return resWithoutBonus; };
 	std::vector<Building*>* getBuildings(short id);
 	const std::vector<Building*>& getBuildings();
 
@@ -58,8 +58,8 @@ private:
 	float* levels;
 	float* levelsFree;
 
-	float *data;
-	
+	float* data;
+
 	std::span<float> unitsSumAsSpan;
 	std::span<float> freeArmySumAsSpan; //TODO to dac jako któtkie
 	std::span<float> buildingsSumAsSpan;
