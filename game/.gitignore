@@ -14,7 +14,7 @@ result
 include
 /CoreData
 x64
-Database
+Data/Database
 /logs
 
 /CoreDataMy/*.ps4
