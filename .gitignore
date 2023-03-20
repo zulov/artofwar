@@ -1,0 +1,7 @@
+/packages
+/x64
+/.vs
+/tests/Urho3D.dll
+/tests/Urho3D_d.dll
+/tests/Urho3D_rd.dll
+/tests/x64
