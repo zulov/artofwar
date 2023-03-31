@@ -60,7 +60,7 @@ TEST_F(GridCalculatorFixture, CombineTest) {
 			auto index = gc->indexFromPosition(i, j);
 			auto center = gc->getCenter(index);
 
-			EXPECT_TRUE(abs(center.x_-i)<=0.f);
+			EXPECT_TRUE(abs(center.x_ - i)<=0.f);
 			EXPECT_TRUE(abs(center.y_ - j) <= 0.f);
 		}
 	}
@@ -96,4 +96,11 @@ TEST_F(GridCalculatorFixture, GetShiftCords) {
 	EXPECT_EQ(gcBig->getShiftCords(16), Urho3D::IntVector2(2, 0));
 	EXPECT_EQ(gcBig->getShiftCords(17), Urho3D::IntVector2(2, 1));
 	EXPECT_EQ(gcBig->getShiftCords(18), Urho3D::IntVector2(2, 2));
+
+	EXPECT_EQ(gcBig->getShiftCords(21), Urho3D::IntVector2(3, -3));
+	EXPECT_EQ(gcBig->getShiftCords(-21), Urho3D::IntVector2(-3, 3));
+	EXPECT_EQ(gcBig->getShiftCords(27), Urho3D::IntVector2(3, 3));
+	EXPECT_EQ(gcBig->getShiftCords(-27), Urho3D::IntVector2(-3, -3));
+
+
 }
