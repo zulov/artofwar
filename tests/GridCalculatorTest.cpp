@@ -101,6 +101,4 @@ TEST_F(GridCalculatorFixture, GetShiftCords) {
 	EXPECT_EQ(gcBig->getShiftCords(-21), Urho3D::IntVector2(-3, 3));
 	EXPECT_EQ(gcBig->getShiftCords(27), Urho3D::IntVector2(3, 3));
 	EXPECT_EQ(gcBig->getShiftCords(-27), Urho3D::IntVector2(-3, -3));
-
-
 }

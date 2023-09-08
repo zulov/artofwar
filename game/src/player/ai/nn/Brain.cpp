@@ -39,11 +39,13 @@ const std::span<float> Brain::decide(std::span<float> data) {
 		Layer* layer = allLayers.at(i);
 		Layer* prevLayer = allLayers.at(i - 1);
 
-		const auto vals = prevLayer->getValues(); //TODO performance to eigen
+		const auto& vals = prevLayer->getValues(); //TODO performance to eigen
 
 		const auto input = Eigen::Map<Eigen::VectorXf>(vals.data(), vals.size());
 		const auto weightedMatrix = Eigen::Map<Eigen::MatrixXf>(layer->getW(), layer->getPrevSize(),
 		                                                        layer->getNumberOfValues()).transpose();
+		const Eigen::MatrixXf& weightedMatrix = layer->getWeightMatrix(); // Avoid creating a new Map each time
+		//to jest sta³e dla konkretnej warstwy
 
 		Eigen::MatrixXf mult = weightedMatrix * input;
 
