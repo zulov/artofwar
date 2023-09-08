@@ -7,7 +7,8 @@ struct GridCalculator {
 	explicit GridCalculator(unsigned short resolution, float size)
 		: resolution(resolution), halfResolution(resolution / 2), sqResolution(resolution * resolution),
 		  fieldSize(size / static_cast<float>(resolution)), halfSize(size * 0.5f),
-		  invFieldSize(static_cast<float>(resolution) / size), sqFieldSize(fieldSize * fieldSize) {
+		invFieldSize(static_cast<float>(resolution) / size), sqFieldSize(fieldSize * fieldSize), 
+		shiftAmount(log2(resolution)), mask(resolution - 1) {
 	}
 
 	GridCalculator(const GridCalculator&) = delete;
@@ -41,8 +42,8 @@ struct GridCalculator {
 	}
 
 	Urho3D::IntVector2 getIndexes(int i) const {
-		return {i / resolution, i % resolution};
-		//return { i >> shiftAmount, i & mask };
+		//return {i / resolution, i % resolution};
+		return { i >> shiftAmount, i & mask };
 		//Zamiast dzielenia przez "resolution" u¿yto zmiennej "shiftAmount", która jest równe log2(resolution), a zamiast modulo(operator %) u¿yto maski,
 		//która ma wartoœæ "resolution - 1" i ma wype³nione jedynkami tylko najmniej znacz¹ce bity.
 	}
@@ -150,4 +151,6 @@ private:
 	float halfSize;
 	float invFieldSize;
 	float sqFieldSize;
+	unsigned char shiftAmount;
+	unsigned short mask;
 };

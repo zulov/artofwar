@@ -26,7 +26,7 @@ GridCalculator* GridCalculatorFixture::gcBig = nullptr;
 
 
 TEST_F(GridCalculatorFixture, Center) {
-	EXPECT_EQ(gc->getCenter(0), Urho3D::Vector2(-3.f, -3.f));
+	 EXPECT_EQ(gc->getCenter(0), Urho3D::Vector2(-3.f, -31.f));
 	EXPECT_EQ(gc->getCenter(6), Urho3D::Vector2(-1.f, 1.f));
 	EXPECT_EQ(gc->getCenter(9), Urho3D::Vector2(1.f, -1.f));
 	EXPECT_EQ(gc->getCenter(15), Urho3D::Vector2(3.f, 3.f));

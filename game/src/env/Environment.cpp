@@ -91,6 +91,7 @@ std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& buc
 	const float sqRadius = radius * radius;
 
 	while (Physical* neight = bucketIterator.next()) {
+		//if bucket wystarczajaco blisk ododaj bez sprawdzania odleglosci
 		addIfInRange(physical, neight, sqRadius, condition);
 	}
 
