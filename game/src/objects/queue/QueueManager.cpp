@@ -3,8 +3,7 @@
 #include "QueueUtils.h"
 
 
-QueueManager::QueueManager(unsigned short maxCapacity): maxCapacity(maxCapacity) {
-}
+QueueManager::QueueManager(unsigned short maxCapacity): maxCapacity(maxCapacity) {}
 
 
 QueueManager::~QueueManager() {
@@ -28,14 +27,14 @@ void QueueManager::add(short number, QueueActionType type, short id, unsigned sh
 }
 
 QueueElement* QueueManager::update() {
-	for (auto i = 0; i < queue.size(); ++i) {
+	for (auto i = 0; i < queue.size();) {
 		if (queue.at(i)->getAmount() <= 0) {
 			delete queue.at(i);
-			queue.erase(queue.begin() + i);
-		}
+			queue.erase(queue.begin() + i); //BUG chyba iterowanie i usuwanie 
+		} else { ++i; }
 	}
 	if (!queue.empty()) {
-		auto element = *queue.begin();
+		const auto element = *queue.begin();
 
 		if (element->update()) {
 			queue.erase(queue.begin());

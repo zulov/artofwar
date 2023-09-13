@@ -238,6 +238,13 @@ void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::
 	visibilityManager->updateVisibility(buildings, units, resources);
 }
 
+void InfluenceManager::updateInfluenceHistoryReset() const{
+	MapsUtils::resetToZeroMaps(foodGatherSpeed);
+	MapsUtils::resetToZeroMaps(woodGatherSpeed);
+	MapsUtils::resetToZeroMaps(stoneGatherSpeed);
+	MapsUtils::resetToZeroMaps(goldGatherSpeed);
+}
+
 void InfluenceManager::draw(InfluenceDataType type, char index) {
 	DebugLineRepo::clear(DebugLineType::INFLUENCE, currentDebugBatch);
 	DebugLineRepo::beginGeometry(DebugLineType::INFLUENCE, currentDebugBatch);

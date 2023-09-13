@@ -7,24 +7,15 @@ class Layer {
 public:
 	Layer(std::vector<float>& w, std::vector<float>& bias);
 	Layer(const Layer& rhs) = delete;
-	~Layer();
-	void setValues(std::span<float> data) const;
-	void setValues(Eigen::MatrixXf& mult) const;
-	std::span<float> getValues() const  { return valuesSpan; }
+	~Layer() = default;
+	void setValues(std::span<float> data);
+	void setValues(Eigen::MatrixXf& mult);
+	void setValues1(const Eigen::VectorXf& mult);
 
-	short getNumberOfValues() const { return valuesSpan.size(); }
-	short getPrevSize() const { return prevSize; }
-	float* getW() const { return w; }
-	short getWSize() const { return valuesSpan.size() * prevSize; }
-	float getBias(int i) const { return bias[i]; }
-	void setValueAt(int i, float newValue) const { values[i] = newValue; }
+	const Eigen::VectorXf& getValues() const { return values; }
+
 private:
-
-	std::span<float> valuesSpan;
-	short prevSize;
-
-	float* values;//TODO performance replate with eigen Vector
-	float* bias;
-
-	float* w;
+	Eigen::MatrixXf weights;
+	Eigen::VectorXf values;
+	Eigen::VectorXf bias;
 };

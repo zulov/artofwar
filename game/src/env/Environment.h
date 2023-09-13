@@ -50,7 +50,7 @@ public:
 	void updateQuadOther() const;
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
 	                      std::vector<ResourceEntity*>* resources) const;
-
+	void updateInfluenceHistoryReset();
 	void invalidateCaches();
 	void update(Unit* unit) const;
 
@@ -93,8 +93,6 @@ public:
 
 	Urho3D::Vector2 getCenter(int index) const;
 	Urho3D::Vector2 getCenter(short x, short z) const;
-
-	Urho3D::Vector2 getPositionInBucket(Unit* unit) const;
 
 	void invalidatePathCache();
 

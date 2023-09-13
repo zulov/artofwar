@@ -37,23 +37,18 @@ const std::span<float> Brain::decide(std::span<float> data) {
 	allLayers.front()->setValues(data);
 	for (int i = 1; i < allLayers.size(); i++) {
 		Layer* layer = allLayers.at(i);
-		Layer* prevLayer = allLayers.at(i - 1);
+		const Layer* prevLayer = allLayers.at(i - 1);
 
-		const auto& vals = prevLayer->getValues(); //TODO performance to eigen
+		//Eigen::MatrixXf mult = layer->getWeights() * prevLayer->getValues();//wsadzic to nizej w zaleznosci od wydajnosci
 
-		const auto input = Eigen::Map<Eigen::VectorXf>(vals.data(), vals.size());
-		const auto weightedMatrix = Eigen::Map<Eigen::MatrixXf>(layer->getW(), layer->getPrevSize(),
-		                                                        layer->getNumberOfValues()).transpose();
-		const Eigen::MatrixXf& weightedMatrix = layer->getWeightMatrix(); // Avoid creating a new Map each time
-		//to jest sta³e dla konkretnej warstwy
-
-		Eigen::MatrixXf mult = weightedMatrix * input;
-
-		layer->setValues(mult);
+		//layer->setValues(mult);
+		layer->setValues1(prevLayer->getValues());
 	}
+
 	auto result = allLayers.back()->getValues();
-	assert(validateSpan(__LINE__, __FILE__, result));
-	return result;
+	auto res1 = std::span(result.data(), result.rows());
+	assert(validateSpan(__LINE__, __FILE__, res1));
+	return res1;
 }
 
 std::string Brain::getName() const {

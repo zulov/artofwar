@@ -99,7 +99,7 @@ public:
 	short getThingToInterActId() const { return thingToInteract ? thingToInteract->getId() : -1; }
 
 	float getMaxSeparationDistance() const;
-	short getPositionInFormation() const { return posInFormation; }
+	short getPositionInState() const { return posInState; }
 	float getMinimalDistance() const;
 	UnitState getActionState() const;
 	UnitState getState() const { return state; }
@@ -156,7 +156,8 @@ public:
 	unsigned char getMaxRangeUsers() const { return 16; }
 	void resetStateChangePending();
 	Physical* getThingToInteract() const { return thingToInteract; }
-
+	void setInCellPos(Urho3D::Vector2 pos) { inCellPos = pos; }
+	Urho3D::Vector2& setInCellPos() { return inCellPos; }
 private:
 	void setAim(Aim* aim);
 	Urho3D::Vector2 velocity, acceleration;
@@ -176,7 +177,7 @@ private:
 	int indexToInteract = -1; //TODO moze sie tego pozbyc
 
 	unsigned short currentFrameState = 0;
-	short posInFormation = -1, formation = -1;
+	short posInState = -1, formation = -1;
 
 	UnitState state;
 	UnitState nextState;
@@ -185,4 +186,5 @@ private:
 	unsigned char useSockets = 0;
 	char lastActionThingId = -1; //TODO reset po jakimœ czasie
 	ActionParameter nextActionParameter;
+	Urho3D::Vector2 inCellPos;
 };

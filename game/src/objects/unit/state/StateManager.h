@@ -25,7 +25,8 @@ public:
 	                          State* toState);
 	static bool canChangeState(Unit* unit, UnitState stateTo);
 	static void execute(Unit* unit, float timeStamp);
-	static void executeChange(std::vector<Unit*>* units);
+	static void executeChange(const std::vector<Unit*>* units);
+	static void reset();
 
 	static bool changeState(Static* obj, StaticState stateTo);
 	
@@ -33,10 +34,25 @@ public:
 	static void executeChange(std::vector<Building*>* buildings);
 	static void executeChange(std::vector<ResourceEntity*>* resources);
 
+	static bool isUnitToDispose();
 	static bool isBuildingToDispose();
-	static void setBuildingToDispose(bool value);
 	static bool isResourceToDispose();
-	static void setResourceToDispose(bool value);
+
+	static void setUnitDead();
+	static void setBuildingDead();
+	static void setResourceDead();
+
+	static void setUnitToDispose();
+	static void setBuildingToDispose();
+	static void setResourceToDispose();
+
+	static bool isUnitUnalived();
+	static bool isBuildingUnalived();
+	static bool isResourceUnalived();
+
+	static bool isUnitDead();
+	static bool isBuildingDead();
+	static bool isResourceDead();
 
 	static void init();
 	static void dispose();
@@ -53,12 +69,17 @@ private:
 
 	static StateManager* instance;
 
-	bool unitHasChanged = false;
-	bool buildingHasChanged = false;
-	bool resourceHasChanged = false;
+	bool unitStateChangePending = false;
+	bool buildingStateChangePending = false;
+	bool resourceStateChangePending = false;
 
-	bool buildingIsToDispose = false;
-	bool resourceIsToDispose = false;
+	bool unitIsInDeadState = false;
+	bool buildingIsInDeadState = false;
+	bool resourceIsInDeadState = false;
+
+	bool unitIsInDisposeState = false;
+	bool buildingIsInDisposeState = false;
+	bool resourceIsInDisposeState = false;
 };
 
 inline bool isInStates(UnitState state, std::initializer_list<UnitState> states) {

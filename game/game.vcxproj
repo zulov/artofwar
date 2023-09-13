@@ -376,7 +376,6 @@
     <ClCompile Include="src\commands\creation\CreationCommandList.cpp" />
     <ClCompile Include="src\env\bucket\ComplexBucketData.cpp" />
     <ClCompile Include="src\env\bucket\MainGrid.cpp" />
-    <ClCompile Include="src\simulation\ObjectsInfo.cpp" />
     <ClCompile Include="src\objects\unit\state\StateManager.cpp" />
     <ClCompile Include="src\hud\window\top\TopHudElement.cpp" />
     <ClCompile Include="src\hud\window\top\TopPanel.cpp" />
@@ -595,7 +594,6 @@
     <ClInclude Include="src\env\ContentInfo.h" />
     <ClInclude Include="src\simulation\formation\FormationState.h" />
     <ClInclude Include="src\simulation\formation\FormationType.h" />
-    <ClInclude Include="src\simulation\ObjectsInfo.h" />
     <ClInclude Include="src\objects\unit\state\State.h" />
     <ClInclude Include="src\objects\unit\state\StateManager.h" />
     <ClInclude Include="src\objects\unit\state\StopState.h" />

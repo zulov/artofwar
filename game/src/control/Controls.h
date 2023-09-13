@@ -22,7 +22,6 @@ namespace Urho3D {
 enum class BuildingActionType : char;
 enum class ResourceActionType : char;
 class HudData;
-class ObjectsInfo;
 class Physical;
 class SelectedInfo;
 class UnitOrder;

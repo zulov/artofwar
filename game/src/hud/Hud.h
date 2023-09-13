@@ -19,7 +19,6 @@ class ScorePanel;
 class SelectedHudPanel;
 class SelectedInfo;
 class CameraManager;
-class ObjectsInfo;
 class MiniMapPanel;
 class TopPanel;
 class HudData;

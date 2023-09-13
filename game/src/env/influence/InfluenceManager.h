@@ -46,6 +46,8 @@ public:
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
 	                      std::vector<ResourceEntity*>* resources) const;
 
+	void updateInfluenceHistoryReset() const;
+
 	void draw(InfluenceDataType type, char index);
 	void drawAll() const;
 

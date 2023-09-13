@@ -8,7 +8,6 @@
 
 
 class Physical;
-class ObjectsInfo;
 
 class SimulationObjectManager {
 public:
@@ -31,7 +30,6 @@ public:
 	void load(dbload_unit* unit);
 	void load(dbload_building* building);
 	void load(dbload_resource_entities* resource) const;
-	ObjectsInfo* getInfo() const { return simulationInfo; }
 
 private:
 	void addUnits(std::vector<Unit*>& temp) const;
@@ -46,8 +44,6 @@ private:
 	UnitFactory unitFactory;
 	BuildingFactory buildingFactory;
 	ResourceFactory resourceFactory;
-
-	ObjectsInfo* simulationInfo;
 
 	std::vector<Unit*>* units;
 	std::vector<Building*>* buildings;

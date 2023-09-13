@@ -47,8 +47,9 @@ public:
 	}
 
 	void execute(Unit* unit, float timeStep) override {
-		if (!unit->isFirstThingAlive() || !Game::getEnvironment()->cellInState(
-			unit->getMainGridIndex(), CellState::COLLECT)) {
+		auto env = Game::getEnvironment();
+		if (!unit->isFirstThingAlive() 
+			|| !env->cellInState(unit->getMainGridIndex(), CellState::COLLECT)) {
 			StateManager::toDefaultState(unit);
 			return;
 		}
@@ -69,10 +70,10 @@ public:
 
 		auto& resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
 		const auto resource = (ResourceEntity*)unit->thingToInteract;
-		const auto bonus = Game::getEnvironment()->getBonuses(unit->player, resource);
+		const auto bonus = env->getBonuses(unit->player, resource);
 		const auto [value, died] = resource->absorbAttack(unit->dbLevel->collect * bonus * timeStep);
 		//resource->getIndexInInfluence()
-		Game::getEnvironment()->addCollect(unit, resource->getId(), value);
+		env->addCollect(unit, resource->getId(), value);
 		resources.add(resource->getId(), value);
 	}
 };

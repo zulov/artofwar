@@ -8,7 +8,6 @@
 #include "objects/PhysicalUtils.h"
 #include "objects/building/Building.h"
 #include "objects/building/ParentBuildingType.h"
-#include "simulation/ObjectsInfo.h"
 
 Possession::Possession(char nation) {
 	for (auto building : Game::getDatabase()->getNation(nation)->buildings) {
@@ -175,12 +174,12 @@ void Possession::add(Unit* unit) {
 	}
 }
 
-void Possession::updateAndClean(const Resources& resources, const ObjectsInfo* simInfo) {
-	cleanDead(buildings, simInfo->ifBuildingDied());
-	cleanDead(units, simInfo->ifUnitDied());
-	cleanDead(workers, simInfo->ifUnitDied());
+void Possession::updateAndClean(const Resources& resources) {
+	cleanDead(buildings, StateManager::isBuildingDead());
+	cleanDead(units, StateManager::isUnitDead());
+	cleanDead(workers, StateManager::isUnitDead());
 
-	if (simInfo->ifBuildingDied()) {
+	if (StateManager::isBuildingDead()) {
 		for (const auto perId : buildingsPerId) {
 			if (perId) {
 				cleanDead(perId);

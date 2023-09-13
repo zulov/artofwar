@@ -44,8 +44,6 @@ public:
 	Urho3D::Vector2 repulseObstacle(Unit* unit) const;
 	void invalidatePathCache();
 
-	Urho3D::Vector2 getPositionInBucket(Unit* unit) const;
-
 	bool cellInState(int index, CellState state) const;
 	void updateCell(int index, char val, CellState cellState) const;
 

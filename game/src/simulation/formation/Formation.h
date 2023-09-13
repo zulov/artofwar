@@ -45,7 +45,7 @@ private:
 
 	void electLeader();
 	void setFormationClearPosition();
-	void setPosInFormationForLeader() const;
+	void setposInStateForLeader() const;
 
 	void changeState(FormationState newState);
 	short id;

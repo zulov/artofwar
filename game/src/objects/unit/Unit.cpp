@@ -303,7 +303,6 @@ bool Unit::action(UnitAction unitAction, const ActionParameter& parameter) {
 	case UnitAction::DEAD:
 		return StateManager::changeState(this, UnitState::DEAD, parameter);
 	case UnitAction::DEFEND:
-		resetFormation();
 		return StateManager::changeState(this, UnitState::DEFEND, parameter);
 	case UnitAction::FOLLOW:
 		return StateManager::changeState(this, UnitState::FOLLOW, parameter);
@@ -405,11 +404,11 @@ void Unit::setFormation(short _formation) {
 
 void Unit::resetFormation() {
 	formation = -1;
-	posInFormation = -1;
+	posInState = -1;
 }
 
 void Unit::setPositionInFormation(short _pos) {
-	posInFormation = _pos;
+	posInState = _pos;
 }
 
 void Unit::clearAims() {

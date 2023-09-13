@@ -18,7 +18,6 @@ class Environment;
 class SceneSaver;
 class SceneLoader;
 class CreationCommandList;
-class ObjectsInfo;
 class CreationCommandList;
 class SimulationObjectManager;
 class UpgradeCommandList;

@@ -212,6 +212,10 @@ void Environment::updateVisibility(std::vector<Building*>* buildings, std::vecto
 	influenceManager.updateVisibility(buildings, units, resources);
 }
 
+void Environment::updateInfluenceHistoryReset() {
+	influenceManager.updateInfluenceHistoryReset();
+}
+
 void Environment::update(Unit* unit) const {
 	unit->setBucket(mainGrid.update(unit, unit->getMainGridIndex()));
 	unit->setSparseIndex(sparseUnitGrid.update(unit, unit->getSparseIndex()));
@@ -318,10 +322,6 @@ Urho3D::Vector2 Environment::getCenter(int index) const {
 
 Urho3D::Vector2 Environment::getCenter(short x, short z) const {
 	return getCenter(calculator->getIndex(x, z));
-}
-
-Urho3D::Vector2 Environment::getPositionInBucket(Unit* unit) const {
-	return mainGrid.getPositionInBucket(unit);
 }
 
 void Environment::invalidatePathCache() {

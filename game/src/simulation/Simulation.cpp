@@ -54,6 +54,7 @@ void Simulation::forceUpdateInfluenceMaps() const {
 	enviroment->updateInfluenceUnits2(units);
 	enviroment->updateInfluenceResources(resources);
 	enviroment->updateInfluenceOther(buildings, units);
+	enviroment->updateInfluenceHistoryReset();
 	enviroment->updateQuadOther();
 	enviroment->updateVisibility(buildings, units, resources);
 }
@@ -76,6 +77,9 @@ void Simulation::updateInfluenceMaps() const {
 	}
 	if (PER_FRAME_ACTION.get(PerFrameAction::VISIBILITY, currentFrame, secondsElapsed)) {
 		enviroment->updateVisibility(buildings, units, resources);
+	}	
+	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_HISTORY_RESET, currentFrame, secondsElapsed)) {
+		enviroment->updateInfluenceHistoryReset();
 	}
 }
 
@@ -106,9 +110,8 @@ SimInfo* Simulation::update(float timeStep) {
 
 		simObjectManager->dispose();
 		simObjectManager->findToDispose();
-		simInfo->setObjectsInfo(simObjectManager->getInfo());
 
-		Game::getPlayersMan()->update(simInfo->getObjectsInfo());
+		Game::getPlayersMan()->update();
 		Game::getFormationManager()->update();
 
 		accumulateTime -= TIME_PER_UPDATE;
@@ -291,6 +294,7 @@ void Simulation::performStateAction(float timeStep) const {
 }
 
 void Simulation::executeStateTransition() const {
+	StateManager::reset();
 	StateManager::executeChange(units);
 	StateManager::executeChange(buildings);
 	StateManager::executeChange(resources);

@@ -24,7 +24,6 @@ class Hud;
 class LevelBuilder;
 class SelectedInfo;
 class Simulation;
-class ObjectsInfo;
 
 class Main : public Urho3D::Application {
 	URHO3D_OBJECT(Main, Application)

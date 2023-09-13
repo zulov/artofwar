@@ -21,7 +21,6 @@
 #include "objects/unit/order/enums/UnitActionType.h"
 #include "player/PlayersManager.h"
 #include "player/ai/ActionCenter.h"
-#include "simulation/ObjectsInfo.h"
 #include "env/Environment.h"
 #include "objects/ActionType.h"
 #include "objects/PhysicalUtils.h"
@@ -426,11 +425,11 @@ bool Controls::conditionToClean(const SimInfo* simulationInfo) const {
 	}
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::UNIT:
-		return simulationInfo->getObjectsInfo()->ifUnitDied();
+		return StateManager::isUnitUnalived();
 	case ObjectType::BUILDING:
-		return simulationInfo->getObjectsInfo()->ifBuildingDied();
+		return StateManager::isBuildingUnalived();
 	case ObjectType::RESOURCE:
-		return simulationInfo->getObjectsInfo()->ifResourceDied();
+		return StateManager::isResourceUnalived();
 	}
 	return false;
 }

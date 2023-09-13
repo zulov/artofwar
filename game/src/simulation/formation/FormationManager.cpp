@@ -67,7 +67,7 @@ void FormationManager::update() {
 float FormationManager::getPriority(Unit* unit) {
 	const short formation = unit->getFormation();
 	if (formation >= 0) {
-		return formations[formation]->getPriority(unit->getPositionInFormation());
+		return formations[formation]->getPriority(unit->getPositionInState());
 	}
 	return 0.f;
 }
@@ -75,7 +75,7 @@ float FormationManager::getPriority(Unit* unit) {
 std::optional<Urho3D::Vector2> FormationManager::getPositionFor(Unit* unit) {
 	const short formation = unit->getFormation();
 	if (formation >= 0) {
-		return formations[formation]->getPositionFor(unit->getPositionInFormation());
+		return formations[formation]->getPositionFor(unit->getPositionInState());
 	}
 	return {};
 }

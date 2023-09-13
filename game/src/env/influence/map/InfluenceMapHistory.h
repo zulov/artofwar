@@ -8,6 +8,7 @@ public:
 	virtual ~InfluenceMapHistory() = default;
 
 	void reset() override;
+	void resetToZero() const;
 private:
 	float minimalThreshold;
 	float vanishCoef;

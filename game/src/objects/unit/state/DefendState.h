@@ -8,4 +8,8 @@ public:
 	}
 
 	~DefendState() override = default;
+
+	void onStart(Unit* unit, const ActionParameter& parameter) override {
+		unit->resetFormation();
+	}
 };

@@ -66,9 +66,9 @@ void PlayersManager::save(SceneSaver& saver) {
 	saver.saveResources(allPlayers);
 }
 
-void PlayersManager::update(const ObjectsInfo* simInfo) {
+void PlayersManager::update() {
 	for (const auto player : allPlayers) {
-		player->updatePossession(simInfo);
+		player->updatePossession();
 		player->updateResource();
 		player->resetScore();
 	}

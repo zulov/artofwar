@@ -3,7 +3,6 @@
 #include <Urho3D/IO/Log.h>
 
 #include "Game.h"
-#include "ObjectsInfo.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
@@ -22,7 +21,6 @@ SimulationObjectManager::SimulationObjectManager() {
 	units->reserve(4069);
 	buildings->reserve(128);
 	resources->reserve(20 * 1024);
-	simulationInfo = new ObjectsInfo();
 }
 
 
@@ -30,8 +28,6 @@ SimulationObjectManager::~SimulationObjectManager() {
 	clear_and_delete_vector(units);
 	clear_and_delete_vector(buildings);
 	clear_and_delete_vector(resources);
-
-	delete simulationInfo;
 
 	dispose();
 }
@@ -93,7 +89,6 @@ void SimulationObjectManager::addUnits(std::vector<Unit*>& temp) const {
 			Game::getPlayersMan()->getPlayer(value->getPlayer())->add(value);
 		}
 		Game::getEnvironment()->addNew(temp);
-		simulationInfo->setAmountUnitChanged();
 	}
 }
 
@@ -104,7 +99,6 @@ void SimulationObjectManager::addBuilding(Building* building) const {
 
 		Game::getPlayersMan()->getPlayer(building->getPlayer())->add(building);
 		Game::getEnvironment()->addNew(building);
-		simulationInfo->setAmountBuildingChanged();
 	} else {
 		Game::getLog()->Write(0, "Building loading not possible");
 	}
@@ -115,28 +109,25 @@ void SimulationObjectManager::addResource(ResourceEntity* resource, bool bulkAdd
 	if (resource) {
 		resources->push_back(resource);
 		Game::getEnvironment()->addNew(resource, bulkAdd);
-		simulationInfo->setAmountResourceChanged();
 	} else {
 		Game::getLog()->Write(0, "Resource adding not possible");
 	}
 }
 
 void SimulationObjectManager::findToDisposeUnits() {
-	units->erase(
-		std::remove_if(
-			units->begin(), units->end(),
-			[this](Unit* unit) {
-				if (unit->isToDispose()) {
-					unitsToDispose.push_back(unit);
-					return true;
+	if (StateManager::isUnitToDispose()) {
+		units->erase(
+			std::remove_if(
+				units->begin(), units->end(),
+				[this](Unit* unit) {
+					if (unit->isToDispose()) {
+						unitsToDispose.push_back(unit);
+						return true;
+					}
+					unit->clean();
+					return false;
 				}
-				unit->clean();
-				return false;
-			}
 		), units->end());
-
-	if (!unitsToDispose.empty()) {
-		simulationInfo->setUnitDied();
 	}
 }
 
@@ -153,11 +144,6 @@ void SimulationObjectManager::findToDisposeBuildings() {
 					return false;
 				}
 			), buildings->end());
-
-		if (!buildingsToDispose.empty()) {
-			simulationInfo->setBuildingDied();
-		}
-		StateManager::setBuildingToDispose(false);
 	}
 }
 
@@ -174,11 +160,6 @@ void SimulationObjectManager::findToDisposeResources() {
 					return false;
 				}
 			), resources->end());
-
-		if (!resourcesToDispose.empty()) {
-			simulationInfo->setResourceDied();
-		}
-		StateManager::setResourceToDispose(false);
 	}
 }
 
@@ -212,6 +193,4 @@ void SimulationObjectManager::dispose() {
 	clear_vector(unitsToDispose);
 	clear_vector(buildingsToDispose);
 	clear_vector(resourcesToDispose);
-
-	simulationInfo->reset();
 }

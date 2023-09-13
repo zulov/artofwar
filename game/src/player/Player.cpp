@@ -90,8 +90,8 @@ void Player::updateResource() const {
 	resources.resetStats();
 }
 
-void Player::updatePossession(const ObjectsInfo* simInfo) {
-	possession.updateAndClean(resources, simInfo);
+void Player::updatePossession() {
+	possession.updateAndClean(resources);
 }
 
 void Player::add(Unit* unit) {

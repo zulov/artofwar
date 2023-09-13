@@ -120,22 +120,16 @@ bool MainGrid::cellInState(int index, CellState state) const {
 void MainGrid::updateCell(int index, char val, CellState cellState) const {
 	assert(calculator->isValidIndex(index));
 	complexData[index].updateSize(val, cellState);
-}
-
-Urho3D::Vector2 MainGrid::getPositionInBucket(Unit* unit) const {
-	const auto index = unit->getMainGridIndex();
 
 	const auto center = calculator->getCenter(index);
-
-	auto& content = buckets[index].getContent();
-	if (content.size() == 1) {
-		return center;
+	int i = 0;
+	for (auto& phy : buckets[index].getContent()) {
+		Unit* unit = (Unit*)phy;
+		if (unit->getState() == UnitState::COLLECT || unit->getState() == UnitState::ATTACK) {
+			unit->setInCellPos(posInBucket[i] + center);
+			i++;
+		}
 	}
-
-	const auto pos = std::ranges::find(content, unit);
-	const auto idx = pos - content.begin();
-	assert(idx >= 0 && idx <= 4);
-	return posInBucket[idx] + center;
 }
 
 unsigned char MainGrid::getRevertCloseIndex(int center, int gridIndex) const {
@@ -465,7 +459,7 @@ Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const
 	return (center1 + center2) / 2;
 }
 
-void MainGrid::updateNeighbors(ComplexBucketData& data, const int current) const {
+void MainGrid::updateNeighbors(ComplexBucketData& data, const int current) const {//TODO optimize
 	for (auto i : closeIndexes->getTabIndexes(current)) {
 		const int nI = current + closeIndexes->getIndexAt(i);
 		if (complexData[nI].isPassable()) {

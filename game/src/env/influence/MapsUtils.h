@@ -14,6 +14,12 @@ namespace MapsUtils {
 			map->reset();
 		}
 	}
+	template <typename T>
+	void resetToZeroMaps(const std::vector<T*>& maps) {
+		for (auto map : maps) {
+			map->resetToZero();
+		}
+	}
 
 	template <typename T>
 	void finalize(const std::vector<T*>& maps) {

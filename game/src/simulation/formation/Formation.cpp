@@ -75,12 +75,12 @@ void Formation::setFormationClearPosition() {
 	}
 }
 
-void Formation::setPosInFormationForLeader() const {
-	short posInFormation = (short)((sideB - 1) / 2) * sideA + (short)(sideA / 2.0 + 0.5);
-	if (posInFormation >= units.size()) {
-		posInFormation = units.size() - 1;
+void Formation::setposInStateForLeader() const {
+	short posInState = (short)((sideB - 1) / 2) * sideA + (short)(sideA / 2.0 + 0.5);
+	if (posInState >= units.size()) {
+		posInState = units.size() - 1;
 	}
-	leader->setPositionInFormation(posInFormation);
+	leader->setPositionInFormation(posInState);
 }
 
 void Formation::updateIds() {
@@ -91,12 +91,12 @@ void Formation::updateIds() {
 		setCenter();
 		setFormationClearPosition();
 
-		setPosInFormationForLeader();
+		setposInStateForLeader();
 
 		auto* const env = Game::getEnvironment();
 		std::unordered_map<int, std::vector<short>> bucketToIds;
 		for (int i = 0; i < units.size(); ++i) {
-			if (leader->getPositionInFormation() == i) {
+			if (leader->getPositionInState() == i) {
 				continue;
 			}
 			auto pos = getPositionFor(i);
@@ -115,7 +115,7 @@ void Formation::updateIds() {
 		std::vector<short> tempVec(units.size());
 		std::iota(tempVec.begin(), tempVec.end(), 0);
 
-		const short leaderID = leader->getPositionInFormation();
+		const short leaderID = leader->getPositionInState();
 		tempVec[leaderID] = -1;
 		short restToAssign = tempVec.size() - 1;
 		for (auto unit : units) {
@@ -155,7 +155,7 @@ void Formation::updateIds() {
 
 		int i = 0;
 		for (auto unit : units) {
-			if (unit->getPositionInFormation() == -1) {
+			if (unit->getPositionInState() == -1) {
 				unit->setPositionInFormation(output[i]);
 				++i;
 			}
@@ -173,18 +173,18 @@ void Formation::calculateCohesion() {
 	notWellFormed = 0;
 	notWellFormedExact = 0;
 	for (const auto unit : units) {
-		const auto desiredPos = getPositionFor(unit->getPositionInFormation());
+		const auto desiredPos = getPositionFor(unit->getPositionInState());
 		const auto dist = sqDist(unit->getPosition(), desiredPos);
 
 		if (dist < 0.5f) {
-			levelOfReach[unit->getPositionInFormation()] = 0;
+			levelOfReach[unit->getPositionInState()] = 0;
 		} else if (dist < 2 * 2) {
 			notWellFormedExact += 1;
-			levelOfReach[unit->getPositionInFormation()] = 1;
+			levelOfReach[unit->getPositionInState()] = 1;
 		} else {
 			notWellFormed += 1;
 			notWellFormedExact += 1;
-			levelOfReach[unit->getPositionInFormation()] = 2;
+			levelOfReach[unit->getPositionInState()] = 2;
 		}
 	}
 	notWellFormed /= units.size();
@@ -297,7 +297,7 @@ void Formation::changeState(FormationState newState) {
 Urho3D::Vector2 Formation::getPositionFor(short id) const {
 	const short columnThis = id % sideA;
 	const short rowThis = id / sideA;
-	const short leaderID = leader->getPositionInFormation();
+	const short leaderID = leader->getPositionInState();
 	if (leaderID == id) {
 		return center;
 	}
@@ -324,7 +324,7 @@ float Formation::getPriority(int id) const {
 }
 
 bool Formation::hasLeader() const {
-	return state != FormationState::REACHED && units.size() > leader->getPositionInFormation();
+	return state != FormationState::REACHED && units.size() > leader->getPositionInState();
 }
 
 std::optional<Unit*> Formation::getLeader() {
