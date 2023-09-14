@@ -116,7 +116,7 @@ void SimulationObjectManager::addResource(ResourceEntity* resource, bool bulkAdd
 
 void SimulationObjectManager::findToDisposeUnits() {
 	if (StateManager::isUnitToDispose()) {
-		units->erase(
+		units->erase(//TODO bug?
 			std::remove_if(
 				units->begin(), units->end(),
 				[this](Unit* unit) {

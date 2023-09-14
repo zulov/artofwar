@@ -15,7 +15,7 @@ public:
 
 	void tempUpdate(const Urho3D::Vector3& pos, float value = 1.f);
 	void tempUpdate(int index, float value = 1.f);
-	void update(int index, float value) const;
+	void update(int index) const;
 	void reset() override;
 	float getValueAt(int index) const override;
 	float getValueAt(const Urho3D::Vector2& pos) const;
@@ -34,6 +34,7 @@ protected:
 	float* tempVals;
 	float coef;
 	bool valuesCalculateNeeded = false;
+	std::vector<int> changedIndexes;
 private:
 	void update(float value, unsigned short centerX, unsigned short centerZ) const;
 

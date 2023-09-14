@@ -55,12 +55,16 @@ void InfluenceMapFloat::tempUpdate(const Urho3D::Vector3& pos, float value) {
 
 void InfluenceMapFloat::tempUpdate(int index, float value) {
 	tempVals[index] += value;
+	if (changedIndexes.size() <= 10) {
+		changedIndexes.push_back(index);
+	}
 	valuesCalculateNeeded = true;
 }
 
-void InfluenceMapFloat::update(int index, float value) const {
+void InfluenceMapFloat::update(int index) const {
 	auto [centerX, centerZ] = calculator->getIndexes(index);
-	update(value, centerX, centerZ);
+	update(tempVals[index], centerX, centerZ);
+	tempVals[index] = 0.f;
 }
 
 void InfluenceMapFloat::update(float value, const unsigned short centerX, const unsigned short centerZ) const {
@@ -179,13 +183,20 @@ bool InfluenceMapFloat::cumulateErros(float percent, float* intersection) const 
 
 void InfluenceMapFloat::updateFromTemp() {
 	if (valuesCalculateNeeded) {
-		for (int i = 0; i < arraySize; ++i) {
-			const auto val = tempVals[i];
-			if (val > 0.f) {
-				update(i, val);
+		if (changedIndexes.size() == 10) {
+			for (int i = 0; i < arraySize; ++i) {
+				const auto val = tempVals[i];
+				if (val > 0.f) {
+					update(i);
+				}
+			}
+		} else {
+			for (const int i : changedIndexes) {
+				update(i);
 			}
 		}
-		std::fill_n(tempVals, arraySize, 0.f);
+		changedIndexes.clear();
+		//std::fill_n(tempVals, arraySize, 0.f);
 		valuesCalculateNeeded = false;
 	}
 }
