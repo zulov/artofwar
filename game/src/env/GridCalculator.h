@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <Urho3D/Math/Vector3.h>
 #include <vector>
 
@@ -9,6 +10,7 @@ struct GridCalculator {
 		  fieldSize(size / static_cast<float>(resolution)), halfSize(size * 0.5f),
 		invFieldSize(static_cast<float>(resolution) / size), sqFieldSize(fieldSize * fieldSize), 
 		shiftAmount(log2(resolution)), mask(resolution - 1) {
+		assert(((resolution & (resolution - 1)) == 0));
 	}
 
 	GridCalculator(const GridCalculator&) = delete;
@@ -26,7 +28,7 @@ struct GridCalculator {
 	}
 
 	unsigned short getIndex(float value) const {
-		return getValid((short)(value + halfSize) * invFieldSize);
+		return getValid((value + halfSize) * invFieldSize);
 	}
 
 	int indexFromPosition(const Urho3D::Vector3& pos) const {

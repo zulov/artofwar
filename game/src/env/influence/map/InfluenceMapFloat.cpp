@@ -191,7 +191,9 @@ void InfluenceMapFloat::updateFromTemp() {
 				}
 			}
 		} else {
-			for (const int i : changedIndexes) { bug powtorzenia!!!
+			std::ranges::sort(changedIndexes);
+			changedIndexes.erase(std::unique(changedIndexes.begin(), changedIndexes.end()), changedIndexes.end());
+			for (const int i : changedIndexes) {
 				update(i);
 			}
 		}
