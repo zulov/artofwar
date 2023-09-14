@@ -9,8 +9,7 @@ public:
 	Layer(const Layer& rhs) = delete;
 	~Layer() = default;
 	void setValues(std::span<float> data);
-	void setValues(Eigen::MatrixXf& mult);
-	void setValues1(const Eigen::VectorXf& mult);
+	void setValues(const Eigen::VectorXf& mult);
 
 	const Eigen::VectorXf& getValues() const { return values; }
 

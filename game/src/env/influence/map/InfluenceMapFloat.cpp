@@ -191,7 +191,7 @@ void InfluenceMapFloat::updateFromTemp() {
 				}
 			}
 		} else {
-			for (const int i : changedIndexes) {
+			for (const int i : changedIndexes) { bug powtorzenia!!!
 				update(i);
 			}
 		}

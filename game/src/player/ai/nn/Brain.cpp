@@ -36,17 +36,12 @@ const std::span<float> Brain::decide(std::span<float> data) {
 	assert(validateSpan(__LINE__, __FILE__, data));
 	allLayers.front()->setValues(data);
 	for (int i = 1; i < allLayers.size(); i++) {
-		Layer* layer = allLayers.at(i);
-		const Layer* prevLayer = allLayers.at(i - 1);
-
-		//Eigen::MatrixXf mult = layer->getWeights() * prevLayer->getValues();//wsadzic to nizej w zaleznosci od wydajnosci
-
-		//layer->setValues(mult);
-		layer->setValues1(prevLayer->getValues());
+		allLayers.at(i)
+		         ->setValues(allLayers.at(i - 1)->getValues());
 	}
 
-	auto result = allLayers.back()->getValues();
-	auto res1 = std::span(result.data(), result.rows());
+	const auto &result = allLayers.back()->getValues();
+	const auto res1 = std::span(const_cast<float*>(result.data()), result.rows());
 	assert(validateSpan(__LINE__, __FILE__, res1));
 	return res1;
 }

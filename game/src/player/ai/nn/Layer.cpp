@@ -11,10 +11,6 @@ void Layer::setValues(std::span<float> data) {
 	values = Eigen::Map<Eigen::VectorXf>(data.data(), data.size());
 }
 
-void Layer::setValues(Eigen::MatrixXf& mult) {
-	values = (mult + bias).array().tanh();
-}
-
-void Layer::setValues1(const Eigen::VectorXf& mult) {
+void Layer::setValues(const Eigen::VectorXf& mult) {
 	values = (weights * mult + bias).array().tanh();
 }
