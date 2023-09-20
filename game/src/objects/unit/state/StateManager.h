@@ -14,6 +14,7 @@ class Unit;
 class State;
 class Static;
 enum class StaticState : char;
+enum class ObjectType : char;
 
 class StateManager {
 public:
@@ -33,22 +34,11 @@ public:
 	static void executeChange(Static* obj);
 	static void executeChange(std::vector<Building*>* buildings);
 	static void executeChange(std::vector<ResourceEntity*>* resources);
+	static void startState(Static* obj);
 
 	static bool isUnitToDispose();
 	static bool isBuildingToDispose();
 	static bool isResourceToDispose();
-
-	static void setUnitDead();
-	static void setBuildingDead();
-	static void setResourceDead();
-
-	static void setUnitToDispose();
-	static void setBuildingToDispose();
-	static void setResourceToDispose();
-
-	static bool isUnitUnalived();
-	static bool isBuildingUnalived();
-	static bool isResourceUnalived();
 
 	static bool isUnitDead();
 	static bool isBuildingDead();
@@ -60,6 +50,7 @@ public:
 private:
 	void initOrders(std::initializer_list<UnitAction> states) const; //TODO move to level
 	void initStates(std::initializer_list<UnitState> states) const; //TODO move to level
+	static void setStaticDead(ObjectType object);
 
 	StateManager();
 	~StateManager();

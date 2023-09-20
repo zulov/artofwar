@@ -86,12 +86,11 @@ void PathFinder::prepareToStart(int startIdx) {
 	updateCost(startIdx, 0.f);
 }
 
-const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
+const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit) {//performance wersja bez vectora
 	assert(limit>0);
 	prepareToStart(startIdx);
 	auto endCords = getCords(endIdxs);
 	assert(!endCords.empty());
-
 	int steps = 0;
 	while (!frontier.empty()) {
 		++steps;
@@ -99,7 +98,7 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 			break;
 		}
 		const auto current = frontier.get();
-		if (std::ranges::any_of(endIdxs, [current](int i) { return i == current; })) {
+		if (std::ranges::binary_search(endIdxs, current)) {
 			//debug(startIdx, endIdx);
 			return reconstructSimplifyPath(startIdx, current, came_from);
 		}
@@ -315,6 +314,7 @@ inline float PathFinder::heuristic(int from, const Urho3D::IntVector2& to) const
 
 float PathFinder::heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const {
 	//closest from endIdxs
+	//bug lepiej wybierac do kogo heurystyka
 	assert(!endIdxs.empty());
 	const auto a = getCords(from);
 	float min = 1024.f;

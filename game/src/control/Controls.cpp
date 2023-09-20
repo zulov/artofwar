@@ -425,11 +425,11 @@ bool Controls::conditionToClean(const SimInfo* simulationInfo) const {
 	}
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::UNIT:
-		return StateManager::isUnitUnalived();
+		return StateManager::isUnitDead();
 	case ObjectType::BUILDING:
-		return StateManager::isBuildingUnalived();
+		return StateManager::isBuildingDead();
 	case ObjectType::RESOURCE:
-		return StateManager::isResourceUnalived();
+		return StateManager::isResourceDead();
 	}
 	return false;
 }

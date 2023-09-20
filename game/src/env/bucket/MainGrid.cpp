@@ -459,7 +459,7 @@ Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const
 	return (center1 + center2) / 2;
 }
 
-void MainGrid::updateNeighbors(ComplexBucketData& data, const int current) const {//TODO optimize
+void MainGrid::updateNeighbors(ComplexBucketData& data, const int current) const {//perf optimize
 	for (auto i : closeIndexes->getTabIndexes(current)) {
 		const int nI = current + closeIndexes->getIndexAt(i);
 		if (complexData[nI].isPassable()) {

@@ -474,7 +474,6 @@
     <ClInclude Include="src\math\MathUtils.h" />
     <ClInclude Include="src\objects\PhysicalUtils.h" />
     <ClInclude Include="src\objects\CellState.h" />
-    <ClInclude Include="src\objects\static\StaticStateUtils.h" />
     <ClInclude Include="src\objects\static\StaticState.h" />
     <ClInclude Include="src\objects\unit\state\ShotState.h" />
     <ClInclude Include="src\colors\ColorPaletteRepo.h" />

@@ -294,12 +294,12 @@ float ActionMaker::dist(std::valarray<float>& center, const db_building_metric* 
 }
 
 std::optional<Urho3D::Vector2> ActionMaker::findPosToBuild(db_building* building, ParentBuildingType type) const {
-	const auto input = Game::getAiInputProvider()->getBuildingsInputWithMetric(
-		player->getId(), player->getLevelForBuilding(building->id)->dbBuildingMetric, type);
-
 	if (type == ParentBuildingType::RESOURCE) {
 		return Game::getEnvironment()->getPosToCreateResBonus(building, player->getId());
 	}
+	const auto input = Game::getAiInputProvider()->getBuildingsInputWithMetric(
+		player->getId(), player->getLevelForBuilding(building->id)->dbBuildingMetric, type);
+
 	return Game::getEnvironment()->getPosToCreate(whereBuilding->decide(input), type, building, player->getId());
 }
 

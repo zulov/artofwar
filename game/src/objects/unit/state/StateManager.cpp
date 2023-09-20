@@ -15,7 +15,6 @@
 #include "database/DatabaseCache.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
-#include "objects/static/StaticStateUtils.h"
 #include "objects/unit/order/enums/UnitAction.h"
 #include "utils/consts.h"
 #include "utils/OtherUtils.h"
@@ -163,10 +162,28 @@ void StateManager::executeChange(std::vector<ResourceEntity*>* resources) {
 	}
 }
 
+void StateManager::startState(Static* obj) {
+	obj->setState(obj->getNextState());
+	switch (obj->getNextState()) {
+	case StaticState::FREE:
+		changeState(obj, StaticState::ALIVE);
+		break;
+	case StaticState::DEAD:
+		changeState(obj, StaticState::DISPOSE);
+		setStaticDead(obj->getType());
+		break;
+	case StaticState::DISPOSE:
+		setStaticDead(obj->getType());
+		break;
+	default:;
+	}
+}
+
 void StateManager::executeChange(Static* obj) {
 	if (obj->getState() != obj->getNextState()) {
-		endState(obj->getState(), obj);
-		startState(obj->getNextState(), obj);
+		//endState(obj->getState(), obj);
+
+		startState(obj);
 	}
 }
 
@@ -235,32 +252,12 @@ void StateManager::initStates(std::initializer_list<UnitState> states) const {
 	}
 }
 
-void StateManager::setBuildingToDispose() {
-	instance->buildingIsInDisposeState = true;
-}
-
-void StateManager::setResourceToDispose() {
-	instance->resourceIsInDisposeState = true;
-}
-
-void StateManager::setResourceDead() {
-	instance->resourceIsInDeadState = true;
-}
-
-void StateManager::setBuildingDead() {
-	instance->buildingIsInDeadState = true;
-}
-
-bool StateManager::isUnitUnalived() {
-	return instance->unitIsInDeadState || instance->unitIsInDisposeState;
-}
-
-bool StateManager::isBuildingUnalived() {
-	return instance->buildingIsInDeadState || instance->buildingIsInDisposeState;
-}
-
-bool StateManager::isResourceUnalived() {
-	return instance->resourceIsInDeadState || instance->resourceIsInDisposeState;
+void StateManager::setStaticDead(ObjectType object) {
+	if (object == ObjectType::BUILDING) {
+		instance->buildingIsInDeadState = true;
+	} else {
+		instance->resourceIsInDeadState = true;
+	}
 }
 
 bool StateManager::isUnitDead() {

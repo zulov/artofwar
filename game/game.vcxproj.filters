@@ -419,7 +419,6 @@
     <ClInclude Include="src\objects\CellState.h" />
     <ClInclude Include="src\objects\static\Static.h" />
     <ClInclude Include="src\objects\static\StaticState.h" />
-    <ClInclude Include="src\objects\static\StaticStateUtils.h" />
     <ClInclude Include="src\objects\unit\state\CollectState.h" />
     <ClInclude Include="src\env\Environment.h">
       <Filter>simulation\env</Filter>
