@@ -58,7 +58,10 @@ using namespace Urho3D;
 
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100),
                                gameState(GameState::STARTING), loadingProgress(6) {
-	MySprite::RegisterObject(context);
+	if(!engineParameters_[EP_HEADLESS].GetBool()) {
+		MySprite::RegisterObject(context);
+	}
+
 	Game::init();
 
 	ProjectileManager::init();
