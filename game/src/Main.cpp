@@ -118,9 +118,9 @@ void Main::Start() {
 		hud->createMyPanels();
 		healthBarProvider.init();
 		subscribeToUIEvents();
+		InitMouseMode(MM_RELATIVE);
 	}
 
-	InitMouseMode(MM_RELATIVE);
 	changeState(GameState::LOADING);
 }
 

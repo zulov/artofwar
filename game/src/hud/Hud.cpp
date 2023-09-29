@@ -74,7 +74,6 @@ void Hud::createCursor() const {
 	if (graphics) {
 		cursor->SetPosition(graphics->GetWidth() / 2, graphics->GetHeight() / 2);
 	}
-
 }
 
 void Hud::createMyPanels() {
@@ -137,7 +136,7 @@ Hud::Hud() : Object(Game::getContext()) {
 		graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
 		resolution = Game::getDatabase()->getResolution(settings->resolution);
 		prepareStyle();
-	
+
 		root = createElement<Urho3D::UIElement>(Game::getUI()->GetRoot(), style, "rootMock");
 	}
 	std::ranges::fill(panels, nullptr);
@@ -145,14 +144,16 @@ Hud::Hud() : Object(Game::getContext()) {
 
 
 void Hud::clear() {
-	clear_array(panels);
+	if (!SIM_GLOBALS.HEADLESS) {
+		clear_array(panels);
 
-	Game::getUI()->GetRoot()->RemoveAllChildren();
+		Game::getUI()->GetRoot()->RemoveAllChildren();
+	}
 }
 
 Hud::~Hud() {
 	clear();
-	if (Game::getUI()->GetCursor() != nullptr) {
+	if (Game::getUI() && Game::getUI()->GetCursor()) {
 		Game::getUI()->GetCursor()->Remove();
 	}
 }
