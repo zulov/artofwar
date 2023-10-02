@@ -98,7 +98,6 @@ void Main::Setup() {
 		engineParameters_[EP_LOG_NAME] = "logs/" + GetTypeName() + ".log";
 	}
 	Game::setCache(GetSubsystem<ResourceCache>())
-		->setUI(GetSubsystem<UI>())
 		->setConsole(GetSubsystem<Console>())
 		->setContext(context_)
 		->setLog(GetSubsystem<Log>());
@@ -111,7 +110,7 @@ void Main::Start() {
 	InitLocalizationSystem();
 
 	subscribeToEvents();
-
+	Game::setUI(GetSubsystem<UI>());
 	hud = new Hud();
 	if (!engineParameters_[EP_HEADLESS].GetBool()) {
 		hud->prepareUrho(engine_);
@@ -214,7 +213,7 @@ void Main::subscribeToEvents() {
 void Main::running(const double timeStep) {
 	Game::addTime(timeStep);
 	SimInfo* simInfo = simulation->update(timeStep);
-	if (!engineParameters_[EP_HEADLESS].GetBool()) {
+	if (!SIM_GLOBALS.HEADLESS) {
 		benchmark.add(1.0f / timeStep);
 		debugManager.draw();
 		SelectedInfo* selectedInfo = control(timeStep, simInfo);
