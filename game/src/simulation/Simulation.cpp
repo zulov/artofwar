@@ -340,12 +340,12 @@ void Simulation::moveUnitsAndCheck(const float timeStep) {
 		unit->checkAim();
 		if (hasMoved) {
 			enviroment->update(unit);
-		} else { unit->setBucket(-1); }
+		} else { unit->setIndexChanged(false); }
 	}
 	enviroment->invalidateCaches();
 
 	if (colorSchemeChanged || colorScheme != SimColorMode::BASIC) {
-		for (auto unit : *units) {
+		for (const auto unit : *units) {
 			unit->changeColor(colorScheme);
 		}
 		colorSchemeChanged = false;

@@ -12,8 +12,8 @@
 
 Grid::Grid(short resolution, float size, bool initCords, float maxQueryRadius)
 	: calculator(GridCalculatorProvider::get(resolution, size)),
-	  levelCache(LevelCacheProvider::get(resolution, initCords, maxQueryRadius, calculator)),
 	  closeIndexes(CloseIndexesProvider::get(resolution)),
+	  levelCache(LevelCacheProvider::get(resolution, initCords, maxQueryRadius, calculator)),
 	  sqResolution(resolution * resolution) {
 	buckets = new Bucket[sqResolution];
 	tempSelected = new std::vector<Physical*>();
@@ -24,16 +24,17 @@ Grid::~Grid() {
 	delete tempSelected;
 }
 
-int Grid::update(Physical* physical, int currentIndex) const {
-	assert(!physical->isToDispose());
+int Grid::update(Unit* unit, int currentIndex) const {
+	assert(!unit->isToDispose());
 
-	const int index = calculator->indexFromPosition(physical->getPosition());
+	const int index = calculator->indexFromPosition(unit->getPosition());
 	if (currentIndex != index) {
-		removeAt(currentIndex, physical);
-		addAt(index, physical);
-		return index;
+		removeAt(currentIndex, unit);
+		addAt(index, unit);
+		unit->setIndexChanged(true);
 	}
-	return -1;
+	unit->setIndexChanged(false);
+	return index;
 }
 
 int Grid::updateNew(Physical* physical) const {

@@ -37,6 +37,7 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 	if (dbUnit->typeCalvary) {
 		chargeData = new ChargeData(150, 2);
 	}
+	shouldUpdate = true;
 }
 
 Unit::~Unit() {
@@ -66,12 +67,13 @@ void Unit::updatePosition() const {
 			const auto dir = dirTo(position, thingToInteract->getPosition());
 
 			node->SetTransform(
-				position,
-				Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(dir.x_, 0.f, dir.y_)));
+			                   position,
+			                   Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(dir.x_, 0.f, dir.y_)));
 		} else if (velocity.LengthSquared() > 4 * dbLevel->sqMinSpeed) {
 			node->SetTransform(
-				position,
-				Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(velocity.x_, 0.f, velocity.y_)));
+			                   position,
+			                   Urho3D::Quaternion(Urho3D::Vector3::FORWARD,
+			                                      Urho3D::Vector3(velocity.x_, 0.f, velocity.y_)));
 		} else {
 			node->SetPosition(position);
 		}
@@ -181,6 +183,10 @@ void Unit::addOrder(IndividualOrder* aim) {
 	aims.add(aim);
 }
 
+void Unit::setIndexChanged(bool changed) {
+	indexHasChanged = changed;
+}
+
 void Unit::setAim(Aim* aim) {
 	aims.set(aim);
 }
@@ -191,7 +197,6 @@ void Unit::drawLineTo(const Urho3D::Vector2& second,
 		Urho3D::Vector3 to = Urho3D::Vector3(position.x_ + second.x_, position.y_, position.z_ + second.y_);
 		DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, position, to, color);
 	}
-
 }
 
 void Unit::debug(DebugUnitType type, ForceStats& stats) {
@@ -361,7 +366,7 @@ void Unit::changeColor(SimColorMode mode) {
 		setShaderParam(this, "ColorPercent", velocity.LengthSquared() / maxSpeed * maxSpeed);
 		break;
 	case SimColorMode::STATE:
-		setShaderParam(this, "ColorPercent", ((float)state )/ magic_enum::enum_count<UnitState>());
+		setShaderParam(this, "ColorPercent", ((float)state) / magic_enum::enum_count<UnitState>());
 		break;
 	case SimColorMode::FORMATION:
 		if (formation != -1) {
@@ -568,19 +573,17 @@ std::vector<int> Unit::getIndexesForRangeUse(Unit* user) const {
 	if (belowRangeLimit() <= 0) { return indexes; }
 
 	const std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(
-		getPosition(), user->getLevel()->attackRange);
+		 getPosition(), user->getLevel()->attackRange);
 	const int mainIndex = getMainGridIndex();
 	const std::vector<short>& closeIndexes = Game::getEnvironment()->getCloseIndexs(mainIndex);
 
 	for (auto index : allIndexes) {
-
 		if (Game::getEnvironment()->cellIsAttackable(index)
 			&& mainIndex != index
 			&& std::ranges::find(closeIndexes, index - mainIndex) == closeIndexes.end()) {
 			//czy to ok?
 			indexes.push_back(index);
 		}
-
 	}
 	return indexes;
 }

@@ -20,7 +20,7 @@ public:
 	Grid(const Grid& rhs) = delete;
 	virtual ~Grid();
 
-	virtual int update(Physical* physical, int currentIndex) const;
+	virtual int update(Unit* unit, int currentIndex) const;
 
 	virtual void remove(Physical* physical) const;
 

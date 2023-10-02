@@ -126,7 +126,6 @@ public:
 	bool action(UnitAction unitAction, const ActionParameter& parameter);
 	bool action(UnitAction unitAction);
 
-	bool indexChanged() const override { return indexHasChanged; }
 	std::string getValues(int precision) override;
 	Urho3D::String getInfo() const override;
 	const Urho3D::String& getName() const override;
@@ -158,6 +157,9 @@ public:
 	Physical* getThingToInteract() const { return thingToInteract; }
 	void setInCellPos(Urho3D::Vector2 pos) { inCellPos = pos; }
 	Urho3D::Vector2& setInCellPos() { return inCellPos; }
+	void setIndexChanged(bool changed);
+	bool indexChanged() const override { return indexHasChanged; } 
+
 private:
 	void setAim(Aim* aim);
 	Urho3D::Vector2 velocity, acceleration;
@@ -187,4 +189,8 @@ private:
 	char lastActionThingId = -1; //TODO reset po jakimœ czasie
 	ActionParameter nextActionParameter;
 	Urho3D::Vector2 inCellPos;
+
+	bool indexHasChanged = false;
+
+	bool shouldUpdate = false;
 };

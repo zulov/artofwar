@@ -14,8 +14,7 @@
 
 enum class VisibilityType : char;
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class Node;
 	class StaticModel;
 }
@@ -35,12 +34,8 @@ public:
 	virtual float getHealthBarSize() const;
 
 	void setBucket(int _bucketIndex) {
-		if (_bucketIndex < 0) {
-			indexHasChanged = false;
-		} else {
-			indexInMainGrid = _bucketIndex;
-			indexHasChanged = true;
-		}
+		assert(_bucketIndex >= 0);
+		indexInMainGrid = _bucketIndex;
 	}
 
 	void setTeam(unsigned char team) { this->team = team; }
@@ -111,6 +106,7 @@ public:
 	void setDefaultShader(Urho3D::Material* mat) const;
 	void ensureMaterialCloned();
 	Urho3D::Node* getNode() { return node; }
+
 protected:
 	virtual void setModelData(float modelHeight) const =0;
 
@@ -131,9 +127,6 @@ protected:
 
 	unsigned char closeUsers = 0,
 	              rangeUsers = 0;
-	bool indexHasChanged = false; ///TODO to tylko dla unit
-
-	bool shouldUpdate = false;
 
 	bool selected = false;
 	bool materialCloned = false;

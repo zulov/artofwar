@@ -50,7 +50,7 @@ public:
 	void updateQuadOther() const;
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
 	                      std::vector<ResourceEntity*>* resources) const;
-	void updateInfluenceHistoryReset();
+	void updateInfluenceHistoryReset() const;
 	void invalidateCaches();
 	void update(Unit* unit) const;
 

@@ -26,11 +26,6 @@ StaticGrid::~StaticGrid() {
 	clear_vector_array(inited);
 }
 
-int StaticGrid::update(Physical* entity, int currentIndex) const {
-	assert(false);
-	return -1;
-}
-
 void StaticGrid::remove(Physical* physical) const {
 	Grid::remove(physical);
 	const int centerIndex = calculator->indexFromPosition(physical->getPosition());

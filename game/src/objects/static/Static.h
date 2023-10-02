@@ -21,7 +21,6 @@ public:
 	bool hasAnyFreeSpace() const;
 	virtual bool canUse(int index) const =0;
 
-	bool indexChanged() const override { return false; }
 	StaticState getNextState() const { return nextState; }
 	StaticState getState() const { return state; }
 	bool isUsable() const override { return state == StaticState::ALIVE; }

@@ -22,8 +22,6 @@ Physical::Physical(Urho3D::Vector3& _position, bool withNode):
 		node->SetVar("link", this);
 		node->SetPosition(position);
 	}
-
-	shouldUpdate = true;
 }
 
 Physical::~Physical() {

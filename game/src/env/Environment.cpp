@@ -212,7 +212,7 @@ void Environment::updateVisibility(std::vector<Building*>* buildings, std::vecto
 	influenceManager.updateVisibility(buildings, units, resources);
 }
 
-void Environment::updateInfluenceHistoryReset() {
+void Environment::updateInfluenceHistoryReset() const {
 	influenceManager.updateInfluenceHistoryReset();
 }
 
@@ -224,6 +224,7 @@ void Environment::update(Unit* unit) const {
 void Environment::addNew(const std::vector<Unit*>& units) {
 	for (const auto unit : units) {
 		assert(unit->getMainGridIndex() == -1);
+		unit->setIndexChanged(true);
 		unit->setBucket(mainGrid.updateNew(unit));
 		unit->setSparseIndex(sparseUnitGrid.updateNew(unit));
 	}
