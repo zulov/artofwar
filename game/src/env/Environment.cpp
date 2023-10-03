@@ -87,7 +87,7 @@ float Environment::getBonuses(char player, const ResourceEntity* resource) const
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
                                                    const std::function<bool(Physical*)>& condition) const {
 	neights->clear();
-	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getPosition(), radius);
+	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getMainGridIndex(), radius);
 	const float sqRadius = radius * radius;
 
 	while (Physical* neight = bucketIterator.next()) {

@@ -4,7 +4,6 @@
 #include "math/MathUtils.h"
 #include "math/SpanUtils.h"
 #include "objects/Physical.h"
-#include "env/GridCalculatorProvider.h"
 #include "env/bucket/levels/LevelCache.h"
 #include "env/bucket/levels/LevelCacheProvider.h"
 #include "utils/OtherUtils.h"

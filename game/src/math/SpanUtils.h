@@ -89,6 +89,16 @@ inline bool validateSpan(int line, std::string file, std::vector<float> vec) {
 	return validateSpan(line, file, std::span(vec.begin(), vec.size()));
 }
 
+inline bool zerosSpan(float* start, int size) {
+	auto vec = std::span(start, size);
+	for (const auto val : vec) {
+		if (val != 0.f) {
+			assert(false);
+		}
+	}
+	return true;
+}
+
 inline float maxSpan(std::span<float> vec) {
 	return *std::ranges::max_element(vec);
 }

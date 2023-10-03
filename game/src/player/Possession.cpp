@@ -42,6 +42,8 @@ Possession::Possession(char nation) {
 
 	levels = new float[levelsSize];
 	levelsFree = new float[levelsSize];
+	std::fill_n(levels, levelsSize, 0.f);
+	std::fill_n(levelsFree, levelsSize, 0.f);
 }
 
 Possession::~Possession() {
@@ -88,8 +90,8 @@ int Possession::getWorkersNumber() const {
 	return workers.size();
 }
 
-int Possession::getFreeWorkersNumber() const { return freeWorkersNumber; }
-int Possession::getFreeArmyNumber() const { return freeArmyNumber; }
+int Possession::getFreeWorkersNumber() { ensureReady(); return freeWorkersNumber; }
+int Possession::getFreeArmyNumber() { ensureReady(); return freeArmyNumber; }
 
 std::vector<Building*>* Possession::getBuildings(short id) {
 	return buildingsPerId[id];
@@ -111,15 +113,8 @@ std::span<float> Possession::refreshBuildingSum(const std::span<unsigned char> i
 	return out;
 }
 
-std::span<float> Possession::refreshResource(const std::span<unsigned char> idxs, std::span<float> out) const {
-	assert(idxs.size() == out.size());
-	for (int i = 0; i < idxs.size(); ++i) {
-		out[i] = buildingsSumAsSpan[idxs[i]];
-	}
-	return out;
-}
-
-std::span<float> Possession::getBuildingsMetrics(ParentBuildingType type) const {
+std::span<float> Possession::getBuildingsMetrics(ParentBuildingType type) {
+	ensureReady();
 	switch (type) {
 	case ParentBuildingType::OTHER:
 		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingOtherIdxs(), buildingsOtherSumSpan);
@@ -150,12 +145,14 @@ bool Possession::hasAnyFreeArmy() const {
 	return std::ranges::any_of(units, [](Unit* unit)-> bool { return isFreeSolider(unit); });
 }
 
-float Possession::getAttackSum() const {
+float Possession::getAttackSum() {
+	ensureReady();
 	return unitsSumAsSpan[5];
 	//TODO hardcoded from AiUnitMetric {[](db_unit* u, db_unit_level* l) -> float { return l->attack; }, 10, UNITS_SUM_X},
 }
 
 float Possession::getDefenceAttackSum() {
+	ensureReady();
 	return buildingsSumAsSpan[5];
 
 	//TODO hardcoded from AiBuildingMetric {[](db_building* b, db_building_level* l) -> float { return l->attack; }, 20, BUILDINGS_SUM_X},
@@ -175,6 +172,7 @@ void Possession::add(Unit* unit) {
 }
 
 void Possession::updateAndClean(const Resources& resources) {
+	ready = false;
 	cleanDead(buildings, StateManager::isBuildingDead());
 	cleanDead(units, StateManager::isUnitDead());
 	cleanDead(workers, StateManager::isUnitDead());
@@ -186,11 +184,17 @@ void Possession::updateAndClean(const Resources& resources) {
 			}
 		}
 	}
+	resourcesSum = sumSpan(resources.getValues());
+}
+
+void Possession::ensureReady() {
+	if (ready) { return; }
+	ready = true;
 	resetSpan(unitsSumAsSpan);
 	resetSpan(freeArmySumAsSpan);
 
-	std::fill_n(levels, levelsSize, 0.f);
-	std::fill_n(levelsFree, levelsSize, 0.f);
+	assert(zerosSpan(levels, levelsSize));
+	assert(zerosSpan(levelsFree, levelsSize));
 
 	for (const auto unit : units) {
 		auto per = unit->getHealthPercent();
@@ -215,12 +219,16 @@ void Possession::updateAndClean(const Resources& resources) {
 				for (int j = 0; j < freeArmySumAsSpan.size(); ++j) {
 					freeArmySumAsSpan[j] += val2 * metric[j];
 				}
+				levelsFree[i] = 0.f;
 			}
+			levels[i] = 0.f;
 		}
 	}
 
 	resetSpan(buildingsSumAsSpan);
-	std::fill_n(levels, levelsSize, 0.f);
+
+	zerosSpan(levels, levelsSize);
+	zerosSpan(levelsFree, levelsSize);
 
 	for (const auto building : buildings) {
 		levels[building->getLevel()->id] += building->getHealthPercent();
@@ -235,10 +243,9 @@ void Possession::updateAndClean(const Resources& resources) {
 			for (int j = 0; j < buildingsSumAsSpan.size(); ++j) {
 				buildingsSumAsSpan[j] += lVal * metric[j];
 			}
+			levels[i] = 0.f;
 		}
 	}
-
-	resourcesSum = sumSpan(resources.getValues());
 
 	freeWorkersNumber = std::ranges::count_if(workers, [](Unit* worker) {
 		return isInFreeState(worker->getState());

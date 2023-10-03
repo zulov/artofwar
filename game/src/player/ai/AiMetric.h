@@ -37,7 +37,7 @@ struct AiBuildingMetric : AiMetric {
 struct AiResourceMetric : AiMetric {
 	const std::function<float(Resources& resources, Possession& possession)> fn;
 
-	AiResourceMetric(const std::function<float(const Resources& resources, const Possession& possession)>& fn,
+	AiResourceMetric(const std::function<float(const Resources& resources, Possession& possession)>& fn,
 	                 float weight, float weightMultiplier = 1.f) : fn(fn), AiMetric(weight, weightMultiplier) {
 	}
 };
@@ -232,12 +232,12 @@ constexpr inline struct MetricDefinitions {
 		{[](const Resources& r, const Possession& p) -> float { return r.getValues()[2]; }, 1000},
 		{[](const Resources& r, const Possession& p) -> float { return r.getValues()[3]; }, 1000},
 
-		{[](const Resources& r, const Possession& p) -> float { return p.getFreeWorkersNumber(); }, 100},
-		{[](const Resources& r, const Possession& p) -> float { return p.getWorkersNumber(); }, 100},
-		{[](const Resources& r, const Possession& p) -> float { return p.getResWithOutBonus()[0]; }, 20}, //10
-		{[](const Resources& r, const Possession& p) -> float { return p.getResWithOutBonus()[1]; }, 20},
-		{[](const Resources& r, const Possession& p) -> float { return p.getResWithOutBonus()[2]; }, 20},
-		{[](const Resources& r, const Possession& p) -> float { return p.getResWithOutBonus()[3]; }, 20},
+		{[](const Resources& r, Possession& p) -> float { return p.getFreeWorkersNumber(); }, 100},
+		{[](const Resources& r, Possession& p) -> float { return p.getWorkersNumber(); }, 100},
+		{[](const Resources& r, Possession& p) -> float { return p.getResWithOutBonus()[0]; }, 20}, //10
+		{[](const Resources& r, Possession& p) -> float { return p.getResWithOutBonus()[1]; }, 20},
+		{[](const Resources& r, Possession& p) -> float { return p.getResWithOutBonus()[2]; }, 20},
+		{[](const Resources& r, Possession& p) -> float { return p.getResWithOutBonus()[3]; }, 20},
 	};
 
 	static inline AiPlayerMetric aiBasicMetric[] = {

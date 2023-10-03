@@ -20,7 +20,6 @@ InfluenceMapFloat(unsigned short resolution, float size, float coef, char level,
 	std::fill_n(values, arraySize, 0.f);
 	std::fill_n(tempVals, arraySize, 0.f);
 
-
 	auto* ptr = templateV;
 	for (short i = -level; i <= level; ++i) {
 		const auto a = i * i;
@@ -54,10 +53,10 @@ void InfluenceMapFloat::tempUpdate(const Urho3D::Vector3& pos, float value) {
 }
 
 void InfluenceMapFloat::tempUpdate(int index, float value) {
-	tempVals[index] += value;
-	if (changedIndexes.size() <= 10) {
+	if (changedIndexes.size() <= 10 && tempVals[index] == 0.f) {
 		changedIndexes.push_back(index);
 	}
+	tempVals[index] += value;
 	valuesCalculateNeeded = true;
 }
 
@@ -191,8 +190,6 @@ void InfluenceMapFloat::updateFromTemp() {
 				}
 			}
 		} else {
-			std::ranges::sort(changedIndexes);
-			changedIndexes.erase(std::unique(changedIndexes.begin(), changedIndexes.end()), changedIndexes.end());
 			for (const int i : changedIndexes) {
 				update(i);
 			}

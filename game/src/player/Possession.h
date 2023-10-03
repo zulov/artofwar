@@ -18,31 +18,32 @@ public:
 	void add(Building* building);
 	void add(Unit* unit);
 	void updateAndClean(const Resources& resources);
+	void ensureReady();
+
 	int getScore() const;
 	int getUnitsNumber() const;
 	int getBuildingsNumber() const;
 	int getWorkersNumber() const;
-	int getFreeWorkersNumber() const;
-	int getFreeArmyNumber() const;
-	std::span<float> getResWithOutBonus() const  { return resWithoutBonus; };
+	int getFreeWorkersNumber();
+	int getFreeArmyNumber();
+	std::span<float> getResWithOutBonus() { ensureReady(); return resWithoutBonus; }
 	std::vector<Building*>* getBuildings(short id);
 	const std::vector<Building*>& getBuildings();
 
 	void addKilled(Physical* physical);
 
-	std::span<float> getUnitsMetrics() const { return unitsSumAsSpan; }
-	std::span<float> getFreeArmyMetrics() const { return freeArmySumAsSpan; }
-	std::span<float> getBuildingsMetrics() const { return buildingsSumAsSpan; }
-	std::span<float> getBuildingsMetrics(ParentBuildingType type) const;
+	std::span<float> getUnitsMetrics() { ensureReady(); return unitsSumAsSpan; }
+	std::span<float> getFreeArmyMetrics() { ensureReady(); return freeArmySumAsSpan; }
+	std::span<float> getBuildingsMetrics() { ensureReady(); return buildingsSumAsSpan; }
+	std::span<float> getBuildingsMetrics(ParentBuildingType type);
 
 	const std::vector<Unit*>& getWorkers() const { return workers; }
 	std::vector<Unit*> getFreeArmy();
 	bool hasAnyFreeArmy() const;
-	float getAttackSum() const;
+	float getAttackSum();
 	float getDefenceAttackSum();
 private:
 	std::span<float> refreshBuildingSum(const std::span<unsigned char> idxs, std::span<float> out) const;
-	std::span<float> refreshResource(const std::span<unsigned char> idxs, std::span<float> out) const;
 	std::vector<Building*> buildings;
 	std::vector<std::vector<Building*>*> buildingsPerId;
 
@@ -52,6 +53,8 @@ private:
 	int freeArmyNumber = 0;
 	float resourcesSum = 0.f;
 	float resourcesDestroyed = 0.f;
+
+	bool ready = false;
 
 	int levelsSize;
 	float* levels;

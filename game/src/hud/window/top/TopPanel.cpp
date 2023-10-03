@@ -47,7 +47,7 @@ void TopPanel::createBody() {
 }
 
 void TopPanel::update(Player* player) const {
-	const auto& possession = player->getPossession();
+	auto& possession = player->getPossession();
 
 	units->setText(Urho3D::String(possession.getFreeArmyNumber()) + "/", Urho3D::String(possession.getUnitsNumber()));
 	workers->setText(Urho3D::String(possession.getFreeWorkersNumber())+"/", Urho3D::String(possession.getWorkersNumber()));
