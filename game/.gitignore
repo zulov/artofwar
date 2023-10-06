@@ -10,10 +10,11 @@ Release
 art_of_war.dir
 result
 *.rar
-/CoreData
 x64
 Data/Database
 /logs
 
 /CoreDataMy/*.ps4
 /CoreDataMy/*.vs4
+/CoreData/*.ps4
+/CoreData/*.vs4
