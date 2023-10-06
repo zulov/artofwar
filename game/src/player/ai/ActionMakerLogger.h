@@ -5,8 +5,6 @@
 
 constexpr bool LOG_ACTIONS_MAKER = false;
 
-using namespace magic_enum::ostream_operators;
-
 inline void logThree(int ids[3], float vals[3], float max) {
 	if constexpr (LOG_ACTIONS_MAKER) {
 		for (int i = 0; i < 3; ++i) {

@@ -11,7 +11,6 @@ Release
 art_of_war.dir
 result
 *.rar
-include
 /CoreData
 x64
 Data/Database

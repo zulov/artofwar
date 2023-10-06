@@ -301,11 +301,12 @@ struct db_unit : db_with_icon, db_with_cost {
 	const bool typeHeavy;
 	const bool typeLight;
 
+	bool possibleStates[magic_enum::enum_count<UnitState>()];
+
 	std::vector<db_unit_level*> levels;
 
 	std::vector<db_nation*> nations;
 	std::vector<unsigned char> ordersIds;
-	bool possibleStates[magic_enum::enum_count<UnitState>()];
 
 	db_unit(short id, char* name, char* icon, char actionState, bool typeInfantry, bool typeRange,
 	        bool typeCalvary, bool typeWorker, bool typeSpecial, bool typeMelee, bool typeHeavy, bool typeLight) :
