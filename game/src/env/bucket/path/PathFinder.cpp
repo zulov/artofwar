@@ -16,7 +16,6 @@
 PathFinder::PathFinder(short resolution, float size) :
 	closeIndexes(CloseIndexesProvider::get(resolution)), calculator(GridCalculatorProvider::get(resolution, size)),
 	resolution(resolution), fieldSize(size / resolution), max_cost_to_ref(resolution * resolution - 1) {
-	FibHeap::initCache();
 
 	const auto sqRes = resolution * resolution;
 	came_from = new int[sqRes];
@@ -86,7 +85,8 @@ void PathFinder::prepareToStart(int startIdx) {
 	updateCost(startIdx, 0.f);
 }
 
-const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit) {//performance wersja bez vectora
+const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
+	//performance wersja bez vectora
 	assert(limit>0);
 	prepareToStart(startIdx);
 	auto endCords = getCords(endIdxs);

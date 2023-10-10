@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <queue>
 #include <vector>
 #include "utils/DeleteUtils.h"
 
@@ -9,269 +10,41 @@ constexpr short CACHE_SIZE = 8192;
 
 static unsigned char DEGREE_CACHE[CACHE_SIZE];
 
-class FibHeap {
+class PriorityHeap {
 public:
-	class FibNode {
-	public:
-		FibNode(const float k, const int pl):
-			left(nullptr), right(nullptr), child(nullptr),
-			key(k), payload(pl), degree(0), used(false) { }
-
-		FibNode(const FibNode& obj) = delete;
-		~FibNode() = default;
-
-		bool isEmpty() const {
-			return key < 0.f;
+	struct HeapNode {
+		int id;
+		float value;
+		HeapNode(int _id, float _value) : id(_id), value(_value) {}
+		bool operator>(const HeapNode& other) const {
+			return value > other.value;
 		}
-
-		void reset() {
-			left = nullptr;
-			right = nullptr;
-			child = nullptr;
-			key = -1.f;
-			payload = -1;
-			degree = 0;
-		}
-
-		FibNode* left;
-		FibNode* right;
-		FibNode* child;
-		float key;
-		int payload;
-		unsigned short degree;
-		bool used;
 	};
 
-	FibHeap(): tempSize(64) {
-		temp = new FibNode*[tempSize];
-		constexpr short initialSize = 1024;
-		freePool.reserve(initialSize);
-		allPool.reserve(initialSize);
-		for (auto i = 0; i < initialSize; ++i) {
-			auto fn = new FibNode(-1, -1);
-			freePool.push_back(fn);
-			allPool.push_back(fn);
-		}
-	}
+	PriorityHeap() = default;
 
-	FibHeap(const FibHeap& obj) = delete;
+	PriorityHeap(const PriorityHeap& obj) = delete;
 
-	~FibHeap() {
-		delete[] temp;
-		clear_vector(allPool);
-	}
-
-	FibNode* getNode(const int pl, const float k) {
-		assert(pl >= 0);
-		assert(k >= 0.f);
-		if (freePool.empty()) {
-			const auto fn = new FibNode(k, pl);
-			allPool.push_back(fn);
-			return fn;
-		}
-		const auto fibNode = freePool.back();
-		freePool.pop_back();
-
-		fibNode->payload = pl;
-		fibNode->key = k;
-
-		return fibNode;
-	}
-
-	void resetNode(FibNode* node) {
-		if (node->key >= 0.f) {
-			freePool.push_back(node);
-		}
-		node->reset();
-	}
 
 	void clear() {
-		n = 0;
-		minNode = nullptr;
-		for (const auto fibNode : usedPool) {
-			resetNode(fibNode);
-			fibNode->used = false;
-		}
-		assert(allPool.size() == freePool.size());
-		usedPool.clear();
-		std::fill_n(temp, tempSize, nullptr);
-	}
-
-	void ensureSizeAndClear(unsigned int size) {
-		if (tempSize < size) {
-			tempSize = size;
-			delete[] temp;
-			temp = new FibNode*[tempSize];
-		}
-
-		std::fill_n(temp, tempSize, nullptr);
-	}
-
-	FibNode* extractMin() {
-		const auto z = minNode;
-		if (z != nullptr) {
-			auto x = z->child;
-			if (x != nullptr) {
-				ensureSizeAndClear(z->degree);
-
-				auto next = x;
-				for (auto i = 0; i < z->degree; ++i) {
-					temp[i] = next;
-					next = next->right;
-				}
-				for (auto i = 0; i < z->degree; ++i) {
-					x = temp[i];
-					minNode->left->right = x;
-					x->left = minNode->left;
-					minNode->left = x;
-					x->right = minNode;
-				}
-			}
-			z->left->right = z->right;
-			z->right->left = z->left;
-			if (z == z->right) {
-				minNode = nullptr;
-			} else {
-				minNode = z->right;
-				consolidate();
-			}
-			--n;
-		}
-		return z;
-	}
-
-	void consolidate() {
-		assert(n<CACHE_SIZE);
-
-		auto w = minNode;
-		unsigned short rootSize = 0;
-		auto next = w;
-		do {
-			++rootSize;
-			next = next->right;
-		} while (next != w);
-
-		const auto maxDegree = DEGREE_CACHE[n];
-
-		const auto secondSize = maxDegree + rootSize;
-		ensureSizeAndClear(secondSize);
-
-		for (int i = maxDegree; i < secondSize; ++i) {
-			temp[i] = next;
-			next = next->right;
-		}
-		for (int i = maxDegree; i < secondSize; ++i) {
-			w = temp[i];
-
-			auto x = w;
-			int d = x->degree;
-			while (temp[d] != nullptr) {
-				auto y = temp[d];
-				if (x->key > y->key) {
-					std::swap(x, y);
-				}
-				fibHeapLink(y, x);
-				temp[d] = nullptr;
-				++d;
-			}
-			temp[d] = x;
-		}
-
-		minNode = nullptr;
-		auto tii = temp;
-		for (auto i = 0; i < maxDegree; ++i, ++tii) {
-			const auto ti = *tii;
-			if (ti != nullptr) {
-				if (minNode == nullptr) {
-					minNode = ti->left = ti->right = ti;
-				} else {
-					minNode->left->right = ti;
-					ti->left = minNode->left;
-					minNode->left = ti;
-					ti->right = minNode;
-
-					if (ti->key < minNode->key) {
-						minNode = ti;
-					}
-				}
-			}
-		}
-	}
-
-	static void fibHeapLink(FibNode* y, FibNode* x) {
-		y->left->right = y->right;
-		y->right->left = y->left;
-		if (x->child != nullptr) {
-			x->child->left->right = y;
-			y->left = x->child->left;
-			x->child->left = y;
-			y->right = x->child;
-		} else {
-			x->child = y;
-			y->right = y;
-			y->left = y;
-		}
-		++x->degree;
-		assert(x->degree<60000);
+		pq = std::priority_queue<HeapNode, std::vector<HeapNode>, std::greater<>>();
 	}
 
 	bool empty() const {
-		return n == 0;
-	}
-
-	void pop() {
-		if (empty()) {
-			return;
-		}
-		const auto x = extractMin();
-		if (x) {
-			resetNode(x);
-		}
+		return pq.empty();
 	}
 
 	int get() {
-		const auto toReturn = minNode->payload;
-		pop();
+		const auto toReturn = pq.top().id;
+		pq.pop();
+
 		return toReturn;
 	}
 
 	void put(const int pl, const float k) {
-		const auto x = getNode(pl, k);
-		if (!x->used) {
-			usedPool.push_back(x);
-			x->used = true;
-		}
-
-		x->degree = 0;
-		//x->child = nullptr;
-		if (minNode == nullptr) {
-			minNode = x->left = x->right = x;
-		} else {
-			minNode->left->right = x;
-			x->left = minNode->left;
-			minNode->left = x;
-			x->right = minNode;
-			if (x->key < minNode->key) {
-				minNode = x;
-			}
-		}
-		++n;
+		pq.emplace(pl, k);
 	}
 
-	FibNode* minNode{};
-	std::vector<FibNode*> freePool;
-	std::vector<FibNode*> allPool;
-	std::vector<FibNode*> usedPool;
-	FibNode** temp;
-	unsigned short tempSize;
-
-	int n{0};
-
-	static void initCache() {
-		const auto coef = 1 / log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2);
-		for (auto i = 0; i < CACHE_SIZE; ++i) {
-			DEGREE_CACHE[i] = static_cast<unsigned char>(floor(log(static_cast<double>(i)) * coef)) + 2;
-			// plus two both for indexing to max degree and so A[max_degree+1] == NIL 
-		}
-	}
+private:
+	std::priority_queue<HeapNode, std::vector<HeapNode>, std::greater<>> pq;
 };

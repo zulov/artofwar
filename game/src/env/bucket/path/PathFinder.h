@@ -59,7 +59,7 @@ private:
 	CloseIndexes* closeIndexes;
 	GridCalculator* calculator;
 
-	FibHeap frontier;
+	PriorityHeap frontier;
 
 	std::vector<int>* tempPath = new std::vector<int>();
 	std::vector<int>* closePath = new std::vector<int>();

@@ -408,7 +408,6 @@ void MainGrid::removeStatic(Static* object) const {
 }
 
 std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3D::Vector3& position) const {
-	//assert(unit->getMainGridIndex()==index);//TODO perf zamienic jezeli ok
 	auto& data = complexData[index];
 
 	if (!data.isPassable()) {
