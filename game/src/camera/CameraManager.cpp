@@ -9,6 +9,7 @@
 #include <Urho3D/Input/Input.h>
 
 #include "simulation/SimGlobals.h"
+#include "utils/DeleteUtils.h"
 #include "utils/OtherUtils.h"
 
 

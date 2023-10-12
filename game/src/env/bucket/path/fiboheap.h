@@ -1,14 +1,7 @@
 #pragma once
 
-#include <cassert>
-#include <cmath>
 #include <queue>
 #include <vector>
-#include "utils/DeleteUtils.h"
-
-constexpr short CACHE_SIZE = 8192;
-
-static unsigned char DEGREE_CACHE[CACHE_SIZE];
 
 class PriorityHeap {
 public:

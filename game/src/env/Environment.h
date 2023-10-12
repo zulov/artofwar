@@ -55,7 +55,7 @@ public:
 	void update(Unit* unit) const;
 
 	void addNew(const std::vector<Unit*>& units);
-	void addNew(Building* building);
+	void addNew(Building* building, bool bulkAdd);
 	void addNew(ResourceEntity* resource, bool bulkAdd);
 
 	void removeFromGrids(const std::vector<Unit*>& units) const;
@@ -144,6 +144,8 @@ public:
 	void nextVisibilityType();
 	void reAddBonuses(std::vector<Building*>* buildings, char player, char resId) const;
 	float getBonuses(char player, const ResourceEntity* resource) const;
+	void refreshAllStatic(std::vector<int>& indexes);
+
 private:
 	//std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius,

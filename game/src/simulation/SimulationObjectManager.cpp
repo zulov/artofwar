@@ -51,15 +51,15 @@ void SimulationObjectManager::addUnits(unsigned number, int id, Urho3D::Vector2&
 void SimulationObjectManager::addBuilding(int id, const Urho3D::IntVector2& _bucketCords, char level,
                                           char player) const {
 	auto* building = buildingFactory.create(id, _bucketCords, level, player);
-	if(building) {
+	if (building) {
 		building->postCreate();
-		addBuilding(building);
+		addBuilding(building, false);
 	}
 }
 
 void SimulationObjectManager::addResource(int id, const Urho3D::IntVector2& _bucketCords, char level) const {
 	auto res = resourceFactory.create(id, _bucketCords, level);
-	if(res) {
+	if (res) {
 		addResource(res, false);
 	}
 }
@@ -74,12 +74,38 @@ void SimulationObjectManager::load(dbload_unit* unit) {
 	addUnits(unitFactory.load(unit));
 }
 
-void SimulationObjectManager::load(dbload_building* building) {
-	addBuilding(buildingFactory.load(building));
+void SimulationObjectManager::load(dbload_building* building) const {
+	addBuilding(buildingFactory.load(building), true);
 }
 
 void SimulationObjectManager::load(dbload_resource_entities* resource) const {
 	addResource(resourceFactory.load(resource), true);
+}
+
+void SimulationObjectManager::refreshAllStatic() {
+	std::vector<int> allCells;
+	allCells.reserve(100000);
+	bool arr[256 * 256]= { 0 };//change size
+	for (const auto resource : *resources) {
+		for (int allCell : resource->getAllCells()) {
+			arr[allCell] = true;
+		}
+		//std::ranges::copy(resource->getAllCells(), std::back_inserter(allCells));
+	}
+	for (const auto building : *buildings) {
+		for (int allCell : building->getAllCells()) {
+			arr[allCell] = true;
+		}
+		//std::ranges::copy(building->getAllCells(), std::back_inserter(allCells));
+	}
+	//std::ranges::sort(allCells);
+	//allCells.erase(std::ranges::unique(allCells).begin(), allCells.end());
+	for (int i = 0; i < 256*256; ++i) {
+		if (arr[i]) {
+			allCells.push_back(i);
+		}
+	}
+	Game::getEnvironment()->refreshAllStatic(allCells);
 }
 
 void SimulationObjectManager::addUnits(std::vector<Unit*>& temp) const {
@@ -93,16 +119,15 @@ void SimulationObjectManager::addUnits(std::vector<Unit*>& temp) const {
 }
 
 
-void SimulationObjectManager::addBuilding(Building* building) const {
+void SimulationObjectManager::addBuilding(Building* building, bool bulkAdd) const {
 	if (building) {
 		buildings->push_back(building);
 
 		Game::getPlayersMan()->getPlayer(building->getPlayer())->add(building);
-		Game::getEnvironment()->addNew(building);
+		Game::getEnvironment()->addNew(building, bulkAdd);
 	} else {
 		Game::getLog()->Write(0, "Building loading not possible");
 	}
-
 }
 
 void SimulationObjectManager::addResource(ResourceEntity* resource, bool bulkAdd) const {
@@ -116,58 +141,60 @@ void SimulationObjectManager::addResource(ResourceEntity* resource, bool bulkAdd
 
 void SimulationObjectManager::findToDisposeUnits() {
 	if (StateManager::isUnitToDispose()) {
-		units->erase(//TODO bug?
-			std::remove_if(
-				units->begin(), units->end(),
-				[this](Unit* unit) {
-					if (unit->isToDispose()) {
-						unitsToDispose.push_back(unit);
-						return true;
-					}
-					unit->clean();
-					return false;
-				}
-		), units->end());
+		units->erase( //TODO bug?
+		             std::remove_if(
+		                            units->begin(), units->end(),
+		                            [this](Unit* unit) {
+			                            if (unit->isToDispose()) {
+				                            unitsToDispose.push_back(unit);
+				                            return true;
+			                            }
+			                            unit->clean();
+			                            return false;
+		                            }
+		                           ), units->end());
 	}
 }
 
 void SimulationObjectManager::findToDisposeBuildings() {
 	if (StateManager::isBuildingToDispose()) {
 		buildings->erase(
-			std::remove_if(
-				buildings->begin(), buildings->end(),
-				[this](Building* building) {
-					if (building->isToDispose()) {
-						buildingsToDispose.push_back(building);
-						return true;
-					}
-					return false;
-				}
-			), buildings->end());
+		                 std::remove_if(
+		                                buildings->begin(), buildings->end(),
+		                                [this](Building* building) {
+			                                if (building->isToDispose()) {
+				                                buildingsToDispose.push_back(building);
+				                                return true;
+			                                }
+			                                return false;
+		                                }
+		                               ), buildings->end());
 	}
 }
 
 void SimulationObjectManager::findToDisposeResources() {
 	if (StateManager::isResourceToDispose()) {
 		resources->erase(
-			std::remove_if(
-				resources->begin(), resources->end(),
-				[this](ResourceEntity* resource) {
-					if (resource->isToDispose()) {
-						resourcesToDispose.push_back(resource);
-						return true;
-					}
-					return false;
-				}
-			), resources->end());
+		                 std::remove_if(
+		                                resources->begin(), resources->end(),
+		                                [this](ResourceEntity* resource) {
+			                                if (resource->isToDispose()) {
+				                                resourcesToDispose.push_back(resource);
+				                                return true;
+			                                }
+			                                return false;
+		                                }
+		                               ), resources->end());
 	}
 }
 
 void SimulationObjectManager::refreshResBonuses() {
 	//TODO perf ugly, refresh ca³oœci
 	bool resourceBuildingChanged[MAX_PLAYERS][RESOURCES_SIZE] =
-	{{false, false, false, false},
-		{false, false, false, false}};
+	{
+		{false, false, false, false},
+		{false, false, false, false}
+	};
 	for (const auto building : buildingsToDispose) {
 		auto& vals = resourceBuildingChanged[building->getPlayer()];
 		for (const char resId : building->getDbBuilding()->resourceTypes) {

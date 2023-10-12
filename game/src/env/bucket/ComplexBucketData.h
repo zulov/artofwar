@@ -36,6 +36,8 @@ public:
 	void setCost(const unsigned char index, float cost) { costToNeight[index] = cost; }
 
 	bool allNeightOccupied() const { return isNeightOccupied == 255; }
+	bool anyNeightFree() const { return isNeightOccupied < 255; }
+	void resetNeight() { isNeightOccupied = 255; }
 
 	char getAdditionalInfo() const { return additionalInfo; }
 	int getEscapeBucket() const { return escapeBucketIndex; }
@@ -57,7 +59,7 @@ private:
 	CellState state;
 	char size, additionalInfo{};
 
-	unsigned char isNeightOccupied = 255; //na poczatku wszystko zajête
+	unsigned char isNeightOccupied = 255; //na poczatku wszystko zajete
 	int escapeBucketIndex = -1;//TODO moze zrezygnowac z tego ca³kiem
 	float costToNeight[8] = {0.f};
 	float resourceBonuses[MAX_PLAYERS][RESOURCES_SIZE];

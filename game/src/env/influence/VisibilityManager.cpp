@@ -17,6 +17,7 @@
 #include "env/GridCalculatorProvider.h"
 #include "utils/OtherUtils.h"
 #include "objects/resource/ResourceEntity.h"
+#include "utils/DeleteUtils.h"
 
 
 VisibilityManager::VisibilityManager(char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain) {

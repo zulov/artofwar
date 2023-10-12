@@ -240,15 +240,15 @@ std::vector<int> PathFinder::getPassableIndexes(const std::vector<int>& endIdxs)
 }
 
 void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
-	std::vector<int> refreshed;
+	std::unordered_set<int> refreshed;
 	while (!toRefresh.empty()) {
 		int startIndex = toRefresh.back();
 		toRefresh.pop_back();
 
-		if (std::ranges::find(refreshed, startIndex) != refreshed.end()) {
+		if (refreshed.contains(startIndex)) {
 			continue;
 		}
-		if (!complexData[startIndex].allNeightOccupied()) {
+		if (complexData[startIndex].anyNeightFree()) {
 			complexData[startIndex].setEscapeThrough(-1);
 			continue;
 		}
@@ -259,29 +259,28 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 		while (!frontier.empty()) {
 			const auto current = frontier.get();
 			assert(calculator->isValidIndex(current));
-			auto& currentData = complexData[current];
-			if (!currentData.allNeightOccupied()) {
+			auto& currentCell = complexData[current];
+			if (currentCell.anyNeightFree()) {
 				end = current;
-				currentData.setEscapeThrough(-1);
+				currentCell.setEscapeThrough(-1);
 				break;
 			}
-			for (auto i : closeIndexes->getTabIndexes(current)) {
-				if (!currentData.ifNeightIsFree(i)) {
-					int nI = current + closeIndexes->getIndexAt(i);
+			for (const auto & [index, indexVal] : closeIndexes->getTabIndexesWithValue(current)) {
+				if (!currentCell.ifNeightIsFree(index)) {
+					int neightIndex = current + indexVal;
 					assert(calculator->isValidIndex(nI));
-					if (!complexData[nI].allNeightOccupied()
-						&& std::ranges::find(refreshed, nI) != refreshed.end()) {
+					if (complexData[neightIndex].anyNeightFree() && refreshed.contains(neightIndex)) {
 						//TODO to chyba glupi warunek
-						toRefresh.push_back(nI);
+						toRefresh.push_back(neightIndex);
 					}
-					int next = nI;
-					if (came_from[current] != next) {
-						const float new_cost = cost_so_far[current] + currentData.getCost(i);
-						if (cost_so_far[next] < 0.f || new_cost < cost_so_far[next]) {
-							updateCost(next, new_cost);
 
-							frontier.put(next, new_cost);
-							came_from[next] = current;
+					if (came_from[current] != neightIndex) {
+						const float new_cost = cost_so_far[current] + currentCell.getCost(index);
+						if (cost_so_far[neightIndex] < 0.f || new_cost < cost_so_far[neightIndex]) {
+							updateCost(neightIndex, new_cost);
+
+							frontier.put(neightIndex, new_cost);
+							came_from[neightIndex] = current;
 						}
 					}
 				}
@@ -293,12 +292,12 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 			for (int i = 1; i < path->size(); ++i) {
 				assert(calculator->isValidIndex(current2));
 				complexData[current2].setEscapeThrough(path->at(i));
-				refreshed.push_back(current2);
+				refreshed.insert(current2);
 				current2 = path->at(i);
 			}
 		} else {
 			assert(calculator->isValidIndex(startIndex));
-			refreshed.push_back(startIndex);
+			refreshed.insert(startIndex);
 			complexData[startIndex].setEscapeThrough(-1);
 		}
 	}

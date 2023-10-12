@@ -280,7 +280,8 @@ void MainGrid::reAddBonuses(std::vector<Building*>* buildings, char player, char
 
 float MainGrid::getBonuses(char player, const ResourceEntity* resource) const {
 	float best = .0f;
-	for (const int cell : resource->getOccupiedCells()) {//TODO perf bonus zapisac w resource
+	for (const int cell : resource->getOccupiedCells()) {
+		//TODO perf bonus zapisac w resource
 		const float val = complexData[cell].getResBonus(player, resource->getId());
 		if (val > best) {
 			best = val;
@@ -358,39 +359,29 @@ void MainGrid::removeResourceBonuses(Static* object) const {
 	}
 }
 
-void MainGrid::addStatic(Static* object) {
-	const auto bucketPos = calculator->getIndexes(object->getMainGridIndex());
-
+void MainGrid::addStatic(Static* object, bool bulkAdd) {
 	for (const auto index : object->getOccupiedCells()) {
 		complexData[index].setStatic(object);
 	}
+	if (!bulkAdd) {
+		refreshAllStatic(object->getAllCells());
+	}
+}
 
+void MainGrid::refreshAllStatic(const std::span<int> indexes) {
 	std::vector<int> toRefresh;
 	toRefresh.reserve(9);
 
-	const auto size = object->getGridSize();
-	const auto sizeX = calculateSize(size.x_, bucketPos.x_);
-	const auto sizeZ = calculateSize(size.y_, bucketPos.y_);
-
-	const auto iMin = calculator->getValid(sizeX.x_ - 1);
-	const auto iMax = calculator->getValid(sizeX.y_ + 1);
-
-	const auto jMin = calculator->getValid(sizeZ.x_ - 1);
-	const auto jMax = calculator->getValid(sizeZ.y_ + 1);
-
-	for (int i = iMin; i < iMax; ++i) {
-		int index = calculator->getNotSafeIndex(i, jMin);
-		for (int j = jMin; j < jMax; ++j) {
-			auto& data = complexData[index];
-			updateNeighbors(data, index);
-			if (data.isPassable()) {
-				data.setEscapeThrough(-1);
-			} else {
-				toRefresh.push_back(index);
-			}
-			++index;
+	for (const auto index : indexes) {
+		auto& data = complexData[index];
+		updateNeighbors(data, index);
+		if (data.isPassable()) {
+			data.setEscapeThrough(-1);
+		}else {
+			toRefresh.push_back(index);
 		}
 	}
+
 	pathFinder.refreshWayOut(toRefresh);
 }
 
@@ -413,7 +404,7 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 	if (!data.isPassable()) {
 		int escapeBucket; //=-1
 		//auto& neights = complexData[index].getNeightbours();
-		if (!data.allNeightOccupied()) {
+		if (data.anyNeightFree()) {
 			float dist = 999999;
 			const auto center = calculator->getCenter(index);
 			for (auto i : closeIndexes->getTabIndexes(index)) {
@@ -458,13 +449,11 @@ Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const
 	return (center1 + center2) / 2;
 }
 
-void MainGrid::updateNeighbors(ComplexBucketData& data, const int current) const {//perf optimize
-	for (auto i : closeIndexes->getTabIndexes(current)) {
-		const int nI = current + closeIndexes->getIndexAt(i);
-		if (complexData[nI].isPassable()) {
-			data.setNeightFree(i);
-		} else {
-			data.setNeightOccupied(i);
+void MainGrid::updateNeighbors(ComplexBucketData& data, const int dataIndex) const {
+	data.resetNeight();
+	for (const auto &p : closeIndexes->getTabIndexesWithValue(dataIndex)) {
+		if (complexData[dataIndex + p.second].isPassable()) {
+			data.setNeightFree(p.first);
 		}
 	}
 }

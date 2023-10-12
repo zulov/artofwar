@@ -84,6 +84,10 @@ float Environment::getBonuses(char player, const ResourceEntity* resource) const
 	return mainGrid.getBonuses(player, resource);
 }
 
+void Environment::refreshAllStatic( std::vector<int>& indexes) {
+	mainGrid.refreshAllStatic(std::span(indexes.data(), indexes.size()));
+}
+
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
                                                    const std::function<bool(Physical*)>& condition) const {
 	neights->clear();
@@ -237,8 +241,8 @@ void Environment::invalidateCaches() {
 	sparseUnitGrid.invalidateCache();
 }
 
-void Environment::addNew(Building* building) {
-	mainGrid.addStatic(building);
+void Environment::addNew(Building* building, bool bulkAdd) {
+	mainGrid.addStatic(building, bulkAdd);
 	mainGrid.addResourceBonuses(building);
 	buildingGrid.updateNew(building);
 
@@ -256,7 +260,7 @@ void Environment::addNew(Building* building) {
 }
 
 void Environment::addNew(ResourceEntity* resource, bool bulkAdd) {
-	mainGrid.addStatic(resource);
+	mainGrid.addStatic(resource, bulkAdd);
 	resource->setIndexInInfluence(influenceManager.getIndex(resource->getPosition()));
 	resourceStaticGrid.updateStatic(resource, bulkAdd);
 }
@@ -480,7 +484,6 @@ Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, co
 
 Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size,
                                               const Urho3D::IntVector2& bucketCords) const {
-
 	return mainGrid.getValidPosition(size, getCenter(calculator->getIndex(bucketCords.x_, bucketCords.y_)));
 }
 

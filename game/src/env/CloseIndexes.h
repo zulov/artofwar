@@ -13,6 +13,7 @@ public:
 	const std::vector<short>& get(int center) const { return closeVals[getIndex(center)]; }
 	const std::vector<short>& getSecond(int center) const { return closeSecondVals[getSecondIndex(center)]; }
 	const std::vector<unsigned char>& getTabIndexes(int center) const { return tabIndexes[getIndex(center)]; }
+	const std::vector<std::pair<unsigned char,short>>& getTabIndexesWithValue(int center) const { return tabIndexesWithValue[getIndex(center)]; }
 	const std::vector<unsigned char>& getTabSecondIndexes(int center) const { return tabSecondIndexes[getSecondIndex(center)]; }
 	short getIndexAt(unsigned char index) const { return templateVec[index]; }
 	short getSecondIndexAt(unsigned char index) const { return templateVecSecond[index]; }
@@ -34,6 +35,7 @@ private:
 
 	static const std::vector<unsigned char> tabIndexes[CLOSE_SIZE];
 	std::vector<short> closeVals[CLOSE_SIZE];
+	std::vector<std::pair<unsigned char, short>> tabIndexesWithValue[CLOSE_SIZE];
 
 	static const std::vector<unsigned char> tabSecondIndexes[CLOSE_SECOND_SIZE];
 	std::vector<short> closeSecondVals[CLOSE_SECOND_SIZE];

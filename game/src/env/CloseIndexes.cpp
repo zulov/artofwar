@@ -76,15 +76,16 @@ CloseIndexes::CloseIndexes(short res)
 	  templateVecSecond{
 		  -2 * res - 2, -2 * res - 1, -2 * res, -2 * res + 1, -2 * res + 2,
 		  -res - 2, -res + 2,
-		  - 2, +2,
+		  -2, +2,
 		  res - 2, res + 2,
 		  2 * res - 2, 2 * res - 1, 2 * res, 2 * res + 1, 2 * res + 2,
 	  } {
-
 	for (int i = 0; i < CLOSE_SIZE; ++i) {
 		closeVals[i].reserve(tabIndexes[i].size());
+		tabIndexesWithValue[i].reserve(tabIndexes[i].size());
 		for (auto j : tabIndexes[i]) {
 			closeVals[i].emplace_back(templateVec[j]);
+			tabIndexesWithValue[i].emplace_back(std::pair(j, templateVec[j]));
 		}
 	}
 

@@ -28,12 +28,13 @@ public:
 	void dispose();
 
 	void load(dbload_unit* unit);
-	void load(dbload_building* building);
+	void load(dbload_building* building) const;
 	void load(dbload_resource_entities* resource) const;
+	void refreshAllStatic();
 
 private:
 	void addUnits(std::vector<Unit*>& temp) const;
-	void addBuilding(Building* building) const;
+	void addBuilding(Building* building, bool bulkAdd) const;
 	void addResource(ResourceEntity* resource, bool bulkAdd) const;
 
 	void findToDisposeUnits();
