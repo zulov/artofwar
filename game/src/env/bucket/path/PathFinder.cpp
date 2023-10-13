@@ -216,7 +216,8 @@ int PathFinder::getPassableEnd(int endIdx) const {
 			endIdx = data.getEscapeBucket();
 			assert(calculator->isValidIndex(endIdx));
 		} else {
-			for (auto i : closeIndexes->getTabIndexes(endIdx)) {
+			for (unsigned char i = 0; i < 8; ++i) {
+			//for (auto i : closeIndexes->getTabIndexes(endIdx)) {//nie trzeba tego fora tylko sprawdzic ktore bity sa na 0
 				if (data.ifNeightIsFree(i)) {
 					endIdx = endIdx + closeIndexes->getIndexAt(i); //TODO obliczyc lepszy, a nie pierwszy z brzegu
 					break;
@@ -230,7 +231,7 @@ int PathFinder::getPassableEnd(int endIdx) const {
 std::vector<int> PathFinder::getPassableIndexes(const std::vector<int>& endIdxs) const {
 	std::vector<int> result;
 	result.reserve(endIdxs.size());
-	for (int endIdx : endIdxs) {
+	for (const int endIdx : endIdxs) {
 		result.push_back(getPassableEnd(endIdx));
 	}
 	std::ranges::sort(result);
@@ -240,7 +241,7 @@ std::vector<int> PathFinder::getPassableIndexes(const std::vector<int>& endIdxs)
 }
 
 void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
-	std::unordered_set<int> refreshed;
+	std::unordered_set<int> refreshed;da sie proscje? ale czy trzeba wszystko an raz przelicza?? moze sie pozby? i obliczac jak trzeba?
 	while (!toRefresh.empty()) {
 		int startIndex = toRefresh.back();
 		toRefresh.pop_back();
@@ -268,7 +269,7 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 			for (const auto & [index, indexVal] : closeIndexes->getTabIndexesWithValue(current)) {
 				if (!currentCell.ifNeightIsFree(index)) {
 					int neightIndex = current + indexVal;
-					assert(calculator->isValidIndex(nI));
+					assert(calculator->isValidIndex(neightIndex));
 					if (complexData[neightIndex].anyNeightFree() && refreshed.contains(neightIndex)) {
 						//TODO to chyba glupi warunek
 						toRefresh.push_back(neightIndex);
@@ -301,6 +302,26 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 			complexData[startIndex].setEscapeThrough(-1);
 		}
 	}
+	int a = 0;
+	int b = 0;
+	for (int i = 0; i < resolution* resolution; ++i) {
+		if(complexData[i].allNeightOccupied()) {
+			if (complexData[i].isPassable()) {
+				std::cout << i;
+			}
+			if(complexData[i].getEscapeBucket()==-1) {
+				std::cout << i;
+			}
+			a++;
+			for (unsigned char x : closeIndexes->getTabSecondIndexes(i)) {
+				if (complexData[i + closeIndexes->getSecondIndexAt(x)].anyNeightFree()) {
+					b++;
+					break;
+				}
+			}
+		}
+	}
+	std::cout << a << ";" << b << ";";
 }
 
 inline float PathFinder::heuristic(const Urho3D::IntVector2& from, const Urho3D::IntVector2& to) const {
