@@ -24,6 +24,7 @@ public:
 	MainGrid(short resolution, float size, float maxQueryRadius);
 	MainGrid(const MainGrid& rhs) = delete;
 	~MainGrid() override;
+	void updateNeight(int idx) const;
 
 	void prepareGridToFind() const;
 	bool validateAdd(const Urho3D::IntVector2& size, Urho3D::IntVector2 bucketCords, bool isBuilding) const;
@@ -34,7 +35,6 @@ public:
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& cords) const;
 
 	void updateNeighbors(ComplexBucketData& data, int dataIndex) const;
-	float cost(const Urho3D::IntVector2& centerParams, int next) const;
 
 	const std::vector<int>* findPath(int startIdx, int endIdx, int limit);
 	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit);
@@ -72,9 +72,16 @@ public:
 	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
 	void reAddBonuses(std::vector<Building*>* buildings, char player, char resId) const;
 	float getBonuses(char player, const ResourceEntity* resource) const;
-	void refreshAllStatic(const std::span<int> indexes);
+	void refreshAllStatic(const std::span<int> allChanged);
+	void refreshGradient(const std::vector<int>& notPassables);
+	void refreshStatic(const std::span<int> changed);
+	const std::vector<std::pair<unsigned char, short>>& getCloseTabIndexesWithValue(int center) const;
 
 private:
+	void refreshAllGradient(std::vector<int>& toRefresh) const;
+	void refreshGradientRemoveStatic(std::span<int> toRefresh) const;
+	void createGradient(std::vector<int>& toRefresh, short level) const;
+
 	ComplexBucketData* complexData;
 	PathFinder pathFinder;
 	std::array<Urho3D::Vector2, 4> posInBucket;

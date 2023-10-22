@@ -4,12 +4,11 @@
 #include <vector>
 
 struct GridCalculator {
-
 	explicit GridCalculator(unsigned short resolution, float size)
 		: resolution(resolution), halfResolution(resolution / 2), sqResolution(resolution * resolution),
 		  fieldSize(size / static_cast<float>(resolution)), halfSize(size * 0.5f),
-		invFieldSize(static_cast<float>(resolution) / size), sqFieldSize(fieldSize * fieldSize), 
-		shiftAmount(log2(resolution)), mask(resolution - 1) {
+		  invFieldSize(static_cast<float>(resolution) / size), sqFieldSize(fieldSize * fieldSize),
+		  shiftAmount(log2(resolution)), mask(resolution - 1) {
 		assert(((resolution & (resolution - 1)) == 0));
 	}
 
@@ -20,10 +19,13 @@ struct GridCalculator {
 	}
 
 	int getNotSafeIndex(unsigned short posX, unsigned short posZ) const {
+		assert((posX * resolution + posZ) >= 0 && (posX * resolution + posZ) < sqResolution);
 		return posX * resolution + posZ;
 	}
 
-	short getNotSafeIndexClose(short posX, short posZ) const {
+	short getNotSafeIndexClose(short posX, short posZ) const {//TODO better to przyjmuje tylko ujemne, uzyc tego wy?ej i odwróci?
+		assert(abs(posX)<=34);
+		assert((posX * resolution + posZ) > -(int)sqResolution && (posX * resolution + posZ) < (int)sqResolution);
 		return posX * resolution + posZ;
 	}
 
@@ -45,7 +47,7 @@ struct GridCalculator {
 
 	Urho3D::IntVector2 getIndexes(int i) const {
 		//return {i / resolution, i % resolution};
-		return { i >> shiftAmount, i & mask };
+		return {i >> shiftAmount, i & mask};
 		//Zamiast dzielenia przez "resolution" u¿yto zmiennej "shiftAmount", która jest równe log2(resolution), a zamiast modulo(operator %) u¿yto maski,
 		//która ma wartoœæ "resolution - 1" i ma wype³nione jedynkami tylko najmniej znacz¹ce bity.
 	}
@@ -106,16 +108,23 @@ struct GridCalculator {
 
 	unsigned short getResolution() const { return resolution; }
 
-	float getDistance(const Urho3D::IntVector2& a, int next) const {
+	float getSqDistance(const Urho3D::IntVector2& a, int next) const {
 		const auto b = getIndexes(next);
 
-		const auto dx = (a.x_ - b.x_);
-		const auto dy = (a.y_ - b.y_);
-		return sqrt((dx * dx + dy * dy) * sqFieldSize);
+		return getSqDistance(a, b);
 	}
 
-	float getDistance(int first, int next) const {
-		return getDistance(getIndexes(first), next);
+	float getSqDistance(const Urho3D::IntVector2& a, const Urho3D::IntVector2& b) const {
+		const auto dx = (a.x_ - b.x_);
+		const auto dy = (a.y_ - b.y_);
+		return (dx * dx + dy * dy) * sqFieldSize;
+	}
+
+	float getSqDistance(int first, int next) const {
+		const auto a = getIndexes(first);
+		const auto b = getIndexes(next);
+
+		return getSqDistance(a, b);
 	}
 
 	int getBiggestDiff(int first, int next) const {

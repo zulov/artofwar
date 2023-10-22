@@ -25,7 +25,9 @@ MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
 		Urho3D::Vector2(quarter, quarter), Urho3D::Vector2(-quarter, -quarter),
 		Urho3D::Vector2(quarter, -quarter), Urho3D::Vector2(-quarter, quarter)
 	};
-
+	for (int i = 0; i < sqResolution; ++i) {
+		complexData[i].setIndexCloseIndexes(closeIndexes->getIndex(i), closeIndexes->getSecondIndex(i));
+	}
 	DebugLineRepo::init(DebugLineType::MAIN_GRID);
 }
 
@@ -33,16 +35,24 @@ MainGrid::~MainGrid() {
 	delete[] complexData;
 }
 
-void MainGrid::prepareGridToFind() const {
-	for (int current = 0; current < sqResolution; ++current) {
-		auto& data = complexData[current];
-		auto centerParams = calculator->getIndexes(current);
+void MainGrid::updateNeight(int idx) const {
+	auto& data = complexData[idx];
+	data.setAllOccupied();
+	for (const auto i : closeIndexes->getTabIndexesByIndex(data.getIndexOfCloseIndexes())) {
+		data.setNeightFree(i);
+	}
+}
 
-		for (auto i : closeIndexes->getTabIndexes(current)) {
-			data.setNeightFree(i);
-			const int nI = current + closeIndexes->getIndexAt(i);
-			data.setCost(i, cost(centerParams, nI));
-		}
+void MainGrid::prepareGridToFind() const {
+	auto lastRow = sqResolution - resolution;
+	auto firstColumn = 0;
+	auto lastColumn = resolution - 1;
+	for (int firstRow = 0; firstRow < resolution; ++firstRow, ++lastRow, firstColumn += resolution, lastColumn +=
+	     resolution) {
+		updateNeight(firstRow);
+		updateNeight(lastRow);
+		updateNeight(firstColumn);
+		updateNeight(lastColumn);
 	}
 }
 
@@ -96,10 +106,10 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 		&& data.isPassable()
 		&& data.allNeightOccupied()) {
 		int counter = 0;
-
-		for (auto i : closeIndexes->getTabIndexes(index)) {
+		
+		for (auto [i, val] : closeIndexes->getTabIndexesWithValueByIndex(data.getIndexOfCloseIndexes())) {
 			if (!data.ifNeightIsFree(i)) {
-				sum += calculator->getCenter(index + closeIndexes->getIndexAt(i));
+				sum += calculator->getCenter(index + val);
 				++counter;
 			}
 		}
@@ -133,17 +143,13 @@ void MainGrid::updateCell(int index, char val, CellState cellState) const {
 }
 
 unsigned char MainGrid::getRevertCloseIndex(int center, int gridIndex) const {
-	int index = gridIndex - center;
-	for (auto i : closeIndexes->getTabIndexes(center)) {
-		if (closeIndexes->getIndexAt(i) == index) {
+	const int index = gridIndex - center;
+	for (auto [i ,val] : closeIndexes->getTabIndexesWithValue(center)) {
+		if (val == index) {
 			return i;
 		}
 	}
-	for (auto i : closeIndexes->getTabIndexes(center)) {
-		if (closeIndexes->getIndexAt(i) == index) {
-			return i;
-		}
-	}
+
 	assert(false);
 	Game::getLog()->Write(0, "closeIndex miscalculate");
 	return 0;
@@ -239,10 +245,10 @@ bool MainGrid::cellIsAttackable(int index) const {
 }
 
 bool MainGrid::anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const {
-	//TODO perf dac square anie sqroot
 	const auto centerCord = calculator->getIndexes(center);
+	distThreshold *= distThreshold;
 	for (const auto index : indexes) {
-		if (calculator->getDistance(centerCord, index) < distThreshold) {
+		if (calculator->getSqDistance(centerCord, index) < distThreshold) {
 			return true;
 		}
 	}
@@ -308,14 +314,17 @@ bool MainGrid::isBuildable(int inx) const {
 
 int MainGrid::closestPassableCell(int posIndex) const {
 	//TODO improved pathFinder getPassableEnd
-	for (auto i : closeIndexes->get(posIndex)) {
-		if (complexData[i + posIndex].isPassable()) {
-			return i + posIndex;
+	const auto& data = complexData[posIndex];
+	for (auto i : closeIndexes->getByIndex(data.getIndexOfCloseIndexes())) {
+		const auto idx = i + posIndex;
+		if (complexData[idx].isPassable()) {
+			return idx;
 		}
 	}
-	for (auto i : closeIndexes->getSecond(posIndex)) {
-		if (complexData[i + posIndex].isPassable()) {
-			return i + posIndex;
+	for (auto i : closeIndexes->getSecondByIndex(data.getIndexSecondOfCloseIndexes())) {
+		auto idx = i + posIndex;
+		if (complexData[idx].isPassable()) {
+			return idx;
 		}
 	}
 	return posIndex; //TODO to zwrócic optional empty
@@ -364,25 +373,69 @@ void MainGrid::addStatic(Static* object, bool bulkAdd) {
 		complexData[index].setStatic(object);
 	}
 	if (!bulkAdd) {
-		refreshAllStatic(object->getAllCells());
+		refreshStatic(object->getAllCells());
 	}
 }
 
-void MainGrid::refreshAllStatic(const std::span<int> indexes) {
+void MainGrid::refreshAllStatic(const std::span<int> allChanged) {
 	std::vector<int> toRefresh;
 	toRefresh.reserve(9);
 
-	for (const auto index : indexes) {
+	for (const auto index : allChanged) {
 		auto& data = complexData[index];
 		updateNeighbors(data, index);
 		if (data.isPassable()) {
-			data.setEscapeThrough(-1);
-		}else {
+			data.setGradient(data.allNeightFree() ? -1 : 0);
+		} else {
 			toRefresh.push_back(index);
 		}
 	}
 
-	pathFinder.refreshWayOut(toRefresh);
+	refreshAllGradient(toRefresh);
+}
+
+void MainGrid::refreshStatic(const std::span<int> changed) {
+	std::vector<int> toRefresh;
+	toRefresh.reserve(9);
+
+	for (const auto index : changed) {
+		auto& data = complexData[index];
+		updateNeighbors(data, index);
+		if (data.isPassable()) {
+			data.setGradient(data.allNeightFree() ? -1 : 0);
+		} else {
+			toRefresh.push_back(index);
+		}
+	}
+
+	refreshGradient(toRefresh);
+}
+
+const std::vector<std::pair<unsigned char, short>>& MainGrid::getCloseTabIndexesWithValue(int center) const {
+	return closeIndexes->getTabIndexesWithValue(center);
+}
+
+void MainGrid::refreshGradient(const std::vector<int>& notPassables) {
+	std::vector<int> toRefresh = notPassables;
+	std::vector<int> toDo = notPassables;
+	std::vector<int> newAdded;
+	while (!toDo.empty()) {
+		for (const auto index : toDo) {
+			auto& data = complexData[index];
+			data.setGradient(1024);
+			for (short value : closeIndexes->getByIndex(data.getIndexOfCloseIndexes())) {
+				auto neightIdx = value + index;
+				auto& neightData = complexData[neightIdx];
+				if (!neightData.isPassable() && neightData.allNeightOccupied() && neightData.getGradient() < 1024) {
+					toRefresh.push_back(neightIdx);
+					newAdded.push_back(neightIdx);
+				}
+			}
+		}
+		toDo = newAdded;
+		newAdded.clear();
+	}
+	refreshAllGradient(toRefresh);
 }
 
 void MainGrid::removeStatic(Static* object) const {
@@ -394,23 +447,65 @@ void MainGrid::removeStatic(Static* object) const {
 	for (const auto index : object->getSurroundCells()) {
 		updateNeighbors(complexData[index], index);
 	}
+	refreshGradientRemoveStatic(object->getOccupiedCells());
+
 	removeResourceBonuses(object);
 	//TODO BUG remove deploy??
+}
+
+void MainGrid::refreshAllGradient(std::vector<int>& toRefresh) const {
+	std::vector<int> nextToRefresh;
+
+	short level = 0;
+	for (int idx : toRefresh) {
+		auto& current = complexData[idx];
+		if (current.allNeightOccupied()) {
+			nextToRefresh.push_back(idx);
+		} else {
+			current.setGradient(level);
+		}
+	}
+	while (!nextToRefresh.empty()) {
+		createGradient(nextToRefresh, level);
+		level++;
+	}
+}
+
+void MainGrid::refreshGradientRemoveStatic(std::span<int> toRefresh) const {
+	//tu wymyslic
+}
+
+void MainGrid::createGradient(std::vector<int>& toRefresh, short level) const {
+	std::vector<int> toRefresh2;
+	for (int current : toRefresh) {
+		auto& currentCell = complexData[current];
+		for (const auto indexVal : closeIndexes->getByIndex(currentCell.getIndexOfCloseIndexes())) {
+			auto& neight = complexData[current + indexVal];
+			if (neight.getGradient() == level) {
+				currentCell.setGradient(level + 1);
+				break;
+			}
+		}
+		if (currentCell.getGradient() == -1) {
+			toRefresh2.push_back(current);
+		}
+	}
+	toRefresh = toRefresh2;
 }
 
 std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3D::Vector3& position) const {
 	auto& data = complexData[index];
 
 	if (!data.isPassable()) {
-		int escapeBucket; //=-1
-		//auto& neights = complexData[index].getNeightbours();
+		int escapeBucket = -1;
 		if (data.anyNeightFree()) {
 			float dist = 999999;
 			const auto center = calculator->getCenter(index);
-			for (auto i : closeIndexes->getTabIndexes(index)) {
+			for (auto [i, val] : closeIndexes->getTabIndexesWithValue(index)) {
 				if (data.ifNeightIsFree(i)) {
-					int ni = index + closeIndexes->getIndexAt(i);
-					float newDist = sqDist(calculator->getCenter(ni), center);
+					int ni = index + val;
+					
+					float newDist = calculator->getSqDistance(ni, index);
 					//TODO perf da sie obliczyc oglosc bez obliczania centrów calculator->getDistance
 					if (newDist < dist) {
 						dist = newDist;
@@ -419,9 +514,18 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 				}
 			}
 		} else {
-			escapeBucket = data.getEscapeBucket();
+			auto currentGradient = data.getGradient();
+			for (short i : closeIndexes->getByIndex(data.getIndexOfCloseIndexes())) {
+				//TODO brac lepszy nic pierwszy z brzegu
+				auto neightIndex = i + index;
+				if (currentGradient < complexData[neightIndex].getGradient()) {
+					escapeBucket = neightIndex;
+					break;
+				}
+			}
 		}
 		if (escapeBucket == -1) {
+			assert(false);
 			return {};
 		}
 		auto direction = data //TODO Error'this' nie uzywany 
@@ -450,16 +554,12 @@ Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const
 }
 
 void MainGrid::updateNeighbors(ComplexBucketData& data, const int dataIndex) const {
-	data.resetNeight();
-	for (const auto &p : closeIndexes->getTabIndexesWithValue(dataIndex)) {
+	data.setAllOccupied();
+	for (const auto& p : closeIndexes->getTabIndexesWithValueByIndex(data.getIndexOfCloseIndexes())) {
 		if (complexData[dataIndex + p.second].isPassable()) {
 			data.setNeightFree(p.first);
 		}
 	}
-}
-
-float inline MainGrid::cost(const Urho3D::IntVector2& centerParams, int next) const {
-	return calculator->getDistance(centerParams, next);
 }
 
 const std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, int limit) {

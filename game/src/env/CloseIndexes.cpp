@@ -85,40 +85,39 @@ CloseIndexes::CloseIndexes(short res)
 		tabIndexesWithValue[i].reserve(tabIndexes[i].size());
 		for (auto j : tabIndexes[i]) {
 			closeVals[i].emplace_back(templateVec[j]);
-			tabIndexesWithValue[i].emplace_back(std::pair(j, templateVec[j]));
+			tabIndexesWithValue[i].emplace_back(j, templateVec[j]);
 		}
 	}
 
 	for (int i = 0; i < CLOSE_SECOND_SIZE; ++i) {
 		closeSecondVals[i].reserve(tabSecondIndexes[i].size());
+		tabSecondIndexesWithValue[i].reserve(tabSecondIndexes[i].size());
 		for (auto j : tabSecondIndexes[i]) {
 			closeSecondVals[i].emplace_back(templateVecSecond[j]);
+			tabSecondIndexesWithValue[i].emplace_back(j, templateVecSecond[j]);
 		}
 	}
 
 	for (int i = 0; i < FROM_1_TO_2_SIZE; ++i) {
 		passTo2From1Vals[i].reserve(passTo2From1Indexes[i].size());
-		for (auto j : passTo2From1Indexes[i]) {
+		for (const auto j : passTo2From1Indexes[i]) {
 			passTo2From1Vals[i].emplace_back(templateVec[j]);
 		}
 	}
 }
 
 bool CloseIndexes::isInLocalArea(const int center, int indexOfAim) const {
-	if (center == indexOfAim) { return true; }
+	if (center == indexOfAim) { return true; }//TODO perf sprawdzac tylko pozytwyne (abs)
 	return isInTab(get(indexOfAim), indexOfAim - center); //center + value == indexOfAim
 }
 
-bool CloseIndexes::isInLocal2Area(int center, int indexOfAim) const {
+bool CloseIndexes::isInLocal2Area(int center, int indexOfAim) const {//TODO perf sprawdzac tylko pozytwyne (abs)
 	return isInTab(getSecond(indexOfAim), indexOfAim - center); //center + value == indexOfAim
 }
 
 const std::vector<short>& CloseIndexes::getPassIndexVia1LevelTo2(int startIdx, int endIdx) const {
-	auto& tab = getTabSecondIndexes(endIdx);
-
 	const auto diff = endIdx - startIdx; //startIdx + tab[i] == endIdx
-	for (auto i : tab) {
-		auto val = getSecondIndexAt(i);
+	for (auto [i, val] : getTabSecondIndexesWithValue(endIdx)) {
 		if (val == diff) {
 			return passTo2From1Vals[i];
 		}
@@ -130,11 +129,8 @@ const std::vector<short>& CloseIndexes::getPassIndexVia1LevelTo2(int startIdx, i
 std::pair<const std::vector<short>&, int> CloseIndexes::getPassIndexVia1LevelTo2(
 	int startIdx, const std::vector<int>& endIdxs) const {
 	for (auto endIdx : endIdxs) {
-		auto& tab = getTabSecondIndexes(endIdx);
-
 		const auto diff = endIdx - startIdx; //startIdx + tab[i] == endIdx
-		for (auto i : tab) {
-			auto val = getSecondIndexAt(i);
+		for (auto [i, val] : getTabSecondIndexesWithValue(endIdx)) {
 			if (val == diff) {
 				return {passTo2From1Vals[i], endIdx};
 			}
@@ -144,7 +140,7 @@ std::pair<const std::vector<short>&, int> CloseIndexes::getPassIndexVia1LevelTo2
 	return {EMPTY, -1};
 }
 
-char CloseIndexes::getIndex(int center) const {
+char CloseIndexes::getIndex(int center) const {//TODO perf zapisac do cella wartosc tego
 	char index = 0;
 	if (center < resolution) { } else if (center >= sqResolutionMinusRes) {
 		index += 6;
@@ -158,23 +154,16 @@ char CloseIndexes::getIndex(int center) const {
 	} else {
 		index += 1;
 	}
+	assert(index >= 0 && index < CLOSE_SIZE);
 	return index;
-	// const auto mod = center % resolution;
-	//
-	// auto a = center < resolution;
-	// auto b = center >= sqResolutionMinusRes;
-	// auto a1 = mod == 0;
-	// auto b1 = mod == resolution - 1;
-	// return  !a * (b * 6 + !b * 3) +
-	// 	!a1 * (b1 * 2 + !b1 * 1);
 }
 
 char CloseIndexes::getSecondIndex(int center) const {
 	const bool firstRow = center < resolution;
 	const bool secondRow = !firstRow && center < 2 * resolution;
 
-	const bool lastRow = center >= resolution * resolution - resolution;
-	const bool almostLastRow = !lastRow && center >= resolution * resolution - 2 * resolution;
+	const bool lastRow = center >= sqResolutionMinusRes;
+	const bool almostLastRow = !lastRow && center >= sqResolutionMinusRes -resolution;
 
 	const bool firstColumn = center % resolution == 0;
 	const bool secondColumn = center % resolution == 1;
@@ -199,5 +188,6 @@ char CloseIndexes::getSecondIndex(int center) const {
 	} else if (lastColumn) {
 		index += 4;
 	} else { index += 2; }
+	assert(index >= 0 && index < CLOSE_SECOND_SIZE);
 	return index;
 }

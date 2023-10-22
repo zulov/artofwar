@@ -29,10 +29,6 @@ void ComplexBucketData::clear() {
 	size = 0;
 }
 
-void ComplexBucketData::setEscapeThrough(int val) {
-	escapeBucketIndex = val;
-}
-
 Urho3D::Vector2 ComplexBucketData::getDirectionFrom(const Urho3D::Vector3& position, Urho3D::Vector2 centerEscape) {
 	return {centerEscape.x_ - position.x_, centerEscape.y_ - position.z_};
 }
@@ -44,6 +40,8 @@ void ComplexBucketData::setNeightOccupied(const unsigned char index) {
 void ComplexBucketData::setNeightFree(const unsigned char index) {
 	isNeightOccupied &= ~Flags::bitFlags[index];
 }
+
+float ComplexBucketData::getCost() const { return cost; }
 
 bool ComplexBucketData::isBuildable() const {
 	return state == CellState::NONE

@@ -135,9 +135,6 @@ void Physical::setPlayerAndTeam(int player) {
 
 void Physical::ensureMaterialCloned() {
 	if (node && !materialCloned) {
-		if(getType()==ObjectType::BUILDING) {
-			std::cout << "test";
-		}
 		const auto model = node->GetComponent<Urho3D::StaticModel>();
 		for (int i = 0; i < model->GetNumGeometries(); ++i) {
 			model->SetMaterial(i, model->GetMaterial(i)->Clone());

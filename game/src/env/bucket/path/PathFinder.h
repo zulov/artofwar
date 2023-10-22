@@ -1,4 +1,5 @@
 #pragma once
+#include <span>
 #include <vector>
 #include "fiboheap.h"
 #include "Urho3D/Math/Vector2.h"
@@ -25,12 +26,12 @@ public:
 	const std::vector<int>* findPath(int startIdx, int endIdx, int limit);
 	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit);
 
-	void refreshWayOut(std::vector<int>& toRefresh);
-
 	void invalidateCache();
 	void debug(int start, int end);
 	void drawMap(Urho3D::Image* image) const;
+
 private:
+	float getDistCost(unsigned char neightIdx) const;
 	const std::vector<int>* realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit);
 	const std::vector<int>* getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const;
 
@@ -54,8 +55,6 @@ private:
 	int isInLocalArea(int center, std::vector<int>& endIdxs) const;
 	void updateCost(int idx, float x);
 
-	
-
 	CloseIndexes* closeIndexes;
 	GridCalculator* calculator;
 
@@ -67,15 +66,15 @@ private:
 	int lastStartIdx = -1;
 	int lastEndIdx = -1;
 
-	const short resolution;
 	const float fieldSize;
+	const float diagonalFieldSize;
+	const short resolution;
 
+	unsigned short staticCounter = 0;
 	int* came_from;
 	float* cost_so_far;
 	ComplexBucketData* complexData;
 
 	int min_cost_to_ref = 0;
 	int max_cost_to_ref;
-	unsigned short staticCounter = 0;
-
 };

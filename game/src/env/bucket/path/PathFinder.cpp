@@ -15,8 +15,8 @@
 
 PathFinder::PathFinder(short resolution, float size) :
 	closeIndexes(CloseIndexesProvider::get(resolution)), calculator(GridCalculatorProvider::get(resolution, size)),
-	resolution(resolution), fieldSize(size / resolution), max_cost_to_ref(resolution * resolution - 1) {
-
+	fieldSize(size / resolution), diagonalFieldSize(fieldSize * sqrtf(2)), resolution(resolution),
+	max_cost_to_ref(resolution * resolution - 1) {
 	const auto sqRes = resolution * resolution;
 	came_from = new int[sqRes];
 	cost_so_far = new float[sqRes];
@@ -103,12 +103,12 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 			return reconstructSimplifyPath(startIdx, current, came_from);
 		}
 		auto const& currentData = complexData[current];
-		for (auto i : closeIndexes->getTabIndexes(current)) {
+		for (auto [i, val] : closeIndexes->getTabIndexesWithValueByIndex(currentData.getIndexOfCloseIndexes())) {
 			if (currentData.ifNeightIsFree(i)) {
-				int next = current + closeIndexes->getIndexAt(i);
+				int next = current + val;
 				assert(validateIndex(current, next));
 				if (came_from[current] != next) {
-					const float new_cost = cost_so_far[current] + currentData.getCost(i);
+					const float new_cost = cost_so_far[current] + complexData[next].getCost() + getDistCost(i);
 					auto const nextCost = cost_so_far[next];
 					if (nextCost < 0.f || new_cost < nextCost) {
 						updateCost(next, new_cost);
@@ -142,7 +142,7 @@ const std::vector<int>* PathFinder::getClosePath2(int startIdx, int endIdx, cons
 }
 
 const std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
-	endIdx = getPassableEnd(endIdx); //TODO improve kolejnosc tego  i nize jest istotna?
+	endIdx = getPassableEnd(endIdx); //TODO improve kolejnosc tego i nize jest istotna?
 
 	if (ifInCache(startIdx, endIdx)) {
 		return tempPath;
@@ -213,13 +213,19 @@ int PathFinder::getPassableEnd(int endIdx) const {
 	while (!complexData[endIdx].isPassable()) {
 		auto& data = complexData[endIdx];
 		if (data.allNeightOccupied()) {
-			endIdx = data.getEscapeBucket();
-			assert(calculator->isValidIndex(endIdx));
+			const auto gradLevel = data.getGradient();
+			for (const auto idx : closeIndexes->getByIndex(data.getIndexOfCloseIndexes())) {
+				if (complexData[endIdx + idx].getGradient() < gradLevel) {//TODO obliczyc lepszy, a nie pierwszy z brzegu
+					endIdx = endIdx + idx;
+					assert(calculator->isValidIndex(endIdx));
+					break;
+				}
+			}
+			assert(false);
 		} else {
-			for (unsigned char i = 0; i < 8; ++i) {
-			//for (auto i : closeIndexes->getTabIndexes(endIdx)) {//nie trzeba tego fora tylko sprawdzic ktore bity sa na 0
+			for (auto [i , val] : closeIndexes->getTabIndexesWithValueByIndex(data.getIndexOfCloseIndexes())) {
 				if (data.ifNeightIsFree(i)) {
-					endIdx = endIdx + closeIndexes->getIndexAt(i); //TODO obliczyc lepszy, a nie pierwszy z brzegu
+					endIdx = endIdx + val; //TODO obliczyc lepszy, a nie pierwszy z brzegu
 					break;
 				}
 			}
@@ -238,90 +244,6 @@ std::vector<int> PathFinder::getPassableIndexes(const std::vector<int>& endIdxs)
 	result.erase(std::unique(result.begin(), result.end()), result.end());
 
 	return result;
-}
-
-void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
-	std::unordered_set<int> refreshed;da sie proscje? ale czy trzeba wszystko an raz przelicza?? moze sie pozby? i obliczac jak trzeba?
-	while (!toRefresh.empty()) {
-		int startIndex = toRefresh.back();
-		toRefresh.pop_back();
-
-		if (refreshed.contains(startIndex)) {
-			continue;
-		}
-		if (complexData[startIndex].anyNeightFree()) {
-			complexData[startIndex].setEscapeThrough(-1);
-			continue;
-		}
-
-		prepareToStart(startIndex);
-
-		int end = startIndex;
-		while (!frontier.empty()) {
-			const auto current = frontier.get();
-			assert(calculator->isValidIndex(current));
-			auto& currentCell = complexData[current];
-			if (currentCell.anyNeightFree()) {
-				end = current;
-				currentCell.setEscapeThrough(-1);
-				break;
-			}
-			for (const auto & [index, indexVal] : closeIndexes->getTabIndexesWithValue(current)) {
-				if (!currentCell.ifNeightIsFree(index)) {
-					int neightIndex = current + indexVal;
-					assert(calculator->isValidIndex(neightIndex));
-					if (complexData[neightIndex].anyNeightFree() && refreshed.contains(neightIndex)) {
-						//TODO to chyba glupi warunek
-						toRefresh.push_back(neightIndex);
-					}
-
-					if (came_from[current] != neightIndex) {
-						const float new_cost = cost_so_far[current] + currentCell.getCost(index);
-						if (cost_so_far[neightIndex] < 0.f || new_cost < cost_so_far[neightIndex]) {
-							updateCost(neightIndex, new_cost);
-
-							frontier.put(neightIndex, new_cost);
-							came_from[neightIndex] = current;
-						}
-					}
-				}
-			}
-		}
-		const std::vector<int>* path = reconstructPath(startIndex, end, came_from);
-		if (!path->empty()) {
-			int current2 = startIndex;
-			for (int i = 1; i < path->size(); ++i) {
-				assert(calculator->isValidIndex(current2));
-				complexData[current2].setEscapeThrough(path->at(i));
-				refreshed.insert(current2);
-				current2 = path->at(i);
-			}
-		} else {
-			assert(calculator->isValidIndex(startIndex));
-			refreshed.insert(startIndex);
-			complexData[startIndex].setEscapeThrough(-1);
-		}
-	}
-	int a = 0;
-	int b = 0;
-	for (int i = 0; i < resolution* resolution; ++i) {
-		if(complexData[i].allNeightOccupied()) {
-			if (complexData[i].isPassable()) {
-				std::cout << i;
-			}
-			if(complexData[i].getEscapeBucket()==-1) {
-				std::cout << i;
-			}
-			a++;
-			for (unsigned char x : closeIndexes->getTabSecondIndexes(i)) {
-				if (complexData[i + closeIndexes->getSecondIndexAt(x)].anyNeightFree()) {
-					b++;
-					break;
-				}
-			}
-		}
-	}
-	std::cout << a << ";" << b << ";";
 }
 
 inline float PathFinder::heuristic(const Urho3D::IntVector2& from, const Urho3D::IntVector2& to) const {
@@ -392,6 +314,13 @@ void PathFinder::drawMap(Urho3D::Image* image) const {
 			}
 		}
 	}
+}
+
+float PathFinder::getDistCost(unsigned char neightIdx) const {
+	if (neightIdx == 1 || neightIdx == 3 || neightIdx == 4 || neightIdx == 6) {
+		return diagonalFieldSize;
+	}
+	return fieldSize;
 }
 
 void PathFinder::updateCost(int idx, float x) {

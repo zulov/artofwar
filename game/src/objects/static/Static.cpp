@@ -69,45 +69,31 @@ void Static::setVisibility(VisibilityType type) {
 }
 
 void Static::populate() {
-	//assert(mainCell==indexInMainGrid);
-	std::vector<int> occupiedCells1;
-
-	auto gridSize = getGridSize();
+	const auto gridSize = getGridSize();
 	const auto cordsCell = Game::getEnvironment()->getCords(indexInMainGrid);
-	const auto sizeX = calculateSize(gridSize.x_, cordsCell.x_);
-	const auto sizeZ = calculateSize(gridSize.y_, cordsCell.y_);
-	occupiedCells1.reserve(gridSize.x_ * gridSize.y_);
+	const auto sizeX = calculateSize(gridSize.x_, cordsCell.x_) + Urho3D::IntVector2(-1, 1);
+	const auto sizeZ = calculateSize(gridSize.y_, cordsCell.y_) + Urho3D::IntVector2(-1, 1);
+	const auto res = Game::getEnvironment()->getResolution();
+	occupiedCellsSize = gridSize.x_ * gridSize.y_;
+
+	data = new int[(gridSize.x_ + 2) * (gridSize.y_ + 2)];//TODO obliczyc dokladnie rozmiar
+	int* o = data;
+	int* s = data + occupiedCellsSize;
 	for (short i = sizeX.x_; i < sizeX.y_; ++i) {
+		if (i < 0 || i >= res) { continue; }
+		const auto index = Game::getEnvironment()->getIndex(i, 0);
 		for (short j = sizeZ.x_; j < sizeZ.y_; ++j) {
-			occupiedCells1.push_back(Game::getEnvironment()->getIndex(i, j));
+			if (j < 0 || j >= res) { continue; }//TODO perf nie iterowac tylko tam gdzie nie wykracza
+			if (i == sizeX.x_ || i == sizeX.y_ - 1 || j == sizeZ.x_ || j == sizeZ.y_ - 1) {
+				surroundCellsSize++;
+				*s = index + j;
+				s++;
+			} else {
+				*o = index + j;
+				o++;
+			}
 		}
 	}
-
-	std::vector<int> surroundCells1;
-	surroundCells1.reserve(occupiedCells1.size() * 8);
-
-	for (auto index : occupiedCells1) {
-		for (auto inIndex : Game::getEnvironment()->getCloseIndexs(index)) {
-			surroundCells1.emplace_back(index + inIndex);
-		}
-	}
-	std::ranges::sort(surroundCells1);
-	surroundCells1.erase(std::unique(surroundCells1.begin(), surroundCells1.end()), surroundCells1.end());
-	surroundCells1.erase(
-		std::ranges::remove_if(surroundCells1,
-		                       [&](auto x) {
-			                       return std::find(occupiedCells1.begin(), occupiedCells1.end(), x) != occupiedCells1.
-				                       end();
-		                       }).begin(),
-		surroundCells1.end());
-	occupiedCellsSize = occupiedCells1.size();
-	surroundCellsSize = surroundCells1.size();
-	delete[] data;
-	data = new int[occupiedCellsSize + surroundCellsSize];
-	auto occupiedCells = getOccupiedCells();
-	auto surroundCells = getSurroundCells();
-	std::ranges::copy(occupiedCells1, occupiedCells.begin());
-	std::ranges::copy(surroundCells1, surroundCells.begin());
 }
 
 int Static::belowCloseLimit() const {
@@ -161,7 +147,7 @@ std::vector<int> Static::getIndexesForRangeUse(Unit* user) const {
 	if (belowRangeLimit() <= 0) { return indexes; }
 
 	const std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(
-		getPosition(), user->getLevel()->attackRange);
+		 getPosition(), user->getLevel()->attackRange);
 	auto cells = getOccupiedCells();
 
 	for (auto index : allIndexes) {
@@ -170,7 +156,6 @@ std::vector<int> Static::getIndexesForRangeUse(Unit* user) const {
 			&& std::ranges::find(cells, index) == cells.end()) {
 			indexes.push_back(index);
 		}
-
 	}
 	return indexes;
 }

@@ -84,7 +84,7 @@ float Environment::getBonuses(char player, const ResourceEntity* resource) const
 	return mainGrid.getBonuses(player, resource);
 }
 
-void Environment::refreshAllStatic( std::vector<int>& indexes) {
+void Environment::refreshAllStatic(std::vector<int>& indexes) {
 	mainGrid.refreshAllStatic(std::span(indexes.data(), indexes.size()));
 }
 
@@ -375,10 +375,6 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 
 const std::vector<short>& Environment::getCloseIndexs(int center) const {
 	return mainGrid.getCloseIndexes(center);
-}
-
-const std::vector<unsigned char>& Environment::getCloseTabIndexes(int center) const {
-	return mainGrid.getCloseTabIndexes(center);
 }
 
 std::array<float, 5>& Environment::getInfluenceDataAt(char player, const Urho3D::Vector2& pos) {

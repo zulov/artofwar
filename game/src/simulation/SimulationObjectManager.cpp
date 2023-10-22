@@ -85,21 +85,18 @@ void SimulationObjectManager::load(dbload_resource_entities* resource) const {
 void SimulationObjectManager::refreshAllStatic() {
 	std::vector<int> allCells;
 	allCells.reserve(100000);
-	bool arr[256 * 256]= { 0 };//change size
+	bool arr[256 * 256]= { false };//BUG change size
 	for (const auto resource : *resources) {
-		for (int allCell : resource->getAllCells()) {
+		for (const int allCell : resource->getAllCells()) {
 			arr[allCell] = true;
 		}
-		//std::ranges::copy(resource->getAllCells(), std::back_inserter(allCells));
 	}
 	for (const auto building : *buildings) {
-		for (int allCell : building->getAllCells()) {
+		for (const int allCell : building->getAllCells()) {
 			arr[allCell] = true;
 		}
-		//std::ranges::copy(building->getAllCells(), std::back_inserter(allCells));
 	}
-	//std::ranges::sort(allCells);
-	//allCells.erase(std::ranges::unique(allCells).begin(), allCells.end());
+
 	for (int i = 0; i < 256*256; ++i) {
 		if (arr[i]) {
 			allCells.push_back(i);

@@ -528,12 +528,12 @@ std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(Unit
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
 	const int mainIndex = getMainGridIndex();
-	const std::vector<unsigned char>& closeTabIndexes = Game::getEnvironment()->getCloseTabIndexes(mainIndex);
-	const std::vector<short>& closeIndexes = Game::getEnvironment()->getCloseIndexs(mainIndex);
-	for (auto i : closeTabIndexes) {
+;
+
+	for (auto [i, val] : Game::getEnvironment()->getCloseTabIndexesWithValue(mainIndex)) {
 		if (!ifSlotIsOccupied(i)) {
 			//TODO1
-			int index = mainIndex + closeIndexes[i];
+			int index = mainIndex + val;
 			if (Game::getEnvironment()->cellIsPassable(index)) {
 				//TODO2 to chyba sprawdza to samo prawie?
 				Urho3D::Vector2 posToFollow = getSocketPos(this, i);
@@ -554,11 +554,10 @@ std::vector<int> Unit::getIndexesForUse(Unit* user) const {
 	std::vector<int> indexes;
 	if (belowCloseLimit() <= 0) { return indexes; }
 	const int mainIndex = getMainGridIndex();
-	const std::vector<unsigned char>& closeTabIndexes = Game::getEnvironment()->getCloseTabIndexes(mainIndex);
-	const std::vector<short>& closeIndexes = Game::getEnvironment()->getCloseIndexs(mainIndex);
-	for (auto i : closeTabIndexes) {
+
+	for (auto [i, val] : Game::getEnvironment()->getCloseTabIndexesWithValue(mainIndex)) {
 		if (!ifSlotIsOccupied(i)) {
-			int index = mainIndex + closeIndexes[i];
+			int index = mainIndex + val;
 			if (Game::getEnvironment()->cellIsPassable(index)) {
 				indexes.push_back(index);
 			}
@@ -580,7 +579,7 @@ std::vector<int> Unit::getIndexesForRangeUse(Unit* user) const {
 	for (auto index : allIndexes) {
 		if (Game::getEnvironment()->cellIsAttackable(index)
 			&& mainIndex != index
-			&& std::ranges::find(closeIndexes, index - mainIndex) == closeIndexes.end()) {
+			&& std::ranges::find(closeIndexes, index - mainIndex) == closeIndexes.end()) { //TODO better jest juz funkcja intab?
 			//czy to ok?
 			indexes.push_back(index);
 		}

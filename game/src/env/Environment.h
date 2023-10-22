@@ -116,7 +116,6 @@ public:
 	void drawDebug(EnvironmentDebugMode environmentDebugMode, char index);
 
 	const std::vector<short>& getCloseIndexs(int center) const;
-	const std::vector<unsigned char>& getCloseTabIndexes(int center) const;
 	std::array<float, 5>& getInfluenceDataAt(char player, const Urho3D::Vector2& pos);
 	std::optional<Urho3D::Vector2> getPosFromIndexes(db_building* building, char player, const std::vector<int>* indexes);
 
@@ -145,6 +144,7 @@ public:
 	void reAddBonuses(std::vector<Building*>* buildings, char player, char resId) const;
 	float getBonuses(char player, const ResourceEntity* resource) const;
 	void refreshAllStatic(std::vector<int>& indexes);
+	const std::vector<std::pair<unsigned char, short>>& getCloseTabIndexesWithValue(int center) const { return mainGrid.getCloseTabIndexesWithValue(center); }
 
 private:
 	//std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;

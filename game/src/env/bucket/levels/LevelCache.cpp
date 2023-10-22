@@ -6,7 +6,6 @@
 
 LevelCache::LevelCache(float maxDistance, bool initCords, GridCalculator* calculator)
 	: maxDistance(maxDistance), invDiff(RES_SEP_DIST / maxDistance), calculator(calculator) {
-
 	levelsCache[0] = new std::vector<short>(1);
 	std::vector<short> temp;
 	for (int i = 1; i < RES_SEP_DIST; ++i) {

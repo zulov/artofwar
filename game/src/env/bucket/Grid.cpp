@@ -14,7 +14,7 @@ Grid::Grid(short resolution, float size, bool initCords, float maxQueryRadius)
 	: calculator(GridCalculatorProvider::get(resolution, size)),
 	  closeIndexes(CloseIndexesProvider::get(resolution)),
 	  levelCache(LevelCacheProvider::get(resolution, initCords, maxQueryRadius, calculator)),
-	  sqResolution(resolution * resolution) {
+	  resolution(resolution), sqResolution(resolution * resolution) {
 	buckets = new Bucket[sqResolution];
 	tempSelected = new std::vector<Physical*>();
 }
@@ -55,11 +55,6 @@ BucketIterator& Grid::getArrayNeight(int center, float radius) {
 const std::vector<short>& Grid::getCloseIndexes(int center) const {
 	return closeIndexes->get(center);
 }
-
-const std::vector<unsigned char>& Grid::getCloseTabIndexes(int center) const {
-	return closeIndexes->getTabIndexes(center);
-}
-
 bool Grid::onlyOneInside(int index) const {
 	return buckets[index].getSize() == 1;
 }
@@ -105,7 +100,9 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D:
 		for (short j = posBeginZ; j <= posEndZ; ++j) {
 			const auto& content = getNotSafeContentAt(i, j);
 			std::ranges::copy_if(content, std::back_inserter(*tempSelected),
-			                     [player](Physical* p) { return (p->getPlayer() < 0 || p->getPlayer() == player) && p->isAlive(); });
+			                     [player](Physical* p) {
+				                     return (p->getPlayer() < 0 || p->getPlayer() == player) && p->isAlive();
+			                     });
 		}
 	}
 
@@ -156,7 +153,8 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, float r
 			auto& content = getNotSafeContentAt(i, j);
 			std::ranges::copy_if(content, std::back_inserter(*tempSelected),
 			                     [clicked](Physical* p) {
-				                     return p->getId() == clicked->getId() && p->getPlayer() == clicked->getPlayer() && p->isAlive();
+				                     return p->getId() == clicked->getId() && p->getPlayer() == clicked->getPlayer() &&
+					                     p->isAlive();
 			                     });
 		}
 	}
