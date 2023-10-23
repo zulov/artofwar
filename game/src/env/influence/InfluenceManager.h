@@ -95,15 +95,8 @@ private:
 	std::vector<InfluenceMapFloat*> unitsInfluencePerPlayer;
 	InfluenceMapFloat* resourceInfluence;
 
-	std::vector<InfluenceMapHistory*> foodGatherSpeed;
-	std::vector<InfluenceMapHistory*> woodGatherSpeed;
-	std::vector<InfluenceMapHistory*> stoneGatherSpeed;
-	std::vector<InfluenceMapHistory*> goldGatherSpeed;
-
-	std::vector<InfluenceMapInt*> foodNotInBonus;
-	std::vector<InfluenceMapInt*> woodNotInBonus;
-	std::vector<InfluenceMapInt*> stoneNotInBonus;
-	std::vector<InfluenceMapInt*> goldNotInBonus;
+	std::vector<InfluenceMapHistory*> gatherSpeed[4];
+	std::vector<InfluenceMapInt*> resNotInBonus[4];
 
 	std::vector<InfluenceMapHistory*> attackSpeed;
 
