@@ -166,11 +166,10 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 	for (const auto resource : *loader.getData()->resource_entities) {
 		simObjectManager->load(resource);
 	}
-	simObjectManager->refreshAllStatic();
-	//maingrid refresh
 	for (const auto building : *loader.getData()->buildings) {
 		simObjectManager->load(building);
 	}
+	simObjectManager->refreshAllStatic();
 }
 
 void Simulation::addTestEntities() const {

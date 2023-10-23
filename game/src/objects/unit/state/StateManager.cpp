@@ -156,7 +156,7 @@ void StateManager::executeChange(std::vector<Building*>* buildings) {
 void StateManager::executeChange(std::vector<ResourceEntity*>* resources) {
 	if (instance->resourceStateChangePending) {
 		instance->resourceStateChangePending = false;
-		for (const auto resource : *resources) {
+		for (const auto resource : *resources) {//TODO perf kolekcja tylko zmienionych i iterowanie tylko po nich
 			executeChange(resource);
 		}
 	}

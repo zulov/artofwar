@@ -147,7 +147,7 @@ Building* Building::load(dbload_building* dbloadBuilding) {
 }
 
 QueueElement* Building::updateQueue() {
-	if (!ready) {
+	if (!ready && !SIM_GLOBALS.HEADLESS) {
 		setShaderParam(this, "Progress", queue->getAt(0)->getProgress());
 	}
 
