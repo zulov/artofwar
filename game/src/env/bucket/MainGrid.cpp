@@ -350,7 +350,7 @@ void MainGrid::addResourceBonuses(Building* building) const {
 			}
 		}
 		std::ranges::sort(indexes);
-		indexes.erase(std::unique(indexes.begin(), indexes.end()), indexes.end());
+		indexes.erase(std::ranges::unique(indexes).begin(), indexes.end());
 		for (const int index : indexes) {
 			complexData[index].setResBonuses(building->getPlayer(), dbBuilding->resourceTypes, level->collect);
 		}

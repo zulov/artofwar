@@ -135,6 +135,7 @@ void Building::levelUp(char level) {
 	dbLevel = dbBuilding->getLevel(level).value(); //TODO BUG value()
 	const int hpTemp = hp;
 	loadXml("Objects/buildings/" + dbLevel->nodeName);
+	populate();
 	if (hpTemp >= 0) {
 		hp = hpTemp;
 	}

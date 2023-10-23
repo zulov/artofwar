@@ -124,8 +124,6 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 			setDefaultShader(model->GetMaterial(i));
 		}
 	}
-
-	populate();
 }
 
 void Physical::setPlayerAndTeam(int player) {

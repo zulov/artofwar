@@ -24,7 +24,7 @@ inline std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units) {
 		allIndexes.push_back(unit->getMainGridIndex());
 	}
 	std::ranges::sort(allIndexes);
-	allIndexes.erase(std::unique(allIndexes.begin(), allIndexes.end()), allIndexes.end());
+	allIndexes.erase(std::ranges::unique(allIndexes).begin(), allIndexes.end());
 	std::vector<std::vector<int>> groupedIndexes;
 
 	for (int current : allIndexes) {
