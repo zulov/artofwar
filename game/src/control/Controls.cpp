@@ -414,7 +414,7 @@ void Controls::refreshSelected() {
 		selected.end());
 
 	if (sizeBefore != selected.size()) {
-		//TODO perf nie koniecznie resetowac ca³oœæ
+		//TODO perf nie koniecznie resetowac calosc
 		selectedInfo->refresh(selected);
 	}
 }
@@ -563,7 +563,7 @@ void Controls::buildControl() {
 		hit_data hitData;
 
 		if (raycastGround(hitData)) {
-			//TODO perf nie robic tego co klatkê
+			//TODO perf nie robic tego co klatke
 			auto env = Game::getEnvironment();
 
 			const auto building = Game::getDatabase()->getBuilding(idToCreate);

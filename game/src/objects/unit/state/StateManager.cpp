@@ -148,6 +148,7 @@ void StateManager::executeChange(std::vector<Building*>* buildings) {
 	if (instance->buildingStateChangePending) {
 		instance->buildingStateChangePending = false;
 		for (const auto building : *buildings) {
+			//TODO perf kolekcja tylko zmienionych i iterowanie tylko po nich
 			executeChange(building);
 		}
 	}
@@ -156,7 +157,8 @@ void StateManager::executeChange(std::vector<Building*>* buildings) {
 void StateManager::executeChange(std::vector<ResourceEntity*>* resources) {
 	if (instance->resourceStateChangePending) {
 		instance->resourceStateChangePending = false;
-		for (const auto resource : *resources) {//TODO perf kolekcja tylko zmienionych i iterowanie tylko po nich
+		for (const auto resource : *resources) {
+			//TODO perf kolekcja tylko zmienionych i iterowanie tylko po nich
 			executeChange(resource);
 		}
 	}
@@ -175,7 +177,7 @@ void StateManager::startState(Static* obj) {
 	case StaticState::DISPOSE:
 		setStaticDead(obj->getType());
 		break;
-	default:;
+	default: ;
 	}
 }
 

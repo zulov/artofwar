@@ -525,7 +525,7 @@ Physical* Environment::closestPhysical(Unit* unit, const std::vector<Physical*>*
 	if (things->empty()) {
 		return nullptr;
 	}
-	std::vector<int> allIndexes;//TODO perf moze dupna tablica
+	std::vector<int> allIndexes;
 	std::unordered_map<int, Physical*> idxToPhysical;
 
 	for (const auto entity : *things) {

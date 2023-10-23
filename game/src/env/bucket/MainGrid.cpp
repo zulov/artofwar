@@ -503,10 +503,9 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 			const auto center = calculator->getCenter(index);
 			for (auto [i, val] : closeIndexes->getTabIndexesWithValue(index)) {
 				if (data.ifNeightIsFree(i)) {
-					int ni = index + val;
+					const int ni = index + val;
 					
 					float newDist = calculator->getSqDistance(ni, index);
-					//TODO perf da sie obliczyc oglosc bez obliczania centrów calculator->getDistance
 					if (newDist < dist) {
 						dist = newDist;
 						escapeBucket = ni;

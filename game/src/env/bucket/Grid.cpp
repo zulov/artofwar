@@ -55,6 +55,7 @@ BucketIterator& Grid::getArrayNeight(int center, float radius) {
 const std::vector<short>& Grid::getCloseIndexes(int center) const {
 	return closeIndexes->get(center);
 }
+
 bool Grid::onlyOneInside(int index) const {
 	return buckets[index].getSize() == 1;
 }
@@ -122,8 +123,10 @@ std::vector<int> Grid::getCloseCenters(Urho3D::Vector2& center, float radius) co
 	std::vector<int> indexes; //TODO performance
 	indexes.reserve((abs(posEndX - posBeginX) + 1) * (abs(posEndZ - posBeginZ) + 1));
 	for (short i = posBeginX; i <= posEndX; ++i) {
+		auto index = calculator->getNotSafeIndex(i, posBeginZ);
 		for (short j = posBeginZ; j <= posEndZ; ++j) {
-			indexes.push_back(calculator->getNotSafeIndex(i, j));
+			indexes.push_back(index);
+			++index;
 		}
 	}
 

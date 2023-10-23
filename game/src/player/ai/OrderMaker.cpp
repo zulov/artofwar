@@ -80,7 +80,7 @@ void OrderMaker::action() {
 							semiCloseAttack(subArmy, *buildings);
 						} else if (centerType == CenterType::ECON) {
 							const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
-							//TODO perf wrzuciæ predykat do œrodka
+							//TODO perf wrzuciæ predykat do srodka
 							std::vector<Physical*> workers;
 							workers.reserve(neights->size());
 							auto pred = [](const Physical* physical) {

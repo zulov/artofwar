@@ -140,7 +140,7 @@ std::pair<const std::vector<short>&, int> CloseIndexes::getPassIndexVia1LevelTo2
 	return {EMPTY, -1};
 }
 
-char CloseIndexes::getIndex(int center) const {//TODO perf zapisac do cella wartosc tego
+char CloseIndexes::getIndex(int center) const {
 	char index = 0;
 	if (center < resolution) { } else if (center >= sqResolutionMinusRes) {
 		index += 6;

@@ -58,7 +58,7 @@ using namespace Urho3D;
 
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100),
                                gameState(GameState::STARTING), loadingProgress(6) {
-	if(!engineParameters_[EP_HEADLESS].GetBool()) {
+	if (!engineParameters_[EP_HEADLESS].GetBool()) {
 		MySprite::RegisterObject(context);
 	}
 
@@ -104,15 +104,16 @@ void Main::Setup() {
 }
 
 void Main::Start() {
-	Game::setGraphics(GetSubsystem<Graphics>());
-
-	SetWindowTitleAndIcon();
-	InitLocalizationSystem();
-
-	subscribeToEvents();
-	Game::setUI(GetSubsystem<UI>());
-	hud = new Hud();
+	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));
 	if (!engineParameters_[EP_HEADLESS].GetBool()) {
+		Game::setGraphics(GetSubsystem<Graphics>());
+
+		SetWindowTitleAndIcon();
+		InitLocalizationSystem();
+		subscribeToEvents();
+		Game::setUI(GetSubsystem<UI>());
+		hud = new Hud();
+
 		hud->prepareUrho(engine_);
 		hud->createMyPanels();
 		healthBarProvider.init();
@@ -182,7 +183,8 @@ void Main::Stop() {
 	if (!SIM_GLOBALS.HEADLESS) { engine_->DumpResources(true); }
 
 	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-		std::chrono::system_clock::now() - SimGlobals::SUPER_START);
+	                                                                            std::chrono::system_clock::now() -
+	                                                                            SimGlobals::SUPER_START);
 
 	std::cout << "ENDED at " << duration.count() << " ms" << std::endl;
 }
@@ -207,7 +209,6 @@ void Main::subscribeToUIEvents() {
 void Main::subscribeToEvents() {
 	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
 	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
-	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));
 }
 
 void Main::running(const double timeStep) {
@@ -349,7 +350,10 @@ void Main::load(const String& saveName, NewGameForm* form) {
 			SetupViewport();
 			controls = new Controls(GetSubsystem<Input>());
 		}
-		hud->resetLoading();
+		if(hud) {
+			hud->resetLoading();
+		}
+		
 		if (form) {
 			levelBuilder->createScene(form);
 		} else {
@@ -368,7 +372,9 @@ void Main::load(const String& saveName, NewGameForm* form) {
 	}
 	case 2: {
 		Game::getEnvironment()->prepareGridToFind();
-		hud->createMiniMap();
+		if (hud) {
+			hud->createMiniMap();
+		}
 		break;
 	}
 	case 3:
@@ -400,7 +406,9 @@ void Main::createEnv(unsigned short mainMapResolution) const {
 
 void Main::changeState(GameState newState) {
 	gameState = newState;
-	hud->updateStateVisibilty(newState);
+	if (hud) {
+		hud->updateStateVisibilty(newState);
+	}
 }
 
 void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
@@ -629,7 +637,8 @@ SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {
 			auto pos = selected->getPosition();
 			pos.y_ += selected->getModelHeight() * 1.3f;
 			IntVector2 pixel{
-				VectorRoundToInt(Vector2(Game::getGraphics()->GetSize()) * camera->WorldToScreenPoint(pos))};
+				VectorRoundToInt(Vector2(Game::getGraphics()->GetSize()) * camera->WorldToScreenPoint(pos))
+			};
 
 			auto halfSize = progressBar->GetSize().x_ / 2;
 			pixel.x_ -= halfSize;
@@ -719,5 +728,4 @@ void Main::miniReadParameters() const {
 			}
 		}
 	}
-
 }
