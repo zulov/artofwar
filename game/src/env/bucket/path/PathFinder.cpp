@@ -215,13 +215,13 @@ int PathFinder::getPassableEnd(int endIdx) const {
 		if (data.allNeightOccupied()) {
 			const auto gradLevel = data.getGradient();
 			for (const auto idx : closeIndexes->getByIndex(data.getIndexOfCloseIndexes())) {
-				if (complexData[endIdx + idx].getGradient() < gradLevel) {//TODO obliczyc lepszy, a nie pierwszy z brzegu
+				if (complexData[endIdx + idx].getGradient() < gradLevel) {
+					//TODO obliczyc lepszy, a nie pierwszy z brzegu
 					endIdx = endIdx + idx;
 					assert(calculator->isValidIndex(endIdx));
 					break;
 				}
 			}
-			assert(false);
 		} else {
 			for (auto [i , val] : closeIndexes->getTabIndexesWithValueByIndex(data.getIndexOfCloseIndexes())) {
 				if (data.ifNeightIsFree(i)) {
@@ -248,10 +248,6 @@ std::vector<int> PathFinder::getPassableIndexes(const std::vector<int>& endIdxs)
 
 inline float PathFinder::heuristic(const Urho3D::IntVector2& from, const Urho3D::IntVector2& to) const {
 	return (abs(from.x_ - to.x_) + abs(from.y_ - to.y_)) * fieldSize;
-}
-
-inline float PathFinder::heuristic(int from, const Urho3D::IntVector2& to) const {
-	return heuristic(getCords(from), to);
 }
 
 float PathFinder::heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const {
@@ -307,20 +303,16 @@ void PathFinder::drawMap(Urho3D::Image* image) const {
 		for (short x = 0; x != resolution; ++x) {
 			const int index = calculator->getIndex(x, y);
 			const int idR = calculator->getIndex(resolution - y - 1, x);
-			if (complexData[index].isPassable()) {
-				*(data + idR) = 0xFFFFFFFF;
-			} else {
-				*(data + idR) = 0xFF000000;
-			}
+			*(data + idR) = complexData[index].isPassable() ? 0xFFFFFFFF : 0xFF000000;
 		}
 	}
 }
 
 float PathFinder::getDistCost(unsigned char neightIdx) const {
 	if (neightIdx == 1 || neightIdx == 3 || neightIdx == 4 || neightIdx == 6) {
-		return diagonalFieldSize;
+		return fieldSize;
 	}
-	return fieldSize;
+	return diagonalFieldSize;
 }
 
 void PathFinder::updateCost(int idx, float x) {
