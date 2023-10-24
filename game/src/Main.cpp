@@ -97,10 +97,12 @@ void Main::Setup() {
 	} else {
 		engineParameters_[EP_LOG_NAME] = "logs/" + GetTypeName() + ".log";
 	}
-	Game::setCache(GetSubsystem<ResourceCache>())
-		->setConsole(GetSubsystem<Console>())
-		->setContext(context_)
-		->setLog(GetSubsystem<Log>());
+	if (!SIM_GLOBALS.HEADLESS) {
+		Game::setCache(GetSubsystem<ResourceCache>())
+			->setConsole(GetSubsystem<Console>())
+			->setLog(GetSubsystem<Log>());
+	}
+	Game::setContext(context_);
 }
 
 void Main::Start() {
