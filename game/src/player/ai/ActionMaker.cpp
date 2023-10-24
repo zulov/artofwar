@@ -76,24 +76,10 @@ bool ActionMaker::createUnit(std::span<float> unitsInput) {
 	return createUnit(unit);
 }
 
-bool ActionMaker::execute(const std::span<float> unitsInput, const std::span<float> buildingsInput,
-                          AiActionType decision) {
-	switch (decision) {
-	case AiActionType::WORKER_CREATE:
-		return createWorker();
-	case AiActionType::UNIT_CREATE:
-		return createUnit(unitsInput);
-	case AiActionType::BUILDING_CREATE:
-		return createBuilding(buildingsInput);
-	default: ;
-	}
-	return false;
-}
-
 void ActionMaker::action() {
 	const auto aiInput = Game::getAiInputProvider();
-	const bool enoughResToWorker = isEnoughResToWorker();
-	if (enoughResToWorker) {
+
+	if (isEnoughResToWorker()) {
 		const auto resInput = aiInput->getResourceInput(player->getId());
 		const auto resResult = ifWorker->decide(resInput);
 		if (randFromTwo(resResult[0])) {
@@ -101,16 +87,19 @@ void ActionMaker::action() {
 		}
 	}
 
-	const auto unitsInput = aiInput->getUnitsInput(player->getId());
-	const auto unitsResult = ifUnit->decide(unitsInput);
-	if (randFromTwo(unitsResult[0])) {
-		createUnit(unitsInput);
+	if(isEnoughResToAnyUnit()) {
+		const auto unitsInput = aiInput->getUnitsInput(player->getId());
+		const auto unitsResult = ifUnit->decide(unitsInput);
+		if (randFromTwo(unitsResult[0])) {
+			createUnit(unitsInput);
+		}
 	}
-
-	const auto buildingsInput = aiInput->getBuildingsInput(player->getId());
-	const auto buildingsResult = ifBuilding->decide(buildingsInput);
-	if (randFromTwo(buildingsResult[0])) {
-		createBuilding(buildingsInput);
+	if (isEnoughResToAnyBuilding()) {
+		const auto buildingsInput = aiInput->getBuildingsInput(player->getId());
+		const auto buildingsResult = ifBuilding->decide(buildingsInput);
+		if (randFromTwo(buildingsResult[0])) {
+			createBuilding(buildingsInput);
+		}
 	}
 
 	//return levelUpUnit();
@@ -155,6 +144,7 @@ bool ActionMaker::createBuilding(db_building* building, ParentBuildingType type)
 			return Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId(), false);
 		}
 	}
+
 	return false;
 }
 
@@ -409,8 +399,25 @@ bool ActionMaker::levelUpUnit() {
 
 
 bool ActionMaker::isEnoughResToWorker() const {
-	for (auto worker : nation->workers) {
-		if (enoughResources(worker)) {
+	for (const auto thing : nation->workers) {
+		if (enoughResources(thing)) {
+			return true;
+		}
+	}
+	return false;
+}
+bool ActionMaker::isEnoughResToAnyUnit() const {
+	for (const auto thing : nation->units) {
+		if (enoughResources(thing)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool ActionMaker::isEnoughResToAnyBuilding() const {
+	for (const auto thing : nation->buildings) {
+		if (enoughResources(thing)) {
 			return true;
 		}
 	}

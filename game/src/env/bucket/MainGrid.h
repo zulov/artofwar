@@ -37,7 +37,7 @@ public:
 	void updateNeighbors(ComplexBucketData& data, int dataIndex) const;
 
 	const std::vector<int>* findPath(int startIdx, int endIdx, int limit);
-	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit);
+	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit, bool closeEnough);
 
 	void drawComplex(Urho3D::Image* image, Urho3D::String prefix) const;
 

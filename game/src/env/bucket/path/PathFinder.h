@@ -24,7 +24,7 @@ public:
 	const std::vector<int>* reconstructSimplifyPath(int start, int goal, const int came_from[]) const;
 
 	const std::vector<int>* findPath(int startIdx, int endIdx, int limit);
-	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit);
+	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit, bool closeEnough);
 
 	void invalidateCache();
 	void debug(int start, int end);
@@ -39,10 +39,9 @@ private:
 	bool validateIndex(int current, int next) const;
 
 	int getPassableEnd(int endIdx) const;
-	std::vector<int> getPassableIndexes(const std::vector<int>& endIdxs) const;
+	std::vector<int> getPassableIndexes(const std::vector<int>& endIdxs, bool closeEnough) const;
 
-	float heuristic(const Urho3D::IntVector2& from, const Urho3D::IntVector2& to) const;
-	float heuristic(int from, const Urho3D::IntVector2& to) const;
+	int heuristic(const Urho3D::IntVector2& from, const Urho3D::IntVector2& to) const;
 	float heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const;
 
 	bool ifInCache(int startIdx, int end) const { return lastStartIdx == startIdx && lastEndIdx == end; }

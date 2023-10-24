@@ -565,8 +565,8 @@ const std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, int limit) 
 	return pathFinder.findPath(startIdx, endIdx, limit);
 }
 
-const std::vector<int>* MainGrid::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
-	return pathFinder.findPath(startIdx, endIdxs, limit);
+const std::vector<int>* MainGrid::findPath(int startIdx, const std::vector<int>& endIdxs, int limit, bool closeEnough) {
+	return pathFinder.findPath(startIdx, endIdxs, limit, closeEnough);
 }
 
 void MainGrid::drawComplex(Urho3D::Image* image, const Urho3D::String prefix) const {

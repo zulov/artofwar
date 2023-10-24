@@ -45,7 +45,6 @@ private:
 	bool createWorker() const;
 
 	std::span<float> getWhichBuilding(ParentBuildingType type, const std::span<float> aiTypeInput) const;
-	bool execute(const std::span<float> unitsInput, const std::span<float> buildingsInput, AiActionType decision);
 
 	std::optional<Urho3D::Vector2> findPosToBuild(db_building* building, ParentBuildingType type) const;
 	std::vector<Building*> getBuildingsCanDeploy(short unitId) const;
@@ -64,6 +63,8 @@ private:
 	Building* getBuildingClosestArea(std::vector<Building*>& allPossible, std::span<float> result) const;
 
 	bool isEnoughResToWorker() const;
+	bool isEnoughResToAnyUnit() const;
+	bool isEnoughResToAnyBuilding() const;
 
 	Player* player;
 	db_nation* nation;

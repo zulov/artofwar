@@ -493,7 +493,7 @@ const std::vector<int>* Environment::findPath(int startIdx, const Urho3D::Vector
 const std::vector<int>* Environment::findPath(int startIdx, const std::vector<int>& endIdxs) {
 	auto dist = calculator->getBiggestDiff(startIdx, endIdxs);
 	dist = dist < 9 ? 9 : dist;
-	return mainGrid.findPath(startIdx, endIdxs, dist * sqrt(dist));
+	return mainGrid.findPath(startIdx, endIdxs, dist * sqrt(dist), true);
 }
 
 const std::vector<int>* Environment::findPath(int startIdx, int endIdx, int limit) {
@@ -539,7 +539,7 @@ Physical* Environment::closestPhysical(Unit* unit, const std::vector<Physical*>*
 	}
 
 	if (!allIndexes.empty()) {
-		const auto path = mainGrid.findPath(unit->getMainGridIndex(), allIndexes, limit);
+		const auto path = mainGrid.findPath(unit->getMainGridIndex(), allIndexes, limit, false);
 		if (!path->empty()) {
 			return idxToPhysical[path->back()];
 		}
