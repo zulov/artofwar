@@ -425,7 +425,7 @@ InfluenceManager::getAreas(std::span<InfluenceMapFloat*> maps, const std::span<f
 	return bestIndexes(intersection, idx, 0.1f * numberOfNotEmptyMap);
 }
 
-void InfluenceManager::addCollect(Unit* unit, char resId, float value) {
+void InfluenceManager::addCollect(Unit* unit, short resId, float value) {
 	const auto playerId = unit->getPlayer();
 
 	assert(gatherSpeed[0][playerId]->getResolution() == calculator->getResolution());

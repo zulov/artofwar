@@ -419,7 +419,7 @@ std::vector<Urho3D::Vector2> Environment::getAreas(char player, const std::span<
 	return influenceManager.getAreasIterative(result, player, 0.1, min);
 }
 
-void Environment::addCollect(Unit* unit, char resId, float value) {
+void Environment::addCollect(Unit* unit, short resId, float value) {
 	influenceManager.addCollect(unit, resId, value);
 }
 
@@ -521,7 +521,7 @@ Urho3D::Vector2 Environment::getPosFromPercent(float x, float z) const {
 }
 
 Physical* Environment::closestPhysical(Unit* unit, const std::vector<Physical*>* things,
-                                       const std::function<bool(Physical*)>& condition, int limit) {
+                                       const std::function<bool(Physical*)>& condition, int limit, bool closeEnough) {
 	if (things->empty()) {
 		return nullptr;
 	}

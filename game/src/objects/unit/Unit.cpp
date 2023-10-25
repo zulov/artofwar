@@ -305,7 +305,6 @@ bool Unit::action(UnitAction unitAction, const ActionParameter& parameter) {
 		}
 		return StateManager::changeState(this, UnitState::ATTACK, parameter);
 
-		break;
 	case UnitAction::DEAD:
 		return StateManager::changeState(this, UnitState::DEAD, parameter);
 	case UnitAction::DEFEND:
@@ -529,7 +528,6 @@ std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(Unit
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
 	const int mainIndex = getMainGridIndex();
-;
 
 	for (auto [i, val] : Game::getEnvironment()->getCloseTabIndexesWithValue(mainIndex)) {
 		if (!ifSlotIsOccupied(i)) {

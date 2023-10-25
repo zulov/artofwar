@@ -64,7 +64,7 @@ public:
 	std::vector<int>* getAreas(const std::span<float> result, ParentBuildingType type, char player);
 	std::vector<int>* getAreasResBonus(char id, char player);
 
-	void addCollect(Unit* unit, char resId, float value);
+	void addCollect(Unit* unit, short resId, float value);
 	void addAttack(char player, const Urho3D::Vector3& position, float value);
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;

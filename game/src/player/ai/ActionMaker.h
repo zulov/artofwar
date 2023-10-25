@@ -22,7 +22,7 @@ struct db_building;
 struct db_unit_level;
 struct db_unit;
 struct db_building_level;
-struct Brain;
+class Brain;
 
 class ActionMaker {
 public:

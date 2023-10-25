@@ -18,9 +18,9 @@ void removeExpired(std::vector<T*>& orders) {
 }
 
 inline bool toAction(Unit* unit, std::vector<Physical*>* list, UnitAction order,
-                     const std::function<bool(Physical*)>& condition) {
+                     const std::function<bool(Physical*)>& condition, bool closeEnough) {
 	const auto closest = Game::getEnvironment()->closestPhysical(unit, list, condition,
-		unit->getLevel()->sqSightRadius);
+		unit->getLevel()->sqSightRadius, closeEnough);
 	return unit->toActionIfInRange(closest, order);
 }
 
@@ -28,11 +28,11 @@ inline void tryToAttack(Unit* unit,
                         const std::function<bool(Physical*)>& condition) {
 	const bool result = toAction(
 		unit, Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, unit->getLevel()->interestRange),
-		UnitAction::ATTACK, condition);
+		UnitAction::ATTACK, condition, true);
 	if (!result) {
 		toAction(
 			unit, Game::getEnvironment()->getBuildingsFromTeamNotEq(unit, -1, unit->getLevel()->interestRange),
-			UnitAction::ATTACK, condition);
+			UnitAction::ATTACK, condition, true);
 	}
 }
 
@@ -43,10 +43,10 @@ inline void tryToCollect(Unit* unit) {
 	bool result = false;
 	if (id >= 0) {
 		list = Game::getEnvironment()->getResources(unit->getPosition(), id, unit->getLevel()->interestRange);
-		result = toAction(unit, list, UnitAction::COLLECT, belowClose);
+		result = toAction(unit, list, UnitAction::COLLECT, belowClose, false);
 	}
 	if (id < 0 || !result) {
 		list = Game::getEnvironment()->getResources(unit->getPosition(), -1, unit->getLevel()->interestRange);
-		toAction(unit, list, UnitAction::COLLECT, belowClose);
+		toAction(unit, list, UnitAction::COLLECT, belowClose, false);
 	}
 }

@@ -88,7 +88,7 @@ public:
 
 	Urho3D::Vector2 getPosFromPercent(float x, float z) const;
 	Physical* closestPhysical(Unit* unit, const std::vector<Physical*>* things,
-	                          const std::function<bool(Physical*)>& condition, int limit);
+	                          const std::function<bool(Physical*)>& condition, int limit, bool closeEnough);
 	Physical* closestPhysicalSimple(const Physical* physical, const std::vector<Physical*>* things, float range) const;
 
 	Urho3D::Vector2 getCenter(int index) const;
@@ -123,7 +123,7 @@ public:
 	                                              db_building* building, char player);
 	std::optional<Urho3D::Vector2> getPosToCreateResBonus(db_building* building, char player);
 	std::vector<Urho3D::Vector2> getAreas(char player, const std::span<float>, int min);
-	void addCollect(Unit* unit, char resId, float value);
+	void addCollect(Unit* unit, short resId, float value);
 	void addAttack(char player, const Urho3D::Vector3& position, float value);
 	void drawInfluence();
 	bool cellIsPassable(int index) const;

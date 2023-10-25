@@ -282,7 +282,7 @@ void MainGrid::reAddBonuses(std::vector<Building*>* buildings, char player, char
 			addResourceBonuses(building);
 		}
 	}
-}
+	}
 
 float MainGrid::getBonuses(char player, const ResourceEntity* resource) const {
 	float best = .0f;
@@ -500,7 +500,7 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 		int escapeBucket = -1;
 		if (data.anyNeightFree()) {
 			float dist = 999999;
-			const auto center = calculator->getCenter(index);
+
 			for (auto [i, val] : closeIndexes->getTabIndexesWithValue(index)) {
 				if (data.ifNeightIsFree(i)) {
 					const int ni = index + val;

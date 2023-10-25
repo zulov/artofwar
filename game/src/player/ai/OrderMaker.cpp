@@ -103,7 +103,7 @@ void OrderMaker::action() {
 
 void OrderMaker::semiCloseAttack(const std::vector<Unit*>& subArmy, const std::vector<Physical*>& things) const {
 	if (!things.empty()) {
-		const auto closest = Game::getEnvironment()->closestPhysical(subArmy.at(0), &things, belowClose, SQ_SEMI_CLOSE);
+		const auto closest = Game::getEnvironment()->closestPhysical(subArmy.at(0), &things, belowClose, SQ_SEMI_CLOSE, true);
 		if (closest) {
 			Game::getActionCenter()->addUnitAction(
 				new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::ATTACK), closest), player->getId());
@@ -123,9 +123,9 @@ std::vector<Unit*> OrderMaker::findFreeWorkers() const {
 
 Physical* OrderMaker::closetInRange(Unit* worker, int resourceId) {
 	float prevRadius = -1.f;
-	for (auto radius : {64.f, 128.f, 256.f}) {
+	for (const auto radius : {64.f, 128.f, 256.f}) {
 		const auto list = Game::getEnvironment()->getResources(worker->getPosition(), resourceId, radius, prevRadius);
-		const auto closest = Game::getEnvironment()->closestPhysical(worker, list, belowClose, radius * radius);
+		const auto closest = Game::getEnvironment()->closestPhysical(worker, list, belowClose, radius * radius, false);
 		if (closest) {
 			return closest;
 		}
@@ -160,7 +160,7 @@ void OrderMaker::actCollect(unsigned char& resHistogram, char resId, std::vector
 void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 	const auto input = Game::getAiInputProvider()->getResourceInput(player->getId());
 	const auto result = whichResource->decide(input);
-	//TODO perf pogrupowac workerów a nie po jednym
+
 	unsigned char resHistogram[RESOURCES_SIZE];
 	std::fill_n(resHistogram, RESOURCES_SIZE, 0);
 	for (int i = 0; i < freeWorkers.size(); ++i) {
@@ -186,6 +186,5 @@ void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 			}
 		}
 		actCollect(resHistogram[idx], idx, rest, workers);
-
 	}
 }
