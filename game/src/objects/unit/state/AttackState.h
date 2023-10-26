@@ -33,7 +33,7 @@ public:
 	void setData(Unit* unit, int found, Physical* const thing) {
 		setStartData(unit, found, thing);
 		if (thing->getType() == ObjectType::UNIT) {
-			setSlotData(unit, found, thing);
+			setSlotData(unit, found, dynamic_cast<Unit*>(thing));
 		}
 	}
 

@@ -92,7 +92,6 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 	auto endCords = getCords(endIdxs);
 	assert(!endCords.empty());
 	int steps = 0;
-	int steps2 = 0;
 	while (!frontier.empty()) {
 		++steps;
 		if (steps > limit) {
@@ -113,7 +112,7 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 					auto const nextCost = cost_so_far[next];
 					if (nextCost < 0.f || new_cost < nextCost) {
 						updateCost(next, new_cost);
-						steps2++;
+
 						frontier.put(next, new_cost + heuristic(next, endCords));
 						came_from[next] = current;
 					}
@@ -239,11 +238,11 @@ int PathFinder::getPassableEnd(int endIdx) const {
 std::vector<int> PathFinder::getPassableIndexes(const std::vector<int>& endIdxs, bool closeEnough) const {
 	std::vector<int> result;
 	result.reserve(endIdxs.size());
-	if(closeEnough) {
+	if (closeEnough) {
 		for (const int endIdx : endIdxs) {
 			result.push_back(getPassableEnd(endIdx));
 		}
-	}else {
+	} else {
 		for (const int endIdx : endIdxs) {
 			if (complexData[endIdx].isPassable()) {
 				result.push_back(endIdx);
@@ -262,7 +261,6 @@ inline int PathFinder::heuristic(const Urho3D::IntVector2& from, const Urho3D::I
 }
 
 float PathFinder::heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const {
-	//closest from endIdxs
 	//bug lepiej wybierac do kogo heurystyka
 	assert(!endIdxs.empty());
 	const auto a = getCords(from);

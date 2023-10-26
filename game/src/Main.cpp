@@ -98,11 +98,11 @@ void Main::Setup() {
 		engineParameters_[EP_LOG_NAME] = "logs/" + GetTypeName() + ".log";
 	}
 	if (!SIM_GLOBALS.HEADLESS) {
-		Game::setCache(GetSubsystem<ResourceCache>())
-			->setConsole(GetSubsystem<Console>())
+		Game::setConsole(GetSubsystem<Console>())
 			->setLog(GetSubsystem<Log>());
 	}
-	Game::setContext(context_);
+	Game::setContext(context_)
+		->setCache(GetSubsystem<ResourceCache>());
 }
 
 void Main::Start() {
@@ -322,7 +322,7 @@ void Main::setSimpleManagers() {
 void Main::updateProgress(Loading& progress) const {
 	if (!SIM_GLOBALS.HEADLESS) {
 		std::string msg = Game::getLocalization()->Get("load_msg_" +
-			String((int)loadingProgress.currentStage)).CString();
+		                                               String((int)loadingProgress.currentStage)).CString();
 		progress.inc(std::move(msg));
 		hud->updateLoading(progress.getProgress());
 	} else {
@@ -352,10 +352,10 @@ void Main::load(const String& saveName, NewGameForm* form) {
 			SetupViewport();
 			controls = new Controls(GetSubsystem<Input>());
 		}
-		if(hud) {
+		if (hud) {
 			hud->resetLoading();
 		}
-		
+
 		if (form) {
 			levelBuilder->createScene(form);
 		} else {

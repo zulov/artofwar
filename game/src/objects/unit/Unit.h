@@ -140,6 +140,7 @@ public:
 	short getCostSum() const override;
 	bool isInCloseRange(int index) const override;
 	void setSlotToInteract(char slot) { slotToInteract = slot; }
+	int getMainGridIndex() const { return indexInMainGrid; }
 	void setSparseIndex(int index);
 
 	float getModelHeight() const override;

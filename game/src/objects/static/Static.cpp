@@ -14,7 +14,7 @@
 Static::Static(Urho3D::Vector3& _position, int indexInGrid, bool withNode) : Physical(_position, withNode),
                                                                              state(StaticState::ALIVE),
                                                                              nextState(StaticState::ALIVE) {
-	this->indexInMainGrid = indexInGrid;
+	setBucketInMainGrid(indexInGrid);
 }
 
 Static::~Static() {
@@ -68,32 +68,47 @@ void Static::setVisibility(VisibilityType type) {
 	visibilityType = type;
 }
 
+Urho3D::IntVector2 Static::getSurroundSize(const Urho3D::IntVector2 oSize, int res) {
+	auto result = oSize + Urho3D::IntVector2(-1, 1);
+	if (result.x_ < 0) {
+		result.x_ = 0;
+	}
+	if (result.y_ >= res) {
+		result.y_ = res - 1;
+	}
+
+	return result;
+}
+
 void Static::populate() {
 	const auto gridSize = getGridSize();
 	const auto cordsCell = Game::getEnvironment()->getCords(indexInMainGrid);
-	const auto sizeX = calculateSize(gridSize.x_, cordsCell.x_) + Urho3D::IntVector2(-1, 1);
-	const auto sizeZ = calculateSize(gridSize.y_, cordsCell.y_) + Urho3D::IntVector2(-1, 1);
+	const auto oSizeX = calculateSize(gridSize.x_, cordsCell.x_);
+	const auto oSizeZ = calculateSize(gridSize.y_, cordsCell.y_);
 	const auto res = Game::getEnvironment()->getResolution();
+	const auto sSizeX = getSurroundSize(oSizeX, res);
+	const auto sSizeZ = getSurroundSize(oSizeZ, res);
+
 	occupiedCellsSize = gridSize.x_ * gridSize.y_;
 
-	data = new int[(gridSize.x_ + 2) * (gridSize.y_ + 2)];//TODO obliczyc dokladnie rozmiar
+	auto tabSize = (sSizeX.y_- sSizeX.x_)* (sSizeZ.y_ - sSizeZ.x_);
+	data = new int[tabSize]; //TODO obliczyc dokladnie rozmiar
 	int* o = data;
 	int* s = data + occupiedCellsSize;
-	for (short i = sizeX.x_; i < sizeX.y_; ++i) {
-		if (i < 0 || i >= res) { continue; }
+	for (short i = sSizeX.x_; i < sSizeX.y_; ++i) {
 		const auto index = Game::getEnvironment()->getIndex(i, 0);
-		for (short j = sizeZ.x_; j < sizeZ.y_; ++j) {
-			if (j < 0 || j >= res) { continue; }//TODO perf nie iterowac tylko tam gdzie nie wykracza
-			if (i == sizeX.x_ || i == sizeX.y_ - 1 || j == sizeZ.x_ || j == sizeZ.y_ - 1) {
+		for (short j = sSizeZ.x_; j < sSizeZ.y_; ++j) {
+			if (i >= oSizeX.x_ && i < oSizeX.y_ && j >= oSizeZ.x_ && j < oSizeZ.y_) {
+				*o = index + j;
+				o++;
+			} else {
 				surroundCellsSize++;
 				*s = index + j;
 				s++;
-			} else {
-				*o = index + j;
-				o++;
 			}
 		}
 	}
+	assert(surroundCellsSize + occupiedCellsSize == tabSize);
 }
 
 int Static::belowCloseLimit() const {

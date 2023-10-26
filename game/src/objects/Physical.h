@@ -33,7 +33,7 @@ public:
 
 	virtual float getHealthBarSize() const;
 
-	void setBucket(int _bucketIndex) {
+	void setBucketInMainGrid(int _bucketIndex) {
 		assert(_bucketIndex >= 0);
 		indexInMainGrid = _bucketIndex;
 	}
@@ -66,8 +66,6 @@ public:
 	const Urho3D::Vector3& getPosition() const { return position; }
 
 	virtual char getPlayer() const { return player; }
-
-	int getMainGridIndex() const { return indexInMainGrid; }
 
 	virtual void populate() { }
 

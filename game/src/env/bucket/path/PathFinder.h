@@ -32,6 +32,7 @@ public:
 
 private:
 	float getDistCost(unsigned char neightIdx) const;
+
 	const std::vector<int>* realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit);
 	const std::vector<int>* getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const;
 

@@ -40,14 +40,19 @@ public:
 	std::string getValues(int precision) override;
 	unsigned short getIndexInInfluence() const { return indexInInfluence; }
 	void setIndexInInfluence(int index);
+
+	int getStaticGridIndex() const { return staticGridIndex; }
+	void setStaticGridIndex(int index) { staticGridIndex = index; }
+
 	bool isInCloseRange(int index) const override;
 	Urho3D::Color getColor(db_player_colors* col) const override;
 	void setVisibility(VisibilityType type) override;
+	Urho3D::IntVector2 getSurroundSize(Urho3D::IntVector2 oSize, int res);
 	unsigned char getHealthBarThick() const override { return 6; }
 protected:
 	void populate() override;
-	
 
+	int staticGridIndex;
 	unsigned short indexInInfluence;
 	StaticState state, nextState;
 

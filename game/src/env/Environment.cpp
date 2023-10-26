@@ -35,7 +35,7 @@ Environment::~Environment() {
 
 std::vector<Physical*>* Environment::getNeighboursFromSparseSamePlayer(Physical* physical, const float radius,
                                                                        char player) {
-	return getNeighbours(physical, sparseUnitGrid, radius,
+	return getNeighbours(physical,sparseUnitGrid, radius,
 	                     [player](const Physical* thing) { return thing->getPlayer() == player && thing->isAlive(); });
 }
 
@@ -91,7 +91,7 @@ void Environment::refreshAllStatic(std::vector<int>& indexes) {
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
                                                    const std::function<bool(Physical*)>& condition) const {
 	neights->clear();
-	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getMainGridIndex(), radius);
+	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getPosition(), radius);
 	const float sqRadius = radius * radius;
 
 	while (Physical* neight = bucketIterator.next()) {
@@ -221,7 +221,7 @@ void Environment::updateInfluenceHistoryReset() const {
 }
 
 void Environment::update(Unit* unit) const {
-	unit->setBucket(mainGrid.update(unit, unit->getMainGridIndex()));
+	unit->setBucketInMainGrid(mainGrid.update(unit, unit->getMainGridIndex()));
 	unit->setSparseIndex(sparseUnitGrid.update(unit, unit->getSparseIndex()));
 }
 
@@ -229,7 +229,7 @@ void Environment::addNew(const std::vector<Unit*>& units) {
 	for (const auto unit : units) {
 		assert(unit->getMainGridIndex() == -1);
 		unit->setIndexChanged(true);
-		unit->setBucket(mainGrid.updateNew(unit));
+		unit->setBucketInMainGrid(mainGrid.updateNew(unit));
 		unit->setSparseIndex(sparseUnitGrid.updateNew(unit));
 	}
 
@@ -531,6 +531,7 @@ Physical* Environment::closestPhysical(Unit* unit, const std::vector<Physical*>*
 	for (const auto entity : *things) {
 		if (entity->isAlive() && condition(entity)) {
 			auto const idxs = entity->getIndexesForUse(unit);
+			//TODO perf ogranizcyc liczbe indeksów, np wybrac jeden dla obiektu
 			allIndexes.insert(allIndexes.end(), idxs.begin(), idxs.end());
 			for (auto idx : idxs) {
 				idxToPhysical[idx] = entity;

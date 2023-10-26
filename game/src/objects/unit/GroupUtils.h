@@ -62,10 +62,10 @@ inline std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units) {
 	for (auto& groupedIndex : groupedIndexes) {
 		std::vector<Unit*> temp;
 		//temp.reserve()
-		for (auto index : groupedIndex) {
-			for (auto value : units) {
-				if (value->getMainGridIndex() == index) {
-					temp.push_back(value);
+		for (const auto index : groupedIndex) {
+			for (auto unit : units) {
+				if (unit->getMainGridIndex() == index) {
+					temp.push_back(unit);
 				}
 			}
 		}

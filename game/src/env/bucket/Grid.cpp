@@ -180,3 +180,4 @@ std::vector<Physical*>* Grid::getAll(int currentIdx, float radius) {
 	}
 	return tempSelected;
 }
+

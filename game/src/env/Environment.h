@@ -147,7 +147,6 @@ public:
 	const std::vector<std::pair<unsigned char, short>>& getCloseTabIndexesWithValue(int center) const { return mainGrid.getCloseTabIndexesWithValue(center); }
 
 private:
-	//std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
 	                                      const std::function<bool(Physical*)>& condition) const;
 	std::vector<Physical*>* getNeighbours(const Urho3D::Vector3& center, Grid& bucketGrid, int id, float radius,

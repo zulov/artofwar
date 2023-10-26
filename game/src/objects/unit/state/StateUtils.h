@@ -10,7 +10,7 @@ inline void setStartData(Unit* unit, int index, Physical* toUse) {
 	toUse->upClose();
 }
 
-inline void setSlotData(Unit* unit, int index, Physical* toUse) {
+inline void setSlotData(Unit* unit, int index, Unit* toUse) {
 	const char slot = Game::getEnvironment()->getRevertCloseIndex(toUse->getMainGridIndex(), index);
 	unit->setSlotToInteract(slot);
 	toUse->setOccupiedIndexSlot(slot, true);
