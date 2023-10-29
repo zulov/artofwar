@@ -57,6 +57,8 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	const auto whichTypeOutput = whichBuildingType->decide(buildingsInput);
 
 	ParentBuildingType type = static_cast<ParentBuildingType>(biggestWithRand(whichTypeOutput));
+	if (!isEnoughResToTypeBuilding(type)) {return false;}
+		
 	const auto aiTypeInput = Game::getAiInputProvider()->getBuildingsTypeInput(player->getId(), type);
 	auto output = getWhichBuilding(type, aiTypeInput);
 
@@ -418,6 +420,15 @@ bool ActionMaker::isEnoughResToAnyUnit() const {
 bool ActionMaker::isEnoughResToAnyBuilding() const {
 	for (const auto thing : nation->buildings) {
 		if (enoughResources(thing)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool ActionMaker::isEnoughResToTypeBuilding(ParentBuildingType type) const {
+	for (const auto thing : nation->buildings) {
+		if (thing->parentType[(char)type] && enoughResources(thing)) {
 			return true;
 		}
 	}

@@ -65,6 +65,7 @@ private:
 	bool isEnoughResToWorker() const;
 	bool isEnoughResToAnyUnit() const;
 	bool isEnoughResToAnyBuilding() const;
+	bool isEnoughResToTypeBuilding(ParentBuildingType type) const;
 
 	Player* player;
 	db_nation* nation;

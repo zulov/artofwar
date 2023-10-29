@@ -33,7 +33,7 @@ public:
 
 	virtual float getHealthBarSize() const;
 
-	void setBucketInMainGrid(int _bucketIndex) {
+	virtual void setBucketInMainGrid(int _bucketIndex) {
 		assert(_bucketIndex >= 0);
 		indexInMainGrid = _bucketIndex;
 	}

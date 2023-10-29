@@ -1,9 +1,10 @@
 #include "Brain.h"
 
-#include "Game.h"
 #include "Layer.h"
 #include "math/SpanUtils.h"
 #include "utils/DeleteUtils.h"
+#include "fast_float/fast_float.h"
+
 
 Brain::Brain(const std::string& filename, std::vector<std::string>& lines): filename(filename) {
 	std::vector<float> w;
@@ -16,12 +17,13 @@ Brain::Brain(const std::string& filename, std::vector<std::string>& lines): file
 			if(token.empty()) {
 				break;
 			}
-			w.push_back(std::stof(token));
+			
+			w.push_back(toFloat(token));
 		}
 		std::getline(tokenStream, token, ';');
 
 		while (std::getline(tokenStream, token, ';')) {
-			b.push_back(std::stof(token));
+			b.push_back(toFloat(token));
 		}
 
 		allLayers.push_back(new Layer(w, b));
@@ -50,4 +52,10 @@ const std::span<float> Brain::decide(std::span<float> data) {
 
 std::string Brain::getName() const {
 	return filename;
+}
+
+float Brain::toFloat(const std::string& token) {
+	float f;
+	fast_float::from_chars(token.data(), token.data() + token.size(), f);
+	return f;
 }

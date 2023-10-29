@@ -216,7 +216,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>src;include;include\Urho3D\ThirdParty;include\Urho3D\ThirdParty\LuaJIT;include\Eigen;include\enum</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;include;include\Urho3D\ThirdParty;include\fast_float;include\Eigen;include\enum</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>

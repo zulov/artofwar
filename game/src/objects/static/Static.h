@@ -43,6 +43,11 @@ public:
 
 	int getStaticGridIndex() const { return staticGridIndex; }
 	void setStaticGridIndex(int index) { staticGridIndex = index; }
+	void setBucketInMainGrid(int _bucketIndex) override {
+		assert(_bucketIndex >= 0);
+		assert(indexInMainGrid==-1);
+		indexInMainGrid = _bucketIndex;
+	}
 
 	bool isInCloseRange(int index) const override;
 	Urho3D::Color getColor(db_player_colors* col) const override;
