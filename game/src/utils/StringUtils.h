@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 #include <span>
+#include <fast_float/fast_float.h>
 
 inline std::vector<std::string> split(const std::string& s, char delimiter) {
 	std::vector<std::string> tokens;
@@ -49,4 +50,10 @@ inline int fatoi(const char* str) {
 		val = val * 10 + (*str++ - '0');
 	}
 	return val;
+}
+
+inline float toFloat(const std::string& token) {
+	float f;
+	fast_float::from_chars(token.data(), token.data() + token.size(), f);
+	return f;
 }

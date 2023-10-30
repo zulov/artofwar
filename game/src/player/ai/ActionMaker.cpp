@@ -60,7 +60,7 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	if (!isEnoughResToTypeBuilding(type)) {return false;}
 		
 	const auto aiTypeInput = Game::getAiInputProvider()->getBuildingsTypeInput(player->getId(), type);
-	auto output = getWhichBuilding(type, aiTypeInput);
+	const auto output = getWhichBuilding(type, aiTypeInput);
 
 	return createBuilding(chooseBuilding(output, type), type);
 }

@@ -5,7 +5,7 @@
 #include <vector>
 
 class Layer;
-
+//TODO remember AVX2 set
 class Brain {
 public:
 	explicit Brain(const std::string& filename, std::vector<std::string>& lines);
@@ -15,7 +15,6 @@ public:
 	const std::span<float> decide(std::span<float> data);
 	std::string getName() const;
 private:
-	float toFloat(const std::string &token);
 	std::vector<Layer*> allLayers;
 
 	std::string filename;
