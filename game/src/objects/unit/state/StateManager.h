@@ -51,6 +51,7 @@ private:
 	void initOrders(std::initializer_list<UnitAction> states) const; //TODO move to level
 	void initStates(std::initializer_list<UnitState> states) const; //TODO move to level
 	static void setStaticDead(ObjectType object);
+	static void setStaticToDispose(ObjectType object);
 
 	StateManager();
 	~StateManager();

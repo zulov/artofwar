@@ -86,6 +86,9 @@ struct GridCalculator {
 	bool isValidIndex(short x, short z) const {
 		return !(x < 0 || x >= resolution || z < 0 || z >= resolution);
 	}
+	bool isValidIndex(const Urho3D::IntVector2 &cord) const {
+		return !(cord.x_ < 0 || cord.x_ >= resolution || cord.y_ < 0 || cord.y_ >= resolution);
+	}
 
 	bool isValidIndex(int index) const { return index >= 0 && index < sqResolution; }
 

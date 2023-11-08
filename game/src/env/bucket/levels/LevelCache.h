@@ -1,4 +1,5 @@
 #pragma once
+#include <ranges>
 #include <vector>
 
 #include "env/GridCalculator.h"
@@ -15,8 +16,11 @@ public:
 	float getMaxDistance() const { return maxDistance; }
 	std::vector<short>* get(float radius) const;
 	std::vector<Urho3D::IntVector2>* getCords(float radius) const;
-	std::pair<std::vector<short>*, std::vector<Urho3D::IntVector2>*> getBoth(float radius) const;
+	std::ranges::zip_view<
+		std::ranges::ref_view<std::vector<short>>,
+		std::ranges::ref_view<std::vector<Urho3D::IntVector2>>> getBoth(float radius) const;
 	void initCordsFn();
+
 private:
 	std::vector<short>* getEnvIndexs(float radius, std::vector<short>* prev, std::vector<short>& temp) const;
 	float maxDistance;
@@ -25,5 +29,4 @@ private:
 	GridCalculator* calculator;
 	std::vector<short>* levelsCache[RES_SEP_DIST];
 	std::vector<Urho3D::IntVector2>* levelsCacheCords[RES_SEP_DIST];
-
 };

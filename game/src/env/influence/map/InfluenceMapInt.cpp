@@ -1,10 +1,12 @@
 #include "InfluenceMapInt.h"
 #include <algorithm>
 #include <numeric>
+
+#include "math/VectorUtils.h"
 #include "objects/Physical.h"
 
 InfluenceMapInt::InfluenceMapInt(unsigned short resolution, float size, float valueThresholdDebug): InfluenceMap(
-	resolution, size, valueThresholdDebug) {
+	 resolution, size, valueThresholdDebug) {
 	values = new unsigned char[arraySize];
 	reset();
 }
@@ -61,9 +63,21 @@ void InfluenceMapInt::ensureReady() {
 	computeMinMax();
 }
 
-int InfluenceMapInt::getMaxIdx() {
+std::vector<unsigned> InfluenceMapInt::getMaxIdxs() {
 	computeMinMax();
-	return maxIdx;
+	if (max <= 0.5f) {
+		return {};
+	}
+	auto idx = sort_indexes_desc(std::span(values, arraySize), 10);
+
+	for (int i = 0; i < 10; ++i) {
+		if (values[idx[i]] == 0) {
+			const auto it = idx.begin() + i;
+			idx.erase(it, idx.end());
+			break;
+		}
+	}
+	return idx;
 }
 
 void InfluenceMapInt::computeMinMax() {

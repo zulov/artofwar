@@ -14,7 +14,7 @@ class QueueElement;
 class Building : public Static {
 public:
 	Building(Urho3D::Vector3 _position, int id, int player, int level, int indexInGrid, bool withNode);
-	~Building();
+	~Building() override;
 
 	void populate() override;
 	void levelUp(char level);

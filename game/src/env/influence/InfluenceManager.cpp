@@ -108,7 +108,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 	arraySize = calculator->getResolution() * calculator->getResolution();
 	assert(arraySize <= std::numeric_limits<unsigned short>::max());
 	intersection = new float[arraySize];
-	tempIndexes = new std::vector<int>();
+	tempIndexes = new std::vector<unsigned>();
 
 	assert(unitsNumberPerPlayer[0]->getResolution() == unitsInfluencePerPlayer[0]->getResolution()
 		&& calculator->getResolution() == unitsNumberPerPlayer[0]->getResolution());
@@ -388,7 +388,7 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span
 	assert(false);
 }
 
-std::vector<int>*
+std::vector<unsigned>*
 InfluenceManager::getAreas(const std::span<float> result, ParentBuildingType type, char player) {
 	if (type == ParentBuildingType::RESOURCE) {
 		return getAreas(mapsGatherSpeedPerPlayer[player], result, player);
@@ -396,14 +396,11 @@ InfluenceManager::getAreas(const std::span<float> result, ParentBuildingType typ
 	return getAreas(mapsForAiPerPlayer[player], result, player);
 }
 
-std::vector<int>* InfluenceManager::getAreasResBonus(char id, char player) {
-	tempIndexes->clear();
-	const int maxIdx = mapsResNotInBonusPerPlayer[player][id]->getMaxIdx();
-	tempIndexes->push_back(maxIdx);
-	return tempIndexes;
+std::vector<unsigned> InfluenceManager::getAreasResBonus(char id, char player) {
+	return mapsResNotInBonusPerPlayer[player][id]->getMaxIdxs();
 }
 
-std::vector<int>*
+std::vector<unsigned>*
 InfluenceManager::getAreas(std::span<InfluenceMapFloat*> maps, const std::span<float> result, char player) const {
 	assert(result.size() == maps.size());
 
@@ -464,7 +461,7 @@ void InfluenceManager::nextVisibilityType() const {
 	visibilityManager->nextVisibilityType();
 }
 
-std::vector<int>* InfluenceManager::bestIndexes(float* values, const std::vector<unsigned>& indexes,
+std::vector<unsigned>* InfluenceManager::bestIndexes(float* values, const std::vector<unsigned>& indexes,
                                                        float minVal) const {
 	tempIndexes->clear();
 

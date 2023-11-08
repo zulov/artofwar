@@ -14,7 +14,7 @@
 Static::Static(Urho3D::Vector3& _position, int indexInGrid, bool withNode) : Physical(_position, withNode),
                                                                              state(StaticState::ALIVE),
                                                                              nextState(StaticState::ALIVE) {
-	setBucketInMainGrid(indexInGrid);
+	Static::setBucketInMainGrid(indexInGrid);
 }
 
 Static::~Static() {

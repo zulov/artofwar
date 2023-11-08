@@ -61,8 +61,8 @@ public:
 	                                               int min);
 
 	float getFieldSize() const;
-	std::vector<int>* getAreas(const std::span<float> result, ParentBuildingType type, char player);
-	std::vector<int>* getAreasResBonus(char id, char player);
+	std::vector<unsigned>* getAreas(const std::span<float> result, ParentBuildingType type, char player);
+	std::vector<unsigned> getAreasResBonus(char id, char player);
 
 	void addCollect(Unit* unit, short resId, float value);
 	void addAttack(char player, const Urho3D::Vector3& position, float value);
@@ -74,9 +74,9 @@ public:
 	void nextVisibilityType() const;
 
 private:
-	std::vector<int>* getAreas(std::span<InfluenceMapFloat*> maps, const std::span<float> result, char player) const;
+	std::vector<unsigned>* getAreas(std::span<InfluenceMapFloat*> maps, const std::span<float> result, char player) const;
 
-	std::vector<int>* bestIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
+	std::vector<unsigned>* bestIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
 	std::vector<Urho3D::Vector2> centersFromIndexes(const std::vector<int>& intersection) const;
 
 	//TODO imprve nie vectory tylko obiekt z mapami per player
@@ -113,5 +113,5 @@ private:
 	InfluenceDataType debugType = InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER;
 	unsigned int arraySize;
 	float* intersection; // [arraySize] ;
-	std::vector<int>* tempIndexes;
+	std::vector<unsigned>* tempIndexes;
 };

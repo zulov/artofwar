@@ -9,7 +9,7 @@ public:
 	StaticGrid(const StaticGrid& rhs) = delete;
 	~StaticGrid() override;
 
-	void remove(Physical* physical) const;
+	void remove(Physical* physical) const override;
 
 	void updateStatic(Static* staticObj, bool bulkAdd) const;
 

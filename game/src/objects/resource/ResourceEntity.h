@@ -12,7 +12,7 @@ enum class ResourceActionType : char;
 class ResourceEntity : public Static {
 public:
 	ResourceEntity(Urho3D::Vector3 _position, db_resource* db_resource, int level, int indexInGrid, bool withNode);
-	virtual ~ResourceEntity() = default;
+	~ResourceEntity() override = default;
 	void populate() override;
 
 	std::pair<float, bool> absorbAttack(float collectSpeed) override;

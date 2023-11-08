@@ -2,6 +2,8 @@
 
 #include <algorithm>
 #include <iostream>
+#include <ranges>
+
 #include "env/GridCalculator.h"
 
 LevelCache::LevelCache(float maxDistance, bool initCords, GridCalculator* calculator)
@@ -54,15 +56,16 @@ std::vector<Urho3D::IntVector2>* LevelCache::getCords(float radius) const {
 	return levelsCacheCords[RES_SEP_DIST - 1];
 }
 
-std::pair<std::vector<short>*, std::vector<Urho3D::IntVector2>*> LevelCache::getBoth(float radius) const {
+std::ranges::zip_view<std::ranges::ref_view<std::vector<short>>, std::ranges::ref_view<std::vector<Urho3D::IntVector2>>>
+LevelCache::getBoth(float radius) const {//TODO return std::views::zip
 	assert(levelsCacheCords[0] != nullptr);
 	const int index = radius * invDiff;
 	if (index < RES_SEP_DIST) {
 		assert(levelsCache[index]->size() == levelsCacheCords[index]->size());
-		return {levelsCache[index], levelsCacheCords[index]};
+		return std::views::zip(*levelsCache[index], *levelsCacheCords[index]);
 	}
 	assert(levelsCache[RES_SEP_DIST - 1]->size() == levelsCacheCords[RES_SEP_DIST - 1]->size());
-	return {levelsCache[RES_SEP_DIST - 1], levelsCacheCords[RES_SEP_DIST - 1]};
+	return std::views::zip(*levelsCache[RES_SEP_DIST - 1], *levelsCacheCords[RES_SEP_DIST - 1]);
 }
 
 void LevelCache::initCordsFn() {

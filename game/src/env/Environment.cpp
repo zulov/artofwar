@@ -382,7 +382,7 @@ std::array<float, 5>& Environment::getInfluenceDataAt(char player, const Urho3D:
 }
 
 std::optional<Urho3D::Vector2> Environment::getPosFromIndexes(db_building* building, char player,
-                                                              const std::vector<int>* indexes) {
+                                                              const std::vector<unsigned>* indexes) {
 	const float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
 	for (const auto centerIndex : *indexes) {
 		Urho3D::Vector2 center = influenceManager.getCenter(centerIndex);
@@ -400,16 +400,16 @@ std::optional<Urho3D::Vector2> Environment::getPosFromIndexes(db_building* build
 std::optional<Urho3D::Vector2> Environment::getPosToCreate(const std::span<float> result, ParentBuildingType type,
                                                            db_building* building,
                                                            char player) {
-	const std::vector<int>* indexes = influenceManager.getAreas(result, type, player);
+	const std::vector<unsigned>* indexes = influenceManager.getAreas(result, type, player);
 
 	return getPosFromIndexes(building, player, indexes);
 }
 
 std::optional<Urho3D::Vector2> Environment::getPosToCreateResBonus(db_building* building, char player) {
-	std::vector<int> allIndexes;
+	std::vector<unsigned> allIndexes;
 	for (const char id : building->resourceTypes) {
-		const std::vector<int>* indexes = influenceManager.getAreasResBonus(id, player);
-		allIndexes.insert(allIndexes.end(), indexes->begin(), indexes->end());
+		auto indexes = influenceManager.getAreasResBonus(id, player);//TODO  jak bedzie kilka resourceTypes to trzeba by to brac po koleji dla największch wartosci niezelzenie od tego jaki jest resource
+		allIndexes.insert(allIndexes.end(), indexes.begin(), indexes.end());
 	}
 
 	return getPosFromIndexes(building, player, &allIndexes);

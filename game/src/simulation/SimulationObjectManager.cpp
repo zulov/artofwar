@@ -1,4 +1,4 @@
-#include "SimulationObjectManager.h"
+ï»¿#include "SimulationObjectManager.h"
 
 #include <Urho3D/IO/Log.h>
 
@@ -65,7 +65,7 @@ void SimulationObjectManager::addResource(int id, const Urho3D::IntVector2& _buc
 }
 
 void SimulationObjectManager::findToDispose() {
-	findToDisposeUnits(); //TODO perf jezeli cos zmieni³o stan do dispose
+	findToDisposeUnits(); //TODO perf jezeli cos zmieniÂ³o stan do dispose
 	findToDisposeBuildings();
 	findToDisposeResources();
 }
@@ -169,8 +169,8 @@ void SimulationObjectManager::findToDisposeBuildings() {
 	}
 }
 
-void SimulationObjectManager::findToDisposeResources() {
-	if (StateManager::isResourceToDispose()) {
+void SimulationObjectManager::findToDisposeResources() {//TODO ten if jest zawzse falsem
+	if (StateManager::isResourceToDispose()) {//TODO perf wrzucaÄ‡ przy zmiane statusu nie ma co iterowac  tutaj, ale i tak trzeba usnac wiec trzeba iterowac
 		resources->erase(
 		                 std::remove_if(
 		                                resources->begin(), resources->end(),
@@ -186,7 +186,7 @@ void SimulationObjectManager::findToDisposeResources() {
 }
 
 void SimulationObjectManager::refreshResBonuses() {
-	//TODO perf ugly, refresh ca³oœci
+	//TODO perf ugly, refresh caÂ³oÅ“ci
 	bool resourceBuildingChanged[MAX_PLAYERS][RESOURCES_SIZE] =
 	{
 		{false, false, false, false},

@@ -16,7 +16,7 @@ public:
 	float getValueAt(int index) const override;
 	void computeMinMax() override;
 	void ensureReady() override;
-	int getMaxIdx();
+	std::vector<unsigned> getMaxIdxs();
 
 private:
 	unsigned char* values;

@@ -35,8 +35,7 @@ ActionMaker::ActionMaker(Player* player, db_nation* nation):
 
 	ifUnit(BrainProvider::get(nation->actionPrefix[11] + "ifUnit.csv")),
 	whichUnit(BrainProvider::get(nation->actionPrefix[12] + "whichUnit.csv")),
-	whereUnit(BrainProvider::get(nation->actionPrefix[13] + "whereUnit.csv")) {
-}
+	whereUnit(BrainProvider::get(nation->actionPrefix[13] + "whereUnit.csv")) {}
 
 std::span<float> ActionMaker::getWhichBuilding(ParentBuildingType type, const std::span<float> aiTypeInput) const {
 	switch (type) {
@@ -57,8 +56,13 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	const auto whichTypeOutput = whichBuildingType->decide(buildingsInput);
 
 	ParentBuildingType type = static_cast<ParentBuildingType>(biggestWithRand(whichTypeOutput));
-	if (!isEnoughResToTypeBuilding(type)) {return false;}
-		
+	if (!isEnoughResToTypeBuilding(type)) { return false; }
+	if (type == ParentBuildingType::RESOURCE) {
+		if (sumSpan(player->getPossession().getResWithOutBonus()) < 0.5) {
+			return false;
+		}
+	}
+
 	const auto aiTypeInput = Game::getAiInputProvider()->getBuildingsTypeInput(player->getId(), type);
 	const auto output = getWhichBuilding(type, aiTypeInput);
 
@@ -89,7 +93,7 @@ void ActionMaker::action() {
 		}
 	}
 
-	if(isEnoughResToAnyUnit()) {
+	if (isEnoughResToAnyUnit()) {
 		const auto unitsInput = aiInput->getUnitsInput(player->getId());
 		const auto unitsResult = ifUnit->decide(unitsInput);
 		if (randFromTwo(unitsResult[0])) {
@@ -111,7 +115,8 @@ void ActionMaker::action() {
 bool ActionMaker::createUnit(db_unit* unit, Building* building) const {
 	if (building) {
 		Game::getActionCenter()->add(
-			new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id, player->getId()));
+		                             new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id,
+		                                                       player->getId()));
 		return true;
 	} else {
 		//TODO try to build
@@ -290,7 +295,9 @@ std::optional<Urho3D::Vector2> ActionMaker::findPosToBuild(db_building* building
 		return Game::getEnvironment()->getPosToCreateResBonus(building, player->getId());
 	}
 	const auto input = Game::getAiInputProvider()->getBuildingsInputWithMetric(
-		player->getId(), player->getLevelForBuilding(building->id)->dbBuildingMetric, type);
+	                                                                           player->getId(),
+	                                                                           player->getLevelForBuilding(building->id)
+	                                                                           ->dbBuildingMetric, type);
 
 	return Game::getEnvironment()->getPosToCreate(whereBuilding->decide(input), type, building, player->getId());
 }
@@ -380,7 +387,8 @@ bool ActionMaker::levelUpBuilding() {
 	const auto level = chooseBuildingLevelUp();
 	if (enoughResources(level)) {
 		Game::getActionCenter()->add(
-			new GeneralActionCommand(level->building, GeneralActionType::BUILDING_LEVEL, player->getId()));
+		                             new GeneralActionCommand(level->building, GeneralActionType::BUILDING_LEVEL,
+		                                                      player->getId()));
 		return true;
 	}
 	return false;
@@ -392,7 +400,8 @@ bool ActionMaker::levelUpUnit() {
 		Building* building = getBuildingToLevelUpUnit(level);
 		if (building) {
 			Game::getActionCenter()->add(
-				new BuildingActionCommand(building, BuildingActionType::UNIT_LEVEL, level->unit, player->getId()));
+			                             new BuildingActionCommand(building, BuildingActionType::UNIT_LEVEL,
+			                                                       level->unit, player->getId()));
 			return true;
 		}
 	}
@@ -408,9 +417,10 @@ bool ActionMaker::isEnoughResToWorker() const {
 	}
 	return false;
 }
+
 bool ActionMaker::isEnoughResToAnyUnit() const {
 	for (const auto thing : nation->units) {
-		if (enoughResources(thing)) {
+		if (!thing->typeWorker && enoughResources(thing)) {
 			return true;
 		}
 	}

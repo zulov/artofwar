@@ -10,7 +10,7 @@ enum class CellState : char;
 class Static : public Physical {
 public:
 	Static(Urho3D::Vector3& _position, int indexInGrid, bool withNode);
-	virtual ~Static();
+	~Static() override;
 
 	void setNextState(StaticState stateTo) { nextState = stateTo; }
 	void setState(StaticState state) { this->state = state; }

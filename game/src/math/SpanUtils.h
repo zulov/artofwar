@@ -11,7 +11,7 @@ inline float minSpan(std::span<float> vec) {
 }
 
 template <typename T>
-inline float sumSpan(std::span<T> vec) {
+inline T sumSpan(std::span<T> vec) {
 	return std::accumulate(vec.begin(), vec.end(), 0.f);
 }
 

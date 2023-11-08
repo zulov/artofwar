@@ -106,7 +106,7 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 		&& data.isPassable()
 		&& data.allNeightOccupied()) {
 		int counter = 0;
-		
+
 		for (auto [i, val] : closeIndexes->getTabIndexesWithValueByIndex(data.getIndexOfCloseIndexes())) {
 			if (!data.ifNeightIsFree(i)) {
 				sum += calculator->getCenter(index + val);
@@ -261,13 +261,10 @@ std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector3& center, floa
 
 	const auto centerCords = calculator->getIndexes(centerIdx);
 
-	auto const [indexes, cords] = levelCache->getBoth(range);
-	auto ptrIdx = indexes->begin();
-	for (const auto& shiftCords : *cords) {
-		if (calculator->isValidIndex(shiftCords.x_ + centerCords.x_, shiftCords.y_ + centerCords.y_)) {
-			allIndexes.push_back(*ptrIdx + centerIdx);
+	for (const auto& [idx, shift] : levelCache->getBoth(range)) {
+		if (calculator->isValidIndex(centerCords + shift)) {
+			allIndexes.push_back(centerIdx + idx);
 		}
-		++ptrIdx;
 	}
 	return allIndexes;
 }
@@ -282,7 +279,7 @@ void MainGrid::reAddBonuses(std::vector<Building*>* buildings, char player, char
 			addResourceBonuses(building);
 		}
 	}
-	}
+}
 
 float MainGrid::getBonuses(char player, const ResourceEntity* resource) const {
 	float best = .0f;
@@ -334,19 +331,14 @@ void MainGrid::addResourceBonuses(Building* building) const {
 	const auto [dbBuilding, level] = building->getData();
 
 	if (dbBuilding->typeResourceAny) {
-		auto const [levels, cords] = levelCache->getBoth(level->resourceRange);
-
 		std::vector<int> indexes;
-		indexes.reserve(levels->size() * building->getOccupiedCells().size());
+		//indexes.reserve(levels->size() * building->getOccupiedCells().size());
 		for (const int cell : building->getOccupiedCells()) {
 			const auto centerCords = calculator->getIndexes(cell);
-			auto ptrIdx = levels->begin();
-			for (const auto& shiftCords : *cords) {
-				if (calculator->isValidIndex(shiftCords.x_ + centerCords.x_, shiftCords.y_ + centerCords.y_)) {
-					auto newIndex = cell + *ptrIdx;
-					indexes.push_back(newIndex);
+			for (const auto& [idx, shift] : levelCache->getBoth(level->resourceRange)) {
+				if (calculator->isValidIndex(centerCords + shift)) {
+					indexes.push_back(cell + idx);
 				}
-				++ptrIdx;
 			}
 		}
 		std::ranges::sort(indexes);
@@ -504,7 +496,7 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 			for (auto [i, val] : closeIndexes->getTabIndexesWithValue(index)) {
 				if (data.ifNeightIsFree(i)) {
 					const int ni = index + val;
-					
+
 					float newDist = calculator->getSqDistance(ni, index);
 					if (newDist < dist) {
 						dist = newDist;

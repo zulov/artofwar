@@ -175,7 +175,7 @@ void StateManager::startState(Static* obj) {
 		setStaticDead(obj->getType());
 		break;
 	case StaticState::DISPOSE:
-		setStaticDead(obj->getType());
+		setStaticToDispose(obj->getType());
 		break;
 	default: ;
 	}
@@ -259,6 +259,13 @@ void StateManager::setStaticDead(ObjectType object) {
 		instance->buildingIsInDeadState = true;
 	} else {
 		instance->resourceIsInDeadState = true;
+	}
+}
+void StateManager::setStaticToDispose(ObjectType object) {
+	if (object == ObjectType::BUILDING) {
+		instance->buildingIsInDisposeState = true;
+	} else {
+		instance->resourceIsInDisposeState = true;
 	}
 }
 
