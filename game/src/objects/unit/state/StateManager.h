@@ -40,6 +40,8 @@ public:
 	static bool isBuildingToDispose();
 	static bool isResourceToDispose();
 
+	static bool isSthToDispose();
+
 	static bool isUnitDead();
 	static bool isBuildingDead();
 	static bool isResourceDead();

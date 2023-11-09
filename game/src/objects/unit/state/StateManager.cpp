@@ -261,6 +261,7 @@ void StateManager::setStaticDead(ObjectType object) {
 		instance->resourceIsInDeadState = true;
 	}
 }
+
 void StateManager::setStaticToDispose(ObjectType object) {
 	if (object == ObjectType::BUILDING) {
 		instance->buildingIsInDisposeState = true;
@@ -291,4 +292,8 @@ bool StateManager::isBuildingToDispose() {
 
 bool StateManager::isResourceToDispose() {
 	return instance->resourceIsInDisposeState;
+}
+
+bool StateManager::isSthToDispose() {
+	return instance->unitIsInDisposeState || instance->resourceIsInDisposeState || instance->resourceIsInDisposeState;
 }

@@ -6,9 +6,11 @@
 #include "objects/Physical.h"
 
 
-inline auto notAlive = [](Physical* physical) {
+inline auto notAlive = [](const Physical* physical) {
 	return physical == nullptr || !physical->isAlive();
 };
+
+inline auto isToDispose = [](const Physical* p) { return p->isToDispose(); };
 
 template <typename T>
 static void cleanDead(std::vector<T*>& vector, bool sthDead = true) {

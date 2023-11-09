@@ -11,6 +11,7 @@
 #include "player/PlayersManager.h"
 #include "scene/load/dbload_container.h"
 #include "env/Environment.h"
+#include "math/VectorUtils.h"
 
 
 SimulationObjectManager::SimulationObjectManager() {
@@ -85,7 +86,7 @@ void SimulationObjectManager::load(dbload_resource_entities* resource) const {
 void SimulationObjectManager::refreshAllStatic() {
 	std::vector<int> allCells;
 	allCells.reserve(100000);
-	bool arr[256 * 256]= { false };//BUG change size
+	bool arr[256 * 256] = {false}; //BUG change size
 	for (const auto resource : *resources) {
 		for (const int allCell : resource->getAllCells()) {
 			arr[allCell] = true;
@@ -97,7 +98,7 @@ void SimulationObjectManager::refreshAllStatic() {
 		}
 	}
 
-	for (int i = 0; i < 256*256; ++i) {
+	for (int i = 0; i < 256 * 256; ++i) {
 		if (arr[i]) {
 			allCells.push_back(i);
 		}
@@ -137,51 +138,31 @@ void SimulationObjectManager::addResource(ResourceEntity* resource, bool bulkAdd
 }
 
 void SimulationObjectManager::findToDisposeUnits() {
+	if (StateManager::isSthToDispose()) {
+		for (const auto unit : *units) {
+			unit->clean();//TODO bug? to powinno być niepotrzebne
+		}
+	}
 	if (StateManager::isUnitToDispose()) {
-		units->erase( //TODO bug?
-		             std::remove_if(
-		                            units->begin(), units->end(),
-		                            [this](Unit* unit) {
-			                            if (unit->isToDispose()) {
-				                            unitsToDispose.push_back(unit);
-				                            return true;
-			                            }
-			                            unit->clean();
-			                            return false;
-		                            }
-		                           ), units->end());
+		const auto newEnd = std::ranges::remove_if(*units, isToDispose).begin();
+		std::copy_if(newEnd, units->end(), std::back_inserter(unitsToDispose), isToDispose);
+		units->erase(newEnd, units->end());
 	}
 }
 
 void SimulationObjectManager::findToDisposeBuildings() {
 	if (StateManager::isBuildingToDispose()) {
-		buildings->erase(
-		                 std::remove_if(
-		                                buildings->begin(), buildings->end(),
-		                                [this](Building* building) {
-			                                if (building->isToDispose()) {
-				                                buildingsToDispose.push_back(building);
-				                                return true;
-			                                }
-			                                return false;
-		                                }
-		                               ), buildings->end());
+		const auto newEnd = std::ranges::remove_if(*buildings, isToDispose).begin();
+		std::copy_if(newEnd, buildings->end(), std::back_inserter(buildingsToDispose), isToDispose);
+		buildings->erase(newEnd, buildings->end());
 	}
 }
 
-void SimulationObjectManager::findToDisposeResources() {//TODO ten if jest zawzse falsem
-	if (StateManager::isResourceToDispose()) {//TODO perf wrzucać przy zmiane statusu nie ma co iterowac  tutaj, ale i tak trzeba usnac wiec trzeba iterowac
-		resources->erase(
-		                 std::remove_if(
-		                                resources->begin(), resources->end(),
-		                                [this](ResourceEntity* resource) {
-			                                if (resource->isToDispose()) {
-				                                resourcesToDispose.push_back(resource);
-				                                return true;
-			                                }
-			                                return false;
-		                                }
-		                               ), resources->end());
+void SimulationObjectManager::findToDisposeResources() {
+	if (StateManager::isResourceToDispose()) {
+		const auto newEnd = std::ranges::remove_if(*resources, isToDispose).begin();
+		std::copy_if(newEnd, resources->end(), std::back_inserter(resourcesToDispose), isToDispose);
+		resources->erase(newEnd, resources->end());
 	}
 }
 
