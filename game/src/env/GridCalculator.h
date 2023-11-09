@@ -23,7 +23,8 @@ struct GridCalculator {
 		return posX * resolution + posZ;
 	}
 
-	short getNotSafeIndexClose(short posX, short posZ) const {//TODO better to przyjmuje tylko ujemne, uzyc tego wy?ej i odwróci?
+	short getNotSafeIndexClose(short posX, short posZ) const {
+		//TODO better to przyjmuje tylko ujemne, uzyc tego wy?ej i odwróci?
 		assert(abs(posX)<=34);
 		assert((posX * resolution + posZ) > -(int)sqResolution && (posX * resolution + posZ) < (int)sqResolution);
 		return posX * resolution + posZ;
@@ -53,27 +54,8 @@ struct GridCalculator {
 	}
 
 	Urho3D::IntVector2 getShiftCords(int i) const {
-		auto cord = getIndexes(i);
-		if (cord.y_ <= -halfResolution) {
-			if (cord.x_ > 0) {
-				++cord.x_;
-			} else {
-				--cord.x_;
-			}
-			cord.y_ = i - (cord.x_ * resolution);
-			return cord;
-		}
-		if (cord.y_ >= halfResolution) {
-			if (cord.x_ >= 0) {
-				++cord.x_;
-			} else {
-				--cord.x_;
-			}
-			cord.y_ = i - (cord.x_ * resolution);
-			return cord;
-		}
-
-		return cord;
+		const auto center = resolution / 2 * resolution + halfResolution;
+		return getIndexes(center + i) - getIndexes(center); //TODO bug sprawdzic skrajne warunki
 	}
 
 	Urho3D::Vector2 getCenter(int i) const {
@@ -86,7 +68,8 @@ struct GridCalculator {
 	bool isValidIndex(short x, short z) const {
 		return !(x < 0 || x >= resolution || z < 0 || z >= resolution);
 	}
-	bool isValidIndex(const Urho3D::IntVector2 &cord) const {
+
+	bool isValidIndex(const Urho3D::IntVector2& cord) const {
 		return !(cord.x_ < 0 || cord.x_ >= resolution || cord.y_ < 0 || cord.y_ >= resolution);
 	}
 

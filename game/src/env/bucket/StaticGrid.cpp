@@ -34,8 +34,9 @@ void StaticGrid::remove(Physical* physical) const {
 	for (int i = 0; i < queryRadius.size(); ++i) {
 		const auto centerBucket = bucketsPerRadius[i] + centerIndex;
 		const auto initedVec = inited[i] + centerIndex;
+
 		for (const auto& [idx, shift] : levelCache->getBoth(queryRadius.at(i))) {
-			if (calculator->isValidIndex(shift + centerCords) && *(initedVec + idx) == true) {
+			if (calculator->isValidIndex(centerCords + shift) && *(initedVec + idx) == true) {
 				(centerBucket + idx)->remove(physical);
 			}
 		}
@@ -49,12 +50,10 @@ void StaticGrid::updateStatic(Static* staticObj, bool bulkAdd) const {
 		const int centerIndex = calculator->indexFromPosition(staticObj->getPosition());
 		const auto centerCords = calculator->getIndexes(centerIndex);
 		for (int i = 0; i < queryRadius.size(); ++i) {
-
 			const auto centerBucket = bucketsPerRadius[i] + centerIndex;
 			const auto initedVec = inited[i] + centerIndex;
-
 			for (const auto& [idx, shift] : levelCache->getBoth(queryRadius.at(i))) {
-				if (calculator->isValidIndex(shift + centerCords) && *(initedVec + idx) == true) {
+				if (calculator->isValidIndex(centerCords + shift) && *(initedVec + idx) == true) {
 					(centerBucket + idx)->add(staticObj);
 				}
 			}
@@ -67,10 +66,10 @@ void StaticGrid::ensureInited(int index, int centerIndex) {
 	inited[index][centerIndex] = true;
 
 	const auto centerCords = calculator->getIndexes(centerIndex);
-	auto& bucketRad = bucketsPerRadius[index][centerIndex];//TODO bug czy to jest kopiowanie jekies?
+	auto& bucketRad = bucketsPerRadius[index][centerIndex];
 
 	for (const auto& [idx, shift] : levelCache->getBoth(queryRadius.at(index))) {
-		if (calculator->isValidIndex(shift + centerCords)) {
+		if (calculator->isValidIndex(centerCords + shift)) {
 			bucketRad.add(buckets[centerIndex + idx].getContent());
 		}
 	}

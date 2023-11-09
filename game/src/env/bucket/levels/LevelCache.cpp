@@ -59,25 +59,24 @@ std::vector<Urho3D::IntVector2>* LevelCache::getCords(float radius) const {
 std::ranges::zip_view<std::ranges::ref_view<std::vector<short>>, std::ranges::ref_view<std::vector<Urho3D::IntVector2>>>
 LevelCache::getBoth(float radius) const {//TODO return std::views::zip
 	assert(levelsCacheCords[0] != nullptr);
-	const int index = radius * invDiff;
-	if (index < RES_SEP_DIST) {
-		assert(levelsCache[index]->size() == levelsCacheCords[index]->size());
-		return std::views::zip(*levelsCache[index], *levelsCacheCords[index]);
+	int index = radius * invDiff;
+	if (index >= RES_SEP_DIST) {
+		index = RES_SEP_DIST - 1;
 	}
-	assert(levelsCache[RES_SEP_DIST - 1]->size() == levelsCacheCords[RES_SEP_DIST - 1]->size());
-	return std::views::zip(*levelsCache[RES_SEP_DIST - 1], *levelsCacheCords[RES_SEP_DIST - 1]);
+	assert(levelsCache[index]->size() == levelsCacheCords[index]->size());
+	return std::views::zip(*levelsCache[index], *levelsCacheCords[index]);
 }
 
 void LevelCache::initCordsFn() {
 	if (levelsCacheCords[0] == nullptr) {
 		levelsCacheCords[0] = new std::vector<Urho3D::IntVector2>();
 		levelsCacheCords[0]->push_back(Urho3D::IntVector2::ZERO);
-		auto prev = levelsCacheCords[0]; //TODO perf tego nie robic dla ca³osci
+		auto prev = levelsCacheCords[0]; //TODO perf tego nie robic dla calosci
 		for (int i = 1; i < RES_SEP_DIST; ++i) {
 			if (levelsCache[i - 1] != levelsCache[i]) {
 				prev = new std::vector<Urho3D::IntVector2>();
 				prev->reserve(levelsCache[i]->size());
-				for (auto value : *levelsCache[i]) {
+				for (const auto value : *levelsCache[i]) {
 					prev->push_back(calculator->getShiftCords(value));
 				}
 			}

@@ -6,6 +6,7 @@ class GridCalculatorFixture : public ::testing::Test {
 public:
 	static GridCalculator* gc;
 	static GridCalculator* gcBig;
+	static GridCalculator* gc32;
 
 protected:
 	static void SetUpTestCase() {
@@ -17,6 +18,7 @@ protected:
 	static void TearDownTestCase() {
 		delete gc;
 		delete gcBig;
+		delete gc32;
 		// Kod uruchamiany po ostatnim teœcie wewn¹trz `Test Case`
 	}
 };
@@ -26,7 +28,7 @@ GridCalculator* GridCalculatorFixture::gcBig = nullptr;
 
 
 TEST_F(GridCalculatorFixture, Center) {
-	 EXPECT_EQ(gc->getCenter(0), Urho3D::Vector2(-3.f, -31.f));
+	EXPECT_EQ(gc->getCenter(0), Urho3D::Vector2(-3.f, -3.f));
 	EXPECT_EQ(gc->getCenter(6), Urho3D::Vector2(-1.f, 1.f));
 	EXPECT_EQ(gc->getCenter(9), Urho3D::Vector2(1.f, -1.f));
 	EXPECT_EQ(gc->getCenter(15), Urho3D::Vector2(3.f, 3.f));
