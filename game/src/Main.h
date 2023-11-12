@@ -10,7 +10,7 @@
 #include "scene/load/SceneLoader.h"
 #include "scene/save/SceneSaver.h"
 
-class SimInfo;
+struct FrameInfo;
 
 namespace Urho3D {
 	class Context;
@@ -63,7 +63,7 @@ private:
 
 	void InitLocalizationSystem() const;
 
-	SelectedInfo* control(float timeStep, SimInfo* simulationInfo);
+	SelectedInfo* control(float timeStep, FrameInfo* frameInfo);
 	void readParameters();
 	void miniReadParameters() const;
 	void changeCamera(CameraBehaviorType type);

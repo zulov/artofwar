@@ -5,7 +5,7 @@
 #include "window/menu/MenuPanel.h"
 #include "window/selected/SelectedHudPanel.h"
 
-class SimInfo;
+struct FrameInfo;
 
 namespace Urho3D {
 	class Engine;
@@ -31,18 +31,17 @@ struct db_resolution;
 
 class Hud : public Urho3D::Object {
 public:
-
-URHO3D_OBJECT(Hud, Object)
+	URHO3D_OBJECT(Hud, Object)
 
 	Hud();
 	~Hud();
 	void clear();
 
 	void update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
-	            SimInfo* simInfo) const;
+	            FrameInfo* frameInfo) const;
 	void createMiniMap() const;
 
-	void updateSelected(SelectedInfo* selectedInfo, SimInfo* simInfo) const;
+	void updateSelected(SelectedInfo* selectedInfo, FrameInfo* frameInfo) const;
 
 	void hoverOnIcon(HudData* hudElement) const { menuPanel->setHoverInfo(hudElement); }
 	void hoverOffIcon() const { menuPanel->removeHoverInfo(); }
@@ -71,8 +70,8 @@ URHO3D_OBJECT(Hud, Object)
 	Urho3D::Button* getLoadButton() const { return mainMenuPanel->getLoadButton(); }
 	Urho3D::Button* getCloseButton() const { return mainMenuPanel->getCloseButton(); }
 	Urho3D::UIElement* getRoot() const { return root; }
-private:
 
+private:
 	void replaceVariables(std::string& xml, int hudSizeId) const;
 	void createConsole(Urho3D::Engine* engine) const;
 	void createCursor() const;

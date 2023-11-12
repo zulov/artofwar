@@ -7,8 +7,8 @@
 #include "database/db_strcut.h"
 #include "objects/building/Building.h"
 
+struct FrameInfo;
 enum class ActionType : char;
-class SimInfo;
 constexpr char MAX_DEPLOY_MARK_NUMBER = 5;
 
 namespace Urho3D {
@@ -50,7 +50,7 @@ public:
 	void activate();
 	void unitOrder(short id);
 
-	void cleanAndUpdate(const SimInfo* simulationInfo);
+	void cleanAndUpdate(const FrameInfo* frameInfo);
 
 	void updateSelection() const;
 	void updateArrow() const;
@@ -72,7 +72,7 @@ private:
 	void actionUnit(short id, ActionType type);
 
 	void refreshSelected();
-	bool conditionToClean(const SimInfo* simulationInfo) const;
+	bool conditionToClean(const FrameInfo* frameInfo) const;
 	void setCircleSight(int i, const Urho3D::Vector3& position, float radius, Urho3D::Color color) const;
 
 	bool clickDown(MouseButton& var) const;

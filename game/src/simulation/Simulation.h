@@ -6,6 +6,7 @@
 
 #include "database/db_strcut.h"
 
+struct FrameInfo;
 enum class UnitAction : char;
 enum class UnitState : char;
 enum class SimColorMode : char;
@@ -23,7 +24,6 @@ class SimulationObjectManager;
 class UpgradeCommandList;
 class CommandList;
 class AiManager;
-class SimInfo;
 
 namespace Urho3D {
 	class Node;
@@ -34,12 +34,12 @@ class Simulation {
 public:
 	explicit Simulation(Environment* enviroment);
 	~Simulation();
-	void clearNodesWithoutDelete();
+	void clearNodesWithoutDelete() const;
 	
 	void updateInfluenceMaps() const;
 	void forceUpdateInfluenceMaps() const;
 
-	SimInfo* update(float timeStep);
+	FrameInfo* update(float timeStep);
 	void initScene(SceneLoader& loader) const;
 	void initScene(NewGameForm* form) const;
 
@@ -77,7 +77,7 @@ private:
 	std::vector<Building*>* buildings;
 	std::vector<ResourceEntity*>* resources;
 
-	SimInfo* simInfo;
+	FrameInfo* frameInfo;
 	Environment* enviroment;
 	SimulationObjectManager* simObjectManager;
 

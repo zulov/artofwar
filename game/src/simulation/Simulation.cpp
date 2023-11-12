@@ -22,7 +22,6 @@
 #include "scene/save/SceneSaver.h"
 #include "simulation/formation/FormationManager.h"
 #include "PerFrameAction.h"
-#include "SimInfo.h"
 #include "objects/projectile/ProjectileManager.h"
 #include "objects/unit/order/OrderUtils.h"
 
@@ -34,18 +33,18 @@ Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
 	units = simObjectManager->getUnits();
 	buildings = simObjectManager->getBuildings();
 	resources = simObjectManager->getResources();
-	simInfo = new SimInfo();
+	frameInfo = new FrameInfo();
 	DebugLineRepo::init(DebugLineType::UNIT_LINES);
 }
 
 Simulation::~Simulation() {
 	delete simObjectManager;
-	delete simInfo;
+	delete frameInfo;
 	delete Game::getActionCenter();
 	Game::setActionCenter(nullptr);
 }
 
-void Simulation::clearNodesWithoutDelete() {
+void Simulation::clearNodesWithoutDelete() const {
 	simObjectManager->clearNodesWithoutDelete();
 }
 
@@ -83,13 +82,13 @@ void Simulation::updateInfluenceMaps() const {
 	}
 }
 
-SimInfo* Simulation::update(float timeStep) {
+FrameInfo* Simulation::update(float timeStep) {
 	accumulateTime += updateTime(timeStep);
-	simInfo->setIsRealFrame(false);
+	frameInfo->setIsRealFrame(false);
 	while (accumulateTime >= TIME_PER_UPDATE) {
 		//simObjectManager->dispose();
 		//TODO bug a co jesli kilka razy sie wykona, moga byæ b³êdy jezeli cos umrze to poza petl¹ 
-		simInfo->setFrame(currentFrame, secondsElapsed);
+		frameInfo->set(currentFrame, secondsElapsed);
 
 		Game::getActionCenter()->executeLists();
 
@@ -119,7 +118,7 @@ SimInfo* Simulation::update(float timeStep) {
 		countFrame();
 	}
 
-	return simInfo;
+	return frameInfo;
 }
 
 void Simulation::selfAI() const {

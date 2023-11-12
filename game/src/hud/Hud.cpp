@@ -19,7 +19,6 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/PerFrameAction.h"
-#include "simulation/SimInfo.h"
 #include "utils/replace_utils.h"
 #include "window/debug/DebugPanel.h"
 #include "window/loading/LoadingPanel.h"
@@ -167,13 +166,13 @@ void Hud::createConsole(Urho3D::Engine* engine) const {
 }
 
 void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
-                 SimInfo* simInfo) const {
-	updateSelected(selectedInfo, simInfo);
+                 FrameInfo* frameInfo) const {
+	updateSelected(selectedInfo, frameInfo);
 
-	debugPanel->setText(simInfo->getFrameInfo()->getSeconds(),
+	debugPanel->setText(frameInfo->getSeconds(),
 	                    benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
 	                    cameraManager->getPosInfo());
-	if (PER_FRAME_ACTION.get(PerFrameAction::HUD_UPDATE, simInfo->getFrameInfo())) {
+	if (PER_FRAME_ACTION.get(PerFrameAction::HUD_UPDATE, frameInfo)) {
 		topPanel->update(Game::getPlayersMan()->getActivePlayer());
 
 		scorePanel->update(Game::getPlayersMan()->getAllPlayers());
@@ -209,10 +208,10 @@ void Hud::updateStateVisibilty(GameState state) {
 	}
 }
 
-void Hud::updateSelected(SelectedInfo* selectedInfo, SimInfo* simInfo) const {
+void Hud::updateSelected(SelectedInfo* selectedInfo, FrameInfo* frameInfo) const {
 	if (selectedInfo->isSthSelected() || selectedInfo->hasChanged()) {
 		if (selectedInfo->hasChanged()
-			|| PER_FRAME_ACTION.get(PerFrameAction::QUEUE_HUD, simInfo->getFrameInfo())) {
+			|| PER_FRAME_ACTION.get(PerFrameAction::QUEUE_HUD, frameInfo)) {
 			selectedHudPanel->update(selectedInfo);
 			menuPanel->updateSelected(selectedInfo);
 			switch (selectedInfo->getSelectedType()) {
@@ -238,7 +237,7 @@ void Hud::updateSelected(SelectedInfo* selectedInfo, SimInfo* simInfo) const {
 			queuePanel->update(selectedInfo);
 		}
 	} else {
-		if (PER_FRAME_ACTION.get(PerFrameAction::QUEUE_HUD, simInfo->getFrameInfo())) {
+		if (PER_FRAME_ACTION.get(PerFrameAction::QUEUE_HUD, frameInfo)) {
 			queuePanel->show(Game::getPlayersMan()->getActivePlayer()->getQueue());
 		}
 

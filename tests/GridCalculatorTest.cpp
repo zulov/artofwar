@@ -6,11 +6,10 @@ class GridCalculatorFixture : public ::testing::Test {
 public:
 	static GridCalculator* gc;
 	static GridCalculator* gcBig;
-	static GridCalculator* gc32;
 
 protected:
 	static void SetUpTestCase() {
-		// Kod uruchamiany przed pierwszym testem wewn¹trz `Test Case`
+		// Kod uruchamiany przed pierwszym testem wewnatrz `Test Case`
 		gc = new GridCalculator(4, 8);
 		gcBig = new GridCalculator(8, 8);
 	}
@@ -18,8 +17,7 @@ protected:
 	static void TearDownTestCase() {
 		delete gc;
 		delete gcBig;
-		delete gc32;
-		// Kod uruchamiany po ostatnim teœcie wewn¹trz `Test Case`
+		// Kod uruchamiany po ostatnim teœcie wewnatrz `Test Case`
 	}
 };
 

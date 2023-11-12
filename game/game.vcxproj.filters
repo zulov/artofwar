@@ -196,7 +196,6 @@
     <ClCompile Include="src\env\CloseIndexes.cpp" />
     <ClCompile Include="src\env\CloseIndexesProvider.cpp" />
     <ClCompile Include="src\player\ai\nn\BrainProvider.cpp" />
-    <ClCompile Include="src\simulation\SimInfo.cpp" />
     <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
     <ClCompile Include="src\objects\queue\SimpleQueueManager.cpp" />
     <ClCompile Include="src\env\influence\map\VisibilityMap.cpp" />
@@ -513,7 +512,6 @@
     <ClInclude Include="src\simulation\SimGlobals.h" />
     <ClInclude Include="src\utils\FileUtils.h" />
     <ClInclude Include="src\player\ai\AiTypes.h" />
-    <ClInclude Include="src\simulation\SimInfo.h" />
     <ClInclude Include="src\simulation\FrameInfo.h" />
     <ClInclude Include="src\database\db_basic_struct.h" />
     <ClInclude Include="src\database\db_grah_structs.h" />

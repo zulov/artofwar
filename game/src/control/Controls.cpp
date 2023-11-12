@@ -26,7 +26,6 @@
 #include "objects/PhysicalUtils.h"
 #include "player/Player.h"
 #include "simulation/FrameInfo.h"
-#include "simulation/SimInfo.h"
 #include "utils/OtherUtils.h"
 
 constexpr char CIRCLE_NUMBER = 5;
@@ -419,8 +418,8 @@ void Controls::refreshSelected() {
 	}
 }
 
-bool Controls::conditionToClean(const SimInfo* simulationInfo) const {
-	if (!simulationInfo->getFrameInfo()->isRealFrame()) {
+bool Controls::conditionToClean(const FrameInfo* frameInfo) const {
+	if (!frameInfo->isRealFrame()) {
 		return false;
 	}
 	switch (selectedInfo->getSelectedType()) {
@@ -434,8 +433,8 @@ bool Controls::conditionToClean(const SimInfo* simulationInfo) const {
 	return false;
 }
 
-void Controls::cleanAndUpdate(const SimInfo* simulationInfo) {
-	if (conditionToClean(simulationInfo)) {
+void Controls::cleanAndUpdate(const FrameInfo* frameInfo) {
+	if (conditionToClean(frameInfo)) {
 		refreshSelected();
 	}
 	switch (selectedInfo->getSelectedType()) {

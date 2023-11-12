@@ -281,7 +281,6 @@
     <ClCompile Include="src\objects\projectile\ProjectileManager.cpp" />
     <ClCompile Include="src\objects\queue\SimpleQueueManager.cpp" />
     <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
-    <ClCompile Include="src\simulation\SimInfo.cpp" />
     <ClCompile Include="src\player\ai\nn\BrainProvider.cpp" />
     <ClCompile Include="src\env\CloseIndexesProvider.cpp" />
     <ClCompile Include="src\env\bucket\levels\LevelCacheProvider.cpp" />
@@ -416,7 +415,6 @@
     <ClInclude Include="src\env\influence\map\VisibilityType.h" />
     <ClInclude Include="src\env\influence\VisibilityMode.h" />
     <ClInclude Include="src\simulation\FrameInfo.h" />
-    <ClInclude Include="src\simulation\SimInfo.h" />
     <ClInclude Include="src\player\ai\AiTypes.h" />
     <ClInclude Include="src\player\ai\nn\BrainProvider.h" />
     <ClInclude Include="src\env\CloseIndexesProvider.h" />

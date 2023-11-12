@@ -43,7 +43,6 @@
 #include "scene/load/dbload_container.h"
 #include "simulation/FrameInfo.h"
 #include "simulation/SimGlobals.h"
-#include "simulation/SimInfo.h"
 #include "simulation/Simulation.h"
 #include "env/Environment.h"
 #include "env/influence/CenterType.h"
@@ -54,11 +53,10 @@
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
-using namespace Urho3D;
 
-Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100),
-                               gameState(GameState::STARTING), loadingProgress(6) {
-	if (!engineParameters_[EP_HEADLESS].GetBool()) {
+Main::Main(Urho3D::Context* context) : Application(context), useMouseMode_(Urho3D::MM_ABSOLUTE), saver(100),
+                                       gameState(GameState::STARTING), loadingProgress(6) {
+	if (!engineParameters_[Urho3D::EP_HEADLESS].GetBool()) {
 		MySprite::RegisterObject(context);
 	}
 
@@ -74,53 +72,53 @@ void Main::Setup() {
 		const db_settings* settings = Game::getDatabase()->getSettings();
 		const db_graph_settings* graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
 		const db_resolution* resolution = Game::getDatabase()->getResolution(settings->resolution);
-		engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
+		engineParameters_[Urho3D::EP_WINDOW_TITLE] = GetTypeName();
 
-		engineParameters_[EP_FULL_SCREEN] = graphSettings->fullscreen;
+		engineParameters_[Urho3D::EP_FULL_SCREEN] = graphSettings->fullscreen;
 
-		engineParameters_[EP_SOUND] = false;
-		engineParameters_[EP_WINDOW_WIDTH] = resolution->x;
-		engineParameters_[EP_WINDOW_HEIGHT] = resolution->y;
+		engineParameters_[Urho3D::EP_SOUND] = false;
+		engineParameters_[Urho3D::EP_WINDOW_WIDTH] = resolution->x;
+		engineParameters_[Urho3D::EP_WINDOW_HEIGHT] = resolution->y;
 
 		engine_->SetMaxFps(graphSettings->max_fps);
 		engine_->SetMinFps(graphSettings->min_fps);
 	}
 
-	engineParameters_[EP_RESOURCE_PATHS] = "Data;CoreData;CoreDataMy";
-	engineParameters_[EP_RESOURCE_PREFIX_PATHS] = " ;../";
+	engineParameters_[Urho3D::EP_RESOURCE_PATHS] = "Data;CoreData;CoreDataMy";
+	engineParameters_[Urho3D::EP_RESOURCE_PREFIX_PATHS] = " ;../";
 
 	readParameters();
 	RandGen::init(SIM_GLOBALS.RANDOM);
 	if (SIM_GLOBALS.HEADLESS) {
-		engineParameters_[EP_LOG_NAME] = "";
-		GetSubsystem<Log>()->SetLevel(LOG_NONE);
+		engineParameters_[Urho3D::EP_LOG_NAME] = "";
+		GetSubsystem<Urho3D::Log>()->SetLevel(Urho3D::LOG_NONE);
 	} else {
-		engineParameters_[EP_LOG_NAME] = "logs/" + GetTypeName() + ".log";
+		engineParameters_[Urho3D::EP_LOG_NAME] = "logs/" + GetTypeName() + ".log";
 	}
 	if (!SIM_GLOBALS.HEADLESS) {
-		Game::setConsole(GetSubsystem<Console>())
-			->setLog(GetSubsystem<Log>());
+		Game::setConsole(GetSubsystem<Urho3D::Console>())
+			->setLog(GetSubsystem<Urho3D::Log>());
 	}
 	Game::setContext(context_)
-		->setCache(GetSubsystem<ResourceCache>());
+		->setCache(GetSubsystem<Urho3D::ResourceCache>());
 }
 
 void Main::Start() {
-	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));
-	if (!engineParameters_[EP_HEADLESS].GetBool()) {
-		Game::setGraphics(GetSubsystem<Graphics>());
+	SubscribeToEvent(Urho3D::E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));
+	if (!engineParameters_[Urho3D::EP_HEADLESS].GetBool()) {
+		Game::setGraphics(GetSubsystem<Urho3D::Graphics>());
 
 		SetWindowTitleAndIcon();
 		InitLocalizationSystem();
 		subscribeToEvents();
-		Game::setUI(GetSubsystem<UI>());
+		Game::setUI(GetSubsystem<Urho3D::UI>());
 		hud = new Hud();
 
 		hud->prepareUrho(engine_);
 		hud->createMyPanels();
 		healthBarProvider.init();
 		subscribeToUIEvents();
-		InitMouseMode(MM_RELATIVE);
+		InitMouseMode(Urho3D::MM_RELATIVE);
 	}
 
 	changeState(GameState::LOADING);
@@ -193,37 +191,37 @@ void Main::Stop() {
 
 void Main::subscribeToUIEvents() {
 	for (auto hudData : hud->getButtonsLeftMenuToSubscribe()) {
-		SubscribeToEvent(hudData->getUIParent(), E_CLICK, URHO3D_HANDLER(Main, HandleLeftMenuButton));
+		SubscribeToEvent(hudData->getUIParent(), Urho3D::E_CLICK, URHO3D_HANDLER(Main, HandleLeftMenuButton));
 	}
 
 	for (auto buttton : hud->getButtonsSelectedToSubscribe()) {
-		SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleSelectedButton));
+		SubscribeToEvent(buttton, Urho3D::E_CLICK, URHO3D_HANDLER(Main, HandleSelectedButton));
 	}
 
-	SubscribeToEvent(hud->getSaveButton(), E_CLICK, URHO3D_HANDLER(Main, HandleSaveScene));
-	SubscribeToEvent(hud->getNewGameProceed(), E_CLICK, URHO3D_HANDLER(Main, HandleNewGame));
-	SubscribeToEvent(hud->getLoadButton(), E_CLICK, URHO3D_HANDLER(Main, HandleLoadGame));
-	SubscribeToEvent(hud->getCloseButton(), E_CLICK, URHO3D_HANDLER(Main, HandleCloseGame));
+	SubscribeToEvent(hud->getSaveButton(), Urho3D::E_CLICK, URHO3D_HANDLER(Main, HandleSaveScene));
+	SubscribeToEvent(hud->getNewGameProceed(), Urho3D::E_CLICK, URHO3D_HANDLER(Main, HandleNewGame));
+	SubscribeToEvent(hud->getLoadButton(), Urho3D::E_CLICK, URHO3D_HANDLER(Main, HandleLoadGame));
+	SubscribeToEvent(hud->getCloseButton(), Urho3D::E_CLICK, URHO3D_HANDLER(Main, HandleCloseGame));
 
 	hud->subscribeToUIEvents();
 }
 
 void Main::subscribeToEvents() {
-	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
-	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
+	SubscribeToEvent(Urho3D::E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
+	SubscribeToEvent(Urho3D::E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
 }
 
 void Main::running(const double timeStep) {
 	Game::addTime(timeStep);
-	SimInfo* simInfo = simulation->update(timeStep);
+	FrameInfo* frameInfo = simulation->update(timeStep);
 	if (!SIM_GLOBALS.HEADLESS) {
 		benchmark.add(1.0f / timeStep);
 		debugManager.draw();
-		SelectedInfo* selectedInfo = control(timeStep, simInfo);
-		hud->update(benchmark, Game::getCameraManager(), selectedInfo, simInfo);
+		SelectedInfo* selectedInfo = control(timeStep, frameInfo);
+		hud->update(benchmark, Game::getCameraManager(), selectedInfo, frameInfo);
 	}
 
-	if (timeLimit != -1 && simInfo->getFrameInfo()->getSeconds() > timeLimit) {
+	if (timeLimit != -1 && frameInfo->getSeconds() > timeLimit) {
 		if (SimGlobals::CURRENT_RUN + 1 < SimGlobals::MAX_RUNS) {
 			changeState(GameState::CLOSING);
 		} else {
@@ -232,7 +230,7 @@ void Main::running(const double timeStep) {
 	}
 }
 
-void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
+void Main::HandleUpdate(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
 	switch (gameState) {
 	case GameState::MENU_MAIN:
 		//changeState(GameState::LOADING);
@@ -241,7 +239,7 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		load(saveToLoad, nullptr);
 		break;
 	case GameState::RUNNING:
-		running(eventData[SceneUpdate::P_TIMESTEP].GetDouble());
+		running(eventData[Urho3D::SceneUpdate::P_TIMESTEP].GetDouble());
 		break;
 	case GameState::PAUSE:
 		break;
@@ -259,30 +257,30 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	}
 }
 
-void Main::InitMouseMode(MouseMode mode) {
+void Main::InitMouseMode(Urho3D::MouseMode mode) {
 	useMouseMode_ = mode;
-	auto input = GetSubsystem<Input>();
+	auto input = GetSubsystem<Urho3D::Input>();
 
-	Console* console = Game::getConsole();
-	if (useMouseMode_ != MM_ABSOLUTE) {
+	Urho3D::Console* console = Game::getConsole();
+	if (useMouseMode_ != Urho3D::MM_ABSOLUTE) {
 		input->SetMouseMode(useMouseMode_);
 		if (console && console->IsVisible()) {
-			input->SetMouseMode(MM_ABSOLUTE, true);
+			input->SetMouseMode(Urho3D::MM_ABSOLUTE, true);
 		}
 	}
 }
 
 void Main::SetWindowTitleAndIcon() {
-	Graphics* graphics = Game::getGraphics();
+	Urho3D::Graphics* graphics = Game::getGraphics();
 	if (graphics) {
-		const auto icon = Game::getCache()->GetResource<Image>("textures/UrhoIcon.png");
+		const auto icon = Game::getCache()->GetResource<Urho3D::Image>("textures/UrhoIcon.png");
 		graphics->SetWindowIcon(icon);
 		graphics->SetWindowTitle("Art of War 2017");
 	}
 }
 
 void Main::changeCamera(CameraBehaviorType type) {
-	if (!engineParameters_[EP_HEADLESS].GetBool()) {
+	if (!engineParameters_[Urho3D::EP_HEADLESS].GetBool()) {
 		Game::getCameraManager()->setCameraBehave(type);
 		SetupViewport();
 		InitMouseMode(Game::getCameraManager()->getMouseMode());
@@ -290,7 +288,7 @@ void Main::changeCamera(CameraBehaviorType type) {
 }
 
 void Main::InitLocalizationSystem() const {
-	const auto l10n = GetSubsystem<Localization>();
+	const auto l10n = GetSubsystem<Urho3D::Localization>();
 	if (!SIM_GLOBALS.HEADLESS) {
 		l10n->LoadJSONFile("lang/language.json");
 	}
@@ -298,7 +296,7 @@ void Main::InitLocalizationSystem() const {
 	Game::setLocalization(l10n);
 }
 
-void Main::save(const String& name) {
+void Main::save(const Urho3D::String& name) {
 	saver.createSave(name);
 	int mapId = 1; //TODO id mapy wpisac
 	saver.saveConfig(mapId, Game::getEnvironment()->getResolution());
@@ -322,7 +320,7 @@ void Main::setSimpleManagers() {
 void Main::updateProgress(Loading& progress) const {
 	if (!SIM_GLOBALS.HEADLESS) {
 		std::string msg = Game::getLocalization()->Get("load_msg_" +
-		                                               String((int)loadingProgress.currentStage)).CString();
+			Urho3D::String((int)loadingProgress.currentStage)).CString();
 		progress.inc(std::move(msg));
 		hud->updateLoading(progress.getProgress());
 	} else {
@@ -330,7 +328,7 @@ void Main::updateProgress(Loading& progress) const {
 	}
 }
 
-void Main::load(const String& saveName, NewGameForm* form) {
+void Main::load(const Urho3D::String& saveName, NewGameForm* form) {
 	switch (loadingProgress.currentStage) {
 	case 0: {
 		RandGen::reset(SIM_GLOBALS.RANDOM);
@@ -348,9 +346,9 @@ void Main::load(const String& saveName, NewGameForm* form) {
 			Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());
 		}
 
-		if (!engineParameters_[EP_HEADLESS].GetBool()) {
+		if (!engineParameters_[Urho3D::EP_HEADLESS].GetBool()) {
 			SetupViewport();
-			controls = new Controls(GetSubsystem<Input>());
+			controls = new Controls(GetSubsystem<Urho3D::Input>());
 		}
 		if (hud) {
 			hud->resetLoading();
@@ -413,36 +411,36 @@ void Main::changeState(GameState newState) {
 	}
 }
 
-void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
-	int key = eventData[KeyUp::P_KEY].GetInt();
+void Main::HandleKeyUp(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eventData) {
+	int key = eventData[Urho3D::KeyUp::P_KEY].GetInt();
 
-	if (key == KEY_ESCAPE) {
-		auto console = GetSubsystem<Console>();
+	if (key == Urho3D::KEY_ESCAPE) {
+		auto console = GetSubsystem<Urho3D::Console>();
 		if (console->IsVisible()) {
 			console->SetVisible(false);
 		} else {
 			engine_->Exit();
 		}
 	}
-	if (key == KEY_KP_0) {
+	if (key == Urho3D::KEY_KP_0) {
 		Game::getPlayersMan()->changeActive(0);
-	} else if (key == KEY_KP_1) {
+	} else if (key == Urho3D::KEY_KP_1) {
 		Game::getPlayersMan()->changeActive(1);
 	}
 	if (gameState == GameState::RUNNING || gameState == GameState::PAUSE) {
-		if (key == KEY_1) {
+		if (key == Urho3D::KEY_1) {
 			changeCamera(CameraBehaviorType::FREE);
-		} else if (key == KEY_2) {
+		} else if (key == Urho3D::KEY_2) {
 			changeCamera(CameraBehaviorType::RTS);
-		} else if (key == KEY_3) {
+		} else if (key == Urho3D::KEY_3) {
 			changeCamera(CameraBehaviorType::TOP);
-		} else if (key == KEY_F5) {
-			String name = "test" + String(RandGen::nextRand(RandIntType::SAVE, 99999999));
+		} else if (key == Urho3D::KEY_F5) {
+			Urho3D::String name = "test" + Urho3D::String(RandGen::nextRand(RandIntType::SAVE, 99999999));
 			save(name);
-		} else if (key == KEY_F6) {
+		} else if (key == Urho3D::KEY_F6) {
 			saveToLoad = "quicksave.db";
 			changeState(GameState::CLOSING);
-		} else if (key == KEY_H) {
+		} else if (key == Urho3D::KEY_H) {
 			auto& possession = Game::getPlayersMan()->getActivePlayer()->getPossession();
 			for (auto building : possession.getBuildings()) {
 				//TODO perf
@@ -455,28 +453,28 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 	}
 }
 
-void Main::HandleNewGame(StringHash eventType, VariantMap& eventData) {
-	const auto element = static_cast<UIElement*>(eventData[UIMouseClick::P_ELEMENT].GetVoidPtr());
+void Main::HandleNewGame(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+	const auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	const auto form = static_cast<NewGameForm*>(element->GetVar("NewGameForm").GetVoidPtr());
 
 	changeState(GameState::NEW_GAME);
 	newGameForm = new NewGameForm(*form);
 }
 
-void Main::HandleLoadGame(StringHash eventType, VariantMap& eventData) {
-	const auto element = static_cast<UIElement*>(eventData[UIMouseClick::P_ELEMENT].GetVoidPtr());
+void Main::HandleLoadGame(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+	const auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	const auto fileName = element->GetVar("LoadFileName").GetString();
 
 	changeState(GameState::LOADING);
 
-	saveToLoad = String(fileName);
+	saveToLoad = Urho3D::String(fileName);
 }
 
-void Main::HandleCloseGame(StringHash eventType, VariantMap& eventData) {
+void Main::HandleCloseGame(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
 	engine_->Exit();
 }
 
-void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
+void Main::HandleLeftMenuButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
 	const auto hudData = HudData::getFromElement(eventData);
 
 	switch (hudData->getType()) {
@@ -487,71 +485,71 @@ void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 	}
 }
 
-void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
+void Main::HandleSelectedButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
 	controls->unSelectAll();
-	const auto element = static_cast<UIElement*>(eventData[UIMouseClick::P_ELEMENT].GetVoidPtr());
+	const auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	auto sHudElement = static_cast<SelectedHudElement*>(element->GetVar("SelectedHudElement").GetVoidPtr());
 	controls->select(&sHudElement->getSelected());
 }
 
-void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
-	const int key = eventData[KeyDown::P_KEY].GetInt();
+void Main::HandleKeyDown(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eventData) {
+	const int key = eventData[Urho3D::KeyDown::P_KEY].GetInt();
 
-	if (key == KEY_F1) {
-		GetSubsystem<Console>()->Toggle();
-	} else if (key == KEY_F2) {
-		GetSubsystem<DebugHud>()->ToggleAll();
+	if (key == Urho3D::KEY_F1) {
+		GetSubsystem<Urho3D::Console>()->Toggle();
+	} else if (key == Urho3D::KEY_F2) {
+		GetSubsystem<Urho3D::DebugHud>()->ToggleAll();
 	}
 
-	if (key == KEY_KP_PLUS) {
+	if (key == Urho3D::KEY_KP_PLUS) {
 		simulation->changeCoef(coefToEdit, 1);
-	} else if (key == KEY_KP_MINUS) {
+	} else if (key == Urho3D::KEY_KP_MINUS) {
 		simulation->changeCoef(coefToEdit, -1);
 	}
 
-	if (key == KEY_F8) {
+	if (key == Urho3D::KEY_F8) {
 		engine_->SetMaxFps((engine_->GetMaxFps() + 1) * 2);
-	} else if (key == KEY_F7) {
+	} else if (key == Urho3D::KEY_F7) {
 		engine_->SetMaxFps(engine_->GetMaxFps() / 2);
 	}
-	if (key == KEY_G) {
+	if (key == Urho3D::KEY_G) {
 		Game::getEnvironment()->flipTerrainShaderParam("GridEnable");
 	}
-	if (key == KEY_V) {
+	if (key == Urho3D::KEY_V) {
 		Game::getEnvironment()->nextVisibilityType();
 	}
 }
 
-void Main::HandleMouseModeRequest(StringHash /*eventType*/, VariantMap& eventData) {
-	const auto console = GetSubsystem<Console>();
+void Main::HandleMouseModeRequest(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eventData) {
+	const auto console = GetSubsystem<Urho3D::Console>();
 	if (console && console->IsVisible()) { return; }
-	auto input = GetSubsystem<Input>();
-	if (useMouseMode_ == MM_ABSOLUTE) {
+	auto input = GetSubsystem<Urho3D::Input>();
+	if (useMouseMode_ == Urho3D::MM_ABSOLUTE) {
 		input->SetMouseVisible(false);
-	} else if (useMouseMode_ == MM_FREE) {
+	} else if (useMouseMode_ == Urho3D::MM_FREE) {
 		input->SetMouseVisible(true);
 	}
 	input->SetMouseMode(useMouseMode_);
 }
 
-void Main::HandleMouseModeChange(StringHash /*eventType*/, VariantMap& eventData) {
-	bool mouseLocked = eventData[MouseModeChanged::P_MOUSELOCKED].GetBool();
-	GetSubsystem<Input>()->SetMouseVisible(!mouseLocked);
+void Main::HandleMouseModeChange(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eventData) {
+	bool mouseLocked = eventData[Urho3D::MouseModeChanged::P_MOUSELOCKED].GetBool();
+	GetSubsystem<Urho3D::Input>()->SetMouseVisible(!mouseLocked);
 }
 
-void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
-	const auto element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+void Main::HandleSaveScene(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eventData) {
+	const auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	const auto data = static_cast<FileFormData*>(element->GetVar("file_data").GetVoidPtr());
 	save(data->fileName);
 }
 
 void Main::SetupViewport() {
-	auto v = new Viewport(context_, Game::getScene(), Game::getCameraManager()->getComponent());
-	SharedPtr<Viewport> viewport(v);
+	auto v = new Urho3D::Viewport(context_, Game::getScene(), Game::getCameraManager()->getComponent());
+	Urho3D::SharedPtr<Urho3D::Viewport> viewport(v);
 
 	//v->GetRenderPath()->Append(Game::getCache()->GetResource<XMLFile>("PostProcess/FXAA2.xml"));
 
-	const auto renderer = GetSubsystem<Renderer>();
+	const auto renderer = GetSubsystem<Urho3D::Renderer>();
 	if (renderer) {
 		renderer->SetViewport(0, viewport);
 	}
@@ -610,9 +608,9 @@ void Main::disposeScene() {
 	loadingProgress.reset();
 }
 
-SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {
-	const IntVector2 cursorPos = Game::getUI()->GetCursorPosition();
-	UIElement* element = Game::getUI()->GetElementAt(hud->getRoot(), cursorPos, true);
+SelectedInfo* Main::control(const float timeStep, FrameInfo* frameInfo) {
+	const Urho3D::IntVector2 cursorPos = Game::getUI()->GetCursorPosition();
+	Urho3D::UIElement* element = Game::getUI()->GetElementAt(hud->getRoot(), cursorPos, true);
 
 	if (element) {
 		controls->deactivate();
@@ -621,7 +619,7 @@ SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {
 		controls->control();
 	}
 
-	const auto input = GetSubsystem<Input>();
+	const auto input = GetSubsystem<Urho3D::Input>();
 	debugManager.change(input, simulation);
 	if (input->GetKeyPress(Urho3D::KEY_P)) {
 		Game::getEnvironment()->drawInfluence();
@@ -629,7 +627,7 @@ SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {
 
 	Game::getCameraManager()->translate(cursorPos, input, timeStep);
 
-	controls->cleanAndUpdate(simulationInfo);
+	controls->cleanAndUpdate(frameInfo);
 	auto camera = Game::getCameraManager()->getComponent();
 	healthBarProvider.reset(controls->getSelected().size(), controls->getInfo()->getSelectedType());
 	for (auto selected : controls->getSelected()) {
@@ -638,8 +636,8 @@ SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {
 		if (progressBar) {
 			auto pos = selected->getPosition();
 			pos.y_ += selected->getModelHeight() * 1.3f;
-			IntVector2 pixel{
-				VectorRoundToInt(Vector2(Game::getGraphics()->GetSize()) * camera->WorldToScreenPoint(pos))
+			Urho3D::IntVector2 pixel{
+				VectorRoundToInt(Urho3D::Vector2(Game::getGraphics()->GetSize()) * camera->WorldToScreenPoint(pos))
 			};
 
 			auto halfSize = progressBar->GetSize().x_ / 2;
@@ -655,13 +653,13 @@ SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {
 }
 
 void Main::readParameters() {
-	auto const& arguments = GetArguments();
+	auto const& arguments = Urho3D::GetArguments();
 
 	for (unsigned i = 0; i < arguments.Size(); ++i) {
 		auto& current = arguments[i];
 		if (current.Length() > 1 && current[0] == '-') {
-			String argument = current.Substring(1).ToLower();
-			const String value = i + 1 < arguments.Size() ? arguments[i + 1] : String::EMPTY;
+			Urho3D::String argument = current.Substring(1).ToLower();
+			const Urho3D::String value = i + 1 < arguments.Size() ? arguments[i + 1] : Urho3D::String::EMPTY;
 
 			if (argument == "train") {
 				SimGlobals::TRAIN_MODE = true;
@@ -690,10 +688,10 @@ void Main::readParameters() {
 				timeLimit = ToInt(value);
 				++i;
 			} else if (argument == "x" && !value.Empty()) {
-				engineParameters_[EP_WINDOW_WIDTH] = ToInt(value);
+				engineParameters_[Urho3D::EP_WINDOW_WIDTH] = ToInt(value);
 				++i;
 			} else if (argument == "y" && !value.Empty()) {
-				engineParameters_[EP_WINDOW_HEIGHT] = ToInt(value);
+				engineParameters_[Urho3D::EP_WINDOW_HEIGHT] = ToInt(value);
 				++i;
 			} else if (argument == "actionaipath1" && !value.Empty()) {
 				SimGlobals::ACTION_AI_PATH[0] = value.CString();
@@ -715,12 +713,12 @@ void Main::readParameters() {
 }
 
 void Main::miniReadParameters() const {
-	auto const& arguments = GetArguments();
+	auto const& arguments = Urho3D::GetArguments();
 
 	for (unsigned i = 0; i < arguments.Size(); ++i) {
 		if (arguments[i].Length() > 1 && arguments[i][0] == '-') {
-			String argument = arguments[i].Substring(1).ToLower();
-			const String value = i + 1 < arguments.Size() ? arguments[i + 1] : String::EMPTY;
+			Urho3D::String argument = arguments[i].Substring(1).ToLower();
+			const Urho3D::String value = i + 1 < arguments.Size() ? arguments[i + 1] : Urho3D::String::EMPTY;
 
 			if (argument == "databasename" && !value.Empty()) {
 				SimGlobals::DATABASE_NUMBER = value;
