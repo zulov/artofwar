@@ -69,7 +69,7 @@ public:
 	bool toActionIfInRange(Physical* closest, UnitAction order);
 	bool toAction(Physical* closest, UnitAction order);
 
-	void updateHeight(float y, double timeStep);
+	void updateHeight(float y, float timeStep);
 
 	void setState(UnitState _state);
 

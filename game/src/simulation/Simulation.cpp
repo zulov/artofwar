@@ -358,9 +358,9 @@ void Simulation::calculateForces() {
 
 	for (const auto unit : *units) {
 		auto& stats = force.stats();
-		if (!SIM_GLOBALS.HEADLESS) {
-			stats.vectorReset();
-		}
+		
+		stats.vectorReset();
+		
 
 		Urho3D::Vector2 newForce;
 		switch (unit->getState()) {

@@ -118,15 +118,11 @@ bool Unit::ifVisible(bool hasMoved, const CameraInfo* camInfo) const {
 
 void Unit::setAcceleration(Urho3D::Vector2& _acceleration) {
 	acceleration = _acceleration;
-	if (acceleration.LengthSquared() > dbLevel->maxForce * dbLevel->maxForce) {
-		acceleration.Normalize();
-		acceleration *= dbLevel->maxForce;
-	}
+	limitTo(acceleration, dbLevel->maxForce);
 }
 
 void Unit::forceGo(float boostCoef, float aimCoef, Urho3D::Vector2& force) const {
-	force.Normalize();
-	force *= boostCoef;
+	scaleTo(force, boostCoef);
 	force -= velocity;
 	force *= dbLevel->mass * aimCoef * 2.f;
 }
@@ -174,8 +170,8 @@ bool Unit::toAction(Physical* closest, UnitAction order) {
 	return false;
 }
 
-void Unit::updateHeight(float y, double timeStep) {
-	velocity *= 1 + (position.y_ - y) * 0.1f * dbLevel->mass * timeStep;
+void Unit::updateHeight(float y, float timeStep) {
+	velocity *= 1.f + (position.y_ - y) * 0.1f * dbLevel->mass * timeStep;
 	position.y_ = y;
 }
 
@@ -457,16 +453,14 @@ std::string Unit::getValues(int precision) {
 void Unit::applyForce(float timeStep) {
 	velocity *= 0.5f; //TODO to dac jaki wspolczynnik tarcia terenu
 	velocity += acceleration * (timeStep * dbLevel->invMass);
-	const float velLength = velocity.LengthSquared();
-	if (velLength < dbLevel->sqMinSpeed) {
+	const float lengthSq = velocity.LengthSquared();
+	if (lengthSq < dbLevel->sqMinSpeed) {
 		if (state == UnitState::MOVE) {
 			StateManager::changeState(this, UnitState::STOP);
 		}
 	} else {
-		if (velLength > maxSpeed * maxSpeed) {
-			velocity.Normalize();
-			velocity *= maxSpeed;
-		}
+		limitTo(velocity, maxSpeed, lengthSq);
+
 		if (state == UnitState::STOP) {
 			StateManager::changeState(this, UnitState::MOVE);
 		}

@@ -42,8 +42,7 @@ struct ProjectileWithNode : public ProjectileBase {
 
 		endHeight = end.y_ + aim->getModelHeight() / (RandGen::nextRand(RandFloatType::OTHER, 3) + 2.f);
 		peakHeight = direction.Length() / (RandGen::nextRand(RandFloatType::OTHER, 3) + 4.1f);
-		direction.Normalize();
-		direction *= speed;
+		scaleTo(direction, speed);
 		node->SetEnabled(true);
 		node->SetPosition(start);
 	}

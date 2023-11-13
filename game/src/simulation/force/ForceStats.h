@@ -9,11 +9,13 @@ constexpr bool FORCE_STATS_ENABLE = false;
 struct ForceStats {
 	void vectorReset() {
 		if constexpr (DEBUG_LINES_ENABLED) {
-			sepObstLast = {};
-			sepUnitLast = {};
-			destLast = {};
-			formLast = {};
-			escaLast = {};
+			if (!SIM_GLOBALS.HEADLESS) {
+				sepObstLast = {};
+				sepUnitLast = {};
+				destLast = {};
+				formLast = {};
+				escaLast = {};
+			}
 		}
 	}
 
@@ -76,19 +78,21 @@ struct ForceStats {
 
 	float* result() {
 		if constexpr (FORCE_STATS_ENABLE) {
-			++statIndex;
-			if (statIndex >= FORCE_STATS_SIZE) {
-				stats[0] = sepObstStat / FORCE_STATS_SIZE;
-				stats[1] = sepUnitStat / FORCE_STATS_SIZE;
-				stats[2] = destStat / FORCE_STATS_SIZE;
-				stats[3] = formStat / FORCE_STATS_SIZE;
-				stats[4] = escaStat / FORCE_STATS_SIZE;
-				statIndex = 0;
-				std::cout <<
-					"sepObs-" << stats[0] << "\tsepUnit-" << stats[1] << "\tdestStat-" <<
-					stats[2] << "\tformStat-" << stats[3] << "\tescaStat-" <<
-					stats[4] << std::endl;
-				reset();
+			if (!SIM_GLOBALS.HEADLESS) {
+				++statIndex;
+				if (statIndex >= FORCE_STATS_SIZE) {
+					stats[0] = sepObstStat / FORCE_STATS_SIZE;
+					stats[1] = sepUnitStat / FORCE_STATS_SIZE;
+					stats[2] = destStat / FORCE_STATS_SIZE;
+					stats[3] = formStat / FORCE_STATS_SIZE;
+					stats[4] = escaStat / FORCE_STATS_SIZE;
+					statIndex = 0;
+					std::cout <<
+						"sepObs-" << stats[0] << "\tsepUnit-" << stats[1] << "\tdestStat-" <<
+						stats[2] << "\tformStat-" << stats[3] << "\tescaStat-" <<
+						stats[4] << std::endl;
+					reset();
+				}
 			}
 		}
 		longestLast = 0;

@@ -50,7 +50,7 @@ struct GridCalculator {
 		//return {i / resolution, i % resolution};
 		return {i >> shiftAmount, i & mask};
 		//Zamiast dzielenia przez "resolution" u¿yto zmiennej "shiftAmount", która jest równe log2(resolution), a zamiast modulo(operator %) u¿yto maski,
-		//która ma wartoœæ "resolution - 1" i ma wype³nione jedynkami tylko najmniej znacz¹ce bity.
+		//która ma wartosc "resolution - 1" i ma wype³nione jedynkami tylko najmniej znacz¹ce bity.
 	}
 
 	Urho3D::IntVector2 getShiftCords(int i) const {

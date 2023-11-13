@@ -24,16 +24,19 @@ Grid::~Grid() {
 	delete tempSelected;
 }
 
-int Grid::update(Unit* unit, int currentIndex) const {
+int Grid::update(Unit* unit, int currentIndex, bool shouldChangeFlag) const {
 	assert(!unit->isToDispose());
 
 	const int index = calculator->indexFromPosition(unit->getPosition());
-	if (currentIndex != index) {
+	const auto areDifferent = currentIndex != index;
+	if (areDifferent) {
 		removeAt(currentIndex, unit);
 		addAt(index, unit);
-		unit->setIndexChanged(true);
 	}
-	unit->setIndexChanged(false);
+	if (shouldChangeFlag) {
+		unit->setIndexChanged(areDifferent);
+	}
+	
 	return index;
 }
 

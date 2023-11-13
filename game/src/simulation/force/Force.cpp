@@ -80,11 +80,9 @@ void Force::destOrFormation(Urho3D::Vector2& newForce, Unit* unit) {
 	if (unit->getFormation() < 0) {
 		destination(newForce, unit, 1.f);
 	} else if (Game::getFormationManager()->isLeader(unit)) {
-		if (Game::getFormationManager()->isMoving(unit)) {
-			destination(newForce, unit, 1.0f);
-		} else {
-			destination(newForce, unit, 0.05f);
-		}
+		const auto factor = Game::getFormationManager()->isMoving(unit) ? 1.0f : 0.05f;
+
+		destination(newForce, unit, factor);
 	} else {
 		formation(newForce, unit);
 	}
@@ -170,7 +168,6 @@ void Force::inCell(Urho3D::Vector2& newForce, Unit* unit) const {
 	//TODO czy to normalizacja?
 	force *= inCellCoef * boostCoef;
 	newForce += force;
-
 }
 
 ForceStats& Force::stats() {

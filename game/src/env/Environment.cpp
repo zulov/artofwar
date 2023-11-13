@@ -35,7 +35,7 @@ Environment::~Environment() {
 
 std::vector<Physical*>* Environment::getNeighboursFromSparseSamePlayer(Physical* physical, const float radius,
                                                                        char player) {
-	return getNeighbours(physical,sparseUnitGrid, radius,
+	return getNeighbours(physical, sparseUnitGrid, radius,
 	                     [player](const Physical* thing) { return thing->getPlayer() == player && thing->isAlive(); });
 }
 
@@ -221,8 +221,10 @@ void Environment::updateInfluenceHistoryReset() const {
 }
 
 void Environment::update(Unit* unit) const {
-	unit->setBucketInMainGrid(mainGrid.update(unit, unit->getMainGridIndex()));
-	unit->setSparseIndex(sparseUnitGrid.update(unit, unit->getSparseIndex()));
+	unit->setBucketInMainGrid(mainGrid.update(unit, unit->getMainGridIndex(), true));
+	if (unit->indexChanged()) {
+		unit->setSparseIndex(sparseUnitGrid.update(unit, unit->getSparseIndex(), false));
+	}
 }
 
 void Environment::addNew(const std::vector<Unit*>& units) {
@@ -408,7 +410,8 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(const std::span<float
 std::optional<Urho3D::Vector2> Environment::getPosToCreateResBonus(db_building* building, char player) {
 	std::vector<unsigned> allIndexes;
 	for (const char id : building->resourceTypes) {
-		auto indexes = influenceManager.getAreasResBonus(id, player);//TODO  jak bedzie kilka resourceTypes to trzeba by to brac po koleji dla największch wartosci niezelzenie od tego jaki jest resource
+		auto indexes = influenceManager.getAreasResBonus(id, player);
+		//TODO  jak bedzie kilka resourceTypes to trzeba by to brac po koleji dla największch wartosci niezelzenie od tego jaki jest resource
 		allIndexes.insert(allIndexes.end(), indexes.begin(), indexes.end());
 	}
 

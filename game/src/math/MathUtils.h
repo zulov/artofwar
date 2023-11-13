@@ -100,3 +100,26 @@ inline Urho3D::Vector2 to2D(Urho3D::Vector3 vec) {
 inline Urho3D::Vector3 to3D(Urho3D::Vector2 vec, float y) {
 	return {vec.x_, y, vec.y_};
 }
+
+inline void notSafeScaleTo(Urho3D::Vector2& vector, float max, float lengthSq) {
+	vector *= max / sqrtf(lengthSq);
+}
+
+inline void scaleTo(Urho3D::Vector2& vector, float max) {
+	const auto lengthSq = vector.LengthSquared();
+	if (lengthSq > 0.f) {
+		notSafeScaleTo(vector, max, lengthSq);
+	}
+}
+
+inline void limitTo(Urho3D::Vector2& vector, float max, float lengthSq) {
+	if (lengthSq > max * max) {
+		notSafeScaleTo(vector, max, lengthSq);
+	}
+}
+
+inline void limitTo(Urho3D::Vector2& vector, float max) {
+	const auto lengthSq = vector.LengthSquared();
+
+	limitTo(vector, max, lengthSq);
+}
