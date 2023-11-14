@@ -96,6 +96,9 @@ void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std:
 	for (const auto building : (*buildings)) {
 		visibilityPerPlayer[building->getPlayer()]->update(building);
 	}
+	for (const auto perPlayer : visibilityPerPlayer) {
+		perPlayer->finish();
+	}
 	const auto terrain = Game::getEnvironment()->getTerrain();
 
 	if (terrain && !SIM_GLOBALS.HEADLESS) {

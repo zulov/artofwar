@@ -6,20 +6,25 @@
 #include "objects/Physical.h"
 #include "env/bucket/levels/LevelCache.h"
 #include "env/bucket/levels/LevelCacheProvider.h"
+#include "env/influence/VisibilityManager.h"
 #include "utils/OtherUtils.h"
+
 
 VisibilityMap::VisibilityMap(unsigned short resolution, float size, float valueThresholdDebug)
 	: InfluenceMap(resolution, size, valueThresholdDebug),
-	  levelCache(LevelCacheProvider::get(resolution, false, 60.f, calculator)) {
+	  levelCache(LevelCacheProvider::get(resolution, true, 60.f, calculator)) {
 	values = new VisibilityType[arraySize];
 	std::fill_n(values, arraySize, VisibilityType::NONE);
 	valuesForInfluence = new bool[arraySize / 4];
 	std::fill_n(valuesForInfluence, arraySize / 4, false);
+	ranges = new float[arraySize];
+	std::fill_n(ranges, arraySize, 0.f);
 }
 
 VisibilityMap::~VisibilityMap() {
 	delete[] values;
 	delete[] valuesForInfluence;
+	delete[] ranges;
 }
 
 void VisibilityMap::update(Physical* thing, float value) {
@@ -28,17 +33,42 @@ void VisibilityMap::update(Physical* thing, float value) {
 	const auto sRadius = thing->getSightRadius();
 	if (sRadius < 0) { return; }
 	const auto centerIdx = calculator->indexFromPosition(thing->getPosition());
-	for (auto level : *levelCache->get(sRadius)) {
-		const auto index = centerIdx + level; //TOdo to trzeba inaczej sprawdzic, bo to wychodzi poza plansze i tak
-		if (calculator->isValidIndex(index)) {
-			values[index] = VisibilityType::VISIBLE;
+	if (ranges[centerIdx] < sRadius) {
+		if (ranges[centerIdx] == 0.f && changedIndexes.size() < CHANGED_INDEXES_MAX_SIZE) {
+			changedIndexes.push_back(centerIdx);
 		}
+		ranges[centerIdx] = sRadius;
 	}
 }
 
+void VisibilityMap::finishAtIndex(int i) const {
+	const auto centerCords = calculator->getIndexes(i);
+	for (const auto& [idx, shift] : levelCache->getBoth(ranges[i])) {
+		if (calculator->isValidIndex(centerCords + shift)) {
+			const auto index = i + idx;
+			values[index] = VisibilityType::VISIBLE;
+		}
+	}
+	ranges[i] = 0.f;
+}
+
+void VisibilityMap::finish() {
+	if (changedIndexes.size() >= CHANGED_INDEXES_MAX_SIZE) {
+		for (int i = 0; i < arraySize; ++i) {
+			if (ranges[i] > 0.f) {
+				finishAtIndex(i);
+			}
+		}
+	} else {
+		for (const int i : changedIndexes) {
+			finishAtIndex(i);
+		}
+	}
+
+	changedIndexes.clear();
+}
+
 void VisibilityMap::updateInt(Physical* thing, int value) {
-	valuesForInfluenceReady = false;
-	percentReady = false;
 	update(thing);
 }
 

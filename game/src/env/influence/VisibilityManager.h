@@ -20,6 +20,8 @@ class Building;
 struct GridCalculator;
 class VisibilityMap;
 
+constexpr int CHANGED_INDEXES_MAX_SIZE = 100;
+
 class VisibilityManager {
 public:
 	VisibilityManager(char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain);

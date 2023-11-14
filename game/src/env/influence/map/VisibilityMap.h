@@ -10,6 +10,8 @@ public:
 	~VisibilityMap() override;
 
 	void update(Physical* thing, float value = 1.f) override;
+	void finishAtIndex(int i) const;
+	void finish();
 	void updateInt(Physical* thing, int value = 1) override;
 	void updateInt(int index, int value = 1) const;
 	void reset() override;
@@ -25,6 +27,8 @@ public:
 private:
 	void ensureReady();
 	VisibilityType* values;
+	float* ranges;
+	std::vector<int> changedIndexes;
 	bool* valuesForInfluence;
 	LevelCache* levelCache;
 	float percent = -1.f;

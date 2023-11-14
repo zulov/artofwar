@@ -58,7 +58,7 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	ParentBuildingType type = static_cast<ParentBuildingType>(biggestWithRand(whichTypeOutput));
 	if (!isEnoughResToTypeBuilding(type)) { return false; }
 	if (type == ParentBuildingType::RESOURCE) {
-		if (sumSpan(player->getPossession().getResWithOutBonus()) < 0.5) {
+		if (sumSpan(player->getPossession().getResWithOutBonus()) < 0.5f) {
 			return false;
 		}
 	}

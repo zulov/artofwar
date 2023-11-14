@@ -5,6 +5,7 @@
 #include "math/MathUtils.h"
 #include "objects/Physical.h"
 #include "env/Environment.h"
+#include "env/influence/VisibilityManager.h"
 
 InfluenceMapFloat::
 InfluenceMapFloat(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug):
@@ -53,7 +54,7 @@ void InfluenceMapFloat::tempUpdate(const Urho3D::Vector3& pos, float value) {
 }
 
 void InfluenceMapFloat::tempUpdate(int index, float value) {
-	if (changedIndexes.size() <= 10 && tempVals[index] == 0.f) {
+	if (changedIndexes.size() < CHANGED_INDEXES_MAX_SIZE && tempVals[index] == 0.f) {
 		changedIndexes.push_back(index);
 	}
 	tempVals[index] += value;
@@ -182,7 +183,7 @@ bool InfluenceMapFloat::cumulateErros(float percent, float* intersection) const 
 
 void InfluenceMapFloat::updateFromTemp() {
 	if (valuesCalculateNeeded) {
-		if (changedIndexes.size() == 10) {
+		if (changedIndexes.size() >= CHANGED_INDEXES_MAX_SIZE) {
 			for (int i = 0; i < arraySize; ++i) {
 				const auto val = tempVals[i];
 				if (val > 0.f) {
