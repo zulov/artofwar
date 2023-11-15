@@ -103,6 +103,8 @@ public:
 	bool isNodeEnabled() const;
 	void setDefaultShader(Urho3D::Material* mat) const;
 	void ensureMaterialCloned();
+	int getIndexInInfluence() const { return indexInInfluence; }
+	void setIndexInInfluence(int index);
 	Urho3D::Node* getNode() { return node; }
 
 protected:
@@ -115,10 +117,11 @@ protected:
 	Urho3D::Node* node{};
 	Urho3D::Vector3 position;
 
-	int indexInMainGrid = -1;
-
 	float hp = -1;
 	float invMaxHp; // optm
+
+	int indexInInfluence = -1;
+	int indexInMainGrid = -1;
 	short id = -1; // optm
 
 	char team, player = -1;

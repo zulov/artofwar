@@ -38,8 +38,6 @@ public:
 	std::vector<int> getIndexesForRangeUse(Unit* user) const override;
 
 	std::string getValues(int precision) override;
-	unsigned short getIndexInInfluence() const { return indexInInfluence; }
-	void setIndexInInfluence(int index);
 
 	int getStaticGridIndex() const { return staticGridIndex; }
 	void setStaticGridIndex(int index) { staticGridIndex = index; }
@@ -58,7 +56,6 @@ protected:
 	void populate() override;
 
 	int staticGridIndex;
-	unsigned short indexInInfluence;
 	StaticState state, nextState;
 
 	unsigned char occupiedCellsSize = 0;

@@ -52,7 +52,7 @@ public:
 	void drawAll() const;
 
 	content_info* getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfos, bool* checks,
-	                             int activePlayer);
+	                             int activePlayer) const;
 	std::array<float, 5>& getInfluenceDataAt(char player, const Urho3D::Vector2& pos);
 	std::vector<int> getIndexesIterative(const std::span<float> result, float tolerance, int min,
 	                                     std::span<InfluenceMapFloat*> maps) const;
@@ -62,11 +62,11 @@ public:
 
 	float getFieldSize() const;
 	std::vector<unsigned>* getAreas(const std::span<float> result, ParentBuildingType type, char player);
-	std::vector<unsigned> getAreasResBonus(char id, char player);
+	std::vector<unsigned> getAreasResBonus(char id, char player) const;
 
-	void addCollect(Unit* unit, short resId, float value);
-	void addAttack(char player, const Urho3D::Vector3& position, float value);
-	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
+	void addCollect(Unit* unit, short resId, float value) const;
+	void addAttack(char player, const Urho3D::Vector3& position, float value) const;
+	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player) const;
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;
 	Urho3D::Vector2 getCenter(int index) const;
 	float getVisibilityScore(char player) const;
@@ -75,6 +75,7 @@ public:
 
 private:
 	std::vector<unsigned>* getAreas(std::span<InfluenceMapFloat*> maps, const std::span<float> result, char player) const;
+	int getIndexInInfluence(Unit* unit) const;
 
 	std::vector<unsigned>* bestIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
 	std::vector<Urho3D::Vector2> centersFromIndexes(const std::vector<int>& intersection) const;

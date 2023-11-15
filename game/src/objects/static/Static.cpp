@@ -27,12 +27,6 @@ void Static::load(dbload_static* dbloadStatic) {
 	this->nextState = StaticState(dbloadStatic->nextState);
 }
 
-void Static::setIndexInInfluence(int index) {
-	assert(index < std::numeric_limits<unsigned short>::max());
-	assert(index >= 0);
-	indexInInfluence = index;
-}
-
 bool Static::isInCloseRange(int index) const {
 	auto cells = getSurroundCells();
 	return std::ranges::find(cells, index) != cells.end();

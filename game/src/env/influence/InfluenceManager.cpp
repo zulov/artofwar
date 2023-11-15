@@ -24,11 +24,11 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 	buildingsInfluencePerPlayer.reserve(numberOfPlayers);
 	unitsInfluencePerPlayer.reserve(numberOfPlayers);
 
-	for (auto &gs : gatherSpeed) {
+	for (auto& gs : gatherSpeed) {
 		gs.reserve(numberOfPlayers);
 	}
 
-	for (auto &resNotInBonus : resNotInBonus) {
+	for (auto& resNotInBonus : resNotInBonus) {
 		resNotInBonus.reserve(numberOfPlayers);
 	}
 
@@ -44,15 +44,15 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 	for (int player = 0; player < numberOfPlayers; ++player) {
 		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(resolution, mapSize, 40));
 		buildingsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 2));
+		                                         new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 2));
 		unitsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 40));
+		                                     new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 40));
 
-		for (auto &gs : gatherSpeed) {
+		for (auto& gs : gatherSpeed) {
 			gs.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
 		}
 
-		for (auto &resNotInBonus : resNotInBonus) {
+		for (auto& resNotInBonus : resNotInBonus) {
 			resNotInBonus.emplace_back(new InfluenceMapInt(resolution, mapSize, 5));
 		}
 
@@ -65,38 +65,38 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 	resourceInfluence = new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 40);
 	for (int player = 0; player < numberOfPlayers; ++player) {
 		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 8>{
-			buildingsInfluencePerPlayer[player],
-			unitsInfluencePerPlayer[player],
-			resourceInfluence, //TODO czy to jest ważne?
-			attackSpeed[player],
-			gatherSpeed[0][player],
-			gatherSpeed[1][player],
-			gatherSpeed[2][player],
-			gatherSpeed[3][player],
-		});
+			                                buildingsInfluencePerPlayer[player],
+			                                unitsInfluencePerPlayer[player],
+			                                resourceInfluence, //TODO czy to jest ważne?
+			                                attackSpeed[player],
+			                                gatherSpeed[0][player],
+			                                gatherSpeed[1][player],
+			                                gatherSpeed[2][player],
+			                                gatherSpeed[3][player],
+		                                });
 		mapsForAiArmyPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 3>{
-			buildingsInfluencePerPlayer[player],
-			unitsInfluencePerPlayer[player],
-			attackSpeed[player],
-		});
+			                                    buildingsInfluencePerPlayer[player],
+			                                    unitsInfluencePerPlayer[player],
+			                                    attackSpeed[player],
+		                                    });
 		mapsForCentersPerPlayer.emplace_back(std::array<InfluenceMapQuad*, 3>{
-			econQuad[player],
-			buildingsQuad[player],
-			armyQuad[player]
-		});
+			                                     econQuad[player],
+			                                     buildingsQuad[player],
+			                                     armyQuad[player]
+		                                     });
 
 		mapsGatherSpeedPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 4>{
-			gatherSpeed[0][player],
-			gatherSpeed[1][player],
-			gatherSpeed[2][player],
-			gatherSpeed[3][player],
-		});
+			                                      gatherSpeed[0][player],
+			                                      gatherSpeed[1][player],
+			                                      gatherSpeed[2][player],
+			                                      gatherSpeed[3][player],
+		                                      });
 		mapsResNotInBonusPerPlayer.emplace_back(std::array<InfluenceMapInt*, 4>{
-			resNotInBonus[0][player],
-			resNotInBonus[1][player],
-			resNotInBonus[2][player],
-			resNotInBonus[3][player],
-		});
+			                                        resNotInBonus[0][player],
+			                                        resNotInBonus[1][player],
+			                                        resNotInBonus[2][player],
+			                                        resNotInBonus[3][player],
+		                                        });
 		assert(validSizes(mapsForAiPerPlayer.at(player)));
 	}
 	visibilityManager = new VisibilityManager(numberOfPlayers, mapSize, terrain);
@@ -111,14 +111,14 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 	tempIndexes = new std::vector<unsigned>();
 
 	assert(unitsNumberPerPlayer[0]->getResolution() == unitsInfluencePerPlayer[0]->getResolution()
-		&& calculator->getResolution() == unitsNumberPerPlayer[0]->getResolution());
+	       && calculator->getResolution() == unitsNumberPerPlayer[0]->getResolution());
 }
 
 InfluenceManager::~InfluenceManager() {
 	clear_vector(unitsNumberPerPlayer);
 	clear_vector(buildingsInfluencePerPlayer);
 	clear_vector(unitsInfluencePerPlayer);
-	for (auto &vec : gatherSpeed) {
+	for (auto& vec : gatherSpeed) {
 		clear_vector(vec);
 	}
 	for (auto& vec : resNotInBonus) {
@@ -144,14 +144,14 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 	if (SIM_GLOBALS.HEADLESS) {
 		for (const auto unit : (*units)) {
 			const auto pId = unit->getPlayer();
-			const auto index = calculator->indexFromPosition(unit->getPosition());
+			const auto index = getIndexInInfluence(unit);
 			unitsInfluencePerPlayer[pId]->tempUpdate(index);
 		}
 	} else {
 		MapsUtils::resetMaps(unitsNumberPerPlayer);
 		for (const auto unit : (*units)) {
 			const auto pId = unit->getPlayer();
-			const auto index = calculator->indexFromPosition(unit->getPosition());
+			const auto index = getIndexInInfluence(unit);
 			unitsNumberPerPlayer[pId]->updateInt(index);
 			unitsInfluencePerPlayer[pId]->tempUpdate(index);
 		}
@@ -172,7 +172,7 @@ void InfluenceManager::updateQuadUnits(const std::vector<Unit*>* units) const {
 	MapsUtils::resetMaps(armyQuad);
 	for (const auto unit : (*units)) {
 		if (!unit->getDbUnit()->typeWorker) {
-			armyQuad[unit->getPlayer()]->updateInt(unit);
+			armyQuad[unit->getPlayer()]->updateInt(getIndexInInfluence(unit));
 		}
 	}
 }
@@ -190,7 +190,7 @@ void InfluenceManager::update(const std::vector<Building*>* buildings) const {
 }
 
 void InfluenceManager::updateWithHistory() const {
-	for (auto &vec : gatherSpeed) {
+	for (auto& vec : gatherSpeed) {
 		MapsUtils::resetMaps(vec);
 		MapsUtils::finalize(vec);
 	}
@@ -208,7 +208,7 @@ void InfluenceManager::updateNotInBonus(std::vector<Unit*>* units) const {
 		if (unit->getDbUnit()->typeWorker && unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
 			auto res = (ResourceEntity*)unit->getThingToInteract();
 			//TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
-			mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getId()]->updateInt(res);
+			mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getId()]->updateInt(res->getIndexInInfluence());
 		}
 	}
 }
@@ -222,7 +222,7 @@ void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::
 	visibilityManager->updateVisibility(buildings, units, resources);
 }
 
-void InfluenceManager::updateInfluenceHistoryReset() const{
+void InfluenceManager::updateInfluenceHistoryReset() const {
 	for (auto& vec : gatherSpeed) {
 		MapsUtils::resetToZeroMaps(vec);
 	}
@@ -302,7 +302,7 @@ void InfluenceManager::drawAll() const {
 }
 
 content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfo,
-                                               bool checks[], int activePlayer) {
+                                               bool checks[], int activePlayer) const {
 	ci->reset(); //TODO przemyslec to, zbyt skomplikowane
 	switch (state) {
 	case CellState::NONE:
@@ -396,7 +396,7 @@ InfluenceManager::getAreas(const std::span<float> result, ParentBuildingType typ
 	return getAreas(mapsForAiPerPlayer[player], result, player);
 }
 
-std::vector<unsigned> InfluenceManager::getAreasResBonus(char id, char player) {
+std::vector<unsigned> InfluenceManager::getAreasResBonus(char id, char player) const {
 	return mapsResNotInBonusPerPlayer[player][id]->getMaxIdxs();
 }
 
@@ -422,22 +422,29 @@ InfluenceManager::getAreas(std::span<InfluenceMapFloat*> maps, const std::span<f
 	return bestIndexes(intersection, idx, 0.1f * numberOfNotEmptyMap);
 }
 
-void InfluenceManager::addCollect(Unit* unit, short resId, float value) {
+int InfluenceManager::getIndexInInfluence(Unit* unit) const {
+	if (unit->getIndexInInfluence() == -1) {
+		const auto newIndex = calculator->indexFromPosition(unit->getPosition());
+		unit->setIndexInInfluence(newIndex);
+	}
+	return unit->getIndexInInfluence();
+}
+
+void InfluenceManager::addCollect(Unit* unit, short resId, float value) const {
 	const auto playerId = unit->getPlayer();
 
 	assert(gatherSpeed[0][playerId]->getResolution() == calculator->getResolution());
-
-	const auto index = calculator->indexFromPosition(unit->getPosition());
+	const auto index = getIndexInInfluence(unit);
 	gatherSpeed[resId][playerId]->tempUpdate(index, value);
 
 	econQuad[playerId]->update(index, value);
 }
 
-void InfluenceManager::addAttack(char player, const Urho3D::Vector3& position, float value) {
+void InfluenceManager::addAttack(char player, const Urho3D::Vector3& position, float value) const {
 	attackSpeed[player]->tempUpdate(position, value);
 }
 
-std::optional<Urho3D::Vector2> InfluenceManager::getCenterOf(CenterType id, char player) {
+std::optional<Urho3D::Vector2> InfluenceManager::getCenterOf(CenterType id, char player) const {
 	return mapsForCentersPerPlayer[player][cast(id)]->getCenter();
 }
 
@@ -462,7 +469,7 @@ void InfluenceManager::nextVisibilityType() const {
 }
 
 std::vector<unsigned>* InfluenceManager::bestIndexes(float* values, const std::vector<unsigned>& indexes,
-                                                       float minVal) const {
+                                                     float minVal) const {
 	tempIndexes->clear();
 
 	for (auto ptr = indexes.begin(); ptr < indexes.end(); ++ptr) {

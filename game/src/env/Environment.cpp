@@ -189,11 +189,11 @@ Environment::getBuildingsFromTeamNotEq(Physical* physical, int id, float radius)
 	return getNeighbours(physical, buildingGrid, radius, condition);
 }
 
-void Environment::updateInfluenceUnits1(std::vector<Unit*>* units) const {
+void Environment::updateInfluenceUnits1(std::vector<Unit*>* units) {
 	influenceManager.update(units);
 }
 
-void Environment::updateInfluenceUnits2(std::vector<Unit*>* units) const {
+void Environment::updateInfluenceUnits2(std::vector<Unit*>* units) {
 	influenceManager.updateQuadUnits(units);
 }
 
@@ -224,6 +224,7 @@ void Environment::update(Unit* unit) const {
 	unit->setBucketInMainGrid(mainGrid.update(unit, unit->getMainGridIndex(), true));
 	if (unit->indexChanged()) {
 		unit->setSparseIndex(sparseUnitGrid.update(unit, unit->getSparseIndex(), false));
+		unit->setIndexInInfluence(-1);
 	}
 }
 

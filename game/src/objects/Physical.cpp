@@ -147,3 +147,8 @@ void Physical::ensureMaterialCloned() {
 		materialCloned = true;
 	}
 }
+
+void Physical::setIndexInInfluence(int index) {
+	assert(index >= -1);
+	indexInInfluence = index;
+}
