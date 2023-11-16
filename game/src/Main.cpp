@@ -83,9 +83,13 @@ void Main::Setup() {
 		engine_->SetMaxFps(graphSettings->max_fps);
 		engine_->SetMinFps(graphSettings->min_fps);
 	}
-
-	engineParameters_[Urho3D::EP_RESOURCE_PATHS] = "Data;CoreData;CoreDataMy";
 	engineParameters_[Urho3D::EP_RESOURCE_PREFIX_PATHS] = " ;../";
+	if (!SIM_GLOBALS.HEADLESS || !SIM_GLOBALS.FAKE_TERRAIN) {
+		engineParameters_[Urho3D::EP_RESOURCE_PATHS] = "Data;CoreData;CoreDataMy";
+	} else {
+		engineParameters_[Urho3D::EP_RESOURCE_PATHS] = "";
+		engineParameters_[Urho3D::EP_AUTOLOAD_PATHS] = "";
+	}
 
 	readParameters();
 	RandGen::init(SIM_GLOBALS.RANDOM);
@@ -99,8 +103,10 @@ void Main::Setup() {
 		Game::setConsole(GetSubsystem<Urho3D::Console>())
 			->setLog(GetSubsystem<Urho3D::Log>());
 	}
-	Game::setContext(context_)
-		->setCache(GetSubsystem<Urho3D::ResourceCache>());
+	if (!SIM_GLOBALS.HEADLESS || !SIM_GLOBALS.FAKE_TERRAIN) {
+		Game::setCache(GetSubsystem<Urho3D::ResourceCache>());
+	}
+	Game::setContext(context_);
 }
 
 void Main::Start() {
@@ -146,18 +152,18 @@ void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>
 void Main::writeOutput() const {
 	if (!outputName.Empty()) {
 		writeOutput(
-			{
-				[](Player* p) -> float { return p->getScore(); },
-				[](Player* p) -> float { return p->getPossession().getUnitsNumber(); },
-				[](Player* p) -> float { return p->getPossession().getBuildingsNumber(); }
-			},
-			{
-				[](Player* p) -> std::span<float> { return p->getResources().getValues(); },
-				[](Player* p) -> std::span<float> { return p->getResources().getSumValues(); },
+		            {
+			            [](Player* p) -> float { return p->getScore(); },
+			            [](Player* p) -> float { return p->getPossession().getUnitsNumber(); },
+			            [](Player* p) -> float { return p->getPossession().getBuildingsNumber(); }
+		            },
+		            {
+			            [](Player* p) -> std::span<float> { return p->getResources().getValues(); },
+			            [](Player* p) -> std::span<float> { return p->getResources().getSumValues(); },
 
-				[](Player* p) -> std::span<float> { return p->getPossession().getUnitsMetrics(); },
-				[](Player* p) -> std::span<float> { return p->getPossession().getBuildingsMetrics(); }
-			});
+			            [](Player* p) -> std::span<float> { return p->getPossession().getUnitsMetrics(); },
+			            [](Player* p) -> std::span<float> { return p->getPossession().getBuildingsMetrics(); }
+		            });
 	}
 }
 
@@ -320,7 +326,7 @@ void Main::setSimpleManagers() {
 void Main::updateProgress(Loading& progress) const {
 	if (!SIM_GLOBALS.HEADLESS) {
 		std::string msg = Game::getLocalization()->Get("load_msg_" +
-			Urho3D::String((int)loadingProgress.currentStage)).CString();
+		                                               Urho3D::String((int)loadingProgress.currentStage)).CString();
 		progress.inc(std::move(msg));
 		hud->updateLoading(progress.getProgress());
 	} else {

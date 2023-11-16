@@ -169,7 +169,7 @@ const std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int
 		closePath->clear();
 		return closePath;
 	}
-	if (ifInCache(startIdx, endIdxs)) {
+	if (ifInCache(startIdx, endIdxs)) {//TODO bug to zwroci jakis a nie najbli?szy
 		return tempPath;
 	}
 
