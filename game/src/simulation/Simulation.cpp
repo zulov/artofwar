@@ -85,6 +85,7 @@ void Simulation::updateInfluenceMaps() const {
 FrameInfo* Simulation::update(float timeStep) {
 	accumulateTime += updateTime(timeStep);
 	frameInfo->setIsRealFrame(false);
+
 	while (accumulateTime >= TIME_PER_UPDATE) {
 		//simObjectManager->dispose();
 		//TODO bug a co jesli kilka razy sie wykona, moga byæ b³êdy jezeli cos umrze to poza petl¹ 
@@ -105,7 +106,7 @@ FrameInfo* Simulation::update(float timeStep) {
 		performStateAction(TIME_PER_UPDATE); //tutaj moga umierac w tym zmiany stanu
 		executeStateTransition();
 		updateQueues();
-		updateInfluenceMaps(); //TODO odtad dalej mozna zrobic forka ?
+		updateInfluenceMaps(); 
 
 		simObjectManager->dispose();
 		simObjectManager->findToDispose();

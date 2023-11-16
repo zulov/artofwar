@@ -55,7 +55,7 @@ URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
 
 Main::Main(Urho3D::Context* context) : Application(context), useMouseMode_(Urho3D::MM_ABSOLUTE), saver(100),
-                                       gameState(GameState::STARTING), loadingProgress(6) {
+                                       gameState(GameState::STARTING), loadingProgress(4) {
 	if (!engineParameters_[Urho3D::EP_HEADLESS].GetBool()) {
 		MySprite::RegisterObject(context);
 	}
@@ -218,9 +218,9 @@ void Main::subscribeToEvents() {
 }
 
 void Main::running(const float timeStep) {
-	Game::addTime(timeStep);
 	FrameInfo* frameInfo = simulation->update(timeStep);
 	if (!SIM_GLOBALS.HEADLESS) {
+		Game::addTime(timeStep);
 		benchmark.add(1.0f / timeStep);
 		debugManager.draw();
 		SelectedInfo* selectedInfo = control(timeStep, frameInfo);
@@ -257,7 +257,26 @@ void Main::HandleUpdate(Urho3D::StringHash eventType, Urho3D::VariantMap& eventD
 		running(timeStep);
 		running(timeStep);
 		running(timeStep);
-		
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
 	}
 		break;
 	case GameState::PAUSE:
@@ -386,20 +405,15 @@ void Main::load(const Urho3D::String& saveName, NewGameForm* form) {
 		} else {
 			createEnv(loader.getConfig()->size);
 		}
-
-		break;
-	}
-	case 2: {
 		Game::getEnvironment()->prepareGridToFind();
 		if (hud) {
 			hud->createMiniMap();
 		}
+
 		break;
 	}
-	case 3:
+	case 2:
 		createSimulation();
-		break;
-	case 4:
 		if (form) {
 			simulation->initScene(form);
 		} else {
@@ -409,7 +423,7 @@ void Main::load(const Urho3D::String& saveName, NewGameForm* form) {
 		simulation->forceUpdateInfluenceMaps();
 		setCameraPos();
 		break;
-	case 5:
+	case 3:
 		delete form; //TODO trzeba ustawic na null
 		loader.end();
 		changeState(GameState::RUNNING);
