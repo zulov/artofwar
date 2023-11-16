@@ -70,7 +70,7 @@ private:
 	void load(const Urho3D::String& saveName, NewGameForm* form);
 	void createEnv(unsigned short mainMapResolution) const;
 	void save(const Urho3D::String& name);
-	void running(double timeStep);
+	void running(float timeStep);
 	void createSimulation();
 	static void setSimpleManagers();
 	void updateProgress(Loading& progress) const;

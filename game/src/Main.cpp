@@ -217,7 +217,7 @@ void Main::subscribeToEvents() {
 	SubscribeToEvent(Urho3D::E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
 }
 
-void Main::running(const double timeStep) {
+void Main::running(const float timeStep) {
 	Game::addTime(timeStep);
 	FrameInfo* frameInfo = simulation->update(timeStep);
 	if (!SIM_GLOBALS.HEADLESS) {
@@ -244,8 +244,21 @@ void Main::HandleUpdate(Urho3D::StringHash eventType, Urho3D::VariantMap& eventD
 	case GameState::LOADING:
 		load(saveToLoad, nullptr);
 		break;
-	case GameState::RUNNING:
-		running(eventData[Urho3D::SceneUpdate::P_TIMESTEP].GetDouble());
+	case GameState::RUNNING: {
+		auto const timeStep = eventData[Urho3D::SceneUpdate::P_TIMESTEP].GetFloat();
+
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		running(timeStep);
+		
+	}
 		break;
 	case GameState::PAUSE:
 		break;
