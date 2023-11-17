@@ -107,15 +107,9 @@ void ResourceEntity::setModelData(float modelHeight) const {
 }
 
 std::pair<float, bool> ResourceEntity::absorbAttack(float collectSpeed) {
-	if (hp - collectSpeed > 0) {
-		hp -= collectSpeed;
-		return {collectSpeed, false};
-	}
-
-	const float toReturn = hp;
-	hp = 0.f;
-	StateManager::changeState(this, StaticState::DEAD);
-	return {toReturn, true};
+	float damageTaken = std::min(hp, collectSpeed);
+	hp -= damageTaken;
+	return { damageTaken, hp == 0 };
 }
 
 ResourceEntity* ResourceEntity::load(dbload_resource_entities* resource) {

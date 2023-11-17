@@ -246,37 +246,9 @@ void Main::HandleUpdate(Urho3D::StringHash eventType, Urho3D::VariantMap& eventD
 		break;
 	case GameState::RUNNING: {
 		auto const timeStep = eventData[Urho3D::SceneUpdate::P_TIMESTEP].GetFloat();
-
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
-		running(timeStep);
+		for (int i = 0; i < SIM_GLOBALS.FRAME_PACK; ++i) {
+			running(timeStep);
+		}
 	}
 		break;
 	case GameState::PAUSE:
@@ -694,16 +666,15 @@ void Main::readParameters() {
 			Urho3D::String argument = current.Substring(1).ToLower();
 			const Urho3D::String value = i + 1 < arguments.Size() ? arguments[i + 1] : Urho3D::String::EMPTY;
 
-			if (argument == "train") {
-				SimGlobals::TRAIN_MODE = true;
-				engine_->SetMaxFps(0);
-				engine_->SetMaxInactiveFps(0);
-			} else if (argument == "benchmark") {
+			if (argument == "benchmark") {
 				SimGlobals::BENCHMARK_MODE = true;
 				engine_->SetMaxFps(0);
 				engine_->SetMaxInactiveFps(0);
 			} else if (argument == "headless") {
 				SimGlobals::HEADLESS = true;
+			} else if (argument == "framepack" && !value.Empty()) {
+				SimGlobals::FRAME_PACK = ToInt(value);
+				++i;
 			} else if (argument == "faketerrain") {
 				SimGlobals::FAKE_TERRAIN = true;
 			} else if (argument == "allplayerai") {

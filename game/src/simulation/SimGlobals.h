@@ -3,7 +3,6 @@
 
 #include "utils/defines.h"
 constexpr bool FORCE_BENCHMARK_MODE = false;
-constexpr bool FORCE_TRAIN_MODE = false;
 constexpr bool FORCE_AI_OUTPUT = false;
 constexpr bool FORCE_ALL_PLAYER_AI = false;
 constexpr bool FORCE_NO_PLAYER_AI = false;
@@ -17,7 +16,7 @@ constexpr unsigned char FRAMES_IN_PERIOD = 1 / TIME_PER_UPDATE;
 
 inline struct SimGlobals {
 	inline static bool BENCHMARK_MODE = FORCE_BENCHMARK_MODE;
-	inline static bool TRAIN_MODE = FORCE_TRAIN_MODE;
+	inline static char FRAME_PACK = 1;
 
 	inline static bool ALL_PLAYER_AI = FORCE_ALL_PLAYER_AI;
 	inline static bool NO_PLAYER_AI = FORCE_NO_PLAYER_AI;
