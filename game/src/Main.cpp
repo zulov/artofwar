@@ -152,18 +152,18 @@ void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>
 void Main::writeOutput() const {
 	if (!outputName.Empty()) {
 		writeOutput(
-		            {
-			            [](Player* p) -> float { return p->getScore(); },
-			            [](Player* p) -> float { return p->getPossession().getUnitsNumber(); },
-			            [](Player* p) -> float { return p->getPossession().getBuildingsNumber(); }
-		            },
-		            {
-			            [](Player* p) -> std::span<float> { return p->getResources().getValues(); },
-			            [](Player* p) -> std::span<float> { return p->getResources().getSumValues(); },
+			{
+				[](Player* p) -> float { return p->getScore(); },
+				[](Player* p) -> float { return p->getPossession().getUnitsNumber(); },
+				[](Player* p) -> float { return p->getPossession().getBuildingsNumber(); }
+			},
+			{
+				[](Player* p) -> std::span<float> { return p->getResources().getValues(); },
+				[](Player* p) -> std::span<float> { return p->getResources().getSumValues(); },
 
-			            [](Player* p) -> std::span<float> { return p->getPossession().getUnitsMetrics(); },
-			            [](Player* p) -> std::span<float> { return p->getPossession().getBuildingsMetrics(); }
-		            });
+				[](Player* p) -> std::span<float> { return p->getPossession().getUnitsMetrics(); },
+				[](Player* p) -> std::span<float> { return p->getPossession().getBuildingsMetrics(); }
+			});
 	}
 }
 
@@ -189,8 +189,8 @@ void Main::Stop() {
 	if (!SIM_GLOBALS.HEADLESS) { engine_->DumpResources(true); }
 
 	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-	                                                                            std::chrono::system_clock::now() -
-	                                                                            SimGlobals::SUPER_START);
+		std::chrono::system_clock::now() -
+		SimGlobals::SUPER_START);
 
 	std::cout << "ENDED at " << duration.count() << " ms" << std::endl;
 }
@@ -218,16 +218,21 @@ void Main::subscribeToEvents() {
 }
 
 void Main::running(const float timeStep) {
-	FrameInfo* frameInfo = simulation->update(timeStep);
-	if (!SIM_GLOBALS.HEADLESS) {
-		Game::addTime(timeStep);
-		benchmark.add(1.0f / timeStep);
-		debugManager.draw();
-		SelectedInfo* selectedInfo = control(timeStep, frameInfo);
-		hud->update(benchmark, Game::getCameraManager(), selectedInfo, frameInfo);
+	FrameInfo* frameInfo;
+	for (int i = 0; i < SIM_GLOBALS.FRAME_PACK; ++i) {
+		frameInfo = simulation->update(timeStep);
+
+
+		if (!SIM_GLOBALS.HEADLESS) {
+			Game::addTime(timeStep);
+			benchmark.add(1.0f / timeStep);
+			debugManager.draw();
+			SelectedInfo* selectedInfo = control(timeStep, frameInfo);
+			hud->update(benchmark, Game::getCameraManager(), selectedInfo, frameInfo);
+		}
 	}
 
-	if (timeLimit != -1 && frameInfo->getSeconds() > timeLimit) {
+	if (timeLimit != -1 && frameInfo->getSeconds() >= timeLimit) {
 		if (SimGlobals::CURRENT_RUN + 1 < SimGlobals::MAX_RUNS) {
 			changeState(GameState::CLOSING);
 		} else {
@@ -244,12 +249,8 @@ void Main::HandleUpdate(Urho3D::StringHash eventType, Urho3D::VariantMap& eventD
 	case GameState::LOADING:
 		load(saveToLoad, nullptr);
 		break;
-	case GameState::RUNNING: {
-		auto const timeStep = eventData[Urho3D::SceneUpdate::P_TIMESTEP].GetFloat();
-		for (int i = 0; i < SIM_GLOBALS.FRAME_PACK; ++i) {
-			running(timeStep);
-		}
-	}
+	case GameState::RUNNING:
+		running(eventData[Urho3D::SceneUpdate::P_TIMESTEP].GetFloat());
 		break;
 	case GameState::PAUSE:
 		break;
@@ -330,7 +331,7 @@ void Main::setSimpleManagers() {
 void Main::updateProgress(Loading& progress) const {
 	if (!SIM_GLOBALS.HEADLESS) {
 		std::string msg = Game::getLocalization()->Get("load_msg_" +
-		                                               Urho3D::String((int)loadingProgress.currentStage)).CString();
+			Urho3D::String((int)loadingProgress.currentStage)).CString();
 		progress.inc(std::move(msg));
 		hud->updateLoading(progress.getProgress());
 	} else {
