@@ -9,7 +9,7 @@
 #include "objects/Physical.h"
 #include "utils/DeleteUtils.h"
 
-StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRadius): Grid(resolution, size, true,
+StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRadius): Grid(resolution, size,
 			 queryRadius.back()), queryRadius(queryRadius) {
 	assert(queryRadius.size()>1);
 	bucketsPerRadius.reserve(queryRadius.size());
@@ -34,10 +34,18 @@ void StaticGrid::remove(Physical* physical) const {
 	for (int i = 0; i < queryRadius.size(); ++i) {
 		const auto centerBucket = bucketsPerRadius[i] + centerIndex;
 		const auto initedVec = inited[i] + centerIndex;
-
-		for (const auto& [idx, shift] : levelCache->getBoth(queryRadius.at(i))) {
-			if (calculator->isValidIndex(centerCords + shift) && *(initedVec + idx) == true) {
-				(centerBucket + idx)->remove(physical);
+		const auto levels = levelCache->get(queryRadius.at(i), centerCords);
+		if (!levels.shifts) {
+			for (const auto idx : *levels.indexes) {
+				if (*(initedVec + idx) == true) {
+					(centerBucket + idx)->remove(physical);
+				}
+			}
+		} else {
+			for (const auto& [idx, shift] : levels.asZip()) {
+				if (calculator->isValidIndex(centerCords + shift) && *(initedVec + idx) == true) {
+					(centerBucket + idx)->remove(physical);
+				}
 			}
 		}
 	}
@@ -52,9 +60,19 @@ void StaticGrid::updateStatic(Static* staticObj, bool bulkAdd) const {
 		for (int i = 0; i < queryRadius.size(); ++i) {
 			const auto centerBucket = bucketsPerRadius[i] + centerIndex;
 			const auto initedVec = inited[i] + centerIndex;
-			for (const auto& [idx, shift] : levelCache->getBoth(queryRadius.at(i))) {
-				if (calculator->isValidIndex(centerCords + shift) && *(initedVec + idx) == true) {
-					(centerBucket + idx)->add(staticObj);
+
+			const auto levels = levelCache->get(queryRadius.at(i), centerCords);
+			if (!levels.shifts) {
+				for (const auto idx : *levels.indexes) {
+					if (*(initedVec + idx) == true) {
+						(centerBucket + idx)->add(staticObj);
+					}
+				}
+			} else {
+				for (const auto& [idx, shift] : levels.asZip()) {
+					if (calculator->isValidIndex(centerCords + shift) && *(initedVec + idx) == true) {
+						(centerBucket + idx)->add(staticObj);
+					}
 				}
 			}
 		}
@@ -68,9 +86,16 @@ void StaticGrid::ensureInited(int index, int centerIndex) {
 	const auto centerCords = calculator->getIndexes(centerIndex);
 	auto& bucketRad = bucketsPerRadius[index][centerIndex];
 
-	for (const auto& [idx, shift] : levelCache->getBoth(queryRadius.at(index))) {
-		if (calculator->isValidIndex(centerCords + shift)) {
+	const auto levels = levelCache->get(queryRadius.at(index), centerCords);
+	if (!levels.shifts) {
+		for (const auto idx : *levels.indexes) {
 			bucketRad.add(buckets[centerIndex + idx].getContent());
+		}
+	} else {
+		for (const auto& [idx, shift] : levels.asZip()) {
+			if (calculator->isValidIndex(centerCords + shift)) {
+				bucketRad.add(buckets[centerIndex + idx].getContent());
+			}
 		}
 	}
 }

@@ -29,11 +29,11 @@ DatabaseCache::DatabaseCache(std::string postfix) {
 
 	pathStr = std::string("Data/");
 	if(!SIM_GLOBALS.HEADLESS) {
-		loadBasic("Database/base" + postfix + ".db");
+		loadBasic("Database/base" + postfix);
 	}
 	
-	loadData("Database/data" + postfix + ".db");
-	loadMaps("map/maps" + postfix + ".db");
+	loadData("Database/data" + postfix);
+	loadMaps("map/maps" + postfix);
 }
 
 void DatabaseCache::loadBasic(const std::string& name) {

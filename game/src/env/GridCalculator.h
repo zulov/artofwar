@@ -53,11 +53,6 @@ struct GridCalculator {
 		//która ma wartosc "resolution - 1" i ma wype³nione jedynkami tylko najmniej znacz¹ce bity.
 	}
 
-	Urho3D::IntVector2 getShiftCords(int i) const {
-		const auto center = resolution / 2 * resolution + halfResolution;
-		return getIndexes(center + i) - getIndexes(center); //TODO bug sprawdzic skrajne warunki
-	}
-
 	Urho3D::Vector2 getCenter(int i) const {
 		const Urho3D::IntVector2 pos = getIndexes(i);
 		const float cX = (pos.x_ + 0.5f) * fieldSize - halfSize;

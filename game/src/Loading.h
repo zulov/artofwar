@@ -46,8 +46,9 @@ struct Loading {
 	}
 
 	unsigned char currentStage;
-private:
 	const unsigned char stagesNumber;
+private:
+
 	const bool ifPrint;
 	std::string msg = "";
 	std::chrono::system_clock::time_point start;

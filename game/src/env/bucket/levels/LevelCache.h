@@ -7,26 +7,56 @@
 struct GridCalculator;
 constexpr char RES_SEP_DIST = 120;
 
+struct LevelCacheValue {
+	LevelCacheValue() = default;
+
+	explicit LevelCacheValue(std::vector<short>* indexes)
+		: indexes(indexes) {}
+
+	std::vector<short>* indexes{};
+	std::vector<Urho3D::IntVector2>* shifts{}; //if null then safe not to check
+	short maxShift = 0;
+
+	void dispose() const {
+		delete indexes;
+		delete shifts;
+	}
+
+	void init(size_t size) {
+		indexes = new std::vector<short>();
+		shifts = new std::vector<Urho3D::IntVector2>;
+		indexes->reserve(size);
+		shifts->reserve(size);
+	}
+
+	std::ranges::zip_view<std::ranges::ref_view<std::vector<short>>, std::ranges::ref_view<std::vector<
+		                      Urho3D::IntVector2>>> asZip() const {
+		return std::views::zip(*indexes, *shifts);
+	}
+
+	void push(Urho3D::IntVector2 first, short second) const {
+		indexes->push_back(second);
+		shifts->push_back(first);
+	}
+};
+
 class LevelCache {
 public:
-	explicit LevelCache(float maxDistance, bool initCords, GridCalculator* calculator);
+	explicit LevelCache(float maxDistance, GridCalculator* calculator);
 	~LevelCache();
 
 	unsigned short getResolution() const { return calculator->getResolution(); }
 	float getMaxDistance() const { return maxDistance; }
-	std::vector<short>* get(float radius) const;
-	std::vector<Urho3D::IntVector2>* getCords(float radius) const;
-	std::ranges::zip_view<
-		std::ranges::ref_view<std::vector<short>>,
-		std::ranges::ref_view<std::vector<Urho3D::IntVector2>>> getBoth(float radius) const;
-	void initCordsFn();
+
+	const LevelCacheValue get(float radius, int center) const;
+	const LevelCacheValue get(float radius, const Urho3D::IntVector2& centerCords) const;
 
 private:
-	std::vector<short>* getEnvIndexs(float radius, std::vector<short>* prev, std::vector<short>& temp) const;
+	LevelCacheValue getEnvIndexs(float radius, LevelCacheValue& prev,
+	                             std::vector<std::pair<Urho3D::IntVector2, short>>& temp) const;
 	float maxDistance;
 	float invDiff;
 
 	GridCalculator* calculator;
-	std::vector<short>* levelsCache[RES_SEP_DIST];
-	std::vector<Urho3D::IntVector2>* levelsCacheCords[RES_SEP_DIST];
+	LevelCacheValue levels[RES_SEP_DIST];
 };

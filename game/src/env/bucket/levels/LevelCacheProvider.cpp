@@ -9,16 +9,13 @@ LevelCacheProvider::~LevelCacheProvider() {
 	clear_vector(caches);
 }
 
-LevelCache* LevelCacheProvider::get(unsigned short resolution, bool initCords, float maxDistance, GridCalculator* calculator) {
+LevelCache* LevelCacheProvider::get(unsigned short resolution, float maxDistance, GridCalculator* calculator) {
 	for (const auto cache : caches) {
 		if (cache->getResolution() == resolution && cache->getMaxDistance() == maxDistance) {
-			if (initCords) {
-				cache->initCordsFn();
-			}
 			return cache;
 		}
 	}
-	auto* const toReturn = new LevelCache(maxDistance, initCords, calculator);
+	auto* const toReturn = new LevelCache(maxDistance, calculator);
 	caches.push_back(toReturn);
 	return toReturn;
 }

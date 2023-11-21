@@ -16,7 +16,7 @@ struct GridCalculator;
 
 class Grid {
 public:
-	Grid(short resolution, float size, bool initCords, float maxQueryRadius);
+	Grid(short resolution, float size, float maxQueryRadius);
 	Grid(const Grid& rhs) = delete;
 	virtual ~Grid();
 
@@ -41,6 +41,7 @@ public:
 
 	bool onlyOneInside(int index) const;
 	std::vector<Physical*>* getAllFromCache(int currentIdx, float radius);
+	void addFromCell(short shiftIdx, int currentIdx) const;
 	std::vector<Physical*>* getAll(int currentIdx, float radius);
 
 protected:

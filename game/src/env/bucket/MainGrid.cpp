@@ -17,7 +17,7 @@
 
 
 MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
-	Grid(resolution, size, true, maxQueryRadius), complexData(new ComplexBucketData[sqResolution]),
+	Grid(resolution, size, maxQueryRadius), complexData(new ComplexBucketData[sqResolution]),
 	pathFinder(resolution, size) {
 	const auto quarter = calculator->getFieldSize() / 4;
 	pathFinder.setComplexBucketData(complexData);
@@ -260,12 +260,19 @@ std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector3& center, floa
 	const auto centerIdx = calculator->indexFromPosition(center);
 
 	const auto centerCords = calculator->getIndexes(centerIdx);
-
-	for (const auto& [idx, shift] : levelCache->getBoth(range)) {
-		if (calculator->isValidIndex(centerCords + shift)) {
+	const auto levels = levelCache->get(range, centerCords);
+	if (!levels.shifts) {
+		for (const auto idx : *levels.indexes) {
 			allIndexes.push_back(centerIdx + idx);
 		}
+	} else {
+		for (const auto& [idx, shift] : levels.asZip()) {
+			if (calculator->isValidIndex(centerCords + shift)) {
+				allIndexes.push_back(centerIdx + idx);
+			}
+		}
 	}
+
 	return allIndexes;
 }
 
@@ -335,9 +342,17 @@ void MainGrid::addResourceBonuses(Building* building) const {
 		//indexes.reserve(levels->size() * building->getOccupiedCells().size());
 		for (const int cell : building->getOccupiedCells()) {
 			const auto centerCords = calculator->getIndexes(cell);
-			for (const auto& [idx, shift] : levelCache->getBoth(level->resourceRange)) {
-				if (calculator->isValidIndex(centerCords + shift)) {
+
+			const auto levels = levelCache->get(level->resourceRange, centerCords);
+			if (!levels.shifts) {
+				for (const auto idx : *levels.indexes) {
 					indexes.push_back(cell + idx);
+				}
+			} else {
+				for (const auto& [idx, shift] : levels.asZip()) {
+					if (calculator->isValidIndex(centerCords + shift)) {
+						indexes.push_back(cell + idx);
+					}
 				}
 			}
 		}

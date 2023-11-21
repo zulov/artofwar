@@ -67,7 +67,8 @@ Main::Main(Urho3D::Context* context) : Application(context), useMouseMode_(Urho3
 
 void Main::Setup() {
 	miniReadParameters();
-	Game::setDatabaseCache(new DatabaseCache(SIM_GLOBALS.DATABASE_NUMBER.CString()));
+	const std::string prefix = std::string(SIM_GLOBALS.DATABASE_NUMBER.CString()) + ".db";
+	Game::setDatabaseCache(new DatabaseCache(prefix));
 	if (!SIM_GLOBALS.HEADLESS) {
 		const db_settings* settings = Game::getDatabase()->getSettings();
 		const db_graph_settings* graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
@@ -152,18 +153,18 @@ void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>
 void Main::writeOutput() const {
 	if (!outputName.Empty()) {
 		writeOutput(
-			{
-				[](Player* p) -> float { return p->getScore(); },
-				[](Player* p) -> float { return p->getPossession().getUnitsNumber(); },
-				[](Player* p) -> float { return p->getPossession().getBuildingsNumber(); }
-			},
-			{
-				[](Player* p) -> std::span<float> { return p->getResources().getValues(); },
-				[](Player* p) -> std::span<float> { return p->getResources().getSumValues(); },
+		            {
+			            [](Player* p) -> float { return p->getScore(); },
+			            [](Player* p) -> float { return p->getPossession().getUnitsNumber(); },
+			            [](Player* p) -> float { return p->getPossession().getBuildingsNumber(); }
+		            },
+		            {
+			            [](Player* p) -> std::span<float> { return p->getResources().getValues(); },
+			            [](Player* p) -> std::span<float> { return p->getResources().getSumValues(); },
 
-				[](Player* p) -> std::span<float> { return p->getPossession().getUnitsMetrics(); },
-				[](Player* p) -> std::span<float> { return p->getPossession().getBuildingsMetrics(); }
-			});
+			            [](Player* p) -> std::span<float> { return p->getPossession().getUnitsMetrics(); },
+			            [](Player* p) -> std::span<float> { return p->getPossession().getBuildingsMetrics(); }
+		            });
 	}
 }
 
@@ -189,8 +190,8 @@ void Main::Stop() {
 	if (!SIM_GLOBALS.HEADLESS) { engine_->DumpResources(true); }
 
 	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-		std::chrono::system_clock::now() -
-		SimGlobals::SUPER_START);
+	                                                                            std::chrono::system_clock::now() -
+	                                                                            SimGlobals::SUPER_START);
 
 	std::cout << "ENDED at " << duration.count() << " ms" << std::endl;
 }
@@ -221,7 +222,6 @@ void Main::running(const float timeStep) {
 	FrameInfo* frameInfo;
 	for (int i = 0; i < SIM_GLOBALS.FRAME_PACK; ++i) {
 		frameInfo = simulation->update(timeStep);
-
 
 		if (!SIM_GLOBALS.HEADLESS) {
 			Game::addTime(timeStep);
@@ -331,7 +331,7 @@ void Main::setSimpleManagers() {
 void Main::updateProgress(Loading& progress) const {
 	if (!SIM_GLOBALS.HEADLESS) {
 		std::string msg = Game::getLocalization()->Get("load_msg_" +
-			Urho3D::String((int)loadingProgress.currentStage)).CString();
+		                                               Urho3D::String((int)loadingProgress.currentStage)).CString();
 		progress.inc(std::move(msg));
 		hud->updateLoading(progress.getProgress());
 	} else {
@@ -340,70 +340,72 @@ void Main::updateProgress(Loading& progress) const {
 }
 
 void Main::load(const Urho3D::String& saveName, NewGameForm* form) {
-	switch (loadingProgress.currentStage) {
-	case 0: {
-		RandGen::reset(SIM_GLOBALS.RANDOM);
-		ProjectileManager::reset();
-		//disposeScene();
-		Game::getDatabase()->refreshAfterParametersRead();
-		setSimpleManagers();
+	for (int i = 0; i < std::min(SIM_GLOBALS.FRAME_PACK, loadingProgress.stagesNumber); ++i) {
+		switch (loadingProgress.currentStage) {
+		case 0: {
+			RandGen::reset(SIM_GLOBALS.RANDOM);
+			ProjectileManager::reset();
+			//disposeScene();
+			Game::getDatabase()->refreshAfterParametersRead();
+			setSimpleManagers();
 
-		levelBuilder = new LevelBuilder();
+			levelBuilder = new LevelBuilder();
 
-		if (form) {
-			Game::getPlayersMan()->load(form);
-		} else {
-			loader.createLoad(saveName, SIM_GLOBALS.CURRENT_RUN > 0);
-			Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());
-		}
+			if (form) {
+				Game::getPlayersMan()->load(form);
+			} else {
+				loader.createLoad(saveName, SIM_GLOBALS.CURRENT_RUN > 0);
+				Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());
+			}
 
-		if (!engineParameters_[Urho3D::EP_HEADLESS].GetBool()) {
-			SetupViewport();
-			controls = new Controls(GetSubsystem<Urho3D::Input>());
-		}
-		if (hud) {
-			hud->resetLoading();
-		}
+			if (!engineParameters_[Urho3D::EP_HEADLESS].GetBool()) {
+				SetupViewport();
+				controls = new Controls(GetSubsystem<Urho3D::Input>());
+			}
+			if (hud) {
+				hud->resetLoading();
+			}
 
-		if (form) {
-			levelBuilder->createScene(form);
-		} else {
-			levelBuilder->createScene(loader);
+			if (form) {
+				levelBuilder->createScene(form);
+			} else {
+				levelBuilder->createScene(loader);
+			}
 		}
-	}
-	break;
-	case 1: {
-		if (form) {
-			createEnv(form->size);
-		} else {
-			createEnv(loader.getConfig()->size);
-		}
-		Game::getEnvironment()->prepareGridToFind();
-		if (hud) {
-			hud->createMiniMap();
-		}
-
 		break;
-	}
-	case 2:
-		createSimulation();
-		if (form) {
-			simulation->initScene(form);
-		} else {
-			simulation->initScene(loader);
-		}
+		case 1: {
+			if (form) {
+				createEnv(form->size);
+			} else {
+				createEnv(loader.getConfig()->size);
+			}
+			Game::getEnvironment()->prepareGridToFind();
+			if (hud) {
+				hud->createMiniMap();
+			}
 
-		simulation->forceUpdateInfluenceMaps();
-		setCameraPos();
-		break;
-	case 3:
-		delete form; //TODO trzeba ustawic na null
-		loader.end();
-		changeState(GameState::RUNNING);
-		inited = true;
-		break;
+			break;
+		}
+		case 2:
+			createSimulation();
+			if (form) {
+				simulation->initScene(form);
+			} else {
+				simulation->initScene(loader);
+			}
+
+			simulation->forceUpdateInfluenceMaps();
+			setCameraPos();
+			break;
+		case 3:
+			delete form; //TODO trzeba ustawic na null
+			loader.end();
+			changeState(GameState::RUNNING);
+			inited = true;
+			break;
+		}
+		updateProgress(loadingProgress);
 	}
-	updateProgress(loadingProgress);
 }
 
 void Main::createEnv(unsigned short mainMapResolution) const {

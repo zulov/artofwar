@@ -66,39 +66,3 @@ TEST_F(GridCalculatorFixture, CombineTest) {
 	}
 }
 
-TEST_F(GridCalculatorFixture, GetShiftCords) {
-	EXPECT_EQ(gcBig->getShiftCords(-18), Urho3D::IntVector2(-2, -2));
-	EXPECT_EQ(gcBig->getShiftCords(-17), Urho3D::IntVector2(-2, -1));
-	EXPECT_EQ(gcBig->getShiftCords(-16), Urho3D::IntVector2(-2, 0));
-	EXPECT_EQ(gcBig->getShiftCords(-15), Urho3D::IntVector2(-2, 1));
-	EXPECT_EQ(gcBig->getShiftCords(-14), Urho3D::IntVector2(-2, 2));
-
-	EXPECT_EQ(gcBig->getShiftCords(-10), Urho3D::IntVector2(-1, -2));
-	EXPECT_EQ(gcBig->getShiftCords(-9), Urho3D::IntVector2(-1, -1));
-	EXPECT_EQ(gcBig->getShiftCords(-8), Urho3D::IntVector2(-1, 0));
-	EXPECT_EQ(gcBig->getShiftCords(-7), Urho3D::IntVector2(-1, 1));
-	EXPECT_EQ(gcBig->getShiftCords(-6), Urho3D::IntVector2(-1, 2));
-
-	EXPECT_EQ(gcBig->getShiftCords(-2), Urho3D::IntVector2(0, -2));
-	EXPECT_EQ(gcBig->getShiftCords(-1), Urho3D::IntVector2(0, -1));
-	EXPECT_EQ(gcBig->getShiftCords(0),  Urho3D::IntVector2(0, 0));
-	EXPECT_EQ(gcBig->getShiftCords(1),  Urho3D::IntVector2(0, 1));
-	EXPECT_EQ(gcBig->getShiftCords(2),  Urho3D::IntVector2(0, 2));
-
-	EXPECT_EQ(gcBig->getShiftCords(6), Urho3D::IntVector2(1, -2));
-	EXPECT_EQ(gcBig->getShiftCords(7), Urho3D::IntVector2(1, -1));
-	EXPECT_EQ(gcBig->getShiftCords(8), Urho3D::IntVector2(1, 0));
-	EXPECT_EQ(gcBig->getShiftCords(9), Urho3D::IntVector2(1, 1));
-	EXPECT_EQ(gcBig->getShiftCords(10), Urho3D::IntVector2(1, 2));
-	 
-	EXPECT_EQ(gcBig->getShiftCords(14), Urho3D::IntVector2(2, -2));
-	EXPECT_EQ(gcBig->getShiftCords(15), Urho3D::IntVector2(2, -1));
-	EXPECT_EQ(gcBig->getShiftCords(16), Urho3D::IntVector2(2, 0));
-	EXPECT_EQ(gcBig->getShiftCords(17), Urho3D::IntVector2(2, 1));
-	EXPECT_EQ(gcBig->getShiftCords(18), Urho3D::IntVector2(2, 2));
-
-	EXPECT_EQ(gcBig->getShiftCords(21), Urho3D::IntVector2(3, -3));
-	EXPECT_EQ(gcBig->getShiftCords(-21), Urho3D::IntVector2(-3, 3));
-	EXPECT_EQ(gcBig->getShiftCords(27), Urho3D::IntVector2(3, 3));
-	EXPECT_EQ(gcBig->getShiftCords(-27), Urho3D::IntVector2(-3, -3));
-}

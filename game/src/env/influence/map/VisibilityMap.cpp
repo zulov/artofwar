@@ -12,7 +12,7 @@
 
 VisibilityMap::VisibilityMap(unsigned short resolution, float size, float valueThresholdDebug)
 	: InfluenceMap(resolution, size, valueThresholdDebug),
-	  levelCache(LevelCacheProvider::get(resolution, true, 60.f, calculator)) {
+	  levelCache(LevelCacheProvider::get(resolution, 60.f, calculator)) {
 	values = new VisibilityType[arraySize];
 	std::fill_n(values, arraySize, VisibilityType::NONE);
 	valuesForInfluence = new bool[arraySize / 4];
@@ -43,10 +43,18 @@ void VisibilityMap::update(Physical* thing, float value) {
 
 void VisibilityMap::finishAtIndex(int i) const {
 	const auto centerCords = calculator->getIndexes(i);
-	for (const auto& [idx, shift] : levelCache->getBoth(ranges[i])) {
-		if (calculator->isValidIndex(centerCords + shift)) {
+	const auto levels = levelCache->get(ranges[i], centerCords);
+	if (!levels.shifts) {
+		for (const auto idx : *levels.indexes) {
 			const auto index = i + idx;
 			values[index] = VisibilityType::VISIBLE;
+		}
+	} else {
+		for (const auto& [idx, shift] : levels.asZip()) {
+			if (calculator->isValidIndex(centerCords + shift)) {
+				const auto index = i + idx;
+				values[index] = VisibilityType::VISIBLE;
+			}
 		}
 	}
 	ranges[i] = 0.f;

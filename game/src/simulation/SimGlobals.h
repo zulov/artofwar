@@ -16,7 +16,7 @@ constexpr unsigned char FRAMES_IN_PERIOD = 1 / TIME_PER_UPDATE;
 
 inline struct SimGlobals {
 	inline static bool BENCHMARK_MODE = FORCE_BENCHMARK_MODE;
-	inline static char FRAME_PACK = 1;
+	inline static unsigned char FRAME_PACK = 1;
 
 	inline static bool ALL_PLAYER_AI = FORCE_ALL_PLAYER_AI;
 	inline static bool NO_PLAYER_AI = FORCE_NO_PLAYER_AI;

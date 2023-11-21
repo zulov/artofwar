@@ -10,10 +10,10 @@
 #include "env/GridCalculatorProvider.h"
 #include "utils/consts.h"
 
-Grid::Grid(short resolution, float size, bool initCords, float maxQueryRadius)
+Grid::Grid(short resolution, float size, float maxQueryRadius)
 	: calculator(GridCalculatorProvider::get(resolution, size)),
 	  closeIndexes(CloseIndexesProvider::get(resolution)),
-	  levelCache(LevelCacheProvider::get(resolution, initCords, maxQueryRadius, calculator)),
+	  levelCache(LevelCacheProvider::get(resolution, maxQueryRadius, calculator)),
 	  resolution(resolution), sqResolution(resolution * resolution) {
 	buckets = new Bucket[sqResolution];
 	tempSelected = new std::vector<Physical*>();
@@ -36,7 +36,7 @@ int Grid::update(Unit* unit, int currentIndex, bool shouldChangeFlag) const {
 	if (shouldChangeFlag) {
 		unit->setIndexChanged(areDifferent);
 	}
-	
+
 	return index;
 }
 
@@ -48,11 +48,12 @@ int Grid::updateNew(Physical* physical) const {
 }
 
 BucketIterator& Grid::getArrayNeight(const Urho3D::Vector3& position, float radius) {
-	return *iterator.init(levelCache->get(radius), calculator->indexFromPosition(position), this);
+	auto center = calculator->indexFromPosition(position);
+	return *iterator.init(levelCache->get(radius, center).indexes, center, this);
 }
 
 BucketIterator& Grid::getArrayNeight(int center, float radius) {
-	return *iterator.init(levelCache->get(radius), center, this);
+	return *iterator.init(levelCache->get(radius, center).indexes, center, this);
 }
 
 const std::vector<short>& Grid::getCloseIndexes(int center) const {
@@ -175,12 +176,26 @@ std::vector<Physical*>* Grid::getAllFromCache(int currentIdx, float radius) {
 	return getAll(currentIdx, radius);
 }
 
-std::vector<Physical*>* Grid::getAll(int currentIdx, float radius) {
-	invalidateCache(currentIdx, radius);
-	for (auto level : *levelCache->get(radius)) {
-		auto& content = getContentAt(level + currentIdx);
-		tempSelected->insert(tempSelected->end(), content.begin(), content.end());
-	}
-	return tempSelected;
+void Grid::addFromCell(short shiftIdx, int currentIdx) const {
+	auto& content = getContentAt(shiftIdx + currentIdx);
+	tempSelected->insert(tempSelected->end(), content.begin(), content.end());
 }
 
+std::vector<Physical*>* Grid::getAll(int currentIdx, float radius) {
+	invalidateCache(currentIdx, radius);
+	const auto centerCords = calculator->getIndexes(currentIdx);
+	const auto levels = levelCache->get(radius, centerCords);
+	if (!levels.shifts) {
+		for (const auto idx : *levels.indexes) {
+			addFromCell(idx, currentIdx);
+		}
+	} else {
+		for (const auto& [idx, shift] : levels.asZip()) {
+			if (calculator->isValidIndex(centerCords + shift)) {
+				addFromCell(idx, currentIdx);
+			}
+		}
+	}
+
+	return tempSelected;
+}

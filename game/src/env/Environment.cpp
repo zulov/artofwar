@@ -17,9 +17,9 @@
 Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolution):
 	mapSize(mainMapResolution * BUCKET_GRID_FIELD_SIZE),
 	mainGrid(mainMapResolution, mapSize, 24),
-	buildingGrid(mapSize / BUCKET_GRID_FIELD_SIZE_BUILD, mapSize, false, 256.f),
+	buildingGrid(mapSize / BUCKET_GRID_FIELD_SIZE_BUILD, mapSize, 256.f),
 	resourceStaticGrid(mapSize / BUCKET_GRID_FIELD_SIZE_RESOURCE, mapSize, {64.f, 128.f, 256.f}),
-	sparseUnitGrid((short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, false, 256.f),
+	sparseUnitGrid((short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256.f),
 	terrain(terrain), influenceManager(MAX_PLAYERS, mapSize, terrain),
 	calculator(GridCalculatorProvider::get(mainMapResolution, mapSize)) {
 	neights = new std::vector<Physical*>();
