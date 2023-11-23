@@ -1,5 +1,6 @@
 #include "BucketIterator.h"
 #include "Grid.h"
+#include "levels/LevelCache.h"
 
 Physical* BucketIterator::next() {
 	while (currentIterator == currentEnd) {
@@ -12,10 +13,9 @@ Physical* BucketIterator::next() {
 	return *(currentIterator++);
 }
 
-BucketIterator* BucketIterator::init(std::vector<short>* _levels, int _center, Grid* _bucketGrid) {
-	levels = _levels;
-	index = levels->begin();
-	levelSize = levels->end();
+BucketIterator* BucketIterator::init(LevelCacheValue _levels, int _center, Grid* _bucketGrid) {
+	index = _levels.indexes->begin();//TODO bug uwzglednic shift
+	levelSize = _levels.indexes->end();
 	center = _center;
 	bucketGrid = _bucketGrid;
 	setRange();

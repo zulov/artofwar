@@ -13,6 +13,13 @@ struct LevelCacheValue {
 	explicit LevelCacheValue(std::vector<short>* indexes)
 		: indexes(indexes) {}
 
+	explicit LevelCacheValue(size_t size) {
+		indexes = new std::vector<short>();
+		shifts = new std::vector<Urho3D::IntVector2>;
+		indexes->reserve(size);
+		shifts->reserve(size);
+	}
+
 	std::vector<short>* indexes{};
 	std::vector<Urho3D::IntVector2>* shifts{}; //if null then safe not to check
 	short maxShift = 0;
@@ -35,6 +42,7 @@ struct LevelCacheValue {
 	}
 
 	void push(Urho3D::IntVector2 first, short second) const {
+		assert(indexes->capacity() > indexes->size());
 		indexes->push_back(second);
 		shifts->push_back(first);
 	}
@@ -53,7 +61,10 @@ public:
 
 private:
 	LevelCacheValue getEnvIndexs(float radius, LevelCacheValue& prev,
-	                             std::vector<std::pair<Urho3D::IntVector2, short>>& temp) const;
+	                             std::vector<Urho3D::IntVector2>& temp,
+	                             std::vector<Urho3D::IntVector2>& tempA,
+	                             std::vector<Urho3D::IntVector2>& tempB,
+	                             std::vector<Urho3D::IntVector2>& tempC) const;
 	float maxDistance;
 	float invDiff;
 

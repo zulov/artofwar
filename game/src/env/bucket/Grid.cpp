@@ -49,11 +49,11 @@ int Grid::updateNew(Physical* physical) const {
 
 BucketIterator& Grid::getArrayNeight(const Urho3D::Vector3& position, float radius) {
 	auto center = calculator->indexFromPosition(position);
-	return *iterator.init(levelCache->get(radius, center).indexes, center, this);
+	return *iterator.init(levelCache->get(radius, center), center, this);
 }
 
 BucketIterator& Grid::getArrayNeight(int center, float radius) {
-	return *iterator.init(levelCache->get(radius, center).indexes, center, this);
+	return *iterator.init(levelCache->get(radius, center), center, this);
 }
 
 const std::vector<short>& Grid::getCloseIndexes(int center) const {

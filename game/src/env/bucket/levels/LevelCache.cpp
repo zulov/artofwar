@@ -11,11 +11,14 @@ LevelCache::LevelCache(float maxDistance, GridCalculator* calculator)
 	levels[0].indexes = new std::vector<short>(1);
 	levels[0].shifts = new std::vector<Urho3D::IntVector2>();
 	levels[0].shifts->push_back(Urho3D::IntVector2::ZERO);
-	std::vector<std::pair<Urho3D::IntVector2, short>> temp;
+	std::vector<Urho3D::IntVector2> temp;
+	std::vector<Urho3D::IntVector2> tempA;
+	std::vector<Urho3D::IntVector2> tempB;
+	std::vector<Urho3D::IntVector2> tempC;
 
 	const auto step = maxDistance / RES_SEP_DIST;
 	for (int i = 1; i < RES_SEP_DIST; ++i) {
-		levels[i] = getEnvIndexs(step * i, levels[i - 1], temp);
+		levels[i] = getEnvIndexs(step * i, levels[i - 1], temp, tempA, tempB, tempC);
 	}
 }
 
@@ -48,56 +51,71 @@ const LevelCacheValue LevelCache::get(float radius, int center) const {
 }
 
 LevelCacheValue LevelCache::getEnvIndexs(float radius, LevelCacheValue& prev,
-                                         std::vector<std::pair<Urho3D::IntVector2, short>>& temp) const {
+                                         std::vector<Urho3D::IntVector2>& temp,
+                                         std::vector<Urho3D::IntVector2>& tempA,
+                                         std::vector<Urho3D::IntVector2>& tempB,
+                                         std::vector<Urho3D::IntVector2>& tempC) const {
 	radius /= calculator->getFieldSize();
 	radius *= radius;
 	temp.clear();
-	temp.reserve(prev.indexes->size());
+	tempA.clear();
+
 	short maxShift = 0;
 	for (short i = 0; i < RES_SEP_DIST; ++i) {
 		const short x = i + 1;
-		const auto sqI = i * i;
-		//j=0
-		if (sqI < radius) {
-			maxShift = x;
-			temp.emplace_back(Urho3D::IntVector2(0, -x), -1);
-			temp.emplace_back(Urho3D::IntVector2(-x, 0), -1);
-		} else {
-			break;
-		}
+		const float sqI = i * i;
+
+		tempB.clear();
+		tempC.clear();
 		for (short j = 0; j < RES_SEP_DIST; ++j) {
 			if (sqI + j * j < radius) {
 				const short y = j + 1;
-				temp.emplace_back(Urho3D::IntVector2(-x, y), -1);
-				temp.emplace_back(Urho3D::IntVector2(-x, -y), -1);
+
+				tempB.emplace_back(-x, y);
+				tempC.emplace_back(-x, -y);
 			} else {
 				break;
 			}
 		}
+		temp.insert(temp.end(), tempB.rbegin(), tempB.rend());
+		//j=0
+		if (sqI < radius) {
+			maxShift = x;
+			tempA.emplace_back(0, -x);
+
+			temp.emplace_back(-x, 0);
+			temp.insert(temp.end(), tempC.begin(), tempC.end());
+		} else {
+			break;
+		}
 	}
-	if (temp.size() * 2 + 1 == prev.shifts->size()) {
+	const auto desiredSize = (temp.size() + tempA.size()) * 2 + 1;
+	if (desiredSize == prev.shifts->size()) {
 		return prev;
 	}
-	std::ranges::reverse(temp);
-	for (auto& pair : temp) {
-		pair.second = calculator->getNotSafeIndexClose(pair.first.x_, pair.first.y_);
+	//std::ranges::reverse(temp);
+	//temp.insert(temp.end(), tempA.rbegin(), tempA.rend());
+
+	LevelCacheValue result(desiredSize);
+
+	for (const auto& v : std::ranges::reverse_view(temp)) {
+		result.push(v, calculator->getNotSafeIndexClose(v.x_, v.y_));
 	}
 
-	std::ranges::sort(temp, [](const auto& left, const auto& right) {
-		return left.second < right.second;
-	});
-	LevelCacheValue result;
-	result.init(temp.size() * 2 + 1);
-	for (const auto& value : temp) {
-		result.push(value.first, value.second);
+	for (const auto& v : std::ranges::reverse_view(tempA)) {
+		result.push(v, calculator->getNotSafeIndexClose(v.x_, v.y_));
 	}
+
 	result.push({}, 0);
 
-	const auto size = temp.size() - 2;
-	for (int i = size; i >= 0; --i) {
-		auto& val = temp[i];
-		result.push(-(val.first), -(val.second));
+	auto shiftIter = result.shifts->rbegin()+1;
+	auto indexIter = result.indexes->rbegin()+1;
+
+	for (; shiftIter != result.shifts->rend(); ++shiftIter, ++indexIter) {
+		result.push(-(*shiftIter), -(*indexIter));
 	}
+	assert(std::ranges::is_sorted(*result.indexes, std::less<short>()));
+	assert(desiredSize == result.indexes->size());
 	result.maxShift = maxShift;
 	return result;
 }
