@@ -34,18 +34,11 @@ void StaticGrid::remove(Physical* physical) const {
 	for (int i = 0; i < queryRadius.size(); ++i) {
 		const auto centerBucket = bucketsPerRadius[i] + centerIndex;
 		const auto initedVec = inited[i] + centerIndex;
-		const auto levels = levelCache->get(queryRadius.at(i), centerCords);
-		if (!levels.shifts) {
-			for (const auto idx : *levels.indexes) {
-				if (*(initedVec + idx) == true) {
-					(centerBucket + idx)->remove(physical);
-				}
-			}
-		} else {
-			for (const auto& [idx, shift] : levels.asZip()) {
-				if (calculator->isValidIndex(centerCords + shift) && *(initedVec + idx) == true) {
-					(centerBucket + idx)->remove(physical);
-				}
+		const auto levels = levelCache->get(queryRadius.at(i), centerIndex, centerCords);
+
+		for (const auto idx : *levels) {
+			if (*(initedVec + idx) == true) {
+				(centerBucket + idx)->remove(physical);
 			}
 		}
 	}
@@ -61,18 +54,11 @@ void StaticGrid::updateStatic(Static* staticObj, bool bulkAdd) const {
 			const auto centerBucket = bucketsPerRadius[i] + centerIndex;
 			const auto initedVec = inited[i] + centerIndex;
 
-			const auto levels = levelCache->get(queryRadius.at(i), centerCords);
-			if (!levels.shifts) {
-				for (const auto idx : *levels.indexes) {
-					if (*(initedVec + idx) == true) {
-						(centerBucket + idx)->add(staticObj);
-					}
-				}
-			} else {
-				for (const auto& [idx, shift] : levels.asZip()) {
-					if (calculator->isValidIndex(centerCords + shift) && *(initedVec + idx) == true) {
-						(centerBucket + idx)->add(staticObj);
-					}
+			const auto levels = levelCache->get(queryRadius.at(i), centerIndex, centerCords);
+
+			for (const auto idx : *levels) {
+				if (*(initedVec + idx) == true) {
+					(centerBucket + idx)->add(staticObj);
 				}
 			}
 		}
@@ -86,17 +72,10 @@ void StaticGrid::ensureInited(int index, int centerIndex) {
 	const auto centerCords = calculator->getIndexes(centerIndex);
 	auto& bucketRad = bucketsPerRadius[index][centerIndex];
 
-	const auto levels = levelCache->get(queryRadius.at(index), centerCords);
-	if (!levels.shifts) {
-		for (const auto idx : *levels.indexes) {
-			bucketRad.add(buckets[centerIndex + idx].getContent());
-		}
-	} else {
-		for (const auto& [idx, shift] : levels.asZip()) {
-			if (calculator->isValidIndex(centerCords + shift)) {
-				bucketRad.add(buckets[centerIndex + idx].getContent());
-			}
-		}
+	const auto levels = levelCache->get(queryRadius.at(index), centerIndex, centerCords);
+
+	for (const auto idx : *levels) {
+		bucketRad.add(buckets[centerIndex + idx].getContent());
 	}
 }
 

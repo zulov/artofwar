@@ -16,6 +16,8 @@ LevelCache::LevelCache(float maxDistance, GridCalculator* calculator)
 	std::vector<Urho3D::IntVector2> tempB;
 	std::vector<Urho3D::IntVector2> tempC;
 
+	tempReturn = new std::vector<short>();
+
 	const auto step = maxDistance / RES_SEP_DIST;
 	for (int i = 1; i < RES_SEP_DIST; ++i) {
 		levels[i] = getEnvIndexs(step * i, levels[i - 1], temp, tempA, tempB, tempC);
@@ -29,9 +31,10 @@ LevelCache::~LevelCache() {
 			levels[i].dispose();
 		}
 	}
+	delete tempReturn;
 }
 
-const LevelCacheValue LevelCache::get(float radius, const Urho3D::IntVector2& centerCords) const {
+const std::vector<short>* LevelCache::get(float radius, int center, const Urho3D::IntVector2& centerCords) const {
 	int index = radius * invDiff;
 	if (index >= RES_SEP_DIST) {
 		index = RES_SEP_DIST - 1;
@@ -40,14 +43,20 @@ const LevelCacheValue LevelCache::get(float radius, const Urho3D::IntVector2& ce
 
 	if (centerCords.x_ - val.maxShift >= 0 && centerCords.x_ + val.maxShift < getResolution() &&
 		centerCords.y_ - val.maxShift >= 0 && centerCords.y_ + val.maxShift < getResolution()) {
-		return LevelCacheValue(levels[index].indexes);
+		return val.indexes;
 	}
-	return levels[index];
+	tempReturn->clear();
+	for (const auto& [idx, shift] : val.asZip()) {
+		if (calculator->isValidIndex(centerCords + shift)) {
+			tempReturn->push_back(idx);
+		}
+	}
+	return tempReturn;
 }
 
-const LevelCacheValue LevelCache::get(float radius, int center) const {
+const std::vector<short>* LevelCache::get(float radius, int center) const {
 	const auto centerCords = calculator->getIndexes(center);
-	return get(radius, centerCords);
+	return get(radius, center, centerCords);
 }
 
 LevelCacheValue LevelCache::getEnvIndexs(float radius, LevelCacheValue& prev,

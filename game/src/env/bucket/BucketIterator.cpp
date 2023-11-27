@@ -13,9 +13,9 @@ Physical* BucketIterator::next() {
 	return *(currentIterator++);
 }
 
-BucketIterator* BucketIterator::init(LevelCacheValue _levels, int _center, Grid* _bucketGrid) {
-	index = _levels.indexes->begin();//TODO bug uwzglednic shift
-	levelSize = _levels.indexes->end();
+BucketIterator* BucketIterator::init(const std::vector<short>* _levels, int _center, Grid* _bucketGrid) {
+	index = _levels->begin();//przefilrowac puste odrazu
+	levelSize = _levels->end();
 	center = _center;
 	bucketGrid = _bucketGrid;
 	setRange();

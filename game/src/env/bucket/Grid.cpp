@@ -81,11 +81,8 @@ void Grid::addAt(int index, Physical* entity) const {
 }
 
 const std::vector<Physical*>& Grid::getContentAt(int index) const {
-	//TODO bug jezeli jest skrajne to bierze z drugiego konca
-	if (calculator->isValidIndex(index)) {
-		return buckets[index].getContent();
-	}
-	return Consts::EMPTY_PHYSICAL;
+	assert(calculator->isValidIndex(index)); 
+	return buckets[index].getContent();
 }
 
 const std::vector<Physical*>& Grid::getNotSafeContentAt(short x, short z) const {
@@ -184,17 +181,10 @@ void Grid::addFromCell(short shiftIdx, int currentIdx) const {
 std::vector<Physical*>* Grid::getAll(int currentIdx, float radius) {
 	invalidateCache(currentIdx, radius);
 	const auto centerCords = calculator->getIndexes(currentIdx);
-	const auto levels = levelCache->get(radius, centerCords);
-	if (!levels.shifts) {
-		for (const auto idx : *levels.indexes) {
-			addFromCell(idx, currentIdx);
-		}
-	} else {
-		for (const auto& [idx, shift] : levels.asZip()) {
-			if (calculator->isValidIndex(centerCords + shift)) {
-				addFromCell(idx, currentIdx);
-			}
-		}
+	const auto levels = levelCache->get(radius, currentIdx, centerCords);
+
+	for (const auto idx : *levels) {
+		addFromCell(idx, currentIdx);
 	}
 
 	return tempSelected;

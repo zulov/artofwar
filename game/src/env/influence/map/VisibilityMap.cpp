@@ -43,20 +43,13 @@ void VisibilityMap::update(Physical* thing, float value) {
 
 void VisibilityMap::finishAtIndex(int i) const {
 	const auto centerCords = calculator->getIndexes(i);
-	const auto levels = levelCache->get(ranges[i], centerCords);
-	if (!levels.shifts) {
-		for (const auto idx : *levels.indexes) {
-			const auto index = i + idx;
-			values[index] = VisibilityType::VISIBLE;
-		}
-	} else {
-		for (const auto& [idx, shift] : levels.asZip()) {
-			if (calculator->isValidIndex(centerCords + shift)) {
-				const auto index = i + idx;
-				values[index] = VisibilityType::VISIBLE;
-			}
-		}
+	const auto levels = levelCache->get(ranges[i], i, centerCords);
+
+	for (const auto idx : *levels) {
+		const auto index = i + idx;
+		values[index] = VisibilityType::VISIBLE;
 	}
+
 	ranges[i] = 0.f;
 }
 

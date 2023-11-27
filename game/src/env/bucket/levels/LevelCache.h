@@ -56,8 +56,8 @@ public:
 	unsigned short getResolution() const { return calculator->getResolution(); }
 	float getMaxDistance() const { return maxDistance; }
 
-	const LevelCacheValue get(float radius, int center) const;
-	const LevelCacheValue get(float radius, const Urho3D::IntVector2& centerCords) const;
+	const std::vector<short>* get(float radius, int center) const;
+	const std::vector<short>* get(float radius, int center, const Urho3D::IntVector2& centerCords) const;
 
 private:
 	LevelCacheValue getEnvIndexs(float radius, LevelCacheValue& prev,
@@ -70,4 +70,5 @@ private:
 
 	GridCalculator* calculator;
 	LevelCacheValue levels[RES_SEP_DIST];
+	std::vector<short>* tempReturn;
 };

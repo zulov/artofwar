@@ -260,17 +260,10 @@ std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector3& center, floa
 	const auto centerIdx = calculator->indexFromPosition(center);
 
 	const auto centerCords = calculator->getIndexes(centerIdx);
-	const auto levels = levelCache->get(range, centerCords);
-	if (!levels.shifts) {
-		for (const auto idx : *levels.indexes) {
-			allIndexes.push_back(centerIdx + idx);
-		}
-	} else {
-		for (const auto& [idx, shift] : levels.asZip()) {
-			if (calculator->isValidIndex(centerCords + shift)) {
-				allIndexes.push_back(centerIdx + idx);
-			}
-		}
+	const auto levels = levelCache->get(range, centerIdx, centerCords);
+
+	for (const auto idx : *levels) {
+		allIndexes.push_back(centerIdx + idx);
 	}
 
 	return allIndexes;
@@ -343,18 +336,12 @@ void MainGrid::addResourceBonuses(Building* building) const {
 		for (const int cell : building->getOccupiedCells()) {
 			const auto centerCords = calculator->getIndexes(cell);
 
-			const auto levels = levelCache->get(level->resourceRange, centerCords);
-			if (!levels.shifts) {
-				for (const auto idx : *levels.indexes) {
-					indexes.push_back(cell + idx);
-				}
-			} else {
-				for (const auto& [idx, shift] : levels.asZip()) {
-					if (calculator->isValidIndex(centerCords + shift)) {
-						indexes.push_back(cell + idx);
-					}
-				}
+			const auto levels = levelCache->get(level->resourceRange, cell, centerCords);
+
+			for (const auto idx : *levels) {
+				indexes.push_back(cell + idx);
 			}
+
 		}
 		std::ranges::sort(indexes);
 		indexes.erase(std::ranges::unique(indexes).begin(), indexes.end());

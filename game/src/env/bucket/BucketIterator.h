@@ -13,7 +13,7 @@ public:
 	
 	Physical* next();
 	void setRange();
-	BucketIterator* init(LevelCacheValue _levels, int _center, Grid* _bucketGrid);
+	BucketIterator* init(const std::vector<short>* _levels, int _center, Grid* _bucketGrid);
 private:
 	std::vector<short>::const_iterator index;
 	std::vector<short>::const_iterator levelSize;
