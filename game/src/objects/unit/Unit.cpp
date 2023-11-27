@@ -128,17 +128,16 @@ void Unit::forceGo(float boostCoef, float aimCoef, Urho3D::Vector2& force) const
 }
 
 Urho3D::Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
-	Urho3D::Vector2 force;
 	aims.clearExpired();
 	if (aims.hasAim()) {
 		auto dirOpt = aims.getDirection(this);
 		if (dirOpt.has_value()) {
-			force = dirOpt.value();
+			auto force = dirOpt.value();
 			forceGo(boostCoef, aimCoef, force);
+			return force;
 		}
 	}
-
-	return force;
+	return {};
 }
 
 std::pair<float, bool> Unit::absorbAttack(float attackCoef) {

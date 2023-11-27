@@ -24,7 +24,6 @@ BucketIterator* BucketIterator::init(const std::vector<short>* _levels, int _cen
 
 void BucketIterator::setRange() {
 	const auto& content = bucketGrid->getContentAt((*index) + center);
-	//TODO bug mo¿e braæ z drugiego konca jezeli index jest niepoprawny
 
 	currentIterator = content.begin();
 	currentEnd = content.end();

@@ -30,11 +30,11 @@ StaticGrid::~StaticGrid() {
 void StaticGrid::remove(Physical* physical) const {
 	Grid::remove(physical);
 	const int centerIndex = calculator->indexFromPosition(physical->getPosition());
-	const auto centerCords = calculator->getIndexes(centerIndex);
+
 	for (int i = 0; i < queryRadius.size(); ++i) {
 		const auto centerBucket = bucketsPerRadius[i] + centerIndex;
 		const auto initedVec = inited[i] + centerIndex;
-		const auto levels = levelCache->get(queryRadius.at(i), centerIndex, centerCords);
+		const auto levels = levelCache->get(queryRadius.at(i), centerIndex);
 
 		for (const auto idx : *levels) {
 			if (*(initedVec + idx) == true) {
@@ -54,7 +54,7 @@ void StaticGrid::updateStatic(Static* staticObj, bool bulkAdd) const {
 			const auto centerBucket = bucketsPerRadius[i] + centerIndex;
 			const auto initedVec = inited[i] + centerIndex;
 
-			const auto levels = levelCache->get(queryRadius.at(i), centerIndex, centerCords);
+			const auto levels = levelCache->get(queryRadius.at(i), centerCords);
 
 			for (const auto idx : *levels) {
 				if (*(initedVec + idx) == true) {
@@ -69,10 +69,9 @@ void StaticGrid::ensureInited(int index, int centerIndex) {
 	if (inited[index][centerIndex]) { return; }
 	inited[index][centerIndex] = true;
 
-	const auto centerCords = calculator->getIndexes(centerIndex);
 	auto& bucketRad = bucketsPerRadius[index][centerIndex];
 
-	const auto levels = levelCache->get(queryRadius.at(index), centerIndex, centerCords);
+	const auto levels = levelCache->get(queryRadius.at(index), centerIndex);
 
 	for (const auto idx : *levels) {
 		bucketRad.add(buckets[centerIndex + idx].getContent());

@@ -42,8 +42,7 @@ void VisibilityMap::update(Physical* thing, float value) {
 }
 
 void VisibilityMap::finishAtIndex(int i) const {
-	const auto centerCords = calculator->getIndexes(i);
-	const auto levels = levelCache->get(ranges[i], i, centerCords);
+	const auto levels = levelCache->get(ranges[i], i);
 
 	for (const auto idx : *levels) {
 		const auto index = i + idx;

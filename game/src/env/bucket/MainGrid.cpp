@@ -259,8 +259,7 @@ std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector3& center, floa
 	std::vector<int> allIndexes;
 	const auto centerIdx = calculator->indexFromPosition(center);
 
-	const auto centerCords = calculator->getIndexes(centerIdx);
-	const auto levels = levelCache->get(range, centerIdx, centerCords);
+	const auto levels = levelCache->get(range, centerIdx);
 
 	for (const auto idx : *levels) {
 		allIndexes.push_back(centerIdx + idx);
@@ -334,9 +333,7 @@ void MainGrid::addResourceBonuses(Building* building) const {
 		std::vector<int> indexes;
 		//indexes.reserve(levels->size() * building->getOccupiedCells().size());
 		for (const int cell : building->getOccupiedCells()) {
-			const auto centerCords = calculator->getIndexes(cell);
-
-			const auto levels = levelCache->get(level->resourceRange, cell, centerCords);
+			const auto levels = levelCache->get(level->resourceRange, cell);
 
 			for (const auto idx : *levels) {
 				indexes.push_back(cell + idx);

@@ -31,8 +31,7 @@ void Force::separationObstacle(Urho3D::Vector2& newForce, Unit* unit) {
 void Force::randSepForce(Urho3D::Vector2& diff) const {
 	diff.x_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE, 1.f) - 0.5f;
 	diff.y_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE, 1.f) - 0.5f;
-	diff.Normalize();
-	diff *= CLOSEST_DIST;
+	scaleTo(diff, CLOSEST_DIST);
 }
 
 void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Physical*>* neights) {

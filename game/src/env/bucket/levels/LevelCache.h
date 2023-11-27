@@ -57,7 +57,7 @@ public:
 	float getMaxDistance() const { return maxDistance; }
 
 	const std::vector<short>* get(float radius, int center) const;
-	const std::vector<short>* get(float radius, int center, const Urho3D::IntVector2& centerCords) const;
+	const std::vector<short>* get(float radius, const Urho3D::IntVector2& centerCords) const;
 
 private:
 	LevelCacheValue getEnvIndexs(float radius, LevelCacheValue& prev,

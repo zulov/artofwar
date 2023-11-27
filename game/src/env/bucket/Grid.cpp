@@ -86,7 +86,7 @@ const std::vector<Physical*>& Grid::getContentAt(int index) const {
 }
 
 const std::vector<Physical*>& Grid::getNotSafeContentAt(short x, short z) const {
-	return buckets[calculator->getNotSafeIndex(x, z)].getContent();
+	return getContentAt(calculator->getNotSafeIndex(x, z));
 }
 
 std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair,
@@ -180,8 +180,7 @@ void Grid::addFromCell(short shiftIdx, int currentIdx) const {
 
 std::vector<Physical*>* Grid::getAll(int currentIdx, float radius) {
 	invalidateCache(currentIdx, radius);
-	const auto centerCords = calculator->getIndexes(currentIdx);
-	const auto levels = levelCache->get(radius, currentIdx, centerCords);
+	const auto levels = levelCache->get(radius, currentIdx);
 
 	for (const auto idx : *levels) {
 		addFromCell(idx, currentIdx);

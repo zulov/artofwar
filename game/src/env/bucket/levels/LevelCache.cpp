@@ -34,7 +34,7 @@ LevelCache::~LevelCache() {
 	delete tempReturn;
 }
 
-const std::vector<short>* LevelCache::get(float radius, int center, const Urho3D::IntVector2& centerCords) const {
+const std::vector<short>* LevelCache::get(float radius, const Urho3D::IntVector2& centerCords) const {
 	int index = radius * invDiff;
 	if (index >= RES_SEP_DIST) {
 		index = RES_SEP_DIST - 1;
@@ -56,7 +56,7 @@ const std::vector<short>* LevelCache::get(float radius, int center, const Urho3D
 
 const std::vector<short>* LevelCache::get(float radius, int center) const {
 	const auto centerCords = calculator->getIndexes(center);
-	return get(radius, center, centerCords);
+	return get(radius, centerCords);
 }
 
 LevelCacheValue LevelCache::getEnvIndexs(float radius, LevelCacheValue& prev,
