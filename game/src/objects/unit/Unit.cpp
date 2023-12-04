@@ -129,13 +129,10 @@ void Unit::forceGo(float boostCoef, float aimCoef, Urho3D::Vector2& force) const
 
 Urho3D::Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
 	aims.clearExpired();
-	if (aims.hasAim()) {
-		auto dirOpt = aims.getDirection(this);
-		if (dirOpt.has_value()) {
-			auto force = dirOpt.value();
-			forceGo(boostCoef, aimCoef, force);
-			return force;
-		}
+	if (aims.hasCurrent()) {
+		auto force = aims.getDirection(this);
+		forceGo(boostCoef, aimCoef, force);
+		return force;
 	}
 	return {};
 }
@@ -564,14 +561,15 @@ std::vector<int> Unit::getIndexesForRangeUse(Unit* user) const {
 	if (belowRangeLimit() <= 0) { return indexes; }
 	const auto env = Game::getEnvironment();
 	const std::vector<int> allIndexes = env->getIndexesInRange(
-		 getPosition(), user->getLevel()->attackRange);
+	                                                           getPosition(), user->getLevel()->attackRange);
 	const int mainIndex = getMainGridIndex();
 	const std::vector<short>& closeIndexes = env->getCloseIndexs(mainIndex);
 
 	for (auto index : allIndexes) {
 		if (env->cellIsAttackable(index)
 			&& mainIndex != index
-			&& std::ranges::find(closeIndexes, index - mainIndex) == closeIndexes.end()) { //TODO better jest juz funkcja intab?
+			&& std::ranges::find(closeIndexes, index - mainIndex) == closeIndexes.end()) {
+			//TODO better jest juz funkcja intab?
 			//czy to ok?
 			indexes.push_back(index);
 		}

@@ -16,7 +16,7 @@ public:
 	Aims();
 	Aims(const Aims& rhs) = delete;
 	~Aims();
-	std::optional<Urho3D::Vector2> getDirection(Unit* unit) const;
+	Urho3D::Vector2 getDirection(Unit* unit) const;
 	void clearExpired();
 	bool process(Unit* unit);
 	void add(IndividualOrder* order);

@@ -13,11 +13,8 @@ Aims::~Aims() {
 	clear_vector(nextAims);
 }
 
-std::optional<Urho3D::Vector2> Aims::getDirection(Unit* unit) const {
-	if (current) {
-		return current->getDirection(unit);
-	}
-	return {};
+Urho3D::Vector2 Aims::getDirection(Unit* unit) const {
+	return current->getDirection(unit);
 }
 
 void Aims::clearExpired() {

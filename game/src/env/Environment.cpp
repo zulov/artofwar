@@ -551,7 +551,6 @@ Physical* Environment::closestPhysical(Unit* unit, const std::vector<Physical*>*
 					}
 				}
 			}
-			//return nullptr;
 		}
 	}
 	return nullptr;
