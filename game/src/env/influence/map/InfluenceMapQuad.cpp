@@ -26,6 +26,7 @@ InfluenceMapQuad::InfluenceMapQuad(unsigned short topResolution, float mapSize)
 		maps.emplace_back(ptr, arraySize);
 		ptr += arraySize;
 	}
+	last = maps.back();
 }
 
 InfluenceMapQuad::~InfluenceMapQuad() {
@@ -86,7 +87,7 @@ unsigned short InfluenceMapQuad::getResolution() const {
 
 void InfluenceMapQuad::update(int index, float value) {
 	dataReady = false;
-	maps.back()[index] += value;
+	last[index] += value;
 }
 
 void InfluenceMapQuad::updateInt(Physical* thing, int value) {
@@ -95,7 +96,7 @@ void InfluenceMapQuad::updateInt(Physical* thing, int value) {
 
 void InfluenceMapQuad::updateInt(int index, int value) {
 	dataReady = false;
-	maps.back()[index] += value;
+	last[index] += value;
 }
 
 void InfluenceMapQuad::reset() {

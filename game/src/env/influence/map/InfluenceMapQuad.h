@@ -27,6 +27,7 @@ private:
 	GridCalculator* calculator;
 	void ensureReady();
 	std::vector<std::span<float>> maps;
+	std::span<float> last;
 	float* data;
 	int dataSize;
 	bool dataReady = false;//TODO bug czy dobrze jest resetowana

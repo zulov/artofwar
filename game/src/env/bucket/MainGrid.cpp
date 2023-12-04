@@ -97,9 +97,9 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, const Urho3D::IntVect
 }
 
 Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
-	auto index = unit->getMainGridIndex();
+	const auto index = unit->getMainGridIndex();
 
-	auto& data = complexData[index];
+	const auto& data = complexData[index];
 
 	Urho3D::Vector2 sum;
 	if (index != unit->getIndexToInteract()
