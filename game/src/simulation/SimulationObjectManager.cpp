@@ -140,7 +140,7 @@ void SimulationObjectManager::addResource(ResourceEntity* resource, bool bulkAdd
 void SimulationObjectManager::findToDisposeUnits() {
 	if (StateManager::isSthToDispose()) {
 		for (const auto unit : *units) {
-			unit->clean();//TODO bug? to powinno być niepotrzebne
+			unit->clean(); //TODO bug? to powinno być niepotrzebne
 		}
 	}
 	if (StateManager::isUnitToDispose()) {
@@ -167,26 +167,17 @@ void SimulationObjectManager::findToDisposeResources() {
 }
 
 void SimulationObjectManager::refreshResBonuses() {
-	//TODO perf ugly, refresh ca³oœci
-	bool resourceBuildingChanged[MAX_PLAYERS][RESOURCES_SIZE] =
-	{
-		{false, false, false, false},
-		{false, false, false, false}
+	auto isResourceBuilding = [](const Building* building) {
+		return building->getDbBuilding()->typeResourceAny;
 	};
-	for (const auto building : buildingsToDispose) {
-		auto& vals = resourceBuildingChanged[building->getPlayer()];
-		for (const char resId : building->getDbBuilding()->resourceTypes) {
-			vals[resId] = true;
-		}
-	}
-	for (char p = 0; p < MAX_PLAYERS; ++p) {
-		const auto& perPlayer = resourceBuildingChanged[p];
-		for (char r = 0; r < RESOURCES_SIZE; ++r) {
-			if (perPlayer[r]) {
-				Game::getEnvironment()->reAddBonuses(buildings, p, r);
-			}
-		}
-	}
+
+	if (!std::ranges::any_of(buildingsToDispose, isResourceBuilding)) { return; }
+
+	std::vector<Building*> resBuilding;
+	std::ranges::copy_if(*buildings, std::back_inserter(resBuilding), isResourceBuilding);
+
+	Game::getEnvironment()->reAddBonuses(resBuilding, resources);
+
 }
 
 void SimulationObjectManager::dispose() {

@@ -1,5 +1,6 @@
 #pragma once
 #include "objects/static/Static.h"
+#include "utils/defines.h"
 
 namespace Urho3D {
 	class Vector3;
@@ -37,7 +38,11 @@ public:
 	ObjectType getType() const override { return ObjectType::RESOURCE; }
 	unsigned char getMaxCloseUsers() const override;
 	short getCostSum() const override { return 0; }
+	float getBonus(char player) const { return bonuses[player]; }
+	void resetBonus() { std::fill_n(bonuses, MAX_PLAYERS, 1.f); }
+	void setBonus(char player, float value) { bonuses[player] = value; }
 
 private:
 	db_resource* dbResource;
+	float bonuses[MAX_PLAYERS] = {1.f, 1.f};
 };

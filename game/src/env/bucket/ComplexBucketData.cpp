@@ -6,11 +6,12 @@
 
 ComplexBucketData::ComplexBucketData() {
 	clear();
+	resetResBonuses();
 }
 
 void ComplexBucketData::setStatic(Static* object) {
 	size = 0;
-
+	staticObj = object;
 	if (object->getType() == ObjectType::BUILDING) {
 		state = CellState::BUILDING;
 		additionalInfo = object->getPlayer();
@@ -18,19 +19,14 @@ void ComplexBucketData::setStatic(Static* object) {
 		state = CellState::RESOURCE;
 		additionalInfo = object->getId();
 	}
-	for (auto& resourceBonus : resourceBonuses) {
-		std::fill_n(resourceBonus, RESOURCES_SIZE, 1.f);
-	}
+
 }
 
 void ComplexBucketData::clear() {
 	state = CellState::NONE;
 	additionalInfo = -1;
 	size = 0;
-}
-
-Urho3D::Vector2 ComplexBucketData::getDirectionFrom(const Urho3D::Vector3& position, Urho3D::Vector2 centerEscape) {
-	return {centerEscape.x_ - position.x_, centerEscape.y_ - position.z_};
+	staticObj = nullptr;
 }
 
 void ComplexBucketData::setNeightOccupied(const unsigned char index) {
@@ -48,7 +44,8 @@ bool ComplexBucketData::isBuildable() const {
 		|| state == CellState::COLLECT;
 }
 
-void ComplexBucketData::updateSize(char val, CellState cellState) {//TODO przemyslec to 
+void ComplexBucketData::updateSize(char val, CellState cellState) {
+	//TODO przemyslec to 
 	size += val;
 	if (size <= 0) {
 		size = 0;
@@ -72,8 +69,8 @@ void ComplexBucketData::setResBonuses(char player, const std::vector<char>& resI
 	}
 }
 
-void ComplexBucketData::resetResBonuses(char player, char resId) {
-	resourceBonuses[player][resId] = 1.f;
+void ComplexBucketData::resetResBonuses() {
+	std::fill_n(&resourceBonuses[0][0], MAX_PLAYERS * RESOURCES_SIZE, 1.f);
 }
 
 float ComplexBucketData::getResBonus(char player, short resId) const {

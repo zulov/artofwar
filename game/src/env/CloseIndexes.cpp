@@ -1,8 +1,9 @@
 #include <vector>
+#include <cassert>
 
 #include "CloseIndexes.h"
+#include "bucket/ComplexBucketData.h"
 
-#include <cassert>
 
 const std::vector<unsigned char> CloseIndexes::tabIndexes[CLOSE_SIZE] = {
 	{4, 6, 7},
@@ -20,7 +21,7 @@ const std::vector<unsigned char> CloseIndexes::tabSecondIndexes[CLOSE_SECOND_SIZ
 	{8, 10, 13, 14, 15},
 	{8, 10, 12, 13, 14, 15},
 	{7, 8, 9, 10, 11, 12, 13, 14, 15},
-	{7, 9, 11, 12, 13, 14, 15},
+	{7, 9, 11, 12, 13, 14},
 	{7, 9, 11, 12, 13},
 
 	{6, 8, 10, 13, 14, 15},
@@ -72,13 +73,13 @@ const std::vector<short> CloseIndexes::EMPTY = {};
 
 CloseIndexes::CloseIndexes(short res)
 	: resolution(res), sqResolutionMinusRes(res * res - res),
-	  templateVec{-res - 1, -res, -res + 1, -1, 1, res - 1, res, res + 1},
+	  templateVec{short( - res - 1), short(-res), short(-res + 1), -1, 1, short(res - 1), res, short(res + 1)},
 	  templateVecSecond{
-		  -2 * res - 2, -2 * res - 1, -2 * res, -2 * res + 1, -2 * res + 2,
-		  -res - 2, -res + 2,
-		  -2, +2,
-		  res - 2, res + 2,
-		  2 * res - 2, 2 * res - 1, 2 * res, 2 * res + 1, 2 * res + 2,
+		  short(-2 * res - 2), short(-2 * res - 1), short(-2 * res), short(-2 * res + 1), short(-2 * res + 2),
+		  short(-res - 2), short(-res + 2),
+		  -2, 2,
+		  short(res - 2), short(res + 2),
+		  short(2 * res - 2), short(2 * res - 1), short(2 * res), short(2 * res + 1), short(2 * res + 2),
 	  } {
 	for (int i = 0; i < CLOSE_SIZE; ++i) {
 		closeVals[i].reserve(tabIndexes[i].size());
@@ -106,41 +107,91 @@ CloseIndexes::CloseIndexes(short res)
 	}
 }
 
-bool CloseIndexes::isInLocalArea(const int center, int indexOfAim) const {
-	if (center == indexOfAim) { return true; }//TODO perf sprawdzac tylko pozytwyne (abs)
-	return isInTab(get(indexOfAim), indexOfAim - center); //center + value == indexOfAim
+const std::vector<short>& CloseIndexes::getLv2(const ComplexBucketData& data) const {
+	return closeSecondVals[data.getIndexSecondOfCloseIndexes()];
 }
 
-bool CloseIndexes::isInLocal2Area(int center, int indexOfAim) const {//TODO perf sprawdzac tylko pozytwyne (abs)
-	return isInTab(getSecond(indexOfAim), indexOfAim - center); //center + value == indexOfAim
+const std::vector<unsigned char>& CloseIndexes::getTabIndexes(const ComplexBucketData& data) {
+	return tabIndexes[data.getIndexOfCloseIndexes()];
+}
+
+const std::vector<std::pair<unsigned char, short>>& CloseIndexes::getTabIndexesWithValue(
+	const ComplexBucketData& data) const {
+	return tabIndexesWithValue[data.getIndexOfCloseIndexes()];
+}
+
+const std::vector<short>& CloseIndexes::getLv1(const ComplexBucketData& data) const {
+	return closeVals[data.getIndexOfCloseIndexes()];
+}
+
+bool CloseIndexes::isInLocalArea(const int center, int indexOfAim) const {
+	if (center == indexOfAim) { return true; }
+	return isInTab(getLv1(indexOfAim), indexOfAim - center); //center + value == indexOfAim
+}
+
+bool CloseIndexes::isInLocalLv2Area(int center, int indexOfAim) const {
+	return isInTab(getLv2(indexOfAim), indexOfAim - center); //center + value == indexOfAim
 }
 
 const std::vector<short>& CloseIndexes::getPassIndexVia1LevelTo2(int startIdx, int endIdx) const {
 	const auto diff = endIdx - startIdx; //startIdx + tab[i] == endIdx
-	for (auto [i, val] : getTabSecondIndexesWithValue(endIdx)) {
+	for (auto [i, val] : getTabIndexesWithValueLv2(endIdx)) {
 		if (val == diff) {
 			return passTo2From1Vals[i];
 		}
 	}
-	assert(!isInLocal2Area(startIdx, endIdx));
+	assert(!isInLocalLv2Area(startIdx, endIdx));
 	return EMPTY;
 }
 
-std::pair<const std::vector<short>&, int> CloseIndexes::getPassIndexVia1LevelTo2(
-	int startIdx, const std::vector<int>& endIdxs) const {
-	for (auto endIdx : endIdxs) {
-		const auto diff = endIdx - startIdx; //startIdx + tab[i] == endIdx
-		for (auto [i, val] : getTabSecondIndexesWithValue(endIdx)) {
-			if (val == diff) {
-				return {passTo2From1Vals[i], endIdx};
-			}
-		}
+std::pair<unsigned char, unsigned char> CloseIndexes::getBothIndexes(int center) const {
+	const bool firstRow = center < resolution;
+	const bool secondRow = !firstRow && center < 2 * resolution;
+
+	const bool lastRow = center >= sqResolutionMinusRes;
+	const bool almostLastRow = !lastRow && center >= sqResolutionMinusRes - resolution;
+
+	const bool firstColumn = center % resolution == 0;
+	const bool secondColumn = center % resolution == 1;
+
+	const bool lastColumn = center % resolution == resolution - 1;
+	const bool almostLastColumn = center % resolution == resolution - 2;
+	char indexLv2 = 0;
+	char indexLv1 = 0;
+	if (firstRow) {}
+	else if (secondRow) {
+		indexLv2 += 5;
+		indexLv1 += 3;
+	} else if (almostLastRow) {
+		indexLv2 += 15;
+		indexLv1 += 3;
+	} else if (lastRow) {
+		indexLv2 += 20;
+		indexLv1 += 6;
+	} else {
+		indexLv2 += 10;
+		indexLv1 += 3;
 	}
 
-	return {EMPTY, -1};
+	if (firstColumn) {}
+	else if (secondColumn) {
+		indexLv2 += 1;
+		indexLv1 += 1;
+	} else if (almostLastColumn) {
+		indexLv2 += 3;
+		indexLv1 += 1;
+	} else if (lastColumn) {
+		indexLv2 += 4;
+		indexLv1 += 2;
+	} else {
+		indexLv2 += 2;
+		indexLv1 += 1;
+	}
+
+	return { indexLv1, indexLv2 };
 }
 
-char CloseIndexes::getIndex(int center) const {
+unsigned char CloseIndexes::getIndex(int center) const {
 	char index = 0;
 	if (center < resolution) { } else if (center >= sqResolutionMinusRes) {
 		index += 6;
@@ -158,36 +209,6 @@ char CloseIndexes::getIndex(int center) const {
 	return index;
 }
 
-char CloseIndexes::getSecondIndex(int center) const {
-	const bool firstRow = center < resolution;
-	const bool secondRow = !firstRow && center < 2 * resolution;
-
-	const bool lastRow = center >= sqResolutionMinusRes;
-	const bool almostLastRow = !lastRow && center >= sqResolutionMinusRes -resolution;
-
-	const bool firstColumn = center % resolution == 0;
-	const bool secondColumn = center % resolution == 1;
-
-	const bool lastColumn = center % resolution == resolution - 1;
-	const bool almostLastColumn = center % resolution == resolution - 2;
-	char index = 0;
-	if (firstRow) {} else if (secondRow) {
-		index += 5;
-	} else if (almostLastRow) {
-		index += 15;
-	} else if (lastRow) {
-		index += 20;
-	} else {
-		index += 10;
-	}
-
-	if (firstColumn) {} else if (secondColumn) {
-		index += 1;
-	} else if (almostLastColumn) {
-		index += 3;
-	} else if (lastColumn) {
-		index += 4;
-	} else { index += 2; }
-	assert(index >= 0 && index < CLOSE_SECOND_SIZE);
-	return index;
+unsigned char CloseIndexes::getSecondIndex(int center) const {
+	return getBothIndexes(center).second;
 }

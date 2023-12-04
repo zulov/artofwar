@@ -45,8 +45,7 @@ void VisibilityMap::finishAtIndex(int i) const {
 	const auto levels = levelCache->get(ranges[i], i);
 
 	for (const auto idx : *levels) {
-		const auto index = i + idx;
-		values[index] = VisibilityType::VISIBLE;
+		values[i + idx] = VisibilityType::VISIBLE;
 	}
 
 	ranges[i] = 0.f;

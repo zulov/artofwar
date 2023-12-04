@@ -17,7 +17,7 @@ protected:
 	static void TearDownTestCase() {
 		delete gc;
 		delete gcBig;
-		// Kod uruchamiany po ostatnim teœcie wewnatrz `Test Case`
+		// Kod uruchamiany po ostatnim tescie wewnatrz `Test Case`
 	}
 };
 
@@ -60,7 +60,7 @@ TEST_F(GridCalculatorFixture, CombineTest) {
 			auto index = gc->indexFromPosition(i, j);
 			auto center = gc->getCenter(index);
 
-			EXPECT_TRUE(abs(center.x_ - i)<=0.f);
+			EXPECT_TRUE(abs(center.x_ - i) <= 0.f);
 			EXPECT_TRUE(abs(center.y_ - j) <= 0.f);
 		}
 	}

@@ -259,8 +259,8 @@ void Possession::ensureReady() {
 	for (const auto worker : workers) {
 		if (worker->getState() == UnitState::COLLECT && worker->isFirstThingAlive()) {
 			auto res = (ResourceEntity*)worker->getThingToInteract();
-			//TODO przechowac w resource
-			const auto bonus = Game::getEnvironment()->getBonuses(worker->getPlayer(), res);
+
+			const auto bonus = res->getBonus(worker->getPlayer());
 			if (bonus <= 1.f) {
 				resWithoutBonus[res->getId()] += 1;
 			}

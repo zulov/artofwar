@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <vector>
 
 #include "objects/CellState.h"
@@ -21,9 +22,8 @@ public:
 	ComplexBucketData(const ComplexBucketData&) = delete;
 
 	void setStatic(Static* object);
+	Static* getStatic() const { return staticObj; }
 	void clear();
-
-	Urho3D::Vector2 getDirectionFrom(const Urho3D::Vector3& position, Urho3D::Vector2 centerEscape);
 
 	void setNeightOccupied(unsigned char index);
 	void setNeightFree(unsigned char index);
@@ -43,7 +43,7 @@ public:
 	void updateSize(char val, CellState cellState);
 
 	void setResBonuses(char player, const std::vector<char>& resIds, float bonus);
-	void resetResBonuses(char player, char resId);
+	void resetResBonuses();
 	float getResBonus(char player, short resId) const;
 
 	void setDeploy();
@@ -54,9 +54,9 @@ public:
 	void setGradient(short gradient) { this->gradient = gradient; }
 	short getGradient() const { return gradient; }
 
-	void setIndexCloseIndexes(unsigned char indexOfCloseIndexes, unsigned char indexOfSecondCloseIndexes) {
-		this->indexOfCloseIndexes = indexOfCloseIndexes;
-		this->indexOfSecondCloseIndexes = indexOfSecondCloseIndexes;
+	void setIndexCloseIndexes(std::pair<unsigned char, unsigned char> indexes) {
+		this->indexOfCloseIndexes = indexes.first;
+		this->indexOfSecondCloseIndexes = indexes.second;
 	}
 
 	unsigned char getIndexOfCloseIndexes() const { return indexOfCloseIndexes; }
@@ -70,6 +70,7 @@ private:
 	unsigned char indexOfCloseIndexes;
 	unsigned char indexOfSecondCloseIndexes;
 	short gradient = -1;
+	Static* staticObj{};
 	float cost = 0.f;
 	float resourceBonuses[MAX_PLAYERS][RESOURCES_SIZE];
 

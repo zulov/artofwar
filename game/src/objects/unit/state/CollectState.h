@@ -70,7 +70,7 @@ public:
 
 		auto& resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
 		const auto resource = (ResourceEntity*)unit->thingToInteract;
-		const auto bonus = env->getBonuses(unit->player, resource);
+		const auto bonus = resource->getBonus(unit->player);// env->getBonuses(unit->player, resource);
 		const auto [value, died] = resource->absorbAttack(unit->dbLevel->collect * bonus * timeStep);
 		//resource->getIndexInInfluence()
 		env->addCollect(unit, resource->getId(), value);

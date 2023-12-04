@@ -66,22 +66,18 @@ void Environment::setTerrainShaderParam(const Urho3D::String& name, const Urho3D
 
 void Environment::flipTerrainShaderParam(const Urho3D::String& name) const {
 	if (terrain && !SIM_GLOBALS.HEADLESS) {
-		auto mat = terrain->GetMaterial();
+		const auto mat = terrain->GetMaterial();
 
 		mat->SetShaderParameter(name, !mat->GetShaderParameter(name).GetBool());
 	}
 }
 
-void Environment::nextVisibilityType() {
+void Environment::nextVisibilityType() const {
 	influenceManager.nextVisibilityType();
 }
 
-void Environment::reAddBonuses(std::vector<Building*>* buildings, char player, char resId) const {
-	mainGrid.reAddBonuses(buildings, player, resId);
-}
-
-float Environment::getBonuses(char player, const ResourceEntity* resource) const {
-	return mainGrid.getBonuses(player, resource);
+void Environment::reAddBonuses(std::vector<Building*>& resBuildings, std::vector<ResourceEntity*>* resources) const {
+	mainGrid.reAddBonuses(resBuildings, resources);
 }
 
 void Environment::refreshAllStatic(std::vector<int>& indexes) {
@@ -246,7 +242,9 @@ void Environment::invalidateCaches() {
 
 void Environment::addNew(Building* building, bool bulkAdd) {
 	mainGrid.addStatic(building, bulkAdd);
-	mainGrid.addResourceBonuses(building);
+	std::vector<Building*> buildings;
+	buildings.push_back(building);
+	mainGrid.addResBonuses(buildings);
 	buildingGrid.updateNew(building);
 
 	building->setIndexInInfluence(influenceManager.getIndex(building->getPosition()));
@@ -530,23 +528,30 @@ Physical* Environment::closestPhysical(Unit* unit, const std::vector<Physical*>*
 		return nullptr;
 	}
 	std::vector<int> allIndexes;
-	std::unordered_map<int, Physical*> idxToPhysical;
+	std::vector <Physical*> thingsFiltered;
+	thingsFiltered.reserve(things->size());
 
 	for (const auto entity : *things) {
 		if (entity->isAlive() && condition(entity)) {
 			auto const idxs = entity->getIndexesForUse(unit);
 			//TODO perf ogranizcyc liczbe indeksów, np wybrac jeden dla obiektu
 			allIndexes.insert(allIndexes.end(), idxs.begin(), idxs.end());
-			for (auto idx : idxs) {
-				idxToPhysical[idx] = entity;
-			}
+			thingsFiltered.push_back(entity);
 		}
 	}
 
 	if (!allIndexes.empty()) {
 		const auto path = mainGrid.findPath(unit->getMainGridIndex(), allIndexes, limit, false);
 		if (!path->empty()) {
-			return idxToPhysical[path->back()];
+			for (const auto entity : thingsFiltered) {
+				auto const idxs = entity->getIndexesForUse(unit);
+				for (const int i : idxs) {
+					if (i == path->back()) {
+						return entity;
+					}
+				}
+			}
+			//return nullptr;
 		}
 	}
 	return nullptr;

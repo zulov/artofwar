@@ -103,7 +103,7 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 			return reconstructSimplifyPath(startIdx, current, came_from);
 		}
 		auto const& currentData = complexData[current];
-		for (auto [i, val] : closeIndexes->getTabIndexesWithValueByIndex(currentData.getIndexOfCloseIndexes())) {
+		for (auto [i, val] : closeIndexes->getTabIndexesWithValue(currentData)) {
 			if (currentData.ifNeightIsFree(i)) {
 				int next = current + val;
 				assert(validateIndex(current, next));
@@ -165,32 +165,12 @@ const std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit
 }
 
 const std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, int limit, bool closeEnough) {
-	if (endIdxs.empty()) {
-		closePath->clear();
-		return closePath;
-	}
-	if (ifInCache(startIdx, endIdxs)) {//TODO bug to zwroci jakis a nie najbli?szy
-		return tempPath;
-	}
-
-	auto newEndIndexes = getPassableIndexes(endIdxs, closeEnough);
+	const auto newEndIndexes = getPassableIndexes(endIdxs, closeEnough);
 	if (newEndIndexes.empty()) {
 		Game::getLog()->WriteRaw("No TargetFound");
 		closePath->clear();
 		return closePath;
 	}
-
-	const int localIdx = isInLocalArea(startIdx, newEndIndexes);
-
-	if (localIdx != -1) {
-		closePath->clear();
-		closePath->emplace_back(localIdx);
-		return closePath;
-	}
-	auto [closePass, endIdx] = closeIndexes->getPassIndexVia1LevelTo2(startIdx, newEndIndexes);
-	//TODO zwrócic kilka vectorów??
-	const auto closePath = getClosePath2(startIdx, endIdx, closePass);
-	if (closePath) { return closePath; }
 
 	const auto path = realFindPath(startIdx, newEndIndexes, limit);
 	if (path->empty()) {
@@ -215,7 +195,7 @@ int PathFinder::getPassableEnd(int endIdx) const {
 		auto& data = complexData[endIdx];
 		if (data.allNeightOccupied()) {
 			const auto gradLevel = data.getGradient();
-			for (const auto idx : closeIndexes->getByIndex(data.getIndexOfCloseIndexes())) {
+			for (const auto idx : closeIndexes->getLv1(data)) {
 				if (complexData[endIdx + idx].getGradient() < gradLevel) {
 					//TODO obliczyc lepszy, a nie pierwszy z brzegu
 					endIdx = endIdx + idx;
@@ -224,7 +204,7 @@ int PathFinder::getPassableEnd(int endIdx) const {
 				}
 			}
 		} else {
-			for (auto [i , val] : closeIndexes->getTabIndexesWithValueByIndex(data.getIndexOfCloseIndexes())) {
+			for (auto [i , val] : closeIndexes->getTabIndexesWithValue(data)) {
 				if (data.ifNeightIsFree(i)) {
 					endIdx = endIdx + val; //TODO obliczyc lepszy, a nie pierwszy z brzegu
 					break;
@@ -272,12 +252,6 @@ float PathFinder::heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) 
 		}
 	}
 	return min * fieldSize;
-}
-
-bool PathFinder::ifInCache(int startIdx, const std::vector<int>& endIdxs) const {
-	if (lastStartIdx != startIdx) { return false; }
-	return std::ranges::any_of(endIdxs.begin(), endIdxs.end(),
-	                           [this](int i) { return i == lastEndIdx; });
 }
 
 void PathFinder::invalidateCache() {
@@ -364,15 +338,5 @@ bool PathFinder::isInLocalArea(const int center, int indexOfAim) const {
 }
 
 bool PathFinder::isInLocal2Area(int center, int indexOfAim) const {
-	return closeIndexes->isInLocal2Area(center, indexOfAim);
-}
-
-int PathFinder::isInLocalArea(int center, std::vector<int>& endIdxs) const {
-	for (auto const idxs : endIdxs) {
-		//TOOD perf tu pewnie kilka rzecz sprawdzane pare rzeczy
-		if (isInLocalArea(center, idxs)) {
-			return idxs;
-		}
-	}
-	return -1;
+	return closeIndexes->isInLocalLv2Area(center, indexOfAim);
 }

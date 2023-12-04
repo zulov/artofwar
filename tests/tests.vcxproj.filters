@@ -4,6 +4,7 @@
     <ClCompile Include="GridCalculatorTest.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="LayerTest.cpp" />
+    <ClCompile Include="CloseIndexTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

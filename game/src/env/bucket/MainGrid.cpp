@@ -26,7 +26,7 @@ MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
 		Urho3D::Vector2(quarter, -quarter), Urho3D::Vector2(-quarter, quarter)
 	};
 	for (int i = 0; i < sqResolution; ++i) {
-		complexData[i].setIndexCloseIndexes(closeIndexes->getIndex(i), closeIndexes->getSecondIndex(i));
+		complexData[i].setIndexCloseIndexes(closeIndexes->getBothIndexes(i));
 	}
 	DebugLineRepo::init(DebugLineType::MAIN_GRID);
 }
@@ -38,7 +38,7 @@ MainGrid::~MainGrid() {
 void MainGrid::updateNeight(int idx) const {
 	auto& data = complexData[idx];
 	data.setAllOccupied();
-	for (const auto i : closeIndexes->getTabIndexesByIndex(data.getIndexOfCloseIndexes())) {
+	for (const auto i : closeIndexes->getTabIndexes(data)) {
 		data.setNeightFree(i);
 	}
 }
@@ -107,7 +107,7 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 		&& data.allNeightOccupied()) {
 		int counter = 0;
 
-		for (auto [i, val] : closeIndexes->getTabIndexesWithValueByIndex(data.getIndexOfCloseIndexes())) {
+		for (auto [i, val] : closeIndexes->getTabIndexesWithValue(data)) {
 			if (!data.ifNeightIsFree(i)) {
 				sum += calculator->getCenter(index + val);
 				++counter;
@@ -144,7 +144,7 @@ void MainGrid::updateCell(int index, char val, CellState cellState) const {
 
 unsigned char MainGrid::getRevertCloseIndex(int center, int gridIndex) const {
 	const int index = gridIndex - center;
-	for (auto [i ,val] : closeIndexes->getTabIndexesWithValue(center)) {
+	for (auto [i ,val] : closeIndexes->getTabIndexesWithValue(complexData[center])) {
 		if (val == index) {
 			return i;
 		}
@@ -268,14 +268,57 @@ std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector3& center, floa
 	return allIndexes;
 }
 
-void MainGrid::reAddBonuses(std::vector<Building*>* buildings, char player, char resId) const {
-	for (int i = 0; i < sqResolution; ++i) {
-		complexData[i].resetResBonuses(player, resId);
+void MainGrid::addResBonuses(std::vector<Building*>& resBuildings) const {
+	std::vector<int> changedIndexes; //TODO perf do it lazy not for all
+	for (const auto building : resBuildings) {
+		addResourceBonuses(building, changedIndexes);
 	}
-	for (const auto building : *buildings) {
-		const auto dbBuilding = building->getDbBuilding();
-		if (building->getPlayer() == player && dbBuilding->hasResourceType[resId]) {
-			addResourceBonuses(building);
+
+	std::vector<ResourceEntity*> withBonus;
+	withBonus.reserve(changedIndexes.size());
+	for (const auto changedIndex : changedIndexes) {
+		Static* obj = complexData[changedIndex].getStatic();
+		if (obj && obj->getType() == ObjectType::RESOURCE) {
+			withBonus.push_back(dynamic_cast<ResourceEntity*>(obj));
+		}
+	}
+	//withBonus usunac duplikwaty
+	for (auto withBonu : withBonus) {
+		for (char player = 0; player < MAX_PLAYERS; ++player) {
+			withBonu->setBonus(player, getBonuses(player, withBonu));
+		}
+	}
+}
+
+void MainGrid::reAddBonuses(std::vector<Building*>& resBuildings, std::vector<ResourceEntity*>* resources) const {
+	for (int i = 0; i < sqResolution; ++i) {
+		complexData[i].resetResBonuses();
+	}
+	for (const auto resource : *resources) {
+		resource->resetBonus();
+	}
+	addResBonuses(resBuildings);
+}
+
+void MainGrid::addResourceBonuses(Building* building, std::vector<int>& changedIndexes) const {
+	const auto [dbBuilding, level] = building->getData();
+
+	if (dbBuilding->typeResourceAny) {
+		std::vector<int> indexes;
+
+		for (const int cell : building->getOccupiedCells()) {
+			const auto levels = levelCache->get(level->resourceRange, cell);
+
+			for (const auto idx : *levels) {
+				indexes.push_back(cell + idx);
+			}
+		}
+		std::ranges::sort(indexes);
+		indexes.erase(std::ranges::unique(indexes).begin(), indexes.end());
+		std::ranges::copy(indexes, std::back_inserter(changedIndexes));
+
+		for (const int index : indexes) {
+			complexData[index].setResBonuses(building->getPlayer(), dbBuilding->resourceTypes, level->collect);
 		}
 	}
 }
@@ -297,7 +340,7 @@ bool MainGrid::isInLocalArea(const int center, int indexOfAim) const {
 }
 
 bool MainGrid::isInLocal1and2Area(int center, int indexOfAim) const {
-	return closeIndexes->isInLocalArea(center, indexOfAim) || closeIndexes->isInLocal2Area(center, indexOfAim);
+	return closeIndexes->isInLocalArea(center, indexOfAim) || closeIndexes->isInLocalLv2Area(center, indexOfAim);
 }
 
 bool MainGrid::isPassable(int inx) const {
@@ -311,52 +354,19 @@ bool MainGrid::isBuildable(int inx) const {
 int MainGrid::closestPassableCell(int posIndex) const {
 	//TODO improved pathFinder getPassableEnd
 	const auto& data = complexData[posIndex];
-	for (auto i : closeIndexes->getByIndex(data.getIndexOfCloseIndexes())) {
+	for (auto i : closeIndexes->getLv1(data)) {
 		const auto idx = i + posIndex;
 		if (complexData[idx].isPassable()) {
 			return idx;
 		}
 	}
-	for (auto i : closeIndexes->getSecondByIndex(data.getIndexSecondOfCloseIndexes())) {
-		auto idx = i + posIndex;
+	for (auto i : closeIndexes->getLv2(data)) {
+		const auto idx = i + posIndex;
 		if (complexData[idx].isPassable()) {
 			return idx;
 		}
 	}
 	return posIndex; //TODO to zwrócic optional empty
-}
-
-void MainGrid::addResourceBonuses(Building* building) const {
-	const auto [dbBuilding, level] = building->getData();
-
-	if (dbBuilding->typeResourceAny) {
-		std::vector<int> indexes;
-		//indexes.reserve(levels->size() * building->getOccupiedCells().size());
-		for (const int cell : building->getOccupiedCells()) {
-			const auto levels = levelCache->get(level->resourceRange, cell);
-
-			for (const auto idx : *levels) {
-				indexes.push_back(cell + idx);
-			}
-
-		}
-		std::ranges::sort(indexes);
-		indexes.erase(std::ranges::unique(indexes).begin(), indexes.end());
-		for (const int index : indexes) {
-			complexData[index].setResBonuses(building->getPlayer(), dbBuilding->resourceTypes, level->collect);
-		}
-	}
-}
-
-void MainGrid::removeResourceBonuses(Static* object) const {
-	if (object->getType() == ObjectType::BUILDING) {
-		const Building* building = (Building*)object;
-		const auto [dbBuilding, level] = building->getData();
-
-		if (dbBuilding->typeResourceAny) {
-			//TODO tu czegoś brakuje
-		}
-	}
 }
 
 void MainGrid::addStatic(Static* object, bool bulkAdd) {
@@ -403,10 +413,14 @@ void MainGrid::refreshStatic(const std::span<int> changed) {
 }
 
 const std::vector<std::pair<unsigned char, short>>& MainGrid::getCloseTabIndexesWithValue(int center) const {
-	return closeIndexes->getTabIndexesWithValue(center);
+	return closeIndexes->getTabIndexesWithValue(complexData[center]);
 }
 
-void MainGrid::refreshGradient(const std::vector<int>& notPassables) {
+const std::vector<short>& MainGrid::getCloseIndexes(int center) const {
+	return closeIndexes->getLv1(complexData[center]);
+}
+
+void MainGrid::refreshGradient(const std::vector<int>& notPassables) const {
 	std::vector<int> toRefresh = notPassables;
 	std::vector<int> toDo = notPassables;
 	std::vector<int> newAdded;
@@ -414,7 +428,7 @@ void MainGrid::refreshGradient(const std::vector<int>& notPassables) {
 		for (const auto index : toDo) {
 			auto& data = complexData[index];
 			data.setGradient(1024);
-			for (short value : closeIndexes->getByIndex(data.getIndexOfCloseIndexes())) {
+			for (short value : closeIndexes->getLv1(data)) {
 				auto neightIdx = value + index;
 				auto& neightData = complexData[neightIdx];
 				if (!neightData.isPassable() && neightData.allNeightOccupied() && neightData.getGradient() < 1024) {
@@ -439,9 +453,6 @@ void MainGrid::removeStatic(Static* object) const {
 		updateNeighbors(complexData[index], index);
 	}
 	refreshGradientRemoveStatic(object->getOccupiedCells());
-
-	removeResourceBonuses(object);
-	//TODO BUG remove deploy??
 }
 
 void MainGrid::refreshAllGradient(std::vector<int>& toRefresh) const {
@@ -470,7 +481,7 @@ void MainGrid::createGradient(std::vector<int>& toRefresh, short level) const {
 	std::vector<int> toRefresh2;
 	for (int current : toRefresh) {
 		auto& currentCell = complexData[current];
-		for (const auto indexVal : closeIndexes->getByIndex(currentCell.getIndexOfCloseIndexes())) {
+		for (const auto indexVal : closeIndexes->getLv1(currentCell)) {
 			auto& neight = complexData[current + indexVal];
 			if (neight.getGradient() == level) {
 				currentCell.setGradient(level + 1);
@@ -492,7 +503,7 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 		if (data.anyNeightFree()) {
 			float dist = 999999;
 
-			for (auto [i, val] : closeIndexes->getTabIndexesWithValue(index)) {
+			for (auto [i, val] : closeIndexes->getTabIndexesWithValue(data)) {
 				if (data.ifNeightIsFree(i)) {
 					const int ni = index + val;
 
@@ -505,7 +516,7 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 			}
 		} else {
 			auto currentGradient = data.getGradient();
-			for (short i : closeIndexes->getByIndex(data.getIndexOfCloseIndexes())) {
+			for (short i : closeIndexes->getLv1(data)) {
 				//TODO brac lepszy nic pierwszy z brzegu
 				auto neightIndex = i + index;
 				if (currentGradient < complexData[neightIndex].getGradient()) {
@@ -518,8 +529,7 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 			assert(false);
 			return {};
 		}
-		auto direction = data //TODO Error'this' nie uzywany 
-			.getDirectionFrom(position, calculator->getCenter(escapeBucket));
+		auto direction = dirTo(position, calculator->getCenter(escapeBucket));
 
 		direction.Normalize();
 		return direction;
@@ -545,7 +555,7 @@ Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const
 
 void MainGrid::updateNeighbors(ComplexBucketData& data, const int dataIndex) const {
 	data.setAllOccupied();
-	for (const auto& p : closeIndexes->getTabIndexesWithValueByIndex(data.getIndexOfCloseIndexes())) {
+	for (const auto& p : closeIndexes->getTabIndexesWithValue(data)) {
 		if (complexData[dataIndex + p.second].isPassable()) {
 			data.setNeightFree(p.first);
 		}

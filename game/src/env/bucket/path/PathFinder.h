@@ -46,13 +46,13 @@ private:
 	float heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const;
 
 	bool ifInCache(int startIdx, int end) const { return lastStartIdx == startIdx && lastEndIdx == end; }
-	bool ifInCache(int startIdx, const std::vector<int>& endIdxs) const;
+
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 	std::vector<Urho3D::IntVector2> getCords(const std::vector<int>& endIdxs) const;
 	void resetPathArrays();
 	bool isInLocalArea(int center, int indexOfAim) const;
 	bool isInLocal2Area(int center, int indexOfAim) const;
-	int isInLocalArea(int center, std::vector<int>& endIdxs) const;
+
 	void updateCost(int idx, float x);
 
 	CloseIndexes* closeIndexes;

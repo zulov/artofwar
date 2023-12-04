@@ -56,10 +56,6 @@ BucketIterator& Grid::getArrayNeight(int center, float radius) {
 	return *iterator.init(levelCache->get(radius, center), center, this);
 }
 
-const std::vector<short>& Grid::getCloseIndexes(int center) const {
-	return closeIndexes->get(center);
-}
-
 bool Grid::onlyOneInside(int index) const {
 	return buckets[index].getSize() == 1;
 }

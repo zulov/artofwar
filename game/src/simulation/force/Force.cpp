@@ -87,8 +87,9 @@ void Force::destOrFormation(Urho3D::Vector2& newForce, Unit* unit) {
 	}
 }
 
-void Force::turnIfAreOpposite(Urho3D::Vector2& newForce, Urho3D::Vector2& force) const  {
-	if (!force.Equals(Urho3D::Vector2::ZERO) && (force.Normalized() + newForce.Normalized()).Equals(Urho3D::Vector2::ZERO)) {
+void Force::turnIfAreOpposite(const Urho3D::Vector2& newForce, Urho3D::Vector2& force) const {
+	if (!force.Equals(Urho3D::Vector2::ZERO) &&
+		(force.Normalized() + newForce.Normalized()).Equals(Urho3D::Vector2::ZERO)) {
 		force += force.Length() * 0.1f * Urho3D::Vector2(force.y_, -force.x_);
 	}
 }

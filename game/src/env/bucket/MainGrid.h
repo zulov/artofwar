@@ -57,8 +57,7 @@ public:
 	bool isPassable(int inx) const;
 	bool isBuildable(int inx) const;
 	int closestPassableCell(int posIndex) const;
-	void addResourceBonuses(Building* building) const;
-	void removeResourceBonuses(Static* object) const;
+	void addResourceBonuses(Building* building, std::vector<int>& changedIndexes) const;
 
 	CellState getCellAt(float x, float z) const;
 	int getAdditionalInfoAt(float x, float z) const;
@@ -70,17 +69,19 @@ public:
 	bool cellIsAttackable(int index) const;
 	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
 	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
-	void reAddBonuses(std::vector<Building*>* buildings, char player, char resId) const;
-	float getBonuses(char player, const ResourceEntity* resource) const;
+	void addResBonuses(std::vector<Building*>& resBuildings) const;
+	void reAddBonuses(std::vector<Building*>& resBuildings, std::vector<ResourceEntity*>* resources) const;
 	void refreshAllStatic(const std::span<int> allChanged);
-	void refreshGradient(const std::vector<int>& notPassables);
+	void refreshGradient(const std::vector<int>& notPassables) const;
 	void refreshStatic(const std::span<int> changed);
 	const std::vector<std::pair<unsigned char, short>>& getCloseTabIndexesWithValue(int center) const;
-
+	const std::vector<short>& getCloseIndexes(int center) const;
 private:
 	void refreshAllGradient(std::vector<int>& toRefresh) const;
 	void refreshGradientRemoveStatic(std::span<int> toRefresh) const;
 	void createGradient(std::vector<int>& toRefresh, short level) const;
+
+	float getBonuses(char player, const ResourceEntity* resource) const;
 
 	ComplexBucketData* complexData;
 	PathFinder pathFinder;

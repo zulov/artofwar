@@ -562,14 +562,14 @@ std::vector<int> Unit::getIndexesForUse(Unit* user) const {
 std::vector<int> Unit::getIndexesForRangeUse(Unit* user) const {
 	std::vector<int> indexes;
 	if (belowRangeLimit() <= 0) { return indexes; }
-
-	const std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(
+	const auto env = Game::getEnvironment();
+	const std::vector<int> allIndexes = env->getIndexesInRange(
 		 getPosition(), user->getLevel()->attackRange);
 	const int mainIndex = getMainGridIndex();
-	const std::vector<short>& closeIndexes = Game::getEnvironment()->getCloseIndexs(mainIndex);
+	const std::vector<short>& closeIndexes = env->getCloseIndexs(mainIndex);
 
 	for (auto index : allIndexes) {
-		if (Game::getEnvironment()->cellIsAttackable(index)
+		if (env->cellIsAttackable(index)
 			&& mainIndex != index
 			&& std::ranges::find(closeIndexes, index - mainIndex) == closeIndexes.end()) { //TODO better jest juz funkcja intab?
 			//czy to ok?

@@ -132,17 +132,17 @@ public:
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType type, char player);
 	float getDiffOfCenters(CenterType type1, char id1, CenterType type2, char id2, float dfVal);
 	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
-	short getResolution() const { return calculator->getResolution(); }
+	unsigned short getResolution() const { return calculator->getResolution(); }
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;
 	float getVisibilityScore(char player) const;
 
 	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
-	Urho3D::Terrain* getTerrain() { return terrain; }
+	Urho3D::Terrain* getTerrain() const { return terrain; }
 	void setTerrainShaderParam(const Urho3D::String& name, const Urho3D::Variant& value) const;
 	void flipTerrainShaderParam(const Urho3D::String& name) const;
-	void nextVisibilityType();
-	void reAddBonuses(std::vector<Building*>* buildings, char player, char resId) const;
-	float getBonuses(char player, const ResourceEntity* resource) const;
+	void nextVisibilityType() const;
+	void reAddBonuses(std::vector<Building*>& resBuildings, std::vector<ResourceEntity*>* resources) const;
+
 	void refreshAllStatic(std::vector<int>& indexes);
 	const std::vector<std::pair<unsigned char, short>>& getCloseTabIndexesWithValue(int center) const { return mainGrid.getCloseTabIndexesWithValue(center); }
 
