@@ -394,7 +394,7 @@ void Main::load(const Urho3D::String& saveName, NewGameForm* form) {
 				simulation->initScene(loader);
 			}
 
-			simulation->forceUpdateInfluenceMaps();
+			simulation->updateInfluenceMaps(true);
 			setCameraPos();
 			break;
 		case 3:

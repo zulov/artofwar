@@ -103,12 +103,14 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 			return reconstructSimplifyPath(startIdx, current, came_from);
 		}
 		auto const& currentData = complexData[current];
+		const auto currentCost = cost_so_far[current];
+		const auto currentCameFrom = came_from[current];
 		for (auto [i, val] : closeIndexes->getTabIndexesWithValue(currentData)) {
 			if (currentData.ifNeightIsFree(i)) {
 				int next = current + val;
 				assert(validateIndex(current, next));
-				if (came_from[current] != next) {
-					const float new_cost = cost_so_far[current] + complexData[next].getCost() + getDistCost(i);
+				if (currentCameFrom != next) {
+					const float new_cost = currentCost + complexData[next].getCost() + getDistCost(i);
 					auto const nextCost = cost_so_far[next];
 					if (nextCost < 0.f || new_cost < nextCost) {
 						updateCost(next, new_cost);

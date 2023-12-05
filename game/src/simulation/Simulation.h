@@ -4,6 +4,7 @@
 #include <vector>
 #include <functional>
 
+#include "PerFrameAction.h"
 #include "database/db_strcut.h"
 
 struct FrameInfo;
@@ -35,9 +36,9 @@ public:
 	explicit Simulation(Environment* enviroment);
 	~Simulation();
 	void clearNodesWithoutDelete() const;
-	
-	void updateInfluenceMaps() const;
-	void forceUpdateInfluenceMaps() const;
+
+	void updateInfluenceMaps(bool force) const;
+	bool canUpdate(PerFrameAction type) const;
 
 	FrameInfo* update(float timeStep);
 	void initScene(SceneLoader& loader) const;

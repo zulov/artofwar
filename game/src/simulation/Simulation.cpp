@@ -48,38 +48,32 @@ void Simulation::clearNodesWithoutDelete() const {
 	simObjectManager->clearNodesWithoutDelete();
 }
 
-void Simulation::forceUpdateInfluenceMaps() const {
-	enviroment->updateInfluenceUnits1(units);
-	enviroment->updateInfluenceUnits2(units);
-	enviroment->updateInfluenceResources(resources);
-	enviroment->updateInfluenceOther(buildings, units);
-	enviroment->updateInfluenceHistoryReset();
-	enviroment->updateQuadOther();
-	enviroment->updateVisibility(buildings, units, resources);
-}
-
-void Simulation::updateInfluenceMaps() const {
-	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_UNITS_1, currentFrame, secondsElapsed)) {
+void Simulation::updateInfluenceMaps(bool force) const {
+	if (force || canUpdate (PerFrameAction::INFLUENCE_UNITS_1) ) {
 		enviroment->updateInfluenceUnits1(units);
 	}
-	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_UNITS_2, currentFrame, secondsElapsed)) {
+	if (force || canUpdate(PerFrameAction::INFLUENCE_UNITS_2)) {
 		enviroment->updateInfluenceUnits2(units);
 	}
-	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_RESOURCES, currentFrame, secondsElapsed)) {
+	if (force || canUpdate(PerFrameAction::INFLUENCE_RESOURCES)) {
 		enviroment->updateInfluenceResources(resources);
 	}
-	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_OTHER, currentFrame, secondsElapsed)) {
+	if (force || canUpdate(PerFrameAction::INFLUENCE_OTHER)) {
 		enviroment->updateInfluenceOther(buildings, units);
 	}
-	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_QUAD_OTHER, currentFrame, secondsElapsed)) {
-		enviroment->updateQuadOther();
-	}
-	if (PER_FRAME_ACTION.get(PerFrameAction::VISIBILITY, currentFrame, secondsElapsed)) {
-		enviroment->updateVisibility(buildings, units, resources);
-	}	
-	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_HISTORY_RESET, currentFrame, secondsElapsed)) {
+	if (force || canUpdate(PerFrameAction::INFLUENCE_HISTORY_RESET)) {
 		enviroment->updateInfluenceHistoryReset();
 	}
+	if (force || canUpdate(PerFrameAction::INFLUENCE_QUAD_OTHER)) {
+		enviroment->updateQuadOther();
+	}
+	if (force || canUpdate(PerFrameAction::VISIBILITY)) {
+		enviroment->updateVisibility(buildings, units, resources);
+	}	
+}
+
+bool Simulation::canUpdate(PerFrameAction type) const {
+	return PER_FRAME_ACTION.get(type, currentFrame, secondsElapsed);
 }
 
 FrameInfo* Simulation::update(float timeStep) {
@@ -105,7 +99,7 @@ FrameInfo* Simulation::update(float timeStep) {
 		performStateAction(TIME_PER_UPDATE); //tutaj moga umierac w tym zmiany stanu
 		executeStateTransition();
 		updateQueues();
-		updateInfluenceMaps(); 
+		updateInfluenceMaps(false); 
 
 		simObjectManager->dispose();
 		simObjectManager->findToDispose();

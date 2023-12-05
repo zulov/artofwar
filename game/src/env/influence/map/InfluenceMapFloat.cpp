@@ -54,7 +54,7 @@ void InfluenceMapFloat::tempUpdate(const Urho3D::Vector3& pos, float value) {
 }
 
 void InfluenceMapFloat::tempUpdate(int index, float value) {
-	if (changedIndexes.size() < CHANGED_INDEXES_MAX_SIZE && tempVals[index] == 0.f) {
+	if (tempVals[index] == 0.f && changedIndexes.size() < CHANGED_INDEXES_MAX_SIZE) {
 		changedIndexes.push_back(index);
 	}
 	tempVals[index] += value;
