@@ -103,8 +103,7 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 
 	Urho3D::Vector2 sum;
 	if (index != unit->getIndexToInteract()
-		&& data.isPassable()
-		&& data.allNeightOccupied()) {
+		&& data.isPassable()) { 
 		int counter = 0;
 
 		for (auto [i, val] : closeIndexes->getTabIndexesWithValue(data)) {

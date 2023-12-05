@@ -1,7 +1,5 @@
 #include "Bucket.h"
 
-#include <algorithm>
-
 #include "objects/Physical.h"
 
 int Bucket::getSize() const {
@@ -26,7 +24,7 @@ void Bucket::remove(Physical* entity) {
 	if (pos < content.size()) {
 		content.erase(content.begin() + pos);
 		// std::iter_swap(content.begin() + pos, content.end()-1);
-		// content.erase(content.end()-1);
+		// content.pop_back();
 	} else {
 		assert(false);
 	}

@@ -8,7 +8,7 @@ struct GridCalculator {
 		: resolution(resolution), halfResolution(resolution / 2), sqResolution(resolution * resolution),
 		  fieldSize(size / static_cast<float>(resolution)), halfSize(size * 0.5f),
 		  invFieldSize(static_cast<float>(resolution) / size), sqFieldSize(fieldSize * fieldSize),
-		  shiftAmount(log2(resolution)), mask(resolution - 1) {
+		  shiftAmount(log2(resolution)), mask(resolution - 1), lastIndex(resolution - 1) {
 		assert(((resolution & (resolution - 1)) == 0));
 	}
 
@@ -81,10 +81,7 @@ struct GridCalculator {
 	}
 
 	unsigned short getValid(short val) const {
-		if (val < 0) {
-			return 0;
-		}
-		return getValidHigh(val);
+		return std::clamp(val, static_cast<short>(0), lastIndex);
 	}
 
 	unsigned short getResolution() const { return resolution; }
@@ -145,4 +142,5 @@ private:
 	float sqFieldSize;
 	unsigned char shiftAmount;
 	unsigned short mask;
+	short lastIndex;
 };
