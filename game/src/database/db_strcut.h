@@ -22,6 +22,9 @@ struct db_building_level;
 struct db_cost;
 struct db_unit_level;
 
+
+//TODO attack reload change to short from float chantge in db
+
 float inline safeDiv(float first, short second) {
 	second = second <= 0 ? 1 : second;
 	return first > 0.f ? first / second * FRAMES_IN_PERIOD : 0.f;
@@ -30,11 +33,11 @@ float inline safeDiv(float first, short second) {
 struct db_common_attack {
 	const float collect;
 	const float attack;
-	const float attackReload;
+	const short attackReload;
 	const short attackRange;
 	const short sqAttackRange;
 
-	db_common_attack(float collect, float attack, float attackReload, short attackRange)
+	db_common_attack(float collect, float attack, short attackReload, short attackRange)
 		: attack(attack), attackReload(attackReload), attackRange(attackRange), collect(collect),
 		  sqAttackRange(attackRange * attackRange) {
 	}
@@ -48,7 +51,7 @@ struct db_common_attack {
 struct db_building_attack : db_common_attack {
 	const bool canAttack;
 
-	db_building_attack(float collect, float attack, float attackReload, short attackRange)
+	db_building_attack(float collect, float attack, short attackReload, short attackRange)
 		: db_common_attack(collect, attack, attackReload, attackRange),
 		  canAttack(initFlag(attack)) {
 	}
@@ -65,7 +68,7 @@ struct db_unit_attack : db_common_attack {
 	const float bonusLight;
 	const float bonusBuilding;
 
-	db_unit_attack(float collect, float attack, float attackReload, short attackRange,
+	db_unit_attack(float collect, float attack, short attackReload, short attackRange,
 	               float bonusInfantry, float bonusRange, float bonusCalvary, float bonusWorker,
 	               float bonusSpecial, float bonusMelee, float bonusHeavy, float bonusLight, float bonusBuilding)
 		: db_common_attack(collect, attack, attackReload, attackRange),

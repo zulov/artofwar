@@ -81,7 +81,7 @@ FrameInfo* Simulation::update(float timeStep) {
 	frameInfo->setIsRealFrame(false);
 
 	while (accumulateTime >= TIME_PER_UPDATE) {
-		//TODO bug a co jesli kilka razy sie wykona, moga byæ b³êdy np w control
+		//TODO bug a co jesli kilka razy sie wykona, moga byc bledy np w control
 		frameInfo->set(currentFrame, secondsElapsed);
 
 		Game::getActionCenter()->executeLists();

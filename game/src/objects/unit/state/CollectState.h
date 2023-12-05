@@ -29,6 +29,7 @@ public:
 		auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
 		const auto found = std::ranges::find(indexesToUse, unit->getMainGridIndex());
 		assert(found != indexesToUse.end());
+		unit->currentFrameState = 0;
 
 		setStartData(unit, *found, parameter.thingToInteract);
 
@@ -67,13 +68,16 @@ public:
 				return;
 			}
 		}
+		++unit->currentFrameState;
+		if (unit->currentFrameState >= FRAMES_IN_PERIOD) {
+			auto& resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
+			const auto resource = (ResourceEntity*)unit->thingToInteract;
+			const auto bonus = resource->getBonus(unit->player);
+			const auto [value, died] = resource->absorbAttack(unit->dbLevel->collect * bonus);
 
-		auto& resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
-		const auto resource = (ResourceEntity*)unit->thingToInteract;
-		const auto bonus = resource->getBonus(unit->player);
-		const auto [value, died] = resource->absorbAttack(unit->dbLevel->collect * bonus * timeStep);
-
-		env->addCollect(unit, resource->getId(), value);
-		resources.add(resource->getId(), value);
+			env->addCollect(unit, resource->getId(), value);
+			resources.add(resource->getId(), value);
+			unit->currentFrameState = 0;
+		}
 	}
 };

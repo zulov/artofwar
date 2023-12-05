@@ -226,6 +226,7 @@ void InfluenceManager::updateInfluenceHistoryReset() const {
 	for (auto& vec : gatherSpeed) {
 		MapsUtils::resetToZeroMaps(vec);
 	}
+	MapsUtils::resetToZeroMaps(attackSpeed);
 }
 
 void InfluenceManager::draw(InfluenceDataType type, char index) {

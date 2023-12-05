@@ -86,6 +86,7 @@ public:
 				return;
 			}
 		}
+		++unit->currentFrameState;
 		if (unit->currentFrameState >= unit->dbLevel->attackReload) {
 			const auto val = unit->getAttackVal(unit);
 			const auto [value, died] = first->absorbAttack(val);
@@ -95,6 +96,6 @@ public:
 			}
 			unit->currentFrameState = 0;
 		}
-		++unit->currentFrameState;
+
 	}
 };
