@@ -65,10 +65,7 @@ const std::vector<int>* PathFinder::reconstructSimplifyPath(int start, int goal,
 
 		int next = came_from[current];
 
-		if (next == current || !calculator->isValidIndex(next)) {
-			assert(false);
-			break; //TODO BUG tu cos dziwnego sie dzieje
-		}
+		assert(!(next == current || !calculator->isValidIndex(next)));
 		current = next;
 	}
 
