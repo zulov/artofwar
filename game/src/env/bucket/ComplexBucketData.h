@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 
+#include "MainGrid.h"
 #include "objects/CellState.h"
 #include "objects/resource/ResourceEntity.h"
 #include "utils/defines.h"
@@ -32,8 +33,10 @@ public:
 	float getCost() const;
 
 	bool allNeightOccupied() const { return isNeightOccupied == 255; }
+	bool anyNeightOccupied() const { return isNeightOccupied > 0; }
 	bool allNeightFree() const { return isNeightOccupied == 0; }
 	bool anyNeightFree() const { return isNeightOccupied != 255; }
+
 	void setAllOccupied() { isNeightOccupied = 255; }
 
 	char getAdditionalInfo() const { return additionalInfo; }

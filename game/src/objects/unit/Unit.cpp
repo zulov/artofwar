@@ -118,6 +118,7 @@ bool Unit::ifVisible(bool hasMoved, const CameraInfo* camInfo) const {
 
 void Unit::setAcceleration(Urho3D::Vector2& _acceleration) {
 	acceleration = _acceleration;
+	assert(!_acceleration.IsNaN());
 	limitTo(acceleration, dbLevel->maxForce);
 }
 
