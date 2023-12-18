@@ -547,9 +547,9 @@ Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const
 	const auto sizeX = calculateSize(size.x_, cords.x_);
 	const auto sizeZ = calculateSize(size.y_, cords.y_);
 
-	const auto cordsCenter = (Urho3D::IntVector2(sizeX.x_, sizeZ.x_) + Urho3D::IntVector2(sizeX.y_ - 1, sizeZ.y_ - 1)) / 2;
+	const auto cordsCenter = Urho3D::IntVector2((sizeX.x_ + sizeX.y_ - 1) / 2, (sizeZ.x_ + sizeZ.y_ - 1) / 2);
+	 co ti sie dzieje :O
 	return calculator->getCenter(cordsCenter);
-
 }
 
 void MainGrid::updateNeighbors(ComplexBucketData& data, const int dataIndex) const {

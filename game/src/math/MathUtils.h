@@ -34,7 +34,7 @@ inline float sqDistAs2D(const Urho3D::Vector3& one, const Urho3D::Vector3& two) 
 inline Urho3D::IntVector2 calculateSize(int size, int central) {
 	const int first = -((size - 1) / 2);
 	const int second = size + first;
-	return Urho3D::IntVector2(first + central, second + central);
+	return {first + central, second + central};
 }
 
 inline Urho3D::Vector2 dirTo(Urho3D::Vector3* a, const Urho3D::Vector2& b) {
