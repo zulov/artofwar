@@ -44,10 +44,6 @@ void InfluenceMap::drawCell(int index, short batch) const {
 	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, b, d, a, color, batch);
 }
 
-Urho3D::Vector2 InfluenceMap::getCenter(int index) const {
-	return calculator->getCenter(index);
-}
-
 float InfluenceMap::getFieldSize() const {
 	return calculator->getFieldSize();
 }

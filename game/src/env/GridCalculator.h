@@ -7,6 +7,7 @@ struct GridCalculator {
 	explicit GridCalculator(unsigned short resolution, float size)
 		: resolution(resolution), halfResolution(resolution / 2), sqResolution(resolution * resolution),
 		  fieldSize(size / static_cast<float>(resolution)), halfSize(size * 0.5f),
+		  firstCenter(0.5f * fieldSize - halfSize),
 		  invFieldSize(static_cast<float>(resolution) / size), sqFieldSize(fieldSize * fieldSize),
 		  shiftAmount(log2(resolution)), mask(resolution - 1), lastIndex(resolution - 1) {
 		assert(((resolution & (resolution - 1)) == 0));
@@ -24,7 +25,7 @@ struct GridCalculator {
 	}
 
 	short getNotSafeIndexClose(short posX, short posZ) const {
-		//TODO better to przyjmuje tylko ujemne, uzyc tego wy?ej i odwróci?
+		//TODO better to przyjmuje tylko ujemne, uzyc tego wyzej i odwroci?
 		assert(abs(posX)<=34);
 		assert((posX * resolution + posZ) > -(int)sqResolution && (posX * resolution + posZ) < (int)sqResolution);
 		return posX * resolution + posZ;
@@ -46,18 +47,25 @@ struct GridCalculator {
 		return getNotSafeIndex(getIndex(x), getIndex(z));
 	}
 
-	Urho3D::IntVector2 getIndexes(int i) const {
+	Urho3D::IntVector2 getCords(int i) const {
 		//return {i / resolution, i % resolution};
 		return {i >> shiftAmount, i & mask};
 		//Zamiast dzielenia przez "resolution" u¿yto zmiennej "shiftAmount", która jest równe log2(resolution), a zamiast modulo(operator %) u¿yto maski,
 		//która ma wartosc "resolution - 1" i ma wype³nione jedynkami tylko najmniej znacz¹ce bity.
 	}
 
+	Urho3D::IntVector2 getCords(const Urho3D::Vector2& pos) const {
+		return {getIndex(pos.x_), getIndex(pos.y_)};
+	}
+
 	Urho3D::Vector2 getCenter(int i) const {
-		const Urho3D::IntVector2 pos = getIndexes(i);
-		const float cX = (pos.x_ + 0.5f) * fieldSize - halfSize;
-		const float cZ = (pos.y_ + 0.5f) * fieldSize - halfSize;
-		return {cX, cZ};
+		return getCenter(getCords(i));
+	}
+
+	Urho3D::Vector2 getCenter(const Urho3D::IntVector2 &pos) const {
+		const float cX = firstCenter + pos.x_ * fieldSize;
+		const float cZ = firstCenter + pos.y_ * fieldSize;
+		return { cX, cZ };
 	}
 
 	bool isValidIndex(short x, short z) const {
@@ -87,7 +95,7 @@ struct GridCalculator {
 	unsigned short getResolution() const { return resolution; }
 
 	float getSqDistance(const Urho3D::IntVector2& a, int next) const {
-		const auto b = getIndexes(next);
+		const auto b = getCords(next);
 
 		return getSqDistance(a, b);
 	}
@@ -99,25 +107,25 @@ struct GridCalculator {
 	}
 
 	float getSqDistance(int first, int next) const {
-		const auto a = getIndexes(first);
-		const auto b = getIndexes(next);
+		const auto a = getCords(first);
+		const auto b = getCords(next);
 
 		return getSqDistance(a, b);
 	}
 
 	int getBiggestDiff(int first, int next) const {
-		auto a = getIndexes(first);
-		auto b = getIndexes(next);
+		auto a = getCords(first);
+		auto b = getCords(next);
 		const auto dx = (a.x_ - b.x_);
 		const auto dy = (a.y_ - b.y_);
 		return Urho3D::Max(Urho3D::Abs(dx), Urho3D::Abs(dy));
 	}
 
 	int getBiggestDiff(int first, const std::vector<int>& endIdxs) const {
-		auto a = getIndexes(first);
+		auto a = getCords(first);
 		int max = 0;
 		for (const int idx : endIdxs) {
-			auto b = getIndexes(idx);
+			auto b = getCords(idx);
 			const auto dx = (a.x_ - b.x_);
 			const auto dy = (a.y_ - b.y_);
 			const auto val = Urho3D::Max(Urho3D::Abs(dx), Urho3D::Abs(dy));
@@ -138,6 +146,7 @@ private:
 	unsigned int sqResolution;
 	float fieldSize;
 	float halfSize;
+	float firstCenter;
 	float invFieldSize;
 	float sqFieldSize;
 	unsigned char shiftAmount;

@@ -25,8 +25,10 @@ MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
 		Urho3D::Vector2(quarter, quarter), Urho3D::Vector2(-quarter, -quarter),
 		Urho3D::Vector2(quarter, -quarter), Urho3D::Vector2(-quarter, quarter)
 	};
+	auto ptr = complexData;
 	for (int i = 0; i < sqResolution; ++i) {
-		complexData[i].setIndexCloseIndexes(closeIndexes->getBothIndexes(i));
+		ptr->setIndexCloseIndexes(closeIndexes->getBothIndexes(i));
+		++ptr;
 	}
 	DebugLineRepo::init(DebugLineType::MAIN_GRID);
 }
@@ -102,7 +104,7 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 	const auto& data = complexData[index];
 
 	Urho3D::Vector2 sum;
-	if (index != unit->getIndexToInteract()//TODO ten warunek to chyba nie na ten index
+	if (index != unit->getIndexToInteract() //TODO ten warunek to chyba nie na ten index
 		&& data.isPassable()
 		&& data.anyNeightOccupied()) {
 		int counter = 0;
@@ -245,7 +247,7 @@ bool MainGrid::cellIsAttackable(int index) const {
 }
 
 bool MainGrid::anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const {
-	const auto centerCord = calculator->getIndexes(center);
+	const auto centerCord = calculator->getCords(center);
 	distThreshold *= distThreshold;
 	for (const auto index : indexes) {
 		if (calculator->getSqDistance(centerCord, index) < distThreshold) {
@@ -538,19 +540,16 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 }
 
 Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
-	return getValidPosition(size, Urho3D::IntVector2(calculator->getIndex(pos.x_), calculator->getIndex(pos.y_)));
+	return getValidPosition(size, calculator->getCords(pos));
 }
 
 Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& cords) const {
 	const auto sizeX = calculateSize(size.x_, cords.x_);
 	const auto sizeZ = calculateSize(size.y_, cords.y_);
 
-	const int index1 = calculator->getIndex(sizeX.x_, sizeZ.x_);
-	const int index2 = calculator->getIndex(sizeX.y_ - 1, sizeZ.y_ - 1);
-	const auto center1 = calculator->getCenter(index1);
-	const auto center2 = calculator->getCenter(index2);
+	const auto cordsCenter = (Urho3D::IntVector2(sizeX.x_, sizeZ.x_) + Urho3D::IntVector2(sizeX.y_ - 1, sizeZ.y_ - 1)) / 2;
+	return calculator->getCenter(cordsCenter);
 
-	return (center1 + center2) / 2;
 }
 
 void MainGrid::updateNeighbors(ComplexBucketData& data, const int dataIndex) const {

@@ -92,16 +92,15 @@ public:
 	Physical* closestPhysicalSimple(const Physical* physical, const std::vector<Physical*>* things, float range) const;
 
 	Urho3D::Vector2 getCenter(int index) const;
-	Urho3D::Vector2 getCenter(short x, short z) const;
 
 	void invalidatePathCache();
 
 	int getIndex(Urho3D::Vector2& pos) const { return calculator->indexFromPosition(pos); }
 	int getIndex(short x, short z) const { return calculator->getIndex(x, z); }
-	Urho3D::IntVector2 getCords(int index) const { return calculator->getIndexes(index); }
+	Urho3D::IntVector2 getCords(int index) const { return calculator->getCords(index); }
 
 	Urho3D::IntVector2 getCords(const Urho3D::Vector2& pos) {
-		return calculator->getIndexes(calculator->indexFromPosition(pos));
+		return calculator->getCords(calculator->indexFromPosition(pos));
 	}
 
 	bool cellInState(int index, CellState state) const;

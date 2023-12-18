@@ -326,10 +326,6 @@ Urho3D::Vector2 Environment::getCenter(int index) const {
 	return calculator->getCenter(index);
 }
 
-Urho3D::Vector2 Environment::getCenter(short x, short z) const {
-	return getCenter(calculator->getIndex(x, z));
-}
-
 void Environment::invalidatePathCache() {
 	mainGrid.invalidatePathCache();
 }
@@ -482,11 +478,11 @@ Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, co
 
 Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size,
                                               const Urho3D::IntVector2& bucketCords) const {
-	return mainGrid.getValidPosition(size, getCenter(calculator->getIndex(bucketCords.x_, bucketCords.y_)));
+	return mainGrid.getValidPosition(size, bucketCords);
 }
 
 const std::vector<int>* Environment::findPath(int startIdx, const Urho3D::Vector2& aim) {
-	auto end = calculator->indexFromPosition(aim);
+	const auto end = calculator->indexFromPosition(aim);
 	auto dist = calculator->getBiggestDiff(startIdx, end);
 	dist = dist < 9 ? 9 : dist;
 	return mainGrid.findPath(startIdx, end, dist * sqrt(dist));
@@ -528,7 +524,7 @@ Physical* Environment::closestPhysical(Unit* unit, const std::vector<Physical*>*
 		return nullptr;
 	}
 	std::vector<int> allIndexes;
-	std::vector <Physical*> thingsFiltered;
+	std::vector<Physical*> thingsFiltered;
 	thingsFiltered.reserve(things->size());
 
 	for (const auto entity : *things) {

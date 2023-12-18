@@ -49,7 +49,7 @@ void StaticGrid::updateStatic(Static* staticObj, bool bulkAdd) const {
 
 	if (!bulkAdd) {
 		const int centerIndex = calculator->indexFromPosition(staticObj->getPosition());
-		const auto centerCords = calculator->getIndexes(centerIndex);
+		const auto centerCords = calculator->getCords(centerIndex);
 		for (int i = 0; i < queryRadius.size(); ++i) {
 			const auto centerBucket = bucketsPerRadius[i] + centerIndex;
 			const auto initedVec = inited[i] + centerIndex;

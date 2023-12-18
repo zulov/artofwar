@@ -408,12 +408,11 @@ InfluenceManager::getAreas(std::span<InfluenceMapFloat*> maps, const std::span<f
 	std::fill_n(intersection, arraySize, 0.f); //TODO perf move to removeunsean
 	const int noOfVisible = visibilityManager->removeUnseen(player, intersection);
 
-	for (const auto map : maps) {
-		map->ensureReady();
-	}
 	char numberOfNotEmptyMap = 0;
 	for (char i = 0; i < maps.size(); ++i) {
-		const auto ok = maps[i]->cumulateErros(result[i], intersection);
+		const auto map = maps[i];
+		map->ensureReady();
+		const auto ok = map->cumulateErros(result[i], intersection);
 		numberOfNotEmptyMap += ok;
 	}
 

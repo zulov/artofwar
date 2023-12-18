@@ -3,7 +3,6 @@
 #include "Game.h"
 #include "database/db_strcut.h"
 #include "math/MathUtils.h"
-
 #include "math/RandGen.h"
 #include "objects/unit/Unit.h"
 #include "env/Environment.h"

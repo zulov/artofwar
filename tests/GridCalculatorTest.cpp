@@ -40,11 +40,11 @@ TEST_F(GridCalculatorFixture, GetIndex) {
 	EXPECT_EQ(gc->getIndex(-5.f), 0);
 	EXPECT_EQ(gc->getIndex(5.f), 3);
 
-	EXPECT_EQ(gc->getIndexes(0), Urho3D::IntVector2(0, 0));
-	EXPECT_EQ(gc->getIndexes(3), Urho3D::IntVector2(0, 3));
-	EXPECT_EQ(gc->getIndexes(6), Urho3D::IntVector2(1, 2));
-	EXPECT_EQ(gc->getIndexes(9), Urho3D::IntVector2(2, 1));
-	EXPECT_EQ(gc->getIndexes(15), Urho3D::IntVector2(3, 3));
+	EXPECT_EQ(gc->getCords(0), Urho3D::IntVector2(0, 0));
+	EXPECT_EQ(gc->getCords(3), Urho3D::IntVector2(0, 3));
+	EXPECT_EQ(gc->getCords(6), Urho3D::IntVector2(1, 2));
+	EXPECT_EQ(gc->getCords(9), Urho3D::IntVector2(2, 1));
+	EXPECT_EQ(gc->getCords(15), Urho3D::IntVector2(3, 3));
 }
 
 

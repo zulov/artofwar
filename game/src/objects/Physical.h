@@ -3,12 +3,10 @@
 #include <span>
 #include <string>
 #include <vector>
-#include <Urho3D/Core/Variant.h>
 #include <Urho3D/Graphics/Material.h>
 
 #include "database/db_other_struct.h"
 #include "objects/ObjectEnums.h"
-#include "player/Possession.h"
 #include "Urho3D/Math/Vector3.h"
 
 

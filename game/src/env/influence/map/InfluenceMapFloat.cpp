@@ -62,7 +62,7 @@ void InfluenceMapFloat::tempUpdate(int index, float value) {
 }
 
 void InfluenceMapFloat::update(int index) const {
-	auto [centerX, centerZ] = calculator->getIndexes(index);
+	auto [centerX, centerZ] = calculator->getCords(index);
 	update(tempVals[index], centerX, centerZ);
 	tempVals[index] = 0.f;
 }

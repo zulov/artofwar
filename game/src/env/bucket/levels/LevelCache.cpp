@@ -55,7 +55,7 @@ const std::vector<short>* LevelCache::get(float radius, const Urho3D::IntVector2
 }
 
 const std::vector<short>* LevelCache::get(float radius, int center) const {
-	const auto centerCords = calculator->getIndexes(center);
+	const auto centerCords = calculator->getCords(center);
 	return get(radius, centerCords);
 }
 
