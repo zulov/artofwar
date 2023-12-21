@@ -286,7 +286,7 @@ const std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vecto
 }
 
 float Environment::getGroundHeightAt(float x, float z) const {
-	const auto vec = Urho3D::Vector3(x, 0, z);
+	const auto vec = Urho3D::Vector3(x, 0.f, z);
 	return getGroundHeightAt(vec);
 }
 
@@ -473,7 +473,7 @@ int Environment::closestPassableCell(int posIndex) const {
 }
 
 Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
-	return mainGrid.getValidPosition(size, pos);
+	return mainGrid.getValidPosition(size, calculator->getCords(pos));
 }
 
 Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size,

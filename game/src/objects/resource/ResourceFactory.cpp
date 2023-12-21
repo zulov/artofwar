@@ -7,11 +7,14 @@
 
 ResourceEntity* ResourceFactory::create(int id, Urho3D::IntVector2 bucketCords, int level) const {
 	db_resource* db_resource = Game::getDatabase()->getResource(id);
-	if (Game::getEnvironment()->validateStatic(db_resource->size, bucketCords, false)) {
-		auto center = Game::getEnvironment()->getValidPosition(db_resource->size, bucketCords);
-		float y = Game::getEnvironment()->getGroundHeightAt(center.x_, center.y_);
-		return new ResourceEntity(Urho3D::Vector3(center.x_, y, center.y_), db_resource, level,
-		                          Game::getEnvironment()->getIndex(bucketCords.x_, bucketCords.y_),
+	const auto env = Game::getEnvironment();
+	if (env->validateStatic(db_resource->size, bucketCords, false)) {
+		const auto center = env->getValidPosition(db_resource->size, bucketCords);
+
+		return new ResourceEntity(Urho3D::Vector3(center.x_,
+		                                          env->getGroundHeightAt(center.x_, center.y_),
+		                                          center.y_), db_resource, level,
+		                          env->getIndex(bucketCords.x_, bucketCords.y_),
 		                          !SIM_GLOBALS.HEADLESS);
 	}
 	return nullptr;

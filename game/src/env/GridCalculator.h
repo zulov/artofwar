@@ -59,13 +59,12 @@ struct GridCalculator {
 	}
 
 	Urho3D::Vector2 getCenter(int i) const {
-		return getCenter(getCords(i));
+		const auto c = getCords(i);
+		return getCenter(c.x_, c.y_);
 	}
 
-	Urho3D::Vector2 getCenter(const Urho3D::IntVector2 &pos) const {
-		const float cX = firstCenter + pos.x_ * fieldSize;
-		const float cZ = firstCenter + pos.y_ * fieldSize;
-		return { cX, cZ };
+	Urho3D::Vector2 getCenter(int x, int y) const {
+		return { firstCenter + x * fieldSize, firstCenter + y * fieldSize };
 	}
 
 	bool isValidIndex(short x, short z) const {

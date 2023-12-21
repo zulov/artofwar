@@ -31,7 +31,7 @@ public:
 	void addStatic(Static* object, bool bulkAdd);
 	void removeStatic(Static* object) const;
 	std::optional<Urho3D::Vector2> getDirectionFrom(int index, const Urho3D::Vector3& position) const;
-	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
+
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& cords) const;
 
 	void updateNeighbors(ComplexBucketData& data, int dataIndex) const;

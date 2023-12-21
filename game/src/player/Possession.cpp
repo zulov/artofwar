@@ -55,7 +55,7 @@ Possession::~Possession() {
 
 int Possession::getScore() const {
 	float buildingScore = 0.f;
-	for (auto building : buildings) {
+	for (const auto building : buildings) {
 		auto cost = building->getCostSum();
 
 		if (!building->isReady()) {
@@ -66,7 +66,7 @@ int Possession::getScore() const {
 
 	float unitsScore = 0.f;
 	float workerScore = 0.f;
-	for (auto unit : units) {
+	for (const auto unit : units) {
 		if (unit->getDbUnit()->typeWorker) {
 			workerScore += unit->getCostSum();
 		} else {
@@ -134,15 +134,13 @@ std::span<float> Possession::getBuildingsMetrics(ParentBuildingType type) {
 std::vector<Unit*> Possession::getFreeArmy() {
 	std::vector<Unit*> army(units.size());
 
-	auto it = std::ranges::copy_if(units, army.begin(), [](Unit* unit) {
-		return isFreeSolider(unit);
-	}).out;
+	const auto it = std::ranges::copy_if(units, army.begin(), isFreeSolider).out;
 	army.resize(std::distance(army.begin(), it));
 	return army;
 }
 
 bool Possession::hasAnyFreeArmy() const {
-	return std::ranges::any_of(units, [](Unit* unit)-> bool { return isFreeSolider(unit); });
+	return std::ranges::any_of(units, isFreeSolider);
 }
 
 float Possession::getAttackSum() {

@@ -7,12 +7,13 @@
 
 Building* BuildingFactory::create(int id, const Urho3D::IntVector2& bucketCords, int level, int player) const {
 	const auto db_building = Game::getDatabase()->getBuilding(id);
-	if (Game::getEnvironment()->validateStatic(db_building->size, bucketCords, true)) {
-		const auto center = Game::getEnvironment()->getValidPosition(db_building->size, bucketCords);
+	const auto env = Game::getEnvironment();
+	if (env->validateStatic(db_building->size, bucketCords, true)) {
+		const auto center = env->getValidPosition(db_building->size, bucketCords);
 		return new Building(Urho3D::Vector3(center.x_,
-		                                    Game::getEnvironment()->getGroundHeightAt(center.x_, center.y_),
+		                                    env->getGroundHeightAt(center.x_, center.y_),
 		                                    center.y_),
-		                    id, player, level, Game::getEnvironment()->getIndex(bucketCords.x_, bucketCords.y_),
+		                    id, player, level, env->getIndex(bucketCords.x_, bucketCords.y_),
 		                    !SIM_GLOBALS.HEADLESS);
 	}
 

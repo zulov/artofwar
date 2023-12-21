@@ -539,10 +539,6 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 	return {};
 }
 
-Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
-	return getValidPosition(size, calculator->getCords(pos));
-}
-
 Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& cords) const {
 	const auto sizeX = calculateSize(size.x_, cords.x_);
 	const auto sizeZ = calculateSize(size.y_, cords.y_);

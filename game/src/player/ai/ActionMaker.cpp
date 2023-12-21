@@ -14,6 +14,7 @@
 #include "player/Player.h"
 #include "player/ai/ActionCenter.h"
 #include "env/Environment.h"
+#include "math/MathUtils.h"
 #include "objects/building/ParentBuildingType.h"
 #include "stats/AiInputProvider.h"
 
@@ -36,6 +37,37 @@ ActionMaker::ActionMaker(Player* player, db_nation* nation):
 	ifUnit(BrainProvider::get(nation->actionPrefix[11] + "ifUnit.csv")),
 	whichUnit(BrainProvider::get(nation->actionPrefix[12] + "whichUnit.csv")),
 	whereUnit(BrainProvider::get(nation->actionPrefix[13] + "whereUnit.csv")) {}
+
+
+void ActionMaker::action() {
+	const auto aiInput = Game::getAiInputProvider();
+
+	if (isEnoughResToWorker()) {
+		const auto resInput = aiInput->getResourceInput(player->getId());
+		const auto resResult = ifWorker->decide(resInput);
+		if (randFromTwo(resResult[0])) {
+			createWorker();
+		}
+	}
+
+	if (isEnoughResToAnyUnit()) {
+		const auto unitsInput = aiInput->getUnitsInput(player->getId());
+		const auto unitsResult = ifUnit->decide(unitsInput);
+		if (randFromTwo(unitsResult[0])) {
+			createUnit(unitsInput);
+		}
+	}
+	if (isEnoughResToAnyBuilding()) {
+		const auto buildingsInput = aiInput->getBuildingsInput(player->getId());
+		const auto buildingsResult = ifBuilding->decide(buildingsInput);
+		if (randFromTwo(buildingsResult[0])) {
+			createBuilding(buildingsInput);
+		}
+	}
+
+	//return levelUpUnit();
+	//return levelUpBuilding();
+}
 
 std::span<float> ActionMaker::getWhichBuilding(ParentBuildingType type, const std::span<float> aiTypeInput) const {
 	switch (type) {
@@ -80,36 +112,6 @@ bool ActionMaker::createUnit(std::span<float> unitsInput) {
 	const auto unit = chooseUnit(whichOutput);
 
 	return createUnit(unit);
-}
-
-void ActionMaker::action() {
-	const auto aiInput = Game::getAiInputProvider();
-
-	if (isEnoughResToWorker()) {
-		const auto resInput = aiInput->getResourceInput(player->getId());
-		const auto resResult = ifWorker->decide(resInput);
-		if (randFromTwo(resResult[0])) {
-			createWorker();
-		}
-	}
-
-	if (isEnoughResToAnyUnit()) {
-		const auto unitsInput = aiInput->getUnitsInput(player->getId());
-		const auto unitsResult = ifUnit->decide(unitsInput);
-		if (randFromTwo(unitsResult[0])) {
-			createUnit(unitsInput);
-		}
-	}
-	if (isEnoughResToAnyBuilding()) {
-		const auto buildingsInput = aiInput->getBuildingsInput(player->getId());
-		const auto buildingsResult = ifBuilding->decide(buildingsInput);
-		if (randFromTwo(buildingsResult[0])) {
-			createBuilding(buildingsInput);
-		}
-	}
-
-	//return levelUpUnit();
-	//return levelUpBuilding();
 }
 
 bool ActionMaker::createUnit(db_unit* unit, Building* building) const {
@@ -229,12 +231,12 @@ db_unit* ActionMaker::chooseUnit(std::span<float> result) {
 	auto& units = nation->units;
 	std::vector<db_unit*> unitsWithoutWorker;
 	unitsWithoutWorker.reserve(units.size());
-	std::copy_if(units.begin(), units.end(), std::back_inserter(unitsWithoutWorker), pred);
+	std::ranges::copy_if(units, std::back_inserter(unitsWithoutWorker), pred);
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
 	diffs.reserve(unitsWithoutWorker.size());
-	for (auto unit : unitsWithoutWorker) {
+	for (const auto unit : unitsWithoutWorker) {
 		diffs.push_back(dist(center, player->getLevelForUnit(unit->id)->dbUnitMetric));
 	}
 	if (diffs.empty()) {
@@ -278,16 +280,11 @@ db_unit_level* ActionMaker::chooseUnitLevelUp() {
 }
 
 float ActionMaker::dist(std::valarray<float>& center, const db_basic_metric* metric) {
-	auto diff = metric->getValuesNormAsVal() - center;
-	diff *= diff;
-	return diff.sum();
+	return sqRootSumError(center, metric->getValuesNormAsVal());
 }
 
 float ActionMaker::dist(std::valarray<float>& center, const db_building_metric* metric, ParentBuildingType type) {
-	std::valarray<float> diff = metric->getValuesNormAsValForType(type) - center;
-
-	diff *= diff;
-	return diff.sum();
+	return sqRootSumError(center, metric->getValuesNormAsValForType(type));
 }
 
 std::optional<Urho3D::Vector2> ActionMaker::findPosToBuild(db_building* building, ParentBuildingType type) const {
@@ -410,37 +407,17 @@ bool ActionMaker::levelUpUnit() {
 
 
 bool ActionMaker::isEnoughResToWorker() const {
-	for (const auto thing : nation->workers) {
-		if (enoughResources(thing)) {
-			return true;
-		}
-	}
-	return false;
+	return std::ranges::any_of(nation->workers, [](const auto& thing) { return enoughResources(thing); });
 }
 
 bool ActionMaker::isEnoughResToAnyUnit() const {
-	for (const auto thing : nation->units) {
-		if (!thing->typeWorker && enoughResources(thing)) {
-			return true;
-		}
-	}
-	return false;
+	return std::ranges::any_of(nation->units, [](const auto& thing) { return !thing->typeWorker && enoughResources(thing); });
 }
 
 bool ActionMaker::isEnoughResToAnyBuilding() const {
-	for (const auto thing : nation->buildings) {
-		if (enoughResources(thing)) {
-			return true;
-		}
-	}
-	return false;
+	return std::ranges::any_of(nation->buildings, [](const auto& thing) { return enoughResources(thing); });
 }
 
 bool ActionMaker::isEnoughResToTypeBuilding(ParentBuildingType type) const {
-	for (const auto thing : nation->buildings) {
-		if (thing->parentType[(char)type] && enoughResources(thing)) {
-			return true;
-		}
-	}
-	return false;
+	return std::ranges::any_of(nation->buildings, [type](const auto& thing) { return thing->parentType[(char)type] && enoughResources(thing); });
 }

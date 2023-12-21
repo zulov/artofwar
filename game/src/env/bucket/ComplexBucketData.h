@@ -2,7 +2,6 @@
 #include <iostream>
 #include <vector>
 
-#include "MainGrid.h"
 #include "objects/CellState.h"
 #include "objects/resource/ResourceEntity.h"
 #include "utils/defines.h"

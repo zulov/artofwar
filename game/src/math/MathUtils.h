@@ -123,3 +123,9 @@ inline void limitTo(Urho3D::Vector2& vector, float max) {
 
 	limitTo(vector, max, lengthSq);
 }
+
+inline float sqRootSumError(const std::valarray<float>& val1, const std::valarray<float>& val2) {
+	auto diff = val1 - val2;
+	diff *= diff;
+	return diff.sum();
+}
