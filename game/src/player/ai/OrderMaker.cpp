@@ -30,8 +30,7 @@ OrderMaker::OrderMaker(Player* player, db_nation* nation)
 
 	  attackOrDefence(BrainProvider::get(nation->orderPrefix[1] + "attackOrDefence.csv")),
 	  whereAttack(BrainProvider::get(nation->orderPrefix[2] + "whereAttack.csv")),
-	  whereDefence(BrainProvider::get(nation->orderPrefix[3] + "whereDefence.csv")) {
-}
+	  whereDefence(BrainProvider::get(nation->orderPrefix[3] + "whereDefence.csv")) {}
 
 void OrderMaker::action() {
 	auto freeWorkers = findFreeWorkers();
@@ -39,6 +38,8 @@ void OrderMaker::action() {
 	if (!freeWorkers.empty()) {
 		collect(freeWorkers);
 	}
+
+	const auto env = Game::getEnvironment();
 
 	if (player->getPossession().hasAnyFreeArmy()) {
 		const auto aiInput = Game::getAiInputProvider();
@@ -52,7 +53,7 @@ void OrderMaker::action() {
 			whereGo = whereDefence->decide(aiInput->getWhereDefend(player->getId()));
 		}
 		const CenterType centerType = static_cast<CenterType>(biggestWithRand(whereGo));
-		const auto posOpt = Game::getEnvironment()->getCenterOf(centerType, playerToGo);
+		const auto posOpt = env->getCenterOf(centerType, playerToGo);
 
 		if (posOpt.has_value()) {
 			std::vector<Unit*> army = player->getPossession().getFreeArmy();
@@ -63,34 +64,32 @@ void OrderMaker::action() {
 					const auto dist = sqDist(centerLocal, center);
 
 					if (dist > SQ_SEMI_CLOSE) {
+						UnitOrder* unitOrder = nullptr;
 						if (subArmy.size() > 1) {
-							Game::getActionCenter()->addUnitAction(
-								new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::GO), center),
-								player->getId());
-						} else {
-							Game::getActionCenter()->addUnitAction(
-								new IndividualOrder(subArmy.at(0), UnitAction::GO, center), player->getId());
+							unitOrder = new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::GO), center);
+						}else {
+							unitOrder = new IndividualOrder(subArmy.at(0), UnitAction::GO, center);
 						}
+						Game::getActionCenter()->addUnitAction(unitOrder, player->getId());
 					} else {
 						const auto unit = subArmy.at(0);
 
 						if (centerType == CenterType::BUILDING) {
-							const auto buildings = Game::getEnvironment()->getBuildingsFromTeamNotEq(
-								unit, -1, SEMI_CLOSE);
+							const auto buildings = env->getBuildingsFromTeamNotEq(unit, -1, SEMI_CLOSE);
 							semiCloseAttack(subArmy, *buildings);
 						} else if (centerType == CenterType::ECON) {
-							const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+							const auto neights = env->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
 							//TODO perf wrzuciæ predykat do srodka
 							std::vector<Physical*> workers;
 							workers.reserve(neights->size());
 							auto pred = [](const Physical* physical) {
 								return ((Unit*)physical)->getDbUnit()->typeWorker;
 							};
-							std::copy_if(neights->begin(), neights->end(), std::back_inserter(workers), pred);
+							std::ranges::copy_if(*neights, std::back_inserter(workers), pred);
 							semiCloseAttack(subArmy, workers);
 						} else {
 							//CenterType::UNITS
-							const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+							const auto neights = env->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
 							semiCloseAttack(subArmy, *neights);
 						}
 					}
@@ -98,26 +97,25 @@ void OrderMaker::action() {
 			}
 		}
 	}
-
 }
 
 void OrderMaker::semiCloseAttack(const std::vector<Unit*>& subArmy, const std::vector<Physical*>& things) const {
 	if (!things.empty()) {
-		const auto closest = Game::getEnvironment()->closestPhysical(subArmy.at(0), &things, belowClose, SQ_SEMI_CLOSE, true);
+		const auto closest = Game::getEnvironment()->closestPhysical(subArmy.at(0), &things, belowClose, SQ_SEMI_CLOSE,
+		                                                             true);
 		if (closest) {
 			Game::getActionCenter()->addUnitAction(
-				new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::ATTACK), closest), player->getId());
+			                                       new GroupOrder(subArmy, UnitActionType::ORDER,
+			                                                      cast(UnitAction::ATTACK), closest), player->getId());
 		}
 	}
 }
 
 std::vector<Unit*> OrderMaker::findFreeWorkers() const {
 	std::vector<Unit*> freeWorkers;
-	for (auto worker : player->getPossession().getWorkers()) {
-		if (isFreeWorker(worker)) {
-			freeWorkers.push_back(worker);
-		}
-	}
+	std::ranges::copy_if(player->getPossession().getWorkers(),
+	                     std::back_inserter(freeWorkers),
+	                     isFreeWorker);
 	return freeWorkers;
 }
 
@@ -140,16 +138,13 @@ void OrderMaker::actCollect(unsigned char& resHistogram, char resId, std::vector
 		resHistogram -= workers.size();
 		const auto closest = closetInRange(workers.at(0), resId);
 		if (closest) {
-			if (workers.size() <= 1) {
-				Game::getActionCenter()
-					->addUnitAction(new IndividualOrder(workers.at(0), UnitAction::COLLECT, closest),
-					                player->getId());
+			UnitOrder* unitOrder;
+			if (workers.size() > 1) {
+				unitOrder = new GroupOrder(workers, UnitActionType::ORDER, cast(UnitAction::COLLECT), closest);
 			} else {
-				Game::getActionCenter()
-					->addUnitAction(
-						new GroupOrder(workers, UnitActionType::ORDER, cast(UnitAction::COLLECT), closest),
-						player->getId());
+				unitOrder = new IndividualOrder(workers.at(0), UnitAction::COLLECT, closest);
 			}
+			Game::getActionCenter()->addUnitAction(unitOrder, player->getId());
 		} else {
 			rest.insert(rest.end(), workers.begin(), workers.end());
 		}
