@@ -127,7 +127,7 @@ bool ActionMaker::createUnit(db_unit* unit, Building* building) const {
 }
 
 bool ActionMaker::createWorker(db_unit* unit) const {
-	if (enoughResources(unit)) {
+	if (enoughResources(unit, player)) {
 		Building* building = getBuildingToDeployWorker(unit);
 		return createUnit(unit, building);
 	}
@@ -135,19 +135,19 @@ bool ActionMaker::createWorker(db_unit* unit) const {
 }
 
 bool ActionMaker::createUnit(db_unit* unit) const {
-	if (enoughResources(unit)) {
+	if (enoughResources(unit, player)) {
 		Building* building = getBuildingToDeploy(unit);
 		return createUnit(unit, building);
 	}
 	return false;
 }
 
-bool ActionMaker::enoughResources(db_with_cost* withCosts) const {
+bool ActionMaker::enoughResources(const db_with_cost* withCosts, Player* player) const {
 	return withCosts && player->getResources().hasEnough(withCosts->costs);
 }
 
 bool ActionMaker::createBuilding(db_building* building, ParentBuildingType type) const {
-	if (enoughResources(building)) {
+	if (enoughResources(building, player)) {
 		auto pos = findPosToBuild(building, type);
 		if (pos.has_value()) {
 			return Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId(), false);
@@ -382,7 +382,7 @@ Building* ActionMaker::getBuildingToLevelUpUnit(db_unit_level* level) {
 
 bool ActionMaker::levelUpBuilding() {
 	const auto level = chooseBuildingLevelUp();
-	if (enoughResources(level)) {
+	if (enoughResources(level, player)) {
 		Game::getActionCenter()->add(
 		                             new GeneralActionCommand(level->building, GeneralActionType::BUILDING_LEVEL,
 		                                                      player->getId()));
@@ -393,7 +393,7 @@ bool ActionMaker::levelUpBuilding() {
 
 bool ActionMaker::levelUpUnit() {
 	db_unit_level* level = chooseUnitLevelUp();
-	if (enoughResources(level)) {
+	if (enoughResources(level, player)) {
 		Building* building = getBuildingToLevelUpUnit(level);
 		if (building) {
 			Game::getActionCenter()->add(
@@ -407,17 +407,25 @@ bool ActionMaker::levelUpUnit() {
 
 
 bool ActionMaker::isEnoughResToWorker() const {
-	return std::ranges::any_of(nation->workers, [](const auto& thing) { return enoughResources(thing); });
+	return std::ranges::any_of(nation->workers, [this](const db_with_cost* thing) {
+		return enoughResources(thing, player);
+	});
 }
 
 bool ActionMaker::isEnoughResToAnyUnit() const {
-	return std::ranges::any_of(nation->units, [](const auto& thing) { return !thing->typeWorker && enoughResources(thing); });
+	return std::ranges::any_of(nation->units, [this](const db_unit* thing) {
+		return !thing->typeWorker && enoughResources(thing, player);
+	});
 }
 
 bool ActionMaker::isEnoughResToAnyBuilding() const {
-	return std::ranges::any_of(nation->buildings, [](const auto& thing) { return enoughResources(thing); });
+	return std::ranges::any_of(nation->buildings, [this](const db_building* thing) {
+		return enoughResources(thing, player);
+	});
 }
 
 bool ActionMaker::isEnoughResToTypeBuilding(ParentBuildingType type) const {
-	return std::ranges::any_of(nation->buildings, [type](const auto& thing) { return thing->parentType[(char)type] && enoughResources(thing); });
+	return std::ranges::any_of(nation->buildings, [this,type](const db_building* thing) {
+		return thing->parentType[(char)type] && enoughResources(thing, player);
+	});
 }

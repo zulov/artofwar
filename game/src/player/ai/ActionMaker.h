@@ -34,7 +34,7 @@ private:
 	bool createUnit(db_unit* unit) const;
 	bool createWorker(db_unit* unit) const;
 
-	bool enoughResources(db_with_cost* withCosts) const;
+	bool enoughResources(const db_with_cost* withCosts, Player * player) const;
 
 	bool levelUpUnit();
 	bool levelUpBuilding();

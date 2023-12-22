@@ -2,6 +2,7 @@
 #include <Urho3D/Math/Vector3.h>
 #include <Urho3D/Math/Vector2.h>
 #include <array>
+#include <valarray>
 
 inline float sqDistAs2D(float a, float b) {
 	return a * a + b * b;
