@@ -425,7 +425,8 @@ bool ActionMaker::isEnoughResToAnyBuilding() const {
 }
 
 bool ActionMaker::isEnoughResToTypeBuilding(ParentBuildingType type) const {
-	return std::ranges::any_of(nation->buildings, [this,type](const db_building* thing) {
-		return thing->parentType[(char)type] && enoughResources(thing, player);
+	char idx = (char)type;
+	return std::ranges::any_of(nation->buildings, [this, idx](const db_building* thing) {
+		return thing->parentType[idx] && enoughResources(thing, player);
 	});
 }
