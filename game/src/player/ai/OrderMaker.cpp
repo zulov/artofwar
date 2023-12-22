@@ -30,7 +30,13 @@ OrderMaker::OrderMaker(Player* player, db_nation* nation)
 
 	  attackOrDefence(BrainProvider::get(nation->orderPrefix[1] + "attackOrDefence.csv")),
 	  whereAttack(BrainProvider::get(nation->orderPrefix[2] + "whereAttack.csv")),
-	  whereDefence(BrainProvider::get(nation->orderPrefix[3] + "whereDefence.csv")) {}
+	  whereDefence(BrainProvider::get(nation->orderPrefix[3] + "whereDefence.csv")) {
+	temp = new std::vector<Physical*>();
+}
+
+OrderMaker::~OrderMaker() {
+	delete temp;
+}
 
 void OrderMaker::action() {
 	auto freeWorkers = findFreeWorkers();
@@ -67,31 +73,27 @@ void OrderMaker::action() {
 						UnitOrder* unitOrder = nullptr;
 						if (subArmy.size() > 1) {
 							unitOrder = new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::GO), center);
-						}else {
+						} else {
 							unitOrder = new IndividualOrder(subArmy.at(0), UnitAction::GO, center);
 						}
 						Game::getActionCenter()->addUnitAction(unitOrder, player->getId());
 					} else {
 						const auto unit = subArmy.at(0);
-
+						std::vector<Physical*>* things;
 						if (centerType == CenterType::BUILDING) {
-							const auto buildings = env->getBuildingsFromTeamNotEq(unit, -1, SEMI_CLOSE);
-							semiCloseAttack(subArmy, *buildings);
+							things = env->getBuildingsFromTeamNotEq(unit, -1, SEMI_CLOSE);
 						} else if (centerType == CenterType::ECON) {
 							const auto neights = env->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
 							//TODO perf wrzuciæ predykat do srodka
-							std::vector<Physical*> workers;
-							workers.reserve(neights->size());
-							auto pred = [](const Physical* physical) {
-								return ((Unit*)physical)->getDbUnit()->typeWorker;
-							};
-							std::ranges::copy_if(*neights, std::back_inserter(workers), pred);
-							semiCloseAttack(subArmy, workers);
+							temp->clear();
+							temp->reserve(neights->size());
+							std::ranges::copy_if(*neights, std::back_inserter(*temp), isWorker);
+							things = temp;
 						} else {
 							//CenterType::UNITS
-							const auto neights = env->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
-							semiCloseAttack(subArmy, *neights);
+							things = env->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
 						}
+						semiCloseAttack(subArmy, things);
 					}
 				}
 			}
@@ -99,9 +101,9 @@ void OrderMaker::action() {
 	}
 }
 
-void OrderMaker::semiCloseAttack(const std::vector<Unit*>& subArmy, const std::vector<Physical*>& things) const {
-	if (!things.empty()) {
-		const auto closest = Game::getEnvironment()->closestPhysical(subArmy.at(0), &things, belowClose, SQ_SEMI_CLOSE,
+void OrderMaker::semiCloseAttack(const std::vector<Unit*>& subArmy, const std::vector<Physical*>* things) const {
+	if (!things->empty()) {
+		const auto closest = Game::getEnvironment()->closestPhysical(subArmy.at(0), things, belowClose, SQ_SEMI_CLOSE,
 		                                                             true);
 		if (closest) {
 			Game::getActionCenter()->addUnitAction(

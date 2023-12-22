@@ -11,13 +11,13 @@ class Brain;
 class OrderMaker {
 public:
 	explicit OrderMaker(Player* player, db_nation* nation);
-	void semiCloseAttack(const std::vector<Unit*>& subArmy, const std::vector<Physical*>& things) const;
+	~OrderMaker();
 	OrderMaker(const OrderMaker& rhs) = delete;
 
 	void action();
 private:
 	std::vector<Unit*> findFreeWorkers() const;
-
+	void semiCloseAttack(const std::vector<Unit*>& subArmy, const std::vector<Physical*>* things) const;
 	Physical* closetInRange(Unit* worker, int resourceId);
 	void actCollect(unsigned char& resHistogram, char resId, std::vector<Unit*>& rest, std::vector<Unit*>& workers);
 	void collect(std::vector<Unit*>& freeWorkers);
@@ -29,5 +29,7 @@ private:
 	Brain* attackOrDefence;
 	Brain* whereAttack;
 	Brain* whereDefence;
+
+	std::vector<Physical*>* temp;
 
 };

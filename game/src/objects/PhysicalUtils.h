@@ -24,6 +24,10 @@ inline bool isFree(Unit* unit) {
 	return unit->getFormation() < 0 && isInFreeState(unit->getState()) && !unit->hasAim();
 }
 
+inline bool isWorker(Physical* physical) {
+	return ((Unit*)physical)->getDbUnit()->typeWorker;
+}
+
 inline bool isFreeWorker(Unit* unit) {
 	return unit->getDbUnit()->typeWorker && isFree(unit);
 }
@@ -32,7 +36,7 @@ inline bool isFreeSolider(Unit* unit) {
 	return !unit->getDbUnit()->typeWorker && isFree(unit);
 }
 
-inline float getCircleSize(const db_building* dbBuilding, const db_building_level * level) {
+inline float getCircleSize(const db_building* dbBuilding, const db_building_level* level) {
 	if (dbBuilding->typeDefence) {
 		return level->attackRange;
 	}
