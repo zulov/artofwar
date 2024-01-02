@@ -2,6 +2,7 @@
 #include <span>
 #include <vector>
 #include "fiboheap.h"
+#include "env/GridCalculator.h"
 #include "Urho3D/Math/Vector2.h"
 
 namespace Urho3D {
@@ -20,8 +21,8 @@ public:
 
 	~PathFinder();
 	void setComplexBucketData(ComplexBucketData* complexData);
-	const std::vector<int>* reconstructPath(int start, int goal, const int came_from[]) const;
-	const std::vector<int>* reconstructSimplifyPath(int start, int goal, const int came_from[]) const;
+	const std::vector<int>* reconstructPath(int start, int goal) const;
+	const std::vector<int>* reconstructSimplifyPath(int start, int goal) const;
 
 	const std::vector<int>* findPath(int startIdx, int endIdx, int limit);
 	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit, bool closeEnough);
@@ -31,7 +32,6 @@ public:
 	void drawMap(Urho3D::Image* image) const;
 
 private:
-	float getDistCost(unsigned char neightIdx) const;
 
 	const std::vector<int>* realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit);
 	const std::vector<int>* getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const;
@@ -43,11 +43,11 @@ private:
 	std::vector<int> getPassableIndexes(const std::vector<int>& endIdxs, bool closeEnough) const;
 
 	int heuristic(const Urho3D::IntVector2& from, const Urho3D::IntVector2& to) const;
-	float heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const;
+	int heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const;
 
 	bool ifInCache(int startIdx, int end) const { return lastStartIdx == startIdx && lastEndIdx == end; }
 
-	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
+	Urho3D::IntVector2 getCords(int index) const { return calculator->getCords(index); }
 	std::vector<Urho3D::IntVector2> getCords(const std::vector<int>& endIdxs) const;
 	void resetPathArrays();
 	bool isInLocalArea(int center, int indexOfAim) const;
@@ -63,12 +63,11 @@ private:
 	std::vector<int>* tempPath = new std::vector<int>();
 	std::vector<int>* closePath = new std::vector<int>();
 
-	int lastStartIdx = -1;
+	int lastStartIdx = -1; //TODO lepszy cache jako obiekt i wiecej
 	int lastEndIdx = -1;
 
-	const float fieldSize;
-	const float diagonalFieldSize;
 	const short resolution;
+	const int sqResolution;
 
 	unsigned short staticCounter = 0;
 	int* came_from;
@@ -77,4 +76,5 @@ private:
 
 	int min_cost_to_ref = 0;
 	int max_cost_to_ref;
+	float distances[8] = {sqrtf(2), 1.f, sqrtf(2), 1.f, 1.f, sqrtf(2), 1.f, sqrtf(2)};
 };

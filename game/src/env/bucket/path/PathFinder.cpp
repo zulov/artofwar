@@ -9,19 +9,17 @@
 #include "../ComplexBucketData.h"
 #include "env/GridCalculator.h"
 #include "env/GridCalculatorProvider.h"
-
 #include "env/CloseIndexes.h"
 #include "env/CloseIndexesProvider.h"
 
 PathFinder::PathFinder(short resolution, float size) :
 	closeIndexes(CloseIndexesProvider::get(resolution)), calculator(GridCalculatorProvider::get(resolution, size)),
-	fieldSize(size / resolution), diagonalFieldSize(fieldSize * sqrtf(2)), resolution(resolution),
-	max_cost_to_ref(resolution * resolution - 1) {
-	const auto sqRes = resolution * resolution;
-	came_from = new int[sqRes];
-	cost_so_far = new float[sqRes];
-	std::fill_n(came_from, sqRes, -1);
-	std::fill_n(cost_so_far, sqRes, -1.f);
+	resolution(resolution), sqResolution(resolution * resolution), max_cost_to_ref(sqResolution - 1) {
+
+	came_from = new int[sqResolution];
+	cost_so_far = new float[sqResolution];
+	std::fill_n(came_from, sqResolution, -1);
+	std::fill_n(cost_so_far, sqResolution, -1.f);
 }
 
 PathFinder::~PathFinder() {
@@ -36,7 +34,7 @@ void PathFinder::setComplexBucketData(ComplexBucketData* complexData) {
 	this->complexData = complexData;
 }
 
-const std::vector<int>* PathFinder::reconstructPath(int start, int goal, const int came_from[]) const {
+const std::vector<int>* PathFinder::reconstructPath(int start, int goal) const {
 	tempPath->clear();
 	int current = goal;
 
@@ -50,7 +48,7 @@ const std::vector<int>* PathFinder::reconstructPath(int start, int goal, const i
 	return tempPath;
 }
 
-const std::vector<int>* PathFinder::reconstructSimplifyPath(int start, int goal, const int came_from[]) const {
+const std::vector<int>* PathFinder::reconstructSimplifyPath(int start, int goal) const {
 	tempPath->clear();
 
 	int current = goal;
@@ -89,15 +87,11 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 	auto endCords = getCords(endIdxs);
 	assert(!endCords.empty());
 	int steps = 0;
-	while (!frontier.empty()) {
-		++steps;
-		if (steps > limit) {
-			break;
-		}
+	while (!frontier.empty() && ++steps <= limit) {
 		const auto current = frontier.get();
 		if (std::ranges::binary_search(endIdxs, current)) {
 			//debug(startIdx, endIdx);
-			return reconstructSimplifyPath(startIdx, current, came_from);
+			return reconstructSimplifyPath(startIdx, current);
 		}
 		auto const& currentData = complexData[current];
 		const auto currentCost = cost_so_far[current];
@@ -107,11 +101,11 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 				int next = current + val;
 				assert(validateIndex(current, next));
 				if (currentCameFrom != next) {
-					const float new_cost = currentCost + complexData[next].getCost() + getDistCost(i);
+					const float new_cost = currentCost + complexData[next].getCost() + distances[i];
 					auto const nextCost = cost_so_far[next];
 					if (nextCost < 0.f || new_cost < nextCost) {
 						updateCost(next, new_cost);
-
+						//TODO check brak heurystyki dla wielu
 						frontier.put(next, new_cost + heuristic(next, endCords));
 						came_from[next] = current;
 					}
@@ -163,13 +157,16 @@ const std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit
 	return realFindPath(startIdx, endIdxs, limit);
 }
 
-const std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, int limit, bool closeEnough) {
+const std::vector<int>*
+PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, int limit, bool closeEnough) {
 	const auto newEndIndexes = getPassableIndexes(endIdxs, closeEnough);
 	if (newEndIndexes.empty()) {
 		Game::getLog()->WriteRaw("No TargetFound");
 		closePath->clear();
 		return closePath;
 	}
+
+	//TODO perf skorzystac z close indexes?
 
 	const auto path = realFindPath(startIdx, newEndIndexes, limit);
 	if (path->empty()) {
@@ -239,18 +236,15 @@ inline int PathFinder::heuristic(const Urho3D::IntVector2& from, const Urho3D::I
 	return abs(from.x_ - to.x_) + abs(from.y_ - to.y_);
 }
 
-float PathFinder::heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const {
+int PathFinder::heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const {
 	//bug lepiej wybierac do kogo heurystyka
 	assert(!endIdxs.empty());
 	const auto a = getCords(from);
 	int min = 1024;
 	for (auto& endCords : endIdxs) {
-		const int val = heuristic(a, endCords);
-		if (val < min) {
-			min = val;
-		}
+		min = std::min(min, heuristic(a, endCords));
 	}
-	return min * fieldSize;
+	return min;
 }
 
 void PathFinder::invalidateCache() {
@@ -270,7 +264,7 @@ void PathFinder::debug(int start, int end) {
 	draw_grid_cost(cost_so_far, image, resolution);
 	image->SaveBMP("result/images/" + prefix + "3_grid_cost.bmp");
 
-	auto path = reconstructPath(start, end, came_from);
+	auto path = reconstructPath(start, end);
 	draw_grid_path(path, image, resolution);
 
 	image->SaveBMP("result/images/" + prefix + "4_grid_path.bmp");
@@ -288,13 +282,6 @@ void PathFinder::drawMap(Urho3D::Image* image) const {
 			*(data + idR) = complexData[index].isPassable() ? 0xFFFFFFFF : 0xFF000000;
 		}
 	}
-}
-
-float PathFinder::getDistCost(unsigned char neightIdx) const {
-	if (neightIdx == 1 || neightIdx == 3 || neightIdx == 4 || neightIdx == 6) {
-		return fieldSize;
-	}
-	return diagonalFieldSize;
 }
 
 void PathFinder::updateCost(int idx, float x) {
@@ -317,18 +304,15 @@ std::vector<Urho3D::IntVector2> PathFinder::getCords(const std::vector<int>& end
 }
 
 void PathFinder::resetPathArrays() {
-	assert(min_cost_to_ref != resolution * resolution - 1);
-	//std::fill_n(cost_so_far + min_cost_to_ref, max_cost_to_ref + 1 - min_cost_to_ref, -1.f);
+	assert(min_cost_to_ref != sqResolution - 1);
+
 	std::fill(cost_so_far + min_cost_to_ref, cost_so_far + max_cost_to_ref + 1, -1.f);
-	//std::fill_n(cost_so_far, resolution * resolution, -1.f);
+	std::fill(came_from + min_cost_to_ref, came_from + max_cost_to_ref + 1, -1);
 
-	int x = -1;
-	int y = -1;
-	long long val = ((long long)x) << 32 | y;
+	assert(std::all_of(cost_so_far, cost_so_far + sqResolution, [](int value) { return value == -1.f; }));
+	assert(std::all_of(came_from, came_from + sqResolution, [](int value) { return value == -1; }));
 
-	memset(came_from + min_cost_to_ref / 2, val, (max_cost_to_ref + 2 - min_cost_to_ref) / 2);
-	//std::fill_n(came_from, resolution * resolution, -1);
-	min_cost_to_ref = resolution * resolution - 1;
+	min_cost_to_ref = sqResolution - 1;
 	max_cost_to_ref = 0;
 }
 
