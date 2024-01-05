@@ -42,7 +42,6 @@ private:
 	int getPassableEnd(int endIdx) const;
 	std::vector<int> getPassableIndexes(const std::vector<int>& endIdxs, bool closeEnough) const;
 
-	int heuristic(const Urho3D::IntVector2& from, const Urho3D::IntVector2& to) const;
 	int heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const;
 
 	bool ifInCache(int startIdx, int end) const { return lastStartIdx == startIdx && lastEndIdx == end; }
@@ -53,7 +52,7 @@ private:
 	bool isInLocalArea(int center, int indexOfAim) const;
 	bool isInLocal2Area(int center, int indexOfAim) const;
 
-	void updateCost(int idx, float x);
+	void updateCost(int idx, float cost, int cameForm);
 
 	CloseIndexes* closeIndexes;
 	GridCalculator* calculator;

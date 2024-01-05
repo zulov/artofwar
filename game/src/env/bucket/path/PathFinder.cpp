@@ -76,8 +76,7 @@ void PathFinder::prepareToStart(int startIdx) {
 	frontier.clear();
 	frontier.put(startIdx, 0.f);
 
-	came_from[startIdx] = startIdx;
-	updateCost(startIdx, 0.f);
+	updateCost(startIdx, 0.f, startIdx);
 }
 
 const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
@@ -104,10 +103,9 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 					const float new_cost = currentCost + complexData[next].getCost() + distances[i];
 					auto const nextCost = cost_so_far[next];
 					if (nextCost < 0.f || new_cost < nextCost) {
-						updateCost(next, new_cost);
-						//TODO check brak heurystyki dla wielu
+						updateCost(next, new_cost, current);
+
 						frontier.put(next, new_cost + heuristic(next, endCords));
-						came_from[next] = current;
 					}
 				}
 			}
@@ -232,17 +230,13 @@ std::vector<int> PathFinder::getPassableIndexes(const std::vector<int>& endIdxs,
 	return result;
 }
 
-inline int PathFinder::heuristic(const Urho3D::IntVector2& from, const Urho3D::IntVector2& to) const {
-	return abs(from.x_ - to.x_) + abs(from.y_ - to.y_);
-}
-
 int PathFinder::heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const {
 	//bug lepiej wybierac do kogo heurystyka
 	assert(!endIdxs.empty());
 	const auto a = getCords(from);
 	int min = 1024;
-	for (auto& endCords : endIdxs) {
-		min = std::min(min, heuristic(a, endCords));
+	for (auto& b : endIdxs) {
+		min = std::min(min, abs(a.x_ - b.x_) + abs(a.y_ - b.y_));
 	}
 	return min;
 }
@@ -284,8 +278,9 @@ void PathFinder::drawMap(Urho3D::Image* image) const {
 	}
 }
 
-void PathFinder::updateCost(int idx, float x) {
-	cost_so_far[idx] = x;
+void PathFinder::updateCost(int idx, float cost, int cameForm) {
+	cost_so_far[idx] = cost;
+	came_from[idx] = cameForm;
 	if (idx < min_cost_to_ref) {
 		min_cost_to_ref = idx;
 	}

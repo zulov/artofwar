@@ -446,11 +446,11 @@ std::optional<Urho3D::Vector2> Environment::getCenterOf(CenterType type, char pl
 	return influenceManager.getCenterOf(type, player);
 }
 
-float Environment::getDiffOfCenters(CenterType type1, char id1, CenterType type2, char id2, float dfVal) {
+float Environment::getDiffOfCenters(CenterType type1, char id1, CenterType type2, char id2, float defaultVal) {
 	const auto optCenter1 = getCenterOf(type1, id1);
-	if (!optCenter1.has_value()) { return dfVal; }
+	if (!optCenter1.has_value()) { return defaultVal; }
 	const auto optCenter2 = getCenterOf(type2, id2);
-	if (!optCenter2.has_value()) { return dfVal; }
+	if (!optCenter2.has_value()) { return defaultVal; }
 
 	return (optCenter1.value() - optCenter2.value()).Length()
 		/ (calculator->getFieldSize() * calculator->getResolution());
