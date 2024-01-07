@@ -28,7 +28,6 @@ public:
 	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit, bool closeEnough);
 
 	void invalidateCache();
-	void debug(int start, int end);
 	void drawMap(Urho3D::Image* image) const;
 
 private:
@@ -52,7 +51,9 @@ private:
 	bool isInLocalArea(int center, int indexOfAim) const;
 	bool isInLocal2Area(int center, int indexOfAim) const;
 
-	void updateCost(int idx, float cost, int cameForm);
+	void update(int idx, float cost, int cameForm, float heuristicCost);
+
+	void debug(int start, int end);
 
 	CloseIndexes* closeIndexes;
 	GridCalculator* calculator;

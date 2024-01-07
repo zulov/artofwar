@@ -15,7 +15,6 @@
 PathFinder::PathFinder(short resolution, float size) :
 	closeIndexes(CloseIndexesProvider::get(resolution)), calculator(GridCalculatorProvider::get(resolution, size)),
 	resolution(resolution), sqResolution(resolution * resolution), max_cost_to_ref(sqResolution - 1) {
-
 	came_from = new int[sqResolution];
 	cost_so_far = new float[sqResolution];
 	std::fill_n(came_from, sqResolution, -1);
@@ -74,9 +73,8 @@ const std::vector<int>* PathFinder::reconstructSimplifyPath(int start, int goal)
 void PathFinder::prepareToStart(int startIdx) {
 	resetPathArrays();
 	frontier.clear();
-	frontier.put(startIdx, 0.f);
 
-	updateCost(startIdx, 0.f, startIdx);
+	update(startIdx, 0.f, startIdx, 0.f);
 }
 
 const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
@@ -103,9 +101,8 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 					const float new_cost = currentCost + complexData[next].getCost() + distances[i];
 					auto const nextCost = cost_so_far[next];
 					if (nextCost < 0.f || new_cost < nextCost) {
-						updateCost(next, new_cost, current);
-
-						frontier.put(next, new_cost + heuristic(next, endCords));
+						update(next, new_cost, current, 
+							new_cost + heuristic(next, endCords));
 					}
 				}
 			}
@@ -278,7 +275,8 @@ void PathFinder::drawMap(Urho3D::Image* image) const {
 	}
 }
 
-void PathFinder::updateCost(int idx, float cost, int cameForm) {
+void PathFinder::update(int idx, float cost, int cameForm, float heuristicCost) {
+	frontier.put(idx, heuristicCost);
 	cost_so_far[idx] = cost;
 	came_from[idx] = cameForm;
 	if (idx < min_cost_to_ref) {
