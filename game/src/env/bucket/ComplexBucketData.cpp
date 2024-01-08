@@ -37,7 +37,7 @@ void ComplexBucketData::setNeightFree(const unsigned char index) {
 	isNeightOccupied &= ~Flags::bitFlags[index];
 }
 
-float ComplexBucketData::getCost() const { return cost; }
+int ComplexBucketData::getCost() const { return cost; }
 
 bool ComplexBucketData::isBuildable() const {
 	return state == CellState::NONE

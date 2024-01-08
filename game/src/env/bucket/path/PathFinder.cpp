@@ -16,9 +16,9 @@ PathFinder::PathFinder(short resolution, float size) :
 	closeIndexes(CloseIndexesProvider::get(resolution)), calculator(GridCalculatorProvider::get(resolution, size)),
 	resolution(resolution), sqResolution(resolution * resolution), max_cost_to_ref(sqResolution - 1) {
 	came_from = new int[sqResolution];
-	cost_so_far = new float[sqResolution];
+	cost_so_far = new int[sqResolution];
 	std::fill_n(came_from, sqResolution, -1);
-	std::fill_n(cost_so_far, sqResolution, -1.f);
+	std::fill_n(cost_so_far, sqResolution, -1);
 }
 
 PathFinder::~PathFinder() {
@@ -74,7 +74,7 @@ void PathFinder::prepareToStart(int startIdx) {
 	resetPathArrays();
 	frontier.clear();
 
-	update(startIdx, 0.f, startIdx, 0.f);
+	update(startIdx, 0, startIdx, 0);
 }
 
 const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
@@ -98,9 +98,9 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 				int next = current + val;
 				assert(validateIndex(current, next));
 				if (currentCameFrom != next) {
-					const float new_cost = currentCost + complexData[next].getCost() + distances[i];
-					auto const nextCost = cost_so_far[next];
-					if (nextCost < 0.f || new_cost < nextCost) {
+					const auto new_cost = currentCost + complexData[next].getCost() + distances[i];
+					const auto nextCost = cost_so_far[next];
+					if (nextCost < 0 || new_cost < nextCost) {
 						update(next, new_cost, current, 
 							new_cost + heuristic(next, endCords));
 					}
@@ -235,7 +235,7 @@ int PathFinder::heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) co
 	for (auto& b : endIdxs) {
 		min = std::min(min, abs(a.x_ - b.x_) + abs(a.y_ - b.y_));
 	}
-	return min;
+	return min*100;
 }
 
 void PathFinder::invalidateCache() {
@@ -275,7 +275,7 @@ void PathFinder::drawMap(Urho3D::Image* image) const {
 	}
 }
 
-void PathFinder::update(int idx, float cost, int cameForm, float heuristicCost) {
+void PathFinder::update(int idx, int cost, int cameForm, int heuristicCost) {
 	frontier.put(idx, heuristicCost);
 	cost_so_far[idx] = cost;
 	came_from[idx] = cameForm;
@@ -299,10 +299,10 @@ std::vector<Urho3D::IntVector2> PathFinder::getCords(const std::vector<int>& end
 void PathFinder::resetPathArrays() {
 	assert(min_cost_to_ref != sqResolution - 1);
 
-	std::fill(cost_so_far + min_cost_to_ref, cost_so_far + max_cost_to_ref + 1, -1.f);
+	std::fill(cost_so_far + min_cost_to_ref, cost_so_far + max_cost_to_ref + 1, -1);
 	std::fill(came_from + min_cost_to_ref, came_from + max_cost_to_ref + 1, -1);
 
-	assert(std::all_of(cost_so_far, cost_so_far + sqResolution, [](int value) { return value == -1.f; }));
+	assert(std::all_of(cost_so_far, cost_so_far + sqResolution, [](int value) { return value == -1; }));
 	assert(std::all_of(came_from, came_from + sqResolution, [](int value) { return value == -1; }));
 
 	min_cost_to_ref = sqResolution - 1;

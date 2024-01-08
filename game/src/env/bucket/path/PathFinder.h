@@ -51,7 +51,7 @@ private:
 	bool isInLocalArea(int center, int indexOfAim) const;
 	bool isInLocal2Area(int center, int indexOfAim) const;
 
-	void update(int idx, float cost, int cameForm, float heuristicCost);
+	void update(int idx, int cost, int cameForm, int heuristicCost);
 
 	void debug(int start, int end);
 
@@ -71,10 +71,10 @@ private:
 
 	unsigned short staticCounter = 0;
 	int* came_from;
-	float* cost_so_far;
+	int* cost_so_far;
 	ComplexBucketData* complexData;
 
 	int min_cost_to_ref = 0;
 	int max_cost_to_ref;
-	float distances[8] = {sqrtf(2), 1.f, sqrtf(2), 1.f, 1.f, sqrtf(2), 1.f, sqrtf(2)};
+	int distances[8] = {int(sqrtf(2)*100), 100, int(sqrtf(2) * 100), 100, 100, int(sqrtf(2) * 100), 100, int(sqrtf(2) * 100) };
 };

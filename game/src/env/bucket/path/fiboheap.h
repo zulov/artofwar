@@ -7,8 +7,8 @@ class PriorityHeap {
 public:
 	struct HeapNode {
 		int id;
-		float value;
-		HeapNode(int _id, float _value) : id(_id), value(_value) {}
+		int value;
+		HeapNode(int _id, int _value) : id(_id), value(_value) {}
 		bool operator>(const HeapNode& other) const {
 			return value > other.value;
 		}
@@ -34,7 +34,7 @@ public:
 		return toReturn;
 	}
 
-	void put(const int pl, const float k) {
+	void put(const int pl, const int k) {
 		pq.emplace(pl, k);
 	}
 

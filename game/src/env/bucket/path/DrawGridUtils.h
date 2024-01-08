@@ -43,13 +43,13 @@ void draw_grid_from(int* cameFrom, Urho3D::Image* image, short resolution) {
 	}
 }
 
-void draw_grid_cost(const float* costSoFar, Urho3D::Image* image, short resolution) {
+void draw_grid_cost(const int* costSoFar, Urho3D::Image* image, short resolution) {
 	const auto data = (uint32_t*)image->GetData();
 
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
 			int id = getIndex(x, y, resolution);
-			if (costSoFar[id] > 0.f) {
+			if (costSoFar[id] > 0) {
 				int idR = getIndex(resolution - y - 1, x, resolution);
 				*(data + idR) -= 0x0000007F;
 			}

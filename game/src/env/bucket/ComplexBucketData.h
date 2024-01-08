@@ -29,7 +29,7 @@ public:
 	void setNeightFree(unsigned char index);
 	bool ifNeightIsFree(unsigned char index) const { return !(isNeightOccupied & Flags::bitFlags[index]); }
 
-	float getCost() const;
+	int getCost() const;
 
 	bool allNeightOccupied() const { return isNeightOccupied == 255; }
 	bool anyNeightOccupied() const { return isNeightOccupied > 0; }
@@ -73,7 +73,7 @@ private:
 	unsigned char indexOfSecondCloseIndexes;
 	short gradient = -1;
 	Static* staticObj{};
-	float cost = 0.f;
+	int cost = 0;
 	float resourceBonuses[MAX_PLAYERS][RESOURCES_SIZE];
 
 	bool belowCellLimit() const;
