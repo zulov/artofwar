@@ -305,7 +305,7 @@
     <ClCompile Include="src\hud\window\score\ScorePanel.cpp" />
     <ClCompile Include="src\player\Possession.cpp" />
     <ClCompile Include="src\env\influence\map\InfluenceMap.cpp" />
-    <ClCompile Include="src\env\bucket\path\PathFinder.cpp" />
+    <ClCompile Include="src\env\path\PathFinder.cpp" />
     <ClCompile Include="src\objects\unit\order\FormationOrder.cpp" />
     <ClCompile Include="src\objects\unit\order\GroupOrder.cpp" />
     <ClCompile Include="src\objects\unit\order\IndividualOrder.cpp" />
@@ -397,6 +397,7 @@
     <ClCompile Include="src\env\influence\VisibilityManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\env\path\PathCache.h" />
     <ClInclude Include="src\objects\building\ParentBuildingType.h" />
     <ClInclude Include="src\objects\projectile\ProjectileManager.h" />
     <ClInclude Include="src\objects\queue\AbstractQueueManager.h" />
@@ -458,7 +459,7 @@
     <ClInclude Include="src\hud\window\score\ScorePanel.h" />
     <ClInclude Include="src\player\ai\InfluenceDataType.h" />
     <ClInclude Include="src\player\Possession.h" />
-    <ClInclude Include="src\env\bucket\path\PathFinder.h" />
+    <ClInclude Include="src\env\path\PathFinder.h" />
     <ClInclude Include="src\utils\AssertUtils.h" />
     <ClInclude Include="src\utils\FileUtils.h" />
     <ClInclude Include="src\utils\Flags.h" />
@@ -483,7 +484,7 @@
     <ClInclude Include="src\objects\projectile\ProjectileWithNode.h" />
     <ClInclude Include="src\utils\OtherUtils.h" />
     <ClInclude Include="src\utils\replace_utils.h" />
-    <ClInclude Include="src\env\bucket\path\DrawGridUtils.h" />
+    <ClInclude Include="src\env\path\DrawGridUtils.h" />
     <ClInclude Include="src\env\EnvConsts.h" />
     <ClInclude Include="src\env\GridCalculator.h" />
     <ClInclude Include="src\env\influence\InfluenceManager.h" />
@@ -544,7 +545,7 @@
     <ClInclude Include="src\scene\load\SceneLoader.h" />
     <ClInclude Include="src\scene\save\SceneSaver.h" />
     <ClInclude Include="src\env\bucket\Bucket.h" />
-    <ClInclude Include="src\env\bucket\path\fiboheap.h" />
+    <ClInclude Include="src\env\path\fiboheap.h" />
     <ClInclude Include="src\env\bucket\Grid.h" />
     <ClInclude Include="src\env\bucket\BucketIterator.h" />
     <ClInclude Include="src\objects\building\Building.h" />

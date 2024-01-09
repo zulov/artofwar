@@ -60,7 +60,7 @@ public:
 
 	void removeFromGrids(const std::vector<Unit*>& units) const;
 	void removeFromGrids(const std::vector<Building*>& buildingsToDispose,
-	                     const std::vector<ResourceEntity*>& resourceToDispose) const;
+	                     const std::vector<ResourceEntity*>& resourceToDispose);
 
 	Urho3D::Vector2 repulseObstacle(Unit* unit) const;
 	std::optional<Urho3D::Vector2> validatePosition(int index, const Urho3D::Vector3& position) const;

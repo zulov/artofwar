@@ -36,8 +36,6 @@ void IndividualOrder::addTargetAim() {
 	unit->action(static_cast<UnitAction>(id), getTargetAim(unit->getMainGridIndex(), *vector));
 	//TODO execute i akajca
 	unit->resetFormation();
-
-	Game::getEnvironment()->invalidatePathCache();
 }
 
 void IndividualOrder::addFollowAim() {

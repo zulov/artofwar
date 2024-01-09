@@ -41,7 +41,6 @@ void FormationOrder::addTargetAim() {
 		Unit* leader = opt.value();
 		leader->action(static_cast<UnitAction>(id), getTargetAim(leader->getMainGridIndex(), *vector));
 		formation->stopAllBesideLeader();
-		Game::getEnvironment()->invalidatePathCache();
 	}
 }
 

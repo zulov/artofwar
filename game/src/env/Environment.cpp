@@ -258,12 +258,14 @@ void Environment::addNew(Building* building, bool bulkAdd) {
 	assert(building->getDeploy().has_value());
 
 	mainGrid.addDeploy(building);
+	mainGrid.invalidatePathCache();
 }
 
 void Environment::addNew(ResourceEntity* resource, bool bulkAdd) {
 	mainGrid.addStatic(resource, bulkAdd);
 	resource->setIndexInInfluence(influenceManager.getIndex(resource->getPosition()));
 	resourceStaticGrid.updateStatic(resource, bulkAdd);
+	mainGrid.invalidatePathCache();
 }
 
 Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) const {
@@ -346,7 +348,7 @@ void Environment::removeFromGrids(const std::vector<Unit*>& units) const {
 }
 
 void Environment::removeFromGrids(const std::vector<Building*>& buildingsToDispose,
-                                  const std::vector<ResourceEntity*>& resourceToDispose) const {
+                                  const std::vector<ResourceEntity*>& resourceToDispose) {
 	for (const auto building : buildingsToDispose) {
 		mainGrid.removeStatic(building);
 		mainGrid.removeDeploy(building);
@@ -356,6 +358,9 @@ void Environment::removeFromGrids(const std::vector<Building*>& buildingsToDispo
 	for (const auto resource : resourceToDispose) {
 		mainGrid.removeStatic(resource);
 		resourceStaticGrid.remove(resource);
+	}
+	if(!resourceToDispose.empty() || !buildingsToDispose.empty()) {
+		mainGrid.invalidatePathCache();
 	}
 }
 

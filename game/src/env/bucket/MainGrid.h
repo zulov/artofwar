@@ -4,7 +4,7 @@
 #include "ComplexBucketData.h"
 #include "Grid.h"
 #include "objects/resource/ResourceEntity.h"
-#include "path/PathFinder.h"
+#include "../path/PathFinder.h"
 
 
 namespace Urho3D {

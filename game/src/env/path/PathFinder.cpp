@@ -6,11 +6,14 @@
 
 #include "DrawGridUtils.h"
 #include "Game.h"
-#include "../ComplexBucketData.h"
+#include "PathCache.h"
+#include "../bucket/ComplexBucketData.h"
 #include "env/GridCalculator.h"
 #include "env/GridCalculatorProvider.h"
 #include "env/CloseIndexes.h"
 #include "env/CloseIndexesProvider.h"
+
+constexpr char MAX_CACHE_SIZE = 100;
 
 PathFinder::PathFinder(short resolution, float size) :
 	closeIndexes(CloseIndexesProvider::get(resolution)), calculator(GridCalculatorProvider::get(resolution, size)),
@@ -19,6 +22,7 @@ PathFinder::PathFinder(short resolution, float size) :
 	cost_so_far = new int[sqResolution];
 	std::fill_n(came_from, sqResolution, -1);
 	std::fill_n(cost_so_far, sqResolution, -1);
+	cache = new PathCache[MAX_CACHE_SIZE];
 }
 
 PathFinder::~PathFinder() {
@@ -27,6 +31,7 @@ PathFinder::~PathFinder() {
 
 	delete tempPath;
 	delete closePath;
+	delete[] cache;
 }
 
 void PathFinder::setComplexBucketData(ComplexBucketData* complexData) {
@@ -101,8 +106,8 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 					const auto new_cost = currentCost + complexData[next].getCost() + distances[i];
 					const auto nextCost = cost_so_far[next];
 					if (nextCost < 0 || new_cost < nextCost) {
-						update(next, new_cost, current, 
-							new_cost + heuristic(next, endCords));
+						update(next, new_cost, current,
+						       new_cost + heuristic(next, endCords));
 					}
 				}
 			}
@@ -133,9 +138,8 @@ const std::vector<int>* PathFinder::getClosePath2(int startIdx, int endIdx, cons
 const std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 	endIdx = getPassableEnd(endIdx); //TODO improve kolejnosc tego i nize jest istotna?
 
-	if (ifInCache(startIdx, endIdx)) {
-		return tempPath;
-	}
+	const auto foundCacheIdx = findInCache(startIdx, endIdx);
+	if (foundCacheIdx > -1) { return &cache[foundCacheIdx].path; }
 
 	if (isInLocalArea(startIdx, endIdx)) {
 		closePath->clear();
@@ -146,10 +150,10 @@ const std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit
 	const auto closePath = getClosePath2(startIdx, endIdx, closeIndexes->getPassIndexVia1LevelTo2(startIdx, endIdx));
 	if (closePath) { return closePath; }
 
-	lastStartIdx = startIdx;
-	lastEndIdx = endIdx;
 	const std::vector endIdxs = {endIdx};
-	return realFindPath(startIdx, endIdxs, limit);
+	const auto path = realFindPath(startIdx, endIdxs, limit);
+	addToCache(startIdx, endIdx, path);
+	return path;
 }
 
 const std::vector<int>*
@@ -163,14 +167,7 @@ PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, int limit, b
 
 	//TODO perf skorzystac z close indexes?
 
-	const auto path = realFindPath(startIdx, newEndIndexes, limit);
-	if (path->empty()) {
-		invalidateCache();
-	} else {
-		lastStartIdx = startIdx;
-		lastEndIdx = path->back();
-	}
-	return path;
+	return realFindPath(startIdx, newEndIndexes, limit);
 }
 
 bool PathFinder::validateIndex(const int current, int next) const {
@@ -232,15 +229,36 @@ int PathFinder::heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) co
 	assert(!endIdxs.empty());
 	const auto a = getCords(from);
 	int min = 1024;
-	for (auto& b : endIdxs) {
+	for (const auto& b : endIdxs) {
 		min = std::min(min, abs(a.x_ - b.x_) + abs(a.y_ - b.y_));
 	}
-	return min*100;
+	return min * PRECISION;
+}
+
+int PathFinder::findInCache(int start, int end) const {
+	for (int i = 0; i < cacheSize; ++i) {
+		if (cache[i].equal(start, end)) { return i; }
+	}
+	return -1;
+}
+
+void PathFinder::addToCache(int startIdx, int endIdx, const std::vector<int>* vector) {
+	cache[cacheIdx].set(startIdx, endIdx, vector);
+	++cacheIdx;
+	if (cacheIdx >= MAX_CACHE_SIZE) {
+		cacheIdx = 0;
+	}
+	if (cacheSize < MAX_CACHE_SIZE) {
+		++cacheSize;
+	}
 }
 
 void PathFinder::invalidateCache() {
-	lastStartIdx = -1;
-	lastEndIdx = -1;
+	for (int i = 0; i < cacheSize; ++i) {
+		cache[i].clear();
+	}
+	cacheIdx = 0;
+	cacheSize = 0;
 }
 
 void PathFinder::debug(int start, int end) {

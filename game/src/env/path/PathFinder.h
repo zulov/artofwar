@@ -5,6 +5,8 @@
 #include "env/GridCalculator.h"
 #include "Urho3D/Math/Vector2.h"
 
+struct PathCache;
+
 namespace Urho3D {
 	class Vector3;
 	class Image;
@@ -13,6 +15,8 @@ namespace Urho3D {
 struct GridCalculator;
 struct CloseIndexes;
 class ComplexBucketData;
+
+constexpr int PRECISION = 20;
 
 //TODO perf zrobic takiego wstepnego findera o nizesz rozdzielczosci jezeli sa w jednym squere i tam nic niema to mozna isc prosto
 class PathFinder {
@@ -31,7 +35,6 @@ public:
 	void drawMap(Urho3D::Image* image) const;
 
 private:
-
 	const std::vector<int>* realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit);
 	const std::vector<int>* getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const;
 
@@ -43,7 +46,8 @@ private:
 
 	int heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const;
 
-	bool ifInCache(int startIdx, int end) const { return lastStartIdx == startIdx && lastEndIdx == end; }
+	int findInCache(int start, int end) const;
+	void addToCache(int startIdx, int endIdx, const std::vector<int>* vector);
 
 	Urho3D::IntVector2 getCords(int index) const { return calculator->getCords(index); }
 	std::vector<Urho3D::IntVector2> getCords(const std::vector<int>& endIdxs) const;
@@ -63,8 +67,9 @@ private:
 	std::vector<int>* tempPath = new std::vector<int>();
 	std::vector<int>* closePath = new std::vector<int>();
 
-	int lastStartIdx = -1; //TODO lepszy cache jako obiekt i wiecej
-	int lastEndIdx = -1;
+	PathCache* cache;
+	char cacheIdx = 0;
+	char cacheSize = 0;
 
 	const short resolution;
 	const int sqResolution;
@@ -76,5 +81,9 @@ private:
 
 	int min_cost_to_ref = 0;
 	int max_cost_to_ref;
-	int distances[8] = {int(sqrtf(2)*100), 100, int(sqrtf(2) * 100), 100, 100, int(sqrtf(2) * 100), 100, int(sqrtf(2) * 100) };
+	int distances[8] = {
+		int(sqrtf(2) * PRECISION), PRECISION, int(sqrtf(2) * PRECISION),
+		PRECISION, PRECISION,
+		int(sqrtf(2) * PRECISION), PRECISION, int(sqrtf(2) * PRECISION)
+	};
 };
