@@ -23,8 +23,7 @@ public:
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
 		if (parameter.isThingAlive()) {
-			auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
-			return std::ranges::find(indexesToUse, unit->getMainGridIndex()) != indexesToUse.end()
+			return parameter.thingToInteract->indexCanBeUse(unit->getMainGridIndex())
 				&& parameter.thingToInteract->belowCloseLimit() > 0;
 		}
 		return false;
@@ -38,12 +37,10 @@ public:
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
-		auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
-		const auto found = std::ranges::find(indexesToUse, unit->getMainGridIndex());
-		assert(found != indexesToUse.end());
+		assert(parameter.thingToInteract->indexCanBeUse(unit->getMainGridIndex()));
 		unit->currentFrameState = 0;
 
-		setData(unit, *found, parameter.thingToInteract);
+		setData(unit, unit->getMainGridIndex(), parameter.thingToInteract);
 
 		unit->maxSpeed = unit->dbLevel->maxSpeed / 2;
 		Game::getEnvironment()->updateCell(unit->getMainGridIndex(), 1, CellState::ATTACK);
@@ -77,10 +74,8 @@ public:
 		if (unit->indexChanged() || first->indexChanged()) {
 			reduce(unit, first);
 
-			auto const indexesToUse = first->getIndexesForUse(unit);
-			const auto found = std::ranges::find(indexesToUse, unit->getMainGridIndex());
-			if (found != indexesToUse.end()) {
-				setData(unit, *found, first);
+			if (first->indexCanBeUse(unit->getMainGridIndex())) {
+				setData(unit, unit->getMainGridIndex(), first);
 			} else {
 				StateManager::toDefaultState(unit);
 				return;

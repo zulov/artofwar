@@ -359,7 +359,7 @@ void Environment::removeFromGrids(const std::vector<Building*>& buildingsToDispo
 		mainGrid.removeStatic(resource);
 		resourceStaticGrid.remove(resource);
 	}
-	if(!resourceToDispose.empty() || !buildingsToDispose.empty()) {
+	if (!resourceToDispose.empty() || !buildingsToDispose.empty()) {
 		mainGrid.invalidatePathCache();
 	}
 }
@@ -534,9 +534,8 @@ Physical* Environment::closestPhysical(Unit* unit, const std::vector<Physical*>*
 
 	for (const auto entity : *things) {
 		if (entity->isAlive() && condition(entity)) {
-			auto const idxs = entity->getIndexesForUse(unit);
 			//TODO perf ogranizcyc liczbe indeksów, np wybrac jeden dla obiektu
-			allIndexes.insert(allIndexes.end(), idxs.begin(), idxs.end());
+			entity->addIndexesForUse(allIndexes);
 			thingsFiltered.push_back(entity);
 		}
 	}
@@ -545,11 +544,8 @@ Physical* Environment::closestPhysical(Unit* unit, const std::vector<Physical*>*
 		const auto path = mainGrid.findPath(unit->getMainGridIndex(), allIndexes, limit, false);
 		if (!path->empty()) {
 			for (const auto entity : thingsFiltered) {
-				auto const idxs = entity->getIndexesForUse(unit);
-				for (const int i : idxs) {
-					if (i == path->back()) {
-						return entity;
-					}
+				if (entity->indexCanBeUse(path->back())) {
+					return entity;
 				}
 			}
 		}

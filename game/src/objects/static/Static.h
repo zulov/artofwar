@@ -34,8 +34,10 @@ public:
 	const std::span<int> getAllCells() const { return std::span{data, static_cast<unsigned long>(occupiedCellsSize + surroundCellsSize) }; }
 
 	std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(Unit* user) override;
-	std::vector<int> getIndexesForUse(Unit* user) const override;
+	std::vector<int> getIndexesForUse() const override;
 	std::vector<int> getIndexesForRangeUse(Unit* user) const override;
+	void addIndexesForUse(std::vector<int>& indexes) const override;
+	bool indexCanBeUse(int index) const override;
 
 	std::string getValues(int precision) override;
 

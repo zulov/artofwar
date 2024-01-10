@@ -39,7 +39,7 @@ void IndividualOrder::addTargetAim() {
 }
 
 void IndividualOrder::addFollowAim() {
-	const auto indexes = toUse->getIndexesForUse(unit);
+	const auto indexes = toUse->getIndexesForUse();
 	if (indexes.empty()) {
 		unit->action(static_cast<UnitAction>(id), getFollowAim(unit->getMainGridIndex(), indexes));
 	}
@@ -100,7 +100,7 @@ std::vector<int> IndividualOrder::getIndexesToAct() const {
 	}
 	if (indexes.empty()) {
 		//close and collect
-		indexes = toUse->getIndexesForUse(unit);
+		indexes = toUse->getIndexesForUse();
 	}
 	return indexes;
 }

@@ -540,21 +540,40 @@ std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(Unit
 	return {};
 }
 
-std::vector<int> Unit::getIndexesForUse(Unit* user) const {
+std::vector<int> Unit::getIndexesForUse() const {
 	std::vector<int> indexes;
 	if (belowCloseLimit() <= 0) { return indexes; }
-	const int mainIndex = getMainGridIndex();
+	indexes.reserve(8 - std::popcount(useSockets));
+	addIndexesForUse(indexes);
 
-	for (auto [i, val] : Game::getEnvironment()->getCloseTabIndexesWithValue(mainIndex)) {
+	return indexes;
+}
+
+void Unit::addIndexesForUse(std::vector<int>& indexes) const {
+	const int mainIndex = getMainGridIndex();
+	const auto env = Game::getEnvironment();
+	for (auto [i, val] : env->getCloseTabIndexesWithValue(mainIndex)) {
 		if (!ifSlotIsOccupied(i)) {
 			int index = mainIndex + val;
-			if (Game::getEnvironment()->cellIsPassable(index)) {
+			if (env->cellIsPassable(index)) {
 				indexes.push_back(index);
 			}
 		}
 	}
+}
 
-	return indexes;
+bool Unit::indexCanBeUse(int index) const {
+	const int mainIndex = getMainGridIndex();
+	const auto env = Game::getEnvironment();
+	for (auto [i, val] : env->getCloseTabIndexesWithValue(mainIndex)) {
+		auto idx = mainIndex + val;
+		if (idx==index && !ifSlotIsOccupied(i)) {
+			if (env->cellIsPassable(idx)) {
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 std::vector<int> Unit::getIndexesForRangeUse(Unit* user) const {

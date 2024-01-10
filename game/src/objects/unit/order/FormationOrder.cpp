@@ -50,7 +50,7 @@ void FormationOrder::addFollowAim() {
 		formation->stopAllBesideLeader();
 		Unit* leader = leaderOpt.value();
 
-		auto const indexes = toUse->getIndexesForUse(leader);
+		auto const indexes = toUse->getIndexesForUse();
 		if (!indexes.empty()) {
 			leader->action(static_cast<UnitAction>(id), getFollowAim(leader->getMainGridIndex(), indexes));
 		}
@@ -67,7 +67,7 @@ void FormationOrder::addChargeAim() {
 void FormationOrder::followAndAct(float distThreshold) {
 	if (const auto optLeader = formation->getLeader(); optLeader.has_value()) {
 		Unit* leader = optLeader.value();
-		auto const indexes = toUse->getIndexesForUse(leader);
+		auto const indexes = toUse->getIndexesForUse();
 		if (!indexes.empty()) {
 			if (Game::getEnvironment()->anyCloseEnough(indexes, leader->getMainGridIndex(), distThreshold)) {
 				for (auto* unit : formation->getUnits()) {

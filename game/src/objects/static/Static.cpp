@@ -85,7 +85,7 @@ void Static::populate() {
 
 	occupiedCellsSize = gridSize.x_ * gridSize.y_;
 
-	auto tabSize = (sSizeX.y_- sSizeX.x_)* (sSizeZ.y_ - sSizeZ.x_);
+	auto tabSize = (sSizeX.y_ - sSizeX.x_) * (sSizeZ.y_ - sSizeZ.x_);
 	data = new int[tabSize]; //TODO obliczyc dokladnie rozmiar
 	int* o = data;
 	int* s = data + occupiedCellsSize;
@@ -138,17 +138,30 @@ std::optional<std::tuple<Urho3D::Vector2, float>> Static::getPosToUseWithDist(Un
 	return {};
 }
 
-std::vector<int> Static::getIndexesForUse(Unit* user) const {
+std::vector<int> Static::getIndexesForUse() const {
 	std::vector<int> indexes;
 	if (belowCloseLimit() <= 0) { return indexes; }
 	indexes.reserve(surroundCellsSize);
+	addIndexesForUse(indexes);
+
+	return indexes;
+}
+
+void Static::addIndexesForUse(std::vector<int>& indexes) const {
 	for (auto index : getSurroundCells()) {
 		if (canUse(index)) {
 			indexes.push_back(index);
 		}
 	}
+}
 
-	return indexes;
+bool Static::indexCanBeUse(int index) const {
+	for (const auto i : getSurroundCells()) {
+		if (index == i && canUse(i)) {
+			return true;
+		}
+	}
+	return false;
 }
 
 std::vector<int> Static::getIndexesForRangeUse(Unit* user) const {

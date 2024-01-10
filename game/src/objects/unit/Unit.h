@@ -120,8 +120,10 @@ public:
 	bool ifSlotIsOccupied(char index) const;
 
 	std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(Unit* user) override;
-	std::vector<int> getIndexesForUse(Unit* user) const override;
+	std::vector<int> getIndexesForUse() const override;
 	std::vector<int> getIndexesForRangeUse(Unit* user) const override;
+	void addIndexesForUse(std::vector<int>& indexes) const override;
+	bool indexCanBeUse(int index) const override;
 
 	bool action(UnitAction unitAction, const ActionParameter& parameter);
 	bool action(UnitAction unitAction);

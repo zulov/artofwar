@@ -69,8 +69,11 @@ public:
 
 	virtual bool isToDispose() const { return false; }
 
-	virtual std::vector<int> getIndexesForUse(Unit* user) const = 0;
+	virtual std::vector<int> getIndexesForUse() const = 0;
 	virtual std::vector<int> getIndexesForRangeUse(Unit* user) const = 0;
+	virtual void addIndexesForUse(std::vector<int>& indexes) const = 0;
+	virtual bool indexCanBeUse(int index) const = 0;
+
 	virtual std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(Unit* user) = 0;
 	std::optional<Urho3D::Vector2> getPosToUseBy(Unit* follower);
 

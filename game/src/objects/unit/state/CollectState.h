@@ -19,19 +19,16 @@ public:
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
 		if (parameter.isThingAlive()) {
-			auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
-			return std::ranges::find(indexesToUse, unit->getMainGridIndex()) != indexesToUse.end();
+			return parameter.thingToInteract->indexCanBeUse(unit->getMainGridIndex());
 		}
 		return false;
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
-		auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
-		const auto found = std::ranges::find(indexesToUse, unit->getMainGridIndex());
-		assert(found != indexesToUse.end());
+		assert(parameter.thingToInteract->indexCanBeUse(unit->getMainGridIndex()));
 		unit->currentFrameState = 0;
 
-		setStartData(unit, *found, parameter.thingToInteract);
+		setStartData(unit, unit->getMainGridIndex(), parameter.thingToInteract);
 
 		unit->lastActionThingId = parameter.thingToInteract->getId();
 		unit->velocity = Urho3D::Vector2::ZERO;
@@ -59,10 +56,8 @@ public:
 			first->reduceClose();
 			unit->thingToInteract = nullptr;
 
-			auto const indexesToUse = first->getIndexesForUse(unit);
-			const auto found = std::ranges::find(indexesToUse, unit->getMainGridIndex());
-			if (found != indexesToUse.end()) {
-				setStartData(unit, *found, first);
+			if (first->indexCanBeUse(unit->getMainGridIndex())) {
+				setStartData(unit, unit->getMainGridIndex(), first);
 			} else {
 				StateManager::toDefaultState(unit);
 				return;
