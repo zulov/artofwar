@@ -566,8 +566,8 @@ bool Unit::indexCanBeUse(int index) const {
 	const int mainIndex = getMainGridIndex();
 	const auto env = Game::getEnvironment();
 	for (auto [i, val] : env->getCloseTabIndexesWithValue(mainIndex)) {
-		auto idx = mainIndex + val;
-		if (idx==index && !ifSlotIsOccupied(i)) {
+		const auto idx = mainIndex + val;
+		if (idx == index && !ifSlotIsOccupied(i)) {
 			if (env->cellIsPassable(idx)) {
 				return true;
 			}

@@ -60,6 +60,7 @@ private:
 	BucketIterator iterator;
 
 	std::vector<Physical*>* tempSelected;
+	std::vector<Physical*>* cache;
 	int prevIndex = -1;
 	float prevRadius = -1.f;
 };

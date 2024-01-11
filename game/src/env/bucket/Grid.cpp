@@ -17,11 +17,13 @@ Grid::Grid(short resolution, float size, float maxQueryRadius)
 	  resolution(resolution), sqResolution(resolution * resolution) {
 	buckets = new Bucket[sqResolution];
 	tempSelected = new std::vector<Physical*>();
+	cache = new std::vector<Physical*>();
 }
 
 Grid::~Grid() {
 	delete[] buckets;
 	delete tempSelected;
+	delete cache;
 }
 
 int Grid::update(Unit* unit, int currentIndex, bool shouldChangeFlag) const {
@@ -87,8 +89,6 @@ const std::vector<Physical*>& Grid::getNotSafeContentAt(short x, short z) const 
 
 std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair,
                                              const char player) {
-	invalidateCache();
-
 	const auto posBeginX = calculator->getIndex(std::min(pair.first->x_, pair.second->x_));
 	const auto posEndX = calculator->getIndex(std::max(pair.first->x_, pair.second->x_));
 	const auto posBeginZ = calculator->getIndex(std::min(pair.first->z_, pair.second->z_));
@@ -135,14 +135,13 @@ void Grid::invalidateCache() {
 }
 
 void Grid::invalidateCache(int currentIdx, float radius) {
-	tempSelected->clear();
+	cache->clear();
 	prevIndex = currentIdx;
 	prevRadius = radius;
 }
 
 std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, float radius) {
 	//TODO clean prawie to samo co wy¿ej
-	invalidateCache();
 	const auto posBeginX = calculator->getIndex(clicked->getPosition().x_ - radius);
 	const auto posBeginZ = calculator->getIndex(clicked->getPosition().z_ - radius);
 	const auto posEndX = calculator->getIndex(clicked->getPosition().x_ + radius);
@@ -164,14 +163,9 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, float r
 
 std::vector<Physical*>* Grid::getAllFromCache(int currentIdx, float radius) {
 	if (currentIdx == prevIndex && radius == prevRadius) {
-		return tempSelected;
+		return cache;
 	}
 	return getAll(currentIdx, radius);
-}
-
-void Grid::addFromCell(short shiftIdx, int currentIdx) const {
-	auto& content = getContentAt(shiftIdx + currentIdx);
-	tempSelected->insert(tempSelected->end(), content.begin(), content.end());
 }
 
 std::vector<Physical*>* Grid::getAll(int currentIdx, float radius) {
@@ -182,5 +176,10 @@ std::vector<Physical*>* Grid::getAll(int currentIdx, float radius) {
 		addFromCell(idx, currentIdx);
 	}
 
-	return tempSelected;
+	return cache;
+}
+
+void Grid::addFromCell(short shiftIdx, int currentIdx) const {
+	auto& content = getContentAt(shiftIdx + currentIdx);
+	cache->insert(cache->end(), content.begin(), content.end());
 }
