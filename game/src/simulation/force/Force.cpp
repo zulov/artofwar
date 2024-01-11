@@ -19,8 +19,7 @@ void Force::separationObstacle(Urho3D::Vector2& newForce, Unit* unit) {
 	const auto minimalDistance = unit->getMinimalDistance() * 3;
 	const auto coef = calculateCoef(distance, minimalDistance);
 
-	force *= coef / distance;
-	force *= boostCoef * sepCoef;
+	force *= (coef / distance) * boostCoef * sepCoef;
 
 	forceStats.addSepObst(force);
 
