@@ -87,7 +87,7 @@ public:
 	content_info* getContentInfo(Urho3D::Vector2 centerPercent, bool checks[], int activePlayer);
 
 	Urho3D::Vector2 getPosFromPercent(float x, float z) const;
-	Physical* closestPhysical(Unit* unit, const std::vector<Physical*>* things,
+	Physical* closestPhysical(int startIdx, const std::vector<Physical*>* things,
 	                          const std::function<bool(Physical*)>& condition, int limit, bool closeEnough);
 	Physical* closestPhysicalSimple(const Physical* physical, const std::vector<Physical*>* things, float range) const;
 

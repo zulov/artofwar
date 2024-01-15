@@ -110,7 +110,7 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 
 	const auto formMng = Game::getFormationManager();
 
-	auto posOpt = formMng->getPositionFor(unit); //TODO czasem jest niepassable
+	auto posOpt = formMng->getPositionFor(unit); //TODO bug czasem jest niepassable oraz gdy wszyscy sasiedzi sa zajeci to path find nie dziala
 	if (posOpt.has_value()) {
 		const float priority = formMng->getPriority(unit);
 		if (priority > 0) {

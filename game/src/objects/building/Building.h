@@ -60,7 +60,7 @@ public:
 private:
 	int deployIndex = -1;
 	unsigned short currentFrameState = 0;
-	bool ready = true;
+	bool ready = true;//TOOD replace with state
 	db_building* dbBuilding;
 	db_building_level* dbLevel;
 

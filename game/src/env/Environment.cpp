@@ -523,8 +523,8 @@ Urho3D::Vector2 Environment::getPosFromPercent(float x, float z) const {
 	return {getPosFromPercent(x), getPosFromPercent(z)};
 }
 
-Physical* Environment::closestPhysical(Unit* unit, const std::vector<Physical*>* things,
-                                       const std::function<bool(Physical*)>& condition, int limit, bool closeEnough) {
+Physical* Environment::closestPhysical(int startIdx, const std::vector<Physical*>* things,
+                                       const std::function<bool(Physical*)>& condition, int limit,bool closeEnough) {
 	if (things->empty()) {
 		return nullptr;
 	}
@@ -541,7 +541,7 @@ Physical* Environment::closestPhysical(Unit* unit, const std::vector<Physical*>*
 	}
 
 	if (!allIndexes.empty()) {
-		const auto path = mainGrid.findPath(unit->getMainGridIndex(), allIndexes, limit, false);
+		const auto path = mainGrid.findPath(startIdx, allIndexes, limit, closeEnough);
 		if (!path->empty()) {
 			for (const auto entity : thingsFiltered) {
 				if (entity->indexCanBeUse(path->back())) {
