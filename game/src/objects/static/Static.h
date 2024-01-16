@@ -58,8 +58,9 @@ protected:
 	void populate() override;
 
 	int staticGridIndex;
-	StaticState state, nextState;
-
+	StaticState state = StaticState::CREATING;
+	StaticState	nextState = StaticState::CREATING;
+	
 	unsigned char occupiedCellsSize = 0;
 	unsigned char surroundCellsSize = 0;
 	VisibilityType visibilityType = VisibilityType::VISIBLE;

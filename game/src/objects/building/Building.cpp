@@ -38,7 +38,6 @@ Building::~Building() {
 }
 
 void Building::postCreate() {
-	ready = false;
 	queue->add(1, QueueActionType::BUILDING_CREATE, getId(), 1);
 	setShaderParam(this, "Progress", 0.0);
 }
@@ -49,7 +48,7 @@ unsigned short Building::getMaxHpBarSize() const {
 }
 
 float Building::getHealthBarSize() const {
-	if (ready) {
+	if (isReady()) {
 		return Physical::getHealthBarSize();
 	}
 	return getMaxHpBarSize() * queue->getAt(0)->getProgress();
@@ -76,7 +75,7 @@ std::pair<float, bool> Building::absorbAttack(float attackCoef) {
 	if (hp <= 0) {
 		return {0.f, false};
 	}
-	const auto val = (attackCoef + attackCoef * !ready) * (1 - dbLevel->armor);
+	const auto val = (attackCoef + attackCoef * !isReady()) * (1 - dbLevel->armor);
 	hp -= val;
 
 	if (hp <= 0) {
@@ -108,7 +107,7 @@ float Building::getAttackVal(Physical* aim) {
 }
 
 void Building::action(BuildingActionType type, short id) const {
-	if (!ready) { return; }
+	if (!isReady()) { return; }
 	Resources& resources = Game::getPlayersMan()->getPlayer(getPlayer())->getResources();
 
 	switch (type) {
@@ -147,7 +146,7 @@ Building* Building::load(dbload_building* dbloadBuilding) {
 }
 
 QueueElement* Building::updateQueue() {
-	if (!ready && !SIM_GLOBALS.HEADLESS) {
+	if (!isReady() && !SIM_GLOBALS.HEADLESS) {
 		setShaderParam(this, "Progress", queue->getAt(0)->getProgress());
 	}
 
@@ -161,7 +160,7 @@ void Building::updateAi(bool ifBuildingAction) {
 		thingToInteract = nullptr;
 		currentFrameState = 0;
 	}
-	if (ready && dbLevel->canAttack) {
+	if (isReady() && dbLevel->canAttack) {
 		if (thingToInteract) {
 			if (currentFrameState >= dbLevel->attackReload) {
 				ProjectileManager::shoot(this, thingToInteract, 7, player);
@@ -210,7 +209,7 @@ void Building::setDeploy(int cell) {
 }
 
 void Building::complete() {
-	ready = true;
+	StateManager::changeState(this, StaticState::ALIVE);
 	setShaderParam(this, "Progress", 2.0);
 	//const int hpTemp = hp;
 	//loadXml("Objects/buildings/" + dbLevel->nodeName);
@@ -218,7 +217,7 @@ void Building::complete() {
 }
 
 float Building::getSightRadius() const {
-	return dbLevel->sightRadius * (1 - 0.7f * !ready);
+	return dbLevel->sightRadius * (1 - 0.7f * !isReady());
 }
 
 short Building::getCostSum() const {

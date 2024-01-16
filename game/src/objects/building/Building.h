@@ -28,7 +28,7 @@ public:
 
 	//TODO target to nie to samo co gdzie sie maja pojawiac!
 	AbstractQueueManager* getQueue() const { return queue; }
-	bool isReady() const { return ready; }
+	bool isReady() const { return state != StaticState::CREATING; }
 
 	Urho3D::String getInfo() const override;
 	const Urho3D::String& getName() const override;
@@ -56,11 +56,12 @@ public:
 	float getModelHeight() const override;
 	void setModelData(float modelHeight) const override;
 	db_building* getDbBuilding() const { return dbBuilding; }
-	std::pair<db_building*, db_building_level*> getData() const { return {dbBuilding, dbLevel}; }//TODO getUniT DATA i resource
+	std::pair<db_building*, db_building_level*> getData() const { return {dbBuilding, dbLevel}; }
+	//TODO getUniT DATA i resource
 private:
 	int deployIndex = -1;
 	unsigned short currentFrameState = 0;
-	bool ready = true;//TOOD replace with state
+
 	db_building* dbBuilding;
 	db_building_level* dbLevel;
 

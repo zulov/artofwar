@@ -11,9 +11,7 @@
 #include "env/Environment.h"
 #include "utils/OtherUtils.h"
 
-Static::Static(Urho3D::Vector3& _position, int indexInGrid, bool withNode) : Physical(_position, withNode),
-                                                                             state(StaticState::ALIVE),
-                                                                             nextState(StaticState::ALIVE) {
+Static::Static(Urho3D::Vector3& _position, int indexInGrid, bool withNode) : Physical(_position, withNode) {
 	Static::setBucketInMainGrid(indexInGrid);
 }
 
@@ -75,11 +73,12 @@ Urho3D::IntVector2 Static::getSurroundSize(const Urho3D::IntVector2 oSize, int r
 }
 
 void Static::populate() {
+	auto env = Game::getEnvironment();
 	const auto gridSize = getGridSize();
-	const auto cordsCell = Game::getEnvironment()->getCords(indexInMainGrid);
+	const auto cordsCell = env->getCords(indexInMainGrid);
 	const auto oSizeX = calculateSize(gridSize.x_, cordsCell.x_);
 	const auto oSizeZ = calculateSize(gridSize.y_, cordsCell.y_);
-	const auto res = Game::getEnvironment()->getResolution();
+	const auto res = env->getResolution();
 	const auto sSizeX = getSurroundSize(oSizeX, res);
 	const auto sSizeZ = getSurroundSize(oSizeZ, res);
 
@@ -90,7 +89,7 @@ void Static::populate() {
 	int* o = data;
 	int* s = data + occupiedCellsSize;
 	for (short i = sSizeX.x_; i < sSizeX.y_; ++i) {
-		const auto index = Game::getEnvironment()->getIndex(i, 0);
+		const auto index = env->getIndex(i, 0);
 		for (short j = sSizeZ.x_; j < sSizeZ.y_; ++j) {
 			if (i >= oSizeX.x_ && i < oSizeX.y_ && j >= oSizeZ.x_ && j < oSizeZ.y_) {
 				*o = index + j;

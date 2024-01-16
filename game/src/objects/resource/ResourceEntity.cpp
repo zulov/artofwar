@@ -18,7 +18,7 @@
 ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, db_resource* db_resource, int level, int indexInGrid, bool withNode)
 	: Static(_position, indexInGrid, withNode) {
 	dbResource = db_resource;
-
+	state = StaticState::ALIVE;
 	if (withNode) {
 		loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(
 		                                                                      RandIntType::RESOURCE_NODE,

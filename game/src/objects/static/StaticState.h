@@ -1,7 +1,8 @@
 #pragma once
 enum class StaticState : char {
-	ALIVE=0,
-	FREE,
+	CREATING=-1,
+	ALIVE,
+	FREE,//TODO czy to potrzebne?
 	DEAD,
 	DISPOSE
 };
