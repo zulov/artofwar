@@ -74,7 +74,7 @@ private:
 	short gradient = -1;
 	Static* staticObj{};
 	int cost = 0;
-	float resourceBonuses[MAX_PLAYERS][RESOURCES_SIZE];
+	float resourceBonuses[MAX_PLAYERS][RESOURCES_SIZE]={ -1.0f };
 
 	bool belowCellLimit() const;
 };

@@ -17,7 +17,8 @@
 
 
 MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
-	Grid(resolution, size, maxQueryRadius), complexData(new ComplexBucketData[sqResolution]),
+	Grid(resolution, size, maxQueryRadius),
+	complexData(new ComplexBucketData[sqResolution]),
 	pathFinder(resolution, size) {
 	const auto quarter = calculator->getFieldSize() / 4;
 	pathFinder.setComplexBucketData(complexData);
