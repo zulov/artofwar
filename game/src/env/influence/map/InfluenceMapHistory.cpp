@@ -10,7 +10,7 @@ void InfluenceMapHistory::reset() {
 	const auto end = values + arraySize;
 
 	for (auto i = values; i < end; ++i) {
-		*i *= *i * vanishCoef;
+		*i *= vanishCoef;
 	}
 	minMaxInited = false;
 }

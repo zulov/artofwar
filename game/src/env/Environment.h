@@ -116,7 +116,8 @@ public:
 
 	const std::vector<short>& getCloseIndexs(int center) const;
 	std::array<float, 5>& getInfluenceDataAt(char player, const Urho3D::Vector2& pos);
-	std::optional<Urho3D::Vector2> getPosFromIndexes(db_building* building, char player, const std::vector<unsigned>* indexes);
+	std::optional<Urho3D::Vector2> getPosFromIndexes(db_building* building, char player,
+	                                                 const std::vector<unsigned>* indexes);
 
 	std::optional<Urho3D::Vector2> getPosToCreate(const std::span<float> result, ParentBuildingType type,
 	                                              db_building* building, char player);
@@ -143,15 +144,20 @@ public:
 	void reAddBonuses(std::vector<Building*>& resBuildings, std::vector<ResourceEntity*>* resources) const;
 
 	void refreshAllStatic(std::vector<int>& indexes);
-	const std::vector<std::pair<unsigned char, short>>& getCloseTabIndexesWithValue(int center) const { return mainGrid.getCloseTabIndexesWithValue(center); }
+
+	const std::vector<std::pair<unsigned char, short>>& getCloseTabIndexesWithValue(int center) const {
+		return mainGrid.getCloseTabIndexesWithValue(center);
+	}
 
 private:
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
 	                                      const std::function<bool(Physical*)>& condition) const;
+	std::vector<Physical*>* getNeighbours(Unit* unit, float radius);
 	std::vector<Physical*>* getNeighbours(const Urho3D::Vector3& center, Grid& bucketGrid, int id, float radius,
 	                                      float prevRadius) const;
-	void addIfInRange(Physical* physical, Physical* neight, const float sqRadius,
+	void addIfInRange(const Physical* physical, Physical* neight, const float sqRadius,
 	                  const std::function<bool(Physical*)>& condition) const;
+	void addIfInRange(const Physical* physical, Physical* neight, const float sqRadius) const;
 	float getPosFromPercent(float value) const;
 	float mapSize;
 	MainGrid mainGrid;
@@ -164,5 +170,4 @@ private:
 	GridCalculator* calculator;
 
 	std::vector<Physical*>* neights;
-
 };

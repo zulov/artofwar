@@ -28,10 +28,10 @@ VisibilityMap::~VisibilityMap() {
 }
 
 void VisibilityMap::update(Physical* thing, float value) {
-	valuesForInfluenceReady = false;
-	percentReady = false;
 	const auto sRadius = thing->getSightRadius();
 	if (sRadius < 0) { return; }
+	valuesForInfluenceReady = false;
+	percentReady = false;
 	const auto centerIdx = calculator->indexFromPosition(thing->getPosition());
 	if (ranges[centerIdx] < sRadius) {
 		if (ranges[centerIdx] == 0.f && changedIndexes.size() < CHANGED_INDEXES_MAX_SIZE) {

@@ -98,9 +98,29 @@ std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& buc
 	return neights;
 }
 
-void Environment::addIfInRange(Physical* physical, Physical* neight, const float sqRadius,
+std::vector<Physical*>* Environment::getNeighbours(Unit* unit, float radius) {
+	neights->clear();
+	BucketIterator& bucketIterator = mainGrid.getArrayNeight(unit->getMainGridIndex(), radius);
+	const float sqRadius = radius * radius;
+
+	while (Physical* neight = bucketIterator.next()) {
+		//if bucket wystarczajaco blisk ododaj bez sprawdzania odleglosci
+		addIfInRange(unit, neight, sqRadius);
+	}
+
+	return neights;
+}
+
+void Environment::addIfInRange(const Physical* physical, Physical* neight, const float sqRadius,
                                const std::function<bool(Physical*)>& condition) const {
 	if (physical != neight && condition(neight)
+		&& sqDistAs2D(physical->getPosition(), neight->getPosition()) < sqRadius) {
+		neights->push_back(neight);
+	}
+}
+
+void Environment::addIfInRange(const Physical* physical, Physical* neight, const float sqRadius) const {
+	if (physical != neight
 		&& sqDistAs2D(physical->getPosition(), neight->getPosition()) < sqRadius) {
 		neights->push_back(neight);
 	}
@@ -110,7 +130,7 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	const auto currentIdx = unit->getMainGridIndex();
 	assert(currentIdx>=0);
 	if (mainGrid.onlyOneInside(currentIdx)) {
-		return getNeighbours(unit, mainGrid, radius, [](Physical* physical) { return true; });
+		return getNeighbours(unit, radius);
 	}
 	const auto simpleNeght = mainGrid.getAllFromCache(currentIdx, radius);
 
