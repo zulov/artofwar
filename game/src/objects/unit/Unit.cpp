@@ -86,7 +86,7 @@ bool Unit::move(float timeStep, const CameraInfo* camInfo) {
 	const bool prevVisible = shouldUpdate;
 
 	if (state != UnitState::STOP) {
-		hasMoved = true;
+		hasMoved = true;jezeli velocity zero to tez powinno byc na false
 		position.x_ += velocity.x_ * timeStep;
 		position.z_ += velocity.y_ * timeStep;
 		shouldUpdate = ifVisible(true, camInfo);
