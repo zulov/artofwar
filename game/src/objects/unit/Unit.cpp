@@ -65,16 +65,9 @@ void Unit::checkAim() {
 void Unit::updatePosition() const {
 	if (shouldUpdate) {
 		if (isInStates(state, {UnitState::ATTACK, UnitState::COLLECT, UnitState::SHOT}) && isFirstThingAlive()) {
-			const auto dir = dirTo(position, thingToInteract->getPosition());
-
-			node->SetTransform(
-			                   position,
-			                   Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(dir.x_, 0.f, dir.y_)));
+			setTransform(dirTo(position, thingToInteract->getPosition()));
 		} else if (velocity.LengthSquared() > 4 * dbLevel->sqMinSpeed) {
-			node->SetTransform(
-			                   position,
-			                   Urho3D::Quaternion(Urho3D::Vector3::FORWARD,
-			                                      Urho3D::Vector3(velocity.x_, 0.f, velocity.y_)));
+			setTransform(velocity);
 		} else {
 			node->SetPosition(position);
 		}
@@ -85,8 +78,8 @@ bool Unit::move(float timeStep, const CameraInfo* camInfo) {
 	bool hasMoved = false;
 	const bool prevVisible = shouldUpdate;
 
-	if (state != UnitState::STOP) {
-		hasMoved = true;jezeli velocity zero to tez powinno byc na false
+	if (state != UnitState::STOP && velocity != Urho3D::Vector2::ZERO) {
+		hasMoved = true;
 		position.x_ += velocity.x_ * timeStep;
 		position.z_ += velocity.y_ * timeStep;
 		shouldUpdate = ifVisible(true, camInfo);
@@ -183,6 +176,11 @@ void Unit::setIndexChanged(bool changed) {
 
 void Unit::setAim(Aim* aim) {
 	aims.set(aim);
+}
+
+void Unit::setTransform(const Urho3D::Vector2& rotation) const {
+	node->SetTransform(position,
+	                   Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(rotation.x_, 0.f, rotation.y_)));
 }
 
 void Unit::drawLineTo(const Urho3D::Vector2& second,
@@ -454,6 +452,9 @@ void Unit::applyForce(float timeStep) {
 	if (lengthSq < dbLevel->sqMinSpeed) {
 		if (state == UnitState::MOVE) {
 			StateManager::changeState(this, UnitState::STOP);
+		}
+		if (lengthSq < dbLevel->sqMinSpeed / 1000) {
+			velocity = Urho3D::Vector2::ZERO;
 		}
 	} else {
 		limitTo(velocity, maxSpeed, lengthSq);

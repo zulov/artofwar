@@ -27,9 +27,8 @@ MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
 		Urho3D::Vector2(quarter, -quarter), Urho3D::Vector2(-quarter, quarter)
 	};
 	auto ptr = complexData;
-	for (int i = 0; i < sqResolution; ++i) {
+	for (int i = 0; i < sqResolution; ++i, ++ptr) {
 		ptr->setIndexCloseIndexes(closeIndexes->getBothIndexes(i));
-		++ptr;
 	}
 	DebugLineRepo::init(DebugLineType::MAIN_GRID);
 }

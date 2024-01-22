@@ -212,7 +212,7 @@ void Simulation::applyForce() const {
 	for (auto unit : *units) {
 		unit->applyForce(TIME_PER_UPDATE);
 		auto pos = unit->getPosition();
-		//TODO to przeniesc do mova? to moze byc [rpblem gdy jest przesuwanie poza klatk¹
+		//TODO to przeniesc do mova? to moze byc problem gdy jest przesuwanie poza klatka
 		const float y = enviroment->getGroundHeightAt(pos);
 		unit->updateHeight(y, TIME_PER_UPDATE);
 	}
@@ -328,7 +328,7 @@ void Simulation::aiPlayers() const {
 void Simulation::moveUnitsAndCheck(const float timeStep) {
 	const auto camInfo = Game::getCameraManager()->getCamInfo(UPDATE_DRAW_DISTANCE);
 
-	for (auto unit : *units) {
+	for (const auto unit : *units) {
 		const bool hasMoved = unit->move(timeStep, camInfo);
 
 		unit->checkAim();
@@ -351,10 +351,7 @@ void Simulation::calculateForces() {
 	DebugLineRepo::beginGeometry(DebugLineType::UNIT_LINES);
 
 	for (const auto unit : *units) {
-		auto& stats = force.stats();
-		
-		stats.vectorReset();
-		
+		auto& stats = force.stats().vectorReset();
 
 		Urho3D::Vector2 newForce;
 		switch (unit->getState()) {

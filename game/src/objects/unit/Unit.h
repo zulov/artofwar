@@ -165,6 +165,7 @@ public:
 
 private:
 	void setAim(Aim* aim);
+	void setTransform(const Urho3D::Vector2 &rotation) const;
 	Urho3D::Vector2 velocity, acceleration;
 	Aims aims;
 

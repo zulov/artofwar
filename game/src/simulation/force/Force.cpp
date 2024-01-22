@@ -85,21 +85,25 @@ void Force::destOrFormation(Urho3D::Vector2& newForce, Unit* unit) {
 	}
 }
 
-void Force::turnIfAreOpposite(const Urho3D::Vector2& newForce, Urho3D::Vector2& force) const {
-	if (!force.Equals(Urho3D::Vector2::ZERO) &&
-		(force.Normalized() + newForce.Normalized()).Equals(Urho3D::Vector2::ZERO)) {
-		force += force.Length() * 0.1f * Urho3D::Vector2(force.y_, -force.x_);
-	}
+void Force::destination(Urho3D::Vector2& newForce, Unit* unit, float factor) {
+	auto destForce = unit->getDestination(boostCoef, aimCoef * factor);
+
+	turnIfAreOpposite(newForce, destForce);
+
+	forceStats.addDest(destForce);
+
+	newForce += destForce;
 }
 
-void Force::destination(Urho3D::Vector2& newForce, Unit* unit, float factor) {
-	auto force = unit->getDestination(boostCoef, aimCoef * factor);
-
-	turnIfAreOpposite(newForce, force);
-
-	forceStats.addDest(force);
-
-	newForce += force;
+void Force::turnIfAreOpposite(const Urho3D::Vector2& newForce, Urho3D::Vector2& destForce) const {
+	if (!destForce.Equals(Urho3D::Vector2::ZERO) && !newForce.Equals(Urho3D::Vector2::ZERO)) {
+		const auto dot = destForce.DotProduct(newForce);
+		if (dot < 0) {
+			if (Urho3D::Equals(dot / (newForce.Length() * destForce.Length()), -1.f)) {
+				destForce += destForce.Length() * 0.1f * Urho3D::Vector2(destForce.y_, -destForce.x_);
+			}
+		}
+	}
 }
 
 void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {

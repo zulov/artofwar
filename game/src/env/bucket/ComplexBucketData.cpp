@@ -6,8 +6,7 @@
 
 ComplexBucketData::ComplexBucketData() {
 	clear();
-	assert(std::all_of(&resourceBonuses[0][0], &resourceBonuses[0][0] + MAX_PLAYERS * RESOURCES_SIZE,
-		       [](float value) { return value == -1.0f; }));
+	resetResBonuses();
 }
 
 void ComplexBucketData::setStatic(Static* object) {

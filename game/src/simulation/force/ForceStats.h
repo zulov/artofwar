@@ -9,7 +9,7 @@ constexpr unsigned short FORCE_STATS_SIZE = 1000;
 constexpr bool FORCE_STATS_ENABLE = false;
 
 struct ForceStats {
-	void vectorReset() {
+	ForceStats &vectorReset() {
 		if constexpr (DEBUG_LINES_ENABLED) {
 			if (!SIM_GLOBALS.HEADLESS) {
 				sepObstLast = {};
@@ -19,6 +19,7 @@ struct ForceStats {
 				escaLast = {};
 			}
 		}
+		return *this;
 	}
 
 	void reset() {
