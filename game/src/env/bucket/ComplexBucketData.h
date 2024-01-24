@@ -27,7 +27,8 @@ public:
 
 	void setNeightOccupied(unsigned char index);
 	void setNeightFree(unsigned char index);
-	bool ifNeightIsFree(unsigned char index) const { return !(isNeightOccupied & Flags::bitFlags[index]); }
+	bool ifNeightIsFree(unsigned char index) const { return !ifNeightIsOccupied(index); }
+	bool ifNeightIsOccupied(unsigned char index) const { return (isNeightOccupied & Flags::bitFlags[index]); }
 
 	int getCost() const;
 

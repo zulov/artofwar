@@ -110,7 +110,7 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 		int counter = 0;
 
 		for (auto [i, val] : closeIndexes->getTabIndexesWithValue(data)) {
-			if (!data.ifNeightIsFree(i)) {
+			if (data.ifNeightIsOccupied(i)) {
 				sum += calculator->getCenter(index + val);
 				++counter;
 			}
