@@ -1,6 +1,7 @@
 #pragma once
 #include <magic_enum.hpp>
 #include <Urho3D/Container/Str.h>
+#include <Urho3D/Graphics/Texture2D.h>
 #include "GameState.h"
 #include "initializer_list"
 
@@ -27,6 +28,7 @@ protected:
 	Urho3D::String styleName, bodyStyle;
 
 	bool visibleAt[magic_enum::enum_count<GameState>()];
+	Urho3D::Texture2D* getTexture(Urho3D::String path) const;
 private:
 	virtual void createBody() =0;
 };

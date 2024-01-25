@@ -38,6 +38,7 @@ public:
 	bool anyNeightFree() const { return isNeightOccupied != 255; }
 
 	void setAllOccupied() { isNeightOccupied = 255; }
+	unsigned char getIsNeightOccupied() const { return isNeightOccupied; }
 
 	char getAdditionalInfo() const { return additionalInfo; }
 

@@ -75,8 +75,7 @@ void MainMenuPanel::createBody() {
 	}
 
 	for (int i = 0; i < MAIN_MENU_BUTTON_NUMBER; ++i) {
-		auto texture2 = Game::getCache()->GetResource<Urho3D::Texture2D
-		>("textures/hud/icon/menu/menu_" + Urho3D::String(i) + ".png");
+		auto texture2 = getTexture("textures/hud/icon/menu/menu_" + Urho3D::String(i) + ".png");
 
 		auto button = createElement<Urho3D::Button>(window, style, "MainMenuButton");
 		createSprite(button, texture2, style, "MainMenuSprite");

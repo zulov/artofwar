@@ -1,7 +1,5 @@
 #include "QueuePanel.h"
-#include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Input/InputEvents.h>
-#include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/ui/button.h>
 #include <Urho3D/UI/UIEvents.h>
 #include <Urho3D/UI/Window.h>
@@ -33,7 +31,7 @@ void QueuePanel::update(AbstractQueueManager* queue, short& j) const {
 		QueueElement* element = queue->getAt(i);
 		elements[j]->show();
 		auto name = getIconName(element->getType(), element->getAmount(), element->getId());
-		auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/" + name);
+		auto texture = getTexture("textures/hud/icon/" + name);
 		if (element->getMaxCapacity() > 1) {
 			elements[j]->
 				setText(Urho3D::String(element->getAmount()) + "/" + Urho3D::String(element->getMaxCapacity()));

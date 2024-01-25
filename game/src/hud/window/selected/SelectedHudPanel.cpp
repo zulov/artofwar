@@ -92,7 +92,7 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 		auto& data = infoType->getData();
 		if (data.empty()) { continue; }
 		auto name = getIconName(type, infoType->getId());
-		auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/" + name);
+		auto texture = getTexture("textures/hud/icon/" + name);
 
 		for (int j = 0; j < data.size(); j += ratio) {
 			int max = Urho3D::Min(data.size(), j + ratio);

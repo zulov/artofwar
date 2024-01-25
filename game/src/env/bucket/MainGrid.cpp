@@ -30,11 +30,14 @@ MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
 	for (int i = 0; i < sqResolution; ++i, ++ptr) {
 		ptr->setIndexCloseIndexes(closeIndexes->getBothIndexes(i));
 	}
+	std::fill_n(repulseCache, 256, nullptr);
+
 	DebugLineRepo::init(DebugLineType::MAIN_GRID);
 }
 
 MainGrid::~MainGrid() {
 	delete[] complexData;
+	clear_array(repulseCache, 256);
 }
 
 void MainGrid::updateNeight(int idx) const {
@@ -98,27 +101,35 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, const Urho3D::IntVect
 	return true;
 }
 
-Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
+Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) {
 	const auto index = unit->getMainGridIndex();
 
-	const auto& data = complexData[index];
-
-	Urho3D::Vector2 sum;
+	const auto& data = complexData[index];;
 	if (index != unit->getIndexToInteract() //TODO ten warunek to chyba nie na ten index
 		&& data.isPassable()
 		&& data.anyNeightOccupied()) {
-		int counter = 0;
+		auto cache = repulseCache[data.getIsNeightOccupied()];
 
-		for (auto [i, val] : closeIndexes->getTabIndexesWithValue(data)) {
-			if (data.ifNeightIsOccupied(i)) {
-				sum += calculator->getCenter(index + val);
-				++counter;
+		if (!cache) {
+			Urho3D::Vector2 sum;
+			int c = 0;
+
+			for (auto [i, val] : closeIndexes->getTabIndexesWithValue(data)) {
+				if (data.ifNeightIsOccupied(i)) {
+					sum += calculator->getCenter(index + val);
+					++c;
+				}
 			}
+
+			sum /= c;
+			cache = new Urho3D::Vector2(sum - calculator->getCenter(index));
+			repulseCache[data.getIsNeightOccupied()] = cache;
 		}
-		sum /= counter;
-		sum -= Urho3D::Vector2(unit->getPosition().x_, unit->getPosition().z_);
+		auto center = *cache + calculator->getCenter(index);
+
+		return Urho3D::Vector2(unit->getPosition().x_, unit->getPosition().z_) - center;
 	}
-	return -sum;
+	return Urho3D::Vector2::ZERO;
 }
 
 void MainGrid::invalidatePathCache() {

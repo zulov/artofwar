@@ -136,8 +136,7 @@ void MiniMapPanel::createBody() {
 	const auto row = createElement<Urho3D::UIElement>(window, style, "MiniMapListRow");
 
 	for (int i = 0; i < MINI_MAP_BUTTON_NUMBER; ++i) {
-		const auto texture = Game::getCache()->GetResource<Urho3D::Texture2D
-		>("textures/hud/icon/mm/minimap" + Urho3D::String(i) + ".png");
+		const auto texture = getTexture("textures/hud/icon/mm/minimap" + Urho3D::String(i) + ".png");
 
 		const auto box = createElement<Urho3D::CheckBox>(row, style, "MiniMapCheckBox");
 		createSprite(box, texture, style, "MiniMapSprite");

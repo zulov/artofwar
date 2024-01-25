@@ -41,7 +41,7 @@ public:
 
 	void drawComplex(Urho3D::Image* image, Urho3D::String prefix) const;
 
-	Urho3D::Vector2 repulseObstacle(Unit* unit) const;
+	Urho3D::Vector2 repulseObstacle(Unit* unit);
 	void invalidatePathCache();
 
 	bool cellInState(int index, CellState state) const;
@@ -86,6 +86,7 @@ private:
 	ComplexBucketData* complexData;
 	PathFinder pathFinder;
 	std::array<Urho3D::Vector2, 4> posInBucket;
+	Urho3D::Vector2* repulseCache[256];
 
 	int counter = 0;
 };

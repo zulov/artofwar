@@ -49,15 +49,14 @@ void InGameMenuPanel::close() const {
 }
 
 void InGameMenuPanel::createBody() {
-	auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/igm/menu.png");
+	auto texture = getTexture("textures/hud/icon/igm/menu.png");
 	toggleButton = createElement<Urho3D::Button>(Game::getUI()->GetRoot(), style, "InGameToggledButton");
 	createSprite(toggleButton, texture, style, "InGameToggledSprite");
 
 	SubscribeToEvent(toggleButton, Urho3D::E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleToggle));
 
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
-		auto texture2 = Game::getCache()->GetResource<Urho3D::Texture2D
-		>("textures/hud/icon/igm/igm_" + Urho3D::String(i) + ".png");
+		const auto texture2 = getTexture("textures/hud/icon/igm/igm_" + Urho3D::String(i) + ".png");
 
 		auto button = createElement<Urho3D::Button>(window, style, "InGameButton");
 		createSprite(button, texture2, style, "InGameSprite");

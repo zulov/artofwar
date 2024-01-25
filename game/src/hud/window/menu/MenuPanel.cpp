@@ -21,8 +21,7 @@
 static constexpr const char* ICONS_PATH = "textures/hud/icon/";
 
 MenuPanel::MenuPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style) : EventPanel(root, _style, "LeftMenuWindow",
-	{GameState::RUNNING, GameState::PAUSE}) {
-}
+		 {GameState::RUNNING, GameState::PAUSE}) {}
 
 MenuPanel::~MenuPanel() {
 	delete infoPanel;
@@ -98,15 +97,14 @@ void MenuPanel::createBody() {
 		row = createElement<Urho3D::UIElement>(mock, style, "LeftMenuListRow");
 	}
 	for (int i = 0; i < CHECKS_NUMBER; ++i) {
-		const auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>(
-			"textures/hud/icon/lm/lm" + Urho3D::String(i) + ".png");
+		const auto texture = getTexture("textures/hud/icon/lm/lm" + Urho3D::String(i) + ".png");
 
 		checks[i] = createElement<Urho3D::CheckBox>(rows[ROWS_NUMBER - 1], style, "LeftMenuCheckBox");
 		checks[i]->SetVar("Num", i);
 		createSprite(checks[i], texture, style, "LeftMenuSmallSprite");
 		SubscribeToEvent(checks[i], Urho3D::E_CLICK, URHO3D_HANDLER(MenuPanel, ChangeModeButton));
 	}
-	const auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/lm/lm3.png");
+	const auto texture = getTexture("textures/hud/icon/lm/lm3.png");
 	const auto nextButton = createElement<Urho3D::Button>(rows[ROWS_NUMBER - 1], style, "LeftMenuIcon");
 	SubscribeToEvent(nextButton, Urho3D::E_CLICK, URHO3D_HANDLER(MenuPanel, NextPage));
 	createSprite(nextButton, texture, style, "LeftMenuSmallSprite");
@@ -177,7 +175,7 @@ void MenuPanel::levelBuilding() {
 		}
 	}
 
-	for (int i = page * BUTTONS_NUMBER; i < levels.size() && i < (page + 1) * BUTTONS_NUMBER; ++ i) {
+	for (int i = page * BUTTONS_NUMBER; i < levels.size() && i < (page + 1) * BUTTONS_NUMBER; ++i) {
 		const auto level = levels[i];
 		const db_building* building = Game::getDatabase()->getBuilding(level->building);
 		setNext(k, "building/levels/" + Urho3D::String(level->level) + "/" + building->icon,

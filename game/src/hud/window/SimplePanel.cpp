@@ -1,5 +1,6 @@
 #include "SimplePanel.h"
 
+#include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/Window.h>
 #include "hud/UiUtils.h"
 #include "utils/OtherUtils.h"
@@ -29,4 +30,8 @@ void SimplePanel::updateStateVisibility(GameState state) {
 
 void SimplePanel::setVisible(bool enable) {
 	window->SetVisible(enable);
+}
+
+Urho3D::Texture2D* SimplePanel::getTexture(const Urho3D::String path) const{
+	return Game::getCache()->GetResource<Urho3D::Texture2D>(path);
 }

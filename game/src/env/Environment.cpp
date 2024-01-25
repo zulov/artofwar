@@ -288,7 +288,7 @@ void Environment::addNew(ResourceEntity* resource, bool bulkAdd) {
 	mainGrid.invalidatePathCache();
 }
 
-Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) const {
+Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) {
 	return mainGrid.repulseObstacle(unit);
 }
 
