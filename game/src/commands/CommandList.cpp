@@ -16,7 +16,7 @@ void CommandList::add(AbstractCommand* first, AbstractCommand* second) {
 }
 
 void CommandList::execute() {
-	for (auto& command : commands) {
+	for (const auto command : commands) {
 		command->clean();
 		if (!command->expired()) {
 			setParameters(command);

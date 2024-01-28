@@ -30,18 +30,18 @@ CreationCommand* CreationCommandList::addBuilding(int id, Urho3D::Vector2& posit
 			}
 		}
 	} else {
-		//TODO add resource presures
+		//TODO add resource presure
 	}
 
 	return nullptr;
 }
 
-CreationCommand* CreationCommandList::addResource(int id, Urho3D::Vector2& position, int level) const {
-	auto env = Game::getEnvironment();
-	db_resource* db_resource = Game::getDatabase()->getResource(id);
+CreationCommand* CreationCommandList::addResource(int id, Urho3D::Vector2& position) const {
+	const auto env = Game::getEnvironment();
+	const auto size = Game::getDatabase()->getResource(id)->size;
 
-	if (env->validateStatic(db_resource->size, position, false)) {
-		return new CreationCommand(ObjectType::RESOURCE, id, env->getCords(position), level, -1);
+	if (env->validateStatic(size, position, false)) {
+		return new CreationCommand(ObjectType::RESOURCE, id, env->getCords(position));
 	}
 	return nullptr;
 }

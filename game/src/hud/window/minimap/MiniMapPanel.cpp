@@ -17,6 +17,7 @@
 MiniMapPanel::MiniMapPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style)
 	: EventPanel(root, _style, "MiniMapWindow", {GameState::RUNNING, GameState::PAUSE}) {
 	std::fill_n(checks, MINI_MAP_BUTTON_NUMBER, true);
+	resourceColors = new unsigned[Game::getDatabase()->getResourcesSize()];
 }
 
 
@@ -25,20 +26,21 @@ MiniMapPanel::~MiniMapPanel() {
 	delete minimap;
 	delete[] unitsColors;
 	delete[] buildingColors;
+	delete[] resourceColors;
 	text->Release();
 }
 
 void MiniMapPanel::initColors() {
 	auto colorsSize = Game::getDatabase()->getPlayerColors().size();
-
+	auto resourceColorsSize = Game::getDatabase()->getResourcesSize();
 	unitsColors = new unsigned[colorsSize];
 	buildingColors = new unsigned[colorsSize];
 
 	std::fill_n(unitsColors, colorsSize, 0xFF505050);
 	std::fill_n(buildingColors, colorsSize, 0xFF505050);
-	std::fill_n(resourceColors, RESOURCES_SIZE, 0xFF808080);
+	std::fill_n(resourceColors, resourceColorsSize, 0xFF808080);
 
-	for (int i = 0; i < RESOURCES_SIZE; ++i) {
+	for (int i = 0; i < resourceColorsSize; ++i) {
 		const auto res = Game::getDatabase()->getResource(i);
 		if (res) {
 			resourceColors[i] = res->mini_map_color;

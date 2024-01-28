@@ -448,6 +448,7 @@ std::string Unit::getValues(int precision) {
 void Unit::applyForce(float timeStep) {
 	velocity *= 0.5f; //TODO to dac jaki wspolczynnik tarcia terenu
 	velocity += acceleration * (timeStep * dbLevel->invMass);
+
 	const float lengthSq = velocity.LengthSquared();
 	if (lengthSq < dbLevel->sqMinSpeed) {
 		if (state == UnitState::MOVE) {

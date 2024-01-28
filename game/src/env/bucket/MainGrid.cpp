@@ -112,7 +112,7 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) {
 
 		if (!cache) {
 			Urho3D::Vector2 sum;
-			int c = 0;
+			float c = 0;
 
 			for (auto [i, val] : closeIndexes->getTabIndexesWithValue(data)) {
 				if (data.ifNeightIsOccupied(i)) {
@@ -125,11 +125,11 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) {
 			cache = new Urho3D::Vector2(sum - calculator->getCenter(index));
 			repulseCache[data.getIsNeightOccupied()] = cache;
 		}
-		auto center = *cache + calculator->getCenter(index);
+		const auto center = *cache + calculator->getCenter(index);
 
 		return Urho3D::Vector2(unit->getPosition().x_, unit->getPosition().z_) - center;
 	}
-	return Urho3D::Vector2::ZERO;
+	return {};
 }
 
 void MainGrid::invalidatePathCache() {
@@ -340,7 +340,7 @@ float MainGrid::getBonuses(char player, const ResourceEntity* resource) const {
 	float best = .0f;
 	for (const int cell : resource->getOccupiedCells()) {
 		//TODO perf bonus zapisac w resource
-		const float val = complexData[cell].getResBonus(player, resource->getId());
+		const float val = complexData[cell].getResBonus(player, resource->getResourceId());
 		if (val > best) {
 			best = val;
 		}

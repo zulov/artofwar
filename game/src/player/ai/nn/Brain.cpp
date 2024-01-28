@@ -10,14 +10,13 @@ Brain::Brain(const std::string& filename, std::vector<std::string>& lines): file
 	std::vector<float> w;
 	std::vector<float> b;
 	for (auto& line : lines) {
-
 		std::string token;
 		std::istringstream tokenStream(line);
 		while (std::getline(tokenStream, token, ';')) {
-			if(token.empty()) {
+			if (token.empty()) {
 				break;
 			}
-			
+
 			w.push_back(toFloat(token));
 		}
 		std::getline(tokenStream, token, ';');
@@ -38,13 +37,15 @@ Brain::~Brain() {
 
 const std::span<float> Brain::decide(std::span<float> data) {
 	assert(validateSpan(__LINE__, __FILE__, data));
-	allLayers.front()->setValues(data);
-	for (int i = 1; i < allLayers.size(); i++) {
-		allLayers.at(i)
-		         ->setValues(allLayers.at(i - 1)->getValues());
+	bool sameInput = allLayers.front()->setInput(data);
+	if (!sameInput) {
+		for (int i = 1; i < allLayers.size(); i++) {
+			allLayers.at(i)
+			         ->setValues(allLayers.at(i - 1)->getValues());
+		}
 	}
 
-	const auto &result = allLayers.back()->getValues();
+	const auto& result = allLayers.back()->getValues();
 	const auto res1 = std::span(const_cast<float*>(result.data()), result.rows());
 	assert(validateSpan(__LINE__, __FILE__, res1));
 	return res1;

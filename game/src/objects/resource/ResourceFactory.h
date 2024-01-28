@@ -12,6 +12,6 @@ class ResourceFactory {
 public:
 	ResourceFactory() = default;
 	~ResourceFactory() = default;
-	ResourceEntity* create(int id, Urho3D::IntVector2 bucketCords, int level) const;
+	ResourceEntity* create(int id, Urho3D::IntVector2 bucketCords) const;
 	ResourceEntity* load(dbload_resource_entities* resource) const;
 };

@@ -232,7 +232,7 @@ int PathFinder::heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) co
 	for (const auto& b : endIdxs) {
 		min = std::min(min, abs(a.x_ - b.x_) + abs(a.y_ - b.y_));
 	}
-	return min * PRECISION;
+	return min * PATH_PRECISION;
 }
 
 int PathFinder::findInCache(int start, int end) const {

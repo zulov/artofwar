@@ -35,14 +35,13 @@ public:
 	std::vector<Physical*>* getNeighboursWithCache(Unit* unit, float radius);
 	const std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
 
-	//std::vector<Physical*>* getResources(Physical* physical, float radius);
 	std::vector<Physical*>* getResources(const Urho3D::Vector3& center, int id, float radius, float prevRadius);
-	std::vector<Physical*>* getResources(const Urho3D::Vector3& center, int id, float radius);
+	std::vector<Physical*>* getResources(const Urho3D::Vector3& center, float radius);
 
 	std::vector<Physical*>* getBuildingsFromTeamNotEq(Physical* physical, int id, float radius);
 
-	void updateInfluenceUnits1(std::vector<Unit*>* units);
-	void updateInfluenceUnits2(std::vector<Unit*>* units);
+	void updateInfluenceUnits1(std::vector<Unit*>* units) const;
+	void updateInfluenceUnits2(std::vector<Unit*>* units) const;
 
 	void updateInfluenceResources(std::vector<ResourceEntity*>* resources) const;
 
@@ -153,8 +152,8 @@ private:
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
 	                                      const std::function<bool(Physical*)>& condition) const;
 	std::vector<Physical*>* getNeighbours(Unit* unit, float radius);
-	std::vector<Physical*>* getNeighbours(const Urho3D::Vector3& center, Grid& bucketGrid, int id, float radius,
-	                                      float prevRadius) const;
+	std::vector<Physical*>* getResources(const Urho3D::Vector3& center, int id, float radius) const;
+
 	void addIfInRange(const Physical* physical, Physical* neight, const float sqRadius,
 	                  const std::function<bool(Physical*)>& condition) const;
 	void addIfInRange(const Physical* physical, Physical* neight, const float sqRadius) const;

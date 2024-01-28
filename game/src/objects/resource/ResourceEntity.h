@@ -12,7 +12,7 @@ enum class ResourceActionType : char;
 
 class ResourceEntity : public Static {
 public:
-	ResourceEntity(Urho3D::Vector3 _position, db_resource* db_resource, int level, int indexInGrid, bool withNode);
+	ResourceEntity(Urho3D::Vector3 _position, db_resource* db_resource, int indexInGrid, bool withNode);
 	~ResourceEntity() override = default;
 	void populate() override;
 
@@ -41,6 +41,8 @@ public:
 	float getBonus(char player) const { return bonuses[player]; }
 	void resetBonus() { std::fill_n(bonuses, MAX_PLAYERS, 1.f); }
 	void setBonus(char player, float value) { bonuses[player] = value; }
+	char getResourceId() const;
+	char getSecondaryId() const override { return getResourceId(); }
 
 private:
 	db_resource* dbResource;

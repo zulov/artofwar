@@ -145,21 +145,15 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	return neights;
 }
 
-std::vector<Physical*>* Environment::getNeighbours(const Urho3D::Vector3& center, Grid& bucketGrid, int id,
-                                                   float radius,
-                                                   float prevRadius) const {
+std::vector<Physical*>* Environment::getResources(const Urho3D::Vector3& center, float radius) {
 	neights->clear();
 
-	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(center, radius);
+	BucketIterator& bucketIterator = resourceStaticGrid.getArrayNeight(center, radius);
 	const float sqRadius = radius * radius;
-	const float sqPrevRadius = prevRadius < 0.f ? prevRadius : prevRadius * prevRadius;
 
 	while (Physical* neight = bucketIterator.next()) {
-		if (id == -1 || id == neight->getId()) {
-			auto dist = sqDistAs2D(center, neight->getPosition());
-			if (dist <= sqRadius && dist > sqPrevRadius) {
-				neights->push_back(neight);
-			}
+		if (sqDistAs2D(center, neight->getPosition()) <= sqRadius) {
+			neights->push_back(neight);
 		}
 	}
 
@@ -176,7 +170,6 @@ const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clic
 
 std::vector<Physical*>*
 Environment::getResources(const Urho3D::Vector3& center, int id, float radius, float prevRadius) {
-	//return getNeighbours(center, resourceStaticGrid, id, radius, prevRadius);//TODO perf? czy to moze jedna szybsze?
 	const float sqRadius = radius * radius;
 	const float sqPrevRadius = prevRadius < 0.f ? prevRadius : prevRadius * prevRadius;
 	neights->clear();
@@ -192,10 +185,6 @@ Environment::getResources(const Urho3D::Vector3& center, int id, float radius, f
 	return neights;
 }
 
-std::vector<Physical*>* Environment::getResources(const Urho3D::Vector3& center, int id, float radius) {
-	return getNeighbours(center, resourceStaticGrid, id, radius, -1);
-}
-
 std::vector<Physical*>*
 Environment::getBuildingsFromTeamNotEq(Physical* physical, int id, float radius) {
 	auto team = physical->getTeam();
@@ -205,11 +194,11 @@ Environment::getBuildingsFromTeamNotEq(Physical* physical, int id, float radius)
 	return getNeighbours(physical, buildingGrid, radius, condition);
 }
 
-void Environment::updateInfluenceUnits1(std::vector<Unit*>* units) {
+void Environment::updateInfluenceUnits1(std::vector<Unit*>* units) const {
 	influenceManager.update(units);
 }
 
-void Environment::updateInfluenceUnits2(std::vector<Unit*>* units) {
+void Environment::updateInfluenceUnits2(std::vector<Unit*>* units) const {
 	influenceManager.updateQuadUnits(units);
 }
 
@@ -544,7 +533,7 @@ Urho3D::Vector2 Environment::getPosFromPercent(float x, float z) const {
 }
 
 Physical* Environment::closestPhysical(int startIdx, const std::vector<Physical*>* things,
-                                       const std::function<bool(Physical*)>& condition, int limit,bool closeEnough) {
+                                       const std::function<bool(Physical*)>& condition, int limit, bool closeEnough) {
 	if (things->empty()) {
 		return nullptr;
 	}

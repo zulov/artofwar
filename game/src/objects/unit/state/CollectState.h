@@ -30,7 +30,7 @@ public:
 
 		setStartData(unit, unit->getMainGridIndex(), parameter.thingToInteract);
 
-		unit->lastActionThingId = parameter.thingToInteract->getId();
+		unit->lastActionThingId = parameter.thingToInteract->getSecondaryId();
 		unit->velocity = Urho3D::Vector2::ZERO;
 		Game::getEnvironment()->updateCell(unit->getMainGridIndex(), 1, CellState::COLLECT);
 	}
@@ -68,6 +68,7 @@ public:
 			auto& resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
 			const auto resource = (ResourceEntity*)unit->thingToInteract;
 			const auto bonus = resource->getBonus(unit->player);
+
 			const auto [value, died] = resource->absorbAttack(unit->dbLevel->collect * bonus);
 
 			env->addCollect(unit, resource->getId(), value);

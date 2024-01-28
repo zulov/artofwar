@@ -5,7 +5,7 @@
 #include "scene/load/dbload_container.h"
 #include "env/Environment.h"
 
-ResourceEntity* ResourceFactory::create(int id, Urho3D::IntVector2 bucketCords, int level) const {
+ResourceEntity* ResourceFactory::create(int id, Urho3D::IntVector2 bucketCords) const {
 	db_resource* db_resource = Game::getDatabase()->getResource(id);
 	const auto env = Game::getEnvironment();
 	if (env->validateStatic(db_resource->size, bucketCords, false)) {
@@ -13,7 +13,7 @@ ResourceEntity* ResourceFactory::create(int id, Urho3D::IntVector2 bucketCords, 
 
 		return new ResourceEntity(Urho3D::Vector3(center.x_,
 		                                          env->getGroundHeightAt(center.x_, center.y_),
-		                                          center.y_), db_resource, level,
+		                                          center.y_), db_resource,
 		                          env->getIndex(bucketCords.x_, bucketCords.y_),
 		                          !SIM_GLOBALS.HEADLESS);
 	}
@@ -22,7 +22,7 @@ ResourceEntity* ResourceFactory::create(int id, Urho3D::IntVector2 bucketCords, 
 
 ResourceEntity* ResourceFactory::load(dbload_resource_entities* resource) const {
 	const Urho3D::IntVector2 bucketCords(resource->buc_x, resource->buc_y);
-	auto ress = create(resource->id_db, bucketCords, resource->level);
+	auto ress = create(resource->id_db, bucketCords);
 	if (ress) {
 		return ress->load(resource);
 	}

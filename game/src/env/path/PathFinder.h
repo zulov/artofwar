@@ -16,7 +16,7 @@ struct GridCalculator;
 struct CloseIndexes;
 class ComplexBucketData;
 
-constexpr int PRECISION = 20;
+constexpr int PATH_PRECISION = 20;
 
 //TODO perf zrobic takiego wstepnego findera o nizesz rozdzielczosci jezeli sa w jednym squere i tam nic niema to mozna isc prosto
 class PathFinder {
@@ -82,8 +82,8 @@ private:
 	int min_cost_to_ref = 0;
 	int max_cost_to_ref;
 	int distances[8] = {
-		int(sqrtf(2) * PRECISION), PRECISION, int(sqrtf(2) * PRECISION),
-		PRECISION, PRECISION,
-		int(sqrtf(2) * PRECISION), PRECISION, int(sqrtf(2) * PRECISION)
+		int(sqrtf(2) * PATH_PRECISION), PATH_PRECISION, int(sqrtf(2) * PATH_PRECISION),
+		PATH_PRECISION, PATH_PRECISION,
+		int(sqrtf(2) * PATH_PRECISION), PATH_PRECISION, int(sqrtf(2) * PATH_PRECISION)
 	};
 };

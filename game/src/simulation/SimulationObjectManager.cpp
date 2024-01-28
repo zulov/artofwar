@@ -58,9 +58,8 @@ void SimulationObjectManager::addBuilding(int id, const Urho3D::IntVector2& _buc
 	}
 }
 
-void SimulationObjectManager::addResource(int id, const Urho3D::IntVector2& _bucketCords, char level) const {
-	auto res = resourceFactory.create(id, _bucketCords, level);
-	if (res) {
+void SimulationObjectManager::addResource(int id, const Urho3D::IntVector2& _bucketCords) const {
+	if (const auto res = resourceFactory.create(id, _bucketCords)) {
 		addResource(res, false);
 	}
 }

@@ -28,6 +28,7 @@ public:
 
 	virtual bool isAlive() const;
 	short getId() const { return id; }
+	virtual char getSecondaryId() const { return -1; }
 
 	virtual float getHealthBarSize() const;
 
@@ -36,9 +37,13 @@ public:
 		indexInMainGrid = _bucketIndex;
 	}
 
+	virtual ObjectType getType() const = 0;
+
+	signed char getTeam() const { return team; }
 	void setTeam(unsigned char team) { this->team = team; }
 	void setPlayer(unsigned char player) { this->player = player; }
-	bool isSelected() const;
+	virtual char getPlayer() const { return player; }
+
 	void load(dbload_physical* dbloadPhysical);
 	virtual bool isIndexSlotOccupied(int indexToInteract) { return false; }
 	virtual bool indexChanged() const { return false; }
@@ -56,14 +61,10 @@ public:
 	void reduceRange() { --rangeUsers; }
 	void upRange() { ++rangeUsers; }
 
-	virtual ObjectType getType() const = 0;
 	virtual float getAttackVal(Physical* aim) { return 0.f; }
 
 	float getHealthPercent() const { return hp * invMaxHp; }
-	signed char getTeam() const { return team; }
 	const Urho3D::Vector3& getPosition() const { return position; }
-
-	virtual char getPlayer() const { return player; }
 
 	virtual void populate() { }
 
@@ -81,11 +82,12 @@ public:
 
 	virtual std::pair<float, bool> absorbAttack(float attackCoef) = 0;
 
+	bool isSelected() const;
 	void select();
 	void clearSelection();
-	virtual short getCostSum() const = 0;
-
 	void unSelect();
+
+	virtual short getCostSum() const = 0;
 
 	virtual float getSightRadius() const { return -1.f; }
 	virtual Urho3D::String getInfo() const = 0;
@@ -106,7 +108,7 @@ public:
 	void ensureMaterialCloned();
 	int getIndexInInfluence() const { return indexInInfluence; }
 	void setIndexInInfluence(int index);
-	Urho3D::Node* getNode() { return node; }
+	Urho3D::Node* getNode() const { return node; }
 
 protected:
 	virtual void setModelData(float modelHeight) const =0;

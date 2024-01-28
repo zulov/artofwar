@@ -47,7 +47,7 @@ int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	                          atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]),
 	                          atoi(argv[10]), atoi(argv[11]), atoi(argv[12]), atoi(argv[13]), atoi(argv[14]),
 	                          atoi(argv[15]), atoi(argv[16])
-	          ));
+	                         ));
 	return 0;
 }
 
@@ -59,8 +59,9 @@ int static loadNation(void* data, int argc, char** argv, char** azColName) {
 
 int static loadResource(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
-	const auto resource = new db_resource(atoi(argv[0]), argv[1], argv[2], atoi(argv[3]), argv[4],
-	                                      atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), fromHex(argv, 8));
+	const auto resource = new db_resource(atoi(argv[0]), atoi(argv[1]), argv[2], argv[3], atoi(argv[4]),
+	                                      argv[5], atoi(argv[6]), atoi(argv[7]), atoi(argv[8]),
+	                                      fromHex(argv, 9), atof(argv[10]), atoi(argv[11])==1);
 	setEntity(getContainer(data)->resources, resource);
 	return 0;
 }

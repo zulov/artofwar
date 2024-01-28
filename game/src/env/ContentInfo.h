@@ -6,10 +6,13 @@
 
 struct content_info {
 	content_info() {
+		resourceNumber = new unsigned char[Game::getDatabase()->getResourcesSize()];
 		reset();
 	}
 
-	~content_info() = default;
+	~content_info() {
+		delete[] resourceNumber;
+	}
 
 	content_info(const content_info&) = delete;
 
@@ -20,7 +23,7 @@ struct content_info {
 		enemyBuilding = 0;
 		std::fill_n(unitsNumberPerPlayer, MAX_PLAYERS, 0);
 		std::fill_n(buildingNumberPerPlayer, MAX_PLAYERS, 0);
-		std::fill_n(resourceNumber, RESOURCES_SIZE, 0);
+		std::fill_n(resourceNumber, Game::getDatabase()->getResourcesSize(), 0);
 
 		hasBuilding = false;
 		hasUnit = false;
@@ -39,7 +42,7 @@ struct content_info {
 	}
 
 	unsigned char biggestResource() {
-		return std::max_element(resourceNumber, resourceNumber + RESOURCES_SIZE) -
+		return std::max_element(resourceNumber, resourceNumber + Game::getDatabase()->getResourcesSize()) -
 			resourceNumber;
 	}
 
@@ -51,7 +54,7 @@ struct content_info {
 	unsigned char enemyBuilding;
 	unsigned char buildingNumberPerPlayer[MAX_PLAYERS];
 
-	unsigned char resourceNumber[RESOURCES_SIZE];
+	unsigned char *resourceNumber;
 
 	bool hasUnit;
 	bool hasBuilding;

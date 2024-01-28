@@ -38,15 +38,19 @@ inline void tryToAttack(Unit* unit,
 
 inline void tryToCollect(Unit* unit) {
 	const auto id = unit->getLastActionThingId();
-	std::vector<Physical*>* list;
+	std::vector<Physical*>* allResources = Game::getEnvironment()->getResources(unit->getPosition(), unit->getLevel()->interestRange);
 
 	bool result = false;
 	if (id >= 0) {
-		list = Game::getEnvironment()->getResources(unit->getPosition(), id, unit->getLevel()->interestRange);
-		result = toAction(unit, list, UnitAction::COLLECT, belowClose, false);
+		std::vector<Physical*> resWithId;
+		for (const auto physical : *allResources) {
+			if (physical->getSecondaryId() == id) {
+				resWithId.push_back(physical);
+			}
+		}
+		result = toAction(unit, &resWithId, UnitAction::COLLECT, belowClose, false);
 	}
-	if (id < 0 || !result) {
-		list = Game::getEnvironment()->getResources(unit->getPosition(), -1, unit->getLevel()->interestRange);
-		toAction(unit, list, UnitAction::COLLECT, belowClose, false);
+	if (!result) {
+		toAction(unit, allResources, UnitAction::COLLECT, belowClose, false);
 	}
 }

@@ -15,16 +15,17 @@
 #include "player/PlayersManager.h"
 
 
-ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, db_resource* db_resource, int level, int indexInGrid, bool withNode)
+ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, db_resource* db_resource, int indexInGrid,
+                               bool withNode)
 	: Static(_position, indexInGrid, withNode) {
 	dbResource = db_resource;
 	state = StaticState::ALIVE;
 	if (withNode) {
-		loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(
-		                                                                      RandIntType::RESOURCE_NODE,
+		loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(RandIntType::RESOURCE_NODE,
 		                                                                      dbResource->nodeName.Size())]);
-
-		node->SetRotation(Urho3D::Quaternion(0, RandGen::nextRand(RandFloatType::RESOURCE_ROTATION, 360.f), 0.0f));
+		if (dbResource->rotatable) {
+			node->SetRotation(Urho3D::Quaternion(0, RandGen::nextRand(RandFloatType::RESOURCE_ROTATION, 360.f), 0.0f));
+		}
 	}
 	ResourceEntity::populate();
 }
@@ -64,6 +65,8 @@ std::string ResourceEntity::getValues(int precision) {
 unsigned char ResourceEntity::getMaxCloseUsers() const {
 	return dbResource->maxUsers;
 }
+
+char ResourceEntity::getResourceId() const { return dbResource->resourceId; }
 
 void ResourceEntity::action(ResourceActionType type, char player) {
 	switch (type) {
@@ -107,15 +110,16 @@ void ResourceEntity::setModelData(float modelHeight) const {
 }
 
 std::pair<float, bool> ResourceEntity::absorbAttack(float collectSpeed) {
+	collectSpeed *= dbResource->collectSpeed;
 	if (hp - collectSpeed > 0) {
 		hp -= collectSpeed;
-		return { collectSpeed, false };
+		return {collectSpeed, false};
 	}
 
 	const float toReturn = hp;
 	hp = 0.f;
 	StateManager::changeState(this, StaticState::DEAD);
-	return { toReturn, true };
+	return {toReturn, true};
 }
 
 ResourceEntity* ResourceEntity::load(dbload_resource_entities* resource) {

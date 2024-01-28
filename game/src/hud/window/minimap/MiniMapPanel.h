@@ -33,5 +33,5 @@ private:
 	bool checks[MINI_MAP_BUTTON_NUMBER];
 	unsigned *unitsColors,
 	         *buildingColors;
-	unsigned resourceColors[RESOURCES_SIZE];
+	unsigned *resourceColors;
 };

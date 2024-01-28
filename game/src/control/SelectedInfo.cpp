@@ -44,9 +44,10 @@ void SelectedInfo::reset() {
 }
 
 void SelectedInfo::select(Physical* entity) {
-	if (entity->getId() >= 0) {
-		selectedByType.at(entity->getId())->add(entity);
-		if (selectedByType.at(entity->getId())->getData().size() == 1) {
+	auto id = entity->getId();
+	if (id >= 0) {
+		selectedByType.at(id)->add(entity);
+		if (selectedByType.at(id)->getData().size() == 1) {
 			++allSubTypeNumber;
 		}
 	}

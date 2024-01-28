@@ -84,7 +84,7 @@ bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player, i
 }
 
 bool ActionCenter::addResource(int id, Urho3D::Vector2& position) {
-	auto command = creation.addResource(id, position, 0);
+	auto command = creation.addResource(id, position);
 	if (command) {
 		creation.add(command);
 		return true;

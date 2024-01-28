@@ -54,6 +54,7 @@ public:
 	void setGraphSettings(int i, db_graph_settings* graphSettings);
 	void setSettings(int i, db_settings* settings);
 	void refreshAfterParametersRead() const;
+	int getResourcesSize() const { return dbContainer->resources.size(); }
 
 private:
 	db_container* dbContainer;
