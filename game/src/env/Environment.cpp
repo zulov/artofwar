@@ -111,6 +111,21 @@ std::vector<Physical*>* Environment::getNeighbours(Unit* unit, float radius) {
 	return neights;
 }
 
+std::vector<Physical*>* Environment::getResources(const Urho3D::Vector3& center, float radius) {
+	neights->clear();
+
+	BucketIterator& bucketIterator = resourceStaticGrid.getArrayNeight(center, radius);
+	const float sqRadius = radius * radius;
+
+	while (Physical* neight = bucketIterator.next()) {
+		if (sqDistAs2D(center, neight->getPosition()) <= sqRadius) {
+			neights->push_back(neight);
+		}
+	}
+
+	return neights;
+}
+
 void Environment::addIfInRange(const Physical* physical, Physical* neight, const float sqRadius,
                                const std::function<bool(Physical*)>& condition) const {
 	if (physical != neight && condition(neight)
@@ -141,21 +156,6 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 		return (unit != neight && sqDistAs2D(unit->getPosition(), neight->getPosition()) < sqRadius);
 	};
 	std::ranges::copy_if(*simpleNeght, std::back_inserter(*neights), pred);
-
-	return neights;
-}
-
-std::vector<Physical*>* Environment::getResources(const Urho3D::Vector3& center, float radius) {
-	neights->clear();
-
-	BucketIterator& bucketIterator = resourceStaticGrid.getArrayNeight(center, radius);
-	const float sqRadius = radius * radius;
-
-	while (Physical* neight = bucketIterator.next()) {
-		if (sqDistAs2D(center, neight->getPosition()) <= sqRadius) {
-			neights->push_back(neight);
-		}
-	}
 
 	return neights;
 }

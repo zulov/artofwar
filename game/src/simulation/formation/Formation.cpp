@@ -85,7 +85,7 @@ void Formation::setposInStateForLeader() const {
 
 void Formation::updateIds() {
 	if (changed) {
-		pathCache.clear();
+		pathCache.clear();//TODO bug to powinno być czyszczone tak jak w pathFinder
 		updateSideSize();
 		electLeader();
 		setCenter();
@@ -210,7 +210,7 @@ void Formation::innerUpdate() {
 }
 
 void Formation::stopAllBesideLeader() {
-	pathCache.clear();
+	pathCache.clear();//TODO bug to powinno być czyszczone tak jak w pathFinder
 	for (auto* unit : units) {
 		if (unit != leader) {
 			StateManager::toDefaultState(unit);

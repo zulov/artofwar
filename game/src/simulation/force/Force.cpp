@@ -133,14 +133,15 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 					auto* const path = env->findPath(unit->getMainGridIndex(), aimIndex, 64);
 					if (!path->empty()) {
 						formMng->addCachePath(unit, aimIndex, path->at(0));
-						auto center = env->getCenter(path->at(0));
-						force = dirTo(unit->getPosition(), center);
+						force = dirTo(unit->getPosition(), env->getCenter(path->at(0)));
 					} else {
 						formMng->addCachePath(unit, aimIndex, -2);
 						Game::getLog()->Write(0, "brak drogi w formacji");
+						return;
 					}
 				} else {
 					Game::getLog()->Write(0, "brak drogi w formacji");
+					return;
 				}
 			}
 			force *= formationCoef * boostCoef * priority;
