@@ -11,8 +11,20 @@ struct MouseHeld {
 	Urho3D::Vector3 first;
 	Urho3D::Vector3 second;
 
+	Urho3D::Vector2 firstAs2D() const {
+		return {first.x_, first.z_};
+	}
+
+	Urho3D::Vector2 secondAs2D() const {
+		return {second.x_, second.z_};
+	}
+
 	float sq2DDist() const {
 		return sqDistAs2D(first, second);
+	}
+
+	Urho3D::Vector2 first2Second() const {
+		return {second.x_ - first.x_, second.z_ - first.z_};
 	}
 
 	std::pair<float, float> minMaxX() const {
@@ -62,7 +74,7 @@ struct MouseButton {
 		isHeld = false;
 		lastUp = Game::getTime();
 	}
-	
+
 	void markHeld() {
 		isHeld = true;
 	}

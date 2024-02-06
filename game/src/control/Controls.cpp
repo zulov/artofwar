@@ -107,7 +107,7 @@ void Controls::unSelectAll() {
 
 void Controls::selectOne(Physical* entity, char player) {
 	const auto entityType = entity->getType();
-	if(!entity->isNodeEnabled()) {
+	if (!entity->isNodeEnabled()) {
 		return;
 	}
 	if (entity == nullptr || entityType != selectedInfo->getSelectedType()) {
@@ -115,9 +115,8 @@ void Controls::selectOne(Physical* entity, char player) {
 	}
 	if (!entity->isSelected() && entity->isAlive()
 		&& (entity->getPlayer() < 0 || entity->getPlayer() == player)) {
-
 		entity->select();
-		
+
 		selected.push_back(entity);
 
 		selectedInfo->setSelectedType(entityType);
@@ -209,15 +208,14 @@ void Controls::leftHold(MouseHeld& held) {
 
 void Controls::rightHold(MouseHeld& held) const {
 	GroupOrder* first = new GroupOrder(selected, UnitActionType::ORDER, cast(UnitAction::GO),
-	                                   Urho3D::Vector2(held.first.x_, held.first.y_));
+		held.firstAs2D());
 	GroupOrder* second;
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
 		second = new GroupOrder(selected, UnitActionType::ORDER, cast(UnitAction::GO),
-		                        Urho3D::Vector2(held.second.x_, held.second.y_), true);
+		                        held.secondAs2D(), true);
 	} else {
 		second = new GroupOrder(selected, UnitActionType::ORDER, cast(UnitAction::CHARGE),
-		                        Urho3D::Vector2(held.second.x_ - held.first.x_,
-		                                        held.second.y_ - held.first.y_), true); //TODO buf append nie dzia³a
+			held.first2Second(), true); //TODO buf append nie dzia³a
 	}
 
 	Game::getActionCenter()->addUnitAction(first, second, Game::getPlayersMan()->getActivePlayerID());
@@ -305,8 +303,8 @@ void Controls::order(short id, ActionType type) {
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::NONE:
 		return Game::getActionCenter()->add(
-			new GeneralActionCommand(id, GeneralActionType::BUILDING_LEVEL,
-			                         Game::getPlayersMan()->getActivePlayerID()));
+		                                    new GeneralActionCommand(id, GeneralActionType::BUILDING_LEVEL,
+		                                                             Game::getPlayersMan()->getActivePlayerID()));
 	case ObjectType::UNIT:
 		return actionUnit(id, type);
 	case ObjectType::BUILDING:
@@ -318,18 +316,20 @@ void Controls::order(short id, ActionType type) {
 
 void Controls::executeOnUnits(short id) const {
 	Game::getActionCenter()->addUnitAction(
-		new GroupOrder(selected, UnitActionType::ORDER, id, nullptr, false),
-		Game::getPlayersMan()->getActivePlayerID());
+	                                       new GroupOrder(selected, UnitActionType::ORDER, id, nullptr, false),
+	                                       Game::getPlayersMan()->getActivePlayerID());
 }
 
 void Controls::executeOnResources(ResourceActionType action) const {
 	Game::getActionCenter()->add(
-		new ResourceActionCommand(selected, action, Game::getPlayersMan()->getActivePlayerID()));
+	                             new ResourceActionCommand(selected, action,
+	                                                       Game::getPlayersMan()->getActivePlayerID()));
 }
 
 void Controls::executeOnBuildings(BuildingActionType action, short id) const {
 	Game::getActionCenter()->add(
-		new BuildingActionCommand(selected, action, id, Game::getPlayersMan()->getActivePlayerID()));
+	                             new BuildingActionCommand(selected, action, id,
+	                                                       Game::getPlayersMan()->getActivePlayerID()));
 }
 
 bool Controls::clickDown(MouseButton& var) const {
@@ -401,16 +401,16 @@ void Controls::actionUnit(short id, ActionType type) {
 void Controls::refreshSelected() {
 	const int sizeBefore = selected.size();
 	selected.erase(
-		std::remove_if(
-			selected.begin(), selected.end(),
-			[](Physical* physical) {
-				if (!physical->isAlive()) {
-					physical->unSelect();
-					return true;
-				}
-				return false;
-			}),
-		selected.end());
+	               std::remove_if(
+	                              selected.begin(), selected.end(),
+	                              [](Physical* physical) {
+		                              if (!physical->isAlive()) {
+			                              physical->unSelect();
+			                              return true;
+		                              }
+		                              return false;
+	                              }),
+	               selected.end());
 
 	if (sizeBefore != selected.size()) {
 		//TODO perf nie koniecznie resetowac calosc
@@ -510,7 +510,8 @@ void Controls::toDefault() {
 
 void Controls::unitFormation(short id) const {
 	Game::getActionCenter()->addUnitAction(
-		new GroupOrder(selected, UnitActionType::FORMATION, id, nullptr), Game::getPlayersMan()->getActivePlayerID());
+	                                       new GroupOrder(selected, UnitActionType::FORMATION, id, nullptr),
+	                                       Game::getPlayersMan()->getActivePlayerID());
 }
 
 void Controls::control() {

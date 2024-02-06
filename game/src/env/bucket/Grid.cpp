@@ -89,15 +89,11 @@ const std::vector<Physical*>& Grid::getNotSafeContentAt(short x, short z) const 
 }
 
 std::vector<Physical*>* Grid::getArrayNeight(MouseHeld& held, const char player) {
-	auto [minX, maxX] = held.minMaxX();
-	auto [minZ, maxZ] = held.minMaxZ();
-	const auto posBeginX = calculator->getIndex(minX);
-	const auto posEndX = calculator->getIndex(maxX);
-	const auto posBeginZ = calculator->getIndex(minZ);
-	const auto posEndZ = calculator->getIndex(maxZ);
+	auto [minX, maxX] = calculator->getIndex(held.minMaxX());
+	auto [minZ, maxZ] = calculator->getIndex(held.minMaxZ());
 	tempSelected->clear();
-	for (short i = posBeginX; i <= posEndX; ++i) {
-		for (short j = posBeginZ; j <= posEndZ; ++j) {
+	for (short i = minX; i <= maxX; ++i) {
+		for (short j = minZ; j <= maxZ; ++j) {
 			const auto& content = getNotSafeContentAt(i, j);
 			std::ranges::copy_if(content, std::back_inserter(*tempSelected),
 			                     [player](Physical* p) {

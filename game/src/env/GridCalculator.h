@@ -35,6 +35,13 @@ struct GridCalculator {
 		return getValid((value + halfSize) * invFieldSize);
 	}
 
+	std::pair<unsigned short, unsigned short> getIndex(std::pair<float, float> range) const {
+		return {
+			getValid((range.first + halfSize) * invFieldSize),
+			getValid((range.second + halfSize) * invFieldSize)
+		};
+	}
+
 	int indexFromPosition(const Urho3D::Vector3& pos) const {
 		return getNotSafeIndex(getIndex(pos.x_), getIndex(pos.z_));
 	}
@@ -64,7 +71,7 @@ struct GridCalculator {
 	}
 
 	Urho3D::Vector2 getCenter(int x, int y) const {
-		return { firstCenter + x * fieldSize, firstCenter + y * fieldSize };
+		return {firstCenter + x * fieldSize, firstCenter + y * fieldSize};
 	}
 
 	bool isValidIndex(short x, short z) const {
