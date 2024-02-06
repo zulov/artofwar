@@ -16,6 +16,7 @@
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/order/enums/UnitAction.h"
+#include "player/ai/ActionCenter.h"
 #include "utils/consts.h"
 #include "utils/OtherUtils.h"
 
@@ -175,6 +176,17 @@ void StateManager::startState(Static* obj) {
 		setStaticDead(obj->getType());
 		break;
 	case StaticState::DISPOSE:
+
+		if (obj->getType()== ObjectType::BUILDING) {
+			if (obj->getHp() <= 0.f) {
+				auto building = (Building*)obj;
+				if (building->getDbBuilding()->ruinable) {
+					auto pos = building->getPosition();
+					auto Pos2d = Urho3D::Vector2(pos.x_, pos.z_);
+					Game::getActionCenter()->addResource(5, Pos2d);
+				}
+			}
+		}
 		setStaticToDispose(obj->getType());
 		break;
 	default: ;

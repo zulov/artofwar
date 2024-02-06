@@ -93,8 +93,8 @@ private:
 
 	void rightClick(hit_data& hitData) const;
 
-	void leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held);
-	void rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const;
+	void leftHold(MouseHeld& held);
+	void rightHold(MouseHeld& held) const;
 
 	void releaseRight();
 	bool orderAction() const;

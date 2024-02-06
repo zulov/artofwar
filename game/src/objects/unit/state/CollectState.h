@@ -11,17 +11,16 @@
 class CollectState : public State {
 public:
 	CollectState(): State({
-		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
-		UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE
-	}) { }
+		                      UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
+		                      UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE
+	                      }) { }
 
 	~CollectState() = default;
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
-		if (parameter.isThingAlive()) {
-			return parameter.thingToInteract->indexCanBeUse(unit->getMainGridIndex());
-		}
-		return false;
+		return parameter.isThingAlive()
+			&& parameter.thingToInteract->indexCanBeUse(unit->getMainGridIndex());
+		//sprawdzic cell limit
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
@@ -46,7 +45,7 @@ public:
 
 	void execute(Unit* unit, float timeStep) override {
 		auto env = Game::getEnvironment();
-		if (!unit->isFirstThingAlive() 
+		if (!unit->isFirstThingAlive()
 			|| !env->cellInState(unit->getMainGridIndex(), CellState::COLLECT)) {
 			StateManager::toDefaultState(unit);
 			return;

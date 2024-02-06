@@ -5,6 +5,7 @@
 #include "EnvConsts.h"
 #include "GridCalculator.h"
 #include "GridCalculatorProvider.h"
+#include "control/MouseButton.h"
 #include "database/db_strcut.h"
 #include "math/MathUtils.h"
 #include "objects/building/Building.h"
@@ -285,10 +286,9 @@ std::optional<Urho3D::Vector2> Environment::validatePosition(int index, const Ur
 	return mainGrid.getDirectionFrom(index, position);
 }
 
-const std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair,
-                                                         char player) {
+const std::vector<Physical*>* Environment::getNeighbours(MouseHeld& held, char player) {
 	for (const auto grid : grids) {
-		const auto result = grid->getArrayNeight(pair, player);
+		const auto result = grid->getArrayNeight(held, player);
 		if (!result->empty()) {
 			return result;
 		}

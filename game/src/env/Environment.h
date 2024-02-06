@@ -11,6 +11,7 @@
 #include "debug/EnvironmentDebugMode.h"
 #include "influence/InfluenceManager.h"
 
+struct MouseHeld;
 enum class CenterType:char;
 struct db_building;
 
@@ -64,7 +65,7 @@ public:
 	Urho3D::Vector2 repulseObstacle(Unit* unit);
 	std::optional<Urho3D::Vector2> validatePosition(int index, const Urho3D::Vector3& position) const;
 
-	const std::vector<Physical*>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
+	const std::vector<Physical*>* getNeighbours(MouseHeld& pair, char player);
 
 	float getGroundHeightAt(float x, float z) const;
 	float getGroundHeightAt(const Urho3D::Vector3& pos) const;

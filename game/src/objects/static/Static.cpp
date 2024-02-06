@@ -155,12 +155,9 @@ void Static::addIndexesForUse(std::vector<int>& indexes) const {
 }
 
 bool Static::indexCanBeUse(int index) const {
-	for (const auto i : getSurroundCells()) {
-		if (index == i && canUse(i)) {
-			return true;
-		}
-	}
-	return false;
+	if (!canUse(index)) { return false; }
+
+	return std::ranges::any_of(getSurroundCells(), [&](const auto& i) { return index == i; });
 }
 
 std::vector<int> Static::getIndexesForRangeUse(Unit* user) const {

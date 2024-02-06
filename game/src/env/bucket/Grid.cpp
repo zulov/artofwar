@@ -1,5 +1,6 @@
 #include "Grid.h"
 #include "Bucket.h"
+#include "control/MouseButton.h"
 #include "levels/LevelCache.h"
 #include "levels/LevelCacheProvider.h"
 #include "objects/unit/Unit.h"
@@ -87,13 +88,14 @@ const std::vector<Physical*>& Grid::getNotSafeContentAt(short x, short z) const 
 	return getContentAt(calculator->getNotSafeIndex(x, z));
 }
 
-std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair,
-                                             const char player) {
-	const auto posBeginX = calculator->getIndex(std::min(pair.first->x_, pair.second->x_));
-	const auto posEndX = calculator->getIndex(std::max(pair.first->x_, pair.second->x_));
-	const auto posBeginZ = calculator->getIndex(std::min(pair.first->z_, pair.second->z_));
-	const auto posEndZ = calculator->getIndex(std::max(pair.first->z_, pair.second->z_));
-
+std::vector<Physical*>* Grid::getArrayNeight(MouseHeld& held, const char player) {
+	auto [minX, maxX] = held.minMaxX();
+	auto [minZ, maxZ] = held.minMaxZ();
+	const auto posBeginX = calculator->getIndex(minX);
+	const auto posEndX = calculator->getIndex(maxX);
+	const auto posBeginZ = calculator->getIndex(minZ);
+	const auto posEndZ = calculator->getIndex(maxZ);
+	tempSelected->clear();
 	for (short i = posBeginX; i <= posEndX; ++i) {
 		for (short j = posBeginZ; j <= posEndZ; ++j) {
 			const auto& content = getNotSafeContentAt(i, j);
@@ -147,6 +149,7 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, float r
 	const auto posEndX = calculator->getIndex(clicked->getPosition().x_ + radius);
 	const auto posEndZ = calculator->getIndex(clicked->getPosition().z_ + radius);
 
+	tempSelected->clear();
 	for (short i = posBeginX; i <= posEndX; ++i) {
 		for (short j = posBeginZ; j <= posEndZ; ++j) {
 			auto& content = getNotSafeContentAt(i, j);

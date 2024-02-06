@@ -2,6 +2,8 @@
 #include "BucketIterator.h"
 #include "objects/building/Building.h"
 
+struct MouseHeld;
+
 namespace Urho3D {
 	class Vector2;
 	class Vector3;
@@ -30,7 +32,7 @@ public:
 
 	const std::vector<Physical*>& getContentAt(int index) const;
 
-	std::vector<Physical*>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
+	std::vector<Physical*>* getArrayNeight(MouseHeld& held, char player);
 	std::vector<Physical*>* getArrayNeightSimilarAs(Physical* clicked, float radius);
 	std::vector<int> getCloseCenters(Urho3D::Vector2& center, float radius) const;
 	void invalidateCache();

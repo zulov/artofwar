@@ -98,6 +98,10 @@ Urho3D::String Building::getInfo() const {
 		                  magic_enum::enum_name(state).data());
 }
 
+unsigned char Building::getMaxCloseUsers() const {
+	return dbBuilding->maxUsers;
+}
+
 const Urho3D::String& Building::getName() const {
 	return dbBuilding->name;
 }

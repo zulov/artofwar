@@ -23,8 +23,8 @@ public:
 
 	StaticState getNextState() const { return nextState; }
 	StaticState getState() const { return state; }
-	bool isUsable() const override { return state == StaticState::ALIVE; }
-	bool isAlive() const override { return state == StaticState::ALIVE || state == StaticState::FREE; }
+	bool isUsable() const override { return state == StaticState::ALIVE; }//TODO bug? moze inne stany tez? np do ataku?
+	bool isAlive() const override { return state == StaticState::ALIVE || state == StaticState::FREE || state == StaticState::CREATING; }
 
 	bool isToDispose() const override { return state == StaticState::DISPOSE; }
 	virtual const Urho3D::IntVector2 getGridSize() const =0;

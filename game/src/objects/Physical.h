@@ -109,6 +109,7 @@ public:
 	int getIndexInInfluence() const { return indexInInfluence; }
 	void setIndexInInfluence(int index);
 	Urho3D::Node* getNode() const { return node; }
+	float getHp() const { return hp; }
 
 protected:
 	virtual void setModelData(float modelHeight) const =0;
@@ -120,7 +121,7 @@ protected:
 	Urho3D::Node* node{};
 	Urho3D::Vector3 position;
 
-	float hp = -1;
+	float hp = -1.f;
 	float invMaxHp; // optm
 
 	int indexInInfluence = -1;

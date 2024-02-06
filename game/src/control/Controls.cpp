@@ -128,7 +128,7 @@ void Controls::selectOne(Physical* entity, char player) {
 
 void Controls::select(const std::vector<Physical*>* entities) {
 	auto player = Game::getPlayersMan()->getActivePlayerID();
-	for (auto physical : *entities) {
+	for (const auto physical : *entities) {
 		selectOne(physical, player);
 	}
 	updateAdditionalInfo();
@@ -199,7 +199,7 @@ void Controls::rightClick(hit_data& hitData) const {
 	Game::getActionCenter()->addUnitAction(createUnitOrder(hitData), Game::getPlayersMan()->getActivePlayerID());
 }
 
-void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) {
+void Controls::leftHold(MouseHeld& held) {
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}
@@ -207,17 +207,17 @@ void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) {
 	select(Game::getEnvironment()->getNeighbours(held, Game::getPlayersMan()->getActivePlayerID()));
 }
 
-void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
+void Controls::rightHold(MouseHeld& held) const {
 	GroupOrder* first = new GroupOrder(selected, UnitActionType::ORDER, cast(UnitAction::GO),
-	                                   Urho3D::Vector2(held.first->x_, held.first->z_));
+	                                   Urho3D::Vector2(held.first.x_, held.first.y_));
 	GroupOrder* second;
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
 		second = new GroupOrder(selected, UnitActionType::ORDER, cast(UnitAction::GO),
-		                        Urho3D::Vector2(held.second->x_, held.second->z_), true);
+		                        Urho3D::Vector2(held.second.x_, held.second.y_), true);
 	} else {
 		second = new GroupOrder(selected, UnitActionType::ORDER, cast(UnitAction::CHARGE),
-		                        Urho3D::Vector2(held.second->x_ - held.first->x_,
-		                                        held.second->z_ - held.first->z_), true); //TODO buf append nie dzia³a
+		                        Urho3D::Vector2(held.second.x_ - held.first.x_,
+		                                        held.second.y_ - held.first.y_), true); //TODO buf append nie dzia³a
 	}
 
 	Game::getActionCenter()->addUnitAction(first, second, Game::getPlayersMan()->getActivePlayerID());
@@ -229,7 +229,7 @@ void Controls::releaseLeft() {
 	if (raycast(hitData)) {
 		const auto lastClicked = left.lastUp;
 		left.setSecond(hitData.position);
-		const float dist = sqDist(left.held.first, left.held.second);
+		const float dist = left.held.sq2DDist();
 		if (left.lastUp - lastClicked < 0.2f && dist < clickDistance) {
 			leftDoubleClick(hitData);
 		} else if (dist > clickDistance) {
@@ -247,7 +247,7 @@ void Controls::releaseRight() {
 
 	if (selectedInfo->getSelectedType() == ObjectType::UNIT && raycast(hitData)) {
 		right.setSecond(hitData.position);
-		if (sqDist(right.held.first, right.held.second) > clickDistance) {
+		if (right.held.sq2DDist() > clickDistance) {
 			rightHold(right.held);
 		} else if (hitData.isSth()) {
 			rightClick(hitData);
@@ -460,17 +460,17 @@ void Controls::updateSelection() const {
 	hit_data hitData;
 
 	if (raycastGround(hitData)) {
-		const float xScale = left.held.first->x_ - hitData.position.x_;
-		const float zScale = left.held.first->z_ - hitData.position.z_;
+		const float xScale = left.held.first.x_ - hitData.position.x_;
+		const float zScale = left.held.first.z_ - hitData.position.z_;
 		if ((xScale * xScale > clickDistance || zScale * zScale > clickDistance)
 			&& Game::getTime() - left.lastDown > 0.3f) {
 			Game::getEnvironment()->setTerrainShaderParam("SelectionEnable", true);
 
-			std::pair<float, float> x = std::minmax(left.held.first->x_, hitData.position.x_);
-			std::pair<float, float> z = std::minmax(left.held.first->z_, hitData.position.z_);
+			auto [minX, maxX] = std::minmax(left.held.first.x_, hitData.position.x_);
+			auto [minZ, maxZ] = std::minmax(left.held.first.z_, hitData.position.z_);
 
 			Game::getEnvironment()->setTerrainShaderParam("SelectionRect",
-			                                              Urho3D::Vector4(x.first, z.first, x.second, z.second));
+			                                              Urho3D::Vector4(minX, minZ, maxX, maxZ));
 		} else {
 			Game::getEnvironment()->setTerrainShaderParam("SelectionEnable", false);
 		}
@@ -481,7 +481,7 @@ void Controls::updateArrow() const {
 	hit_data hitData;
 
 	if (selectedInfo->getSelectedType() == ObjectType::UNIT && raycastGround(hitData)) {
-		auto dir = *right.held.first - hitData.position;
+		auto dir = right.held.first - hitData.position;
 
 		const float length = dir.Length();
 
@@ -491,7 +491,7 @@ void Controls::updateArrow() const {
 			}
 			arrowNode->SetScale({length, 1, length / 3});
 			arrowNode->SetDirection({-dir.z_, 0, dir.x_});
-			arrowNode->SetPosition(*right.held.first);
+			arrowNode->SetPosition(right.held.first);
 		} else if (arrowNode->IsEnabled()) {
 			arrowNode->SetEnabled(false);
 		}
@@ -592,7 +592,7 @@ void Controls::buildControl() {
 	}
 
 	if (input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT)) {
-		left.markIfNotHeld();
+		left.markHeld();
 	} else if (left.isHeld) {
 		releaseBuildLeft();
 	}
@@ -604,7 +604,7 @@ void Controls::buildControl() {
 
 void Controls::orderControl() {
 	if (input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT)) {
-		left.markIfNotHeld();
+		left.markHeld();
 	} else if (left.isHeld) {
 		switch (unitOrderType) {
 		case UnitAction::GO:
@@ -622,7 +622,7 @@ void Controls::orderControl() {
 	}
 
 	if (input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) {
-		right.markIfNotHeld();
+		right.markHeld();
 	} else if (right.isHeld) {
 		toDefault();
 	}

@@ -168,21 +168,22 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
 		auto b = Urho3D::Vector2(-185, -140);
+		auto c = Urho3D::Vector2(-185, -150);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.1f, 0, Urho3D::Vector2(0, 100), 0);
 		//Game::getActionCenter()->addUnits(60, 1, Urho3D::Vector2(-5, 25), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER  * 0.1f, 2, Urho3D::Vector2(0, 70), 1);
 
-		//Game::getActionCenter()->addUnits(30, 0, Urho3D::Vector2(0, 100), 0);
+		Game::getActionCenter()->addUnits(30, 1, b, 0);
 		//Game::getActionCenter()->addUnits(10, 2, Urho3D::Vector2(0, 70), 1);
 
-		//Game::getActionCenter()->addBuilding(1, b, 1, true);
+		Game::getActionCenter()->addBuilding(2, c, 1, true);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.5f, 1, Urho3D::Vector2(300, 212), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.2f, 1, Urho3D::Vector2(290, 210), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 4, Urho3D::Vector2(10, 240), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 300, 0, Urho3D::Vector2(10, 250), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER*10, 4, Urho3D::Vector2(-20, -200), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0);
-		Game::getActionCenter()->addResource(5, b);
+		//Game::getActionCenter()->addResource(5, b);
 	}
 }
 

@@ -40,9 +40,7 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 	const bool isLeader = Game::getFormationManager()->isLeader(unit);
 
 	const std::span<Unit*> neights2 = std::span((Unit**)neights->data(), neights->size());
-	for (auto neight : neights2) {
-		//	for (auto physical : *neights) {
-		//	auto neight = dynamic_cast<Unit*>(physical);
+	for (const auto neight : neights2) {
 		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 

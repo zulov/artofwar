@@ -15,18 +15,17 @@
 class AttackState : public State {
 public:
 	AttackState(): State({
-		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
-		UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE
-	}) { }
+		                     UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
+		                     UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE
+	                     }) { }
 
 	~AttackState() = default;
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
-		if (parameter.isThingAlive()) {
-			return parameter.thingToInteract->indexCanBeUse(unit->getMainGridIndex())
-				&& parameter.thingToInteract->belowCloseLimit() > 0;
-		}
-		return false;
+		return parameter.isThingAlive()
+			&& parameter.thingToInteract->indexCanBeUse(unit->getMainGridIndex())
+			&& parameter.thingToInteract->belowCloseLimit() > 0;
+		//sprawdzic cell limit
 	}
 
 	void setData(Unit* unit, int found, Physical* const thing) {
@@ -91,6 +90,5 @@ public:
 			}
 			unit->currentFrameState = 0;
 		}
-
 	}
 };
