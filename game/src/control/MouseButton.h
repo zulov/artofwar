@@ -44,32 +44,18 @@ struct MouseButton {
 	~MouseButton() { clean(); }
 
 	void clean() {
-		// if (held.first) {
-		// 	delete held.first;
-		// 	held.first = nullptr;
-		// }
-		// if (held.second) {
-		// 	delete held.second;
-		// 	held.second = nullptr;
-		// }
+		lastUp = -1.f;
+		lastDown = -1.f;
 		isHeld = false;
 	}
 
 	void setFirst(Urho3D::Vector3& hitPos) {
-		// if (held.first != nullptr) {
-		// 	delete held.first;
-		// 	held.first = nullptr;
-		// }
 		held.first = hitPos;
 		lastDown = Game::getTime();
 		isHeld = true;
 	}
 
 	void setSecond(Urho3D::Vector3& hitPos) {
-		// if (held.second != nullptr) {
-		// 	delete held.second;
-		// 	held.second = nullptr;
-		// }
 		held.second = hitPos;
 		isHeld = false;
 		lastUp = Game::getTime();
