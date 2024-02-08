@@ -400,6 +400,7 @@ void Controls::actionUnit(short id, ActionType type) {
 
 void Controls::refreshSelected() {
 	const int sizeBefore = selected.size();
+	//TODO use std::stable_partition
 	selected.erase(
 	               std::remove_if(
 	                              selected.begin(), selected.end(),

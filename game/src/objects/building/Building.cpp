@@ -14,9 +14,7 @@
 #include <string>
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Resource/Localization.h>
-
 #include "math/MathUtils.h"
-#include "math/SpanUtils.h"
 #include "objects/projectile/ProjectileManager.h"
 #include "objects/queue/QueueElement.h"
 #include "env/Environment.h"

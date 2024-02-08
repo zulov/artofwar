@@ -143,25 +143,25 @@ void SimulationObjectManager::findToDisposeUnits() {
 		}
 	}
 	if (StateManager::isUnitToDispose()) {
-		const auto newEnd = std::ranges::remove_if(*units, isToDispose).begin();
-		std::copy_if(newEnd, units->end(), std::back_inserter(unitsToDispose), isToDispose);
-		units->erase(newEnd, units->end());
+		const auto partitionPoint = std::ranges::stable_partition(*units, isNotToDispose).begin();
+		std::copy(partitionPoint, units->end(), std::back_inserter(unitsToDispose));
+		units->erase(partitionPoint, units->end());
 	}
 }
 
 void SimulationObjectManager::findToDisposeBuildings() {
 	if (StateManager::isBuildingToDispose()) {
-		const auto newEnd = std::ranges::remove_if(*buildings, isToDispose).begin();
-		std::copy_if(newEnd, buildings->end(), std::back_inserter(buildingsToDispose), isToDispose);
-		buildings->erase(newEnd, buildings->end());
+		const auto partitionPoint = std::ranges::stable_partition(*buildings, isNotToDispose).begin();
+		std::copy(partitionPoint, buildings->end(), std::back_inserter(buildingsToDispose));
+		buildings->erase(partitionPoint, buildings->end());
 	}
 }
 
 void SimulationObjectManager::findToDisposeResources() {
 	if (StateManager::isResourceToDispose()) {
-		const auto newEnd = std::ranges::remove_if(*resources, isToDispose).begin();
-		std::copy_if(newEnd, resources->end(), std::back_inserter(resourcesToDispose), isToDispose);
-		resources->erase(newEnd, resources->end());
+		const auto partitionPoint = std::ranges::stable_partition(*resources, isNotToDispose).begin();
+		std::copy(partitionPoint, resources->end(), std::back_inserter(resourcesToDispose));
+		resources->erase(partitionPoint, resources->end());
 	}
 }
 

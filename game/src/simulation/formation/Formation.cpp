@@ -358,6 +358,7 @@ void Formation::semiReset() {
 }
 
 void Formation::updateUnits() {
+	//TODO use std::stable partition
 	units.erase(
 		std::remove_if(
 			units.begin(), units.end(),

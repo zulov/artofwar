@@ -6,6 +6,7 @@
 
 template <typename T>
 void removeExpired(std::vector<T*>& orders) {
+	//TODO use std::stable partition
 	orders.erase(std::remove_if(orders.begin(), orders.end(),
 	                            [](T* uo) {
 		                            const bool expired = uo->expired();
