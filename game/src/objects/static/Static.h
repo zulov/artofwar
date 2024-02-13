@@ -41,11 +41,9 @@ public:
 
 	std::string getValues(int precision) override;
 
-	int getStaticGridIndex() const { return staticGridIndex; }
-	void setStaticGridIndex(int index) { staticGridIndex = index; }
 	void setBucketInMainGrid(int _bucketIndex) override {
 		assert(_bucketIndex >= 0);
-		assert(indexInMainGrid==-1);
+		assert(indexInMainGrid == -1);
 		indexInMainGrid = _bucketIndex;
 	}
 
@@ -57,7 +55,6 @@ public:
 protected:
 	void populate() override;
 
-	int staticGridIndex;
 	StaticState state = StaticState::CREATING;
 	StaticState	nextState = StaticState::CREATING;
 	

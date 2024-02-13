@@ -140,12 +140,20 @@ bool MainGrid::cellInState(int index, CellState state) const {
 	return complexData[index].getType() == state;
 }
 
-void MainGrid::updateCell(int index, char val, CellState cellState) const {
-	assert(calculator->isValidIndex(index));
-	complexData[index].updateSize(val, cellState);
+void MainGrid::incCell(int index, CellState cellState) const {
+	complexData[index].incStateSize(cellState);
+	updateInCellPos(index);
+}
+void MainGrid::decCell(int index) const {
+	complexData[index].decStateSize();
+	updateInCellPos(index);
+}
 
+void MainGrid::updateInCellPos(int index) const {
 	const auto center = calculator->getCenter(index);
 	int i = 0;
+	auto s = complexData[index].getSize();
+	auto c = buckets[index].getContent();
 	for (auto& phy : buckets[index].getContent()) {
 		Unit* unit = (Unit*)phy;
 		if (unit->getState() == UnitState::COLLECT || unit->getState() == UnitState::ATTACK) {

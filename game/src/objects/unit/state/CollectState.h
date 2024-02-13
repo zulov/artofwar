@@ -27,20 +27,15 @@ public:
 		assert(parameter.thingToInteract->indexCanBeUse(unit->getMainGridIndex()));
 		unit->currentFrameState = 0;
 
-		setStartData(unit, unit->getMainGridIndex(), parameter.thingToInteract);
+		setStartData(unit, parameter.thingToInteract, CellState::COLLECT);
 
 		unit->lastActionThingId = parameter.thingToInteract->getSecondaryId();
 		unit->velocity = Urho3D::Vector2::ZERO;
-		Game::getEnvironment()->updateCell(unit->getMainGridIndex(), 1, CellState::COLLECT);
+		
 	}
 
 	void onEnd(Unit* unit) override {
-		if (unit->isFirstThingAlive()) {
-			unit->thingToInteract->reduceClose();
-		}
-		Game::getEnvironment()->updateCell(unit->indexToInteract, -1, CellState::NONE);
-
-		unit->indexToInteract = -1;
+		reduce(unit);
 	}
 
 	void execute(Unit* unit, float timeStep) override {
@@ -52,11 +47,10 @@ public:
 		}
 		const auto first = unit->thingToInteract;
 		if (unit->indexChanged()) {
-			first->reduceClose();
-			unit->thingToInteract = nullptr;
+			reduce(unit);
 
 			if (first->indexCanBeUse(unit->getMainGridIndex())) {
-				setStartData(unit, unit->getMainGridIndex(), first);
+				setStartData(unit, first, CellState::COLLECT);
 			} else {
 				StateManager::toDefaultState(unit);
 				return;

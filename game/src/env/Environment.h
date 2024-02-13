@@ -104,7 +104,8 @@ public:
 	}
 
 	bool cellInState(int index, CellState state) const;
-	void updateCell(int index, char val, CellState cellState) const;
+	void incCell(int index, CellState cellState) const;
+	void decCell(int index) const;
 
 	unsigned char getRevertCloseIndex(int center, int gridIndex) const;
 

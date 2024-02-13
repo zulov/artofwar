@@ -174,6 +174,12 @@ void Unit::setIndexChanged(bool changed) {
 	indexHasChanged = changed;
 }
 
+void Unit::resetToInteract() {
+	thingToInteract = nullptr;
+	indexToInteract = -1;
+	slotToInteract = -1;
+}
+
 void Unit::setAim(Aim* aim) {
 	aims.set(aim);
 }

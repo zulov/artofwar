@@ -28,10 +28,10 @@ public:
 		//sprawdzic cell limit
 	}
 
-	void setData(Unit* unit, int found, Physical* const thing) {
-		setStartData(unit, found, thing);
+	void setData(Unit* unit, Physical* const thing) {
+		setStartData(unit, thing, CellState::ATTACK);
 		if (thing->getType() == ObjectType::UNIT) {
-			setSlotData(unit, found, dynamic_cast<Unit*>(thing));
+			setSlotData(unit, dynamic_cast<Unit*>(thing));
 		}
 	}
 
@@ -39,29 +39,15 @@ public:
 		assert(parameter.thingToInteract->indexCanBeUse(unit->getMainGridIndex()));
 		unit->currentFrameState = 0;
 
-		setData(unit, unit->getMainGridIndex(), parameter.thingToInteract);
+		setData(unit, parameter.thingToInteract);
 
 		unit->maxSpeed = unit->dbLevel->maxSpeed / 2;
-		Game::getEnvironment()->updateCell(unit->getMainGridIndex(), 1, CellState::ATTACK);
 	}
 
 	void onEnd(Unit* unit) override {
-		reduce(unit, unit->thingToInteract);
+		reduce(unit);
 
 		unit->maxSpeed = unit->dbLevel->maxSpeed;
-	}
-
-	void reduce(Unit* unit, Physical* first) {
-		if (unit->isFirstThingAlive()) {
-			first->reduceClose();
-			first->setOccupiedIndexSlot(unit->slotToInteract, false);
-		}
-		if (unit->indexToInteract > 0) {
-			Game::getEnvironment()->updateCell(unit->indexToInteract, -1, CellState::NONE);
-		}
-
-		unit->thingToInteract = nullptr;
-		unit->indexToInteract = -1;
 	}
 
 	void execute(Unit* unit, float timeStep) override {
@@ -69,12 +55,13 @@ public:
 			StateManager::toDefaultState(unit);
 			return;
 		}
+
 		const auto first = unit->thingToInteract;
 		if (unit->indexChanged() || first->indexChanged()) {
-			reduce(unit, first);
+			reduce(unit);
 
 			if (first->indexCanBeUse(unit->getMainGridIndex())) {
-				setData(unit, unit->getMainGridIndex(), first);
+				setData(unit, first);
 			} else {
 				StateManager::toDefaultState(unit);
 				return;

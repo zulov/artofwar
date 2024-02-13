@@ -58,13 +58,6 @@ bool StateManager::toDefaultState(Unit* unit) {
 	return changeState(unit, UnitState::STOP, Consts::EMPTY_ACTION_PARAMETER); //TODO mo¿e lepiej move
 }
 
-bool StateManager::canStartState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter,
-                                 State* stateFrom, State* toState) {
-	return stateFrom->validateTransition(stateTo)
-		&& unit->getDbUnit()->possibleStates[cast(stateTo)]
-		&& toState->canStart(unit, actionParameter);
-}
-
 bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter) {
 	State* stateFrom = instance->states[cast(unit->getNextState())];
 	State* toState = instance->states[cast(stateTo)];
@@ -78,6 +71,13 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParame
 	                      Urho3D::String(magic_enum::enum_name(stateTo).data()));
 
 	return false;
+}
+
+bool StateManager::canStartState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter,
+	State* stateFrom, State* toState) {
+	return stateFrom->validateTransition(stateTo)
+		&& unit->getDbUnit()->possibleStates[cast(stateTo)]
+		&& toState->canStart(unit, actionParameter);
 }
 
 bool StateManager::canChangeState(Unit* unit, UnitState stateTo) {

@@ -142,6 +142,7 @@ public:
 	short getCostSum() const override;
 	bool isInCloseRange(int index) const override;
 	void setSlotToInteract(char slot) { slotToInteract = slot; }
+	char getSlotToInteract() const { return slotToInteract; }
 	int getMainGridIndex() const { return indexInMainGrid; }
 	void setSparseIndex(int index);
 
@@ -161,7 +162,8 @@ public:
 	void setInCellPos(Urho3D::Vector2 pos) { inCellPos = pos; }
 	Urho3D::Vector2& setInCellPos() { return inCellPos; }
 	void setIndexChanged(bool changed);
-	bool indexChanged() const override { return indexHasChanged; } 
+	bool indexChanged() const override { return indexHasChanged; }
+	void resetToInteract();
 
 private:
 	void setAim(Aim* aim);

@@ -43,17 +43,18 @@ bool ComplexBucketData::isBuildable() const {
 		|| state == CellState::COLLECT;
 }
 
-void ComplexBucketData::updateSize(char val, CellState cellState) {
-	//TODO przemyslec to 
-	size += val;
+void ComplexBucketData::incStateSize(CellState cellState) {
+	++size;
+	if (state == CellState::NONE || state == CellState::ATTACK || state == CellState::COLLECT) {
+		state = cellState;
+	}
+}
+void ComplexBucketData::decStateSize() {
+	--size;
 	if (size <= 0) {
-		size = 0;
+		assert(size == 0);
 		if (state == CellState::ATTACK || state == CellState::COLLECT) {
 			state = CellState::NONE;
-		}
-	} else {
-		if (state == CellState::NONE || state == CellState::ATTACK || state == CellState::COLLECT) {
-			state = cellState;
 		}
 	}
 }
@@ -77,7 +78,7 @@ float ComplexBucketData::getResBonus(char player, short resId) const {
 }
 
 bool ComplexBucketData::belowCellLimit() const {
-	return size < 2;
+	return size < 3;
 }
 
 void ComplexBucketData::setDeploy() {
@@ -93,6 +94,6 @@ bool ComplexBucketData::cellIsCollectable() const {
 bool ComplexBucketData::cellIsAttackable() const {
 	return (state == CellState::NONE
 			|| state == CellState::ATTACK
-			|| state == CellState::DEPLOY)
+			|| state == CellState::DEPLOY)//deplot bug?
 		&& belowCellLimit();
 }

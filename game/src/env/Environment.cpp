@@ -345,8 +345,14 @@ bool Environment::cellInState(int index, CellState state) const {
 	return mainGrid.cellInState(index, state);
 }
 
-void Environment::updateCell(int index, char val, CellState cellState) const {
-	mainGrid.updateCell(index, val, cellState);
+void Environment::incCell(int index, CellState cellState) const {
+	assert(calculator->isValidIndex(index));
+	mainGrid.incCell(index, cellState);
+}
+
+void Environment::decCell(int index) const {
+	assert(calculator->isValidIndex(index));
+	mainGrid.decCell(index);
 }
 
 void Environment::removeFromGrids(const std::vector<Unit*>& units) const {

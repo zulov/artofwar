@@ -44,7 +44,8 @@ public:
 
 	CellState getType() const { return state; }
 
-	void updateSize(char val, CellState cellState);
+	void incStateSize(CellState cellState);
+	void decStateSize();
 
 	void setResBonuses(char player, const std::vector<char>& resIds, float bonus);
 	void resetResBonuses();
@@ -65,6 +66,8 @@ public:
 
 	unsigned char getIndexOfCloseIndexes() const { return indexOfCloseIndexes; }
 	unsigned char getIndexSecondOfCloseIndexes() const { return indexOfSecondCloseIndexes; }
+
+	char getSize() { return size; }
 
 private:
 	CellState state;

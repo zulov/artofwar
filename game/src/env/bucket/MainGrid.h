@@ -45,7 +45,9 @@ public:
 	void invalidatePathCache();
 
 	bool cellInState(int index, CellState state) const;
-	void updateCell(int index, char val, CellState cellState) const;
+	void incCell(int index, CellState cellState) const;
+	void decCell(int index) const;
+	void updateInCellPos(int index) const;
 
 	unsigned char getRevertCloseIndex(int center, int gridIndex) const;
 	void addDeploy(Building* building) const;
