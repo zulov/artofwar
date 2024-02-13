@@ -225,10 +225,11 @@ void Controls::releaseLeft() {
 	hit_data hitData;
 
 	if (raycast(hitData)) {
-		const auto lastClicked = left.lastUp;
+
 		left.setSecond(hitData.position);
-		const float dist = left.held.sq2DDist();
-		if (left.lastUp - lastClicked < 0.2f && dist < clickDistance) {
+		const float dist = left.sq2DDist();
+		
+		if (left.timeUpDiff() < 0.2f && dist < clickDistance) {
 			leftDoubleClick(hitData);
 		} else if (dist > clickDistance) {
 			leftHold(left.held);
@@ -237,7 +238,6 @@ void Controls::releaseLeft() {
 		}
 	}
 	Game::getEnvironment()->setTerrainShaderParam("SelectionEnable", false);
-	left.clean();
 }
 
 void Controls::releaseRight() {
@@ -245,14 +245,13 @@ void Controls::releaseRight() {
 
 	if (selectedInfo->getSelectedType() == ObjectType::UNIT && raycast(hitData)) {
 		right.setSecond(hitData.position);
-		if (right.held.sq2DDist() > clickDistance) {
+		if (right.sq2DDist() > clickDistance) {
 			rightHold(right.held);
 		} else if (hitData.isSth()) {
 			rightClick(hitData);
 		}
 	}
 	arrowNode->SetEnabled(false);
-	right.clean();
 }
 
 void Controls::releaseBuildLeft() {
@@ -349,8 +348,6 @@ void Controls::createBuilding(Urho3D::Vector2 pos) const {
 }
 
 void Controls::cleanMouse() {
-	left.clean();
-	right.clean();
 	arrowNode->SetEnabled(false);
 
 	Game::getEnvironment()->setTerrainShaderParam("SelectionEnable", false);
@@ -620,7 +617,6 @@ void Controls::orderControl() {
 			break;
 		default: ;
 		}
-		left.clean();
 	}
 
 	if (input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) {

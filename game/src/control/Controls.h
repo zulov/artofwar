@@ -3,7 +3,6 @@
 #include "ControlsState.h"
 #include "MouseButton.h"
 #include "objects/unit/order/enums/UnitAction.h"
-#include "HealthBarProvider.h"
 #include "database/db_strcut.h"
 #include "objects/building/Building.h"
 
