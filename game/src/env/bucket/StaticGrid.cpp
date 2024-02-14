@@ -45,6 +45,7 @@ void StaticGrid::remove(Physical* physical) const {
 }
 
 void StaticGrid::updateStatic(Static* staticObj, bool bulkAdd) const {
+	Grid::updateNew(staticObj);
 	if (!bulkAdd) {
 		const int centerIndex = calculator->indexFromPosition(staticObj->getPosition());
 		const auto centerCords = calculator->getCords(centerIndex);

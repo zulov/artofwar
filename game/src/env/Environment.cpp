@@ -148,7 +148,7 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	if (mainGrid.onlyOneInside(currentIdx)) {
 		return getNeighbours(unit, radius);
 	}
-	const auto simpleNeght = mainGrid.getAllFromCache(currentIdx, radius);
+	const auto simpleNeight = mainGrid.getAllFromCache(currentIdx, radius);
 
 	const float sqRadius = radius * radius;
 
@@ -156,7 +156,7 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	auto pred = [sqRadius,unit](Physical* neight) {
 		return (unit != neight && sqDistAs2D(unit->getPosition(), neight->getPosition()) < sqRadius);
 	};
-	std::ranges::copy_if(*simpleNeght, std::back_inserter(*neights), pred);
+	std::ranges::copy_if(*simpleNeight, std::back_inserter(*neights), pred);
 
 	return neights;
 }
