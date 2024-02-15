@@ -73,12 +73,14 @@ public:
 	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
 	void addResBonuses(std::vector<Building*>& resBuildings) const;
 	void reAddBonuses(std::vector<Building*>& resBuildings, std::vector<ResourceEntity*>* resources) const;
-	void refreshAllStatic(const std::span<int> allChanged);
-	void refreshGradient(const std::vector<int>& notPassables) const;
+	void refreshAllStatic(std::vector<ResourceEntity*>* resources, std::vector<Building*>* buildings);
 	void refreshStatic(const std::span<int> changed);
 	const std::vector<std::pair<unsigned char, short>>& getCloseTabIndexesWithValue(int center) const;
 	const std::vector<short>& getCloseIndexes(int center) const;
+
 private:
+	void refreshAllStatic(const std::span<int> allChanged);
+	void refreshGradient(const std::vector<int>& notPassables) const;
 	void refreshAllGradient(std::vector<int>& toRefresh) const;
 	void refreshGradientRemoveStatic(std::span<int> toRefresh) const;
 	void createGradient(std::vector<int>& toRefresh, short level) const;
@@ -89,7 +91,7 @@ private:
 	PathFinder pathFinder;
 	std::array<Urho3D::Vector2, 4> posInBucket;
 	Urho3D::Vector2* repulseCache[256];
-
+	bool* countArray{};
 	int counter = 0;
 };
 

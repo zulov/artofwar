@@ -81,8 +81,8 @@ void Environment::reAddBonuses(std::vector<Building*>& resBuildings, std::vector
 	mainGrid.reAddBonuses(resBuildings, resources);
 }
 
-void Environment::refreshAllStatic(std::vector<int>& indexes) {
-	mainGrid.refreshAllStatic(std::span(indexes.data(), indexes.size()));
+void Environment::refreshAllStatic(std::vector<ResourceEntity*>* resources, std::vector<Building*>* buildings) {
+	mainGrid.refreshAllStatic(resources, buildings);
 }
 
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius,

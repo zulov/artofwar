@@ -144,17 +144,16 @@ public:
 	void nextVisibilityType() const;
 	void reAddBonuses(std::vector<Building*>& resBuildings, std::vector<ResourceEntity*>* resources) const;
 
-	void refreshAllStatic(std::vector<int>& indexes);
-
 	const std::vector<std::pair<unsigned char, short>>& getCloseTabIndexesWithValue(int center) const {
 		return mainGrid.getCloseTabIndexesWithValue(center);
 	}
+
+	void refreshAllStatic(std::vector<ResourceEntity*>* resources, std::vector<Building*>* buildings);
 
 private:
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
 	                                      const std::function<bool(Physical*)>& condition) const;
 	std::vector<Physical*>* getNeighbours(Unit* unit, float radius);
-	std::vector<Physical*>* getResources(const Urho3D::Vector3& center, int id, float radius) const;
 
 	void addIfInRange(const Physical* physical, Physical* neight, const float sqRadius,
 	                  const std::function<bool(Physical*)>& condition) const;

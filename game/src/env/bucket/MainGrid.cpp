@@ -19,7 +19,7 @@
 MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
 	Grid(resolution, size, maxQueryRadius),
 	complexData(new ComplexBucketData[sqResolution]),
-	pathFinder(resolution, size) {
+	pathFinder(resolution, size), countArray(new bool[sqResolution]) {
 	const auto quarter = calculator->getFieldSize() / 4;
 	pathFinder.setComplexBucketData(complexData);
 	posInBucket = {
@@ -37,6 +37,7 @@ MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
 
 MainGrid::~MainGrid() {
 	delete[] complexData;
+	delete[] countArray;
 	clear_array(repulseCache, 256);
 }
 
@@ -144,6 +145,7 @@ void MainGrid::incCell(int index, CellState cellState) const {
 	complexData[index].incStateSize(cellState);
 	updateInCellPos(index);
 }
+
 void MainGrid::decCell(int index) const {
 	complexData[index].decStateSize();
 	updateInCellPos(index);
@@ -152,10 +154,9 @@ void MainGrid::decCell(int index) const {
 void MainGrid::updateInCellPos(int index) const {
 	const auto center = calculator->getCenter(index);
 	int i = 0;
-	auto s = complexData[index].getSize();
-	auto c = buckets[index].getContent();
 	for (auto& phy : buckets[index].getContent()) {
 		Unit* unit = (Unit*)phy;
+		assert(i < posInBucket.size());
 		if (unit->getState() == UnitState::COLLECT || unit->getState() == UnitState::ATTACK) {
 			unit->setInCellPos(posInBucket[i] + center);
 			i++;
@@ -429,7 +430,6 @@ void MainGrid::refreshStatic(const std::span<int> changed) {
 			toRefresh.push_back(index);
 		}
 	}
-
 	refreshGradient(toRefresh);
 }
 
@@ -439,6 +439,29 @@ const std::vector<std::pair<unsigned char, short>>& MainGrid::getCloseTabIndexes
 
 const std::vector<short>& MainGrid::getCloseIndexes(int center) const {
 	return closeIndexes->getLv1(complexData[center]);
+}
+
+void MainGrid::refreshAllStatic(std::vector<ResourceEntity*>* resources, std::vector<Building*>* buildings) {
+	std::vector<int> allCells;
+	allCells.reserve(sqResolution);;
+	std::fill_n(countArray, sqResolution, false);
+	for (const auto resource : *resources) {
+		for (const int allCell : resource->getAllCells()) {
+			countArray[allCell] = true;
+		}
+	}
+	for (const auto building : *buildings) {
+		for (const int allCell : building->getAllCells()) {
+			countArray[allCell] = true;
+		}
+	}
+
+	for (int i = 0; i < sqResolution; ++i) {
+		if (countArray[i]) {
+			allCells.push_back(i);
+		}
+	}
+	refreshAllStatic(std::span(allCells.data(), allCells.size()));
 }
 
 void MainGrid::refreshGradient(const std::vector<int>& notPassables) const {
@@ -509,7 +532,7 @@ void MainGrid::createGradient(std::vector<int>& toRefresh, short level) const {
 				break;
 			}
 		}
-		if (currentCell.getGradient() == -1) {
+		if (currentCell.getGradient() == 1024) {
 			toRefresh2.push_back(current);
 		}
 	}
@@ -540,7 +563,7 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 			for (short i : closeIndexes->getLv1(data)) {
 				//TODO brac lepszy nic pierwszy z brzegu
 				auto neightIndex = i + index;
-				if (currentGradient < complexData[neightIndex].getGradient()) {
+				if (currentGradient > complexData[neightIndex].getGradient()) {
 					escapeBucket = neightIndex;
 					break;
 				}

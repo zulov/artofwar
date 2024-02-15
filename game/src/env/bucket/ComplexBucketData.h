@@ -67,8 +67,6 @@ public:
 	unsigned char getIndexOfCloseIndexes() const { return indexOfCloseIndexes; }
 	unsigned char getIndexSecondOfCloseIndexes() const { return indexOfSecondCloseIndexes; }
 
-	char getSize() { return size; }
-
 private:
 	CellState state;
 	char size, additionalInfo{};

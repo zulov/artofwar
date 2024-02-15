@@ -167,8 +167,8 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		auto b = Urho3D::Vector2(-185, -140);
-		auto c = Urho3D::Vector2(-185, -150);
+		//auto b = Urho3D::Vector2(-185, -140);
+		//auto c = Urho3D::Vector2(-185, -150);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.1f, 0, Urho3D::Vector2(0, 100), 0);
 		//Game::getActionCenter()->addUnits(60, 1, Urho3D::Vector2(-5, 25), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER  * 0.1f, 2, Urho3D::Vector2(0, 70), 1);

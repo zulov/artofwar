@@ -83,26 +83,7 @@ void SimulationObjectManager::load(dbload_resource_entities* resource) const {
 }
 
 void SimulationObjectManager::refreshAllStatic() {
-	std::vector<int> allCells;
-	allCells.reserve(100000);
-	bool arr[256 * 256] = {false}; //BUG change size
-	for (const auto resource : *resources) {
-		for (const int allCell : resource->getAllCells()) {
-			arr[allCell] = true;
-		}
-	}
-	for (const auto building : *buildings) {
-		for (const int allCell : building->getAllCells()) {
-			arr[allCell] = true;
-		}
-	}
-
-	for (int i = 0; i < 256 * 256; ++i) {
-		if (arr[i]) {
-			allCells.push_back(i);
-		}
-	}
-	Game::getEnvironment()->refreshAllStatic(allCells);
+	Game::getEnvironment()->refreshAllStatic(resources, buildings);
 }
 
 void SimulationObjectManager::addUnits(std::vector<Unit*>& temp) const {
@@ -176,7 +157,6 @@ void SimulationObjectManager::refreshResBonuses() {
 	std::ranges::copy_if(*buildings, std::back_inserter(resBuilding), isResourceBuilding);
 
 	Game::getEnvironment()->reAddBonuses(resBuilding, resources);
-
 }
 
 void SimulationObjectManager::dispose() {
