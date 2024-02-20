@@ -17,7 +17,7 @@ class Static;
 
 class ComplexBucketData {
 public:
-	ComplexBucketData();
+	ComplexBucketData() = default;
 	~ComplexBucketData() = default;
 	ComplexBucketData(const ComplexBucketData&) = delete;
 
@@ -68,8 +68,8 @@ public:
 	unsigned char getIndexSecondOfCloseIndexes() const { return indexOfSecondCloseIndexes; }
 
 private:
-	CellState state;
-	char size, additionalInfo{};
+	CellState state = CellState::NONE;
+	char size = 0, additionalInfo = -1;
 
 	unsigned char isNeightOccupied = 0; //na poczatku wszystko wolne
 	unsigned char indexOfCloseIndexes;
@@ -77,7 +77,7 @@ private:
 	short gradient = -1;
 	Static* staticObj{};
 	int cost = 0;
-	float resourceBonuses[MAX_PLAYERS][RESOURCES_SIZE]={ -1.0f };
+	float resourceBonuses[MAX_PLAYERS][RESOURCES_SIZE] = {{1.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f}};
 
 	bool belowCellLimit() const;
 };

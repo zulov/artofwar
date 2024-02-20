@@ -4,13 +4,7 @@
 #include "utils/Flags.h"
 
 
-ComplexBucketData::ComplexBucketData() {
-	clear();
-	resetResBonuses();
-}
-
 void ComplexBucketData::setStatic(Static* object) {
-	size = 0;
 	staticObj = object;
 	if (object->getType() == ObjectType::BUILDING) {
 		state = CellState::BUILDING;
@@ -24,7 +18,6 @@ void ComplexBucketData::setStatic(Static* object) {
 void ComplexBucketData::clear() {
 	state = CellState::NONE;
 	additionalInfo = -1;
-	size = 0;
 	staticObj = nullptr;
 }
 
