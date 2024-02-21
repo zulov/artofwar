@@ -21,16 +21,19 @@ public:
 	static bool changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter);
 	static bool changeState(Unit* unit, UnitState stateTo);
 	static bool toDefaultState(Unit* unit);
-	
+
 	static bool canStartState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter, State* stateFrom,
 	                          State* toState);
 	static bool canChangeState(Unit* unit, UnitState stateTo);
 	static void execute(Unit* unit, float timeStamp);
 	static void executeChange(const std::vector<Unit*>* units);
 	static void reset();
+	static const std::vector<Unit*>& getDeadUnits() { return instance->deadUnits; }
+	static const std::vector<Building*>& getDeadBuildings() { return instance->deadBuildings; }
+	static const std::vector<ResourceEntity*>& getDeadResources() { return instance->deadResources; }
 
 	static bool changeState(Static* obj, StaticState stateTo);
-	
+
 	static void executeChange(Static* obj);
 	static void executeChange(std::vector<Building*>* buildings);
 	static void executeChange(std::vector<ResourceEntity*>* resources);
@@ -52,7 +55,9 @@ public:
 private:
 	void initOrders(std::initializer_list<UnitAction> states) const; //TODO move to level
 	void initStates(std::initializer_list<UnitState> states) const; //TODO move to level
-	static void setStaticDead(ObjectType object);
+
+
+	static void setStaticDead(Static* object);
 	static void setStaticToDispose(ObjectType object);
 
 	StateManager();
@@ -67,13 +72,13 @@ private:
 	bool buildingStateChangePending = false;
 	bool resourceStateChangePending = false;
 
-	bool unitIsInDeadState = false;
-	bool buildingIsInDeadState = false;
-	bool resourceIsInDeadState = false;
-
 	bool unitIsInDisposeState = false;
 	bool buildingIsInDisposeState = false;
 	bool resourceIsInDisposeState = false;
+
+	std::vector<Unit*> deadUnits;
+	std::vector<Building*> deadBuildings;
+	std::vector<ResourceEntity*> deadResources;
 };
 
 inline bool isInStates(UnitState state, std::initializer_list<UnitState> states) {

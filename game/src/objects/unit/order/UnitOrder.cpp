@@ -82,10 +82,3 @@ void UnitOrder::execute() {
 		return addStopAim();
 	}
 }
-
-short UnitOrder::getToUseId() const {
-	assert(toUse!=nullptr);
-	if (toUse) {
-		return toUse->getId();
-	}
-}

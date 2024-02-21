@@ -28,8 +28,6 @@ Grid::~Grid() {
 }
 
 int Grid::update(Unit* unit, int currentIndex, bool shouldChangeFlag) const {
-	assert(!unit->isToDispose());
-
 	const int index = calculator->indexFromPosition(unit->getPosition());
 	const auto areDifferent = currentIndex != index;
 	if (areDifferent) {

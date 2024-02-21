@@ -105,7 +105,7 @@ void StateManager::executeChange(const std::vector<Unit*>* units) {
 					stateFrom->onEnd(unit);
 					unit->setState(nextState);
 					if (nextState == UnitState::DEAD) {
-						instance->unitIsInDeadState = true;
+						instance->deadUnits.push_back(unit);
 					} else if (nextState == UnitState::DISPOSE) {
 						instance->unitIsInDisposeState = true;
 					}
@@ -123,9 +123,9 @@ void StateManager::executeChange(const std::vector<Unit*>* units) {
 }
 
 void StateManager::reset() {
-	instance->unitIsInDeadState = false;
-	instance->buildingIsInDeadState = false;
-	instance->resourceIsInDeadState = false;
+	instance->deadUnits.clear();
+	instance->deadBuildings.clear();
+	instance->deadResources.clear();
 
 	instance->unitIsInDisposeState = false;
 	instance->buildingIsInDisposeState = false;
@@ -173,7 +173,7 @@ void StateManager::startState(Static* obj) {
 		break;
 	case StaticState::DEAD:
 		changeState(obj, StaticState::DISPOSE);
-		setStaticDead(obj->getType());
+		setStaticDead(obj);
 		break;
 	case StaticState::DISPOSE:
 
@@ -266,11 +266,11 @@ void StateManager::initStates(std::initializer_list<UnitState> states) const {
 	}
 }
 
-void StateManager::setStaticDead(ObjectType object) {
-	if (object == ObjectType::BUILDING) {
-		instance->buildingIsInDeadState = true;
+void StateManager::setStaticDead(Static* object) {
+	if (object->getType() == ObjectType::BUILDING) {
+		instance->deadBuildings.push_back(static_cast<Building*>(object));
 	} else {
-		instance->resourceIsInDeadState = true;
+		instance->deadResources.push_back(static_cast<ResourceEntity*>(object));
 	}
 }
 
@@ -283,15 +283,15 @@ void StateManager::setStaticToDispose(ObjectType object) {
 }
 
 bool StateManager::isUnitDead() {
-	return instance->unitIsInDeadState;
+	return !instance->deadUnits.empty();
 }
 
 bool StateManager::isBuildingDead() {
-	return instance->buildingIsInDeadState;
+	return !instance->deadBuildings.empty();
 }
 
 bool StateManager::isResourceDead() {
-	return instance->resourceIsInDeadState;
+	return !instance->deadResources.empty();
 }
 
 bool StateManager::isUnitToDispose() {

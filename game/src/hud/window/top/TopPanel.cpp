@@ -56,9 +56,11 @@ void TopPanel::update(Player* player) const {
 	auto& resources = player->getResources();
 	unsigned short workersPerRes[RESOURCES_SIZE] = {0, 0, 0, 0};
 	for (const auto worker : possession.getWorkers()) {
-		const auto id = worker->getThingToInterActId();
-		if (id >= 0 && worker->getState() == UnitState::COLLECT) {
-			++workersPerRes[id];
+		if(worker->getState() == UnitState::COLLECT) {
+			const auto resId = static_cast<ResourceEntity*>(worker->getThingToInteract())->getResourceId();
+			if (resId >= 0) {
+				++workersPerRes[resId];
+			}
 		}
 	}
 

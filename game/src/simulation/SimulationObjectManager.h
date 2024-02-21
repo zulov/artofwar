@@ -23,9 +23,9 @@ public:
 	void addBuilding(int id, const Urho3D::IntVector2& _bucketCords, char level, char player) const;
 	void addResource(int id, const Urho3D::IntVector2& _bucketCords) const;
 
-	void findToDispose();
-
 	void dispose();
+
+	void removeFromGrids();
 
 	void load(dbload_unit* unit);
 	void load(dbload_building* building) const;
@@ -37,9 +37,9 @@ private:
 	void addBuilding(Building* building, bool bulkAdd) const;
 	void addResource(ResourceEntity* resource, bool bulkAdd) const;
 
-	void findToDisposeUnits();
-	void findToDisposeBuildings();
-	void findToDisposeResources();
+	void cleanAndDisposeUnits();
+	void cleanAndDisposeBuildings();
+	void cleanAndDisposeResources();
 	void refreshResBonuses();
 
 	UnitFactory unitFactory;
@@ -49,9 +49,4 @@ private:
 	std::vector<Unit*>* units;
 	std::vector<Building*>* buildings;
 	std::vector<ResourceEntity*>* resources;
-
-	std::vector<Unit*> unitsToDispose;
-	std::vector<Building*> buildingsToDispose;
-	std::vector<ResourceEntity*> resourcesToDispose;
-
 };

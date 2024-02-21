@@ -30,7 +30,7 @@ SimulationObjectManager::~SimulationObjectManager() {
 	clear_and_delete_vector(buildings);
 	clear_and_delete_vector(resources);
 
-	dispose();
+	//removeFromGrids();
 }
 
 void SimulationObjectManager::clearNodesWithoutDelete() {
@@ -62,12 +62,6 @@ void SimulationObjectManager::addResource(int id, const Urho3D::IntVector2& _buc
 	if (const auto res = resourceFactory.create(id, _bucketCords)) {
 		addResource(res, false);
 	}
-}
-
-void SimulationObjectManager::findToDispose() {
-	findToDisposeUnits(); //TODO perf jezeli cos zmieni³o stan do dispose
-	findToDisposeBuildings();
-	findToDisposeResources();
 }
 
 void SimulationObjectManager::load(dbload_unit* unit) {
@@ -117,33 +111,21 @@ void SimulationObjectManager::addResource(ResourceEntity* resource, bool bulkAdd
 	}
 }
 
-void SimulationObjectManager::findToDisposeUnits() {
+void SimulationObjectManager::cleanAndDisposeUnits() {
 	if (StateManager::isSthToDispose()) {
 		for (const auto unit : *units) {
 			unit->clean(); //TODO bug? to powinno być niepotrzebne
 		}
 	}
-	if (StateManager::isUnitToDispose()) {
-		const auto partitionPoint = std::ranges::stable_partition(*units, isNotToDispose).begin();
-		std::copy(partitionPoint, units->end(), std::back_inserter(unitsToDispose));
-		units->erase(partitionPoint, units->end());
-	}
+	cleanAndDispose(units, StateManager::isUnitToDispose());
 }
 
-void SimulationObjectManager::findToDisposeBuildings() {
-	if (StateManager::isBuildingToDispose()) {
-		const auto partitionPoint = std::ranges::stable_partition(*buildings, isNotToDispose).begin();
-		std::copy(partitionPoint, buildings->end(), std::back_inserter(buildingsToDispose));
-		buildings->erase(partitionPoint, buildings->end());
-	}
+void SimulationObjectManager::cleanAndDisposeBuildings() {
+	cleanAndDispose(buildings, StateManager::isBuildingToDispose());
 }
 
-void SimulationObjectManager::findToDisposeResources() {
-	if (StateManager::isResourceToDispose()) {
-		const auto partitionPoint = std::ranges::stable_partition(*resources, isNotToDispose).begin();
-		std::copy(partitionPoint, resources->end(), std::back_inserter(resourcesToDispose));
-		resources->erase(partitionPoint, resources->end());
-	}
+void SimulationObjectManager::cleanAndDisposeResources() {
+	cleanAndDispose(resources, StateManager::isResourceToDispose());
 }
 
 void SimulationObjectManager::refreshResBonuses() {
@@ -151,7 +133,7 @@ void SimulationObjectManager::refreshResBonuses() {
 		return building->getDbBuilding()->typeResourceAny;
 	};
 
-	if (!std::ranges::any_of(buildingsToDispose, isResourceBuilding)) { return; }
+	if (!std::ranges::any_of(StateManager::getDeadBuildings(), isResourceBuilding)) { return; }
 
 	std::vector<Building*> resBuilding;
 	std::ranges::copy_if(*buildings, std::back_inserter(resBuilding), isResourceBuilding);
@@ -160,12 +142,14 @@ void SimulationObjectManager::refreshResBonuses() {
 }
 
 void SimulationObjectManager::dispose() {
-	Game::getEnvironment()->removeFromGrids(unitsToDispose);
-	Game::getEnvironment()->removeFromGrids(buildingsToDispose, resourcesToDispose);
+	cleanAndDisposeUnits(); //TODO perf jezeli cos zmieni³o stan do dispose
+	cleanAndDisposeBuildings();
+	cleanAndDisposeResources();
+}
+
+void SimulationObjectManager::removeFromGrids() {
+	Game::getEnvironment()->removeFromGrids(StateManager::getDeadUnits());
+	Game::getEnvironment()->removeFromGrids(StateManager::getDeadBuildings(), StateManager::getDeadResources());
 
 	refreshResBonuses();
-
-	clear_vector(unitsToDispose);
-	clear_vector(buildingsToDispose);
-	clear_vector(resourcesToDispose);
 }

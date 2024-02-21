@@ -208,7 +208,7 @@ void InfluenceManager::updateNotInBonus(std::vector<Unit*>* units) const {
 		if (unit->getDbUnit()->typeWorker && unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
 			auto res = (ResourceEntity*)unit->getThingToInteract();
 			//TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
-			mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getId()]->updateInt(res->getIndexInInfluence());
+			mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getResourceId()]->updateInt(res->getIndexInInfluence());
 		}
 	}
 }

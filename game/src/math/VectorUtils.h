@@ -12,12 +12,30 @@ inline auto notAlive = [](const Physical* physical) {
 
 inline auto isNotToDispose = [](const Physical* p) { return !p->isToDispose(); };
 
+
+inline auto dispose = [](const Physical* p) {
+	const auto flag= p->isToDispose();
+	if(flag) {
+		delete p;
+	}
+	return flag;
+};
+
 template <typename T>
 static void cleanDead(std::vector<T*>& vector, bool sthDead = true) {
 	if (sthDead) {
 		vector.erase(
 			std::remove_if(vector.begin(), vector.end(), notAlive),
 			vector.end());
+	}
+}
+
+template <typename T>
+static void cleanAndDispose(std::vector<T*>* vector, bool sthDead = true) {
+	if (sthDead) {
+		vector->erase(
+			std::remove_if(vector->begin(), vector->end(), dispose),
+			vector->end());
 	}
 }
 

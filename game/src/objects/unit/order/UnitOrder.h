@@ -22,8 +22,7 @@ public:
 	virtual short getSize() const =0;
 
 	bool getAppend() const { return append; }
-	short getId() const { return id; }
-	short getToUseId() const;
+
 protected:
 	Physical* toUse = nullptr; //TODO tu nada³a by sie unia?
 	Urho3D::Vector2* vector = nullptr;

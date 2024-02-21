@@ -260,7 +260,7 @@ void Possession::ensureReady() {
 
 			const auto bonus = res->getBonus(worker->getPlayer());
 			if (bonus <= 1.f) {
-				resWithoutBonus[res->getId()] += 1;
+				resWithoutBonus[res->getResourceId()] += 1;
 			}
 		}
 	}

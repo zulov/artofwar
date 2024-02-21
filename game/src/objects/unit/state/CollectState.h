@@ -64,8 +64,8 @@ public:
 
 			const auto [value, died] = resource->absorbAttack(unit->dbLevel->collect * bonus);
 
-			env->addCollect(unit, resource->getId(), value);
-			resources.add(resource->getId(), value);
+			env->addCollect(unit, resource->getResourceId(), value);
+			resources.add(resource->getResourceId(), value);
 			unit->currentFrameState = 0;
 		}
 	}

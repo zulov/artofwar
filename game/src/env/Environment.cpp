@@ -227,10 +227,12 @@ void Environment::updateInfluenceHistoryReset() const {
 }
 
 void Environment::update(Unit* unit) const {
-	unit->setBucketInMainGrid(mainGrid.update(unit, unit->getMainGridIndex(), true));
-	if (unit->indexChanged()) {
-		unit->setSparseIndex(sparseUnitGrid.update(unit, unit->getSparseIndex(), false));
-		unit->setIndexInInfluence(-1);
+	if (unit->isAlive()) {
+		unit->setBucketInMainGrid(mainGrid.update(unit, unit->getMainGridIndex(), true));
+		if (unit->indexChanged()) {
+			unit->setSparseIndex(sparseUnitGrid.update(unit, unit->getSparseIndex(), false));
+			unit->setIndexInInfluence(-1);
+		}
 	}
 }
 
