@@ -7,10 +7,10 @@
 #include "objects/queue/QueueActionType.h"
 
 
-UpgradeCommand::UpgradeCommand(char player, int id, QueueActionType type): AbstractCommand(player), type(type), id(id) {
+UpgradeCommand::UpgradeCommand(char player, short id, QueueActionType type): player(player), type(type), id(id) {
 }
 
-void UpgradeCommand::execute() {
+void UpgradeCommand::execute(SimulationObjectManager* simulationObjectManager) const {
 	char level = Game::getPlayersMan()->getPlayer(player)->upgradeLevel(type, id);
 	if (type == QueueActionType::BUILDING_LEVEL && level > 0) {
 		for (auto building : *simulationObjectManager->getBuildings()) {

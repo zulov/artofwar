@@ -221,7 +221,7 @@
     <ClInclude Include="src\camera\FreeCameraBehave.h">
       <Filter>camera\behave</Filter>
     </ClInclude>
-    <ClInclude Include="src\commands\AbstractCommand.h">
+    <ClInclude Include="src\commands\PhysicalCommand.h">
       <Filter>command</Filter>
     </ClInclude>
     <ClInclude Include="src\commands\CommandList.h">

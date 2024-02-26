@@ -1,23 +1,21 @@
 #pragma once
 #include <vector>
-#include "commands/AbstractCommand.h"
+#include "commands/PhysicalCommand.h"
 
 enum class ResourceActionType : char;
 class ResourceEntity;
 class Physical;
 
-class ResourceActionCommand : public AbstractCommand {
+class ResourceActionCommand : public PhysicalCommand {
 	friend class Stats;
 public:
 	ResourceActionCommand(ResourceEntity* resource, ResourceActionType action, char player);
 	ResourceActionCommand(const std::vector<Physical*>& resources, ResourceActionType action, char player);
 
-	bool expired() override;
-	void clean() override;
-
 	void execute() override;
 
 private:
 	ResourceActionType action;
+	char player;
 	std::vector<ResourceEntity*> resources;
 };

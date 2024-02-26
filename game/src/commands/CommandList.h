@@ -1,18 +1,16 @@
 #pragma once
 #include <vector>
 
-class AbstractCommand;
+class PhysicalCommand;
 
 class CommandList {
 public:
 	CommandList() = default;
 	virtual ~CommandList();
-	void add(AbstractCommand* command);
-	void add(AbstractCommand* first, AbstractCommand* second);
+	void add(PhysicalCommand* command);
+	void add(PhysicalCommand* first, PhysicalCommand* second);
 
 	void execute();
-protected:
-	virtual void setParameters(AbstractCommand* command);
 private:
-	std::vector<AbstractCommand*> commands;
+	std::vector<PhysicalCommand*> commands;
 };

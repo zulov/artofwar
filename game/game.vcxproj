@@ -508,7 +508,7 @@
     <ClInclude Include="src\hud\window\main_menu\MainMenuPanel.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\camera\TopCameraBehave.h" />
-    <ClInclude Include="src\commands\AbstractCommand.h" />
+    <ClInclude Include="src\commands\PhysicalCommand.h" />
     <ClInclude Include="src\control\HitData.h" />
     <ClInclude Include="src\control\MouseButton.h" />
     <ClInclude Include="src\database\db_utils.h" />

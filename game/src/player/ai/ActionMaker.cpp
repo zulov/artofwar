@@ -117,13 +117,11 @@ bool ActionMaker::createUnit(std::span<float> unitsInput) {
 bool ActionMaker::createUnit(db_unit* unit, Building* building) const {
 	if (building) {
 		Game::getActionCenter()->add(
-		                             new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id,
-		                                                       player->getId()));
+		                             new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id));
 		return true;
-	} else {
-		//TODO try to build
-		return false;
 	}
+	//TODO try to build
+	return false;
 }
 
 bool ActionMaker::createWorker(db_unit* unit) const {
@@ -398,7 +396,7 @@ bool ActionMaker::levelUpUnit() {
 		if (building) {
 			Game::getActionCenter()->add(
 			                             new BuildingActionCommand(building, BuildingActionType::UNIT_LEVEL,
-			                                                       level->unit, player->getId()));
+			                                                       level->unit));
 			return true;
 		}
 	}

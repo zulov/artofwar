@@ -46,6 +46,18 @@ CreationCommand* CreationCommandList::addResource(int id, Urho3D::Vector2& posit
 	return nullptr;
 }
 
+void CreationCommandList::add(CreationCommand* command) {
+	commands.push_back(command);
+}
+
+void CreationCommandList::execute() {
+	for (const auto command : commands) {
+		command->execute(simulationObjectManager);
+		delete command;
+	}
+	commands.clear();
+}
+
 CreationCommand*
 CreationCommandList::addBuildingForce(int id, Urho3D::Vector2& position, char player, int level) const {
 	db_building* building = Game::getDatabase()->getBuilding(id);
@@ -57,8 +69,4 @@ CreationCommandList::addBuildingForce(int id, Urho3D::Vector2& position, char pl
 	}
 
 	return nullptr;
-}
-
-void CreationCommandList::setParameters(AbstractCommand* command) {
-	dynamic_cast<CreationCommand*>(command)->setSimulationObjectManager(simulationObjectManager);
 }

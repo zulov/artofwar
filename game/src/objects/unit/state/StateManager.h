@@ -4,6 +4,7 @@
 #include <magic_enum.hpp>
 #include <vector>
 
+#include "objects/unit/Unit.h"
 #include "objects/unit/order/enums/UnitAction.h"
 #include "objects/unit/state/UnitState.h"
 
@@ -90,7 +91,8 @@ inline bool isInStates(UnitState state, std::initializer_list<UnitState> states)
 	return false;
 }
 
-inline bool isInFreeState(UnitState state) {
+inline bool isInFreeState(Unit* unit) {
 	//return isInStates(state, {UnitState::STOP, UnitState::MOVE});
+	auto state = unit->getState();
 	return state == UnitState::STOP || state == UnitState::MOVE;
 }

@@ -24,7 +24,7 @@ public:
 	bool getAppend() const { return append; }
 
 protected:
-	Physical* toUse = nullptr; //TODO tu nada³a by sie unia?
+	Physical* toUse = nullptr; //TODO tu nada sie unia?
 	Urho3D::Vector2* vector = nullptr;
 
 	const short id;

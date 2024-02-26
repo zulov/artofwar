@@ -195,7 +195,7 @@ UnitOrder* Controls::createUnitOrder(hit_data& hitData) const {
 }
 
 void Controls::rightClick(hit_data& hitData) const {
-	Game::getActionCenter()->addUnitAction(createUnitOrder(hitData), Game::getPlayersMan()->getActivePlayerID());
+	Game::getActionCenter()->addUnitAction(createUnitOrder(hitData));
 }
 
 void Controls::leftHold(MouseHeld& held) {
@@ -208,27 +208,26 @@ void Controls::leftHold(MouseHeld& held) {
 
 void Controls::rightHold(MouseHeld& held) const {
 	GroupOrder* first = new GroupOrder(selected, UnitActionType::ORDER, cast(UnitAction::GO),
-		held.firstAs2D());
+	                                   held.firstAs2D());
 	GroupOrder* second;
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
 		second = new GroupOrder(selected, UnitActionType::ORDER, cast(UnitAction::GO),
 		                        held.secondAs2D(), true);
 	} else {
 		second = new GroupOrder(selected, UnitActionType::ORDER, cast(UnitAction::CHARGE),
-			held.first2Second(), true); //TODO buf append nie dzia³a
+		                        held.first2Second(), true); //TODO buf append nie dzia³a
 	}
 
-	Game::getActionCenter()->addUnitAction(first, second, Game::getPlayersMan()->getActivePlayerID());
+	Game::getActionCenter()->addUnitAction(first, second);
 }
 
 void Controls::releaseLeft() {
 	hit_data hitData;
 
 	if (raycast(hitData)) {
-
 		left.setSecond(hitData.position);
 		const float dist = left.sq2DDist();
-		
+
 		if (left.timeUpDiff() < 0.2f && dist < clickDistance) {
 			leftDoubleClick(hitData);
 		} else if (dist > clickDistance) {
@@ -314,9 +313,7 @@ void Controls::order(short id, ActionType type) {
 }
 
 void Controls::executeOnUnits(short id) const {
-	Game::getActionCenter()->addUnitAction(
-	                                       new GroupOrder(selected, UnitActionType::ORDER, id, nullptr, false),
-	                                       Game::getPlayersMan()->getActivePlayerID());
+	Game::getActionCenter()->addUnitAction(new GroupOrder(selected, UnitActionType::ORDER, id, nullptr, false));
 }
 
 void Controls::executeOnResources(ResourceActionType action) const {
@@ -326,9 +323,7 @@ void Controls::executeOnResources(ResourceActionType action) const {
 }
 
 void Controls::executeOnBuildings(BuildingActionType action, short id) const {
-	Game::getActionCenter()->add(
-	                             new BuildingActionCommand(selected, action, id,
-	                                                       Game::getPlayersMan()->getActivePlayerID()));
+	Game::getActionCenter()->add(new BuildingActionCommand(selected, action, id));
 }
 
 bool Controls::clickDown(MouseButton& var) const {
@@ -508,8 +503,7 @@ void Controls::toDefault() {
 
 void Controls::unitFormation(short id) const {
 	Game::getActionCenter()->addUnitAction(
-	                                       new GroupOrder(selected, UnitActionType::FORMATION, id, nullptr),
-	                                       Game::getPlayersMan()->getActivePlayerID());
+	                                       new GroupOrder(selected, UnitActionType::FORMATION, id, nullptr));
 }
 
 void Controls::control() {

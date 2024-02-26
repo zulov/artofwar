@@ -25,15 +25,12 @@ void ActionCenter::add(BuildingActionCommand* command) {
 	action.add(command);
 }
 
-void ActionCenter::addUnitAction(UnitOrder* first, char player) {
-	auto com = new UnitActionCommand(first, player);
-	action.add(com);
+void ActionCenter::addUnitAction(UnitOrder* first) {
+	action.add(new UnitActionCommand(first));
 }
 
-void ActionCenter::addUnitAction(UnitOrder* first, UnitOrder* second, char player) {
-	auto com1 = new UnitActionCommand(first, player);
-	auto com2 = new UnitActionCommand(second, player);
-	action.add(com1, com2);
+void ActionCenter::addUnitAction(UnitOrder* first, UnitOrder* second) {
+	action.add(new UnitActionCommand(first), new UnitActionCommand(second));
 }
 
 void ActionCenter::add(GeneralActionCommand* command) {

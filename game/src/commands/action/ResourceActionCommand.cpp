@@ -3,12 +3,12 @@
 #include "objects/resource/ResourceEntity.h"
 
 ResourceActionCommand::ResourceActionCommand(ResourceEntity* resource, ResourceActionType action, char player)
-	: AbstractCommand(player), action(action) {
+	: action(action), player(player) {
 	resources.emplace_back(resource);
 }
 
 ResourceActionCommand::ResourceActionCommand(const std::vector<Physical*>& resources, ResourceActionType action,
-                                             char player) : AbstractCommand(player), action(action) {
+                                             char player) : action(action), player(player) {
 	this->resources.reserve(resources.size());
 	for (auto* resource : resources) {
 		this->resources.emplace_back(reinterpret_cast<ResourceEntity*>(resource));
@@ -17,14 +17,8 @@ ResourceActionCommand::ResourceActionCommand(const std::vector<Physical*>& resou
 
 void ResourceActionCommand::execute() {
 	for (const auto resource : resources) {
-		resource->action(action, player);
+		if(resource->isAlive()) {
+			resource->action(action, player);
+		}
 	}
-}
-
-void ResourceActionCommand::clean() {
-	cleanDead(resources);
-}
-
-bool ResourceActionCommand::expired() {
-	return resources.empty();
 }

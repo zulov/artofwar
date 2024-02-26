@@ -1,6 +1,5 @@
 #pragma once
-#include "commands/CommandList.h"
-
+#include <vector>
 
 namespace Urho3D {
 	class Vector2;
@@ -9,7 +8,7 @@ namespace Urho3D {
 class SimulationObjectManager;
 class CreationCommand;
 
-class CreationCommandList : public CommandList {
+class CreationCommandList  {
 public:
 	explicit CreationCommandList(SimulationObjectManager* simulationObjectManager);
 	virtual ~CreationCommandList() = default;
@@ -18,8 +17,9 @@ public:
 	CreationCommand* addBuildingForce(int id, Urho3D::Vector2& position, char player, int level) const;
 	CreationCommand* addResource(int id, Urho3D::Vector2& position) const;
 
-protected:
-	void setParameters(AbstractCommand* command) override;
+	void add(CreationCommand* command);
+	void execute();
 private:
+	std::vector<CreationCommand*> commands;
 	SimulationObjectManager* simulationObjectManager;
 };

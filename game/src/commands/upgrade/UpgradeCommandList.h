@@ -1,15 +1,18 @@
 #pragma once
-#include "commands/CommandList.h"
+#include <vector>
 
+class UpgradeCommand;
 class SimulationObjectManager;
 
-class UpgradeCommandList : public CommandList {
+class UpgradeCommandList {
 public:
 	explicit UpgradeCommandList(SimulationObjectManager* simulationObjectManager);
 	~UpgradeCommandList() = default;
 
-protected:
-	void setParameters(AbstractCommand* command) override;
+	void add(UpgradeCommand* command);
+
+	void execute();
 private:
+	std::vector<UpgradeCommand*> commands;
 	SimulationObjectManager* simulationObjectManager;
 };

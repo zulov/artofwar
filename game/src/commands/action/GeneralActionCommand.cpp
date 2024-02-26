@@ -7,14 +7,7 @@
 #include "player/PlayersManager.h"
 
 GeneralActionCommand::GeneralActionCommand(short id, GeneralActionType action, char player)
-	: AbstractCommand(player), id(id), action(action) {
-}
-
-void GeneralActionCommand::clean() {
-}
-
-bool GeneralActionCommand::expired() {
-	return false;
+	: id(id), action(action), player(player) {
 }
 
 void GeneralActionCommand::execute() {

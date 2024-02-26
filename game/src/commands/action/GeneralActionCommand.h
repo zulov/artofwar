@@ -1,17 +1,16 @@
 #pragma once
-#include "commands/AbstractCommand.h"
+#include "commands/PhysicalCommand.h"
 
 enum class GeneralActionType : char;
 
-class GeneralActionCommand : public AbstractCommand {
+class GeneralActionCommand : public PhysicalCommand {
 	friend class Stats;
 public:
 	GeneralActionCommand(short id, GeneralActionType action, char player);
 
-	void clean() override;
-	bool expired() override;
 	void execute() override;
 private:
 	short id;
 	GeneralActionType action;
+	char player;
 };

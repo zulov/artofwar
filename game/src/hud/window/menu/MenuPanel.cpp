@@ -178,7 +178,7 @@ void MenuPanel::levelBuilding() {
 	for (int i = page * BUTTONS_NUMBER; i < levels.size() && i < (page + 1) * BUTTONS_NUMBER; ++i) {
 		const auto level = levels[i];
 		const db_building* building = Game::getDatabase()->getBuilding(level->building);
-		setNext(k, "building/levels/" + Urho3D::String(level->level) + "/" + building->icon,
+		setNext(k, "building/levels/" + Urho3D::String((int)level->level) + "/" + building->icon,
 		        building->id, ActionType::BUILDING_LEVEL);
 	}
 	resetRestButtons(k);

@@ -1,4 +1,5 @@
 #pragma once
+#include "commands/CommandList.h"
 #include "commands/creation/CreationCommandList.h"
 #include "commands/upgrade/UpgradeCommandList.h"
 
@@ -26,8 +27,8 @@ public:
 	void add(ResourceActionCommand* command);
 	void add(BuildingActionCommand* command);
 
-	void addUnitAction(UnitOrder* first, char player);
-	void addUnitAction(UnitOrder* first, UnitOrder* second, char player);
+	void addUnitAction(UnitOrder* first);
+	void addUnitAction(UnitOrder* first, UnitOrder* second);
 
 	void executeActions();
 	void executeLists();

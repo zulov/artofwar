@@ -21,7 +21,7 @@ inline bool belowCloseOrRange(Physical* physical) {
 }
 
 inline bool isFree(Unit* unit) {
-	return unit->getFormation() < 0 && isInFreeState(unit->getState()) && !unit->hasAim() && Game::getEnvironment()->cellIsPassable(unit->getMainGridIndex());
+	return unit->getFormation() < 0 && isInFreeState(unit) && !unit->hasAim() && Game::getEnvironment()->cellIsPassable(unit->getMainGridIndex());
 }
 
 inline bool isWorker(Physical* physical) {

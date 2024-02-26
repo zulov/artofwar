@@ -3,10 +3,16 @@
 
 
 UpgradeCommandList::UpgradeCommandList(SimulationObjectManager* simulationObjectManager)
-	: simulationObjectManager(simulationObjectManager) {
+	: simulationObjectManager(simulationObjectManager) {}
+
+void UpgradeCommandList::add(UpgradeCommand* command) {
+	commands.push_back(command);
 }
 
-void UpgradeCommandList::setParameters(AbstractCommand* command) {
-	auto* m = dynamic_cast<UpgradeCommand*>(command);
-	m->setSimulationObjectManager(simulationObjectManager);
+void UpgradeCommandList::execute() {
+	for (const auto command : commands) {
+		command->execute(simulationObjectManager);
+		delete command;
+	}
+	commands.clear();
 }

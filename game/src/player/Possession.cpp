@@ -245,13 +245,8 @@ void Possession::ensureReady() {
 		}
 	}
 
-	freeWorkersNumber = std::ranges::count_if(workers, [](Unit* worker) {
-		return isInFreeState(worker->getState());
-	});
-
-	freeArmyNumber = std::ranges::count_if(units, [](Unit* worker) {
-		return isFreeSolider(worker);
-	});
+	freeWorkersNumber = std::ranges::count_if(workers, isInFreeState);
+	freeArmyNumber = std::ranges::count_if(units, isFreeSolider);
 
 	resetSpan(resWithoutBonus);
 	for (const auto worker : workers) {

@@ -3,17 +3,17 @@
 #include "simulation/SimulationObjectManager.h"
 
 
-CreationCommand::CreationCommand(ObjectType type, int id, const Urho3D::IntVector2 bucketCords) 
-	: AbstractCommand(-1), id(id), objectType(type), bucketCords(bucketCords) {}
+CreationCommand::CreationCommand(ObjectType type, short id, const Urho3D::IntVector2 bucketCords) 
+	: bucketCords(bucketCords), objectType(type), id(id), player(-1) {}
 
-CreationCommand::CreationCommand(ObjectType type, int id, const Urho3D::IntVector2 bucketCords, char level, char player)
-	: AbstractCommand(player), id(id), level(level), objectType(type), bucketCords(bucketCords) {}
+CreationCommand::CreationCommand(ObjectType type, short id, const Urho3D::IntVector2 bucketCords, char level, char player)
+	: bucketCords(bucketCords), objectType(type), id(id), level(level), player(player) {}
 
-CreationCommand::CreationCommand(ObjectType type, int id, const Urho3D::Vector2& position, char level, char player,
-                                 int number): AbstractCommand(player), id(id),
-                                              number(number), level(level), position(position), objectType(type) {}
+CreationCommand::CreationCommand(ObjectType type, short id, const Urho3D::Vector2& position, char level, char player,
+                                 int number): position(position), number(number),
+                                              objectType(type), id(id), level(level), player(player) {}
 
-void CreationCommand::execute() {
+void CreationCommand::execute(SimulationObjectManager* simulationObjectManager) {
 	switch (objectType) {
 	case ObjectType::UNIT:
 		simulationObjectManager->addUnits(number, id, position, level, player);
@@ -25,8 +25,4 @@ void CreationCommand::execute() {
 		simulationObjectManager->addResource(id, bucketCords);
 		break;
 	}
-}
-
-void CreationCommand::setSimulationObjectManager(SimulationObjectManager* _simulationObjectManager) {
-	simulationObjectManager = _simulationObjectManager;
 }

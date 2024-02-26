@@ -38,6 +38,20 @@ OrderMaker::~OrderMaker() {
 	delete temp;
 }
 
+UnitOrder* OrderMaker::unitOrderGo(std::vector<Unit*>& subArmy, Urho3D::Vector2& center) const {
+	if (subArmy.size() > 1) {
+		return new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::GO), center);
+	}
+	return new IndividualOrder(subArmy.at(0), UnitAction::GO, center);
+}
+
+UnitOrder* OrderMaker::unitOrderCollect(std::vector<Unit*>& workers, Physical* closest) const {
+	if (workers.size() > 1) {
+		return new GroupOrder(workers, UnitActionType::ORDER, cast(UnitAction::COLLECT), closest);
+	}
+	return new IndividualOrder(workers.at(0), UnitAction::COLLECT, closest);
+}
+
 void OrderMaker::action() {
 	auto freeWorkers = findFreeWorkers();
 
@@ -70,13 +84,7 @@ void OrderMaker::action() {
 					const auto dist = sqDist(centerLocal, center);
 
 					if (dist > SQ_SEMI_CLOSE) {
-						UnitOrder* unitOrder = nullptr;
-						if (subArmy.size() > 1) {
-							unitOrder = new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::GO), center);
-						} else {
-							unitOrder = new IndividualOrder(subArmy.at(0), UnitAction::GO, center);
-						}
-						Game::getActionCenter()->addUnitAction(unitOrder, player->getId());
+						Game::getActionCenter()->addUnitAction(unitOrderGo(subArmy, center));
 					} else {
 						const auto unit = subArmy.at(0);
 						std::vector<Physical*>* things;
@@ -103,12 +111,13 @@ void OrderMaker::action() {
 
 void OrderMaker::semiCloseAttack(const std::vector<Unit*>& subArmy, const std::vector<Physical*>* things) const {
 	if (!things->empty()) {
-		const auto closest = Game::getEnvironment()->closestPhysical(subArmy.at(0)->getMainGridIndex(), things, belowClose, SQ_SEMI_CLOSE,
+		const auto closest = Game::getEnvironment()->closestPhysical(subArmy.at(0)->getMainGridIndex(), things,
+		                                                             belowClose, SQ_SEMI_CLOSE,
 		                                                             true);
 		if (closest) {
 			Game::getActionCenter()->addUnitAction(
 			                                       new GroupOrder(subArmy, UnitActionType::ORDER,
-			                                                      cast(UnitAction::ATTACK), closest), player->getId());
+			                                                      cast(UnitAction::ATTACK), closest));
 		}
 	}
 }
@@ -123,9 +132,10 @@ std::vector<Unit*> OrderMaker::findFreeWorkers() const {
 
 Physical* OrderMaker::closetInRange(Unit* worker, int resourceId) {
 	float prevRadius = -1.f;
-	for (const auto radius : { 64.f, 128.f, 256.f}) {
+	for (const auto radius : {64.f, 128.f, 256.f}) {
 		const auto list = Game::getEnvironment()->getResources(worker->getPosition(), resourceId, radius, prevRadius);
-		const auto closest = Game::getEnvironment()->closestPhysical(worker->getMainGridIndex(), list, belowClose, radius * radius, false);
+		const auto closest = Game::getEnvironment()->closestPhysical(worker->getMainGridIndex(), list, belowClose,
+		                                                             radius * radius, false);
 		if (closest) {
 			return closest;
 		}
@@ -140,13 +150,7 @@ void OrderMaker::actCollect(unsigned char& resHistogram, char resId, std::vector
 		resHistogram -= workers.size();
 		const auto closest = closetInRange(workers.at(0), resId);
 		if (closest) {
-			UnitOrder* unitOrder;
-			if (workers.size() > 1) {
-				unitOrder = new GroupOrder(workers, UnitActionType::ORDER, cast(UnitAction::COLLECT), closest);
-			} else {
-				unitOrder = new IndividualOrder(workers.at(0), UnitAction::COLLECT, closest);
-			}
-			Game::getActionCenter()->addUnitAction(unitOrder, player->getId());
+			Game::getActionCenter()->addUnitAction(unitOrderCollect(workers, closest));
 		} else {
 			rest.insert(rest.end(), workers.begin(), workers.end());
 		}
