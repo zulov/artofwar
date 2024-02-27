@@ -345,6 +345,7 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 	bool typeUnitCavalry;
 
 	bool ruinable;
+	short toResource;
 
 	unsigned char maxUsers;
 	bool typeResourceAny;
@@ -361,14 +362,14 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 	db_building(short id, char* name, char* icon, short sizeX, short sizeZ,
 	            bool typeCenter, bool typeHome, bool typeDefence, bool typeResourceFood, bool typeResourceWood,
 	            bool typeResourceStone, bool typeResourceGold, bool typeTechBlacksmith, bool typeTechUniversity,
-	            bool typeUnitBarracks, bool typeUnitRange, bool typeUnitCavalry, bool ruinable)
+	            bool typeUnitBarracks, bool typeUnitRange, bool typeUnitCavalry, bool ruinable, short toResource)
 		: db_with_icon(id, name, icon), db_static({sizeX, sizeZ}),
 		  typeCenter(typeCenter), typeHome(typeHome), typeDefence(typeDefence),
 		  typeResourceFood(typeResourceFood), typeResourceWood(typeResourceWood),
 		  typeResourceStone(typeResourceStone), typeResourceGold(typeResourceGold),
 		  typeTechBlacksmith(typeTechBlacksmith), typeTechUniversity(typeTechUniversity),
 		  typeUnitBarracks(typeUnitBarracks), typeUnitRange(typeUnitRange), typeUnitCavalry(typeUnitCavalry),
-		  ruinable(ruinable), maxUsers(sizeX * 2 + sizeZ * 2 + 4),
+		  ruinable(ruinable), toResource(toResource), maxUsers(sizeX * 2 + sizeZ * 2 + 4),
 		  typeResourceAny(typeResourceFood || typeResourceWood || typeResourceStone || typeResourceGold) {
 		hasResourceType[0] = typeResourceFood;
 		hasResourceType[1] = typeResourceWood;

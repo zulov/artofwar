@@ -99,9 +99,7 @@ public:
 	int getIndex(short x, short z) const { return calculator->getIndex(x, z); }
 	Urho3D::IntVector2 getCords(int index) const { return calculator->getCords(index); }
 
-	Urho3D::IntVector2 getCords(const Urho3D::Vector2& pos) {
-		return calculator->getCords(calculator->indexFromPosition(pos));
-	}
+	Urho3D::IntVector2 getCords(const Urho3D::Vector2& pos) const { return calculator->getCords(pos); }
 
 	bool cellInState(int index, CellState state) const;
 	void incCell(int index, CellState cellState) const;

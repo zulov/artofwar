@@ -74,7 +74,7 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParame
 }
 
 bool StateManager::canStartState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter,
-	State* stateFrom, State* toState) {
+                                 State* stateFrom, State* toState) {
 	return stateFrom->validateTransition(stateTo)
 		&& unit->getDbUnit()->possibleStates[cast(stateTo)]
 		&& toState->canStart(unit, actionParameter);
@@ -171,19 +171,30 @@ void StateManager::startState(Static* obj) {
 	case StaticState::FREE:
 		changeState(obj, StaticState::ALIVE);
 		break;
+	case StaticState::ALIVE:
+		if (obj->getType() == ObjectType::BUILDING) {
+			auto building = (Building*)obj;
+			auto res = building->getDbBuilding()->toResource;
+			if (res >= 0) {
+				changeState(obj, StaticState::DEAD);
+			}
+		}
+		break;
 	case StaticState::DEAD:
 		changeState(obj, StaticState::DISPOSE);
 		setStaticDead(obj);
 		break;
 	case StaticState::DISPOSE:
-
-		if (obj->getType()== ObjectType::BUILDING) {
+		if (obj->getType() == ObjectType::BUILDING) {
+			auto building = (Building*)obj;
 			if (obj->getHp() <= 0.f) {
-				auto building = (Building*)obj;
 				if (building->getDbBuilding()->ruinable) {
-					auto pos = building->getPosition();
-					auto Pos2d = Urho3D::Vector2(pos.x_, pos.z_);
-					Game::getActionCenter()->addResource(5, Pos2d);
+					Game::getActionCenter()->addResource(5, building->getMainGridIndex());
+				}
+			} else {
+				auto res = building->getDbBuilding()->toResource;
+				if (res >= 0) {
+					Game::getActionCenter()->addResource(res, building->getMainGridIndex());
 				}
 			}
 		}

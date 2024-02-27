@@ -142,7 +142,7 @@ public:
 	bool isInCloseRange(int index) const override;
 	void setSlotToInteract(char slot) { slotToInteract = slot; }
 	char getSlotToInteract() const { return slotToInteract; }
-	int getMainGridIndex() const { return indexInMainGrid; }
+
 	void setSparseIndex(int index);
 
 	float getModelHeight() const override;

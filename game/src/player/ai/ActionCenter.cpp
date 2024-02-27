@@ -6,6 +6,7 @@
 #include "commands/action/UnitActionCommand.h"
 #include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"
+#include "env/Environment.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 
@@ -46,12 +47,12 @@ void ActionCenter::executeLists() {
 	creation.execute();
 }
 
-bool ActionCenter::addUnits(int number, int id, Urho3D::Vector2 position, char player) {
+bool ActionCenter::addUnits(int number, short id, Urho3D::Vector2 position, char player) {
 	auto level = Game::getPlayersMan()->getPlayer(player)->getLevelForUnit(id)->level;
 	return addUnits(number, id, position, player, level);
 }
 
-bool ActionCenter::addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) {
+bool ActionCenter::addUnits(int number, short id, Urho3D::Vector2& position, char player, int level) {
 	auto command = creation.addUnits(number, id, position, player, level);
 	if (command) {
 		creation.add(command);
@@ -60,12 +61,12 @@ bool ActionCenter::addUnits(int number, int id, Urho3D::Vector2& position, char 
 	return false;
 }
 
-bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player, bool force) {
+bool ActionCenter::addBuilding(short id, Urho3D::Vector2& position, char player, bool force) {
 	auto level = Game::getPlayersMan()->getPlayer(player)->getLevelForBuilding(id)->level;
 	return addBuilding(id, position, player, level, force);
 }
 
-bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player, int level, bool force) {
+bool ActionCenter::addBuilding(short id, Urho3D::Vector2& position, char player, int level, bool force) {
 	CreationCommand* command{};
 	if (force) {
 		command = creation.addBuildingForce(id, position, player, level);
@@ -80,8 +81,9 @@ bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player, i
 	return false;
 }
 
-bool ActionCenter::addResource(int id, Urho3D::Vector2& position) {
-	auto command = creation.addResource(id, position);
+bool ActionCenter::addResource(short id, int index) {
+	auto cords = Game::getEnvironment()->getCords(index);
+	const auto command = creation.addResource(id, cords);
 	if (command) {
 		creation.add(command);
 		return true;
