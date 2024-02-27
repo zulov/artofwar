@@ -9,16 +9,11 @@ Building* BuildingFactory::create(int id, const Urho3D::IntVector2& bucketCords,
 	const auto db_building = Game::getDatabase()->getBuilding(id);
 	const auto env = Game::getEnvironment();
 	if (env->validateStatic(db_building->size, bucketCords, true)) {
-		const auto center = env->getValidPosition(db_building->size, bucketCords);
-		return new Building(Urho3D::Vector3(center.x_,
-		                                    env->getGroundHeightAt(center.x_, center.y_),
-		                                    center.y_),
-		                    id, player, level, env->getIndex(bucketCords.x_, bucketCords.y_),
-		                    !SIM_GLOBALS.HEADLESS);
+		return new Building(env->getValidPosition(db_building->size, bucketCords), db_building, player, level,
+		                    env->getIndex(bucketCords.x_, bucketCords.y_), !SIM_GLOBALS.HEADLESS);
 	}
 
 	return nullptr;
-
 }
 
 Building* BuildingFactory::load(dbload_building* building) const {

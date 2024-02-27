@@ -37,6 +37,19 @@ CreationCommand* CreationCommandList::addBuilding(short id, Urho3D::Vector2& pos
 	return nullptr;
 }
 
+CreationCommand*
+CreationCommandList::addBuildingForce(short id, Urho3D::Vector2& position, char player, int level) const {
+	const db_building* building = Game::getDatabase()->getBuilding(id);
+	const auto env = Game::getEnvironment();
+
+	const auto cords = env->getCords(position);
+	if (env->validateStatic(building->size, cords, true)) {
+		return new CreationCommand(ObjectType::BUILDING, id, cords, level, player);
+	}
+
+	return nullptr;
+}
+
 CreationCommand* CreationCommandList::addResource(short id, Urho3D::IntVector2& cords) const {
 	const auto size = Game::getDatabase()->getResource(id)->size;
 
@@ -56,17 +69,4 @@ void CreationCommandList::execute() {
 		delete command;
 	}
 	commands.clear();
-}
-
-CreationCommand*
-CreationCommandList::addBuildingForce(short id, Urho3D::Vector2& position, char player, int level) const {
-	const db_building* building = Game::getDatabase()->getBuilding(id);
-	const auto env = Game::getEnvironment();
-
-	const auto cords = env->getCords(position);
-	if (env->validateStatic(building->size, cords, true)) {
-		return new CreationCommand(ObjectType::BUILDING, id, cords, level, player);
-	}
-
-	return nullptr;
 }

@@ -494,13 +494,14 @@ int Environment::closestPassableCell(int posIndex) const {
 	return mainGrid.closestPassableCell(posIndex);
 }
 
-Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
-	return mainGrid.getValidPosition(size, calculator->getCords(pos));
+Urho3D::Vector3 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
+	return getValidPosition(size, calculator->getCords(pos));
 }
 
-Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size,
+Urho3D::Vector3 Environment::getValidPosition(const Urho3D::IntVector2& size,
                                               const Urho3D::IntVector2& bucketCords) const {
-	return mainGrid.getValidPosition(size, bucketCords);
+	auto pos2d = mainGrid.getValidPosition(size, bucketCords);
+	return getPosWithHeightAt(pos2d.x_, pos2d.y_);
 }
 
 const std::vector<int>* Environment::findPath(int startIdx, const Urho3D::Vector2& aim) {

@@ -70,14 +70,15 @@ public:
 	float getGroundHeightAt(float x, float z) const;
 	float getGroundHeightAt(const Urho3D::Vector3& pos) const;
 	Urho3D::Vector3 getPosWithHeightAt(float x, float z) const;
+
 	Urho3D::Vector3 getPosWithHeightAt(int index) const;
 	float getGroundHeightPercentScaled(float x, float z, float div) const;
 
 	bool validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos, bool isBuilding) const;
 	bool validateStatic(const Urho3D::IntVector2& size, const Urho3D::IntVector2 bucketCords, bool isBuilding) const;
 
-	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
-	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) const;
+	Urho3D::Vector3 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
+	Urho3D::Vector3 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) const;
 
 	const std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim);
 	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs);
