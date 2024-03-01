@@ -29,7 +29,7 @@ public:
 	const std::vector<int>* reconstructSimplifyPath(int start, int goal) const;
 
 	const std::vector<int>* findPath(int startIdx, int endIdx, int limit);
-	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit, bool closeEnough);
+	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit);
 
 	void invalidateCache();
 	void drawMap(Urho3D::Image* image) const;
@@ -40,9 +40,6 @@ private:
 
 	void prepareToStart(int startIdx);
 	bool validateIndex(int current, int next) const;
-
-	int getPassableEnd(int endIdx) const;
-	std::vector<int> getPassableIndexes(const std::vector<int>& endIdxs, bool closeEnough) const;
 
 	int heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const;
 

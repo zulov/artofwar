@@ -30,7 +30,7 @@ MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
 	for (int i = 0; i < sqResolution; ++i, ++ptr) {
 		ptr->setIndexCloseIndexes(closeIndexes->getBothIndexes(i));
 	}
-	std::fill_n(repulseCache, 256, nullptr);
+	fillCache();
 
 	DebugLineRepo::init(DebugLineType::MAIN_GRID);
 }
@@ -38,8 +38,30 @@ MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
 MainGrid::~MainGrid() {
 	delete[] complexData;
 	delete[] countArray;
-	clear_array(repulseCache, 256);
 }
+
+void MainGrid::fillCache() {
+	auto c = calculator->getCenter(0);
+	const Urho3D::Vector2 centers[8] = {
+		calculator->getCenter(-1, -1) - c, calculator->getCenter(-1, 0) - c, calculator->getCenter(-1, 1) - c,
+		calculator->getCenter(0, -1) - c, calculator->getCenter(0, 1) - c,
+		calculator->getCenter(1, -1) - c, calculator->getCenter(1, 0) - c, calculator->getCenter(1, 1) - c,
+	};
+	repulseCache[0] = {0, 0};
+	for (unsigned char index = 1; ; ++index) {
+		Urho3D::Vector2 sum;
+		float c = 0;
+		for (int i = 0; i < 8; ++i) {
+			if (index & Flags::bitFlags[i]) {
+				++c;
+				sum += centers[i];
+			}
+		}
+		repulseCache[index] = sum / c;
+		if (index == 255) { break; }
+	}
+}
+
 
 void MainGrid::updateNeight(int idx) const {
 	auto& data = complexData[idx];
@@ -105,28 +127,12 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, const Urho3D::IntVect
 Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) {
 	const auto index = unit->getMainGridIndex();
 
-	const auto& data = complexData[index];;
+	const auto& data = complexData[index];
 	if (index != unit->getIndexToInteract() //TODO ten warunek to chyba nie na ten index
 		&& data.isPassable()
 		&& data.anyNeightOccupied()) {
-		auto cache = repulseCache[data.getIsNeightOccupied()];
 
-		if (!cache) {
-			Urho3D::Vector2 sum;
-			float c = 0;
-
-			for (auto [i, val] : closeIndexes->getTabIndexesWithValue(data)) {
-				if (data.ifNeightIsOccupied(i)) {
-					sum += calculator->getCenter(index + val);
-					++c;
-				}
-			}
-
-			sum /= c;
-			cache = new Urho3D::Vector2(sum - calculator->getCenter(index));
-			repulseCache[data.getIsNeightOccupied()] = cache;
-		}
-		const auto center = *cache + calculator->getCenter(index);
+		const auto center = repulseCache[data.getIsNeightOccupied()] + calculator->getCenter(index);
 
 		return Urho3D::Vector2(unit->getPosition().x_, unit->getPosition().z_) - center;
 	}
@@ -443,7 +449,7 @@ const std::vector<short>& MainGrid::getCloseIndexes(int center) const {
 
 void MainGrid::refreshAllStatic(std::vector<ResourceEntity*>* resources, std::vector<Building*>* buildings) {
 	std::vector<int> allCells;
-	allCells.reserve(sqResolution);;
+	allCells.reserve(sqResolution);
 	std::fill_n(countArray, sqResolution, false);
 	for (const auto resource : *resources) {
 		for (const int allCell : resource->getAllCells()) {
@@ -502,7 +508,7 @@ void MainGrid::removeStatic(Static* object) const {
 void MainGrid::refreshAllGradient(std::vector<int>& toRefresh) const {
 	std::vector<int> nextToRefresh;
 
-	short level = 0;
+	short level = 0; //TODO bug tu 1??
 	for (int idx : toRefresh) {
 		auto& current = complexData[idx];
 		if (current.allNeightOccupied()) {
@@ -559,15 +565,7 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 				}
 			}
 		} else {
-			auto currentGradient = data.getGradient();
-			for (short i : closeIndexes->getLv1(data)) {
-				//TODO brac lepszy nic pierwszy z brzegu
-				auto neightIndex = i + index;
-				if (currentGradient > complexData[neightIndex].getGradient()) {
-					escapeBucket = neightIndex;
-					break;
-				}
-			}
+			escapeBucket = getCloserToPassable(data, index);
 		}
 		if (escapeBucket == -1) {
 			assert(false);
@@ -579,6 +577,58 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 		return direction;
 	}
 	return {};
+}
+
+int MainGrid::getPassableEnd(int endIdx) const {
+	while (!complexData[endIdx].isPassable()) {
+		auto& data = complexData[endIdx];
+		if (data.allNeightOccupied()) {
+			endIdx = getCloserToPassable(data, endIdx);
+		} else {
+			for (auto [i, val] : closeIndexes->getTabIndexesWithValue(data)) {
+				if (data.ifNeightIsFree(i)) {
+					endIdx = endIdx + val; //TODO obliczyc lepszy, a nie pierwszy z brzegu
+					break;
+				}
+			}
+		}
+	}
+	return endIdx;
+}
+
+
+int MainGrid::getCloserToPassable(const ComplexBucketData& data, int index) const {
+	const auto gradLevel = data.getGradient();
+	for (const auto idx : closeIndexes->getLv1(data)) {
+		if (complexData[index + idx].getGradient() < gradLevel) {
+			//TODO obliczyc lepszy, a nie pierwszy z brzegu
+			return index + idx;
+		}
+	}
+
+	assert(false);
+	return -1;
+}
+
+std::vector<int> MainGrid::getPassableIndexes(const std::vector<int>& endIdxs, bool closeEnough) const {
+	std::vector<int> result;
+	result.reserve(endIdxs.size());
+	if (closeEnough) {
+		for (const int endIdx : endIdxs) {
+			result.push_back(getPassableEnd(endIdx));
+		}
+	} else {
+		for (const int endIdx : endIdxs) {
+			if (complexData[endIdx].isPassable()) {
+				result.push_back(endIdx);
+			}
+		}
+	}
+
+	std::ranges::sort(result);
+	result.erase(std::ranges::unique(result).begin(), result.end());
+
+	return result;
 }
 
 Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& cords) const {
@@ -603,22 +653,32 @@ void MainGrid::updateNeighbors(ComplexBucketData& data, const int dataIndex) con
 }
 
 const std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, int limit) {
+	endIdx = getPassableEnd(endIdx); //TODO to powinno zwracać kolekcje jeżeli jest not passable
 	return pathFinder.findPath(startIdx, endIdx, limit);
 }
 
 const std::vector<int>* MainGrid::findPath(int startIdx, const std::vector<int>& endIdxs, int limit, bool closeEnough) {
-	return pathFinder.findPath(startIdx, endIdxs, limit, closeEnough);
+	const auto newEndIndexes = getPassableIndexes(endIdxs, closeEnough);
+	return pathFinder.findPath(startIdx, newEndIndexes, limit);
 }
 
 void MainGrid::drawComplex(Urho3D::Image* image, const Urho3D::String prefix) const {
-	for (short y = 0; y != calculator->getResolution(); ++y) {
-		for (short x = 0; x != calculator->getResolution(); ++x) {
-			const int index = calculator->getIndex(x, y);
-
-			image->SetPixel(x, calculator->getResolution() - y - 1,
-			                std::get<1>(Game::getColorPaletteRepo()->getInfoForGrid(complexData[index].getType())));
+	const auto pelette = Game::getColorPaletteRepo();
+	for (short x = 0; x != calculator->getResolution(); ++x) {
+		const int index = calculator->getIndex(x, 0);
+		for (short y = 0; y != calculator->getResolution(); ++y) {
+			image->SetPixel(x, y, std::get<1>(pelette->getInfoForGrid(complexData[index + y].getType())));
 		}
 	}
-
+	image->FlipVertical();
 	image->SavePNG("result/images/complexData/type_" + prefix + ".png");
+
+	for (short x = 0; x != calculator->getResolution(); ++x) {
+		const int index = calculator->getIndex(x, 0);
+		for (short y = 0; y != calculator->getResolution(); ++y) {
+			image->SetPixel(x, y, pelette->getColor(complexData[index + y].getGradient() + 1, 4));
+		}
+	}
+	image->FlipVertical();
+	image->SavePNG("result/images/complexData/grad_" + prefix + ".png");
 }

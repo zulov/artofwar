@@ -136,8 +136,6 @@ const std::vector<int>* PathFinder::getClosePath2(int startIdx, int endIdx, cons
 }
 
 const std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
-	endIdx = getPassableEnd(endIdx); //TODO improve kolejnosc tego i nize jest istotna?
-
 	const auto foundCacheIdx = findInCache(startIdx, endIdx);
 	if (foundCacheIdx > -1) { return &cache[foundCacheIdx].path; }
 
@@ -157,9 +155,8 @@ const std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit
 }
 
 const std::vector<int>*
-PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, int limit, bool closeEnough) {
-	const auto newEndIndexes = getPassableIndexes(endIdxs, closeEnough);
-	if (newEndIndexes.empty()) {
+PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
+	if (endIdxs.empty()) {
 		Game::getLog()->WriteRaw("No TargetFound");
 		closePath->clear();
 		return closePath;
@@ -167,7 +164,7 @@ PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, int limit, b
 
 	//TODO perf skorzystac z close indexes?
 
-	return realFindPath(startIdx, newEndIndexes, limit);
+	return realFindPath(startIdx, endIdxs, limit);
 }
 
 bool PathFinder::validateIndex(const int current, int next) const {
@@ -176,52 +173,6 @@ bool PathFinder::validateIndex(const int current, int next) const {
 	}
 	std::cout << current << "@@" << next << std::endl;
 	return false;
-}
-
-int PathFinder::getPassableEnd(int endIdx) const {
-	while (!complexData[endIdx].isPassable()) {
-		auto& data = complexData[endIdx];
-		if (data.allNeightOccupied()) {
-			const auto gradLevel = data.getGradient();
-			for (const auto idx : closeIndexes->getLv1(data)) {
-				if (complexData[endIdx + idx].getGradient() < gradLevel) {
-					//TODO obliczyc lepszy, a nie pierwszy z brzegu
-					endIdx = endIdx + idx;
-					assert(calculator->isValidIndex(endIdx));
-					break;
-				}
-			}
-		} else {
-			for (auto [i , val] : closeIndexes->getTabIndexesWithValue(data)) {
-				if (data.ifNeightIsFree(i)) {
-					endIdx = endIdx + val; //TODO obliczyc lepszy, a nie pierwszy z brzegu
-					break;
-				}
-			}
-		}
-	}
-	return endIdx;
-}
-
-std::vector<int> PathFinder::getPassableIndexes(const std::vector<int>& endIdxs, bool closeEnough) const {
-	std::vector<int> result;
-	result.reserve(endIdxs.size());
-	if (closeEnough) {
-		for (const int endIdx : endIdxs) {
-			result.push_back(getPassableEnd(endIdx));
-		}
-	} else {
-		for (const int endIdx : endIdxs) {
-			if (complexData[endIdx].isPassable()) {
-				result.push_back(endIdx);
-			}
-		}
-	}
-
-	std::ranges::sort(result);
-	result.erase(std::ranges::unique(result).begin(), result.end());
-
-	return result;
 }
 
 int PathFinder::heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const {

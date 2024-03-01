@@ -21,6 +21,7 @@ enum class GridDebugType : char {
 
 class MainGrid : public Grid {
 public:
+
 	MainGrid(short resolution, float size, float maxQueryRadius);
 	MainGrid(const MainGrid& rhs) = delete;
 	~MainGrid() override;
@@ -31,6 +32,9 @@ public:
 	void addStatic(Static* object, bool bulkAdd);
 	void removeStatic(Static* object) const;
 	std::optional<Urho3D::Vector2> getDirectionFrom(int index, const Urho3D::Vector3& position) const;
+
+	int getPassableEnd(int endIdx) const;
+	std::vector<int> getPassableIndexes(const std::vector<int>& endIdxs, bool closeEnough) const;
 
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& cords) const;
 
@@ -84,13 +88,16 @@ private:
 	void refreshAllGradient(std::vector<int>& toRefresh) const;
 	void refreshGradientRemoveStatic(std::span<int> toRefresh) const;
 	void createGradient(std::vector<int>& toRefresh, short level) const;
+	int getCloserToPassable(const ComplexBucketData& data, int index) const;
+
+	void fillCache();
 
 	float getBonuses(char player, const ResourceEntity* resource) const;
 
 	ComplexBucketData* complexData;
 	PathFinder pathFinder;
 	std::array<Urho3D::Vector2, 4> posInBucket;
-	Urho3D::Vector2* repulseCache[256];
+	Urho3D::Vector2 repulseCache[256];
 	bool* countArray{};
 	int counter = 0;
 };

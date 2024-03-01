@@ -334,12 +334,15 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 	bool typeCenter;
 	bool typeHome;
 	bool typeDefence;
+
 	bool typeResourceFood;
 	bool typeResourceWood;
 	bool typeResourceStone;
 	bool typeResourceGold;
+
 	bool typeTechBlacksmith;
 	bool typeTechUniversity;
+
 	bool typeUnitBarracks;
 	bool typeUnitRange;
 	bool typeUnitCavalry;

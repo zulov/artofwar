@@ -54,18 +54,17 @@ void InfluenceMap::print(Urho3D::String name) {
 	image->SetSize(resolution, resolution, 4);
 	ensureReady();
 	computeMinMax();
-	for (short y = 0; y != resolution; ++y) {
-		for (short x = 0; x != resolution; ++x) {
-			const int index = calculator->getNotSafeIndex(x, y);
-
-			const auto color = Game::getColorPaletteRepo()->getColor(getValueAsPercent(index), 1.f);
-			image->SetPixel(x, resolution - y - 1, color);
+	for (short x = 0; x != resolution; ++x) {
+		const int index = calculator->getNotSafeIndex(x, 0);
+		for (short y = 0; y != resolution; ++y) {
+			const auto color = Game::getColorPaletteRepo()->getColor(getValueAsPercent(index + y), 1.f);
+			image->SetPixel(x, y, color);
 		}
 	}
 	image->Resize(256, 256);
-
+	image->FlipVertical();
 	image->SavePNG("result/images/infl/" + name + "_" + Urho3D::String(resolution) + "x" + Urho3D::String(resolution)
-		+ "#" + Urho3D::String(counter) + ".png");
+	               + "#" + Urho3D::String(counter) + ".png");
 	++counter;
 
 	delete image;
