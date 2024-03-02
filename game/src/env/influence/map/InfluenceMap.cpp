@@ -57,7 +57,7 @@ void InfluenceMap::print(Urho3D::String name) {
 	for (short x = 0; x != resolution; ++x) {
 		const int index = calculator->getNotSafeIndex(x, 0);
 		for (short y = 0; y != resolution; ++y) {
-			const auto color = Game::getColorPaletteRepo()->getColor(getValueAsPercent(index + y), 1.f);
+			const auto color = Game::getColorPaletteRepo()->getSolidColor(getValueAsPercent(index + y), 1.f);
 			image->SetPixel(x, y, color);
 		}
 	}

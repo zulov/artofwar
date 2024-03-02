@@ -562,9 +562,9 @@ void Controls::buildControl() {
 
 			auto hitPos = Urho3D::Vector2(hitData.position.x_, hitData.position.z_);
 
-			const auto validPos = env->getValidPosition(building->size, hitPos);
+
 			auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(idToCreate);
-			tempBuildingNode->SetPosition(env->getPosWithHeightAt(validPos.x_, validPos.y_));
+			tempBuildingNode->SetPosition(env->getValidPosition(building->size, hitPos));
 			if (!tempBuildingNode->IsEnabled()) {
 				tempBuildingNode->LoadXML(Game::getCache()
 				                          ->GetResource<Urho3D::XMLFile>("Objects/buildings/" + level->nodeName)

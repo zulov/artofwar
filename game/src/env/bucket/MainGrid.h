@@ -94,6 +94,8 @@ private:
 
 	float getBonuses(char player, const ResourceEntity* resource) const;
 
+	bool validateGradient() const;
+
 	ComplexBucketData* complexData;
 	PathFinder pathFinder;
 	std::array<Urho3D::Vector2, 4> posInBucket;

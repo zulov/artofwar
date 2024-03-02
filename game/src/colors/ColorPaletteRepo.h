@@ -20,6 +20,7 @@ public:
 	ColorPaletteRepo();
 	~ColorPaletteRepo() = default;
 	Urho3D::Color& getColor(float value, float maxValue);
+	Urho3D::Color& getSolidColor(float value, float maxValue);
 	Urho3D::Material* getLineMaterial() const;
 	Urho3D::Material* getInfluenceMaterial() const;
 	std::tuple<bool, Urho3D::Color> getInfoForGrid(CellState state) const;
@@ -29,4 +30,5 @@ private:
 	Urho3D::Material* lineMaterial;
 	Urho3D::Material* influenceMaterial;
 	Urho3D::Color basicSpectrum[SPECTRUM_RESOLUTION + 1];
+	Urho3D::Color basicSpectrumSolid[SPECTRUM_RESOLUTION + 1];//solid
 };

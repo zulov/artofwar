@@ -311,7 +311,7 @@ float Environment::getGroundHeightAt(const Urho3D::Vector3& pos) const {
 }
 
 Urho3D::Vector3 Environment::getPosWithHeightAt(float x, float z) const {
-	return Urho3D::Vector3(x, getGroundHeightAt(x, z), z);
+	return {x, getGroundHeightAt(x, z), z};
 }
 
 Urho3D::Vector3 Environment::getPosWithHeightAt(int index) const {

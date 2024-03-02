@@ -121,7 +121,7 @@ void InfluenceMapQuad::print(const Urho3D::String& name, std::span<float> map) {
 		for (short x = 0; x != resolution; ++x) {
 			const int index = x * resolution + y;
 
-			const auto color = Game::getColorPaletteRepo()->getColor((map[index] - min) / diff, 1.f);
+			const auto color = Game::getColorPaletteRepo()->getSolidColor((map[index] - min) / diff, 1.f);
 			image->SetPixel(x, resolution - y - 1, color);
 		}
 	}

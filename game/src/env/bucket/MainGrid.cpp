@@ -131,7 +131,6 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) {
 	if (index != unit->getIndexToInteract() //TODO ten warunek to chyba nie na ten index
 		&& data.isPassable()
 		&& data.anyNeightOccupied()) {
-
 		const auto center = repulseCache[data.getIsNeightOccupied()] + calculator->getCenter(index);
 
 		return Urho3D::Vector2(unit->getPosition().x_, unit->getPosition().z_) - center;
@@ -363,6 +362,41 @@ float MainGrid::getBonuses(char player, const ResourceEntity* resource) const {
 	return best;
 }
 
+bool MainGrid::validateGradient() const {
+	for (int i = 0; i < sqResolution; ++i) {
+		auto& data = complexData[i];
+		auto currentGradient = data.getGradient();
+		if (data.isPassable()) {
+			if (data.allNeightFree()) {
+				if (currentGradient == -1) { continue; }
+				std::cout << i << "g" << currentGradient;
+				return false;
+			}
+			if (currentGradient == 0) { continue; }
+			std::cout << i << "g" << currentGradient;
+			return false;
+		}
+		bool correct = false;
+		for (short value : closeIndexes->getLv1(data)) {
+			auto neightIdx = value + i;
+			auto &neight  = complexData[neightIdx];
+			auto neightGradient = neight.getGradient();
+			if (abs(currentGradient - neightGradient) > 1) {
+				std::cout << i << "g" << currentGradient;
+				return false;
+			}
+			if (neightGradient < currentGradient) {
+				correct = true;
+				break;
+			}
+		}
+		if(!correct) {
+			std::cout << i << "g" << currentGradient;
+			return false;
+		}
+	}
+}
+
 bool MainGrid::isInLocalArea(const int center, int indexOfAim) const {
 	return closeIndexes->isInLocalArea(center, indexOfAim);
 }
@@ -413,9 +447,13 @@ void MainGrid::refreshAllStatic(const std::span<int> allChanged) {
 	for (const auto index : allChanged) {
 		auto& data = complexData[index];
 		updateNeighbors(data, index);
+		if(index==59) {
+			std::cout << "Dupa";
+		}
 		if (data.isPassable()) {
 			data.setGradient(data.allNeightFree() ? -1 : 0);
 		} else {
+			data.setGradient(1024);
 			toRefresh.push_back(index);
 		}
 	}
@@ -468,6 +506,7 @@ void MainGrid::refreshAllStatic(std::vector<ResourceEntity*>* resources, std::ve
 		}
 	}
 	refreshAllStatic(std::span(allCells.data(), allCells.size()));
+	//assert(validateGradient());
 }
 
 void MainGrid::refreshGradient(const std::vector<int>& notPassables) const {
@@ -508,8 +547,11 @@ void MainGrid::removeStatic(Static* object) const {
 void MainGrid::refreshAllGradient(std::vector<int>& toRefresh) const {
 	std::vector<int> nextToRefresh;
 
-	short level = 0; //TODO bug tu 1??
-	for (int idx : toRefresh) {
+	short level = 1;
+	for (int idx: toRefresh) {
+		if (idx == 59) {
+			std::cout << "Dupa";
+		}
 		auto& current = complexData[idx];
 		if (current.allNeightOccupied()) {
 			nextToRefresh.push_back(idx);
@@ -530,6 +572,9 @@ void MainGrid::refreshGradientRemoveStatic(std::span<int> toRefresh) const {
 void MainGrid::createGradient(std::vector<int>& toRefresh, short level) const {
 	std::vector<int> toRefresh2;
 	for (int current : toRefresh) {
+		if (current == 59) {
+			std::cout << "Dupa";
+		}
 		auto& currentCell = complexData[current];
 		for (const auto indexVal : closeIndexes->getLv1(currentCell)) {
 			auto& neight = complexData[current + indexVal];
@@ -676,7 +721,7 @@ void MainGrid::drawComplex(Urho3D::Image* image, const Urho3D::String prefix) co
 	for (short x = 0; x != calculator->getResolution(); ++x) {
 		const int index = calculator->getIndex(x, 0);
 		for (short y = 0; y != calculator->getResolution(); ++y) {
-			image->SetPixel(x, y, pelette->getColor(complexData[index + y].getGradient() + 1, 4));
+			image->SetPixel(x, y, pelette->getSolidColor(complexData[index + y].getGradient() + 1, 6));
 		}
 	}
 	image->FlipVertical();

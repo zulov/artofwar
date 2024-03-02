@@ -18,8 +18,10 @@ ColorPaletteRepo::ColorPaletteRepo() {
 		influenceMaterial = Game::getCache()->GetResource<Urho3D::Material>("Materials/influence.xml");
 		for (int i = 0; i < SPECTRUM_RESOLUTION; ++i) {
 			basicSpectrum[i] = Urho3D::Color(0.1, i * (1.0f / SPECTRUM_RESOLUTION), 0.1, 0.5);
+			basicSpectrumSolid[i] = Urho3D::Color(0.1, i * (1.0f / SPECTRUM_RESOLUTION), 0.1, 1);
 		}
 		basicSpectrum[SPECTRUM_RESOLUTION] = basicSpectrum[SPECTRUM_RESOLUTION - 1];
+		basicSpectrumSolid[SPECTRUM_RESOLUTION] = basicSpectrumSolid[SPECTRUM_RESOLUTION - 1];
 	}
 }
 
@@ -27,6 +29,11 @@ Urho3D::Color& ColorPaletteRepo::getColor(float value, float maxValue) {
 	value = fixValue(value, maxValue);
 	const int index = value / maxValue * SPECTRUM_RESOLUTION;
 	return basicSpectrum[index];
+}
+Urho3D::Color& ColorPaletteRepo::getSolidColor(float value, float maxValue) {
+	value = fixValue(value, maxValue);
+	const int index = value / maxValue * SPECTRUM_RESOLUTION;
+	return basicSpectrumSolid[index];
 }
 
 Urho3D::Material* ColorPaletteRepo::getLineMaterial() const {
