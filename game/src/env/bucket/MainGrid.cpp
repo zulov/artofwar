@@ -369,20 +369,17 @@ bool MainGrid::validateGradient() const {
 		if (data.isPassable()) {
 			if (data.allNeightFree()) {
 				if (currentGradient == -1) { continue; }
-				std::cout << i << "g" << currentGradient;
 				return false;
 			}
 			if (currentGradient == 0) { continue; }
-			std::cout << i << "g" << currentGradient;
 			return false;
 		}
 		bool correct = false;
 		for (short value : closeIndexes->getLv1(data)) {
 			auto neightIdx = value + i;
-			auto &neight  = complexData[neightIdx];
+			auto& neight = complexData[neightIdx];
 			auto neightGradient = neight.getGradient();
 			if (abs(currentGradient - neightGradient) > 1) {
-				std::cout << i << "g" << currentGradient;
 				return false;
 			}
 			if (neightGradient < currentGradient) {
@@ -390,11 +387,11 @@ bool MainGrid::validateGradient() const {
 				break;
 			}
 		}
-		if(!correct) {
-			std::cout << i << "g" << currentGradient;
+		if (!correct) {
 			return false;
 		}
 	}
+	return true;
 }
 
 bool MainGrid::isInLocalArea(const int center, int indexOfAim) const {
@@ -447,9 +444,6 @@ void MainGrid::refreshAllStatic(const std::span<int> allChanged) {
 	for (const auto index : allChanged) {
 		auto& data = complexData[index];
 		updateNeighbors(data, index);
-		if(index==59) {
-			std::cout << "Dupa";
-		}
 		if (data.isPassable()) {
 			data.setGradient(data.allNeightFree() ? -1 : 0);
 		} else {
@@ -501,12 +495,14 @@ void MainGrid::refreshAllStatic(std::vector<ResourceEntity*>* resources, std::ve
 	}
 
 	for (int i = 0; i < sqResolution; ++i) {
-		if (countArray[i]) {
+		if (countArray[i] || i < resolution || i >= sqResolution - resolution
+			|| i % resolution == 0
+			|| i % resolution == resolution - 1) {
 			allCells.push_back(i);
 		}
 	}
 	refreshAllStatic(std::span(allCells.data(), allCells.size()));
-	//assert(validateGradient());
+	assert(validateGradient());
 }
 
 void MainGrid::refreshGradient(const std::vector<int>& notPassables) const {
@@ -548,10 +544,7 @@ void MainGrid::refreshAllGradient(std::vector<int>& toRefresh) const {
 	std::vector<int> nextToRefresh;
 
 	short level = 1;
-	for (int idx: toRefresh) {
-		if (idx == 59) {
-			std::cout << "Dupa";
-		}
+	for (int idx : toRefresh) {
 		auto& current = complexData[idx];
 		if (current.allNeightOccupied()) {
 			nextToRefresh.push_back(idx);
@@ -572,9 +565,6 @@ void MainGrid::refreshGradientRemoveStatic(std::span<int> toRefresh) const {
 void MainGrid::createGradient(std::vector<int>& toRefresh, short level) const {
 	std::vector<int> toRefresh2;
 	for (int current : toRefresh) {
-		if (current == 59) {
-			std::cout << "Dupa";
-		}
 		auto& currentCell = complexData[current];
 		for (const auto indexVal : closeIndexes->getLv1(currentCell)) {
 			auto& neight = complexData[current + indexVal];
