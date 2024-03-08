@@ -28,7 +28,6 @@ public:
 	const std::vector<int>* reconstructPath(int start, int goal) const;
 	const std::vector<int>* reconstructSimplifyPath(int start, int goal) const;
 
-	const std::vector<int>* findPath(int startIdx, int endIdx, int limit);
 	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit);
 
 	void invalidateCache();

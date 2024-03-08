@@ -206,7 +206,7 @@ int MainGrid::getAdditionalInfoAt(float x, float z) const {
 }
 
 void MainGrid::drawDebug(GridDebugType type) const {
-	DebugLineRepo::clear(DebugLineType::MAIN_GRID);
+	DebugLineRepo::clear(DebugLineType::MAIN_GRID); //TODO perf draw only on change
 	DebugLineRepo::beginGeometry(DebugLineType::MAIN_GRID);
 
 	switch (type) {
@@ -214,11 +214,11 @@ void MainGrid::drawDebug(GridDebugType type) const {
 		break;
 	case GridDebugType::CELLS_TYPE: {
 		for (int i = 0; i < sqResolution; ++i) {
-			auto center = calculator->getCenter(i);
 			std::tuple<bool, Urho3D::Color> info = Game::getColorPaletteRepo()->
 				getInfoForGrid(complexData[i].getType());
 
 			if (std::get<0>(info)) {
+				auto center = calculator->getCenter(i);
 				const auto v = calculator->getFieldSize() / 2.3f;
 				const auto a = getVertex(center, Urho3D::Vector2(-v, v));
 				const auto b = getVertex(center, Urho3D::Vector2(v, -v));
@@ -360,6 +360,10 @@ float MainGrid::getBonuses(char player, const ResourceEntity* resource) const {
 		}
 	}
 	return best;
+}
+
+bool MainGrid::validateAllPassable(const std::vector<int>& vector) const {
+	return std::ranges::all_of(vector, [&](int value) { return complexData[value].isPassable(); });
 }
 
 bool MainGrid::validateGradient() const {
@@ -614,21 +618,33 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 	return {};
 }
 
-int MainGrid::getPassableEnd(int endIdx) const {
-	while (!complexData[endIdx].isPassable()) {
-		auto& data = complexData[endIdx];
-		if (data.allNeightOccupied()) {
-			endIdx = getCloserToPassable(data, endIdx);
-		} else {
-			for (auto [i, val] : closeIndexes->getTabIndexesWithValue(data)) {
-				if (data.ifNeightIsFree(i)) {
-					endIdx = endIdx + val; //TODO obliczyc lepszy, a nie pierwszy z brzegu
-					break;
+std::vector<int> MainGrid::getPassableEnd(int endIdx) const {
+	std::vector<int> result;
+	result.push_back(endIdx);
+	if (complexData[endIdx].isPassable()) {
+		return result;
+	}
+	std::vector<int> result2;
+	auto gradient = complexData[endIdx].getGradient();
+	for (int i = gradient; i > 0; --i) {
+		for (int current : result) {
+			auto& currentData = complexData[current];
+			auto currentGrad = currentData.getGradient();
+			for (const auto neightIdx : closeIndexes->getLv1(currentData)) {
+				auto neightIndex = current + neightIdx;
+				if (complexData[neightIndex].getGradient() < currentGrad) {
+					result2.push_back(neightIndex);
 				}
 			}
 		}
+		result = result2;
+		result2.clear();
 	}
-	return endIdx;
+	std::ranges::sort(result);
+	result.erase(std::ranges::unique(result).begin(), result.end());
+	assert(validateAllPassable(result));
+
+	return result;
 }
 
 
@@ -650,7 +666,10 @@ std::vector<int> MainGrid::getPassableIndexes(const std::vector<int>& endIdxs, b
 	result.reserve(endIdxs.size());
 	if (closeEnough) {
 		for (const int endIdx : endIdxs) {
-			result.push_back(getPassableEnd(endIdx));
+			//TODO a co jesli czesc jest pasable a czesc nie, czy to sa lepsze indeksy?
+			for (int passableEnd : getPassableEnd(endIdx)) {
+				result.push_back(passableEnd); //TODO perf dodać naraz
+			}
 		}
 	} else {
 		for (const int endIdx : endIdxs) {
@@ -688,8 +707,7 @@ void MainGrid::updateNeighbors(ComplexBucketData& data, const int dataIndex) con
 }
 
 const std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, int limit) {
-	endIdx = getPassableEnd(endIdx); //TODO to powinno zwracać kolekcje jeżeli jest not passable
-	return pathFinder.findPath(startIdx, endIdx, limit);
+	return pathFinder.findPath(startIdx, getPassableEnd(endIdx), limit);
 }
 
 const std::vector<int>* MainGrid::findPath(int startIdx, const std::vector<int>& endIdxs, int limit, bool closeEnough) {

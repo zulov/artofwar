@@ -33,7 +33,7 @@ public:
 	void removeStatic(Static* object) const;
 	std::optional<Urho3D::Vector2> getDirectionFrom(int index, const Urho3D::Vector3& position) const;
 
-	int getPassableEnd(int endIdx) const;
+	std::vector<int> getPassableEnd(int endIdx) const;
 	std::vector<int> getPassableIndexes(const std::vector<int>& endIdxs, bool closeEnough) const;
 
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& cords) const;
@@ -94,6 +94,7 @@ private:
 
 	float getBonuses(char player, const ResourceEntity* resource) const;
 
+	bool validateAllPassable(const std::vector<int>& vector) const;
 	bool validateGradient() const;
 
 	ComplexBucketData* complexData;

@@ -508,13 +508,13 @@ const std::vector<int>* Environment::findPath(int startIdx, const Urho3D::Vector
 	const auto end = calculator->indexFromPosition(aim);
 	auto dist = calculator->getBiggestDiff(startIdx, end);
 	dist = dist < 9 ? 9 : dist;
-	return mainGrid.findPath(startIdx, end, dist * sqrt(dist));
+	return mainGrid.findPath(startIdx, end);
 }
 
 const std::vector<int>* Environment::findPath(int startIdx, const std::vector<int>& endIdxs) {
 	auto dist = calculator->getBiggestDiff(startIdx, endIdxs);
 	dist = dist < 9 ? 9 : dist;
-	return mainGrid.findPath(startIdx, endIdxs, dist * sqrt(dist), true);
+	return mainGrid.findPath(startIdx, endIdxs, true);
 }
 
 const std::vector<int>* Environment::findPath(int startIdx, int endIdx, int limit) {

@@ -72,11 +72,11 @@ void DebugLineRepo::commit(DebugLineType type, short batch) {
 void DebugLineRepo::beginGeometry(DebugLineType type, short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
-			if (type == DebugLineType::INFLUENCE || type == DebugLineType::MAIN_GRID) {
-				geometry[cast(type)].at(batch)->BeginGeometry(0, Urho3D::PrimitiveType::TRIANGLE_LIST);
-			} else {
-				geometry[cast(type)].at(batch)->BeginGeometry(0, Urho3D::PrimitiveType::LINE_LIST);
-			}
+			const auto primitiveType = (type == DebugLineType::INFLUENCE || type == DebugLineType::MAIN_GRID)
+				                           ? Urho3D::PrimitiveType::TRIANGLE_LIST
+				                           : Urho3D::PrimitiveType::LINE_LIST;
+
+			geometry[cast(type)].at(batch)->BeginGeometry(0, primitiveType);
 		}
 	}
 }

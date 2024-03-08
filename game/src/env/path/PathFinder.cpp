@@ -135,25 +135,6 @@ const std::vector<int>* PathFinder::getClosePath2(int startIdx, int endIdx, cons
 	return nullptr;
 }
 
-const std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
-	const auto foundCacheIdx = findInCache(startIdx, endIdx);
-	if (foundCacheIdx > -1) { return &cache[foundCacheIdx].path; }
-
-	if (isInLocalArea(startIdx, endIdx)) {
-		closePath->clear();
-		closePath->emplace_back(endIdx);
-		return closePath;
-	}
-
-	const auto closePath = getClosePath2(startIdx, endIdx, closeIndexes->getPassIndexVia1LevelTo2(startIdx, endIdx));
-	if (closePath) { return closePath; }
-
-	const std::vector endIdxs = {endIdx};
-	const auto path = realFindPath(startIdx, endIdxs, limit);
-	addToCache(startIdx, endIdx, path);
-	return path;
-}
-
 const std::vector<int>*
 PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
 	if (endIdxs.empty()) {
@@ -161,10 +142,31 @@ PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
 		closePath->clear();
 		return closePath;
 	}
+	if (endIdxs.size() == 1) {
+		const auto foundCacheIdx = findInCache(startIdx, endIdxs[0]);
+		if (foundCacheIdx > -1) {
+			return &cache[foundCacheIdx].path;
+		}
+	}
+	for (int endIdx : endIdxs) {
+		if (isInLocalArea(startIdx, endIdx)) {
+			closePath->clear();
+			closePath->emplace_back(endIdx);
+			return closePath;
+		}
+
+		const auto closePath = getClosePath2(startIdx, endIdx, closeIndexes->getPassIndexVia1LevelTo2(startIdx, endIdx));
+		if (closePath) { return closePath; }
+	}
+
 
 	//TODO perf skorzystac z close indexes?
+	const auto path = realFindPath(startIdx, endIdxs, limit);
+	if (!path->empty()) {
+		addToCache(startIdx, path->back(), path);
+	}
 
-	return realFindPath(startIdx, endIdxs, limit);
+	return path;
 }
 
 bool PathFinder::validateIndex(const int current, int next) const {
