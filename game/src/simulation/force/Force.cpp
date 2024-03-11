@@ -128,7 +128,7 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 				if (nextIndex >= 0) {
 					force = dirTo(unit->getPosition(), env->getCenter(nextIndex));
 				} else if (nextIndex == -1) {
-					auto* const path = env->findPath(unit->getMainGridIndex(), aimIndex, 64);
+					auto* const path = env->findPath(unit->getMainGridIndex(), aimIndex);
 					if (!path->empty()) {
 						formMng->addCachePath(unit, aimIndex, path->at(0));
 						force = dirTo(unit->getPosition(), env->getCenter(path->at(0)));

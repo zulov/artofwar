@@ -296,7 +296,7 @@ std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector3& center, floa
 }
 
 void MainGrid::addResBonuses(std::vector<Building*>& resBuildings) const {
-	std::vector<int> changedIndexes; //TODO perf do it lazy not for all
+	std::vector<int> changedIndexes;
 	for (const auto building : resBuildings) {
 		addResourceBonuses(building, changedIndexes);
 	}
@@ -353,7 +353,6 @@ void MainGrid::addResourceBonuses(Building* building, std::vector<int>& changedI
 float MainGrid::getBonuses(char player, const ResourceEntity* resource) const {
 	float best = .0f;
 	for (const int cell : resource->getOccupiedCells()) {
-		//TODO perf bonus zapisac w resource
 		const float val = complexData[cell].getResBonus(player, resource->getResourceId());
 		if (val > best) {
 			best = val;
@@ -666,10 +665,8 @@ std::vector<int> MainGrid::getPassableIndexes(const std::vector<int>& endIdxs, b
 	result.reserve(endIdxs.size());
 	if (closeEnough) {
 		for (const int endIdx : endIdxs) {
-			//TODO a co jesli czesc jest pasable a czesc nie, czy to sa lepsze indeksy?
-			for (int passableEnd : getPassableEnd(endIdx)) {
-				result.push_back(passableEnd); //TODO perf dodać naraz
-			}
+			auto passableEnds = getPassableEnd(endIdx);
+			result.insert(result.end(), passableEnds.begin(), passableEnds.end());
 		}
 	} else {
 		for (const int endIdx : endIdxs) {
@@ -706,13 +703,13 @@ void MainGrid::updateNeighbors(ComplexBucketData& data, const int dataIndex) con
 	}
 }
 
-const std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, int limit) {
-	return pathFinder.findPath(startIdx, getPassableEnd(endIdx), limit);
+const std::vector<int>* MainGrid::findPath(int startIdx, int endIdx) {
+	return pathFinder.findPath(startIdx, getPassableEnd(endIdx));
 }
 
-const std::vector<int>* MainGrid::findPath(int startIdx, const std::vector<int>& endIdxs, int limit, bool closeEnough) {
+const std::vector<int>* MainGrid::findPath(int startIdx, const std::vector<int>& endIdxs, bool closeEnough) {
 	const auto newEndIndexes = getPassableIndexes(endIdxs, closeEnough);
-	return pathFinder.findPath(startIdx, newEndIndexes, limit);
+	return pathFinder.findPath(startIdx, newEndIndexes);
 }
 
 void MainGrid::drawComplex(Urho3D::Image* image, const Urho3D::String prefix) const {

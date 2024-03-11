@@ -142,7 +142,7 @@ void SimulationObjectManager::refreshResBonuses() {
 }
 
 void SimulationObjectManager::dispose() {
-	cleanAndDisposeUnits(); //TODO perf jezeli cos zmieni³o stan do dispose
+	cleanAndDisposeUnits();
 	cleanAndDisposeBuildings();
 	cleanAndDisposeResources();
 }

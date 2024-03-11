@@ -16,28 +16,6 @@ inline std::vector<std::string> split(const std::string& s, char delimiter) {
 	return tokens; //TODO performance czy to kopia?
 }
 
-template <typename Iterator>
-std::string join(Iterator begin, Iterator end, char separator = ';') {
-	std::ostringstream o;
-	if (begin != end) {
-		o << *begin++;
-		for (; begin != end; ++begin)
-			o << separator << *begin;
-	}
-	return o.str(); //TODO performance czy to kopia?
-}
-
-template <typename T>
-std::string join(std::span<T> span, char separator = ';') {
-	return join(span.begin(), span.end(), separator);
-}
-
-template <typename T>
-std::string join(std::vector<T> span, char separator = ';') {
-	return join(span.begin(), span.end(), separator);
-}
-
-
 inline std::string asStringF(float val, int precision = 2) {
 	std::stringstream ss;
 	ss << std::fixed << std::setprecision(precision) << val;

@@ -20,8 +20,7 @@ void removeExpired(std::vector<T*>& orders) {
 
 inline bool toAction(Unit* unit, std::vector<Physical*>* list, UnitAction order,
                      const std::function<bool(Physical*)>& condition, bool closeEnough) {
-	const auto closest = Game::getEnvironment()->closestPhysical(unit->getMainGridIndex(), list, condition,
-		unit->getLevel()->sqSightRadius, closeEnough);
+	const auto closest = Game::getEnvironment()->closestPhysical(unit->getMainGridIndex(), list, condition, closeEnough);
 	return unit->toActionIfInRange(closest, order);
 }
 

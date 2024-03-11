@@ -136,7 +136,7 @@ const std::vector<int>* PathFinder::getClosePath2(int startIdx, int endIdx, cons
 }
 
 const std::vector<int>*
-PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
+PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs) {
 	if (endIdxs.empty()) {
 		Game::getLog()->WriteRaw("No TargetFound");
 		closePath->clear();
@@ -155,12 +155,13 @@ PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
 			return closePath;
 		}
 
-		const auto closePath = getClosePath2(startIdx, endIdx, closeIndexes->getPassIndexVia1LevelTo2(startIdx, endIdx));
+		const auto closePath = getClosePath2(startIdx, endIdx,
+		                                     closeIndexes->getPassIndexVia1LevelTo2(startIdx, endIdx));
 		if (closePath) { return closePath; }
 	}
 
+	const int limit = std::max(calculator->getBiggestDiff(startIdx, endIdxs), 64);
 
-	//TODO perf skorzystac z close indexes?
 	const auto path = realFindPath(startIdx, endIdxs, limit);
 	if (!path->empty()) {
 		addToCache(startIdx, path->back(), path);

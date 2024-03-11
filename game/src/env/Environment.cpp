@@ -506,19 +506,16 @@ Urho3D::Vector3 Environment::getValidPosition(const Urho3D::IntVector2& size,
 
 const std::vector<int>* Environment::findPath(int startIdx, const Urho3D::Vector2& aim) {
 	const auto end = calculator->indexFromPosition(aim);
-	auto dist = calculator->getBiggestDiff(startIdx, end);
-	dist = dist < 9 ? 9 : dist;
+
 	return mainGrid.findPath(startIdx, end);
 }
 
 const std::vector<int>* Environment::findPath(int startIdx, const std::vector<int>& endIdxs) {
-	auto dist = calculator->getBiggestDiff(startIdx, endIdxs);
-	dist = dist < 9 ? 9 : dist;
 	return mainGrid.findPath(startIdx, endIdxs, true);
 }
 
-const std::vector<int>* Environment::findPath(int startIdx, int endIdx, int limit) {
-	return mainGrid.findPath(startIdx, endIdx, limit);
+const std::vector<int>* Environment::findPath(int startIdx, int endIdx) {
+	return mainGrid.findPath(startIdx, endIdx);
 }
 
 void Environment::prepareGridToFind() const {
@@ -542,7 +539,7 @@ Urho3D::Vector2 Environment::getPosFromPercent(float x, float z) const {
 }
 
 Physical* Environment::closestPhysical(int startIdx, const std::vector<Physical*>* things,
-                                       const std::function<bool(Physical*)>& condition, int limit, bool closeEnough) {
+                                       const std::function<bool(Physical*)>& condition, bool closeEnough) {
 	if (things->empty()) {
 		return nullptr;
 	}
@@ -559,7 +556,7 @@ Physical* Environment::closestPhysical(int startIdx, const std::vector<Physical*
 	}
 
 	if (!allIndexes.empty()) {
-		const auto path = mainGrid.findPath(startIdx, allIndexes, limit, closeEnough);
+		const auto path = mainGrid.findPath(startIdx, allIndexes, closeEnough);
 		if (!path->empty()) {
 			for (const auto entity : thingsFiltered) {
 				if (entity->indexCanBeUse(path->back())) {

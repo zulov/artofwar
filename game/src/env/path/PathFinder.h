@@ -18,7 +18,6 @@ class ComplexBucketData;
 
 constexpr int PATH_PRECISION = 20;
 
-//TODO perf zrobic takiego wstepnego findera o nizesz rozdzielczosci jezeli sa w jednym squere i tam nic niema to mozna isc prosto
 class PathFinder {
 public:
 	PathFinder(short resolution, float size);
@@ -28,7 +27,7 @@ public:
 	const std::vector<int>* reconstructPath(int start, int goal) const;
 	const std::vector<int>* reconstructSimplifyPath(int start, int goal) const;
 
-	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit);
+	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs);
 
 	void invalidateCache();
 	void drawMap(Urho3D::Image* image) const;

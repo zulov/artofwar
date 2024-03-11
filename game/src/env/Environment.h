@@ -82,14 +82,14 @@ public:
 
 	const std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim);
 	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs);
-	const std::vector<int>* findPath(int startIdx, int endIdx, int limit);
+	const std::vector<int>* findPath(int startIdx, int endIdx);
 
 	void prepareGridToFind() const;
 	content_info* getContentInfo(Urho3D::Vector2 centerPercent, bool checks[], int activePlayer);
 
 	Urho3D::Vector2 getPosFromPercent(float x, float z) const;
 	Physical* closestPhysical(int startIdx, const std::vector<Physical*>* things,
-	                          const std::function<bool(Physical*)>& condition, int limit, bool closeEnough);
+	                          const std::function<bool(Physical*)>& condition, bool closeEnough);
 	Physical* closestPhysicalSimple(const Physical* physical, const std::vector<Physical*>* things, float range) const;
 
 	Urho3D::Vector2 getCenter(int index) const;

@@ -112,8 +112,7 @@ void OrderMaker::action() {
 void OrderMaker::semiCloseAttack(const std::vector<Unit*>& subArmy, const std::vector<Physical*>* things) const {
 	if (!things->empty()) {
 		const auto closest = Game::getEnvironment()->closestPhysical(subArmy.at(0)->getMainGridIndex(), things,
-		                                                             belowClose, SQ_SEMI_CLOSE,
-		                                                             true);
+		                                                             belowClose, true);
 		if (closest) {
 			Game::getActionCenter()->addUnitAction(
 			                                       new GroupOrder(subArmy, UnitActionType::ORDER,
@@ -134,8 +133,7 @@ Physical* OrderMaker::closetInRange(Unit* worker, int resourceId) {
 	float prevRadius = -1.f;
 	for (const auto radius : {64.f, 128.f, 256.f}) {
 		const auto list = Game::getEnvironment()->getResources(worker->getPosition(), resourceId, radius, prevRadius);
-		const auto closest = Game::getEnvironment()->closestPhysical(worker->getMainGridIndex(), list, belowClose,
-		                                                             radius * radius, false);
+		const auto closest = Game::getEnvironment()->closestPhysical(worker->getMainGridIndex(), list, belowClose, false);
 		if (closest) {
 			return closest;
 		}

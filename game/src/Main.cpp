@@ -451,7 +451,6 @@ void Main::HandleKeyUp(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eve
 		} else if (key == Urho3D::KEY_H) {
 			auto& possession = Game::getPlayersMan()->getActivePlayer()->getPossession();
 			for (auto building : possession.getBuildings()) {
-				//TODO perf
 				if (building->getDbBuilding()->typeCenter) {
 					auto pos = building->getPosition();
 					Game::getCameraManager()->changePosition(pos.x_, pos.z_);

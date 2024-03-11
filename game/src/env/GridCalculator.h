@@ -119,22 +119,13 @@ struct GridCalculator {
 		return getSqDistance(a, b);
 	}
 
-	int getBiggestDiff(int first, int next) const {
-		auto a = getCords(first);
-		auto b = getCords(next);
-		const auto dx = (a.x_ - b.x_);
-		const auto dy = (a.y_ - b.y_);
-		return Urho3D::Max(Urho3D::Abs(dx), Urho3D::Abs(dy));
-	}
-
 	int getBiggestDiff(int first, const std::vector<int>& endIdxs) const {
-		auto a = getCords(first);
+		const auto a = getCords(first);
 		int max = 0;
 		for (const int idx : endIdxs) {
-			auto b = getCords(idx);
-			const auto dx = (a.x_ - b.x_);
-			const auto dy = (a.y_ - b.y_);
-			const auto val = Urho3D::Max(Urho3D::Abs(dx), Urho3D::Abs(dy));
+			const auto b = getCords(idx);
+
+			const auto val = Urho3D::Max(Urho3D::Abs(a.x_ - b.x_), Urho3D::Abs(a.y_ - b.y_));
 			if (val > max) {
 				max = val;
 			}
