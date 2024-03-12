@@ -82,12 +82,13 @@ void PathFinder::prepareToStart(int startIdx) {
 	update(startIdx, 0, startIdx, 0);
 }
 
-const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
+const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs) {
 	//performance wersja bez vectora
 	assert(limit>0);
 	prepareToStart(startIdx);
 	auto endCords = getCords(endIdxs);
 	assert(!endCords.empty());
+	const int limit = std::max(calculator->getBiggestManhattan(startIdx, endCords), 16)*3;
 	int steps = 0;
 	while (!frontier.empty() && ++steps <= limit) {
 		const auto current = frontier.get();
@@ -113,6 +114,7 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 			}
 		}
 	}
+
 	//debug(startIdx, endIdx);
 	tempPath->clear();
 	return tempPath;
@@ -157,16 +159,13 @@ PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs) {
 
 		const auto closePath = getClosePath2(startIdx, endIdx,
 		                                     closeIndexes->getPassIndexVia1LevelTo2(startIdx, endIdx));
-		if (closePath) { return closePath; }
+		if (closePath) {return closePath; }
 	}
 
-	const int limit = std::max(calculator->getBiggestDiff(startIdx, endIdxs), 64);
-
-	const auto path = realFindPath(startIdx, endIdxs, limit);
+	const auto path = realFindPath(startIdx, endIdxs);
 	if (!path->empty()) {
 		addToCache(startIdx, path->back(), path);
-	}
-
+	}//TODO perf drugi cache do braku przejscia ale jak tu uwzglednic limit
 	return path;
 }
 

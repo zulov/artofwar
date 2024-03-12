@@ -70,5 +70,5 @@ private:
 	float notWellFormed = 1.f;
 	float notWellFormedExact = 1.f;
 
-	std::unordered_map<size_t, int> pathCache;
+	std::unordered_map<size_t, int> pathCache;//TODO czy nie wystarczy cachce z pathFinder
 };

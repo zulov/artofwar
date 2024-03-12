@@ -33,7 +33,7 @@ public:
 	void drawMap(Urho3D::Image* image) const;
 
 private:
-	const std::vector<int>* realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit);
+	const std::vector<int>* realFindPath(int startIdx, const std::vector<int>& endIdxs);
 	const std::vector<int>* getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const;
 
 	void prepareToStart(int startIdx);

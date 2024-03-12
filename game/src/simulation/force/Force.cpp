@@ -110,46 +110,50 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 		Game::getLog()->Write(3, "ERROR unit still has aims");
 	}
 
-	const auto formMng = Game::getFormationManager();
+	const auto formation = Game::getFormationManager()->getFormation(unit);
+	auto aimPos = formation->getPositionFor(unit->getPositionInState());
 
-	auto posOpt = formMng->getPositionFor(unit); //TODO bug czasem jest niepassable oraz gdy wszyscy sasiedzi sa zajeci to path find nie dziala
-	if (posOpt.has_value()) {
-		const float priority = formMng->getPriority(unit);
-		if (priority > 0) {
-			auto pos = posOpt.value();
-			const auto env = Game::getEnvironment();
+	const float priority = formation->getPriority(unit->getPositionInState());
+	if (priority > 0) {
+		const auto env = Game::getEnvironment();
 
-			const auto aimIndex = env->getIndex(pos);
-			Urho3D::Vector2 force;
-			if (env->isInLocalArea(unit->getMainGridIndex(), aimIndex)) {
-				force = dirTo(unit->getPosition(), pos);
-			} else {
-				int nextIndex = formMng->getCachePath(unit, aimIndex);
-				if (nextIndex >= 0) {
-					force = dirTo(unit->getPosition(), env->getCenter(nextIndex));
-				} else if (nextIndex == -1) {
-					auto* const path = env->findPath(unit->getMainGridIndex(), aimIndex);
-					if (!path->empty()) {
-						formMng->addCachePath(unit, aimIndex, path->at(0));
-						force = dirTo(unit->getPosition(), env->getCenter(path->at(0)));
-					} else {
-						formMng->addCachePath(unit, aimIndex, -2);
-						Game::getLog()->Write(0, "brak drogi w formacji");
-						return;
-					}
+		const auto aimIndex = env->getIndex(aimPos);
+		Urho3D::Vector2 force;
+		auto startIndex = unit->getMainGridIndex();
+		if (env->isInLocalArea(startIndex, aimIndex)) {
+			//moglby zastapic path finder ale by kierowal tylko do center, to by jeszcze ogral ale 
+			force = dirTo(unit->getPosition(), aimPos);
+		} else {
+			int nextIndex = formation->getCachePath(startIndex, aimIndex);
+			if (nextIndex >= 0) {
+				//ten cache chyba jest lzejszy (moze zmienic na vector) niz ten w path finder ale zle resetowany
+				std::cout << "c";
+				force = dirTo(unit->getPosition(), env->getCenter(nextIndex));
+			} else if (nextIndex == -1) {
+				auto* const path = env->findPath(startIndex, aimIndex);
+				if (!path->empty()) {
+					std::cout << "o";
+					formation->addCachePath(startIndex, aimIndex, path->at(0));
+					force = dirTo(unit->getPosition(), env->getCenter(path->at(0)));
 				} else {
+					std::cout << "e";
+					formation->addCachePath(startIndex, aimIndex, -2);
 					Game::getLog()->Write(0, "brak drogi w formacji");
 					return;
 				}
+			} else {
+				std::cout << "x";
+				Game::getLog()->Write(0, "brak drogi w formacji");
+				return;
 			}
-			force *= formationCoef * boostCoef * priority;
-
-			turnIfAreOpposite(newForce, force);
-
-			forceStats.addForm(force);
-
-			newForce += force;
 		}
+		force *= formationCoef * boostCoef * priority;
+
+		turnIfAreOpposite(newForce, force);
+
+		forceStats.addForm(force);
+
+		newForce += force;
 	}
 }
 

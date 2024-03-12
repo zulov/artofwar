@@ -1,7 +1,8 @@
 #pragma once
 #include "Formation.h"
-#include <optional>
 #include <vector>
+
+#include "objects/unit/Unit.h"
 
 
 class FormationManager {
@@ -12,11 +13,9 @@ public:
 	                                          FormationType _type = FormationType::SQUERE);
 	void update();
 	float getPriority(Unit* unit);
-	std::optional<Urho3D::Vector2> getPositionFor(Unit* unit);
 	bool isLeader(Unit* unit) const;
 	bool isMoving(Unit* unit) const;
-	int getCachePath(Unit* unit, int aimIndex) const;
-	void addCachePath(Unit* unit, int aimIndex, int next);
+	Formation* getFormation(Unit* unit) const { return formations[unit->getFormation()]; }
 private:
 	std::vector<Formation*> formations;
 	unsigned currentlyFree = 0;
