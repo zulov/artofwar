@@ -48,12 +48,6 @@ TEST_F(GridCalculatorFixture, GetIndex) {
 }
 
 
-TEST_F(GridCalculatorFixture, GetBiggestDiff) {
-	EXPECT_EQ(gc->getBiggestDiff(0, { 0, 1, 2, 6, 7 }), 3);
-	EXPECT_EQ(gc->getBiggestDiff(15, { 1, 6, 7 }), 3);
-}
-
-
 TEST_F(GridCalculatorFixture, CombineTest) {
 	for (auto i = -3.f; i < 3.f; i += 2.f) {
 		for (auto j = -3.f; j < 3.f; j += 2.f) {

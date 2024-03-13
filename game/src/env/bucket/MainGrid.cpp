@@ -482,6 +482,10 @@ const std::vector<short>& MainGrid::getCloseIndexes(int center) const {
 	return closeIndexes->getLv1(complexData[center]);
 }
 
+short MainGrid::getGradient(int index) const{
+	return complexData[index].getGradient();
+}
+
 void MainGrid::refreshAllStatic(std::vector<ResourceEntity*>* resources, std::vector<Building*>* buildings) {
 	std::vector<int> allCells;
 	allCells.reserve(sqResolution);

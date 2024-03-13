@@ -84,16 +84,15 @@ void PathFinder::prepareToStart(int startIdx) {
 
 const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs) {
 	//performance wersja bez vectora
-	assert(limit>0);
 	prepareToStart(startIdx);
 	auto endCords = getCords(endIdxs);
 	assert(!endCords.empty());
-	const int limit = std::max(calculator->getBiggestManhattan(startIdx, endCords), 16)*3;
+	const int limit = std::max(calculator->getBiggestManhattan(startIdx, endCords), 16)*4;
 	int steps = 0;
 	while (!frontier.empty() && ++steps <= limit) {
 		const auto current = frontier.get();
 		if (std::ranges::binary_search(endIdxs, current)) {
-			//debug(startIdx, endIdx);
+			//debug(startIdx, current);
 			return reconstructSimplifyPath(startIdx, current);
 		}
 		auto const& currentData = complexData[current];
@@ -114,7 +113,6 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 			}
 		}
 	}
-
 	//debug(startIdx, endIdx);
 	tempPath->clear();
 	return tempPath;

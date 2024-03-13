@@ -81,7 +81,7 @@ public:
 	void refreshStatic(const std::span<int> changed);
 	const std::vector<std::pair<unsigned char, short>>& getCloseTabIndexesWithValue(int center) const;
 	const std::vector<short>& getCloseIndexes(int center) const;
-
+	short getGradient(int index) const;
 private:
 	void refreshAllStatic(const std::span<int> allChanged);
 	void refreshGradient(const std::vector<int>& notPassables) const;

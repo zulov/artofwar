@@ -17,7 +17,7 @@ public:
 	void destOrFormation(Urho3D::Vector2& newForce, Unit* unit);
 	void destination(Urho3D::Vector2& newForce, Unit* unit, float factor);
 	void formation(Urho3D::Vector2& newForce, Unit* unit);
-	void escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit);
+	bool escapeFromInvalidPosition(Urho3D::Vector2& newForce, const Unit* unit);
 	void inCell(Urho3D::Vector2& newForce, Unit* unit) const;
 
 	ForceStats& stats();

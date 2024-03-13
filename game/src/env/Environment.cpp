@@ -85,6 +85,10 @@ void Environment::refreshAllStatic(std::vector<ResourceEntity*>* resources, std:
 	mainGrid.refreshAllStatic(resources, buildings);
 }
 
+short Environment::getOccupationLevel(int index) const {
+	return mainGrid.getGradient(index);
+}
+
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
                                                    const std::function<bool(Physical*)>& condition) const {
 	neights->clear();

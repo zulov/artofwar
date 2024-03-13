@@ -6,7 +6,7 @@
 #include "Game.h"
 #include "database/db_strcut.h"
 #include "math/MathUtils.h"
-#include "objects/CellState.h"
+#include "env/bucket/CellState.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimGlobals.h"

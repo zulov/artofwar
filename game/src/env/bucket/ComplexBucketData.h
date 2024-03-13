@@ -1,8 +1,7 @@
 #pragma once
-#include <iostream>
 #include <vector>
 
-#include "objects/CellState.h"
+#include "CellEnums.h"
 #include "objects/resource/ResourceEntity.h"
 #include "utils/defines.h"
 #include "utils/Flags.h"

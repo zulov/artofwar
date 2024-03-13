@@ -120,33 +120,32 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 		const auto aimIndex = env->getIndex(aimPos);
 		Urho3D::Vector2 force;
 		auto startIndex = unit->getMainGridIndex();
-		if (env->isInLocalArea(startIndex, aimIndex)) {
-			//moglby zastapic path finder ale by kierowal tylko do center, to by jeszcze ogral ale 
-			force = dirTo(unit->getPosition(), aimPos);
-		} else {
-			int nextIndex = formation->getCachePath(startIndex, aimIndex);
-			if (nextIndex >= 0) {
-				//ten cache chyba jest lzejszy (moze zmienic na vector) niz ten w path finder ale zle resetowany
-				std::cout << "c";
-				force = dirTo(unit->getPosition(), env->getCenter(nextIndex));
-			} else if (nextIndex == -1) {
-				auto* const path = env->findPath(startIndex, aimIndex);
-				if (!path->empty()) {
-					std::cout << "o";
-					formation->addCachePath(startIndex, aimIndex, path->at(0));
-					force = dirTo(unit->getPosition(), env->getCenter(path->at(0)));
+
+		int nextIndexFromCache = formation->getCachePath(startIndex, aimIndex);
+		if (nextIndexFromCache >= 0) {
+			//ten cache chyba jest lzejszy (moze zmienic na vector) niz ten w path finder ale zle resetowany
+			force = dirTo(unit->getPosition(), env->getCenter(nextIndexFromCache));
+		} else if (nextIndexFromCache == -1) {
+			auto* const path = env->findPath(startIndex, aimIndex);
+			if (!path->empty()) {
+				int nextIndex = path->at(0);
+				if (nextIndex != aimIndex) {
+					formation->addCachePath(startIndex, aimIndex, nextIndex);
+					force = dirTo(unit->getPosition(), env->getCenter(nextIndex));
 				} else {
-					std::cout << "e";
-					formation->addCachePath(startIndex, aimIndex, -2);
-					Game::getLog()->Write(0, "brak drogi w formacji");
-					return;
+					//close
+					force = dirTo(unit->getPosition(), aimPos);
 				}
 			} else {
-				std::cout << "x";
+				formation->addCachePath(startIndex, aimIndex, -2);
 				Game::getLog()->Write(0, "brak drogi w formacji");
 				return;
 			}
+		} else {
+			Game::getLog()->Write(0, "brak drogi w formacji");
+			return;
 		}
+
 		force *= formationCoef * boostCoef * priority;
 
 		turnIfAreOpposite(newForce, force);
@@ -157,7 +156,7 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 	}
 }
 
-void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit) {
+bool Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, const Unit* unit) {
 	const auto opt = Game::getEnvironment()->validatePosition(unit->getMainGridIndex(), unit->getPosition());
 	if (opt.has_value()) {
 		auto force = opt.value() * escapeCoef * boostCoef;
@@ -166,6 +165,7 @@ void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit) {
 
 		newForce += force;
 	}
+	return Game::getEnvironment()->getOccupationLevel(unit->getMainGridIndex()) > 1;
 }
 
 void Force::inCell(Urho3D::Vector2& newForce, Unit* unit) const {

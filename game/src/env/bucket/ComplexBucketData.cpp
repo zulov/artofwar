@@ -1,6 +1,6 @@
 #include "ComplexBucketData.h"
 #include "objects/static/Static.h"
-#include "objects/CellState.h"
+#include "CellEnums.h"
 #include "utils/Flags.h"
 
 

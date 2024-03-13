@@ -49,7 +49,7 @@ void Simulation::clearNodesWithoutDelete() const {
 }
 
 void Simulation::updateInfluenceMaps(bool force) const {
-	if (force || canUpdate (PerFrameAction::INFLUENCE_UNITS_1) ) {
+	if (force || canUpdate(PerFrameAction::INFLUENCE_UNITS_1)) {
 		enviroment->updateInfluenceUnits1(units);
 	}
 	if (force || canUpdate(PerFrameAction::INFLUENCE_UNITS_2)) {
@@ -69,7 +69,7 @@ void Simulation::updateInfluenceMaps(bool force) const {
 	}
 	if (force || canUpdate(PerFrameAction::VISIBILITY)) {
 		enviroment->updateVisibility(buildings, units, resources);
-	}	
+	}
 }
 
 bool Simulation::canUpdate(PerFrameAction type) const {
@@ -99,7 +99,7 @@ FrameInfo* Simulation::update(float timeStep) {
 		performStateAction(TIME_PER_UPDATE); //tutaj moga umierac w tym zmiany stanu
 		executeStateTransition();
 		updateQueues();
-		updateInfluenceMaps(false); 
+		updateInfluenceMaps(false);
 
 		simObjectManager->removeFromGrids();
 		simObjectManager->dispose();
@@ -221,10 +221,10 @@ void Simulation::applyForce() const {
 
 void Simulation::levelUp(QueueElement* done, char player) const {
 	Game::getActionCenter()->add(new UpgradeCommand(
-		player,
-		done->getId(),
-		done->getType()
-	));
+	                                                player,
+	                                                done->getId(),
+	                                                done->getType()
+	                                               ));
 }
 
 void Simulation::updateBuildingQueues() const {
@@ -369,20 +369,22 @@ void Simulation::calculateForces() {
 		break;
 		default: {
 			//TODO improve getMaxSeparationDistance powino sie dodac jeszcze minimal dist
-			const auto neighbours = enviroment->getNeighboursWithCache(unit, unit->getMaxSeparationDistance());
+			const bool invalid = force.escapeFromInvalidPosition(newForce, unit);
+			if (!invalid) {
+				const auto neighbours = enviroment->getNeighboursWithCache(unit, unit->getMaxSeparationDistance());
 
-			force.separationUnits(newForce, unit, neighbours);
-			force.separationObstacle(newForce, unit);
-			force.escapeFromInvalidPosition(newForce, unit);
+				force.separationUnits(newForce, unit, neighbours);
+				force.separationObstacle(newForce, unit);
 
-			force.destOrFormation(newForce, unit);
+				force.destOrFormation(newForce, unit);
+			}
 		}
 		}
 
 		stats.result();
 
 		unit->setAcceleration(newForce);
-		if(!SIM_GLOBALS.HEADLESS) {
+		if (!SIM_GLOBALS.HEADLESS) {
 			unit->debug(DebugUnitType::AIM, stats); //TODO przeniesc do Controls
 		}
 	}

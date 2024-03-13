@@ -5,7 +5,7 @@
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
 #include "env/Environment.h"
-#include "objects/CellState.h"
+#include "env/bucket/CellEnums.h"
 #include "objects/resource/ResourceEntity.h"
 
 class CollectState : public State {

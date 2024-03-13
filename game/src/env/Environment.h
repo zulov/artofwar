@@ -148,7 +148,7 @@ public:
 	}
 
 	void refreshAllStatic(std::vector<ResourceEntity*>* resources, std::vector<Building*>* buildings);
-
+	short getOccupationLevel(int index) const;
 private:
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
 	                                      const std::function<bool(Physical*)>& condition) const;
