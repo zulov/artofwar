@@ -21,6 +21,7 @@ class Unit;
 struct dbload_physical;
 
 class Physical {
+	friend class CreationCommand;
 public:
 	explicit Physical(Urho3D::Vector3& _position, bool withNode);
 	virtual ~Physical();

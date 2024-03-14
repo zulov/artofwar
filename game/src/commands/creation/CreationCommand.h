@@ -7,14 +7,13 @@ enum class ObjectType : char;
 class SimulationObjectManager;
 
 class CreationCommand {
-	friend class Stats;
-
 public:
 	CreationCommand(ObjectType type, short id, const Urho3D::IntVector2 bucketCords);
 	CreationCommand(ObjectType type, short id, const Urho3D::IntVector2 bucketCords, char level, char player);
 	CreationCommand(ObjectType type, short id, const Urho3D::Vector2& position, char level, char player, int number);
 	virtual ~CreationCommand() = default;
 	void execute(SimulationObjectManager* simulationObjectManager);
+	void setHp(float value) { hp = value; }
 
 private:
 	Urho3D::Vector2 position;
@@ -24,4 +23,5 @@ private:
 	short id;
 	char level = -1;
 	char player;
+	float hp = -1.0;
 };

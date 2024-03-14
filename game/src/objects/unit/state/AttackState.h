@@ -69,7 +69,7 @@ public:
 		}
 		++unit->currentFrameState;
 		if (unit->currentFrameState >= unit->dbLevel->attackReload) {
-			const auto val = unit->getAttackVal(unit);
+			const auto val = unit->getAttackVal(unit)*10;
 			const auto [value, died] = first->absorbAttack(val);
 			Game::getEnvironment()->addAttack(unit->getPlayer(), first->getPosition(), value);
 			if (died) {

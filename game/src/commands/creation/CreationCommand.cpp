@@ -1,12 +1,14 @@
 #include "CreationCommand.h"
 #include "objects/ObjectEnums.h"
+#include "objects/resource/ResourceEntity.h"
 #include "simulation/SimulationObjectManager.h"
 
 
-CreationCommand::CreationCommand(ObjectType type, short id, const Urho3D::IntVector2 bucketCords) 
+CreationCommand::CreationCommand(ObjectType type, short id, const Urho3D::IntVector2 bucketCords)
 	: bucketCords(bucketCords), objectType(type), id(id), player(-1) {}
 
-CreationCommand::CreationCommand(ObjectType type, short id, const Urho3D::IntVector2 bucketCords, char level, char player)
+CreationCommand::CreationCommand(ObjectType type, short id, const Urho3D::IntVector2 bucketCords, char level,
+                                 char player)
 	: bucketCords(bucketCords), objectType(type), id(id), level(level), player(player) {}
 
 CreationCommand::CreationCommand(ObjectType type, short id, const Urho3D::Vector2& position, char level, char player,
@@ -22,7 +24,10 @@ void CreationCommand::execute(SimulationObjectManager* simulationObjectManager) 
 		simulationObjectManager->addBuilding(id, bucketCords, level, player);
 		break;
 	case ObjectType::RESOURCE:
-		simulationObjectManager->addResource(id, bucketCords);
+		auto res = simulationObjectManager->addResource(id, bucketCords);
+		if (res && hp > 0.f) {
+			res->hp = hp;
+		}
 		break;
 	}
 }

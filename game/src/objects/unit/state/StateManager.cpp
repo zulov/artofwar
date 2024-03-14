@@ -189,7 +189,13 @@ void StateManager::startState(Static* obj) {
 			auto building = (Building*)obj;
 			if (obj->getHp() <= 0.f) {
 				if (building->getDbBuilding()->ruinable) {
-					Game::getActionCenter()->addResource(5, building->getMainGridIndex());
+					auto costs = building->getDbBuilding()->costs;
+					if (costs->anyWoodOrStone) {
+						short id = costs->moreWoodThanStone ? 6 : 5;
+						float amount = costs->moreWoodThanStone ? costs->wood : costs->stone;
+
+						Game::getActionCenter()->addResource(id, building->getMainGridIndex(), amount * 0.2f);
+					}
 				}
 			} else {
 				auto res = building->getDbBuilding()->toResource;

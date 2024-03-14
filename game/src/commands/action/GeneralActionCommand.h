@@ -4,7 +4,6 @@
 enum class GeneralActionType : char;
 
 class GeneralActionCommand : public PhysicalCommand {
-	friend class Stats;
 public:
 	GeneralActionCommand(short id, GeneralActionType action, char player);
 

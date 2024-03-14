@@ -7,7 +7,6 @@ class Building;
 class Physical;
 
 class BuildingActionCommand : public PhysicalCommand {
-	friend class Stats;
 public:
 	BuildingActionCommand(Building* building, BuildingActionType action, short id);
 	BuildingActionCommand(const std::vector<Physical*>& buildings, BuildingActionType action, short id);

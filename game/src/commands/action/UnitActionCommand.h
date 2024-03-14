@@ -10,7 +10,6 @@ class Physical;
 enum class UnitAction : char;
 
 class UnitActionCommand : public PhysicalCommand {
-	friend class Stats;
 public:
 	UnitActionCommand(UnitOrder* order);
 	~UnitActionCommand() override = default;

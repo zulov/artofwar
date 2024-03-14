@@ -7,7 +7,6 @@ class ResourceEntity;
 class Physical;
 
 class ResourceActionCommand : public PhysicalCommand {
-	friend class Stats;
 public:
 	ResourceActionCommand(ResourceEntity* resource, ResourceActionType action, char player);
 	ResourceActionCommand(const std::vector<Physical*>& resources, ResourceActionType action, char player);
