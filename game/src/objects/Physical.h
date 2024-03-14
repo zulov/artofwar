@@ -36,6 +36,7 @@ public:
 		assert(_bucketIndex >= 0);
 		indexInMainGrid = _bucketIndex;
 	}
+
 	int getMainGridIndex() const { return indexInMainGrid; }
 
 	virtual ObjectType getType() const = 0;

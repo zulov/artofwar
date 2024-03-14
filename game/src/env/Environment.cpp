@@ -548,6 +548,7 @@ Physical* Environment::closestPhysical(int startIdx, const std::vector<Physical*
 		return nullptr;
 	}
 	std::vector<int> allIndexes;
+	allIndexes.reserve(things->size());
 	std::vector<Physical*> thingsFiltered;
 	thingsFiltered.reserve(things->size());
 

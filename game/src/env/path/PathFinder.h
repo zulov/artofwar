@@ -52,7 +52,7 @@ private:
 
 	void update(int idx, int cost, int cameForm, int heuristicCost);
 
-	void debug(int start, int end);
+	void debug(int start, int end, bool pathFound);
 
 	CloseIndexes* closeIndexes;
 	GridCalculator* calculator;

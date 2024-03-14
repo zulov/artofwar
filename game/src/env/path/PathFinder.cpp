@@ -87,12 +87,12 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 	prepareToStart(startIdx);
 	auto endCords = getCords(endIdxs);
 	assert(!endCords.empty());
-	const int limit = std::max(calculator->getBiggestManhattan(startIdx, endCords), 16)*4;
+	const int limit = std::max(calculator->getBiggestManhattan(startIdx, endCords), 4) * 16;
 	int steps = 0;
 	while (!frontier.empty() && ++steps <= limit) {
 		const auto current = frontier.get();
 		if (std::ranges::binary_search(endIdxs, current)) {
-			//debug(startIdx, current);
+			//debug(startIdx, current, true);
 			return reconstructSimplifyPath(startIdx, current);
 		}
 		auto const& currentData = complexData[current];
@@ -113,7 +113,8 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 			}
 		}
 	}
-	//debug(startIdx, endIdx);
+
+	//debug(startIdx, endIdxs[0], false);
 	tempPath->clear();
 	return tempPath;
 }
@@ -154,16 +155,17 @@ PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs) {
 			closePath->emplace_back(endIdx);
 			return closePath;
 		}
-
+	}
+	for (const int endIdx : endIdxs) {
 		const auto closePath = getClosePath2(startIdx, endIdx,
 		                                     closeIndexes->getPassIndexVia1LevelTo2(startIdx, endIdx));
-		if (closePath) {return closePath; }
+		if (closePath) { return closePath; }
 	}
 
 	const auto path = realFindPath(startIdx, endIdxs);
 	if (!path->empty()) {
 		addToCache(startIdx, path->back(), path);
-	}//TODO perf drugi cache do braku przejscia ale jak tu uwzglednic limit
+	} //TODO perf drugi cache do braku przejscia ale jak tu uwzglednic limit
 	return path;
 }
 
@@ -212,22 +214,22 @@ void PathFinder::invalidateCache() {
 	cacheSize = 0;
 }
 
-void PathFinder::debug(int start, int end) {
+void PathFinder::debug(int start, int end, bool pathFound) {
 	auto image = new Urho3D::Image(Game::getContext());
 	image->SetSize(resolution, resolution, 4);
 
-	Urho3D::String prefix = Urho3D::String(staticCounter) + "_";
+	Urho3D::String prefix = "result/images/" + Urho3D::String(staticCounter) + "_";
 	drawMap(image);
-	image->SaveBMP("result/images/" + prefix + "1_grid_map.bmp");
-	//draw_grid_from(came_from, image);
-	//image->SaveBMP("result/images/" + prefix + "2_grid_from.bmp");
+	image->SaveBMP(prefix + "1_grid_map.bmp");
+
 	draw_grid_cost(cost_so_far, image, resolution);
-	image->SaveBMP("result/images/" + prefix + "3_grid_cost.bmp");
+	image->SaveBMP(prefix + "2_grid_cost.bmp");
 
-	auto path = reconstructPath(start, end);
-	draw_grid_path(path, image, resolution);
-
-	image->SaveBMP("result/images/" + prefix + "4_grid_path.bmp");
+	if (pathFound) {
+		auto path = reconstructPath(start, end);
+		draw_grid_path(path, image, resolution);
+		image->SaveBMP(prefix + "3_grid_path.bmp");
+	}
 
 	delete image;
 	staticCounter++;

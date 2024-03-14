@@ -9,7 +9,7 @@
 #include "debug/DebugLineRepo.h"
 #include "map/InfluenceMapInt.h"
 #include "math/VectorUtils.h"
-#include "objects/CellState.h"
+#include "env/bucket/CellEnums.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"

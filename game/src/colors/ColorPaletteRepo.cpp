@@ -2,11 +2,10 @@
 
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include "ColorPallet.h"
 #include "Game.h"
 #include "database/db_strcut.h"
 #include "math/MathUtils.h"
-#include "env/bucket/CellState.h"
+#include "env/bucket/CellEnums.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimGlobals.h"
