@@ -131,7 +131,7 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) {
 	if (index != unit->getIndexToInteract() //TODO ten warunek to chyba nie na ten index
 		&& data.isPassable()
 		&& data.anyNeightOccupied()) {
-		const auto center = repulseCache[data.getIsNeightOccupied()] + calculator->getCenter(index);
+		const auto center = repulseCache[data.getNeightOccupation()] + calculator->getCenter(index);
 
 		return Urho3D::Vector2(unit->getPosition().x_, unit->getPosition().z_) - center;
 	}
@@ -274,12 +274,10 @@ bool MainGrid::cellIsAttackable(int index) const {
 bool MainGrid::anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const {
 	const auto centerCord = calculator->getCords(center);
 	distThreshold *= distThreshold;
-	for (const auto index : indexes) {
-		if (calculator->getSqDistance(centerCord, index) < distThreshold) {
-			return true;
-		}
-	}
-	return false;
+
+	return std::ranges::any_of(indexes, [&](const auto& index) {
+		return calculator->getSqDistance(centerCord, index) < distThreshold;
+	});
 }
 
 std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector3& center, float range) const {
@@ -482,7 +480,7 @@ const std::vector<short>& MainGrid::getCloseIndexes(int center) const {
 	return closeIndexes->getLv1(complexData[center]);
 }
 
-short MainGrid::getGradient(int index) const{
+short MainGrid::getGradient(int index) const {
 	return complexData[index].getGradient();
 }
 
@@ -594,16 +592,15 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 		int escapeBucket = -1;
 		if (data.anyNeightFree()) {
 			float dist = 999999;
+			auto cords = calculator->getCords(index);
+			for (auto [i, val] : closeIndexes->getTabIndexesWithValueFreeOnly(data)) {
 
-			for (auto [i, val] : closeIndexes->getTabIndexesWithValue(data)) {
-				if (data.ifNeightIsFree(i)) {
-					const int ni = index + val;
+				const int ni = index + val;
 
-					float newDist = calculator->getSqDistance(ni, index);
-					if (newDist < dist) {
-						dist = newDist;
-						escapeBucket = ni;
-					}
+				float newDist = calculator->getSqDistance(cords, ni);
+				if (newDist < dist) {
+					dist = newDist;
+					escapeBucket = ni;
 				}
 			}
 		} else {

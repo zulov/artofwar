@@ -98,17 +98,15 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 		auto const& currentData = complexData[current];
 		const auto currentCost = cost_so_far[current];
 		const auto currentCameFrom = came_from[current];
-		for (auto [i, val] : closeIndexes->getTabIndexesWithValue(currentData)) {
-			if (currentData.ifNeightIsFree(i)) {
-				int next = current + val;
-				assert(validateIndex(current, next));
-				if (currentCameFrom != next) {
-					const auto new_cost = currentCost + complexData[next].getCost() + distances[i];
-					const auto nextCost = cost_so_far[next];
-					if (nextCost < 0 || new_cost < nextCost) {
-						update(next, new_cost, current,
-						       new_cost + heuristic(next, endCords));
-					}
+		for (auto [i, val] : closeIndexes->getTabIndexesWithValueFreeOnly(currentData)) {
+			int next = current + val;
+			assert(validateIndex(current, next));
+			if (currentCameFrom != next) {
+				const auto new_cost = currentCost + complexData[next].getCost() + distances[i];
+				const auto nextCost = cost_so_far[next];
+				if (nextCost < 0 || new_cost < nextCost) {
+					update(next, new_cost, current,
+					       new_cost + heuristic(next, endCords));
 				}
 			}
 		}

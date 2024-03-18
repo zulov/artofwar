@@ -33,12 +33,11 @@ public:
 	void drawMap(Urho3D::Image* image) const;
 
 private:
+
 	const std::vector<int>* realFindPath(int startIdx, const std::vector<int>& endIdxs);
 	const std::vector<int>* getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const;
 
 	void prepareToStart(int startIdx);
-	bool validateIndex(int current, int next) const;
-
 	int heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const;
 
 	int findInCache(int start, int end) const;
@@ -53,6 +52,7 @@ private:
 	void update(int idx, int cost, int cameForm, int heuristicCost);
 
 	void debug(int start, int end, bool pathFound);
+	bool validateIndex(int current, int next) const;
 
 	CloseIndexes* closeIndexes;
 	GridCalculator* calculator;

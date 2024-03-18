@@ -112,13 +112,6 @@ struct GridCalculator {
 		return (dx * dx + dy * dy) * sqFieldSize;
 	}
 
-	float getSqDistance(int first, int next) const {
-		const auto a = getCords(first);
-		const auto b = getCords(next);
-
-		return getSqDistance(a, b);
-	}
-
 	int getBiggestManhattan(int first, const std::vector<Urho3D::IntVector2>& endCords) const {
 		const auto a = getCords(first);
 		int max = 0;

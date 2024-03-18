@@ -20,6 +20,8 @@ public:
 	const std::vector<unsigned char>& getTabIndexes(const ComplexBucketData& data);
 	const std::vector<std::pair<unsigned char, short>>& getTabIndexesWithValue(const ComplexBucketData& data) const;
 
+	const std::vector<std::pair<unsigned char, short>>& getTabIndexesWithValueFreeOnly(const ComplexBucketData& data) const;
+
 	unsigned short getResolution() const { return resolution; }
 	bool isInLocalArea(int center, int indexOfAim) const;
 	bool isInLocalLv2Area(int center, int indexOfAim) const;
@@ -29,6 +31,7 @@ public:
 private:
 	unsigned char getIndex(int center) const;
 	unsigned char getSecondIndex(int center) const;
+	bool validateCloseIndexes(ComplexBucketData const& data) const;
 
 	const std::vector< std::pair<unsigned char, short>>& getTabIndexesWithValueLv2(int center) const { return tabSecondIndexesWithValue[getSecondIndex(center)]; }
 
@@ -48,6 +51,8 @@ private:
 	static const std::vector<unsigned char> passTo2From1Indexes[FROM_1_TO_2_SIZE];
 	std::vector<short> passTo2From1Vals[FROM_1_TO_2_SIZE];
 	static const std::vector<short> EMPTY;
+
+	std::vector<std::pair<unsigned char, short>> tabIndexesWithValueOnlyFree[256];
 };
 
 inline bool isInTab(const std::vector<short>& tab, const int val) {

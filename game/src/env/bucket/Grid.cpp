@@ -9,7 +9,6 @@
 #include "env/ContentInfo.h"
 #include "env/GridCalculator.h"
 #include "env/GridCalculatorProvider.h"
-#include "utils/consts.h"
 
 Grid::Grid(short resolution, float size, float maxQueryRadius)
 	: calculator(GridCalculatorProvider::get(resolution, size)),

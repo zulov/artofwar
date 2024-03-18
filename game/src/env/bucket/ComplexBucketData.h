@@ -27,9 +27,6 @@ public:
 	void setNeightOccupied(unsigned char index);
 	void setNeightFree(unsigned char index);
 	bool ifNeightIsFree(unsigned char index) const { return !ifNeightIsOccupied(index); }
-	bool ifNeightIsOccupied(unsigned char index) const { return isNeightOccupied & Flags::bitFlags[index]; }
-
-	int getCost() const;
 
 	bool allNeightOccupied() const { return isNeightOccupied == 255; }
 	bool anyNeightOccupied() const { return isNeightOccupied > 0; }
@@ -37,7 +34,9 @@ public:
 	bool anyNeightFree() const { return isNeightOccupied != 255; }
 
 	void setAllOccupied() { isNeightOccupied = 255; }
-	unsigned char getIsNeightOccupied() const { return isNeightOccupied; }
+	unsigned char getNeightOccupation() const { return isNeightOccupied; }
+
+	int getCost() const;
 
 	char getAdditionalInfo() const { return additionalInfo; }
 
@@ -67,6 +66,7 @@ public:
 	unsigned char getIndexSecondOfCloseIndexes() const { return indexOfSecondCloseIndexes; }
 
 private:
+	bool ifNeightIsOccupied(unsigned char index) const { return isNeightOccupied & Flags::bitFlags[index]; }
 	CellState state = CellState::NONE;
 	char size = 0, additionalInfo = -1;
 

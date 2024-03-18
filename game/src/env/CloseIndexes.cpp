@@ -73,7 +73,7 @@ const std::vector<short> CloseIndexes::EMPTY = {};
 
 CloseIndexes::CloseIndexes(short res)
 	: resolution(res), sqResolutionMinusRes(res * res - res),
-	  templateVec{short( - res - 1), short(-res), short(-res + 1), -1, 1, short(res - 1), res, short(res + 1)},
+	  templateVec{short(-res - 1), short(-res), short(-res + 1), -1, 1, short(res - 1), res, short(res + 1)},
 	  templateVecSecond{
 		  short(-2 * res - 2), short(-2 * res - 1), short(-2 * res), short(-2 * res + 1), short(-2 * res + 2),
 		  short(-res - 2), short(-res + 2),
@@ -105,6 +105,16 @@ CloseIndexes::CloseIndexes(short res)
 			passTo2From1Vals[i].emplace_back(templateVec[j]);
 		}
 	}
+
+	for (int i = 0; i < 256; ++i) {
+		const unsigned char val = i;
+		auto& vector = tabIndexesWithValueOnlyFree[val];
+		for (int b = 0; b < 8; ++b) {
+			if (!(val & Flags::bitFlags[b])) {
+				vector.push_back(tabIndexesWithValue[4][b]);
+			}
+		}
+	}
 }
 
 const std::vector<short>& CloseIndexes::getLv2(const ComplexBucketData& data) const {
@@ -118,6 +128,12 @@ const std::vector<unsigned char>& CloseIndexes::getTabIndexes(const ComplexBucke
 const std::vector<std::pair<unsigned char, short>>& CloseIndexes::getTabIndexesWithValue(
 	const ComplexBucketData& data) const {
 	return tabIndexesWithValue[data.getIndexOfCloseIndexes()];
+}
+
+const std::vector<std::pair<unsigned char, short>>& CloseIndexes::getTabIndexesWithValueFreeOnly(
+	const ComplexBucketData& data) const {
+	assert(validateCloseIndexes(data));
+	return tabIndexesWithValueOnlyFree[data.getNeightOccupation()];
 }
 
 const std::vector<short>& CloseIndexes::getLv1(const ComplexBucketData& data) const {
@@ -158,8 +174,7 @@ std::pair<unsigned char, unsigned char> CloseIndexes::getBothIndexes(int center)
 	const bool almostLastColumn = center % resolution == resolution - 2;
 	char indexLv2 = 0;
 	char indexLv1 = 0;
-	if (firstRow) {}
-	else if (secondRow) {
+	if (firstRow) {} else if (secondRow) {
 		indexLv2 += 5;
 		indexLv1 += 3;
 	} else if (almostLastRow) {
@@ -173,8 +188,7 @@ std::pair<unsigned char, unsigned char> CloseIndexes::getBothIndexes(int center)
 		indexLv1 += 3;
 	}
 
-	if (firstColumn) {}
-	else if (secondColumn) {
+	if (firstColumn) {} else if (secondColumn) {
 		indexLv2 += 1;
 		indexLv1 += 1;
 	} else if (almostLastColumn) {
@@ -188,7 +202,7 @@ std::pair<unsigned char, unsigned char> CloseIndexes::getBothIndexes(int center)
 		indexLv1 += 1;
 	}
 
-	return { indexLv1, indexLv2 };
+	return {indexLv1, indexLv2};
 }
 
 unsigned char CloseIndexes::getIndex(int center) const {
@@ -211,4 +225,20 @@ unsigned char CloseIndexes::getIndex(int center) const {
 
 unsigned char CloseIndexes::getSecondIndex(int center) const {
 	return getBothIndexes(center).second;
+}
+
+bool CloseIndexes::validateCloseIndexes(ComplexBucketData const& data) const {
+	int j = 0;
+	//auto& vec = getTabIndexesWithValueFreeOnly(data);// recursion
+	auto& vec = tabIndexesWithValueOnlyFree[data.getNeightOccupation()];
+
+	for (auto [i, val] : getTabIndexesWithValue(data)) {
+		if (data.ifNeightIsFree(i)) {
+			if (vec[j].first != i || vec[j].second != val) {
+				return false;
+			}
+			++j;
+		}
+	}
+	return j == vec.size();
 }
