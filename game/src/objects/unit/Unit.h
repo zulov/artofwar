@@ -113,10 +113,8 @@ public:
 
 	int getSparseIndex() const { return sparseIndexInGrid; }
 
-	bool isIndexSlotOccupied(int indexToInteract) override;
-
 	void setOccupiedIndexSlot(char index, bool value) override;
-	bool ifSlotIsOccupied(char index) const;
+	bool ifSlotFree(char index) const;
 
 	std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(Unit* user) override;
 	std::vector<int> getIndexesForUse() const override;

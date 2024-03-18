@@ -48,7 +48,6 @@ public:
 	virtual char getPlayer() const { return player; }
 
 	void load(dbload_physical* dbloadPhysical);
-	virtual bool isIndexSlotOccupied(int indexToInteract) { return false; }
 	virtual bool indexChanged() const { return false; }
 
 	virtual void setOccupiedIndexSlot(char index, bool value) { }

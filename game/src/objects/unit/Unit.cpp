@@ -488,11 +488,6 @@ UnitState Unit::getActionState() const {
 	return dbUnit->actionState;
 }
 
-bool Unit::isIndexSlotOccupied(int indexToInteract) {
-	const unsigned char index = Game::getEnvironment()->getRevertCloseIndex(getMainGridIndex(), indexToInteract);
-	return ifSlotIsOccupied(index);
-}
-
 bool Unit::isFirstThingAlive() const {
 	return thingToInteract != nullptr
 		&& thingToInteract->isUsable();
@@ -529,7 +524,7 @@ std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(Unit
 	const int mainIndex = getMainGridIndex();
 
 	for (auto [i, val] : Game::getEnvironment()->getCloseTabIndexesWithValue(mainIndex)) {
-		if (!ifSlotIsOccupied(i)) {
+		if (ifSlotFree(i)) {
 			//TODO1
 			int index = mainIndex + val;
 			if (Game::getEnvironment()->cellIsPassable(index)) {
@@ -561,7 +556,7 @@ void Unit::addIndexesForUse(std::vector<int>& indexes) const {
 	const int mainIndex = getMainGridIndex();
 	const auto env = Game::getEnvironment();
 	for (auto [i, val] : env->getCloseTabIndexesWithValue(mainIndex)) {
-		if (!ifSlotIsOccupied(i)) {
+		if (ifSlotFree(i)) {
 			int index = mainIndex + val;
 			if (env->cellIsPassable(index)) {
 				indexes.push_back(index);
@@ -575,7 +570,7 @@ bool Unit::indexCanBeUse(int index) const {
 	const auto env = Game::getEnvironment();
 	for (auto [i, val] : env->getCloseTabIndexesWithValue(mainIndex)) {
 		const auto idx = mainIndex + val;
-		if (idx == index && !ifSlotIsOccupied(i)) {
+		if (idx == index && ifSlotFree(i)) {
 			if (env->cellIsPassable(idx)) {
 				return true;
 			}
@@ -615,8 +610,8 @@ void Unit::setOccupiedIndexSlot(char index, bool value) {
 	}
 }
 
-bool Unit::ifSlotIsOccupied(char index) const {
+bool Unit::ifSlotFree(char index) const {//TODO perf and clean zwrocic tylko wolne
 	assert(index < 8);
 	assert(index >= 0);
-	return useSockets & Flags::bitFlags[index];
+	return !(useSockets & Flags::bitFlags[index]);
 }
