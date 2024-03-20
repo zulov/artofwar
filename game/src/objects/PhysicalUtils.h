@@ -35,6 +35,9 @@ inline bool isFreeWorker(Unit* unit) {
 inline bool isFreeSolider(Unit* unit) {
 	return !unit->getDbUnit()->typeWorker && isFree(unit);
 }
+inline bool isSolider(Unit* unit) {
+	return !unit->getDbUnit()->typeWorker;
+}
 
 inline float getCircleSize(const db_building* dbBuilding, const db_building_level* level) {
 	if (dbBuilding->typeDefence) {

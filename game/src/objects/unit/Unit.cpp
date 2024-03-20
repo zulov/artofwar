@@ -610,8 +610,7 @@ void Unit::setOccupiedIndexSlot(char index, bool value) {
 	}
 }
 
-bool Unit::ifSlotFree(char index) const {//TODO perf and clean zwrocic tylko wolne
+bool Unit::ifSlotFree(unsigned char index) const {//TODO perf and clean zwrocic tylko wolne
 	assert(index < 8);
-	assert(index >= 0);
 	return !(useSockets & Flags::bitFlags[index]);
 }

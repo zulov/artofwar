@@ -26,6 +26,7 @@ public:
 	int getWorkersNumber() const;
 	int getFreeWorkersNumber();
 	int getFreeArmyNumber();
+	int getArmyNumber();
 	std::span<float> getResWithOutBonus() { ensureReady(); return resWithoutBonus; }
 	std::vector<Building*>* getBuildings(short id);
 	const std::vector<Building*>& getBuildings();
@@ -49,8 +50,11 @@ private:
 
 	std::vector<Unit*> units;
 	std::vector<Unit*> workers;
+
 	int freeWorkersNumber = 0;
 	int freeArmyNumber = 0;
+	int armyNumber = 0;
+
 	float resourcesSum = 0.f;
 	float resourcesDestroyed = 0.f;
 

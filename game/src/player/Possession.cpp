@@ -91,7 +91,10 @@ int Possession::getWorkersNumber() const {
 }
 
 int Possession::getFreeWorkersNumber() { ensureReady(); return freeWorkersNumber; }
+
 int Possession::getFreeArmyNumber() { ensureReady(); return freeArmyNumber; }
+
+int Possession::getArmyNumber() { ensureReady(); return armyNumber; }
 
 std::vector<Building*>* Possession::getBuildings(short id) {
 	return buildingsPerId[id];
@@ -246,7 +249,9 @@ void Possession::ensureReady() {
 	}
 
 	freeWorkersNumber = std::ranges::count_if(workers, isInFreeState);
+	//TODO obliczyc w jednej petli
 	freeArmyNumber = std::ranges::count_if(units, isFreeSolider);
+	armyNumber = std::ranges::count_if(units, isSolider);
 
 	resetSpan(resWithoutBonus);
 	for (const auto worker : workers) {

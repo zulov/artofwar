@@ -14,7 +14,7 @@
 
 
 TopPanel::TopPanel(Urho3D::UIElement* root, Urho3D::XMLFile* style) : SimplePanel(root, style, "TopWindow",
-	{GameState::RUNNING, GameState::PAUSE}) {}
+		 {GameState::RUNNING, GameState::PAUSE}) {}
 
 
 TopPanel::~TopPanel() {
@@ -46,18 +46,18 @@ void TopPanel::createBody() {
 }
 
 void TopPanel::update(Player* player) const {
-	auto& possession = player->getPossession();
+	auto& poss = player->getPossession();
 
-	units->setText(Urho3D::String(possession.getFreeArmyNumber()) + "/", Urho3D::String(possession.getUnitsNumber()));
-	workers->setText(Urho3D::String(possession.getFreeWorkersNumber()) + "/",
-	                 Urho3D::String(possession.getWorkersNumber()));
 	name->setText(Urho3D::String(player->getName()), "");
+	units->setText(Urho3D::String(poss.getFreeArmyNumber()) + "/", Urho3D::String(poss.getArmyNumber()));
+	workers->setText(Urho3D::String(poss.getFreeWorkersNumber()) + "/", Urho3D::String(poss.getWorkersNumber()));
 
-	auto& resources = player->getResources();
+	const auto& resources = player->getResources();
 	unsigned short workersPerRes[RESOURCES_SIZE] = {0, 0, 0, 0};
-	for (const auto worker : possession.getWorkers()) {
-		if(worker->getState() == UnitState::COLLECT) {
-			const auto resId = static_cast<ResourceEntity*>(worker->getThingToInteract())->getResourceId();
+	for (const auto worker : poss.getWorkers()) {
+		if (worker->getState() == UnitState::COLLECT) {
+			const auto resId = dynamic_cast<ResourceEntity*>(worker->getThingToInteract())->getResourceId();
+			assert(resId >= 0 && resId <= 3);
 			if (resId >= 0) {
 				++workersPerRes[resId];
 			}
