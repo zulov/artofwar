@@ -10,11 +10,10 @@ DebugPanel::DebugPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style) : Simpl
 void DebugPanel::setText(unsigned int seconds, float avgLow, float avgMiddle,
                          float avgHighest, const Urho3D::String& camInfo) {
 	msg.Clear();
-	msg .Append("FPS: ")
+	msg.Append("FPS: ")
 	   .Append(Urho3D::String(avgLow)).Append("|")
 	   .Append(Urho3D::String(avgMiddle)).Append("|")
 	   .Append(Urho3D::String(avgHighest)).Append("|")
-	   .Append("\nTime: ").Append(Urho3D::String(seconds / 60)).Append(":").Append(Urho3D::String(seconds % 60))
 	   .Append("\nCamera: \n\t").Append(camInfo);
 
 	fpsText->SetText(msg);

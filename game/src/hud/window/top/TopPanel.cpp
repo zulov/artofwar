@@ -1,6 +1,5 @@
 #include "TopPanel.h"
 #include <Urho3D/Graphics/Texture2D.h>
-#include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/Window.h>
 #include "GameState.h"
 #include "TopHudElement.h"
@@ -11,7 +10,11 @@
 #include "player/Player.h"
 #include "player/Possession.h"
 #include "player/Resources.h"
+#include "simulation/FrameInfo.h"
 
+const Urho3D::String monthsRoman[] = {
+	"   I", "  II", " III", "  IV", "   V", "  VI", " VII", "VIII", "  IX", "   X", "  XI", " XII"
+};
 
 TopPanel::TopPanel(Urho3D::UIElement* root, Urho3D::XMLFile* style) : SimplePanel(root, style, "TopWindow",
 		 {GameState::RUNNING, GameState::PAUSE}) {}
@@ -23,6 +26,7 @@ TopPanel::~TopPanel() {
 	delete workers;
 	delete name;
 	delete infoPanel;
+	delete time;
 }
 
 void TopPanel::createBody() {
@@ -40,18 +44,24 @@ void TopPanel::createBody() {
 	elements[2] = new TopHudElement(window, style, getTexture(resIconPath + "stone.png"));
 	elements[3] = new TopHudElement(window, style, getTexture(resIconPath + "gold.png"));
 
+	time = new TopHudElement(window, style, textureWorker);
+
 	infoPanel = new TopInfoPanel(root, style);
 	infoPanel->createWindow();
 	infoPanel->setVisible(true);
 }
 
-void TopPanel::update(Player* player) const {
+void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	auto& poss = player->getPossession();
 
-	name->setText(Urho3D::String(player->getName()), "");
+	name->setText(player->getName(), "(" + Urho3D::String((int)player->getId()) + ")");
 	units->setText(Urho3D::String(poss.getFreeArmyNumber()) + "/", Urho3D::String(poss.getArmyNumber()));
 	workers->setText(Urho3D::String(poss.getFreeWorkersNumber()) + "/", Urho3D::String(poss.getWorkersNumber()));
+	auto [month, year] = frameInfo->getDate();
+	auto [h, m, s] = frameInfo->getTime();
 
+	time->setText(monthsRoman[month] + " " + Urho3D::String(year),
+	              "(" + to2DigString(h) + ":" + to2DigString(m) + ":" + to2DigString(s) + ")");
 	const auto& resources = player->getResources();
 	unsigned short workersPerRes[RESOURCES_SIZE] = {0, 0, 0, 0};
 	for (const auto worker : poss.getWorkers()) {

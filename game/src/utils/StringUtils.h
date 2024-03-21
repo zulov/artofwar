@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include <span>
+#include <Urho3D/Container/Str.h>
 #include <fast_float/fast_float.h>
 
 inline std::vector<std::string> split(const std::string& s, char delimiter) {
@@ -34,4 +34,8 @@ inline float toFloat(const std::string& token) {
 	float f;
 	fast_float::from_chars(token.data(), token.data() + token.size(), f);
 	return f;
+}
+
+inline Urho3D::String to2DigString(unsigned char v) {
+	return (v < 10 ? "0" : "") + Urho3D::String((unsigned int)v);
 }

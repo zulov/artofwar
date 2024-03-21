@@ -78,7 +78,7 @@ bool Simulation::canUpdate(PerFrameAction type) const {
 
 FrameInfo* Simulation::update(float timeStep) {
 	accumulateTime += updateTime(timeStep);
-	frameInfo->setIsRealFrame(false);
+	frameInfo->resetRealFrame();
 
 	while (accumulateTime >= TIME_PER_UPDATE) {
 		//TODO bug a co jesli kilka razy sie wykona, moga byc bledy np w control

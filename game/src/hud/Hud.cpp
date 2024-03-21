@@ -173,7 +173,7 @@ void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInf
 	                    benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
 	                    cameraManager->getPosInfo());
 	if (PER_FRAME_ACTION.get(PerFrameAction::HUD_UPDATE, frameInfo)) {
-		topPanel->update(Game::getPlayersMan()->getActivePlayer());
+		topPanel->update(Game::getPlayersMan()->getActivePlayer(), frameInfo);
 
 		scorePanel->update(Game::getPlayersMan()->getAllPlayers());
 	}

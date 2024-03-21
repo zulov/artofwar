@@ -1,5 +1,5 @@
 <element type="TopWindow" style="MyWindow">
-	<attribute name="Min Size" value="{resX/4} {iconY/2+2*spaceY}"/>
+	<attribute name="Min Size" value="{resX/2} {iconY/2+2*spaceY}"/>
 	<attribute name="Max Size" value="{resX/2} {iconY/2+2*spaceY}"/>
 	<attribute name="Vert Alignment" value="Top"/>
 	<attribute name="Horiz Alignment" value="Right"/>
@@ -11,7 +11,7 @@
 
 <element type="TopButtons" style="Button">
 	<attribute name="Min Size" value="{iconX*2} {iconY/2}"/>
-	<attribute name="Max Size" value="{iconX*2} {iconY/2}"/>
+	<attribute name="Max Size" value="{iconX*2.5} {iconY/2}"/>
 </element>
 
 <element type="TopButtonsNarrow" style="Button">
