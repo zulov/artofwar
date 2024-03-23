@@ -13,20 +13,21 @@
 	<attribute name="Min Size" value="{iconX*2} {iconY/2}"/>
 	<attribute name="Max Size" value="{iconX*2.5} {iconY/2}"/>
 </element>
-
 <element type="TopButtonsNarrow" style="Button">
 	<attribute name="Min Size" value="{iconX*1.5} {iconY/2}"/>
-	<attribute name="Max Size" value="{iconX*1.5} {iconY/2}"/>
+	<attribute name="Max Size" value="{iconX*2} {iconY/2}"/>
+</element>
+<element type="TopButtonsWide" style="Button">
+	<attribute name="Min Size" value="{iconX*2.5} {iconY/2}"/>
+	<attribute name="Max Size" value="{iconX*3.5} {iconY/2}"/>
 </element>
 
 <element type="TopText" style="MyText">
 	<attribute name="Font Size" value="{fontSize}"/>
-	<attribute name="Vert Alignment" value="Center"/>
 </element>
 <element type="TopTextSmall" style="MyText">
 	<attribute name="Font Size" value="{fontSize-1}"/>
-	<attribute name="Vert Alignment" value="Center"/>
-	<attribute name="Color" value="0.7 0.7 0.7"/>
+	<attribute name="Color" value="0.6 0.6 0.6"/>
 </element>
 
 <element type="mockCenter">
@@ -35,7 +36,7 @@
 	<attribute name="Position" value="{-spaceX} 0"/>
 	<attribute name="Horiz Alignment" value="Right"/>
 	<attribute name="Min Size" value="0 {iconY/2}"/>
-	<attribute name="Max Size" value="{iconX} {iconY/2}"/>
+	<attribute name="Max Size" value="{iconX*5} {iconY/2}"/>
 </element>
 
 <element type="SpriteLeft" style="Sprite">

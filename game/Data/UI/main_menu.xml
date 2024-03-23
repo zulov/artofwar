@@ -36,7 +36,6 @@
 <element type="MainMenuText" style="MyText">
 	<attribute name="Text Alignment" value="Right"/>
 	<attribute name="Horiz Alignment" value="Center"/>
-	<attribute name="Vert Alignment" value="Center"/>
 </element>
 
 	<element type="MainMenuTitle" style="MyText">
@@ -81,7 +80,6 @@
 <element type="HelpContentText" style="MyText">
 	<attribute name="Word Wrap" value="true"/>
 	<attribute name="Horiz Alignment" value="Center"/>
-	<attribute name="Vert Alignment" value="Center"/>
 </element>
 
 <element type="HelpListButton" style="Button">
@@ -91,7 +89,6 @@
 
 <element type="HelpListText" style="MyText">
 	<attribute name="Font Size" value="{fontSize}"/>
-	<attribute name="Vert Alignment" value="Center"/>
 	<attribute name="Horiz Alignment" value="Center"/>
 </element>
 
@@ -123,7 +120,6 @@
 
 <element type="MainMenuNewGameButtonText" style="MyText">
 	<attribute name="Horiz Alignment" value="Center"/>
-	<attribute name="Vert Alignment" value="Center"/>
 </element>
 
 <element type="MainMenuNewGameButtonLabel" style="MyText">
@@ -156,7 +152,6 @@
 
 <element type="LoadListText" style="MyText">
 	<attribute name="Font Size" value="{fontSize}"/>
-	<attribute name="Vert Alignment" value="Center"/>
 	<attribute name="Horiz Alignment" value="Center"/>
 </element>
 
@@ -168,14 +163,12 @@
 
 <element type="LoadButtonText" style="MyText">
 	<attribute name="Font Size" value="{fontSize*1.2}"/>
-	<attribute name="Vert Alignment" value="Center"/>
 	<attribute name="Horiz Alignment" value="Center"/>
 </element>
 
 <element type="LoadLeftMock">
 	<attribute name="Min Size" value="{iconX*5} {bigY/2}"/>
 	<attribute name="Max Size" value="{iconX*5} {bigY-iconY*4}"/>
-
 	<attribute name="Horiz Alignment" value="Left"/>
 	<attribute name="Vert Alignment" value="Center"/>
 	<attribute name="Position" value="{iconX} 0"/>
@@ -195,7 +188,6 @@
 </element>
 
 <element type="MiniWindow" style="MyWindow">
-	<attribute name="Vert Alignment" value="Center"/>
 	<attribute name="Horiz Alignment" value="Center"/>
 	<attribute name="Layout Mode" value="Vertical"/>
 	<attribute name="Layout Spacing" value="{iconY}"/>
@@ -247,7 +239,6 @@
 
 <element type="MainMenuSettingsButtonText" style="MyText">
 	<attribute name="Font Size" value="{fontSize*1.2}"/>
-	<attribute name="Vert Alignment" value="Center"/>
 	<attribute name="Horiz Alignment" value="Center"/>
 </element>
 

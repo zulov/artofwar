@@ -17,7 +17,10 @@ void CommandList::add(PhysicalCommand* first, PhysicalCommand* second) {
 
 void CommandList::execute() {
 	for (const auto command : commands) {
-		command->execute();
+		//if(!command->expired()) {//TODO error
+			command->execute();
+		//}
+		
 		delete command;
 	}
 	commands.clear();

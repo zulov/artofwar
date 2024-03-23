@@ -31,12 +31,11 @@ TopPanel::~TopPanel() {
 
 void TopPanel::createBody() {
 	const Urho3D::String path = "textures/hud/icon/top/";
-	const auto textureHuman = getTexture(path + "human.png");
-	const auto textureWorker = getTexture(path + "worker.png");
-	const auto textureName = getTexture(path + "helmet.png");
-	name = new TopHudElement(window, style, textureName);
-	units = new TopHudElement(window, style, textureHuman, "TopButtonsNarrow");
-	workers = new TopHudElement(window, style, textureWorker, "TopButtonsNarrow");
+
+	name = new TopHudElement(window, style, getTexture(path + "helmet.png"));
+	time = new TopHudElement(window, style, getTexture(path + "time.png"), "TopButtonsWide");
+	units = new TopHudElement(window, style, getTexture(path + "human.png"), "TopButtonsNarrow");
+	workers = new TopHudElement(window, style, getTexture(path + "worker.png"), "TopButtonsNarrow");
 
 	const Urho3D::String resIconPath = "textures/hud/icon/resource/";
 	elements[0] = new TopHudElement(window, style, getTexture(resIconPath + "food.png"));
@@ -44,7 +43,7 @@ void TopPanel::createBody() {
 	elements[2] = new TopHudElement(window, style, getTexture(resIconPath + "stone.png"));
 	elements[3] = new TopHudElement(window, style, getTexture(resIconPath + "gold.png"));
 
-	time = new TopHudElement(window, style, textureWorker);
+
 
 	infoPanel = new TopInfoPanel(root, style);
 	infoPanel->createWindow();
@@ -54,14 +53,14 @@ void TopPanel::createBody() {
 void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	auto& poss = player->getPossession();
 
-	name->setText(player->getName(), "(" + Urho3D::String((int)player->getId()) + ")");
-	units->setText(Urho3D::String(poss.getFreeArmyNumber()) + "/", Urho3D::String(poss.getArmyNumber()));
-	workers->setText(Urho3D::String(poss.getFreeWorkersNumber()) + "/", Urho3D::String(poss.getWorkersNumber()));
+	name->setText(player->getName(),  Urho3D::String((int)player->getId()) );
+	units->setText(Urho3D::String(poss.getFreeArmyNumber()) , Urho3D::String(poss.getArmyNumber()));
+	workers->setText(Urho3D::String(poss.getFreeWorkersNumber()), Urho3D::String(poss.getWorkersNumber()));
 	auto [month, year] = frameInfo->getDate();
 	auto [h, m, s] = frameInfo->getTime();
 
 	time->setText(monthsRoman[month] + " " + Urho3D::String(year),
-	              "(" + to2DigString(h) + ":" + to2DigString(m) + ":" + to2DigString(s) + ")");
+	               Urho3D::String((int)h) + ":" + to2DigString(m) + ":" + to2DigString(s));
 	const auto& resources = player->getResources();
 	unsigned short workersPerRes[RESOURCES_SIZE] = {0, 0, 0, 0};
 	for (const auto worker : poss.getWorkers()) {
@@ -76,8 +75,7 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 
 	auto vals = resources.getValues();
 	for (int i = 0; i < vals.size(); ++i) {
-		elements[i]->setText(
-		                     Urho3D::String((int)vals[i]) + "|", Urho3D::String(workersPerRes[i]));
+		elements[i]->setText(Urho3D::String((int)vals[i]), Urho3D::String(workersPerRes[i]));
 	}
 }
 

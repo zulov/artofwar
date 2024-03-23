@@ -25,5 +25,5 @@ void TopHudElement::show() const {
 
 void TopHudElement::setText(const Urho3D::String& msg, const Urho3D::String& msg1) const {
 	value->SetText(msg);
-	value1->SetText(msg1);
+	value1->SetText("(" + msg1 + ")");
 }

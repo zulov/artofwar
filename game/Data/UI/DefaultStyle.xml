@@ -471,7 +471,6 @@
 <element type="MsgTextButton" style="MyText">
 	<attribute name="Font Size" value="{fontSize}"/>
 	<attribute name="Horiz Alignment" value="Center"/>
-	<attribute name="Vert Alignment" value="Center"/>
 </element>
 
 <element type="Sprite">
@@ -482,10 +481,7 @@
 	<attribute name="Opacity" value="0.8"/>
 </element>
 
-
 <element type="rootMock">
 	<attribute name="Min Size" value="{resX} {resy}"/>
 	<attribute name="Max Size" value="{resX} {resy}"/>
 </element>
-
-

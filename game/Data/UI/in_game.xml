@@ -49,7 +49,6 @@
 <element type="InGameText" style="MyText">
 	<attribute name="Text Alignment" value="Right"/>
 	<attribute name="Horiz Alignment" value="Center"/>
-	<attribute name="Vert Alignment" value="Center"/>
 </element>
 
 <element type="MiddleTitle" style="MyText">
