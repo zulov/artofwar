@@ -55,3 +55,9 @@
 	<attribute name="Position" value="0 {iconY/2+2*spaceY}"/>
 	<attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}"/>
 </element>
+
+
+<element type="TopToolTip">
+	<attribute name="Delay" value="0.1"/>
+	<attribute name="Position" value="0 {iconY/2+2*spaceY}"/>
+</element>

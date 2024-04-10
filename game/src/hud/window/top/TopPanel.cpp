@@ -53,8 +53,9 @@ void TopPanel::createBody() {
 void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	auto& poss = player->getPossession();
 
-	name->setText(player->getName(),  Urho3D::String((int)player->getId()) );
-	units->setText(Urho3D::String(poss.getFreeArmyNumber()) , Urho3D::String(poss.getArmyNumber()));
+	name->setText(player->getName(), Urho3D::String((int)player->getId()) )
+	->setToolTip("DUpa");
+	units->setText(Urho3D::String(poss.getFreeArmyNumber()) , Urho3D::String(poss.getArmyNumber()))->setToolTip("");
 	workers->setText(Urho3D::String(poss.getFreeWorkersNumber()), Urho3D::String(poss.getWorkersNumber()));
 	auto [month, year] = frameInfo->getDate();
 	auto [h, m, s] = frameInfo->getTime();
