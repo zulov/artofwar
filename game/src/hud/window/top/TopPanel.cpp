@@ -17,7 +17,8 @@ const Urho3D::String monthsRoman[] = {
 };
 
 TopPanel::TopPanel(Urho3D::UIElement* root, Urho3D::XMLFile* style) : SimplePanel(root, style, "TopWindow",
-		 {GameState::RUNNING, GameState::PAUSE}) {}
+	{GameState::RUNNING, GameState::PAUSE}) {
+}
 
 
 TopPanel::~TopPanel() {
@@ -33,7 +34,7 @@ void TopPanel::createBody() {
 	const Urho3D::String path = "textures/hud/icon/top/";
 
 	name = new TopHudElement(window, style, getTexture(path + "helmet.png"));
-	time = new TopHudElement(window, style, getTexture(path + "time.png"), "TopButtonsWide");
+	time = new TopHudElement(window, style, getTexture(path + "time.png"), false, "TopButtonsWide");
 	units = new TopHudElement(window, style, getTexture(path + "human.png"), "TopButtonsNarrow");
 	workers = new TopHudElement(window, style, getTexture(path + "worker.png"), "TopButtonsNarrow");
 
@@ -44,7 +45,6 @@ void TopPanel::createBody() {
 	elements[3] = new TopHudElement(window, style, getTexture(resIconPath + "gold.png"));
 
 
-
 	infoPanel = new TopInfoPanel(root, style);
 	infoPanel->createWindow();
 	infoPanel->setVisible(true);
@@ -53,15 +53,15 @@ void TopPanel::createBody() {
 void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	auto& poss = player->getPossession();
 
-	name->setText(player->getName(), Urho3D::String((int)player->getId()) )
-	->setToolTip("DUpa");
-	units->setText(Urho3D::String(poss.getFreeArmyNumber()) , Urho3D::String(poss.getArmyNumber()))->setToolTip("");
+	name->setText(player->getName(), Urho3D::String((int)player->getId()))
+	    ->setToolTip("Team: " + ((int)player->getTeam()));
+	units->setText(Urho3D::String(poss.getFreeArmyNumber()), Urho3D::String(poss.getArmyNumber()))->setToolTip("");
 	workers->setText(Urho3D::String(poss.getFreeWorkersNumber()), Urho3D::String(poss.getWorkersNumber()));
 	auto [month, year] = frameInfo->getDate();
 	auto [h, m, s] = frameInfo->getTime();
 
 	time->setText(monthsRoman[month] + " " + Urho3D::String(year),
-	               Urho3D::String((int)h) + ":" + to2DigString(m) + ":" + to2DigString(s));
+	              Urho3D::String((int)h) + ":" + to2DigString(m) + ":" + to2DigString(s));
 	const auto& resources = player->getResources();
 	unsigned short workersPerRes[RESOURCES_SIZE] = {0, 0, 0, 0};
 	for (const auto worker : poss.getWorkers()) {

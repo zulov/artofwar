@@ -3,7 +3,7 @@
 #include <Urho3D/UI/ToolTip.h>
 
 TopHudElement::TopHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style, Urho3D::Texture2D* texture,
-                             Urho3D::String styleName) {
+                             bool toolTipEnabled, Urho3D::String styleName) {
 	button = createElement<Urho3D::Button>(parent, style, styleName);
 	icon = createSprite(button, texture, style, "SpriteLeft");
 
@@ -14,13 +14,13 @@ TopHudElement::TopHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style, 
 
 	button->SetVar("TopHudElement", this);
 
-	toolTip = createElement<Urho3D::ToolTip>(button, style, "TopToolTip");
+	if (toolTipEnabled) {
+		toolTip = createElement<Urho3D::ToolTip>(button, style, "TopToolTip");
 
-    auto* textHolder = createElement<Urho3D::BorderImage>(toolTip, style, "ToolTipBorderImage"); 
+		auto* textHolder = createElement<Urho3D::BorderImage>(toolTip, style, "ToolTipBorderImage");
 
-	tooltipText = createElement<Urho3D::Text>(textHolder, style, "ToolTipText");
-
-	tooltipText->SetText("Please drag me!");
+		tooltipText = createElement<Urho3D::Text>(textHolder, style, "ToolTipText");
+	}
 }
 
 void TopHudElement::hide() const {
@@ -31,17 +31,12 @@ void TopHudElement::show() const {
 	button->SetVisible(true);
 }
 
-const TopHudElement* TopHudElement::setText(const Urho3D::String& msg, const Urho3D::String& msg1)const {
+const TopHudElement* TopHudElement::setText(const Urho3D::String& msg, const Urho3D::String& msg1) const {
 	value->SetText(msg);
 	value1->SetText("(" + msg1 + ")");
 	return this;
 }
 
 void TopHudElement::setToolTip(const Urho3D::String& msg) const {
-	if(msg.Empty()) {
-		toolTip->SetVisible(false);
-	}else {
-		toolTip->SetVisible(true);
-		tooltipText->SetText(msg);
-	}
+	tooltipText->SetText(msg);
 }
