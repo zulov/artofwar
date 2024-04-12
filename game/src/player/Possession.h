@@ -55,6 +55,18 @@ private:
 	int freeArmyNumber = 0;
 	int armyNumber = 0;
 
+	//TODO cout and to tooltip
+	unsigned short typeInfantryNumber;
+	unsigned short typeCalvaryNumber;
+
+	unsigned short typeRangeNumber;
+	unsigned short typeMeleeNumber;
+
+	unsigned short typeHeavyNumber;
+	unsigned short typeLightNumber;
+
+	unsigned short typeSpecialNumber;
+
 	float resourcesSum = 0.f;
 	float resourcesDestroyed = 0.f;
 

@@ -54,9 +54,16 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	auto& poss = player->getPossession();
 
 	name->setText(player->getName(), Urho3D::String((int)player->getId()))
-	    ->setToolTip("Team: " + ((int)player->getTeam()));
-	units->setText(Urho3D::String(poss.getFreeArmyNumber()), Urho3D::String(poss.getArmyNumber()))->setToolTip("");
-	workers->setText(Urho3D::String(poss.getFreeWorkersNumber()), Urho3D::String(poss.getWorkersNumber()));
+	    ->setToolTip("Team: " + Urho3D::String((int)player->getTeam()));
+	auto freeArmy = Urho3D::String(poss.getFreeArmyNumber());
+	auto wholeArmy = Urho3D::String(poss.getArmyNumber());
+	units->setText(freeArmy, wholeArmy)
+	     ->setToolTip("Idle army: " + freeArmy
+		     + "\nWhole army: " + wholeArmy
+		     + "\nInfantry: x, Calvary: y"
+		     + "\nMelee: x, Range: y"
+		     + "\nLight: x, Heavy: y");
+
 	auto [month, year] = frameInfo->getDate();
 	auto [h, m, s] = frameInfo->getTime();
 
@@ -74,9 +81,20 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 		}
 	}
 
+	workers->setText(Urho3D::String(poss.getFreeWorkersNumber()), Urho3D::String(poss.getWorkersNumber()))
+		->setToolTip(
+			"Food: " + Urho3D::String(workersPerRes[0]) +
+			"\nWood: " + Urho3D::String(workersPerRes[1]) +
+			"\nStone: " + Urho3D::String(workersPerRes[2]) +
+			"\nGold: " + Urho3D::String(workersPerRes[3])
+		);
+
 	auto vals = resources.getValues();
 	for (int i = 0; i < vals.size(); ++i) {
-		elements[i]->setText(Urho3D::String((int)vals[i]), Urho3D::String(workersPerRes[i]));
+		elements[i]->setText(Urho3D::String((int)vals[i]), Urho3D::String(workersPerRes[i]))
+		->setToolTip("Gather speed: xx.x/s"
+		"\nWorkers with bonus 3/4"
+		"\nAdditional bonus: 100/342");
 	}
 }
 
