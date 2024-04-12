@@ -104,7 +104,7 @@ FrameInfo* Simulation::update(float timeStep) {
 		simObjectManager->removeFromGrids();
 		simObjectManager->dispose();
 
-		Game::getPlayersMan()->update();
+		Game::getPlayersMan()->update(frameInfo);
 		Game::getFormationManager()->update();
 
 		accumulateTime -= TIME_PER_UPDATE;

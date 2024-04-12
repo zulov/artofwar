@@ -90,11 +90,20 @@ int Possession::getWorkersNumber() const {
 	return workers.size();
 }
 
-int Possession::getFreeWorkersNumber() { ensureReady(); return freeWorkersNumber; }
+int Possession::getFreeWorkersNumber() {
+	ensureReady();
+	return idleWorkersNumber;
+}
 
-int Possession::getFreeArmyNumber() { ensureReady(); return freeArmyNumber; }
+int Possession::getFreeArmyNumber() {
+	ensureReady();
+	return idleArmyNumber;
+}
 
-int Possession::getArmyNumber() { ensureReady(); return armyNumber; }
+int Possession::getArmyNumber() {
+	ensureReady();
+	return armyNumber;
+}
 
 std::vector<Building*>* Possession::getBuildings(short id) {
 	return buildingsPerId[id];
@@ -248,9 +257,35 @@ void Possession::ensureReady() {
 		}
 	}
 
-	freeWorkersNumber = std::ranges::count_if(workers, isInFreeState);
-	//TODO obliczyc w jednej petli
-	freeArmyNumber = std::ranges::count_if(units, isFreeSolider);
+	idleWorkersNumber = std::ranges::count_if(workers, isInFreeState);
+
+	idleArmyNumber = 0;
+	armyNumber = 0;
+	typeInfantryNumber = 0;
+	typeCalvaryNumber = 0;
+	typeRangeNumber = 0;
+	typeMeleeNumber = 0;
+	typeHeavyNumber = 0;
+	typeLightNumber = 0;
+	typeSpecialNumber = 0;
+
+	for (const auto unit : units) {
+		if (isSolider(unit)) {
+			++armyNumber;
+			const auto dbUnit = unit->getDbUnit();
+			if (isFree(unit)) { ++idleArmyNumber; }
+			if (dbUnit->typeInfantry) { ++typeInfantryNumber; }
+			if (dbUnit->typeCalvary) { ++typeCalvaryNumber; }
+			if (dbUnit->typeRange) { ++typeRangeNumber; }
+			if (dbUnit->typeMelee) { ++typeMeleeNumber; }
+			if (dbUnit->typeLight) { ++typeLightNumber; }
+			if (dbUnit->typeHeavy) { ++typeHeavyNumber; }
+			if (dbUnit->typeSpecial) { ++typeSpecialNumber; }
+		}
+	}
+
+
+	idleArmyNumber = std::ranges::count_if(units, isFreeSolider);
 	armyNumber = std::ranges::count_if(units, isSolider);
 
 	resetSpan(resWithoutBonus);

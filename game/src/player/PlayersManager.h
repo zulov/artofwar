@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 
+struct FrameInfo;
 constexpr char TEAMS_NUMBER = 3;
 
 class SceneSaver;
@@ -22,7 +23,7 @@ public:
 	std::vector<Player*>& getTeam(short i);
 	void changeActive(short i);
 	void save(SceneSaver& saver);
-	void update();
+	void update(FrameInfo* frameInfo);
 	char getActivePlayerID() const;
 	static char getEnemyFor(char player);
 

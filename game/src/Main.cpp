@@ -301,7 +301,9 @@ void Main::changeCamera(CameraBehaviorType type) {
 void Main::InitLocalizationSystem() const {
 	const auto l10n = GetSubsystem<Urho3D::Localization>();
 	if (!SIM_GLOBALS.HEADLESS) {
+		
 		l10n->LoadJSONFile("lang/language.json");
+		l10n->LoadJSONFile("lang/top_language.json");
 	}
 
 	Game::setLocalization(l10n);

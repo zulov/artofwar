@@ -51,21 +51,12 @@ private:
 	std::vector<Unit*> units;
 	std::vector<Unit*> workers;
 
-	int freeWorkersNumber = 0;
-	int freeArmyNumber = 0;
-	int armyNumber = 0;
-
-	//TODO cout and to tooltip
-	unsigned short typeInfantryNumber;
-	unsigned short typeCalvaryNumber;
-
-	unsigned short typeRangeNumber;
-	unsigned short typeMeleeNumber;
-
-	unsigned short typeHeavyNumber;
-	unsigned short typeLightNumber;
-
-	unsigned short typeSpecialNumber;
+	unsigned idleWorkersNumber = 0;
+	unsigned idleArmyNumber = 0, armyNumber = 0;
+	unsigned typeInfantryNumber = 0, typeCalvaryNumber = 0;
+	unsigned typeRangeNumber = 0, typeMeleeNumber = 0;
+	unsigned typeHeavyNumber = 0, typeLightNumber = 0;
+	unsigned typeSpecialNumber = 0;
 
 	float resourcesSum = 0.f;
 	float resourcesDestroyed = 0.f;

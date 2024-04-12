@@ -1,5 +1,6 @@
 #include "TopPanel.h"
 #include <Urho3D/Graphics/Texture2D.h>
+#include <Urho3D/Resource/Localization.h>
 #include <Urho3D/UI/Window.h>
 #include "GameState.h"
 #include "TopHudElement.h"
@@ -52,9 +53,10 @@ void TopPanel::createBody() {
 
 void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	auto& poss = player->getPossession();
+	const auto l10n = Game::getLocalization();
 
 	name->setText(player->getName(), Urho3D::String((int)player->getId()))
-	    ->setToolTip("Team: " + Urho3D::String((int)player->getTeam()));
+	    ->setToolTip(l10nFormat("top_name_tooltip", player->getTeam()));
 	auto freeArmy = Urho3D::String(poss.getFreeArmyNumber());
 	auto wholeArmy = Urho3D::String(poss.getArmyNumber());
 	units->setText(freeArmy, wholeArmy)
@@ -92,7 +94,7 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	auto vals = resources.getValues();
 	for (int i = 0; i < vals.size(); ++i) {
 		elements[i]->setText(Urho3D::String((int)vals[i]), Urho3D::String(workersPerRes[i]))
-		->setToolTip("Gather speed: xx.x/s"
+		->setToolTip("Gather speed: " + Urho3D::String(asStringF(resources.getGatherSpeeds()[i]).c_str()) +
 		"\nWorkers with bonus 3/4"
 		"\nAdditional bonus: 100/342");
 	}

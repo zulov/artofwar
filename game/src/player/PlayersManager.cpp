@@ -3,6 +3,7 @@
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "scene/load/dbload_container.h"
 #include "scene/save/SceneSaver.h"
+#include "simulation/PerFrameAction.h"
 
 
 PlayersManager::~PlayersManager() {
@@ -66,10 +67,13 @@ void PlayersManager::save(SceneSaver& saver) {
 	saver.saveResources(allPlayers);
 }
 
-void PlayersManager::update() {
+void PlayersManager::update(FrameInfo *frameInfo) {
 	for (const auto player : allPlayers) {
 		player->updatePossession();
-		player->updateResource();
+		if(PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_GATHER_SPEED, frameInfo->getCurrentFrame())) {
+			player->updateResource();
+		}
+
 		player->resetScore();
 	}
 }

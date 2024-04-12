@@ -5,6 +5,9 @@
 #include <sstream>
 #include <Urho3D/Container/Str.h>
 #include <fast_float/fast_float.h>
+#include <Urho3D/Resource/Localization.h>
+
+#include "Game.h"
 
 inline std::vector<std::string> split(const std::string& s, char delimiter) {
 	std::vector<std::string> tokens;
@@ -38,4 +41,8 @@ inline float toFloat(const std::string& token) {
 
 inline Urho3D::String to2DigString(unsigned char v) {
 	return (v < 10 ? "0" : "") + Urho3D::String((unsigned int)v);
+}
+
+inline const Urho3D::String& l10nFormat(const Urho3D::String& key, ...) {
+	return Urho3D::String().AppendWithFormat(Game::getLocalization()->Get(key).CString(), args);
 }

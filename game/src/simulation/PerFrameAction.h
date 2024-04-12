@@ -19,6 +19,7 @@ enum class PerFrameAction:char {
 	HUD_UPDATE,
 	VISIBILITY,
 	INFLUENCE_HISTORY_RESET,
+	RESOURCE_GATHER_SPEED,
 };
 
 constexpr inline struct PerFrameActionData {
@@ -85,7 +86,8 @@ private:
 			0, 0, 0, 30, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		}//INFLUENCE_HISTORY_RESET
+		},//INFLUENCE_HISTORY_RESET
+		ONCE_PER_SECOND //RESOURCE_GATHER_SPEED
 	};
 public:
 	static bool get(PerFrameAction type, unsigned char frameNum, unsigned int second = 1) {
