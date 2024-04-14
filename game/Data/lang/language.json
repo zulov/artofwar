@@ -235,7 +235,7 @@
 		"pl":"\nAtak: %s Obrona: %s\nHP: %d/%d\nUżytkowników: %d/%d %d/%d\nStan: %s"
 	},
 	"info_resource":{
-		"pl":"\nZasobów: %d/%d (%sx)\nUżytkowników: %d/%d"
+		"pl":"%s\nZasobów: %d/%d (%sx)\nUżytkowników: %d/%d"
 	},
 	"info_unit":{
 		"pl":"\nAtak: %s|%s|%s\nObrona: %s\nZdrowie: %d/%d\nUżytkowników: %d/%d %d/%d\nStan: %s"

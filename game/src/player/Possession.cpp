@@ -53,7 +53,7 @@ Possession::~Possession() {
 	delete[]levelsFree;
 }
 
-int Possession::getScore() const {
+unsigned Possession::getScore() const {
 	float buildingScore = 0.f;
 	for (const auto building : buildings) {
 		auto cost = building->getCostSum();
@@ -78,31 +78,61 @@ int Possession::getScore() const {
 	//return buildings.size() * 10 + units.size() + resourcesSum / 100;
 }
 
-int Possession::getUnitsNumber() const {
+unsigned Possession::getUnitsNumber() const {
 	return units.size();
 }
 
-int Possession::getBuildingsNumber() const {
+unsigned Possession::getBuildingsNumber() const {
 	return buildings.size();
 }
 
-int Possession::getWorkersNumber() const {
+unsigned Possession::getWorkersNumber() const {
 	return workers.size();
 }
 
-int Possession::getFreeWorkersNumber() {
+unsigned Possession::getFreeWorkersNumber() {
 	ensureReady();
 	return idleWorkersNumber;
 }
 
-int Possession::getFreeArmyNumber() {
+unsigned Possession::getFreeArmyNumber() {
 	ensureReady();
 	return idleArmyNumber;
 }
 
-int Possession::getArmyNumber() {
+unsigned Possession::getArmyNumber() {
 	ensureReady();
 	return armyNumber;
+}
+
+unsigned Possession::getInfantryNumber() {
+	ensureReady();
+	return typeInfantryNumber;
+}
+
+unsigned Possession::getCalvaryNumber() {
+	ensureReady();
+	return typeCalvaryNumber;
+}
+
+unsigned Possession::getMeleeNumber() {
+	ensureReady();
+	return typeMeleeNumber;
+}
+
+unsigned Possession::getRangeNumber() {
+	ensureReady();
+	return typeRangeNumber;
+}
+
+unsigned Possession::getLightNumber() {
+	ensureReady();
+	return typeLightNumber;
+}
+
+unsigned Possession::getHeavyNumber() {
+	ensureReady();
+	return typeHeavyNumber;
 }
 
 std::vector<Building*>* Possession::getBuildings(short id) {

@@ -53,18 +53,17 @@ void TopPanel::createBody() {
 
 void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	auto& poss = player->getPossession();
-	const auto l10n = Game::getLocalization();
 
 	name->setText(player->getName(), Urho3D::String((int)player->getId()))
-	    ->setToolTip(l10nFormat("top_name_tooltip", player->getTeam()));
+	    ->setToolTip(l10nFormat("top_name_tooltip", (int)player->getTeam()));
+
 	auto freeArmy = Urho3D::String(poss.getFreeArmyNumber());
 	auto wholeArmy = Urho3D::String(poss.getArmyNumber());
 	units->setText(freeArmy, wholeArmy)
-	     ->setToolTip("Idle army: " + freeArmy
-		     + "\nWhole army: " + wholeArmy
-		     + "\nInfantry: x, Calvary: y"
-		     + "\nMelee: x, Range: y"
-		     + "\nLight: x, Heavy: y");
+	     ->setToolTip(l10nFormat("top_units_tooltip", poss.getFreeArmyNumber(), poss.getArmyNumber(), 
+			 poss.getInfantryNumber(), poss.getCalvaryNumber(),
+			 poss.getMeleeNumber(),poss.getRangeNumber(),
+			 poss.getLightNumber(), poss.getHeavyNumber()));
 
 	auto [month, year] = frameInfo->getDate();
 	auto [h, m, s] = frameInfo->getTime();

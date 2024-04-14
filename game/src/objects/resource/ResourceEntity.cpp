@@ -48,10 +48,8 @@ unsigned short ResourceEntity::getMaxHpBarSize() const {
 Urho3D::String ResourceEntity::getInfo() const {
 	const auto l10n = Game::getLocalization();
 	const auto bonus = bonuses[Game::getPlayersMan()->getActivePlayerID()] * dbResource->collectSpeed;
-	return Urho3D::String(dbResource->name)
-		.AppendWithFormat(l10n->Get("info_resource").CString(),
-		                  (int)hp, dbResource->maxHp, asStringF(bonus, 1).c_str(),
-		                  closeUsers, getMaxCloseUsers());
+	return l10nFormat("info_resource", dbResource->name.CString(), (int)hp, dbResource->maxHp,
+	                  asStringF(bonus, 1).c_str(), closeUsers, getMaxCloseUsers());
 }
 
 const Urho3D::String& ResourceEntity::getName() const {

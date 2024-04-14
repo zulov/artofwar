@@ -20,13 +20,21 @@ public:
 	void updateAndClean(const Resources& resources);
 	void ensureReady();
 
-	int getScore() const;
-	int getUnitsNumber() const;
-	int getBuildingsNumber() const;
-	int getWorkersNumber() const;
-	int getFreeWorkersNumber();
-	int getFreeArmyNumber();
-	int getArmyNumber();
+	unsigned getScore() const;
+	unsigned getUnitsNumber() const;
+	unsigned getBuildingsNumber() const;
+	unsigned getWorkersNumber() const;
+
+	unsigned getFreeWorkersNumber();
+	unsigned getFreeArmyNumber();
+	unsigned getArmyNumber();
+	unsigned getInfantryNumber();
+	unsigned getCalvaryNumber();
+	unsigned getMeleeNumber();
+	unsigned getRangeNumber();
+	unsigned getLightNumber();
+	unsigned getHeavyNumber();
+
 	std::span<float> getResWithOutBonus() { ensureReady(); return resWithoutBonus; }
 	std::vector<Building*>* getBuildings(short id);
 	const std::vector<Building*>& getBuildings();
