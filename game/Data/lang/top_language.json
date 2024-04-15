@@ -5,5 +5,11 @@
 	},
 	"top_units_tooltip":{
 		"pl":"Bezczyni: %d, Wszyscy: %d\nPiechota: %d, Kawaleria: %d\nW zwarciu: %d, Na odległość: %d\nLekka: %d, Ciężka: %d",
+	},
+	"top_workers_tooltip":{
+		"pl":"Żywność: %d\nDrewno: %d\nKamień: %d\nZłoto: %d",
+	},
+	"top_workers_tooltip":{
+		"pl":"Żywność: %d\nDrewno: %d\nKamień: %d\nZłoto: %d",
 	}
 }

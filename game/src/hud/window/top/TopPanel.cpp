@@ -83,12 +83,7 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	}
 
 	workers->setText(Urho3D::String(poss.getFreeWorkersNumber()), Urho3D::String(poss.getWorkersNumber()))
-		->setToolTip(
-			"Food: " + Urho3D::String(workersPerRes[0]) +
-			"\nWood: " + Urho3D::String(workersPerRes[1]) +
-			"\nStone: " + Urho3D::String(workersPerRes[2]) +
-			"\nGold: " + Urho3D::String(workersPerRes[3])
-		);
+		->setToolTip(l10nFormat("top_workers_tooltip", workersPerRes[0], workersPerRes[1], workersPerRes[2], workersPerRes[3]));
 
 	auto vals = resources.getValues();
 	for (int i = 0; i < vals.size(); ++i) {
