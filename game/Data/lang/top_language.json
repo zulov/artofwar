@@ -9,7 +9,16 @@
 	"top_workers_tooltip":{
 		"pl":"Żywność: %d\nDrewno: %d\nKamień: %d\nZłoto: %d",
 	},
-	"top_workers_tooltip":{
-		"pl":"Żywność: %d\nDrewno: %d\nKamień: %d\nZłoto: %d",
-	}
+	"top_food_tooltip":{
+		"pl":"Prędkość zbierania: %s/min\nRobotnicy z bonusem %d/%d\nPoza spiżarniami: %d",
+	},
+	"top_wood_tooltip":{
+		"pl":"Prędkość zbierania: %s/min\nRobotnicy z bonusem %d/%d",
+	},
+	"top_stone_tooltip":{
+		"pl":"Prędkość zbierania: %s/min\nRobotnicy z bonusem %d/%d",
+	},
+	"top_gold_tooltip":{
+		"pl":"Prędkość zbierania: %s/min\nRobotnicy z bonusem %d/%d",
+	},
 }

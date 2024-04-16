@@ -60,17 +60,17 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	auto freeArmy = Urho3D::String(poss.getFreeArmyNumber());
 	auto wholeArmy = Urho3D::String(poss.getArmyNumber());
 	units->setText(freeArmy, wholeArmy)
-	     ->setToolTip(l10nFormat("top_units_tooltip", poss.getFreeArmyNumber(), poss.getArmyNumber(), 
-			 poss.getInfantryNumber(), poss.getCalvaryNumber(),
-			 poss.getMeleeNumber(),poss.getRangeNumber(),
-			 poss.getLightNumber(), poss.getHeavyNumber()));
+	     ->setToolTip(l10nFormat("top_units_tooltip", poss.getFreeArmyNumber(), poss.getArmyNumber(),
+	                             poss.getInfantryNumber(), poss.getCalvaryNumber(),
+	                             poss.getMeleeNumber(), poss.getRangeNumber(),
+	                             poss.getLightNumber(), poss.getHeavyNumber()));
 
 	auto [month, year] = frameInfo->getDate();
 	auto [h, m, s] = frameInfo->getTime();
 
 	time->setText(monthsRoman[month] + " " + Urho3D::String(year),
 	              Urho3D::String((int)h) + ":" + to2DigString(m) + ":" + to2DigString(s));
-	const auto& resources = player->getResources();
+
 	unsigned short workersPerRes[RESOURCES_SIZE] = {0, 0, 0, 0};
 	for (const auto worker : poss.getWorkers()) {
 		if (worker->getState() == UnitState::COLLECT) {
@@ -83,15 +83,25 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	}
 
 	workers->setText(Urho3D::String(poss.getFreeWorkersNumber()), Urho3D::String(poss.getWorkersNumber()))
-		->setToolTip(l10nFormat("top_workers_tooltip", workersPerRes[0], workersPerRes[1], workersPerRes[2], workersPerRes[3]));
+	       ->setToolTip(l10nFormat("top_workers_tooltip", workersPerRes[0], workersPerRes[1], workersPerRes[2],
+	                               workersPerRes[3]));
 
+	const auto& resources = player->getResources();
 	auto vals = resources.getValues();
 	for (int i = 0; i < vals.size(); ++i) {
-		elements[i]->setText(Urho3D::String((int)vals[i]), Urho3D::String(workersPerRes[i]))
-		->setToolTip("Gather speed: " + Urho3D::String(asStringF(resources.getGatherSpeeds()[i]).c_str()) +
-		"\nWorkers with bonus 3/4"
-		"\nAdditional bonus: 100/342");
+		elements[i]->setText(Urho3D::String((int)vals[i]), Urho3D::String(workersPerRes[i]));
 	}
+	auto gather = resources.getGatherSpeeds();
+	auto without = poss.getResWithOutBonus();
+
+	elements[0]->setToolTip(l10nFormat("top_food_tooltip", asStringF(gather[0] * 60.f, 1).c_str(),
+	                                   (int)(workersPerRes[0] - without[0]), workersPerRes[0], (int)abs(vals[0] - resources.getFoodStorage())));
+	elements[1]->setToolTip(l10nFormat("top_wood_tooltip", asStringF(gather[1] * 60.f, 1).c_str(),
+	                                   (int)(workersPerRes[1] - without[1]), workersPerRes[1]));
+	elements[2]->setToolTip(l10nFormat("top_stone_tooltip", asStringF(gather[2] * 60.f, 1).c_str(),
+	                                   (int)(workersPerRes[2] - without[2]), workersPerRes[2]));
+	elements[3]->setToolTip(l10nFormat("top_gold_tooltip", asStringF(gather[3] * 60.f, 1).c_str(),
+	                                   (int)(workersPerRes[3] - without[3]), workersPerRes[3]));
 }
 
 void TopPanel::setVisible(bool enable) {

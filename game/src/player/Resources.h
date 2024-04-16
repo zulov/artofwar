@@ -30,6 +30,9 @@ public:
 	void setValue(int id, float amount);
 
 	void resetStats() const;
+
+	float getFoodStorage() const { return foodStorage; }
+
 private:
 	float data[RESOURCES_SIZE * 4];
 
@@ -37,4 +40,6 @@ private:
 	std::span<float> gatherSpeeds;
 	std::span<float> sumGatherSpeed;
 	std::span<float> sumValues;
+
+	float foodStorage = 0.f;
 };
