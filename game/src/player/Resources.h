@@ -42,4 +42,5 @@ private:
 	std::span<float> sumValues;
 
 	float foodStorage = 0.f;
+	float goldStorage = 0.f;
 };

@@ -2,6 +2,6 @@
 <attribute name="Scale" value="2 1 2" />
 <component type="StaticModel">
 	<attribute name="Model" value="Model;Models/buildings/Cube.mdl" />
-	<attribute name="Material" value="Material;Materials/buildings/granary_1.xml" />
+	<attribute name="Material" value="Material;Materials/buildings/mill_1.xml" />
 </component>
 </node>
