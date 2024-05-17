@@ -1,0 +1,7 @@
+<node>
+<attribute name="Scale" value="3 1 3" />
+<component type="StaticModel">
+	<attribute name="Model" value="Model;Models/buildings/Cube.mdl" />
+	<attribute name="Material" value="Material;Materials/buildings/goldRefinery_1.xml" />
+</component>
+</node>
