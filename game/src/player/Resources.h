@@ -32,6 +32,7 @@ public:
 	void resetStats() const;
 
 	float getFoodStorage() const { return foodStorage; }
+	float getGoldStorage() const { return goldStorage; }
 
 private:
 	float data[RESOURCES_SIZE * 4];

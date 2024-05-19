@@ -94,14 +94,23 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	auto gather = resources.getGatherSpeeds();
 	auto without = poss.getResWithOutBonus();
 
-	elements[0]->setToolTip(l10nFormat("top_food_tooltip", asStringF(gather[0] * 60.f, 1).c_str(),
-	                                   (int)(workersPerRes[0] - without[0]), workersPerRes[0], (int)abs(vals[0] - resources.getFoodStorage())));
-	elements[1]->setToolTip(l10nFormat("top_wood_tooltip", asStringF(gather[1] * 60.f, 1).c_str(),
-	                                   (int)(workersPerRes[1] - without[1]), workersPerRes[1]));
-	elements[2]->setToolTip(l10nFormat("top_stone_tooltip", asStringF(gather[2] * 60.f, 1).c_str(),
-	                                   (int)(workersPerRes[2] - without[2]), workersPerRes[2]));
-	elements[3]->setToolTip(l10nFormat("top_gold_tooltip", asStringF(gather[3] * 60.f, 1).c_str(),
-	                                   (int)(workersPerRes[3] - without[3]), workersPerRes[3]));
+	elements[0]->setToolTip(l10nFormat("top_food_tooltip",
+	                                   asStringF(gather[0] * 60.f, 1).c_str(),
+	                                   (int)(workersPerRes[0] - without[0]),
+	                                   workersPerRes[0],
+	                                   (int)abs(vals[0] - resources.getFoodStorage())));
+	elements[1]->setToolTip(l10nFormat("top_wood_tooltip",
+	                                   asStringF(gather[1] * 60.f, 1).c_str(),
+	                                   (int)(workersPerRes[1] - without[1]),
+	                                   workersPerRes[1]));
+	elements[2]->setToolTip(l10nFormat("top_stone_tooltip",
+	                                   asStringF(gather[2] * 60.f, 1).c_str(),
+	                                   (int)(workersPerRes[2] - without[2]),
+	                                   workersPerRes[2]));
+	elements[3]->setToolTip(l10nFormat("top_gold_tooltip",
+	                                   asStringF(gather[3] * 60.f, 1).c_str(),
+	                                   (int)(workersPerRes[3] - without[3]),
+	                                   (int)abs(vals[3] - resources.getGoldStorage())));
 }
 
 void TopPanel::setVisible(bool enable) {
