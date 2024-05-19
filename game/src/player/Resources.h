@@ -13,6 +13,7 @@ public:
 	Resources();
 	~Resources() = default;
 	void init(float valueForAll);
+
 	explicit Resources(float valueForAll);
 	Resources(const Resources&) = delete;
 
@@ -30,9 +31,20 @@ public:
 	void setValue(int id, float amount);
 
 	void resetStats() const;
+	void updateResourceMonth();
+	void updateResourceYear();
 
 	float getFoodStorage() const { return foodStorage; }
 	float getGoldStorage() const { return goldStorage; }
+
+	float getLastFoodLost() const { return lastFoodLost; }
+	float potentialFoodLost() const { return abs(values[0] - foodStorage) * foodLostRate; }
+
+	float getLastGoldGains() const { return lastGoldGain; }
+	float potentialGoldGain() const { return abs(goldStorage - values[3]) * goldGainRate; }
+
+	float getStoneRefineCapacity() const { return 0.f; }
+	float getPotentialStoneRefinement() const { return 0.f; }
 
 private:
 	float data[RESOURCES_SIZE * 4];
@@ -44,4 +56,10 @@ private:
 
 	float foodStorage = 0.f;
 	float goldStorage = 0.f;
+
+	float lastFoodLost = 0.f;
+	float foodLostRate = 0.1f;
+
+	float lastGoldGain = 0.f;
+	float goldGainRate = 0.01f;
 };

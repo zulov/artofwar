@@ -30,6 +30,9 @@ public:
 	Urho3D::String& getName() { return name; }
 
 	void updateResource() const;
+	void updateResourceMonth();
+	void updateResourceYear();
+
 	void updatePossession();
 	void add(Unit* unit);
 	void add(Building* building);

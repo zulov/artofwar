@@ -74,6 +74,14 @@ void PlayersManager::update(FrameInfo *frameInfo) {
 			player->updateResource();
 		}
 
+		if (PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_MONTH_UPDATE, frameInfo->getCurrentFrame())) {
+			player->updateResourceMonth();
+		}
+
+		if (PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_YEAR_UPDATE, frameInfo->getCurrentFrame())) {
+			player->updateResourceYear();
+		}
+
 		player->resetScore();
 	}
 }

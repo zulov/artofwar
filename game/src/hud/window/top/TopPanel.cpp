@@ -98,7 +98,10 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	                                   asStringF(gather[0] * 60.f, 1).c_str(),
 	                                   (int)(workersPerRes[0] - without[0]),
 	                                   workersPerRes[0],
-	                                   (int)abs(vals[0] - resources.getFoodStorage())));
+	                                   (int)vals[0],
+	                                   (int)resources.getFoodStorage(),
+	                                   (int)resources.getLastFoodLost(),
+	                                   (int)resources.potentialFoodLost()));
 	elements[1]->setToolTip(l10nFormat("top_wood_tooltip",
 	                                   asStringF(gather[1] * 60.f, 1).c_str(),
 	                                   (int)(workersPerRes[1] - without[1]),
@@ -106,11 +109,20 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	elements[2]->setToolTip(l10nFormat("top_stone_tooltip",
 	                                   asStringF(gather[2] * 60.f, 1).c_str(),
 	                                   (int)(workersPerRes[2] - without[2]),
-	                                   workersPerRes[2]));
+	                                   workersPerRes[2],
+	                                   (int)resources.getStoneRefineCapacity(),
+	                                   (int)resources.getPotentialStoneRefinement()));
 	elements[3]->setToolTip(l10nFormat("top_gold_tooltip",
 	                                   asStringF(gather[3] * 60.f, 1).c_str(),
 	                                   (int)(workersPerRes[3] - without[3]),
-	                                   (int)abs(vals[3] - resources.getGoldStorage())));
+	                                   workersPerRes[3],
+	                                   (int)vals[0],
+	                                   (int)resources.getGoldStorage(),
+	                                   (int)resources.getLastGoldGains(),
+		                                   (int)resources.getPotentialGoldGains(),
+		                                   (int)abs(vals[3] - resources.getGoldStorage()),
+		                                   (int)resources.getGoldRefineCapacity(),
+		                                   (int)resources.getPotentialGoldRefinement()));
 }
 
 void TopPanel::setVisible(bool enable) {

@@ -72,3 +72,11 @@ void Resources::resetStats() const {
 	std::ranges::copy(sumGatherSpeed, gatherSpeeds.begin());
 	resetSpan(sumGatherSpeed);
 }
+
+void Resources::updateResourceMonth() {
+	values[0] -= potentialFoodLost();
+}
+
+void Resources::updateResourceYear() {
+	values[3] -= potentialGoldGain();
+}

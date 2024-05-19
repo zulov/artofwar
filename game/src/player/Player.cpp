@@ -90,6 +90,14 @@ void Player::updateResource() const {
 	resources.resetStats();
 }
 
+void Player::updateResourceMonth() {
+	resources.updateResourceMonth();
+}
+
+void Player::updateResourceYear() {
+	resources.updateResourceYear();
+}
+
 void Player::updatePossession() {
 	possession.updateAndClean(resources);
 }
