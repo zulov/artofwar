@@ -114,15 +114,11 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	                                   (int)resources.getPotentialStoneRefinement()));
 	elements[3]->setToolTip(l10nFormat("top_gold_tooltip",
 	                                   asStringF(gather[3] * 60.f, 1).c_str(),
-	                                   (int)(workersPerRes[3] - without[3]),
-	                                   workersPerRes[3],
-	                                   (int)vals[0],
-	                                   (int)resources.getGoldStorage(),
-	                                   (int)resources.getLastGoldGains(),
-		                                   (int)resources.getPotentialGoldGains(),
-		                                   (int)abs(vals[3] - resources.getGoldStorage()),
-		                                   (int)resources.getGoldRefineCapacity(),
-		                                   (int)resources.getPotentialGoldRefinement()));
+	                                   (int)(workersPerRes[3] - without[3]), workersPerRes[3],
+	                                   (int)vals[3], (int)resources.getGoldStorage(),
+	                                   (int)resources.getLastGoldGains(), (int)resources.getPotentialGoldGains(),
+	                                   (int)resources.getGoldRefineCapacity(),
+	                                   (int)resources.getPotentialGoldRefinement()));
 }
 
 void TopPanel::setVisible(bool enable) {

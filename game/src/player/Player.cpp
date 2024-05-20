@@ -86,7 +86,7 @@ void Player::resetScore() {
 	score = -1;
 }
 
-void Player::updateResource() const {
+void Player::updateResource() {
 	resources.resetStats();
 }
 

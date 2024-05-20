@@ -224,7 +224,7 @@ void Possession::updateAndClean(const Resources& resources) {
 			}
 		}
 	}
-	resourcesSum = sumSpan(resources.getValues());
+	resourcesSum = sumArray(resources.getValues());
 }
 
 void Possession::ensureReady() {

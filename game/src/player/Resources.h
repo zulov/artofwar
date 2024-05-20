@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <string>
 #include <span>
 
@@ -21,16 +22,14 @@ public:
 	bool hasEnough(const db_cost* costs) const;
 	void add(int id, float value);
 
-	std::span<float> getValues() const { return values; }
-	std::span<float> getGatherSpeeds() const { return gatherSpeeds; }
-	std::span<float> getSumValues() const { return sumValues; }
-
-	int getSum() const;
+	const std::array<float, RESOURCES_SIZE>& getValues() const { return values; }
+	const std::array<float, RESOURCES_SIZE>& getGatherSpeeds() const { return gatherSpeeds1s; }
+	const std::array<float, RESOURCES_SIZE>& getSumValues() const { return sumValues; }
 
 	std::string getValues(int precision, int player) const;
 	void setValue(int id, float amount);
 
-	void resetStats() const;
+	void resetStats();
 	void updateResourceMonth();
 	void updateResourceYear();
 
@@ -46,20 +45,28 @@ public:
 	float getStoneRefineCapacity() const { return 0.f; }
 	float getPotentialStoneRefinement() const { return 0.f; }
 
-private:
-	float data[RESOURCES_SIZE * 4];
+	float getPotentialGoldGains() const { return 0.f; }
+	float getGoldRefineCapacity() const { return goldRefineCapacity; }
+	float getPotentialGoldRefinement() const { return 0.f; }
 
-	std::span<float> values;
-	std::span<float> gatherSpeeds;
-	std::span<float> sumGatherSpeed;
-	std::span<float> sumValues;
+private:
+	std::array<float, RESOURCES_SIZE> values;//TODO wszystie te wartosci trzeba zapisac w savie
+	std::array<float, RESOURCES_SIZE> gatherSpeeds60s;//to do AI? jakies real speed
+	std::array<float, RESOURCES_SIZE> gatherSpeeds1s;
+	std::array<float, RESOURCES_SIZE> sumGatherSpeed;
+	std::array<float, RESOURCES_SIZE> sumValues;
 
 	float foodStorage = 0.f;
-	float goldStorage = 0.f;
-
 	float lastFoodLost = 0.f;
 	float foodLostRate = 0.1f;
 
+	float stoneRefineCapacity = 0.f;
+	float stoneRefineValue = 0.f;
+
+	float goldStorage = 0.f;
 	float lastGoldGain = 0.f;
 	float goldGainRate = 0.01f;
+	float goldRefineCapacity = 0.f;
+
+
 };

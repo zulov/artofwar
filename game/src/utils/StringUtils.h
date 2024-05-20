@@ -43,6 +43,11 @@ inline Urho3D::String to2DigString(unsigned char v) {
 	return (v < 10 ? "0" : "") + Urho3D::String((unsigned int)v);
 }
 
+template <typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8, typename T9>
+Urho3D::String l10nFormat(const char* fmt, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9) {
+	return Urho3D::String().AppendWithFormat(Game::getLocalization()->Get(Urho3D::String(fmt)).CString(), t1, t2, t3, t4, t5, t6, t7, t8, t9);
+}
+
 template <typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
 Urho3D::String l10nFormat(const char* fmt, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8) {
 	return Urho3D::String().AppendWithFormat(Game::getLocalization()->Get(Urho3D::String(fmt)).CString(), t1, t2, t3, t4, t5, t6, t7, t8);

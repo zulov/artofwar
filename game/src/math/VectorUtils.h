@@ -93,3 +93,17 @@ static std::vector<unsigned char> intersection(std::vector<std::vector<unsigned 
 	}
 	return common;
 }
+
+template <typename T, std::size_t N>
+T sumArray(const std::array<T, N>& arr) {
+	T sum = 0;
+	for (const auto& value : arr) {
+		sum += value;
+	}
+	return sum;
+}
+
+template <typename T, std::size_t N>
+void resetArray(std::array<T, N>& arr, T val = 0.f) {
+	std::fill_n(arr.begin(), arr.size(), val);
+}

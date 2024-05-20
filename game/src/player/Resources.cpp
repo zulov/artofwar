@@ -4,6 +4,7 @@
 
 #include "database/DatabaseCache.h"
 #include "math/SpanUtils.h"
+#include "math/VectorUtils.h"
 
 
 Resources::Resources() {
@@ -15,13 +16,10 @@ Resources::Resources(float valueForAll) {
 }
 
 void Resources::init(float valueForAll) {
-	values = std::span(data, RESOURCES_SIZE);
-	gatherSpeeds = std::span(data + RESOURCES_SIZE, RESOURCES_SIZE);
-	sumGatherSpeed = std::span(data + 2 * RESOURCES_SIZE, RESOURCES_SIZE);
-	sumValues = std::span(data + 3 * RESOURCES_SIZE, RESOURCES_SIZE);
+
 
 	resetSpan(values, valueForAll);
-	resetSpan(gatherSpeeds);
+	resetSpan(gatherSpeeds1s);
 	resetSpan(sumGatherSpeed);
 	resetSpan(sumValues);
 }
@@ -51,13 +49,9 @@ void Resources::add(int id, float value) {
 	sumValues[id] += value;
 }
 
-int Resources::getSum() const {
-	return sumSpan(values);
-}
-
 std::string Resources::getValues(int precision, int player) const {
 	std::string str;
-	for (int i = 0; i < RESOURCES_SIZE; ++i) {
+	for (int i = 0; i < RESOURCES_SIZE; ++i) {//TODO zapisac to w jednej linijce
 		str += "(" + std::to_string(player) + "," + std::to_string(i) + "," + std::to_string(
 			(int)(values[i] * precision)) + "),";
 	}
@@ -68,9 +62,9 @@ void Resources::setValue(int id, float amount) {
 	values[id] = amount;
 }
 
-void Resources::resetStats() const {
-	std::ranges::copy(sumGatherSpeed, gatherSpeeds.begin());
-	resetSpan(sumGatherSpeed);
+void Resources::resetStats() {
+	std::ranges::copy(sumGatherSpeed, gatherSpeeds1s.begin());
+	resetArray(sumGatherSpeed);
 }
 
 void Resources::updateResourceMonth() {
@@ -78,5 +72,5 @@ void Resources::updateResourceMonth() {
 }
 
 void Resources::updateResourceYear() {
-	values[3] -= potentialGoldGain();
+	values[3] += potentialGoldGain();
 }

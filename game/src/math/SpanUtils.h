@@ -11,7 +11,7 @@ inline float minSpan(std::span<float> vec) {
 }
 
 template <typename T>
-inline T sumSpan(std::span<T> vec) {
+T sumSpan(std::span<T> vec) {
 	return std::accumulate(vec.begin(), vec.end(), 0.f);
 }
 
@@ -25,7 +25,7 @@ inline float minSpanSq(std::span<float> vec) {
 }
 
 template <typename T>
-inline void printSpan(std::span<T> vec) {
+void printSpan(std::span<T> vec) {
 	for (auto val : vec) {
 		std::cerr << val << ";";
 	}
@@ -33,7 +33,7 @@ inline void printSpan(std::span<T> vec) {
 }
 
 template <typename T>
-inline void printSpan(std::span<T> vec, std::function<bool(T)> condition) {
+void printSpan(std::span<T> vec, std::function<bool(T)> condition) {
 	for (auto val : vec) {
 		if (condition(val)) {
 			std::cerr << val << ";";
@@ -43,7 +43,7 @@ inline void printSpan(std::span<T> vec, std::function<bool(T)> condition) {
 }
 
 template <typename T>
-inline void printSpan(std::span<T> vec, int cols) {
+void printSpan(std::span<T> vec, int cols) {
 	int i = 0;
 	for (auto val : vec) {
 		if (i % cols == 0) {
@@ -110,4 +110,9 @@ inline float maxSpanRoot(std::span<float> vec) {
 
 inline void resetSpan(std::span<float> vec, float val = 0.f) {
 	std::fill_n(vec.begin(), vec.size(), val);
+}
+
+template <typename T, std::size_t N>
+std::span<const T> asSpan(const std::array<T, N>& arr) {
+	return std::span(arr.data(), arr.size());
 }
