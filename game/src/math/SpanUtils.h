@@ -113,6 +113,6 @@ inline void resetSpan(std::span<float> vec, float val = 0.f) {
 }
 
 template <typename T, std::size_t N>
-std::span<const T> asSpan(const std::array<T, N>& arr) {
+const std::span<const T> asSpan(const std::array<T, N>& arr) {
 	return std::span(arr.data(), arr.size());
 }

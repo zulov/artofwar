@@ -77,7 +77,7 @@ private:
 	void changeState(GameState newState);
 
 	void writeOutput(std::initializer_list<const std::function<float(Player*)>> funcs1,
-	                 std::initializer_list<const std::function<std::span<float>(Player*)>> funcs2) const;
+	                 std::initializer_list<const std::function<std::span<const float>(Player*)>> funcs2) const;
 	void writeOutput() const;
 	void setCameraPos() const;
 

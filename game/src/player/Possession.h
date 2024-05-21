@@ -77,7 +77,7 @@ private:
 
 	float* data;
 
-	std::span<float> unitsSumAsSpan;
+	std::span<float> unitsSumAsSpan;//zrobic z tego array
 	std::span<float> freeArmySumAsSpan; //TODO to dac jako któtkie
 	std::span<float> buildingsSumAsSpan;
 
