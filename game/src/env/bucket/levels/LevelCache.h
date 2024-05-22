@@ -29,13 +29,6 @@ struct LevelCacheValue {
 		delete shifts;
 	}
 
-	void init(size_t size) {
-		indexes = new std::vector<short>();
-		shifts = new std::vector<Urho3D::IntVector2>;
-		indexes->reserve(size);
-		shifts->reserve(size);
-	}
-
 	std::ranges::zip_view<std::ranges::ref_view<std::vector<short>>, std::ranges::ref_view<std::vector<
 		                      Urho3D::IntVector2>>> asZip() const {
 		return std::views::zip(*indexes, *shifts);
