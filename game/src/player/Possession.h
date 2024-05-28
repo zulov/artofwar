@@ -2,8 +2,6 @@
 #include <span>
 #include <vector>
 
-#include "ai/MetricDefinitions.h"
-
 
 struct PossessionMetric;
 enum class ParentBuildingType : char;
@@ -39,15 +37,15 @@ public:
 	unsigned getLightNumber();
 	unsigned getHeavyNumber();
 
-	std::span<float> getResWithOutBonus() { ensureReady(); return resWithoutBonus; }
+	std::span<float> getResWithOutBonus() { ensureReady(); return metric->resWithoutBonus; }
 	std::vector<Building*>* getBuildings(short id);
 	const std::vector<Building*>& getBuildings();
 
 	void addKilled(Physical* physical);
 
-	std::span<float> getUnitsMetrics() { ensureReady(); return unitsSumAsSpan; }
-	std::span<float> getFreeArmyMetrics() { ensureReady(); return freeArmySumAsSpan; }
-	std::span<float> getBuildingsMetrics() { ensureReady(); return buildingsSumAsSpan; }
+	std::span<float> getUnitsMetrics() { ensureReady(); return metric->unitsSumAsSpan; }
+	std::span<float> getFreeArmyMetrics() { ensureReady(); return metric->freeArmySumAsSpan; }
+	std::span<float> getBuildingsMetrics() { ensureReady(); return metric->buildingsSumAsSpan; }
 	std::span<float> getBuildingsMetrics(ParentBuildingType type);
 
 	const std::vector<Unit*>& getWorkers() const { return workers; }
