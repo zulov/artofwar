@@ -58,14 +58,14 @@ public:
 		}
 		++unit->currentFrameState;
 		if (unit->currentFrameState >= FRAMES_IN_PERIOD) {
-			auto& resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
+			auto* resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
 			const auto resource = (ResourceEntity*)unit->thingToInteract;
 			const auto bonus = resource->getBonus(unit->player);
 
 			const auto [value, died] = resource->absorbAttack(unit->dbLevel->collect * bonus);
 
 			env->addCollect(unit, resource->getResourceId(), value);
-			resources.add(resource->getResourceId(), value);
+			resources->add(resource->getResourceId(), value);
 			unit->currentFrameState = 0;
 		}
 	}

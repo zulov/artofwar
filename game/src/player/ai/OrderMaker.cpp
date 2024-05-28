@@ -19,6 +19,7 @@
 #include "objects/unit/order/GroupOrder.h"
 #include "objects/unit/order/enums/UnitActionType.h"
 #include "env/influence/CenterType.h"
+#include "player/Possession.h"
 #include "utils/OtherUtils.h"
 
 constexpr float SEMI_CLOSE = 30.f;
@@ -123,7 +124,7 @@ void OrderMaker::semiCloseAttack(const std::vector<Unit*>& subArmy, const std::v
 
 std::vector<Unit*> OrderMaker::findFreeWorkers() const {
 	std::vector<Unit*> freeWorkers;
-	std::ranges::copy_if(player->getPossession().getWorkers(),
+	std::ranges::copy_if(player->getPossession()->getWorkers(),
 	                     std::back_inserter(freeWorkers),
 	                     isFreeWorker);
 	return freeWorkers;

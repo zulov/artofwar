@@ -10,6 +10,7 @@
 #include "player/PlayersManager.h"
 #include "simulation/SimGlobals.h"
 #include "env/Environment.h"
+#include "player/Resources.h"
 
 ColorPaletteRepo::ColorPaletteRepo() {
 	if (!SIM_GLOBALS.HEADLESS) {
@@ -75,7 +76,7 @@ Urho3D::Color ColorPaletteRepo::getColorForValidation(const db_building* buildin
 	const Environment* env = Game::getEnvironment();
 	if (env->validateStatic(building->size, hitPos, true)) {
 		if (env->isVisible(Game::getPlayersMan()->getActivePlayerID(), hitPos)) {
-			if (Game::getPlayersMan()->getActivePlayer()->getResources().hasEnough(building->costs)) {
+			if (Game::getPlayersMan()->getActivePlayer()->getResources()->hasEnough(building->costs)) {
 				return Urho3D::Color::GREEN;
 			} 
 			return Urho3D::Color(0.7, 0.4, 0.1);

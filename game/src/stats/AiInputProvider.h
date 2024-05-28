@@ -1,7 +1,7 @@
 #pragma once
 #include <span>
 #include "database/db_strcut.h"
-#include "player/ai/AiMetric.h"
+#include "player/ai/MetricDefinitions.h"
 
 class Player;
 struct db_unit_metric;

@@ -4,9 +4,10 @@
 #include "math/SpanUtils.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "player/ai/AiMetric.h"
 #include "player/ai/AiUtils.h"
 #include "objects/building/ParentBuildingType.h"
+#include "player/Possession.h"
+#include "player/ai/MetricDefinitions.h"
 
 
 AiInputProvider::AiInputProvider() {
@@ -26,13 +27,13 @@ std::span<float> AiInputProvider::getResourceInput(char playerId) const {
 std::span<float> AiInputProvider::getUnitsInput(char playerId) const {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
-	return combineWithBasic(unitsInputSpan, player->getPossession().getUnitsMetrics(), player);
+	return combineWithBasic(unitsInputSpan, player->getPossession()->getUnitsMetrics(), player);
 }
 
 std::span<float> AiInputProvider::getBuildingsInput(char playerId) const {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
-	return combineWithBasic(buildingsInputSpan, player->getPossession().getBuildingsMetrics(), player);
+	return combineWithBasic(buildingsInputSpan, player->getPossession()->getBuildingsMetrics(), player);
 }
 
 std::span<float> AiInputProvider::getUnitsInputWithMetric(char playerId, const db_unit_metric* prop) const {
@@ -100,7 +101,7 @@ std::span<float> AiInputProvider::getBuildingsTypeInput(char playerId, ParentBui
 		                                                           METRIC_DEFINITIONS.aiResWithoutBonusIdxsSpan),
 		                        player);
 	}
-	return combineWithBasic(getBuildingInputSpan(type), player->getPossession().getBuildingsMetrics(type), player);
+	return combineWithBasic(getBuildingInputSpan(type), player->getPossession()->getBuildingsMetrics(type), player);
 }
 
 std::span<float> AiInputProvider::getBasicInput(std::span<float> dest, Player* player) const {

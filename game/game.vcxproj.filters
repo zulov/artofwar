@@ -426,7 +426,7 @@
     <ClInclude Include="src\objects\ActionType.h" />
     <ClInclude Include="src\colors\ColorPaletteRepo.h" />
     <ClInclude Include="src\env\path\PathFinder.h" />
-    <ClInclude Include="src\env\path\fiboheap.h" />
+    <ClInclude Include="src\env\path\PriorityHeap.h" />
     <ClInclude Include="src\env\path\DrawGridUtils.h" />
     <ClInclude Include="src\hud\window\top\info\TopInfoPanel.h" />
     <ClInclude Include="src\env\influence\InfluenceManager.h" />
@@ -535,6 +535,8 @@
     <ClInclude Include="src\player\ai\AiMetric.h" />
     <ClInclude Include="src\objects\building\ParentBuildingType.h" />
     <ClInclude Include="src\env\path\PathCache.h" />
+    <ClInclude Include="src\player\ai\MetricDefinitions.h" />
+    <ClInclude Include="src\player\ai\PossessionMetric.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

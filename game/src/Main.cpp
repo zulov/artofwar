@@ -47,6 +47,7 @@
 #include "env/Environment.h"
 #include "env/influence/CenterType.h"
 #include "hud/UiUtils.h"
+#include "player/Possession.h"
 #include "simulation/formation/FormationManager.h"
 #include "stats/AiInputProvider.h"
 
@@ -155,15 +156,15 @@ void Main::writeOutput() const {
 		writeOutput(
 		            {
 			            [](Player* p) -> float { return p->getScore(); },
-			            [](Player* p) -> float { return p->getPossession().getUnitsNumber(); },
-			            [](Player* p) -> float { return p->getPossession().getBuildingsNumber(); }
+			            [](Player* p) -> float { return p->getPossession()->getUnitsNumber(); },
+			            [](Player* p) -> float { return p->getPossession()->getBuildingsNumber(); }
 		            },
 		            {
-			            [](Player* p) -> const std::span<const float> { return asSpan(p->getResources().getValues()); },
-			            [](Player* p) -> const std::span<const float> { return asSpan(p->getResources().getSumValues()); },
+			            [](Player* p) -> const std::span<const float> { return asSpan(p->getResources()->getValues()); },
+			            [](Player* p) -> const std::span<const float> { return asSpan(p->getResources()->getSumValues()); },
 
-			            [](Player* p) -> std::span<float> { return p->getPossession().getUnitsMetrics(); },
-			            [](Player* p) -> std::span<float> { return p->getPossession().getBuildingsMetrics(); }
+			            [](Player* p) -> std::span<float> { return p->getPossession()->getUnitsMetrics(); },
+			            [](Player* p) -> std::span<float> { return p->getPossession()->getBuildingsMetrics(); }
 		            });
 	}
 }
@@ -451,8 +452,8 @@ void Main::HandleKeyUp(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eve
 			saveToLoad = "quicksave.db";
 			changeState(GameState::CLOSING);
 		} else if (key == Urho3D::KEY_H) {
-			auto& possession = Game::getPlayersMan()->getActivePlayer()->getPossession();
-			for (auto building : possession.getBuildings()) {
+			const auto possession = Game::getPlayersMan()->getActivePlayer()->getPossession();
+			for (const auto building : possession->getBuildings()) {
 				if (building->getDbBuilding()->typeCenter) {
 					auto pos = building->getPosition();
 					Game::getCameraManager()->changePosition(pos.x_, pos.z_);

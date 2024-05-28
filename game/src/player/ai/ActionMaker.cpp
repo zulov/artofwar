@@ -16,6 +16,8 @@
 #include "env/Environment.h"
 #include "math/MathUtils.h"
 #include "objects/building/ParentBuildingType.h"
+#include "player/Possession.h"
+#include "player/Resources.h"
 #include "stats/AiInputProvider.h"
 
 
@@ -90,7 +92,7 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	ParentBuildingType type = static_cast<ParentBuildingType>(biggestWithRand(whichTypeOutput));
 	if (!isEnoughResToTypeBuilding(type)) { return false; }
 	if (type == ParentBuildingType::RESOURCE) {
-		if (sumSpan(player->getPossession().getResWithOutBonus()) < 0.5f) {
+		if (sumSpan(player->getPossession()->getResWithOutBonus()) < 0.5f) {
 			return false;
 		}
 	}
@@ -141,7 +143,7 @@ bool ActionMaker::createUnit(db_unit* unit) const {
 }
 
 bool ActionMaker::enoughResources(const db_with_cost* withCosts, Player* player) const {
-	return withCosts && player->getResources().hasEnough(withCosts->costs);
+	return withCosts && player->getResources()->hasEnough(withCosts->costs);
 }
 
 bool ActionMaker::createBuilding(db_building* building, ParentBuildingType type) const {
@@ -309,7 +311,7 @@ std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId) const {
 	}
 	std::vector<Building*> allPossible;
 	for (auto thatCanDeploy : buildingIdsThatCanDeploy) {
-		std::ranges::copy_if(*player->getPossession().getBuildings(thatCanDeploy),
+		std::ranges::copy_if(*player->getPossession()->getBuildings(thatCanDeploy),
 		                     std::back_inserter(allPossible), [](Building* b) { return b->isReady(); });
 	}
 	return allPossible;

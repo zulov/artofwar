@@ -6,6 +6,7 @@
 #include "player/PlayersManager.h"
 #include "env/Environment.h"
 #include "player/Player.h"
+#include "player/Resources.h"
 
 
 CreationCommandList::CreationCommandList(SimulationObjectManager* simulationObjectManager)
@@ -19,14 +20,14 @@ CreationCommand* CreationCommandList::addUnits(int number, short id, Urho3D::Vec
 }
 
 CreationCommand* CreationCommandList::addBuilding(short id, Urho3D::Vector2& position, char player, int level) const {
-	Resources& resources = Game::getPlayersMan()->getPlayer(player)->getResources();
+	Resources* resources = Game::getPlayersMan()->getPlayer(player)->getResources();
 	db_building* building = Game::getDatabase()->getBuilding(id);
-	if (resources.hasEnough(building->costs)) {
+	if (resources->hasEnough(building->costs)) {
 		const auto env = Game::getEnvironment();
 		if (env->isVisible(player, position)) {
 			const auto cords = env->getCords(position);
 			if (env->validateStatic(building->size, cords, true)) {
-				resources.reduce(building->costs);
+				resources->reduce(building->costs);
 				return new CreationCommand(ObjectType::BUILDING, id, cords, level, player);
 			}
 		}

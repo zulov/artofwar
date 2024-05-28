@@ -1,13 +1,14 @@
 #include "Possession.h"
 #include "Game.h"
 #include "Resources.h"
-#include "ai/AiMetric.h"
+#include "ai/PossessionMetric.h"
 #include "database/DatabaseCache.h"
 #include "math/SpanUtils.h"
 #include "math/VectorUtils.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/building/Building.h"
 #include "objects/building/ParentBuildingType.h"
+#include "objects/resource/ResourceEntity.h"
 
 Possession::Possession(char nation) {
 	for (auto building : Game::getDatabase()->getNation(nation)->buildings) {
@@ -24,16 +25,16 @@ Possession::Possession(char nation) {
 	data = new float[dataSize];
 
 	int begin = 0;
-	unitsSumAsSpan = std::span(data, UNIT_SIZE);
-	freeArmySumAsSpan = std::span(data + (begin += UNIT_SIZE), UNIT_SIZE);
-	buildingsSumAsSpan = std::span(data + (begin += UNIT_SIZE), BUILDING_SIZE);
-
-	buildingsOtherSumSpan = std::span(data + (begin += BUILDING_SIZE), BUILDING_OTHER_SIZE);
-	buildingsDefenceSumSpan = std::span(data + (begin += BUILDING_OTHER_SIZE), BUILDING_DEF_SIZE);
-
-	buildingsTechSumSpan = std::span(data + (begin += BUILDING_DEF_SIZE), BUILDING_TECH_SIZE);
-	buildingsUnitsSumSpan = std::span(data + (begin += BUILDING_TECH_SIZE), BUILDING_UNITS_SIZE);
-	resWithoutBonus = std::span(data + (begin += BUILDING_UNITS_SIZE), RESOURCES_SIZE);
+	// unitsSumAsSpan = std::span(data, UNIT_SIZE);
+	// freeArmySumAsSpan = std::span(data + (begin += UNIT_SIZE), UNIT_SIZE);
+	// buildingsSumAsSpan = std::span(data + (begin += UNIT_SIZE), BUILDING_SIZE);
+	//
+	// buildingsOtherSumSpan = std::span(data + (begin += BUILDING_SIZE), BUILDING_OTHER_SIZE);
+	// buildingsDefenceSumSpan = std::span(data + (begin += BUILDING_OTHER_SIZE), BUILDING_DEF_SIZE);
+	//
+	// buildingsTechSumSpan = std::span(data + (begin += BUILDING_DEF_SIZE), BUILDING_TECH_SIZE);
+	// buildingsUnitsSumSpan = std::span(data + (begin += BUILDING_TECH_SIZE), BUILDING_UNITS_SIZE);
+	// resWithoutBonus = std::span(data + (begin += BUILDING_UNITS_SIZE), RESOURCES_SIZE);
 
 	std::fill_n(data, dataSize, 0.f);
 
@@ -150,7 +151,7 @@ void Possession::addKilled(Physical* physical) {
 std::span<float> Possession::refreshBuildingSum(const std::span<unsigned char> idxs, std::span<float> out) const {
 	assert(idxs.size() == out.size());
 	for (int i = 0; i < idxs.size(); ++i) {
-		out[i] = buildingsSumAsSpan[idxs[i]];
+		out[i] = metric->buildingsSumAsSpan[idxs[i]];
 	}
 	return out;
 }
@@ -159,16 +160,16 @@ std::span<float> Possession::getBuildingsMetrics(ParentBuildingType type) {
 	ensureReady();
 	switch (type) {
 	case ParentBuildingType::OTHER:
-		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingOtherIdxs(), buildingsOtherSumSpan);
+		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingOtherIdxs(), metric->buildingsOtherSumSpan);
 	case ParentBuildingType::DEFENCE:
-		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingDefenceIdxs(), buildingsDefenceSumSpan);
+		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingDefenceIdxs(), metric->buildingsDefenceSumSpan);
 	case ParentBuildingType::RESOURCE:
 		assert(false);
 	//return refreshResource(METRIC_DEFINITIONS.getResWithoutBonusIdxs(), buildingsResSumSpan);
 	case ParentBuildingType::TECH:
-		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingTechIdxs(), buildingsTechSumSpan);
+		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingTechIdxs(), metric->buildingsTechSumSpan);
 	case ParentBuildingType::UNITS:
-		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingUnitsIdxs(), buildingsUnitsSumSpan);
+		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingUnitsIdxs(), metric->buildingsUnitsSumSpan);
 	default: ;
 	}
 }
@@ -187,13 +188,13 @@ bool Possession::hasAnyFreeArmy() const {
 
 float Possession::getAttackSum() {
 	ensureReady();
-	return unitsSumAsSpan[5];
+	return metric->unitsSumAsSpan[5];
 	//TODO hardcoded from AiUnitMetric {[](db_unit* u, db_unit_level* l) -> float { return l->attack; }, 10, UNITS_SUM_X},
 }
 
 float Possession::getDefenceAttackSum() {
 	ensureReady();
-	return buildingsSumAsSpan[5];
+	return metric->buildingsSumAsSpan[5];
 
 	//TODO hardcoded from AiBuildingMetric {[](db_building* b, db_building_level* l) -> float { return l->attack; }, 20, BUILDINGS_SUM_X},
 }
@@ -211,7 +212,7 @@ void Possession::add(Unit* unit) {
 	}
 }
 
-void Possession::updateAndClean(const Resources& resources) {
+void Possession::updateAndClean(const Resources* resources) {
 	ready = false;
 	cleanDead(buildings, StateManager::isBuildingDead());
 	cleanDead(units, StateManager::isUnitDead());
@@ -224,14 +225,14 @@ void Possession::updateAndClean(const Resources& resources) {
 			}
 		}
 	}
-	resourcesSum = sumArray(resources.getValues());
+	resourcesSum = sumArray(resources->getValues());
 }
 
 void Possession::ensureReady() {
 	if (ready) { return; }
 	ready = true;
-	resetSpan(unitsSumAsSpan);
-	resetSpan(freeArmySumAsSpan);
+	resetSpan(metric->unitsSumAsSpan);
+	resetSpan(metric->freeArmySumAsSpan);
 
 	assert(zerosSpan(levels, levelsSize));
 	assert(zerosSpan(levelsFree, levelsSize));
@@ -249,15 +250,15 @@ void Possession::ensureReady() {
 	for (int i = 0; i < levelsSize; ++i) {
 		const auto val = levels[i];
 		if (val > 0.f) {
-			auto& metric = uLevels[i]->dbUnitMetric->getValuesNormForSum();
-			assert(metric.size() == unitsSumAsSpan.size());
-			for (int j = 0; j < unitsSumAsSpan.size(); ++j) {
-				unitsSumAsSpan[j] += val * metric[j];
+			auto& metric1 = uLevels[i]->dbUnitMetric->getValuesNormForSum();
+			assert(metric1.size() == metric->unitsSumAsSpan.size());
+			for (int j = 0; j < metric->unitsSumAsSpan.size(); ++j) {
+				metric->unitsSumAsSpan[j] += val * metric1[j];
 			}
 			const auto val2 = levelsFree[i];
 			if (val2 > 0.f) {
-				for (int j = 0; j < freeArmySumAsSpan.size(); ++j) {
-					freeArmySumAsSpan[j] += val2 * metric[j];
+				for (int j = 0; j < metric->freeArmySumAsSpan.size(); ++j) {
+					metric->freeArmySumAsSpan[j] += val2 * metric1[j];
 				}
 				levelsFree[i] = 0.f;
 			}
@@ -265,7 +266,7 @@ void Possession::ensureReady() {
 		}
 	}
 
-	resetSpan(buildingsSumAsSpan);
+	resetSpan(metric->buildingsSumAsSpan);
 
 	zerosSpan(levels, levelsSize);
 	zerosSpan(levelsFree, levelsSize);
@@ -278,10 +279,10 @@ void Possession::ensureReady() {
 	for (int i = 0; i < levelsSize; ++i) {
 		const auto lVal = levels[i];
 		if (lVal > 0.f) {
-			auto& metric = bLevels[i]->dbBuildingMetric->getValuesNormForSum();
-			assert(metric.size() == buildingsSumAsSpan.size());
-			for (int j = 0; j < buildingsSumAsSpan.size(); ++j) {
-				buildingsSumAsSpan[j] += lVal * metric[j];
+			auto& metric1 = bLevels[i]->dbBuildingMetric->getValuesNormForSum();
+			assert(metric1.size() == metric->buildingsSumAsSpan.size());
+			for (int j = 0; j < metric->buildingsSumAsSpan.size(); ++j) {
+				metric->buildingsSumAsSpan[j] += lVal * metric1[j];
 			}
 			levels[i] = 0.f;
 		}
@@ -318,19 +319,19 @@ void Possession::ensureReady() {
 	idleArmyNumber = std::ranges::count_if(units, isFreeSolider);
 	armyNumber = std::ranges::count_if(units, isSolider);
 
-	resetSpan(resWithoutBonus);
+	resetSpan(metric->resWithoutBonus);
 	for (const auto worker : workers) {
 		if (worker->getState() == UnitState::COLLECT && worker->isFirstThingAlive()) {
 			auto res = (ResourceEntity*)worker->getThingToInteract();
 
 			const auto bonus = res->getBonus(worker->getPlayer());
 			if (bonus <= 1.f) {
-				resWithoutBonus[res->getResourceId()] += 1;
+				metric->resWithoutBonus[res->getResourceId()] += 1;
 			}
 		}
 	}
 
-	assert(validateSpan(__LINE__, __FILE__, unitsSumAsSpan));
-	assert(validateSpan(__LINE__, __FILE__, freeArmySumAsSpan));
-	assert(validateSpan(__LINE__, __FILE__, buildingsSumAsSpan));
+	assert(validateSpan(__LINE__, __FILE__, metric->unitsSumAsSpan));
+	assert(validateSpan(__LINE__, __FILE__, metric->freeArmySumAsSpan));
+	assert(validateSpan(__LINE__, __FILE__, metric->buildingsSumAsSpan));
 }

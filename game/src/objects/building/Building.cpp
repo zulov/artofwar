@@ -110,18 +110,18 @@ float Building::getAttackVal(Physical* aim) {
 
 void Building::action(BuildingActionType type, short id) const {
 	if (!isReady()) { return; }
-	Resources& resources = Game::getPlayersMan()->getPlayer(getPlayer())->getResources();
+	Resources* resources = Game::getPlayersMan()->getPlayer(getPlayer())->getResources();
 
 	switch (type) {
 	case BuildingActionType::UNIT_CREATE:
-		if (resources.reduce(Game::getDatabase()->getUnit(id)->costs)) {
+		if (resources->reduce(Game::getDatabase()->getUnit(id)->costs)) {
 			queue->add(1, QueueActionType::UNIT_CREATE, id, 30);
 		}
 		break;
 	case BuildingActionType::UNIT_LEVEL: {
 		auto opt = Game::getPlayersMan()->getPlayer(getPlayer())->getNextLevelForUnit(id);
 		if (opt.has_value()) {
-			if (resources.reduce(opt.value()->costs)) {
+			if (resources->reduce(opt.value()->costs)) {
 				queue->add(1, QueueActionType::UNIT_LEVEL, id, 1);
 			}
 		}

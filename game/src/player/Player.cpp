@@ -1,5 +1,7 @@
 #include "player/Player.h"
 #include "Game.h"
+#include "Possession.h"
+#include "Resources.h"
 #include "database/DatabaseCache.h"
 #include "objects/queue/QueueActionType.h"
 #include "env/Environment.h"
@@ -9,7 +11,7 @@ Player::Player(int nationId, char team, char id, int color, Urho3D::String name,
 	queue(new QueueManager(1)), dbNation(Game::getDatabase()->getNation(nationId)),
 	actionMaker(this, dbNation), orderMaker(this, dbNation),
 	name(std::move(name)), team(team),
-	color(color), id(id), active(active), possession(nationId) {
+	color(color), id(id), active(active), resources(new Resources()),possession(new Possession(nationId)) {
 
 	unitLevels = new char[Game::getDatabase()->getUnits().size()];
 	buildingLevels = new char[Game::getDatabase()->getBuildings().size()];
@@ -22,6 +24,8 @@ Player::~Player() {
 	delete[] unitLevels;
 	delete[] buildingLevels;
 	delete queue;
+	delete resources;
+	delete possession;
 }
 
 std::string Player::getValues(int precision) const {
@@ -33,12 +37,12 @@ std::string Player::getValues(int precision) const {
 		+ std::to_string(color) + "'";
 }
 
-void Player::setResourceAmount(int resource, float amount) {
-	resources.setValue(resource, amount);
+void Player::setResourceAmount(int resource, float amount) const {
+	resources->setValue(resource, amount);
 }
 
-void Player::setResourceAmount(float amount) {
-	resources.init(amount);
+void Player::setResourceAmount(float amount) const {
+	resources->init(amount);
 }
 
 char Player::upgradeLevel(QueueActionType type, int id) const {
@@ -78,48 +82,48 @@ std::optional<db_building_level*> Player::getNextLevelForBuilding(short id) cons
 	return Game::getDatabase()->getBuilding(id)->getLevel(buildingLevels[id] + 1);
 }
 
-void Player::addKilled(Physical* physical) {
-	possession.addKilled(physical);
+void Player::addKilled(Physical* physical) const {
+	possession->addKilled(physical);
 }
 
 void Player::resetScore() {
 	score = -1;
 }
 
-void Player::updateResource() {
-	resources.resetStats();
+void Player::updateResource() const {
+	resources->resetStats();
 }
 
-void Player::updateResourceMonth() {
-	resources.updateResourceMonth();
+void Player::updateResourceMonth() const {
+	resources->updateResourceMonth();
 }
 
-void Player::updateResourceYear() {
-	resources.updateResourceYear();
+void Player::updateResourceYear() const {
+	resources->updateResourceYear();
 }
 
 void Player::updatePossession() {
-	possession.updateAndClean(resources);
+	possession->updateAndClean(resources);
 }
 
-void Player::add(Unit* unit) {
-	possession.add(unit);
+void Player::add(Unit* unit) const {
+	possession->add(unit);
 }
 
-void Player::add(Building* building) {
-	possession.add(building);
+void Player::add(Building* building) const {
+	possession->add(building);
 }
 
 int Player::getScore() {
 	if (score < 0) {
 		const float visibilityPercent = Game::getEnvironment()->getVisibilityScore(id);
-		score = possession.getScore() + visibilityPercent * 1000.f;
+		score = possession->getScore() + visibilityPercent * 1000.f;
 	}
 	return score;
 }
 
 int Player::getWorkersNumber() const {
-	return possession.getWorkersNumber();
+	return possession->getWorkersNumber();
 }
 
 QueueElement* Player::updateQueue() const {

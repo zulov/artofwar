@@ -1,7 +1,7 @@
 #pragma once
 
 #include "db_strcut.h"
-#include "player/ai/AiMetric.h"
+#include "player/ai/MetricDefinitions.h"
 #include "utils/DeleteUtils.h"
 
 struct db_hud_vars;

@@ -7,6 +7,7 @@
 #include "objects/unit/Unit.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
+#include "player/Resources.h"
 
 SceneSaver::SceneSaver(int precision): loadingState(7), precision(precision) {
 	//TODO zapisywanie powinno byc tylko miedzy klatkami
@@ -133,9 +134,8 @@ void SceneSaver::saveResources(const std::vector<Player*>& players) {
 	loadingState.inc("saving resources");
 	if (players.empty()) { return; }
 	std::string sql = "INSERT INTO resources VALUES ";
-	for (auto player : players) {
-		Resources& resources = player->getResources();
-		sql += resources.getValues(precision, player->getId());
+	for (const auto player : players) {
+		sql += player->getResources()->getValues(precision, player->getId());
 	}
 	executeInsert(sql);
 }

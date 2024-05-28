@@ -2,6 +2,10 @@
 #include <span>
 #include <vector>
 
+#include "ai/MetricDefinitions.h"
+
+
+struct PossessionMetric;
 enum class ParentBuildingType : char;
 class Physical;
 class Player;
@@ -17,7 +21,7 @@ public:
 
 	void add(Building* building);
 	void add(Unit* unit);
-	void updateAndClean(const Resources& resources);
+	void updateAndClean(const Resources* resources);
 	void ensureReady();
 
 	unsigned getScore() const;
@@ -77,14 +81,5 @@ private:
 
 	float* data;
 
-	std::span<float> unitsSumAsSpan;//zrobic z tego array
-	std::span<float> freeArmySumAsSpan; //TODO to dac jako któtkie
-	std::span<float> buildingsSumAsSpan;
-
-	std::span<float> buildingsOtherSumSpan;
-	std::span<float> buildingsDefenceSumSpan;
-	std::span<float> resWithoutBonus;
-	std::span<float> buildingsTechSumSpan;
-	std::span<float> buildingsUnitsSumSpan;
-
+	PossessionMetric* metric;
 };

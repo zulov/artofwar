@@ -1,11 +1,12 @@
 #pragma once
-#include "Resources.h"
-#include "Possession.h"
+
 #include "objects/queue/QueueManager.h"
 #include "ai/ActionMaker.h"
 #include "ai/OrderMaker.h"
 #include "database/db_strcut.h"
 
+class Possession;
+class Resources;
 struct db_nation;
 enum class ActionType : char;
 
@@ -17,25 +18,25 @@ public:
 	~Player();
 
 	std::string getValues(int precision) const;
-	void setResourceAmount(int resource, float amount);
-	void setResourceAmount(float amount);
+	void setResourceAmount(int resource, float amount) const;
+	void setResourceAmount(float amount) const;
 	char upgradeLevel(QueueActionType type, int id) const;
 
-	Resources& getResources() { return resources; }
-	Possession& getPossession() { return possession; }
+	Resources* getResources() const { return resources; }
+	Possession* getPossession() const { return possession; }
 	short getNation() const { return dbNation->id; }
 	char getTeam() const { return team; }
 	char getId() const { return id; } //TODO bug id playera a jego index to czêsto nie to samo
 	int getColor() const { return color; }
 	Urho3D::String& getName() { return name; }
 
-	void updateResource();
-	void updateResourceMonth();
-	void updateResourceYear();
+	void updateResource() const;
+	void updateResourceMonth() const;
+	void updateResourceYear() const;
 
 	void updatePossession();
-	void add(Unit* unit);
-	void add(Building* building);
+	void add(Unit* unit) const;
+	void add(Building* building) const;
 	void aiAction();
 	void aiOrder();
 	int getScore();
@@ -48,13 +49,13 @@ public:
 	db_building_level* getLevelForBuilding(short id) const;
 	std::optional<db_unit_level*> getNextLevelForUnit(short id) const;
 	std::optional<db_building_level*> getNextLevelForBuilding(short id) const;
-	void addKilled(Physical* physical);
+	void addKilled(Physical* physical) const;
 	void resetScore();
 private:
 	db_nation* dbNation; //Must by first
 	QueueManager* queue;
-	Possession possession;
-	Resources resources;
+	Possession* possession;
+	Resources* resources;
 	ActionMaker actionMaker;
 	OrderMaker orderMaker;
 	Urho3D::String name;
