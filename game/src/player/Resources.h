@@ -22,9 +22,9 @@ public:
 	bool hasEnough(const db_cost* costs) const;
 	void add(int id, float value);
 
-	const std::array<float, RESOURCES_SIZE>& getValues() const { return values; }
-	const std::array<float, RESOURCES_SIZE>& getGatherSpeeds() const { return gatherSpeeds1s; }
-	const std::array<float, RESOURCES_SIZE>& getSumValues() const { return sumValues; }
+	const std::span<float> getValues() { return values; }
+	const std::span<float> getGatherSpeeds() { return gatherSpeeds1s; }
+	const std::span<float> getSumValues() { return sumValues; }
 
 	std::string getValues(int precision, int player) const;
 	void setValue(int id, float amount);

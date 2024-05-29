@@ -11,17 +11,14 @@
 #include "objects/resource/ResourceEntity.h"
 
 Possession::Possession(char nation) {
-	for (auto building : Game::getDatabase()->getNation(nation)->buildings) {
+	for (const auto building : Game::getDatabase()->getNation(nation)->buildings) {
 		auto id = building->id;
 		if (buildingsPerId.size() <= id) {
 			buildingsPerId.resize(id + 1, nullptr);
 		}
 		buildingsPerId[id] = new std::vector<Building*>();
 	}
-	int dataSize = UNIT_SIZE * 2 + BUILDING_SIZE
-		+ BUILDING_OTHER_SIZE + BUILDING_DEF_SIZE
-		+ BUILDING_TECH_SIZE
-		+ BUILDING_UNITS_SIZE + RESOURCES_SIZE;
+
 	metric = new PossessionMetric();
 
 	levelsSize = Urho3D::Max(Game::getDatabase()->getUnitLevels().size(),

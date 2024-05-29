@@ -160,8 +160,8 @@ void Main::writeOutput() const {
 			            [](Player* p) -> float { return p->getPossession()->getBuildingsNumber(); }
 		            },
 		            {
-			            [](Player* p) -> const std::span<const float> { return asSpan(p->getResources()->getValues()); },
-			            [](Player* p) -> const std::span<const float> { return asSpan(p->getResources()->getSumValues()); },
+			            [](Player* p) -> std::span<float> { return p->getResources()->getValues(); },
+			            [](Player* p) -> std::span<float> { return p->getResources()->getSumValues(); },
 
 			            [](Player* p) -> std::span<float> { return p->getPossession()->getUnitsMetrics(); },
 			            [](Player* p) -> std::span<float> { return p->getPossession()->getBuildingsMetrics(); }
