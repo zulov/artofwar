@@ -5,6 +5,8 @@
 #include <vector>
 
 
+class Possession;
+
 namespace Urho3D {
 	class Vector2;
 }
@@ -68,6 +70,8 @@ private:
 	bool isEnoughResToTypeBuilding(ParentBuildingType type) const;
 
 	Player* player;
+	char playerId;
+	Possession* possession;
 	db_nation* nation;
 
 	Brain* ifWorker;

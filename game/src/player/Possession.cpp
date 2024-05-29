@@ -22,21 +22,7 @@ Possession::Possession(char nation) {
 		+ BUILDING_OTHER_SIZE + BUILDING_DEF_SIZE
 		+ BUILDING_TECH_SIZE
 		+ BUILDING_UNITS_SIZE + RESOURCES_SIZE;
-	data = new float[dataSize];
-
-	int begin = 0;
-	// unitsSumAsSpan = std::span(data, UNIT_SIZE);
-	// freeArmySumAsSpan = std::span(data + (begin += UNIT_SIZE), UNIT_SIZE);
-	// buildingsSumAsSpan = std::span(data + (begin += UNIT_SIZE), BUILDING_SIZE);
-	//
-	// buildingsOtherSumSpan = std::span(data + (begin += BUILDING_SIZE), BUILDING_OTHER_SIZE);
-	// buildingsDefenceSumSpan = std::span(data + (begin += BUILDING_OTHER_SIZE), BUILDING_DEF_SIZE);
-	//
-	// buildingsTechSumSpan = std::span(data + (begin += BUILDING_DEF_SIZE), BUILDING_TECH_SIZE);
-	// buildingsUnitsSumSpan = std::span(data + (begin += BUILDING_TECH_SIZE), BUILDING_UNITS_SIZE);
-	// resWithoutBonus = std::span(data + (begin += BUILDING_UNITS_SIZE), RESOURCES_SIZE);
-
-	std::fill_n(data, dataSize, 0.f);
+	metric = new PossessionMetric();
 
 	levelsSize = Urho3D::Max(Game::getDatabase()->getUnitLevels().size(),
 	                         Game::getDatabase()->getBuildingLevels().size());
@@ -49,7 +35,7 @@ Possession::Possession(char nation) {
 
 Possession::~Possession() {
 	clear_vector(buildingsPerId);
-	delete[]data;
+	delete metric;
 	delete[]levels;
 	delete[]levelsFree;
 }
@@ -136,6 +122,11 @@ unsigned Possession::getHeavyNumber() {
 	return typeHeavyNumber;
 }
 
+std::span<float> Possession::getResWithOutBonus() {
+	ensureReady();
+	return metric->resWithoutBonus;
+}
+
 std::vector<Building*>* Possession::getBuildings(short id) {
 	return buildingsPerId[id];
 }
@@ -146,6 +137,21 @@ const std::vector<Building*>& Possession::getBuildings() {
 
 void Possession::addKilled(Physical* physical) {
 	resourcesDestroyed += physical->getCostSum();
+}
+
+std::span<float> Possession::getUnitsMetrics() {
+	ensureReady();
+	return metric->unitsSumAsSpan;
+}
+
+std::span<float> Possession::getFreeArmyMetrics() {
+	ensureReady();
+	return metric->freeArmySumAsSpan;
+}
+
+std::span<float> Possession::getBuildingsMetrics() {
+	ensureReady();
+	return metric->buildingsSumAsSpan;
 }
 
 std::span<float> Possession::refreshBuildingSum(const std::span<unsigned char> idxs, std::span<float> out) const {

@@ -26,7 +26,7 @@ constexpr float SEMI_CLOSE = 30.f;
 constexpr float SQ_SEMI_CLOSE = SEMI_CLOSE * SEMI_CLOSE;
 
 OrderMaker::OrderMaker(Player* player, db_nation* nation)
-	: player(player),
+	: player(player), playerId(player->getId()), possession(player->getPossession()),
 	  whichResource(BrainProvider::get(nation->orderPrefix[0] + "whichResource.csv")),
 
 	  attackOrDefence(BrainProvider::get(nation->orderPrefix[1] + "attackOrDefence.csv")),
@@ -62,22 +62,22 @@ void OrderMaker::action() {
 
 	const auto env = Game::getEnvironment();
 
-	if (player->getPossession().hasAnyFreeArmy()) {
+	if (possession->hasAnyFreeArmy()) {
 		const auto aiInput = Game::getAiInputProvider();
-		auto const resultAoD = attackOrDefence->decide(aiInput->getAttackOrDefenceInput(player->getId()));
+		auto const resultAoD = attackOrDefence->decide(aiInput->getAttackOrDefenceInput(playerId));
 		std::span<float> whereGo;
-		char playerToGo = player->getId();
+		char playerToGo = playerId;
 		if (randFromTwo(resultAoD[0])) {
-			playerToGo = Game::getPlayersMan()->getEnemyFor(player->getId());
-			whereGo = whereAttack->decide(aiInput->getWhereAttack(player->getId()));
+			playerToGo = Game::getPlayersMan()->getEnemyFor(playerId);
+			whereGo = whereAttack->decide(aiInput->getWhereAttack(playerId));
 		} else {
-			whereGo = whereDefence->decide(aiInput->getWhereDefend(player->getId()));
+			whereGo = whereDefence->decide(aiInput->getWhereDefend(playerId));
 		}
 		const CenterType centerType = static_cast<CenterType>(biggestWithRand(whereGo));
 		const auto posOpt = env->getCenterOf(centerType, playerToGo);
 
 		if (posOpt.has_value()) {
-			std::vector<Unit*> army = player->getPossession().getFreeArmy();
+			std::vector<Unit*> army = possession->getFreeArmy();
 			auto center = posOpt.value();
 			for (auto& subArmy : divide(army)) {
 				if (!subArmy.empty()) {
@@ -116,15 +116,15 @@ void OrderMaker::semiCloseAttack(const std::vector<Unit*>& subArmy, const std::v
 		                                                             belowClose, true);
 		if (closest) {
 			Game::getActionCenter()->addUnitAction(
-			                                       new GroupOrder(subArmy, UnitActionType::ORDER,
-			                                                      cast(UnitAction::ATTACK), closest));
+				new GroupOrder(subArmy, UnitActionType::ORDER,
+				               cast(UnitAction::ATTACK), closest));
 		}
 	}
 }
 
 std::vector<Unit*> OrderMaker::findFreeWorkers() const {
 	std::vector<Unit*> freeWorkers;
-	std::ranges::copy_if(player->getPossession()->getWorkers(),
+	std::ranges::copy_if(possession->getWorkers(),
 	                     std::back_inserter(freeWorkers),
 	                     isFreeWorker);
 	return freeWorkers;
@@ -134,7 +134,8 @@ Physical* OrderMaker::closetInRange(Unit* worker, int resourceId) {
 	float prevRadius = -1.f;
 	for (const auto radius : {64.f, 128.f, 256.f}) {
 		const auto list = Game::getEnvironment()->getResources(worker->getPosition(), resourceId, radius, prevRadius);
-		const auto closest = Game::getEnvironment()->closestPhysical(worker->getMainGridIndex(), list, belowClose, false);
+		const auto closest = Game::getEnvironment()->closestPhysical(worker->getMainGridIndex(), list, belowClose,
+		                                                             false);
 		if (closest) {
 			return closest;
 		}
@@ -158,7 +159,7 @@ void OrderMaker::actCollect(unsigned char& resHistogram, char resId, std::vector
 }
 
 void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
-	const auto input = Game::getAiInputProvider()->getResourceInput(player->getId());
+	const auto input = Game::getAiInputProvider()->getResourceInput(playerId);
 	const auto result = whichResource->decide(input);
 
 	unsigned char resHistogram[RESOURCES_SIZE];

@@ -37,15 +37,15 @@ public:
 	unsigned getLightNumber();
 	unsigned getHeavyNumber();
 
-	std::span<float> getResWithOutBonus() { ensureReady(); return metric->resWithoutBonus; }
+	std::span<float> getResWithOutBonus();
 	std::vector<Building*>* getBuildings(short id);
 	const std::vector<Building*>& getBuildings();
 
 	void addKilled(Physical* physical);
 
-	std::span<float> getUnitsMetrics() { ensureReady(); return metric->unitsSumAsSpan; }
-	std::span<float> getFreeArmyMetrics() { ensureReady(); return metric->freeArmySumAsSpan; }
-	std::span<float> getBuildingsMetrics() { ensureReady(); return metric->buildingsSumAsSpan; }
+	std::span<float> getUnitsMetrics();
+	std::span<float> getFreeArmyMetrics();
+	std::span<float> getBuildingsMetrics();
 	std::span<float> getBuildingsMetrics(ParentBuildingType type);
 
 	const std::vector<Unit*>& getWorkers() const { return workers; }
@@ -76,8 +76,6 @@ private:
 	int levelsSize;
 	float* levels;
 	float* levelsFree;
-
-	float* data;
 
 	PossessionMetric* metric;
 };

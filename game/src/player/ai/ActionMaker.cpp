@@ -1,7 +1,6 @@
 #include "ActionMaker.h"
 
 #include <format>
-#include "AiTypes.h"
 #include "AiUtils.h"
 #include "Game.h"
 #include "commands/action/BuildingActionCommand.h"
@@ -22,7 +21,7 @@
 
 
 ActionMaker::ActionMaker(Player* player, db_nation* nation):
-	player(player), nation(nation),
+	player(player), playerId(player->getId()), possession(player->getPossession()), nation(nation),
 	ifWorker(BrainProvider::get(nation->actionPrefix[0] + "ifWorker.csv")),
 	whereWorker(BrainProvider::get(nation->actionPrefix[1] + "whereWorker.csv")),
 
@@ -45,7 +44,7 @@ void ActionMaker::action() {
 	const auto aiInput = Game::getAiInputProvider();
 
 	if (isEnoughResToWorker()) {
-		const auto resInput = aiInput->getResourceInput(player->getId());
+		const auto resInput = aiInput->getResourceInput(playerId);
 		const auto resResult = ifWorker->decide(resInput);
 		if (randFromTwo(resResult[0])) {
 			createWorker();
@@ -53,14 +52,14 @@ void ActionMaker::action() {
 	}
 
 	if (isEnoughResToAnyUnit()) {
-		const auto unitsInput = aiInput->getUnitsInput(player->getId());
+		const auto unitsInput = aiInput->getUnitsInput(playerId);
 		const auto unitsResult = ifUnit->decide(unitsInput);
 		if (randFromTwo(unitsResult[0])) {
 			createUnit(unitsInput);
 		}
 	}
 	if (isEnoughResToAnyBuilding()) {
-		const auto buildingsInput = aiInput->getBuildingsInput(player->getId());
+		const auto buildingsInput = aiInput->getBuildingsInput(playerId);
 		const auto buildingsResult = ifBuilding->decide(buildingsInput);
 		if (randFromTwo(buildingsResult[0])) {
 			createBuilding(buildingsInput);
@@ -92,12 +91,12 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	ParentBuildingType type = static_cast<ParentBuildingType>(biggestWithRand(whichTypeOutput));
 	if (!isEnoughResToTypeBuilding(type)) { return false; }
 	if (type == ParentBuildingType::RESOURCE) {
-		if (sumSpan(player->getPossession()->getResWithOutBonus()) < 0.5f) {
+		if (sumSpan(possession->getResWithOutBonus()) < 0.5f) {
 			return false;
 		}
 	}
 
-	const auto aiTypeInput = Game::getAiInputProvider()->getBuildingsTypeInput(player->getId(), type);
+	const auto aiTypeInput = Game::getAiInputProvider()->getBuildingsTypeInput(playerId, type);
 	const auto output = getWhichBuilding(type, aiTypeInput);
 
 	return createBuilding(chooseBuilding(output, type), type);
@@ -150,7 +149,7 @@ bool ActionMaker::createBuilding(db_building* building, ParentBuildingType type)
 	if (enoughResources(building, player)) {
 		auto pos = findPosToBuild(building, type);
 		if (pos.has_value()) {
-			return Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId(), false);
+			return Game::getActionCenter()->addBuilding(building->id, pos.value(), playerId, false);
 		}
 	}
 
@@ -289,14 +288,14 @@ float ActionMaker::dist(std::valarray<float>& center, const db_building_metric* 
 
 std::optional<Urho3D::Vector2> ActionMaker::findPosToBuild(db_building* building, ParentBuildingType type) const {
 	if (type == ParentBuildingType::RESOURCE) {
-		return Game::getEnvironment()->getPosToCreateResBonus(building, player->getId());
+		return Game::getEnvironment()->getPosToCreateResBonus(building, playerId);
 	}
 	const auto input = Game::getAiInputProvider()->getBuildingsInputWithMetric(
-	                                                                           player->getId(),
+	                                                                           playerId,
 	                                                                           player->getLevelForBuilding(building->id)
 	                                                                           ->dbBuildingMetric, type);
 
-	return Game::getEnvironment()->getPosToCreate(whereBuilding->decide(input), type, building, player->getId());
+	return Game::getEnvironment()->getPosToCreate(whereBuilding->decide(input), type, building, playerId);
 }
 
 std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId) const {
@@ -311,7 +310,7 @@ std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId) const {
 	}
 	std::vector<Building*> allPossible;
 	for (auto thatCanDeploy : buildingIdsThatCanDeploy) {
-		std::ranges::copy_if(*player->getPossession()->getBuildings(thatCanDeploy),
+		std::ranges::copy_if(*possession->getBuildings(thatCanDeploy),
 		                     std::back_inserter(allPossible), [](Building* b) { return b->isReady(); });
 	}
 	return allPossible;
@@ -322,7 +321,7 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) const {
 	if (allPossible.empty()) { return nullptr; }
 	if (allPossible.size() == 1) { return allPossible.at(0); }
 	const auto input = Game::getAiInputProvider()
-		->getUnitsInputWithMetric(player->getId(), player->getLevelForUnit(unit->id)->dbUnitMetric);
+		->getUnitsInputWithMetric(playerId, player->getLevelForUnit(unit->id)->dbUnitMetric);
 	const auto result = whereUnit->decide(input);
 
 	return getBuildingClosestArea(allPossible, result);
@@ -332,7 +331,7 @@ Building* ActionMaker::getBuildingToDeployWorker(db_unit* unit) const {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
 	if (allPossible.empty()) { return nullptr; }
 	if (allPossible.size() == 1) { return allPossible.at(0); }
-	const auto input = Game::getAiInputProvider()->getResourceInput(player->getId());
+	const auto input = Game::getAiInputProvider()->getResourceInput(playerId);
 
 	const auto result = whereWorker->decide(input);
 
@@ -340,7 +339,7 @@ Building* ActionMaker::getBuildingToDeployWorker(db_unit* unit) const {
 }
 
 Building* ActionMaker::getBuildingClosestArea(std::vector<Building*>& allPossible, std::span<float> result) const {
-	auto centers = Game::getEnvironment()->getAreas(player->getId(), result, 10);
+	auto centers = Game::getEnvironment()->getAreas(playerId, result, 10);
 	float closestVal = 99999;
 	Building* closest = allPossible[0];
 	for (const auto possible : allPossible) {
@@ -385,7 +384,7 @@ bool ActionMaker::levelUpBuilding() {
 	if (enoughResources(level, player)) {
 		Game::getActionCenter()->add(
 		                             new GeneralActionCommand(level->building, GeneralActionType::BUILDING_LEVEL,
-		                                                      player->getId()));
+		                                                      playerId));
 		return true;
 	}
 	return false;

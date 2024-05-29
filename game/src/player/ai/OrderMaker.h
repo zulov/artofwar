@@ -2,6 +2,7 @@
 #include <vector>
 #include <Urho3D/Math/Vector2.h>
 
+class Possession;
 class UnitOrder;
 struct db_nation;
 enum class UnitState : char;
@@ -27,6 +28,8 @@ private:
 	void collect(std::vector<Unit*>& freeWorkers);
 
 	Player* player;
+	char playerId;
+	Possession* possession;
 
 	Brain* whichResource;
 

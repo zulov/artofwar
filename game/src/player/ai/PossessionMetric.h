@@ -2,11 +2,23 @@
 #include <array>
 
 #include "MetricDefinitions.h"
+#include "math/VectorUtils.h"
 #include "utils/defines.h"
 
 struct PossessionMetric {
+	PossessionMetric() {
+		resetArray(unitsSumAsSpan);
+		resetArray(freeArmySumAsSpan);
+		resetArray(buildingsSumAsSpan);
 
-	std::array<float, UNIT_SIZE> unitsSumAsSpan;//zrobic z tego array
+		resetArray(buildingsOtherSumSpan);
+		resetArray(buildingsDefenceSumSpan);
+		resetArray(buildingsTechSumSpan);
+		resetArray(buildingsUnitsSumSpan);
+		resetArray(resWithoutBonus);
+	}
+
+	std::array<float, UNIT_SIZE> unitsSumAsSpan;
 	std::array<float, UNIT_SIZE> freeArmySumAsSpan; //TODO to dac jako któtkie
 	std::array<float, BUILDING_SIZE> buildingsSumAsSpan;
 

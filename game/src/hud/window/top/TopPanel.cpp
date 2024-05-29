@@ -82,7 +82,7 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 		}
 	}
 
-	workers->setText(Urho3D::String(poss->getFreeWorkersNumber()), Urho3D::String(poss.getWorkersNumber()))
+	workers->setText(Urho3D::String(poss->getFreeWorkersNumber()), Urho3D::String(poss->getWorkersNumber()))
 	       ->setToolTip(l10nFormat("top_workers_tooltip", workersPerRes[0], workersPerRes[1], workersPerRes[2],
 	                               workersPerRes[3]));
 

@@ -52,6 +52,13 @@ public:
 	void addKilled(Physical* physical) const;
 	void resetScore();
 private:
+	int score = -1;
+
+	char team;
+	char id;//przed possession,resources
+	bool active;
+	int color;
+
 	db_nation* dbNation; //Must by first
 	QueueManager* queue;
 	Possession* possession;
@@ -59,12 +66,6 @@ private:
 	ActionMaker actionMaker;
 	OrderMaker orderMaker;
 	Urho3D::String name;
-	int score = -1;
-
-	char team;
-	char id;
-	bool active;
-	int color;
 
 	char* unitLevels;
 	char* buildingLevels;
