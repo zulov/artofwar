@@ -64,6 +64,7 @@ void Resources::setValue(int id, float amount) {
 void Resources::update1s(Possession* possession) {
 	std::ranges::copy(sumGatherSpeed, gatherSpeeds1s.begin());
 	resetArray(sumGatherSpeed);
+
 	foodStorage = 0;
 	goldStorage = 0;
 	stoneRefineCapacity = 0;
@@ -75,6 +76,8 @@ void Resources::update1s(Possession* possession) {
 		stoneRefineCapacity += level->stoneRefineCapacity;
 		goldRefineCapacity += level->goldRefineCapacity;
 	}
+	values[2] += getPotentialStoneRefinement();
+	values[3] += getPotentialGoldRefinement();
 }
 
 void Resources::updateMonth() {

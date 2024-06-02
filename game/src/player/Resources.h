@@ -43,12 +43,12 @@ public:
 	float getLastGoldGains() const { return lastGoldGain; }
 	float potentialGoldGain() const { return std::max(goldStorage, values[3]) * goldGainRate; }
 
-	float getStoneRefineCapacity() const { return 0.f; }
-	float getPotentialStoneRefinement() const { return 0.f; }
+	float getStoneRefineCapacity() const { return stoneRefineCapacity; }
+	float getPotentialStoneRefinement() const { return std::min(gatherSpeeds1s[2], stoneRefineCapacity) * stoneRefineValue; }
 
 	float getPotentialGoldGains() const { return potentialGoldGain(); }
 	float getGoldRefineCapacity() const { return goldRefineCapacity; }
-	float getPotentialGoldRefinement() const { return 0.f; }
+	float getPotentialGoldRefinement() const { return std::min(gatherSpeeds1s[3], goldRefineCapacity) * goldRefineValue; }
 
 private:
 	std::array<float, RESOURCES_SIZE> values; //TODO wszystie te wartosci trzeba zapisac w savie
@@ -62,10 +62,12 @@ private:
 	float foodLostRate = 0.1f;
 
 	float stoneRefineCapacity = 0.f;
-	float stoneRefineValue = 0.f;
+	float stoneRefineValue = 0.1f;
 
 	float goldStorage = 0.f;
 	float lastGoldGain = 0.f;
 	float goldGainRate = 0.01f;
+
 	float goldRefineCapacity = 0.f;
+	float goldRefineValue = 0.1f;
 };
