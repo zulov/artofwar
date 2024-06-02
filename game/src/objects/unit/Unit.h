@@ -107,7 +107,7 @@ public:
 	bool isToDispose() const override { return state == UnitState::DISPOSE; }
 	bool hasAim() const { return aims.hasAim(); }
 	db_unit_level* getLevel() const { return dbLevel; }
-	db_unit* getDbUnit() const { return dbUnit; }
+	db_unit* getDb() const { return dbUnit; }
 	short getLastActionThingId() const { return lastActionThingId; }
 	float getAttackRange() const;
 

@@ -47,7 +47,7 @@ int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	                          atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]),
 	                          atoi(argv[10]), atoi(argv[11]), atoi(argv[12]), atoi(argv[13]), atoi(argv[14]),
 	                          atoi(argv[15]), atoi(argv[16]), atoi(argv[17]), atoi(argv[18])
-	                         ));
+	          ));
 	return 0;
 }
 
@@ -61,7 +61,7 @@ int static loadResource(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	const auto resource = new db_resource(atoi(argv[0]), atoi(argv[1]), argv[2], argv[3], atoi(argv[4]),
 	                                      argv[5], atoi(argv[6]), atoi(argv[7]), atoi(argv[8]),
-	                                      fromHex(argv, 9), atof(argv[10]), atoi(argv[11])==1);
+	                                      fromHex(argv, 9), atof(argv[10]), atoi(argv[11]) == 1);
 	setEntity(getContainer(data)->resources, resource);
 	return 0;
 }
@@ -144,7 +144,8 @@ int static loadBuildingLevels(void* data, int argc, char** argv, char** azColNam
 	auto level = new db_building_level(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), argv[3], argv[4],
 	                                   atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]),
 	                                   atof(argv[9]), atof(argv[10]), atof(argv[11]), atof(argv[12]),
-	                                   atoi(argv[13]), atof(argv[14]), atof(argv[15]));
+	                                   atoi(argv[13]), atof(argv[14]), atof(argv[15]), atoi(argv[16]),
+	                                   atoi(argv[17]), atoi(argv[18]), atoi(argv[19]));
 	setEntity(xyz->buildingsLevels, level);
 	xyz->buildings[level->building]->levels.push_back(level);
 	for (auto nation : xyz->nations) {

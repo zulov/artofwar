@@ -395,7 +395,7 @@ float Unit::getAttackVal(Physical* aim) {
 		return dbLevel->attack * (1.f + dbLevel->bonusBuilding);
 	}
 	if (aim->getType() == ObjectType::UNIT) {
-		return dbLevel->attack * (1.f + ((Unit*)aim)->getDbUnit()->getBonuses(dbLevel));
+		return dbLevel->attack * (1.f + ((Unit*)aim)->getDb()->getBonuses(dbLevel));
 	}
 	return dbLevel->attack;
 }

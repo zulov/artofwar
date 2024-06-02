@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 #include <Urho3D/Math/Vector3.h>
 #include <vector>
 

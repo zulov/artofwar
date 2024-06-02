@@ -171,7 +171,7 @@ void InfluenceManager::update(const std::vector<ResourceEntity*>* resources) con
 void InfluenceManager::updateQuadUnits(const std::vector<Unit*>* units) const {
 	MapsUtils::resetMaps(armyQuad);
 	for (const auto unit : (*units)) {
-		if (!unit->getDbUnit()->typeWorker) {
+		if (!unit->getDb()->typeWorker) {
 			armyQuad[unit->getPlayer()]->updateInt(getIndexInInfluence(unit));
 		}
 	}
@@ -205,7 +205,7 @@ void InfluenceManager::updateNotInBonus(std::vector<Unit*>* units) const {
 	}
 	//TODO perf tylko workerów sprawdzić
 	for (const auto unit : *units) {
-		if (unit->getDbUnit()->typeWorker && unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
+		if (unit->getDb()->typeWorker && unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
 			auto res = (ResourceEntity*)unit->getThingToInteract();
 			//TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
 			mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getResourceId()]->updateInt(res->getIndexInInfluence());

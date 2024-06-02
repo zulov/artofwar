@@ -410,6 +410,10 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 	const short building;
 	const short queueMaxCapacity;
 	const float resourceRange;
+	const short foodStorage;
+	const short goldStoreage;
+	const float stoneRefineCapacity;
+	const float goldRefineCapacity;
 
 	const Urho3D::String nodeName;
 
@@ -423,11 +427,14 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 
 	db_building_level(short id, short level, short building, char* name, char* nodeName, short queueMaxCapacity,
 	                  short buildSpeed, short upgradeSpeed, short maxHp, float armor, float sightRng,
-	                  float collect, float atckR, short atckRRld, float atckRRng, float resourceRng)
+	                  float collect, float atckR, short atckRRld, float atckRRng, float resourceRng, short foodStorage,
+	                  short goldStoreage, float stoneRefineCapacity, float goldRefineCapacity)
 		: db_with_name(id, name), db_level(level),
 		  db_building_attack(collect, atckR, atckRRld, atckRRng),
 		  db_base(maxHp, armor, sightRng), db_build_upgrade(buildSpeed, upgradeSpeed),
-		  building(building), nodeName(nodeName), queueMaxCapacity(queueMaxCapacity), resourceRange(resourceRng) { }
+		  building(building), nodeName(nodeName), queueMaxCapacity(queueMaxCapacity), resourceRange(resourceRng),
+		  foodStorage(foodStorage), goldStoreage(goldStoreage), stoneRefineCapacity(stoneRefineCapacity),
+		  goldRefineCapacity(goldRefineCapacity){ }
 
 	~db_building_level() {
 		clear_vector(unitsPerNation);

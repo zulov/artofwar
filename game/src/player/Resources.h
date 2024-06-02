@@ -6,6 +6,7 @@
 
 #include "utils/defines.h"
 
+class Possession;
 struct db_with_cost;
 struct db_cost;
 
@@ -22,42 +23,42 @@ public:
 	bool hasEnough(const db_cost* costs) const;
 	void add(int id, float value);
 
-	const std::span<float> getValues() { return values; }
-	const std::span<float> getGatherSpeeds() { return gatherSpeeds1s; }
-	const std::span<float> getSumValues() { return sumValues; }
+	std::span<float> getValues() { return values; }
+	std::span<float> getGatherSpeeds() { return gatherSpeeds1s; }
+	std::span<float> getSumValues() { return sumValues; }
 
 	std::string getValues(int precision, int player) const;
 	void setValue(int id, float amount);
 
-	void resetStats();
-	void updateResourceMonth();
-	void updateResourceYear();
+	void update1s(Possession* possession);
+	void updateMonth();
+	void updateYear();
 
 	float getFoodStorage() const { return foodStorage; }
 	float getGoldStorage() const { return goldStorage; }
 
 	float getLastFoodLost() const { return lastFoodLost; }
-	float potentialFoodLost() const { return abs(values[0] - foodStorage) * foodLostRate; }
+	float potentialFoodLost() const { return std::max(0.f, values[0] - foodStorage) * foodLostRate; }
 
 	float getLastGoldGains() const { return lastGoldGain; }
-	float potentialGoldGain() const { return abs(goldStorage - values[3]) * goldGainRate; }
+	float potentialGoldGain() const { return std::max(goldStorage, values[3]) * goldGainRate; }
 
 	float getStoneRefineCapacity() const { return 0.f; }
 	float getPotentialStoneRefinement() const { return 0.f; }
 
-	float getPotentialGoldGains() const { return 0.f; }
+	float getPotentialGoldGains() const { return potentialGoldGain(); }
 	float getGoldRefineCapacity() const { return goldRefineCapacity; }
 	float getPotentialGoldRefinement() const { return 0.f; }
 
 private:
-	std::array<float, RESOURCES_SIZE> values;//TODO wszystie te wartosci trzeba zapisac w savie
-	std::array<float, RESOURCES_SIZE> gatherSpeeds60s;//to do AI? jakies real speed
+	std::array<float, RESOURCES_SIZE> values; //TODO wszystie te wartosci trzeba zapisac w savie
+	std::array<float, RESOURCES_SIZE> gatherSpeeds60s; //to do AI? jakies real speed
 	std::array<float, RESOURCES_SIZE> gatherSpeeds1s;
 	std::array<float, RESOURCES_SIZE> sumGatherSpeed;
 	std::array<float, RESOURCES_SIZE> sumValues;
 
-	float foodStorage = 0.f;
-	float lastFoodLost = 0.f;
+	int foodStorage = 0;
+	int lastFoodLost = 0;
 	float foodLostRate = 0.1f;
 
 	float stoneRefineCapacity = 0.f;
@@ -67,6 +68,4 @@ private:
 	float lastGoldGain = 0.f;
 	float goldGainRate = 0.01f;
 	float goldRefineCapacity = 0.f;
-
-
 };

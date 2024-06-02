@@ -19,7 +19,7 @@ public:
 
 	void add(Building* building);
 	void add(Unit* unit);
-	void updateAndClean(const Resources* resources);
+	void updateAndClean(Resources* resources);
 	void ensureReady();
 
 	unsigned getScore() const;

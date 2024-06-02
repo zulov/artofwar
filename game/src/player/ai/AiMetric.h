@@ -37,7 +37,7 @@ struct AiBuildingMetric : AiMetric {
 struct AiResourceMetric : AiMetric {
 	const std::function<float(Resources* resources, Possession* possession)> fn;
 
-	AiResourceMetric(const std::function<float(const Resources* resources, Possession* possession)>& fn,
+	AiResourceMetric(const std::function<float(Resources* resources, Possession* possession)>& fn,
 	                 float weight, float weightMultiplier = 1.f) : AiMetric(weight, weightMultiplier), fn(fn) {
 	}
 };

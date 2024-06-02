@@ -443,8 +443,8 @@ void Controls::cleanAndUpdate(const FrameInfo* frameInfo) {
 		for (int i = 0; i < Urho3D::Min(selected.size(), 5); ++i) {
 			const Building* build = (Building*)selected.at(i);
 
-			setCircleSight(i, build->getPosition(), getCircleSize(build->getDbBuilding(), build->getLevel()),
-			               Game::getColorPaletteRepo()->getCircleColor(build->getDbBuilding()));
+			setCircleSight(i, build->getPosition(), getCircleSize(build->getDb(), build->getLevel()),
+			               Game::getColorPaletteRepo()->getCircleColor(build->getDb()));
 		}
 	}
 }

@@ -124,7 +124,7 @@ void Simulation::selfAI() const {
 					switch (unit->getActionState()) {
 					case UnitState::ATTACK:
 					case UnitState::SHOT:
-						tryToAttack(unit, getCondition(unit->getDbUnit()));
+						tryToAttack(unit, getCondition(unit->getDb()));
 						break;
 					case UnitState::COLLECT:
 						tryToCollect(unit);
@@ -167,7 +167,7 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		//auto b = Urho3D::Vector2(-185, -140);
+		//auto p0 = Urho3D::Vector2(-185, -140);
 		//auto c = Urho3D::Vector2(-185, -150);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.1f, 0, Urho3D::Vector2(0, 100), 0);
 		//Game::getActionCenter()->addUnits(60, 1, Urho3D::Vector2(-5, 25), 0);
@@ -176,7 +176,7 @@ void Simulation::addTestEntities() const {
 		//Game::getActionCenter()->addUnits(20, 1, b, 0);
 		//Game::getActionCenter()->addUnits(10, 2, Urho3D::Vector2(0, 70), 1);
 
-		//Game::getActionCenter()->addBuilding(2, c, 1, true);
+		//Game::getActionCenter()->addBuilding(15, p0, 0, true);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.5f, 1, Urho3D::Vector2(300, 212), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.2f, 1, Urho3D::Vector2(290, 210), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 4, Urho3D::Vector2(10, 240), 1);

@@ -71,7 +71,7 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	time->setText(monthsRoman[month] + " " + Urho3D::String(year),
 	              Urho3D::String((int)h) + ":" + to2DigString(m) + ":" + to2DigString(s));
 
-	unsigned short workersPerRes[RESOURCES_SIZE] = {0, 0, 0, 0};
+	unsigned short workersPerRes[] = {0, 0, 0, 0};
 	for (const auto worker : poss->getWorkers()) {
 		if (worker->getState() == UnitState::COLLECT) {
 			const auto resId = dynamic_cast<ResourceEntity*>(worker->getThingToInteract())->getResourceId();
@@ -95,7 +95,7 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	auto without = poss->getResWithOutBonus();
 
 	elements[0]->setToolTip(l10nFormat("top_food_tooltip",
-	                                   asStringF(gather[0] * 60.f, 1).c_str(),
+	                                   asStringF(gather[0], 1).c_str(),
 	                                   (int)(workersPerRes[0] - without[0]),
 	                                   workersPerRes[0],
 	                                   (int)vals[0],
@@ -103,17 +103,17 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	                                   (int)resources->getLastFoodLost(),
 	                                   (int)resources->potentialFoodLost()));
 	elements[1]->setToolTip(l10nFormat("top_wood_tooltip",
-	                                   asStringF(gather[1] * 60.f, 1).c_str(),
+	                                   asStringF(gather[1], 1).c_str(),
 	                                   (int)(workersPerRes[1] - without[1]),
 	                                   workersPerRes[1]));
 	elements[2]->setToolTip(l10nFormat("top_stone_tooltip",
-	                                   asStringF(gather[2] * 60.f, 1).c_str(),
+	                                   asStringF(gather[2], 1).c_str(),
 	                                   (int)(workersPerRes[2] - without[2]),
 	                                   workersPerRes[2],
 	                                   (int)resources->getStoneRefineCapacity(),
 	                                   (int)resources->getPotentialStoneRefinement()));
 	elements[3]->setToolTip(l10nFormat("top_gold_tooltip",
-	                                   asStringF(gather[3] * 60.f, 1).c_str(),
+	                                   asStringF(gather[3], 1).c_str(),
 	                                   (int)(workersPerRes[3] - without[3]), workersPerRes[3],
 	                                   (int)vals[3], (int)resources->getGoldStorage(),
 	                                   (int)resources->getLastGoldGains(), (int)resources->getPotentialGoldGains(),

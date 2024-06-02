@@ -25,18 +25,18 @@ inline bool isFree(Unit* unit) {
 }
 
 inline bool isWorker(Physical* physical) {
-	return ((Unit*)physical)->getDbUnit()->typeWorker;
+	return ((Unit*)physical)->getDb()->typeWorker;
 }
 
 inline bool isFreeWorker(Unit* unit) {
-	return unit->getDbUnit()->typeWorker && isFree(unit);
+	return unit->getDb()->typeWorker && isFree(unit);
 }
 
 inline bool isFreeSolider(Unit* unit) {
-	return !unit->getDbUnit()->typeWorker && isFree(unit);
+	return !unit->getDb()->typeWorker && isFree(unit);
 }
 inline bool isSolider(Unit* unit) {
-	return !unit->getDbUnit()->typeWorker;
+	return !unit->getDb()->typeWorker;
 }
 
 inline float getCircleSize(const db_building* dbBuilding, const db_building_level* level) {

@@ -30,7 +30,7 @@ public:
 	int getColor() const { return color; }
 	Urho3D::String& getName() { return name; }
 
-	void updateResource() const;
+	void updateResource1s() const;
 	void updateResourceMonth() const;
 	void updateResourceYear() const;
 

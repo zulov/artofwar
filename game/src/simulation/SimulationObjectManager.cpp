@@ -132,7 +132,7 @@ void SimulationObjectManager::cleanAndDisposeResources() {
 
 void SimulationObjectManager::refreshResBonuses() {
 	auto isResourceBuilding = [](const Building* building) {
-		return building->getDbBuilding()->typeResourceAny;
+		return building->getDb()->typeResourceAny;
 	};
 
 	if (!std::ranges::any_of(StateManager::getDeadBuildings(), isResourceBuilding)) { return; }

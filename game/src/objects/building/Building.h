@@ -55,7 +55,7 @@ public:
 
 	float getModelHeight() const override;
 	void setModelData(float modelHeight) const override;
-	db_building* getDbBuilding() const { return dbBuilding; }
+	db_building* getDb() const { return dbBuilding; }
 	std::pair<db_building*, db_building_level*> getData() const { return {dbBuilding, dbLevel}; }
 	unsigned char getMaxCloseUsers() const override;
 	//TODO getUniT DATA i resource

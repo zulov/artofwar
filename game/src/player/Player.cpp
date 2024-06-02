@@ -90,16 +90,16 @@ void Player::resetScore() {
 	score = -1;
 }
 
-void Player::updateResource() const {
-	resources->resetStats();
+void Player::updateResource1s() const {
+	resources->update1s(possession);
 }
 
 void Player::updateResourceMonth() const {
-	resources->updateResourceMonth();
+	resources->updateMonth();
 }
 
 void Player::updateResourceYear() const {
-	resources->updateResourceYear();
+	resources->updateYear();
 }
 
 void Player::updatePossession() {

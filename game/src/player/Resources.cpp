@@ -16,8 +16,6 @@ Resources::Resources(float valueForAll) {
 }
 
 void Resources::init(float valueForAll) {
-
-
 	resetSpan(values, valueForAll);
 	resetSpan(gatherSpeeds1s);
 	resetSpan(sumGatherSpeed);
@@ -51,7 +49,8 @@ void Resources::add(int id, float value) {
 
 std::string Resources::getValues(int precision, int player) const {
 	std::string str;
-	for (int i = 0; i < RESOURCES_SIZE; ++i) {//TODO zapisac to w jednej linijce
+	for (int i = 0; i < RESOURCES_SIZE; ++i) {
+		//TODO zapisac to w jednej linijce
 		str += "(" + std::to_string(player) + "," + std::to_string(i) + "," + std::to_string(
 			(int)(values[i] * precision)) + "),";
 	}
@@ -62,15 +61,29 @@ void Resources::setValue(int id, float amount) {
 	values[id] = amount;
 }
 
-void Resources::resetStats() {
+void Resources::update1s(Possession* possession) {
 	std::ranges::copy(sumGatherSpeed, gatherSpeeds1s.begin());
 	resetArray(sumGatherSpeed);
+	foodStorage = 0;
+	goldStorage = 0;
+	stoneRefineCapacity = 0;
+	goldRefineCapacity = 0;
+	for (const auto building : possession->getBuildings()) {
+		const auto level = building->getLevel();
+		foodStorage += level->foodStorage;
+		goldStorage += level->goldStoreage;
+		stoneRefineCapacity += level->stoneRefineCapacity;
+		goldRefineCapacity += level->goldRefineCapacity;
+	}
 }
 
-void Resources::updateResourceMonth() {
-	values[0] -= potentialFoodLost();
+void Resources::updateMonth() {
+	lastFoodLost = potentialFoodLost();
+	values[0] -= lastFoodLost;
+	assert(values[0] >= 0);
 }
 
-void Resources::updateResourceYear() {
+void Resources::updateYear() {
+	lastGoldGain = potentialGoldGain();
 	values[3] += potentialGoldGain();
 }

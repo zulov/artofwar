@@ -67,18 +67,18 @@ void PlayersManager::save(SceneSaver& saver) {
 	saver.saveResources(allPlayers);
 }
 
-void PlayersManager::update(FrameInfo *frameInfo) {
+void PlayersManager::update(FrameInfo* frameInfo) {
 	for (const auto player : allPlayers) {
 		player->updatePossession();
-		if(PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_GATHER_SPEED, frameInfo->getCurrentFrame())) {
-			player->updateResource();
+		if (PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_GATHER_SPEED, frameInfo)) {
+			player->updateResource1s();
 		}
 
-		if (PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_MONTH_UPDATE, frameInfo->getCurrentFrame())) {
+		if (PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_MONTH_UPDATE, frameInfo)) {
 			player->updateResourceMonth();
 		}
 
-		if (PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_YEAR_UPDATE, frameInfo->getCurrentFrame())) {
+		if (PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_YEAR_UPDATE, frameInfo)) {
 			player->updateResourceYear();
 		}
 
@@ -91,7 +91,8 @@ char PlayersManager::getActivePlayerID() const {
 }
 
 char PlayersManager::getEnemyFor(char player) {
-	if (player == 0) {//TODO bug do it better
+	if (player == 0) {
+		//TODO bug do it better
 		return 1;
 	}
 	return 0;

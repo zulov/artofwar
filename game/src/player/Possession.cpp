@@ -51,7 +51,7 @@ unsigned Possession::getScore() const {
 	float unitsScore = 0.f;
 	float workerScore = 0.f;
 	for (const auto unit : units) {
-		if (unit->getDbUnit()->typeWorker) {
+		if (unit->getDb()->typeWorker) {
 			workerScore += unit->getCostSum();
 		} else {
 			unitsScore += unit->getCostSum();
@@ -210,12 +210,12 @@ void Possession::add(Building* building) {
 void Possession::add(Unit* unit) {
 	units.push_back(unit);
 
-	if (unit->getDbUnit()->typeWorker) {
+	if (unit->getDb()->typeWorker) {
 		workers.push_back(unit);
 	}
 }
 
-void Possession::updateAndClean(const Resources* resources) {
+void Possession::updateAndClean(Resources* resources) {
 	ready = false;
 	cleanDead(buildings, StateManager::isBuildingDead());
 	cleanDead(units, StateManager::isUnitDead());
@@ -228,7 +228,7 @@ void Possession::updateAndClean(const Resources* resources) {
 			}
 		}
 	}
-	resourcesSum = sumArray(resources->getValues());
+	resourcesSum = sumSpan(resources->getValues());
 }
 
 void Possession::ensureReady() {
@@ -306,7 +306,7 @@ void Possession::ensureReady() {
 	for (const auto unit : units) {
 		if (isSolider(unit)) {
 			++armyNumber;
-			const auto dbUnit = unit->getDbUnit();
+			const auto dbUnit = unit->getDb();
 			if (isFree(unit)) { ++idleArmyNumber; }
 			if (dbUnit->typeInfantry) { ++typeInfantryNumber; }
 			if (dbUnit->typeCalvary) { ++typeCalvaryNumber; }

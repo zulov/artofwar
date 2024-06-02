@@ -105,13 +105,12 @@ private:
 	};
 
 public:
-	static bool get(PerFrameAction type, unsigned char frameNum, unsigned int second = 1) {
+	static bool get(PerFrameAction type, unsigned char frameNum, unsigned int second = 0) {
 		const auto val = data[cast(type)][frameNum];
-		return val != 0 && second % val == 0;
+		return val != 0 && (second+1) % val == 0;
 	}
 
 	static bool get(PerFrameAction type, const FrameInfo* frameInfo) {
-		const auto val = data[cast(type)][frameInfo->getCurrentFrame()];
-		return val != 0 && frameInfo->getSeconds() % val == 0;
+		return get(type, frameInfo->getCurrentFrame(), frameInfo->getSeconds());
 	}
 } PER_FRAME_ACTION;

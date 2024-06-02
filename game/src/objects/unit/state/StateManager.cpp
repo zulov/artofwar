@@ -76,7 +76,7 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParame
 bool StateManager::canStartState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter,
                                  State* stateFrom, State* toState) {
 	return stateFrom->validateTransition(stateTo)
-		&& unit->getDbUnit()->possibleStates[cast(stateTo)]
+		&& unit->getDb()->possibleStates[cast(stateTo)]
 		&& toState->canStart(unit, actionParameter);
 }
 
@@ -174,7 +174,7 @@ void StateManager::startState(Static* obj) {
 	case StaticState::ALIVE:
 		if (obj->getType() == ObjectType::BUILDING) {
 			auto building = (Building*)obj;
-			auto res = building->getDbBuilding()->toResource;
+			auto res = building->getDb()->toResource;
 			if (res >= 0) {
 				changeState(obj, StaticState::DEAD);
 			}
@@ -188,8 +188,8 @@ void StateManager::startState(Static* obj) {
 		if (obj->getType() == ObjectType::BUILDING) {
 			auto building = (Building*)obj;
 			if (obj->getHp() <= 0.f) {
-				if (building->getDbBuilding()->ruinable) {
-					auto costs = building->getDbBuilding()->costs;
+				if (building->getDb()->ruinable) {
+					auto costs = building->getDb()->costs;
 					if (costs->anyWoodOrStone) {
 						short id = costs->moreWoodThanStone ? 6 : 5;
 						float amount = costs->moreWoodThanStone ? costs->wood : costs->stone;
@@ -198,7 +198,7 @@ void StateManager::startState(Static* obj) {
 					}
 				}
 			} else {
-				auto res = building->getDbBuilding()->toResource;
+				auto res = building->getDb()->toResource;
 				if (res >= 0) {
 					Game::getActionCenter()->addResource(res, building->getMainGridIndex());
 				}

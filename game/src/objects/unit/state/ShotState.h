@@ -19,7 +19,7 @@ public:
 	}
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
-		assert(unit->getDbUnit()->typeRange);
+		assert(unit->getDb()->typeRange);
 		if (parameter.isThingAlive()) {
 			auto const indexesToUse = parameter.thingToInteract->getIndexesForRangeUse(unit);
 			return std::ranges::find(indexesToUse, unit->getMainGridIndex()) != indexesToUse.end()

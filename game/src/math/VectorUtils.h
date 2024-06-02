@@ -95,7 +95,7 @@ static std::vector<unsigned char> intersection(std::vector<std::vector<unsigned 
 }
 
 template <typename T, std::size_t N>
-T sumArray(const std::array<T, N>& arr) {
+T sumArray(std::array<T, N>& arr) {
 	T sum = 0;
 	for (const auto& value : arr) {
 		sum += value;
