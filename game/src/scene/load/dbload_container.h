@@ -90,13 +90,18 @@ struct dbload_player {
 
 struct dbload_resource {
 	short player;
-	short resource;
-	float amount;
+	float food;
+	float wood;
+	float stone;
+	float gold;
 
-	dbload_resource(short player, short resource, float amount)
+	dbload_resource(short player, float food, float wood, float stone, float gold)
 		: player(player),
-		  resource(resource),
-		  amount(amount) { }
+		  food(food),
+		  wood(wood),
+		  stone(stone),
+		  gold(gold) {
+	}
 };
 
 struct dbload_container {

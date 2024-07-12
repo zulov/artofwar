@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <iostream>
 #include <string>
 #include <span>
 
@@ -28,7 +29,7 @@ public:
 	std::span<float> getSumValues() { return sumValues; }
 
 	std::string getValues(int precision, int player) const;
-	void setValue(int id, float amount);
+	void setValue(float food, float wood, float stone, float gold);
 
 	void update1s(Possession* possession);
 	void updateMonth();
@@ -44,11 +45,14 @@ public:
 	float potentialGoldGain() const { return std::max(goldStorage, values[3]) * goldGainRate; }
 
 	float getStoneRefineCapacity() const { return stoneRefineCapacity; }
-	float getPotentialStoneRefinement() const { return std::min(gatherSpeeds1s[2], stoneRefineCapacity) * stoneRefineValue; }
+	float getPotentialStoneRefinement() const {
+		std::cout << gatherSpeeds1s[2]<<";"<<stoneRefineCapacity <<";"<< stoneRefineBonus << std::endl;
+		return std::min(gatherSpeeds1s[2], stoneRefineCapacity) * stoneRefineBonus;
+	}
 
 	float getPotentialGoldGains() const { return potentialGoldGain(); }
 	float getGoldRefineCapacity() const { return goldRefineCapacity; }
-	float getPotentialGoldRefinement() const { return std::min(gatherSpeeds1s[3], goldRefineCapacity) * goldRefineValue; }
+	float getPotentialGoldRefinement() const { return std::min(gatherSpeeds1s[3], goldRefineCapacity) * goldRefineBonus; }
 
 private:
 	std::array<float, RESOURCES_SIZE> values; //TODO wszystie te wartosci trzeba zapisac w savie
@@ -62,12 +66,12 @@ private:
 	float foodLostRate = 0.1f;
 
 	float stoneRefineCapacity = 0.f;
-	float stoneRefineValue = 0.1f;
+	float stoneRefineBonus = 0.1f;
 
 	float goldStorage = 0.f;
 	float lastGoldGain = 0.f;
 	float goldGainRate = 0.01f;
 
 	float goldRefineCapacity = 0.f;
-	float goldRefineValue = 0.1f;
+	float goldRefineBonus = 0.1f;
 };

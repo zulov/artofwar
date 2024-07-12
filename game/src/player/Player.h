@@ -18,7 +18,7 @@ public:
 	~Player();
 
 	std::string getValues(int precision) const;
-	void setResourceAmount(int resource, float amount) const;
+	void setResourceAmount(float food, float wood, float stone, float gold) const;
 	void setResourceAmount(float amount) const;
 	char upgradeLevel(QueueActionType type, int id) const;
 

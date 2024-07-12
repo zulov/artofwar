@@ -44,7 +44,7 @@ int static load_resources(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
 	int p = xyz->precision;
-	xyz->resources->push_back(new dbload_resource(atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p));
+	xyz->resources->push_back(new dbload_resource(atoi(argv[0]), atof(argv[1]) / p, atof(argv[2]) / p, atof(argv[3]) / p, atof(argv[4]) / p));
 
 	return 0;
 }

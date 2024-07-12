@@ -37,8 +37,8 @@ std::string Player::getValues(int precision) const {
 		+ std::to_string(color) + "'";
 }
 
-void Player::setResourceAmount(int resource, float amount) const {
-	resources->setValue(resource, amount);
+void Player::setResourceAmount(float food, float wood, float stone, float gold) const {
+	resources->setValue(food, wood, stone, gold);
 }
 
 void Player::setResourceAmount(float amount) const {

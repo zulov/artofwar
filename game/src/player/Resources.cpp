@@ -17,6 +17,7 @@ Resources::Resources(float valueForAll) {
 
 void Resources::init(float valueForAll) {
 	resetSpan(values, valueForAll);
+	resetSpan(gatherSpeeds60s);
 	resetSpan(gatherSpeeds1s);
 	resetSpan(sumGatherSpeed);
 	resetSpan(sumValues);
@@ -48,17 +49,19 @@ void Resources::add(int id, float value) {
 }
 
 std::string Resources::getValues(int precision, int player) const {
-	std::string str;
-	for (int i = 0; i < RESOURCES_SIZE; ++i) {
-		//TODO zapisac to w jednej linijce
-		str += "(" + std::to_string(player) + "," + std::to_string(i) + "," + std::to_string(
-			(int)(values[i] * precision)) + "),";
-	}
+	std::string str = "(" + std::to_string(player) + 
+		"," + std::to_string((int)(values[0] * precision))+"," + std::to_string((int)(values[1] * precision)) + 
+		"," + std::to_string((int)(values[2] * precision))+"," + std::to_string((int)(values[3] * precision)) + 
+		"),";
+
 	return str;
 }
 
-void Resources::setValue(int id, float amount) {
-	values[id] = amount;
+void Resources::setValue(float food, float wood, float stone, float gold) {
+	values[0] = food;
+	values[1] = wood;
+	values[2] = stone;
+	values[3] = gold;
 }
 
 void Resources::update1s(Possession* possession) {

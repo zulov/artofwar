@@ -21,10 +21,10 @@ void PlayersManager::load(std::vector<dbload_player*>* players, std::vector<dblo
 		teams[player->team].push_back(newPlayer);
 	}
 
-	for (auto resource : *resources) {
-		for (auto player : allPlayers) {
+	for (const auto resource : *resources) {
+		for (const auto player : allPlayers) {
 			if (player->getId() == resource->player) {
-				player->setResourceAmount(resource->resource, resource->amount);
+				player->setResourceAmount(resource->food, resource->wood,resource->stone, resource->gold);
 			}
 		}
 	}
