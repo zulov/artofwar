@@ -11,7 +11,7 @@ Player::Player(int nationId, char team, char id, int color, Urho3D::String name,
 	queue(new QueueManager(1)), dbNation(Game::getDatabase()->getNation(nationId)),
 	actionMaker(this, dbNation), orderMaker(this, dbNation),
 	name(std::move(name)), team(team),
-	color(color), id(id), active(active), resources(new Resources()),possession(new Possession(nationId)) {
+	color(color), id(id), active(active), resources(new Resources()), possession(new Possession(nationId)) {
 
 	unitLevels = new char[Game::getDatabase()->getUnits().size()];
 	buildingLevels = new char[Game::getDatabase()->getBuildings().size()];

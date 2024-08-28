@@ -5,6 +5,7 @@
 #include <vector>
 
 
+class AiInputProvider;
 class Possession;
 
 namespace Urho3D {
@@ -73,6 +74,7 @@ private:
 	char playerId;
 	Possession* possession;
 	db_nation* nation;
+	AiInputProvider* aiInput;
 
 	Brain* ifWorker;
 	Brain* whereWorker;

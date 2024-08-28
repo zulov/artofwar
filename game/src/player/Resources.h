@@ -46,7 +46,6 @@ public:
 
 	float getStoneRefineCapacity() const { return stoneRefineCapacity; }
 	float getPotentialStoneRefinement() const {
-		std::cout << gatherSpeeds1s[2]<<";"<<stoneRefineCapacity <<";"<< stoneRefineBonus << std::endl;
 		return std::min(gatherSpeeds1s[2], stoneRefineCapacity) * stoneRefineBonus;
 	}
 

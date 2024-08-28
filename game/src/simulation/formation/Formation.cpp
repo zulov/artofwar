@@ -50,7 +50,7 @@ void Formation::chooseLeader(Urho3D::Vector2& localCenter) {
 }
 
 void Formation::electLeader() {
-	auto center = computeLocalCenter(units);
+	auto center = computeCenter(units);
 	chooseLeader(center);
 
 	if (oldLeader != nullptr && leader != oldLeader) {

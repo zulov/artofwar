@@ -20,7 +20,7 @@ inline bool addToGroup(std::vector<std::vector<int>>& groupedIndexes, int curren
 inline std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units) {
 	std::vector<int> allIndexes;
 	allIndexes.reserve(units.size());
-	for (auto* unit : units) {
+	for (const auto* unit : units) {
 		allIndexes.push_back(unit->getMainGridIndex());
 	}
 	std::ranges::sort(allIndexes);
@@ -75,9 +75,9 @@ inline std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units) {
 	return result;
 }
 
-inline Urho3D::Vector2 computeLocalCenter(const std::vector<Unit*>& units) {
+inline Urho3D::Vector2 computeCenter(const std::vector<Unit*>& units) {
 	auto localCenter = Urho3D::Vector2::ZERO;
-	for (auto* unit : units) {
+	for (const auto* unit : units) {
 		const auto pos = unit->getPosition();
 		localCenter.x_ += pos.x_;
 		localCenter.y_ += pos.z_;

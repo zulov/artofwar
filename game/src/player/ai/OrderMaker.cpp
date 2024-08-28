@@ -28,10 +28,10 @@ constexpr float SQ_SEMI_CLOSE = SEMI_CLOSE * SEMI_CLOSE;
 OrderMaker::OrderMaker(Player* player, db_nation* nation)
 	: player(player), playerId(player->getId()), possession(player->getPossession()),
 	  whichResource(BrainProvider::get(nation->orderPrefix[0] + "whichResource.csv")),
-
 	  attackOrDefence(BrainProvider::get(nation->orderPrefix[1] + "attackOrDefence.csv")),
 	  whereAttack(BrainProvider::get(nation->orderPrefix[2] + "whereAttack.csv")),
-	  whereDefence(BrainProvider::get(nation->orderPrefix[3] + "whereDefence.csv")) {
+	  whereDefence(BrainProvider::get(nation->orderPrefix[3] + "whereDefence.csv")),
+	  aiInput(Game::getAiInputProvider()) {
 	temp = new std::vector<Physical*>();
 }
 
@@ -53,17 +53,31 @@ UnitOrder* OrderMaker::unitOrderCollect(std::vector<Unit*>& workers, Physical* c
 	return new IndividualOrder(workers.at(0), UnitAction::COLLECT, closest);
 }
 
+std::vector<Physical*>* OrderMaker::getThingsToAttack(const CenterType centerType, Unit* const unit) {
+	if (centerType == CenterType::BUILDING) {
+		return Game::getEnvironment()->getBuildingsFromTeamNotEq(unit, -1, SEMI_CLOSE);
+	}
+	if (centerType == CenterType::ECON) {
+		const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+		//TODO perf wrzuciæ predykat do srodka
+		temp->clear();
+		temp->reserve(neights->size());
+		std::ranges::copy_if(*neights, std::back_inserter(*temp), isWorker);
+		return temp;
+	} //CenterType::UNITS
+	return Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+}
+
 void OrderMaker::action() {
 	auto freeWorkers = findFreeWorkers();
 
 	if (!freeWorkers.empty()) {
 		collect(freeWorkers);
-	}
+	} //TODO change busy worker
 
 	const auto env = Game::getEnvironment();
 
 	if (possession->hasAnyFreeArmy()) {
-		const auto aiInput = Game::getAiInputProvider();
 		auto const resultAoD = attackOrDefence->decide(aiInput->getAttackOrDefenceInput(playerId));
 		std::span<float> whereGo;
 		char playerToGo = playerId;
@@ -75,35 +89,20 @@ void OrderMaker::action() {
 		}
 		const CenterType centerType = static_cast<CenterType>(biggestWithRand(whereGo));
 		const auto posOpt = env->getCenterOf(centerType, playerToGo);
+		if (!posOpt.has_value()) { return; }
 
-		if (posOpt.has_value()) {
-			std::vector<Unit*> army = possession->getFreeArmy();
-			auto center = posOpt.value();
-			for (auto& subArmy : divide(army)) {
-				if (!subArmy.empty()) {
-					auto centerLocal = computeLocalCenter(subArmy);
-					const auto dist = sqDist(centerLocal, center);
+		std::vector<Unit*> army = possession->getFreeArmy();
+		auto target = posOpt.value();
+		for (auto& subArmy : divide(army)) {
+			if (!subArmy.empty()) {
+				auto armyCenter = computeCenter(subArmy);
+				const auto dist = sqDist(armyCenter, target);
 
-					if (dist > SQ_SEMI_CLOSE) {
-						Game::getActionCenter()->addUnitAction(unitOrderGo(subArmy, center));
-					} else {
-						const auto unit = subArmy.at(0);
-						std::vector<Physical*>* things;
-						if (centerType == CenterType::BUILDING) {
-							things = env->getBuildingsFromTeamNotEq(unit, -1, SEMI_CLOSE);
-						} else if (centerType == CenterType::ECON) {
-							const auto neights = env->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
-							//TODO perf wrzuciæ predykat do srodka
-							temp->clear();
-							temp->reserve(neights->size());
-							std::ranges::copy_if(*neights, std::back_inserter(*temp), isWorker);
-							things = temp;
-						} else {
-							//CenterType::UNITS
-							things = env->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
-						}
-						semiCloseAttack(subArmy, things);
-					}
+				if (dist > SQ_SEMI_CLOSE) {
+					Game::getActionCenter()->addUnitAction(unitOrderGo(subArmy, target));
+				} else {
+					const auto unit = subArmy.at(0);
+					semiCloseAttack(subArmy, getThingsToAttack(centerType, unit));
 				}
 			}
 		}
@@ -159,14 +158,14 @@ void OrderMaker::actCollect(unsigned char& resHistogram, char resId, std::vector
 }
 
 void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
-	const auto input = Game::getAiInputProvider()->getResourceInput(playerId);
+	const auto input = aiInput->getResourceInput(playerId);
 	const auto result = whichResource->decide(input);
 
 	unsigned char resHistogram[RESOURCES_SIZE];
 	std::fill_n(resHistogram, RESOURCES_SIZE, 0);
 	for (int i = 0; i < freeWorkers.size(); ++i) {
 		//TODO to powinno byc posortowane wed³ugo iloœci? 
-		const auto resourceId = biggestWithRand(result); //TODO perf tutaj tylko losowaca sortowanie wyciagnac wy¿ej
+		const auto resourceId = biggestWithRand(result); //TODO perf tutaj tylko losowac
 		++resHistogram[resourceId];
 	}
 	char idx = 0;

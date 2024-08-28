@@ -1,6 +1,13 @@
 #pragma once
 #include <vector>
-#include <Urho3D/Math/Vector2.h>
+
+#include "env/influence/CenterType.h"
+
+class AiInputProvider;
+
+namespace Urho3D {
+	class Vector2;
+}
 
 class Possession;
 class UnitOrder;
@@ -24,12 +31,14 @@ private:
 	Physical* closetInRange(Unit* worker, int resourceId);
 	UnitOrder* unitOrderGo(std::vector<Unit*>& subArmy, Urho3D::Vector2& center) const;
 	UnitOrder* unitOrderCollect(std::vector<Unit*>& workers, Physical* closest) const;
+	std::vector<Physical*>* getThingsToAttack(CenterType centerType, Unit* unit);
 	void actCollect(unsigned char& resHistogram, char resId, std::vector<Unit*>& rest, std::vector<Unit*>& workers);
 	void collect(std::vector<Unit*>& freeWorkers);
 
 	Player* player;
 	char playerId;
 	Possession* possession;
+	AiInputProvider* aiInput;
 
 	Brain* whichResource;
 

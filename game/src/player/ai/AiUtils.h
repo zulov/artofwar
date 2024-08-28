@@ -2,6 +2,7 @@
 #include "math/RandGen.h"
 #include "math/VectorUtils.h"
 #include "ActionMakerLogger.h"
+#include "math/MathUtils.h"
 
 inline bool randFromTwo(float val) {
 	return val + 1.f > RandGen::nextRand(RandFloatType::AI, 2.f);
