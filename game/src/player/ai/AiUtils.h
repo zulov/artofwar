@@ -2,7 +2,6 @@
 #include "math/RandGen.h"
 #include "math/VectorUtils.h"
 #include "ActionMakerLogger.h"
-#include "math/MathUtils.h"
 
 inline bool randFromTwo(float val) {
 	return val + 1.f > RandGen::nextRand(RandFloatType::AI, 2.f);
@@ -11,7 +10,7 @@ inline bool randFromTwo(float val) {
 inline int biggestWithRand(std::span<float> vals) {
 	assert(validateSpan(__LINE__, __FILE__, vals));
 	assert(!vals.empty());
-	for (float& val : vals) {
+	for (float& val : vals) {//TODO modyfikowalnosc wyników? jezeli sa reuzyte to moze byc problem, sam brain powinien porawaic te wartoœci
 		if (val < 0) {
 			val = 0.f;
 		}

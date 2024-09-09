@@ -203,6 +203,8 @@
     <ClCompile Include="src\objects\projectile\ProjectileManager.cpp" />
     <ClCompile Include="src\objects\projectile\ProjectileBase.h" />
     <ClCompile Include="src\env\influence\VisibilityManager.cpp" />
+    <ClCompile Include="src\utils\DebugUtils.h" />
+    <ClCompile Include="src\utils\DebugUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />

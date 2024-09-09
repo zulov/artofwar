@@ -20,6 +20,7 @@
 #include "objects/unit/order/enums/UnitActionType.h"
 #include "env/influence/CenterType.h"
 #include "player/Possession.h"
+#include "utils/DebugUtils.h"
 #include "utils/OtherUtils.h"
 
 constexpr float SEMI_CLOSE = 30.f;
@@ -160,6 +161,12 @@ void OrderMaker::actCollect(unsigned char& resHistogram, char resId, std::vector
 void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 	const auto input = aiInput->getResourceInput(playerId);
 	const auto result = whichResource->decide(input);
+	if(freeWorkers.size()==1) {
+		const auto resourceId = biggestWithRand(result);
+
+	}else {
+		COUNT_Y();
+	}
 
 	unsigned char resHistogram[RESOURCES_SIZE];
 	std::fill_n(resHistogram, RESOURCES_SIZE, 0);
@@ -174,6 +181,8 @@ void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 		//TODO close divide
 		std::vector<Unit*> workers;
 		for (int i = 0; i < workersGroup.size(); ++i) {
+			
+			//int maxInter = std::max((int)resHistogram[idx], (int)workersGroup.size());
 			if (workers.size() < resHistogram[idx]) {
 				workers.push_back(workersGroup[i]);
 			} else {
