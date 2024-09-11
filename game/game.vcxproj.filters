@@ -539,6 +539,7 @@
     <ClInclude Include="src\env\path\PathCache.h" />
     <ClInclude Include="src\player\ai\MetricDefinitions.h" />
     <ClInclude Include="src\player\ai\PossessionMetric.h" />
+    <ClInclude Include="src\utils\PrintUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

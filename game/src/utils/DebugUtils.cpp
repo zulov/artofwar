@@ -17,11 +17,8 @@ void COUNT_Y() {
 void PRINT_X2Y() {
 	if (counterX + counterY > 0) {
 		float sum = 100.f / (counterX + counterY);
-		std::cout << "X: " << counterX << " Y: " << counterY << "| X-Y " << asStringF(counterX * sum, 1) << "%-" <<
-			asStringF(counterY * sum, 1) << "%" << std::endl;
+		std::cout << "X: " << counterX << " Y: " << counterY << "| X-Y "
+			<< asStringF(counterX * sum, 1) << "%-"
+			<< asStringF(counterY * sum, 1) << "%" << std::endl;
 	}
-}
-
-void PRINT() {
-	std::cout << std::endl;
 }

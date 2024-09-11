@@ -487,6 +487,7 @@
     <ClInclude Include="src\objects\unit\SimColorMode.h" />
     <ClInclude Include="src\objects\projectile\ProjectileWithNode.h" />
     <ClInclude Include="src\utils\OtherUtils.h" />
+    <ClInclude Include="src\utils\PrintUtils.h" />
     <ClInclude Include="src\utils\replace_utils.h" />
     <ClInclude Include="src\env\path\DrawGridUtils.h" />
     <ClInclude Include="src\env\EnvConsts.h" />

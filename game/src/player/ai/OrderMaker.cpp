@@ -20,7 +20,6 @@
 #include "objects/unit/order/enums/UnitActionType.h"
 #include "env/influence/CenterType.h"
 #include "player/Possession.h"
-#include "utils/DebugUtils.h"
 #include "utils/OtherUtils.h"
 
 constexpr float SEMI_CLOSE = 30.f;
