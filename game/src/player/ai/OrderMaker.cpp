@@ -163,11 +163,10 @@ void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 	const auto result = whichResource->decide(input);
 	if(freeWorkers.size()==1) {
 		const auto resourceId = biggestWithRand(result);
-
-	}else {
-		COUNT_Y();
+		const auto closest = closetInRange(freeWorkers.at(0), resourceId);
+		Game::getActionCenter()->addUnitAction(unitOrderCollect(freeWorkers, closest));
+		return;
 	}
-
 	unsigned char resHistogram[RESOURCES_SIZE];
 	std::fill_n(resHistogram, RESOURCES_SIZE, 0);
 	for (int i = 0; i < freeWorkers.size(); ++i) {
@@ -175,9 +174,10 @@ void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 		const auto resourceId = biggestWithRand(result); //TODO perf tutaj tylko losowac
 		++resHistogram[resourceId];
 	}
+	
 	char idx = 0;
 	std::vector<Unit*> rest;
-	for (auto& workersGroup : divide(freeWorkers)) {
+	for (auto& workersGroup : divide(freeWorkers, true)) {
 		//TODO close divide
 		std::vector<Unit*> workers;
 		for (int i = 0; i < workersGroup.size(); ++i) {

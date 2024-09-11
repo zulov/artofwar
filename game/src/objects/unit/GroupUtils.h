@@ -3,6 +3,7 @@
 #include <objects/unit/Unit.h>
 #include <Game.h>
 #include "env/Environment.h"
+#include <iostream>
 
 inline bool addToGroup(std::vector<std::vector<int>>& groupedIndexes, int current) {
 	for (auto& groupedIndex : groupedIndexes) {
@@ -17,7 +18,8 @@ inline bool addToGroup(std::vector<std::vector<int>>& groupedIndexes, int curren
 	return false;
 }
 
-inline std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units) {
+//TODO uproœciæ dla ma³ych grup
+inline std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units, bool sort = false) {
 	std::vector<int> allIndexes;
 	allIndexes.reserve(units.size());
 	for (const auto* unit : units) {
@@ -71,6 +73,11 @@ inline std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units) {
 		}
 
 		result.push_back(temp);
+	}
+	if (sort && units.size() > 2 && result.size() > 1) {
+		std::ranges::sort(result, [](const std::vector<Unit*>& a, const std::vector<Unit*>& b) {
+			return a.size() > b.size();
+		});
 	}
 	return result;
 }
