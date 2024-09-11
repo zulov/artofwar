@@ -163,7 +163,10 @@ void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 	if(freeWorkers.size()==1) {
 		const auto resourceId = biggestWithRand(result);
 		const auto closest = closetInRange(freeWorkers.at(0), resourceId);
-		Game::getActionCenter()->addUnitAction(unitOrderCollect(freeWorkers, closest));
+		if(closest) {
+			Game::getActionCenter()->addUnitAction(unitOrderCollect(freeWorkers, closest));
+		}
+		
 		return;
 	}
 	unsigned char resHistogram[RESOURCES_SIZE];
