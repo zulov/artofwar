@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 
+#include "env/Environment.h"
 #include "env/influence/CenterType.h"
 #include "utils/defines.h"
 
@@ -33,9 +34,11 @@ private:
 	UnitOrder* unitOrderGo(std::vector<Unit*>& subArmy, Urho3D::Vector2& center) const;
 	UnitOrder* unitOrderCollect(std::vector<Unit*>& workers, Physical* closest) const;
 	std::vector<Physical*>* getThingsToAttack(CenterType centerType, Unit* unit);
+
 	void actCollect(char resId, std::vector<Unit*>& rest, std::vector<Unit*>& workers);
 	std::vector<Unit*> getSubGroup(std::vector<std::vector<Unit*>>& groups, unsigned char n);
 	void collect(std::vector<Unit*>& freeWorkers);
+	void armyAction();
 
 	Player* player;
 	char playerId;

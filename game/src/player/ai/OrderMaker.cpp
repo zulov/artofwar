@@ -70,6 +70,35 @@ std::vector<Physical*>* OrderMaker::getThingsToAttack(const CenterType centerTyp
 	return Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
 }
 
+void OrderMaker::armyAction() {
+	auto const resultAoD = attackOrDefence->decide(aiInput->getAttackOrDefenceInput(playerId));
+	std::span<float> whereGo;
+	char playerToGo = playerId;
+	if (randFromTwo(resultAoD[0])) {
+		playerToGo = Game::getPlayersMan()->getEnemyFor(playerId);
+		whereGo = whereAttack->decide(aiInput->getWhereAttack(playerId));
+	} else {
+		whereGo = whereDefence->decide(aiInput->getWhereDefend(playerId));
+	}
+	const CenterType centerType = static_cast<CenterType>(biggestWithRand(whereGo));
+	const auto posOpt = Game::getEnvironment()->getCenterOf(centerType, playerToGo);
+	if (!posOpt.has_value()) { return; }
+
+	std::vector<Unit*> army = possession->getFreeArmy();
+	auto target = posOpt.value();
+	for (auto& subArmy : divide(army)) { //TODO kazda sub armia moze miec inny cel
+		auto armyCenter = computeCenter(subArmy);
+		const auto dist = sqDist(armyCenter, target);
+
+		if (dist > SQ_SEMI_CLOSE) {
+			Game::getActionCenter()->addUnitAction(unitOrderGo(subArmy, target));
+		} else {
+			const auto unit = subArmy.at(0);
+			semiCloseAttack(subArmy, getThingsToAttack(centerType, unit));
+		}
+	}
+}
+
 void OrderMaker::action() {
 	auto freeWorkers = findFreeWorkers();
 
@@ -77,37 +106,8 @@ void OrderMaker::action() {
 		collect(freeWorkers);
 	} //TODO change busy worker
 
-	const auto env = Game::getEnvironment();
-
 	if (possession->hasAnyFreeArmy()) {
-		auto const resultAoD = attackOrDefence->decide(aiInput->getAttackOrDefenceInput(playerId));
-		std::span<float> whereGo;
-		char playerToGo = playerId;
-		if (randFromTwo(resultAoD[0])) {
-			playerToGo = Game::getPlayersMan()->getEnemyFor(playerId);
-			whereGo = whereAttack->decide(aiInput->getWhereAttack(playerId));
-		} else {
-			whereGo = whereDefence->decide(aiInput->getWhereDefend(playerId));
-		}
-		const CenterType centerType = static_cast<CenterType>(biggestWithRand(whereGo));
-		const auto posOpt = env->getCenterOf(centerType, playerToGo);
-		if (!posOpt.has_value()) { return; }
-
-		std::vector<Unit*> army = possession->getFreeArmy();
-		auto target = posOpt.value();
-		for (auto& subArmy : divide(army)) {
-			if (!subArmy.empty()) {
-				auto armyCenter = computeCenter(subArmy);
-				const auto dist = sqDist(armyCenter, target);
-
-				if (dist > SQ_SEMI_CLOSE) {
-					Game::getActionCenter()->addUnitAction(unitOrderGo(subArmy, target));
-				} else {
-					const auto unit = subArmy.at(0);
-					semiCloseAttack(subArmy, getThingsToAttack(centerType, unit));
-				}
-			}
-		}
+		armyAction();
 	}
 }
 
@@ -187,7 +187,6 @@ void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 	std::fill_n(resHistogram, RESOURCES_SIZE, 0);
 
 	for (int i = 0; i < freeWorkers.size(); ++i) {
-		//TODO to powinno byc posortowane wed³ugo iloœci? 
 		const auto resourceId = biggestWithRand(result); //TODO perf tutaj tylko losowac
 		++resHistogram[resourceId];
 	}
