@@ -20,8 +20,7 @@ std::span<float> AiInputProvider::getResourceInput(char playerId) const {
 
 	return combineWithBasic(resourceIdInputSpan,
 	                        METRIC_DEFINITIONS.getResourceNorm(player->getResources(), player->getPossession(),
-	                                                           METRIC_DEFINITIONS.aiResInputIdxs),
-	                        player);
+	                                                           METRIC_DEFINITIONS.aiResInputIdxs), player);
 }
 
 std::span<float> AiInputProvider::getUnitsInput(char playerId) const {
@@ -53,9 +52,8 @@ std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, con
 
 std::span<float> AiInputProvider::getAttackOrDefenceInput(char playerId) const {
 	const auto plyMng = Game::getPlayersMan();
-	const char idEnemy = plyMng->getEnemyFor(playerId);
 
-	auto& data = METRIC_DEFINITIONS.getAttackOrDefenceNorm(plyMng->getPlayer(playerId), plyMng->getPlayer(idEnemy));
+	auto& data = METRIC_DEFINITIONS.getAttackOrDefenceNorm(plyMng->getPlayer(playerId), plyMng->getEnemyFor(playerId));
 	std::ranges::copy(data, attackOfDefenceInputSpan.begin());
 
 	assert(validateSpan(__LINE__, __FILE__, attackOfDefenceInputSpan));
@@ -65,19 +63,17 @@ std::span<float> AiInputProvider::getAttackOrDefenceInput(char playerId) const {
 std::span<float> AiInputProvider::getWhereAttack(char playerId) const {
 	const auto plyMng = Game::getPlayersMan();
 	auto* player = plyMng->getPlayer(playerId);
-	const char idEnemy = plyMng->getEnemyFor(playerId);
 
 	return combineWithBasic(whereAttackInputSpan,
-	                        METRIC_DEFINITIONS.getWhereAttackNorm(player, plyMng->getPlayer(idEnemy)), player);
+	                        METRIC_DEFINITIONS.getWhereAttackNorm(player, plyMng->getEnemyFor(playerId)), player);
 }
 
 std::span<float> AiInputProvider::getWhereDefend(char playerId) const {
 	const auto plyMng = Game::getPlayersMan();
 	auto* player = plyMng->getPlayer(playerId);
-	const char idEnemy = plyMng->getEnemyFor(playerId);
 
 	return combineWithBasic(whereDefendInputSpan,
-	                        METRIC_DEFINITIONS.getWhereDefendNorm(player, plyMng->getPlayer(idEnemy)), player);
+	                        METRIC_DEFINITIONS.getWhereDefendNorm(player, plyMng->getEnemyFor(playerId)), player);
 }
 
 std::span<float> AiInputProvider::getBuildingInputSpan(ParentBuildingType type) const {
@@ -98,16 +94,15 @@ std::span<float> AiInputProvider::getBuildingsTypeInput(char playerId, ParentBui
 	if (type == ParentBuildingType::RESOURCE) {
 		return combineWithBasic(buildingsResInputSpan,
 		                        METRIC_DEFINITIONS.getResourceNorm(player->getResources(), player->getPossession(),
-		                                                           METRIC_DEFINITIONS.aiResWithoutBonusIdxsSpan),
-		                        player);
+		                                                           METRIC_DEFINITIONS.aiResWithoutBonusIdxsSpan), player);
 	}
 	return combineWithBasic(getBuildingInputSpan(type), player->getPossession()->getBuildingsMetrics(type), player);
 }
 
 std::span<float> AiInputProvider::getBasicInput(std::span<float> dest, Player* player) const {
 	const auto plyMng = Game::getPlayersMan();
-	char idEnemy = plyMng->getEnemyFor(player->getId());
-	auto& data = METRIC_DEFINITIONS.getBasicNorm(player, plyMng->getPlayer(idEnemy));
+
+	auto& data = METRIC_DEFINITIONS.getBasicNorm(player, plyMng->getEnemyFor(player->getId()));
 	assert(validateSpan(__LINE__, __FILE__, data));
 	std::ranges::copy(data, dest.begin());
 

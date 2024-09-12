@@ -69,21 +69,6 @@ void ActionMaker::action() {
 	//return levelUpBuilding();
 }
 
-std::span<float> ActionMaker::getWhichBuilding(ParentBuildingType type, const std::span<float> aiTypeInput) const {
-	switch (type) {
-	case ParentBuildingType::OTHER:
-		return whichBuildingTypeOther->decide(aiTypeInput);
-	case ParentBuildingType::DEFENCE:
-		return whichBuildingTypeDefence->decide(aiTypeInput);
-	case ParentBuildingType::RESOURCE:
-		return whichBuildingTypeResource->decide(aiTypeInput);
-	case ParentBuildingType::TECH:
-		return whichBuildingTypeTech->decide(aiTypeInput);
-	case ParentBuildingType::UNITS:
-		return whichBuildingTypeUnits->decide(aiTypeInput);
-	}
-}
-
 bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	const auto whichTypeOutput = whichBuildingType->decide(buildingsInput);
 
@@ -99,6 +84,21 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	const auto output = getWhichBuilding(type, aiTypeInput);
 
 	return createBuilding(chooseBuilding(output, type), type);
+}
+
+std::span<float> ActionMaker::getWhichBuilding(ParentBuildingType type, const std::span<float> aiTypeInput) const {
+	switch (type) {
+	case ParentBuildingType::OTHER:
+		return whichBuildingTypeOther->decide(aiTypeInput);
+	case ParentBuildingType::DEFENCE:
+		return whichBuildingTypeDefence->decide(aiTypeInput);
+	case ParentBuildingType::RESOURCE:
+		return whichBuildingTypeResource->decide(aiTypeInput);
+	case ParentBuildingType::TECH:
+		return whichBuildingTypeTech->decide(aiTypeInput);
+	case ParentBuildingType::UNITS:
+		return whichBuildingTypeUnits->decide(aiTypeInput);
+	}
 }
 
 bool ActionMaker::createWorker() const {
@@ -171,7 +171,7 @@ db_building* ActionMaker::chooseBuilding(std::span<float> result, ParentBuilding
 		return nullptr;
 	}
 	if (buildings.size() == 1) {
-		return buildings.at(1);
+		return buildings.at(0);
 	}
 	if (type == ParentBuildingType::RESOURCE) {
 		int res = biggestWithRand(result);

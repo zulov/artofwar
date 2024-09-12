@@ -25,7 +25,8 @@ public:
 	void save(SceneSaver& saver);
 	void update(FrameInfo* frameInfo);
 	char getActivePlayerID() const;
-	static char getEnemyFor(char player);
+	static char getEnemyIdFor(char player);
+	Player* getEnemyFor(char player) const;
 
 	std::vector<Player*>& getAllPlayers();
 private:

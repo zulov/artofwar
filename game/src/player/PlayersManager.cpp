@@ -90,12 +90,16 @@ char PlayersManager::getActivePlayerID() const {
 	return activePlayer->getId();
 }
 
-char PlayersManager::getEnemyFor(char player) {
+char PlayersManager::getEnemyIdFor(char player) {
 	if (player == 0) {
 		//TODO bug do it better
 		return 1;
 	}
 	return 0;
+}
+
+Player* PlayersManager::getEnemyFor(char player) const {
+	return allPlayers[getEnemyIdFor(player)];
 }
 
 std::vector<Player*>& PlayersManager::getAllPlayers() {

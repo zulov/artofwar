@@ -22,7 +22,6 @@
 #include "player/Possession.h"
 #include "utils/DebugUtils.h"
 #include "utils/OtherUtils.h"
-#include "utils/PrintUtils.h"
 
 constexpr float SEMI_CLOSE = 30.f;
 constexpr float SQ_SEMI_CLOSE = SEMI_CLOSE * SEMI_CLOSE;
@@ -75,7 +74,7 @@ void OrderMaker::armyAction() {
 	std::span<float> whereGo;
 	char playerToGo = playerId;
 	if (randFromTwo(resultAoD[0])) {
-		playerToGo = Game::getPlayersMan()->getEnemyFor(playerId);
+		playerToGo = Game::getPlayersMan()->getEnemyIdFor(playerId);
 		whereGo = whereAttack->decide(aiInput->getWhereAttack(playerId));
 	} else {
 		whereGo = whereDefence->decide(aiInput->getWhereDefend(playerId));
