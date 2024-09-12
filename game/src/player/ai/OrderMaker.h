@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "env/influence/CenterType.h"
+#include "utils/defines.h"
 
 class AiInputProvider;
 
@@ -32,7 +33,8 @@ private:
 	UnitOrder* unitOrderGo(std::vector<Unit*>& subArmy, Urho3D::Vector2& center) const;
 	UnitOrder* unitOrderCollect(std::vector<Unit*>& workers, Physical* closest) const;
 	std::vector<Physical*>* getThingsToAttack(CenterType centerType, Unit* unit);
-	void actCollect(unsigned char& resHistogram, char resId, std::vector<Unit*>& rest, std::vector<Unit*>& workers);
+	void actCollect(char resId, std::vector<Unit*>& rest, std::vector<Unit*>& workers);
+	std::vector<Unit*> getSubGroup(std::vector<std::vector<Unit*>>& groups, unsigned char n);
 	void collect(std::vector<Unit*>& freeWorkers);
 
 	Player* player;
@@ -47,5 +49,6 @@ private:
 	Brain* whereDefence;
 
 	std::vector<Physical*>* temp;
+	unsigned char resHistogram[RESOURCES_SIZE];
 
 };

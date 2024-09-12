@@ -20,7 +20,9 @@
 #include "objects/unit/order/enums/UnitActionType.h"
 #include "env/influence/CenterType.h"
 #include "player/Possession.h"
+#include "utils/DebugUtils.h"
 #include "utils/OtherUtils.h"
+#include "utils/PrintUtils.h"
 
 constexpr float SEMI_CLOSE = 30.f;
 constexpr float SQ_SEMI_CLOSE = SEMI_CLOSE * SEMI_CLOSE;
@@ -131,10 +133,11 @@ std::vector<Unit*> OrderMaker::findFreeWorkers() const {
 
 Physical* OrderMaker::closetInRange(Unit* worker, int resourceId) {
 	float prevRadius = -1.f;
+	const auto env = Game::getEnvironment();
 	for (const auto radius : {64.f, 128.f, 256.f}) {
-		const auto list = Game::getEnvironment()->getResources(worker->getPosition(), resourceId, radius, prevRadius);
-		const auto closest = Game::getEnvironment()->closestPhysical(worker->getMainGridIndex(), list, belowClose,
-		                                                             false);
+		const auto list = env->getResources(worker->getPosition(), resourceId, radius, prevRadius);
+		const auto closest = env->closestPhysical(worker->getMainGridIndex(), list, belowClose,
+		                                          false);
 		if (closest) {
 			return closest;
 		}
@@ -143,10 +146,9 @@ Physical* OrderMaker::closetInRange(Unit* worker, int resourceId) {
 	return nullptr;
 }
 
-void OrderMaker::actCollect(unsigned char& resHistogram, char resId, std::vector<Unit*>& rest,
-                            std::vector<Unit*>& workers) {
+void OrderMaker::actCollect(char resId, std::vector<Unit*>& rest, std::vector<Unit*>& workers) {
 	if (!workers.empty()) {
-		resHistogram -= workers.size();
+		resHistogram[resId] -= workers.size();
 		const auto closest = closetInRange(workers.at(0), resId);
 		if (closest) {
 			Game::getActionCenter()->addUnitAction(unitOrderCollect(workers, closest));
@@ -157,45 +159,56 @@ void OrderMaker::actCollect(unsigned char& resHistogram, char resId, std::vector
 	}
 }
 
+std::vector<Unit*> OrderMaker::getSubGroup(std::vector<std::vector<Unit*>>& groups, unsigned char n) {
+	int biggestVal = groups[0].size();
+	int bigestIdx = 0;
+	for (int i = 1; i < groups.size(); ++i) {
+		if (groups[i].size() > biggestVal) {
+			bigestIdx = i;
+			biggestVal = groups[i].size();
+		}
+	}
+	return moveNLastElements(groups[bigestIdx], n);
+}
+
 void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 	const auto input = aiInput->getResourceInput(playerId);
 	const auto result = whichResource->decide(input);
-	if(freeWorkers.size()==1) {
+	if (freeWorkers.size() == 1) {
 		const auto resourceId = biggestWithRand(result);
-		const auto closest = closetInRange(freeWorkers.at(0), resourceId);
-		if(closest) {
-			Game::getActionCenter()->addUnitAction(unitOrderCollect(freeWorkers, closest));
+		const auto worker = freeWorkers.at(0);
+		const auto closest = closetInRange(worker, resourceId);
+		if (closest) {
+			Game::getActionCenter()->addUnitAction(new IndividualOrder(worker, UnitAction::COLLECT, closest));
 		}
-		
 		return;
 	}
-	unsigned char resHistogram[RESOURCES_SIZE];
+
 	std::fill_n(resHistogram, RESOURCES_SIZE, 0);
+
 	for (int i = 0; i < freeWorkers.size(); ++i) {
 		//TODO to powinno byc posortowane wed³ugo iloœci? 
 		const auto resourceId = biggestWithRand(result); //TODO perf tutaj tylko losowac
 		++resHistogram[resourceId];
 	}
-	
-	char idx = 0;
+	int all = freeWorkers.size();
 	std::vector<Unit*> rest;
-	for (auto& workersGroup : divide(freeWorkers, true)) {
-		//TODO close divide
-		std::vector<Unit*> workers;
-		for (int i = 0; i < workersGroup.size(); ++i) {
-			
-			//int maxInter = std::max((int)resHistogram[idx], (int)workersGroup.size());
-			if (workers.size() < resHistogram[idx]) {
-				workers.push_back(workersGroup[i]);
-			} else {
-				actCollect(resHistogram[idx], idx, rest, workers);
-				--i;
-				++idx;
-			}
-			if (idx >= RESOURCES_SIZE) {
-				break;
-			}
+	auto groups = divide(freeWorkers);
+
+	while (all > 0) {
+		auto maxHistogram = std::ranges::max_element(resHistogram);
+		auto resId = maxHistogram - std::begin(resHistogram);
+
+		auto workers = getSubGroup(groups, *maxHistogram);
+		const auto closest = closetInRange(workers.at(0), resId);
+
+		if (closest) {
+			Game::getActionCenter()->addUnitAction(unitOrderCollect(workers, closest));
+			*maxHistogram -= workers.size();
+		} else {
+			rest.insert(rest.end(), workers.begin(), workers.end());
 		}
-		actCollect(resHistogram[idx], idx, rest, workers);
+		all -= workers.size();
 	}
+	if (rest.size() > 0) { COUNT("collect rest"); }
 }

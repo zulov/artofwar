@@ -194,6 +194,7 @@ void Main::Stop() {
 	                                                                            std::chrono::system_clock::now() -
 	                                                                            SimGlobals::SUPER_START);
 	PRINT_X2Y();
+	PRINT_COUNTERS();
 	std::cout << "ENDED at " << duration.count() << " ms" << std::endl;
 }
 

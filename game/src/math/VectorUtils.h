@@ -107,3 +107,20 @@ template <typename T, std::size_t N>
 void resetArray(std::array<T, N>& arr, T val = 0.f) {
 	std::fill_n(arr.begin(), arr.size(), val);
 }
+
+
+template <typename T>
+std::vector<T> moveNLastElements(std::vector<T>& source, int size) {
+	size = std::min((int)source.size(), size);
+	std::vector<T> destination;
+	destination.reserve(size);
+
+	auto it = source.end() - size;
+
+	destination.insert(destination.end(),
+		std::make_move_iterator(it),
+		std::make_move_iterator(source.end()));
+
+	source.erase(it, source.end());
+	return destination;
+}

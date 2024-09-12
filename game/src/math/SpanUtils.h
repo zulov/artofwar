@@ -33,6 +33,14 @@ void printSpan(std::span<T> vec) {
 }
 
 template <typename T>
+void printSpanInt(std::span<T> vec) {
+	for (auto val : vec) {
+		std::cerr << (int)val << ";";
+	}
+	std::cerr << std::endl;
+}
+
+template <typename T>
 void printSpan(std::span<T> vec, std::function<bool(T)> condition) {
 	for (auto val : vec) {
 		if (condition(val)) {
