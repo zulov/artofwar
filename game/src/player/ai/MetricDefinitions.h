@@ -45,27 +45,23 @@ constexpr inline struct MetricDefinitions {
 		return output;
 	}
 
-	const void getBuildingNorm(std::vector<float>& result, std::span<AiBuildingMetric> span,
+	const std::vector<float> getBuildingNorm(std::span<AiBuildingMetric> span,
 	                           const std::function<float(const AiBuildingMetric&)>& getWeight,
 	                           db_building* building, db_building_level* level) const {
-		result.clear();
+		std::vector<float> result;
 		result.reserve(span.size());
 		for (auto const& v : span) {
 			result.push_back(v.fn(building, level) * getWeight(v));
 		}
+		return result;
 	}
 
 	const std::vector<float> getBuildingNorm(db_building* building, db_building_level* level) const {
-		std::vector<float> result;
-		getBuildingNorm(result, buildingInputSpan, [](const AiBuildingMetric& m){ return m.weight; }, building, level);
-		return result;
+		return getBuildingNorm(buildingInputSpan, [](const AiBuildingMetric& m){ return m.weight; }, building, level);
 	}
 
 	const std::vector<float> getBuildingNormForSum(db_building* building, db_building_level* level) const {
-		std::vector<float> result;
-		getBuildingNorm(result, buildingInputSpan, [](const AiBuildingMetric& m){ return m.weightForSum; }, building,
-		                level);
-		return result;
+		return getBuildingNorm(buildingInputSpan, [](const AiBuildingMetric& m){ return m.weightForSum; }, building, level);
 	}
 
 	// const std::vector<float> getResourceNorm(Resources& resources, Possession& possession) const {
@@ -118,7 +114,7 @@ constexpr inline struct MetricDefinitions {
 	const std::span<unsigned char> getResWithoutBonusIdxs() const { return aiResWithoutBonusIdxsSpan; }
 
 
-	static inline AiUnitMetric aiUnitMetric[] = {
+	static inline AiUnitMetric aiUnitMetric[] = {//db_unit* u, db_unit_level* l
 		{[](db_unit* u, db_unit_level* l) -> float{ return u->getSumCost(); }, 400, UNITS_SUM_X},
 		//TODO czy grupowe ma sens?
 		{[](db_unit* u, db_unit_level* l) -> float{ return l->maxHp; }, 300, UNITS_SUM_X},
@@ -149,33 +145,33 @@ constexpr inline struct MetricDefinitions {
 		{[](db_unit* u, db_unit_level* l) -> float{ return l->bonusLight; }, 1, UNITS_SUM_X},
 	};
 
-	static inline AiBuildingMetric aiBuildingMetric[] = {
-		{[](db_building* b, db_building_level* l) -> float{ return b->getSumCost(); }, 400, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float{ return l->maxHp; }, 500, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float{ return l->armor; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float{ return l->sightRadius; }, 50, BUILDINGS_SUM_X},
+	static inline AiBuildingMetric aiBuildingMetric[] = {//db_building* b, db_building_level* l
+		{[](auto b, auto l) -> float{ return b->getSumCost(); }, 400, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float{ return l->maxHp; }, 500, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float{ return l->armor; }, 1, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float{ return l->sightRadius; }, 50, BUILDINGS_SUM_X},
 
-		{[](db_building* b, db_building_level* l) -> float{ return l->collect; }, 2, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float{ return l->attack; }, 20, BUILDINGS_SUM_X}, //5
-		{[](db_building* b, db_building_level* l) -> float{ return l->attackReload; }, 200, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float{ return l->attackRange; }, 20, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float{ return l->resourceRange; }, 20, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float{ return l->collect; }, 2, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float{ return l->attack; }, 20, BUILDINGS_SUM_X}, //5
+		{[](auto b, auto l) -> float{ return l->attackReload; }, 200, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float{ return l->attackRange; }, 20, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float{ return l->resourceRange; }, 20, BUILDINGS_SUM_X},
 		//TODO stad duzo wyrzuciæ
 
-		{[](db_building* b, db_building_level* l) -> float{ return b->typeCenter; }, 1, BUILDINGS_SUM_X}, //9
-		{[](db_building* b, db_building_level* l) -> float{ return b->typeHome; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float{ return b->typeDefence; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float{ return b->typeResourceFood; }, 1, BUILDINGS_SUM_X}, //12
-		{[](db_building* b, db_building_level* l) -> float{ return b->typeResourceWood; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float{ return b->typeResourceStone; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float{ return b->typeResourceGold; }, 1, BUILDINGS_SUM_X}, //15
-		{[](db_building* b, db_building_level* l) -> float{ return b->typeTechBlacksmith; }, 1, BUILDINGS_SUM_X}, //16
-		{[](db_building* b, db_building_level* l) -> float{ return b->typeTechUniversity; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float{ return b->typeUnitBarracks; }, 1, BUILDINGS_SUM_X}, //18
-		{[](db_building* b, db_building_level* l) -> float{ return b->typeUnitRange; }, 1, BUILDINGS_SUM_X},
-		{[](db_building* b, db_building_level* l) -> float{ return b->typeUnitCavalry; }, 1, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float{ return b->typeCenter; }, 1, BUILDINGS_SUM_X}, //9
+		{[](auto b, auto l) -> float{ return b->typeHome; }, 1, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float{ return b->typeDefence; }, 1, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float{ return b->typeResourceFood; }, 1, BUILDINGS_SUM_X}, //12
+		{[](auto b, auto l) -> float{ return b->typeResourceWood; }, 1, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float{ return b->typeResourceStone; }, 1, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float{ return b->typeResourceGold; }, 1, BUILDINGS_SUM_X}, //15
+		{[](auto b, auto l) -> float{ return b->typeTechBlacksmith; }, 1, BUILDINGS_SUM_X}, //16
+		{[](auto b, auto l) -> float{ return b->typeTechUniversity; }, 1, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float{ return b->typeUnitBarracks; }, 1, BUILDINGS_SUM_X}, //18
+		{[](auto b, auto l) -> float{ return b->typeUnitRange; }, 1, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float{ return b->typeUnitCavalry; }, 1, BUILDINGS_SUM_X},
 	};
-
+	//TODO improve nie indeksy ale enumy?
 	static inline unsigned char aiUnitsTypesIdxs[] = {8, 9, 10, 11, 12, 12, 13, 14, 15};
 
 	static inline unsigned char aiBuildingOtherIdxs[] = {9, 10}; //TODO moze cos wiecej?
@@ -189,7 +185,7 @@ constexpr inline struct MetricDefinitions {
 	static inline unsigned char aiResWithoutBonusIdxs[] = {10, 11, 12, 13};
 
 	//TODO moze to zwracac od razy przedzia³em jakos
-	static inline AiResourceMetric aiResourceMetric[] = {
+	static inline AiResourceMetric aiResourceMetric[] = {//Resources* r, Possession* p
 		{[](Resources* r, Possession* p) -> float{ return r->getGatherSpeeds()[0]; }, 10},
 		{[](Resources* r, Possession* p) -> float{ return r->getGatherSpeeds()[1]; }, 10},
 		{[](Resources* r, Possession* p) -> float{ return r->getGatherSpeeds()[2]; }, 10},
@@ -245,7 +241,7 @@ constexpr inline struct MetricDefinitions {
 		},
 	};
 
-	static inline AiPlayerMetric aiWhereAttack[] = {
+	static inline AiPlayerMetric aiWhereAttack[] = {//Player* p1, Player* p2
 		{[](Player* p1, Player* p2) -> float{ return p1->getPossession()->getAttackSum(); }, 1000},
 		{
 			[](Player* p1, Player* p2) -> float{
@@ -290,7 +286,7 @@ constexpr inline struct MetricDefinitions {
 		},
 		//TODO musi byæ do przeciwnika bo inaczej zawsze do siebie
 	};
-
+	//TODO pozbyc sie tych spanów
 	constexpr static std::span<unsigned char> aiBuildingOtherIdxsSpan = std::span(aiBuildingOtherIdxs);
 	constexpr static std::span<unsigned char> aiBuildingUnitsIdxsSpan = std::span(aiBuildingUnitsIdxs);
 	constexpr static std::span<unsigned char> aiBuildingTechIdxsSpan = std::span(aiBuildingTechIdxs);
