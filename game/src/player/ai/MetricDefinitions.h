@@ -105,11 +105,11 @@ constexpr inline struct MetricDefinitions {
 
 	const std::span<unsigned char> getUnitTypesIdxs() const { return aiUnitTypesIdxsSpan; }
 
-	const std::span<unsigned char> getBuildingOtherIdxs() const { return aiBuildingOtherIdxsSpan; }
+	const std::span<const unsigned char> getBuildingOtherIdxs() const { return asSpan(aiBuildingOtherIdxsArray); }
 	const std::span<unsigned char> getBuildingDefenceIdxs() const { return aiBuildingDefIdxsSpan; }
 	const std::span<unsigned char> getBuildingResourceIdxs() const { return aiBuildingResIdxsSpan; }
 	const std::span<unsigned char> getBuildingTechIdxs() const { return aiBuildingTechIdxsSpan; }
-	const std::span<unsigned char> getBuildingUnitsIdxs() const { return aiBuildingUnitsIdxsSpan; }
+	const std::span<unsigned char> getBuildingUnitsIdxs() const { return std::span(aiBuildingUnitsIdxs, std::size(aiBuildingUnitsIdxs)); }
 	const std::span<unsigned char> getBuildingTypesIdxs() const { return aiBuildingTypesIdxsSpan; }
 
 	const std::span<unsigned char> getResWithoutBonusIdxs() const { return aiResWithoutBonusIdxsSpan; }
@@ -172,18 +172,6 @@ constexpr inline struct MetricDefinitions {
 		{[](auto b, auto l) -> float { return b->typeUnitRange; }, 1, BUILDINGS_SUM_X},
 		{[](auto b, auto l) -> float { return b->typeUnitCavalry; }, 1, BUILDINGS_SUM_X},
 	};
-	//TODO improve nie indeksy ale enumy?
-	static inline unsigned char aiUnitsTypesIdxs[] = {8, 9, 10, 11, 12, 12, 13, 14, 15};
-
-	static inline unsigned char aiBuildingOtherIdxs[] = {9, 10}; //TODO moze cos wiecej?
-	static inline unsigned char aiBuildingUnitsIdxs[] = {18, 19, 20}; //TODO moze cos wiecej?
-	static inline unsigned char aiBuildingTechIdxs[] = {16, 17}; //TODO moze cos wiecej?
-	static inline unsigned char aiBuildingResIdxs[] = {4, 8, 12, 13, 14, 15};
-	static inline unsigned char aiBuildingDefIdxs[] = {0, 1, 2, 3, 5, 6, 7};
-	static inline unsigned char aiBuildingTypesIdxs[] = {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
-
-	static inline unsigned char aiResInputIdxs[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	static inline unsigned char aiResWithoutBonusIdxs[] = {10, 11, 12, 13};
 
 	//TODO moze to zwracac od razy przedzia³em jakos
 	static inline AiResourceMetric aiResourceMetric[] = { //Resources* r, Possession* p
@@ -286,9 +274,24 @@ constexpr inline struct MetricDefinitions {
 			}
 		},
 		//TODO musi byæ do przeciwnika bo inaczej zawsze do siebie
+
 	};
+
+	//TODO improve nie indeksy ale enumy?
+	static inline unsigned char aiUnitsTypesIdxs[] = { 8, 9, 10, 11, 12, 12, 13, 14, 15 };
+
+	//static inline unsigned char aiBuildingOtherIdxs[] = { 9, 10 }; //TODO moze cos wiecej?
+	static inline unsigned char aiBuildingUnitsIdxs[] = { 18, 19, 20 }; //TODO moze cos wiecej?
+	static inline unsigned char aiBuildingTechIdxs[] = { 16, 17 }; //TODO moze cos wiecej?
+	static inline unsigned char aiBuildingResIdxs[] = { 4, 8, 12, 13, 14, 15 };
+	static inline unsigned char aiBuildingDefIdxs[] = { 0, 1, 2, 3, 5, 6, 7 };
+	static inline unsigned char aiBuildingTypesIdxs[] = { 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+
+	static inline unsigned char aiResInputIdxs[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	static inline unsigned char aiResWithoutBonusIdxs[] = { 10, 11, 12, 13 };
 	//TODO pozbyc sie tych spanów
-	constexpr static std::span<unsigned char> aiBuildingOtherIdxsSpan = std::span(aiBuildingOtherIdxs);
+	constexpr static std::array aiBuildingOtherIdxsArray = std::to_array<unsigned char>({ 9, 10 });
+	//constexpr static std::span<unsigned char> aiBuildingOtherIdxsSpan = std::span(aiBuildingOtherIdxs);
 	constexpr static std::span<unsigned char> aiBuildingUnitsIdxsSpan = std::span(aiBuildingUnitsIdxs);
 	constexpr static std::span<unsigned char> aiBuildingTechIdxsSpan = std::span(aiBuildingTechIdxs);
 	constexpr static std::span<unsigned char> aiBuildingResIdxsSpan = std::span(aiBuildingResIdxs);
@@ -324,7 +327,7 @@ constexpr char UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiUnitMetric);
 constexpr char BUILDING_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingMetric);
 constexpr char UNIT_TYPES_SIZE = std::size(METRIC_DEFINITIONS.aiUnitsTypesIdxs);
 
-constexpr char BUILDING_OTHER_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingOtherIdxs);
+constexpr char BUILDING_OTHER_SIZE = METRIC_DEFINITIONS.aiBuildingOtherIdxsArray.size();
 constexpr char BUILDING_DEF_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingDefIdxs);
 constexpr char BUILDING_RES_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingResIdxs);
 constexpr char BUILDING_TECH_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingTechIdxs);

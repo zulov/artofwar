@@ -54,7 +54,7 @@ public:
 	float getAttackSum();
 	float getDefenceAttackSum();
 private:
-	std::span<float> refreshBuildingSum(const std::span<unsigned char> idxs, std::span<float> out) const;
+	std::span<float> refreshBuildingSum(std::span<const unsigned char> idxs, std::span<float> out) const;
 	std::vector<Building*> buildings;
 	std::vector<std::vector<Building*>*> buildingsPerId;
 

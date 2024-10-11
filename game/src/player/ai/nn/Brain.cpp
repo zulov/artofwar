@@ -35,7 +35,7 @@ Brain::~Brain() {
 	clear_vector(allLayers);
 }
 
-const std::span<float> Brain::decide(std::span<float> data) {
+const std::span<float> Brain::decide(std::span<const float> data) {
 	assert(validateSpan(__LINE__, __FILE__, data));
 	bool sameInput = allLayers.front()->setInput(data);
 	if (!sameInput) {

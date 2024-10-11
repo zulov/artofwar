@@ -12,7 +12,7 @@ public:
 	Brain(const Brain& rhs) = delete;
 	~Brain();
 
-	const std::span<float> decide(std::span<float> data);
+	const std::span<float> decide(std::span<const float> data);
 	std::string getName() const;
 private:
 	std::vector<Layer*> allLayers;

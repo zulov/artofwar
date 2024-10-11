@@ -151,7 +151,7 @@ std::span<float> Possession::getBuildingsMetrics() {
 	return metric->buildingsSumAsSpan;
 }
 
-std::span<float> Possession::refreshBuildingSum(const std::span<unsigned char> idxs, std::span<float> out) const {
+std::span<float> Possession::refreshBuildingSum(const std::span<const unsigned char> idxs, std::span<float> out) const {
 	assert(idxs.size() == out.size());
 	for (int i = 0; i < idxs.size(); ++i) {
 		out[i] = metric->buildingsSumAsSpan[idxs[i]];

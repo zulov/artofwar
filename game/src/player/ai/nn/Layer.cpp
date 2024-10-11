@@ -8,7 +8,7 @@ Layer::Layer(std::vector<float>& w, std::vector<float>& b) {
 	bias = Eigen::Map<Eigen::VectorXf>(b.data(), b.size());
 }
 
-bool Layer::setInput(std::span<float> data) {
+bool Layer::setInput(std::span<const float> data) {
 	const bool si = sameInput(data);
 	if (!si) {
 		values = Eigen::Map<Eigen::VectorXf>(data.data(), data.size());
@@ -21,7 +21,7 @@ void Layer::setValues(const Eigen::VectorXf& mult) {
 	values = (weights * mult + bias).array().tanh();
 }
 
-bool Layer::sameInput(std::span<float> data) {
+bool Layer::sameInput(std::span<const float> data) {
 	if (values.size() == 0) { return false; }
 	for (int i = 0; i < values.size(); ++i) {
 		if (data[i] != values[i]) {

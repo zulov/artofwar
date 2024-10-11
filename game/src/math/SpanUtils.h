@@ -124,3 +124,13 @@ template <typename T, std::size_t N>
 const std::span<const T> asSpan(const std::array<T, N>& arr) {
 	return std::span(arr.data(), arr.size());
 }
+
+template <typename T, std::size_t N>
+const std::span<const T> asSpan2(const std::array<T, N>& arr) {
+	return std::span(arr.data(), arr.size());
+}
+
+template <typename T, std::size_t N>
+const std::span<const T> asSpan3(const std::array<T, N>& arr) {
+	return std::span(arr.data(), arr.size());
+}

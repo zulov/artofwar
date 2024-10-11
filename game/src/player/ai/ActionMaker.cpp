@@ -69,7 +69,7 @@ void ActionMaker::action() {
 	//return levelUpBuilding();
 }
 
-bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
+bool ActionMaker::createBuilding(const std::span<const float> buildingsInput) {
 	const auto whichTypeOutput = whichBuildingType->decide(buildingsInput);
 
 	ParentBuildingType type = static_cast<ParentBuildingType>(biggestWithRand(whichTypeOutput));
@@ -86,7 +86,7 @@ bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	return createBuilding(chooseBuilding(output, type), type);
 }
 
-std::span<float> ActionMaker::getWhichBuilding(ParentBuildingType type, const std::span<float> aiTypeInput) const {
+std::span<float> ActionMaker::getWhichBuilding(ParentBuildingType type, const std::span<const float> aiTypeInput) const {
 	switch (type) {
 	case ParentBuildingType::OTHER:
 		return whichBuildingTypeOther->decide(aiTypeInput);

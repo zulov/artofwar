@@ -123,7 +123,7 @@ protected:
 
 	std::vector<float> valuesNormForSum;
 
-	void setValarray(std::valarray<float>& valarray, const std::span<unsigned char>& idxs) {
+	void setValarray(std::valarray<float>& valarray, const std::span<const unsigned char>& idxs) {
 		std::vector<float> temp;
 		temp.clear();
 		temp.reserve(idxs.size());
@@ -151,7 +151,7 @@ struct db_building_metric : db_basic_metric {
 	std::valarray<float> unitsNormAsVal;
 
 	db_building_metric(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
-	                   std::span<unsigned char> otherIdxs, std::span<unsigned char> defenceIdxs,
+	                   std::span<const unsigned char> otherIdxs, std::span<unsigned char> defenceIdxs,
 	                   std::span<unsigned char> resourceIdxs, std::span<unsigned char> techIdxs,
 	                   std::span<unsigned char> unitsIdxs, std::span<unsigned char> typesIdxs) {
 		assert(validateSpan(__LINE__, __FILE__, newValues));
@@ -444,7 +444,7 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 	}
 
 	void finish(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
-	            std::span<unsigned char> valuesOtherIdxs, std::span<unsigned char> valuesDefenceIdxs,
+	            std::span<const unsigned char> valuesOtherIdxs, std::span<unsigned char> valuesDefenceIdxs,
 	            std::span<unsigned char> valuesResourceIdxs, std::span<unsigned char> valuesTechIdxs,
 	            std::span<unsigned char> valuesUnitsIdxs, std::span<unsigned char> typesIdxs) {
 		dbBuildingMetric = new db_building_metric(newValues, newValuesForSum, valuesOtherIdxs, valuesDefenceIdxs,

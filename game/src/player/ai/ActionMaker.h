@@ -43,11 +43,11 @@ private:
 	bool levelUpBuilding();
 	bool createBuilding(db_building* building, ParentBuildingType type) const;
 	std::vector<db_building*> getBuildingsInType(ParentBuildingType type);
-	bool createBuilding(std::span<float> buildingsInput);
+	bool createBuilding(std::span<const float> buildingsInput);
 	bool createUnit(std::span<float> unitsInput);
 	bool createWorker() const;
 
-	std::span<float> getWhichBuilding(ParentBuildingType type, const std::span<float> aiTypeInput) const;
+	std::span<float> getWhichBuilding(ParentBuildingType type, const std::span<const float> aiTypeInput) const;
 
 	std::optional<Urho3D::Vector2> findPosToBuild(db_building* building, ParentBuildingType type) const;
 	std::vector<Building*> getBuildingsCanDeploy(short unitId) const;
