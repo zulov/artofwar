@@ -15,7 +15,7 @@ AiInputProvider::AiInputProvider() {
 	// 	resourceIdInputSpan.size(), unitsInputSpan.size(), buildingsInputSpan.size(), unitsWithMetricUnitSpan.size(), basicWithMetricUnitSpan.size());
 }
 
-std::span<const float> AiInputProvider::getResourceInput(char playerId) const {
+std::span<const float> AiInputProvider::getResourceInput(char playerId) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
 	return combineWithBasic(resourceIdInputArray,
@@ -23,26 +23,26 @@ std::span<const float> AiInputProvider::getResourceInput(char playerId) const {
 	                                                           METRIC_DEFINITIONS.aiResInputIdxs), player);
 }
 
-std::span<const float> AiInputProvider::getUnitsInput(char playerId) const {
+std::span<const float> AiInputProvider::getUnitsInput(char playerId) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
 	return combineWithBasic(unitsInput, player->getPossession()->getUnitsMetrics(), player);
 }
 
-std::span<const float> AiInputProvider::getBuildingsInput(char playerId) const {
+std::span<const float> AiInputProvider::getBuildingsInput(char playerId){
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
 	return combineWithBasic(buildingsInput, player->getPossession()->getBuildingsMetrics(), player);
 }
 
-std::span<const float> AiInputProvider::getUnitsInputWithMetric(char playerId, const db_unit_metric* prop) const {
+std::span<const float> AiInputProvider::getUnitsInputWithMetric(char playerId, const db_unit_metric* prop) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
 	return combineWithBasic(unitsWithMetric, prop->getTypesVal(), player);
 }
 
 std::span<const float> AiInputProvider::getBuildingsInputWithMetric(char playerId, const db_building_metric* prop,
-                                                              ParentBuildingType type) const {
+                                                              ParentBuildingType type) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 	if (type == ParentBuildingType::RESOURCE) {
 		return combineWithBasic(buildingsResWhereInput, prop->getValuesNormAsValForType(type), player);
@@ -50,7 +50,7 @@ std::span<const float> AiInputProvider::getBuildingsInputWithMetric(char playerI
 	return combineWithBasic(buildingsWhereInput, prop->getTypesVal(), player);
 }
 
-std::span<const float> AiInputProvider::getAttackOrDefenceInput(char playerId) const {
+std::span<const float> AiInputProvider::getAttackOrDefenceInput(char playerId) {
 	const auto plyMng = Game::getPlayersMan();
 
 	auto& data = METRIC_DEFINITIONS.getAttackOrDefenceNorm(plyMng->getPlayer(playerId), plyMng->getEnemyFor(playerId));
@@ -61,7 +61,7 @@ std::span<const float> AiInputProvider::getAttackOrDefenceInput(char playerId) c
 	return asSpan3(attackOrDefenceInput);
 }
 
-std::span<const float> AiInputProvider::getWhereAttack(char playerId) const {
+std::span<const float> AiInputProvider::getWhereAttack(char playerId) {
 	const auto plyMng = Game::getPlayersMan();
 	auto* player = plyMng->getPlayer(playerId);
 
@@ -69,7 +69,7 @@ std::span<const float> AiInputProvider::getWhereAttack(char playerId) const {
 	                        METRIC_DEFINITIONS.getWhereAttackNorm(player, plyMng->getEnemyFor(playerId)), player);
 }
 
-std::span<const float> AiInputProvider::getWhereDefend(char playerId) const {
+std::span<const float> AiInputProvider::getWhereDefend(char playerId) {
 	const auto plyMng = Game::getPlayersMan();
 	auto* player = plyMng->getPlayer(playerId);
 
@@ -77,7 +77,7 @@ std::span<const float> AiInputProvider::getWhereDefend(char playerId) const {
 	                        METRIC_DEFINITIONS.getWhereDefendNorm(player, plyMng->getEnemyFor(playerId)), player);
 }
 
-std::span<const float> AiInputProvider::getBuildingsTypeInput(char playerId, ParentBuildingType type) const {
+std::span<const float> AiInputProvider::getBuildingsTypeInput(char playerId, ParentBuildingType type) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
 	if (type == ParentBuildingType::RESOURCE) {
@@ -97,30 +97,12 @@ std::span<const float> AiInputProvider::getBuildingsTypeInput(char playerId, Par
 }
 
 template <std::size_t N>
-std::span<float> AiInputProvider::getBasicInput(const std::array<float, N>& output, Player* player) const {
+std::span<const float> AiInputProvider::combineWithBasic(std::array<float, N>& output, std::span<const float> toJoin,
+                                                   Player* player) {
 	auto& data = METRIC_DEFINITIONS.getBasicNorm(player, Game::getPlayersMan()->getEnemyFor(player->getId()));
-	assert(validateSpan(__LINE__, __FILE__, data));
-	//std::ranges::copy(data, output.begin());
 	std::copy(data.begin(), data.end(), output.begin());
-
-	return std::span(output.begin() + data.size(), output.size() - data.size());
-}
-
-template <std::size_t N>
-std::span<const float> AiInputProvider::combineWithBasic(const std::array<float, N>& output, const std::span<const float> toJoin,
-                                                   Player* player) const {
-	std::ranges::copy(toJoin, getBasicInput(output, player).begin());
-	assert(toJoin.size() > 0);
-	assert(validateSpan(__LINE__, __FILE__, toJoin));
-	assert(validateSpan(__LINE__, __FILE__, output));
-	assert(output.size() == BASIC_SIZE + toJoin.size());
-	return asSpan2(output);
-}
-
-template <std::size_t N>
-std::span<const float> AiInputProvider::combineWithBasic(const std::array<float, N> output, const std::vector<float>& toJoin,
-                                                   Player* player) const {
-	std::ranges::copy(toJoin, getBasicInput(output, player).begin());
+	std::copy(toJoin.begin(), toJoin.end(), output.begin()+data.size());
+	//std::ranges::copy(toJoin, getBasicInput(output, player).begin());
 	assert(toJoin.size() > 0);
 	assert(validateSpan(__LINE__, __FILE__, toJoin));
 	assert(validateSpan(__LINE__, __FILE__, output));

@@ -21,28 +21,28 @@ struct AiPlayerMetric;
 class Player;
 
 constexpr inline struct MetricDefinitions {
-	const std::vector<float>& getAiPlayerMetricNorm(Player* one, Player* two, std::span<AiPlayerMetric> metric) const {
+	const std::span<const float> getAiPlayerMetricNorm(Player* one, Player* two, std::span<AiPlayerMetric> metric) const {
 		output.clear();
 		for (auto const& v : metric) {
 			output.push_back(v.fn(one, two) * v.weight);
 		}
-		return output;
+		return asSpan(output);
 	}
 
-	const std::vector<float>& getUnitNormForSum(db_unit* unit, db_unit_level* level) const {
+	const std::span<const float> getUnitNormForSum(db_unit* unit, db_unit_level* level) const {
 		outputSum.clear();
 		for (auto const& v : unitInputSpan) {
 			outputSum.push_back(v.fn(unit, level) * v.weightForSum);
 		}
-		return outputSum;
+		return asSpan(output);
 	}
 
-	const std::vector<float>& getUnitNorm(db_unit* unit, db_unit_level* level) const {
+	const std::span<const float> getUnitNorm(db_unit* unit, db_unit_level* level) const {
 		output.clear();
 		for (auto const& v : unitInputSpan) {
 			output.push_back(v.fn(unit, level) * v.weight);
 		}
-		return output;
+		return asSpan(output);
 	}
 
 	const std::vector<float> getBuildingNorm(std::span<AiBuildingMetric> span,
@@ -73,14 +73,14 @@ constexpr inline struct MetricDefinitions {
 	// 	return output;
 	// }
 
-	const std::vector<float> getResourceNorm(Resources* resources, Possession* possession,
+	const std::span<const float> getResourceNorm(Resources* resources, Possession* possession,
 	                                         std::span<unsigned char> idxs) const {
 		output.clear();
 		for (auto idx : idxs) {
 			auto& v = resourceAllInputSpan[idx];
 			output.push_back(v.fn(resources, possession) * v.weight);
 		}
-		return output;
+		return asSpan(output);
 	}
 
 	const std::vector<float>& getBasicNorm(Player* one, Player* two) const {
@@ -91,15 +91,15 @@ constexpr inline struct MetricDefinitions {
 		return basic;
 	}
 
-	const std::vector<float>& getAttackOrDefenceNorm(Player* one, Player* two) const {
+	const std::span<const float> getAttackOrDefenceNorm(Player* one, Player* two) const {
 		return getAiPlayerMetricNorm(one, two, attackOrDefenceInputSpan);
 	}
 
-	const std::vector<float>& getWhereAttackNorm(Player* one, Player* two) const {
+	const std::span<const float> getWhereAttackNorm(Player* one, Player* two) const {
 		return getAiPlayerMetricNorm(one, two, whereAttackInputSpan);
 	}
 
-	const std::vector<float>& getWhereDefendNorm(Player* one, Player* two) const {
+	const std::span<const float> getWhereDefendNorm(Player* one, Player* two) const {
 		return getAiPlayerMetricNorm(one, two, whereDefendInputSpan);
 	}
 

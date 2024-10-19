@@ -13,29 +13,26 @@ public:
 	AiInputProvider();
 	AiInputProvider(const AiInputProvider&) = delete;
 
-	std::span<const float> getResourceInput(char playerId) const;
-	std::span<const float> getUnitsInput(char playerId) const;
-	std::span<const float> getBuildingsInput(char playerId) const;
+	std::span<const float> getResourceInput(char playerId);
+	std::span<const float> getUnitsInput(char playerId);
+	std::span<const float> getBuildingsInput(char playerId);
 
-	std::span<const float> getUnitsInputWithMetric(char playerId, const db_unit_metric* prop) const;
-	std::span<const float> getBuildingsInputWithMetric(char playerId, const db_building_metric* prop, ParentBuildingType type) const;
+	std::span<const float> getUnitsInputWithMetric(char playerId, const db_unit_metric* prop);
+	std::span<const float> getBuildingsInputWithMetric(char playerId, const db_building_metric* prop,
+	                                                   ParentBuildingType type);
 
-	std::span<const float> getAttackOrDefenceInput(char playerId) const;
-	std::span<const float> getWhereAttack(char playerId) const;
-	std::span<const float> getWhereDefend(char playerId) const;
-	std::span<const float> getBuildingsTypeInput(char playerId, ParentBuildingType type) const;
+	std::span<const float> getAttackOrDefenceInput(char playerId);
+	std::span<const float> getWhereAttack(char playerId);
+	std::span<const float> getWhereDefend(char playerId);
+	std::span<const float> getBuildingsTypeInput(char playerId, ParentBuildingType type);
+
 private:
 	template <std::size_t N>
-	std::span<float> getBasicInput(const std::array<float, N>& output, Player* player) const;
-	template <std::size_t N>
-	std::span<const float> combineWithBasic(const std::array<float, N>& output, const std::span<const float> toJoin,
-	                                  Player* player) const;
-	template <std::size_t N>
-	std::span<const float> combineWithBasic(const std::array<float,N> output, const std::vector<float>& toJoin,
-	                                  Player* player) const;
+	std::span<const float> combineWithBasic(std::array<float, N>& output, std::span<const float> toJoin,
+	                                        Player* player);
 
 	std::array<float, BASIC_SIZE + RESOURCE_AI_SIZE> resourceIdInputArray;
-	std::array<float, BASIC_SIZE + UNIT_SIZE > unitsInput;
+	std::array<float, BASIC_SIZE + UNIT_SIZE> unitsInput;
 	std::array<float, BASIC_SIZE + BUILDING_SIZE> buildingsInput;
 
 	std::array<float, ATTACK_OR_DEFENCE_SIZE> attackOrDefenceInput;

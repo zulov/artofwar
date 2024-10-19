@@ -227,7 +227,7 @@ struct db_build_upgrade {
 };
 
 struct db_unit_metric : db_basic_metric {
-	db_unit_metric(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
+	db_unit_metric(const std::span<const float> newValues, const std::span<const float> newValuesForSum,
 	               std::span<unsigned char> typesIdxs) {
 		assert(validateSpan(__LINE__, __FILE__, newValues));
 		assert(validateSpan(__LINE__, __FILE__, newValuesForSum));
@@ -275,7 +275,7 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 		maxForce(maxForce),
 		sqMinSpeed(minSpeed * minSpeed) { }
 
-	void finish(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
+	void finish(const std::span<const float> newValues, const std::span<const float> newValuesForSum,
 	            std::span<unsigned char> valuesUnitsTypesIdxs) {
 		dbUnitMetric = new db_unit_metric(newValues, newValuesForSum, valuesUnitsTypesIdxs);
 	}
