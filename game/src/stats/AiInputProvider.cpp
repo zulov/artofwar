@@ -20,7 +20,7 @@ std::span<const float> AiInputProvider::getResourceInput(char playerId) {
 
 	return combineWithBasic(resourceIdInputArray,
 	                        METRIC_DEFINITIONS.getResourceNorm(player->getResources(), player->getPossession(),
-	                                                           METRIC_DEFINITIONS.aiResInputIdxs), player);
+	                                                          METRIC_DEFINITIONS.aiResInputIdxs), player);
 }
 
 std::span<const float> AiInputProvider::getUnitsInput(char playerId) {
@@ -83,7 +83,7 @@ std::span<const float> AiInputProvider::getBuildingsTypeInput(char playerId, Par
 	if (type == ParentBuildingType::RESOURCE) {
 		return combineWithBasic(buildingsResInput,
 		                        METRIC_DEFINITIONS.getResourceNorm(player->getResources(), player->getPossession(),
-		                                                           METRIC_DEFINITIONS.aiResWithoutBonusIdxsSpan), player);
+		                                                           METRIC_DEFINITIONS.aiResWithoutBonusIdxs), player);
 	}
 	switch (type) {
 	case ParentBuildingType::OTHER: return combineWithBasic(buildingsOtherInput, player->getPossession()->getBuildingsMetrics(type), player);

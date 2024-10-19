@@ -74,7 +74,7 @@ constexpr inline struct MetricDefinitions {
 	// }
 
 	const std::span<const float> getResourceNorm(Resources* resources, Possession* possession,
-	                                         std::span<unsigned char> idxs) const {
+	                                         std::span<const unsigned char> idxs) const {
 		output.clear();
 		for (auto idx : idxs) {
 			auto& v = resourceAllInputSpan[idx];
@@ -103,16 +103,14 @@ constexpr inline struct MetricDefinitions {
 		return getAiPlayerMetricNorm(one, two, whereDefendInputSpan);
 	}
 
-	const std::span<unsigned char> getUnitTypesIdxs() const { return aiUnitTypesIdxsSpan; }
-
-	const std::span<const unsigned char> getBuildingOtherIdxs() const { return asSpan(aiBuildingOtherIdxsArray); }
-	const std::span<unsigned char> getBuildingDefenceIdxs() const { return aiBuildingDefIdxsSpan; }
-	const std::span<unsigned char> getBuildingResourceIdxs() const { return aiBuildingResIdxsSpan; }
-	const std::span<unsigned char> getBuildingTechIdxs() const { return aiBuildingTechIdxsSpan; }
-	const std::span<unsigned char> getBuildingUnitsIdxs() const { return std::span(aiBuildingUnitsIdxs, std::size(aiBuildingUnitsIdxs)); }
-	const std::span<unsigned char> getBuildingTypesIdxs() const { return aiBuildingTypesIdxsSpan; }
-
-	const std::span<unsigned char> getResWithoutBonusIdxs() const { return aiResWithoutBonusIdxsSpan; }
+	const std::span<const unsigned char> getUnitTypesIdxs() const { return aiUnitsTypesIdxs; }
+	const std::span<const unsigned char> getBuildingOtherIdxs() const { return aiBuildingOtherIdxs; }
+	const std::span<const unsigned char> getBuildingDefenceIdxs() const { return aiBuildingDefIdxs;}
+	const std::span<const unsigned char> getBuildingResourceIdxs() const { return aiBuildingResIdxs;}
+	const std::span<const unsigned char> getBuildingTechIdxs() const { return aiBuildingTechIdxs;}
+	const std::span<const unsigned char> getBuildingUnitsIdxs() const { return aiBuildingUnitsIdxs; }
+	const std::span<const unsigned char> getBuildingTypesIdxs() const { return aiBuildingTypesIdxs;}
+	const std::span<const unsigned char> getResWithoutBonusIdxs() const { return aiResWithoutBonusIdxs; }
 
 
 	static inline AiUnitMetric aiUnitMetric[] = { //db_unit* u, db_unit_level* l
@@ -278,30 +276,18 @@ constexpr inline struct MetricDefinitions {
 	};
 
 	//TODO improve nie indeksy ale enumy?
-	static inline unsigned char aiUnitsTypesIdxs[] = { 8, 9, 10, 11, 12, 12, 13, 14, 15 };
+	constexpr static std::array aiUnitsTypesIdxs = std::to_array<unsigned char>({ 8, 9, 10, 11, 12, 12, 13, 14, 15 });
 
-	//static inline unsigned char aiBuildingOtherIdxs[] = { 9, 10 }; //TODO moze cos wiecej?
-	static inline unsigned char aiBuildingUnitsIdxs[] = { 18, 19, 20 }; //TODO moze cos wiecej?
-	static inline unsigned char aiBuildingTechIdxs[] = { 16, 17 }; //TODO moze cos wiecej?
-	static inline unsigned char aiBuildingResIdxs[] = { 4, 8, 12, 13, 14, 15 };
-	static inline unsigned char aiBuildingDefIdxs[] = { 0, 1, 2, 3, 5, 6, 7 };
-	static inline unsigned char aiBuildingTypesIdxs[] = { 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+	constexpr static std::array aiBuildingOtherIdxs = std::to_array<unsigned char>({ 9, 10 });//TODO moze cos wiecej?
+	constexpr static std::array aiBuildingUnitsIdxs = std::to_array<unsigned char>({ 18, 19, 20 }); //TODO moze cos wiecej?
+	constexpr static std::array aiBuildingTechIdxs = std::to_array<unsigned char>({ 16, 17 }); //TODO moze cos wiecej?
+	constexpr static std::array aiBuildingResIdxs = std::to_array<unsigned char>({ 4, 8, 12, 13, 14, 15 });
+	constexpr static std::array aiBuildingDefIdxs = std::to_array<unsigned char>({ 0, 1, 2, 3, 5, 6, 7 });
+	constexpr static std::array aiBuildingTypesIdxs = std::to_array<unsigned char>({ 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 });
 
-	static inline unsigned char aiResInputIdxs[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-	static inline unsigned char aiResWithoutBonusIdxs[] = { 10, 11, 12, 13 };
+	constexpr static std::array aiResInputIdxs = std::to_array<unsigned char>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+	constexpr static std::array aiResWithoutBonusIdxs = std::to_array<unsigned char>({ 10, 11, 12, 13 });
 	//TODO pozbyc sie tych spanów
-	constexpr static std::array aiBuildingOtherIdxsArray = std::to_array<unsigned char>({ 9, 10 });
-	//constexpr static std::span<unsigned char> aiBuildingOtherIdxsSpan = std::span(aiBuildingOtherIdxs);
-	constexpr static std::span<unsigned char> aiBuildingUnitsIdxsSpan = std::span(aiBuildingUnitsIdxs);
-	constexpr static std::span<unsigned char> aiBuildingTechIdxsSpan = std::span(aiBuildingTechIdxs);
-	constexpr static std::span<unsigned char> aiBuildingResIdxsSpan = std::span(aiBuildingResIdxs);
-	constexpr static std::span<unsigned char> aiBuildingDefIdxsSpan = std::span(aiBuildingDefIdxs);
-	constexpr static std::span<unsigned char> aiBuildingTypesIdxsSpan = std::span(aiBuildingTypesIdxs);
-
-	constexpr static std::span<unsigned char> aiResWithoutBonusIdxsSpan = std::span(aiResWithoutBonusIdxs);
-	constexpr static std::span<unsigned char> aiResInputIdxsSpan = std::span(aiResInputIdxs);
-
-	constexpr static std::span<unsigned char> aiUnitTypesIdxsSpan = std::span(aiUnitsTypesIdxs);
 
 	constexpr static std::span<AiUnitMetric> unitInputSpan = std::span(aiUnitMetric);
 
@@ -327,7 +313,7 @@ constexpr char UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiUnitMetric);
 constexpr char BUILDING_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingMetric);
 constexpr char UNIT_TYPES_SIZE = std::size(METRIC_DEFINITIONS.aiUnitsTypesIdxs);
 
-constexpr char BUILDING_OTHER_SIZE = METRIC_DEFINITIONS.aiBuildingOtherIdxsArray.size();
+constexpr char BUILDING_OTHER_SIZE = METRIC_DEFINITIONS.aiBuildingOtherIdxs.size();
 constexpr char BUILDING_DEF_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingDefIdxs);
 constexpr char BUILDING_RES_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingResIdxs);
 constexpr char BUILDING_TECH_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingTechIdxs);
@@ -336,7 +322,7 @@ constexpr char BUILDING_RES_BONUS_SIZE = std::size(METRIC_DEFINITIONS.aiResWitho
 
 constexpr char BUILDING_TYPES_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingTypesIdxs);
 
-constexpr char RESOURCE_AI_SIZE = std::size(METRIC_DEFINITIONS.aiResInputIdxsSpan);
+constexpr char RESOURCE_AI_SIZE = std::size(METRIC_DEFINITIONS.aiResInputIdxs);
 
 constexpr char ATTACK_OR_DEFENCE_SIZE = std::size(METRIC_DEFINITIONS.aiAttackOrDefence);
 constexpr char WHERE_ATTACK_SIZE = std::size(METRIC_DEFINITIONS.aiWhereAttack);
