@@ -107,7 +107,7 @@ bool ActionMaker::createWorker() const {
 	return createWorker(nation->workers.at(0)); //TODO get better
 }
 
-bool ActionMaker::createUnit(std::span<float> unitsInput) {
+bool ActionMaker::createUnit(std::span<const float> unitsInput) {
 	const auto whichOutput = whichUnit->decide(unitsInput);
 	const auto unit = chooseUnit(whichOutput);
 

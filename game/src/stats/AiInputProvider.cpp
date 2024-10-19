@@ -98,9 +98,7 @@ std::span<const float> AiInputProvider::getBuildingsTypeInput(char playerId, Par
 
 template <std::size_t N>
 std::span<float> AiInputProvider::getBasicInput(const std::array<float, N>& output, Player* player) const {
-	const auto plyMng = Game::getPlayersMan();
-
-	auto& data = METRIC_DEFINITIONS.getBasicNorm(player, plyMng->getEnemyFor(player->getId()));
+	auto& data = METRIC_DEFINITIONS.getBasicNorm(player, Game::getPlayersMan()->getEnemyFor(player->getId()));
 	assert(validateSpan(__LINE__, __FILE__, data));
 	//std::ranges::copy(data, output.begin());
 	std::copy(data.begin(), data.end(), output.begin());

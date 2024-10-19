@@ -11,7 +11,7 @@ Layer::Layer(std::vector<float>& w, std::vector<float>& b) {
 bool Layer::setInput(std::span<const float> data) {
 	const bool si = sameInput(data);
 	if (!si) {
-		values = Eigen::Map<Eigen::VectorXf>(data.data(), data.size());
+		values = Eigen::Map<const Eigen::VectorXf>(data.data(), data.size());
 	}
 
 	return si;

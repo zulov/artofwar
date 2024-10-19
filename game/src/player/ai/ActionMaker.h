@@ -44,7 +44,7 @@ private:
 	bool createBuilding(db_building* building, ParentBuildingType type) const;
 	std::vector<db_building*> getBuildingsInType(ParentBuildingType type);
 	bool createBuilding(std::span<const float> buildingsInput);
-	bool createUnit(std::span<float> unitsInput);
+	bool createUnit(std::span<const float> unitsInput);
 	bool createWorker() const;
 
 	std::span<float> getWhichBuilding(ParentBuildingType type, const std::span<const float> aiTypeInput) const;
