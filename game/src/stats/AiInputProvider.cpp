@@ -57,7 +57,7 @@ std::span<const float> AiInputProvider::getAttackOrDefenceInput(char playerId) {
 	//std::ranges::copy(data, std::begin(attackOrDefenceInput));
 	std::copy(data.begin(), data.end(), attackOrDefenceInput.begin());
 
-	assert(validateSpan(__LINE__, __FILE__, attackOfDefenceInputSpan));
+	assert(validateSpan(__LINE__, __FILE__, attackOrDefenceInput));
 	return asSpan3(attackOrDefenceInput);
 }
 

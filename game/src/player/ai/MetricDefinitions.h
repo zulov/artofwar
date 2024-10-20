@@ -34,7 +34,7 @@ constexpr inline struct MetricDefinitions {
 		for (auto const& v : aiUnitMetric) {
 			outputSum.push_back(v.fn(unit, level) * v.weightForSum);
 		}
-		return asSpan(output);
+		return asSpan(outputSum);
 	}
 
 	const std::span<const float> getUnitNorm(db_unit* unit, db_unit_level* level) const {
