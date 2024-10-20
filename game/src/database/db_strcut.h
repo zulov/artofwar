@@ -267,13 +267,13 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 		unit(unit),
 		minDist(minDist),
 		maxSep(1.f),
-		node(node),
 		mass(mass),
 		invMass(1 / mass),
 		maxSpeed(maxSpeed),
 		minSpeed(minSpeed),
 		maxForce(maxForce),
-		sqMinSpeed(minSpeed * minSpeed) { }
+		sqMinSpeed(minSpeed * minSpeed),
+		node(node) { }
 
 	void finish(const std::span<const float> newValues, const std::span<const float> newValuesForSum,
 	            std::span<const unsigned char> valuesUnitsTypesIdxs) {

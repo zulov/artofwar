@@ -31,7 +31,7 @@ constexpr inline struct MetricDefinitions {
 
 	const std::span<const float> getUnitNormForSum(db_unit* unit, db_unit_level* level) const {
 		outputSum.clear();
-		for (auto const& v : unitInputSpan) {
+		for (auto const& v : aiUnitMetric) {
 			outputSum.push_back(v.fn(unit, level) * v.weightForSum);
 		}
 		return asSpan(output);
@@ -39,7 +39,7 @@ constexpr inline struct MetricDefinitions {
 
 	const std::span<const float> getUnitNorm(db_unit* unit, db_unit_level* level) const {
 		output.clear();
-		for (auto const& v : unitInputSpan) {
+		for (auto const& v : aiUnitMetric) {
 			output.push_back(v.fn(unit, level) * v.weight);
 		}
 		return asSpan(output);
@@ -57,11 +57,11 @@ constexpr inline struct MetricDefinitions {
 	}
 
 	const std::vector<float> getBuildingNorm(db_building* building, db_building_level* level) const {
-		return getBuildingNorm(buildingInputSpan, [](const AiBuildingMetric& m) { return m.weight; }, building, level);
+		return getBuildingNorm(aiBuildingMetric, [](const AiBuildingMetric& m) { return m.weight; }, building, level);
 	}
 
 	const std::vector<float> getBuildingNormForSum(db_building* building, db_building_level* level) const {
-		return getBuildingNorm(buildingInputSpan, [](const AiBuildingMetric& m) { return m.weightForSum; }, building,
+		return getBuildingNorm(aiBuildingMetric, [](const AiBuildingMetric& m) { return m.weightForSum; }, building,
 		                       level);
 	}
 
@@ -77,7 +77,7 @@ constexpr inline struct MetricDefinitions {
 	                                         std::span<const unsigned char> idxs) const {
 		output.clear();
 		for (auto idx : idxs) {
-			auto& v = resourceAllInputSpan[idx];
+			auto& v = aiResourceMetric[idx];
 			output.push_back(v.fn(resources, possession) * v.weight);
 		}
 		return asSpan(output);
@@ -85,22 +85,22 @@ constexpr inline struct MetricDefinitions {
 
 	const std::vector<float>& getBasicNorm(Player* one, Player* two) const {
 		basic.clear();
-		for (auto const& v : basicInputSpan) {
+		for (auto const& v : aiBasicMetric) {
 			basic.push_back(v.fn(one, two) * v.weight);
 		}
 		return basic;
 	}
 
 	const std::span<const float> getAttackOrDefenceNorm(Player* one, Player* two) const {
-		return getAiPlayerMetricNorm(one, two, attackOrDefenceInputSpan);
+		return getAiPlayerMetricNorm(one, two, aiAttackOrDefence);
 	}
 
 	const std::span<const float> getWhereAttackNorm(Player* one, Player* two) const {
-		return getAiPlayerMetricNorm(one, two, whereAttackInputSpan);
+		return getAiPlayerMetricNorm(one, two, aiWhereAttack);
 	}
 
 	const std::span<const float> getWhereDefendNorm(Player* one, Player* two) const {
-		return getAiPlayerMetricNorm(one, two, whereDefendInputSpan);
+		return getAiPlayerMetricNorm(one, two, aiWhereDefend);
 	}
 
 	const std::span<const unsigned char> getUnitTypesIdxs() const { return aiUnitsTypesIdxs; }
@@ -272,7 +272,6 @@ constexpr inline struct MetricDefinitions {
 			}
 		},
 		//TODO musi byæ do przeciwnika bo inaczej zawsze do siebie
-
 	};
 
 	//TODO improve nie indeksy ale enumy?
@@ -287,19 +286,6 @@ constexpr inline struct MetricDefinitions {
 
 	constexpr static std::array aiResInputIdxs = std::to_array<unsigned char>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
 	constexpr static std::array aiResWithoutBonusIdxs = std::to_array<unsigned char>({ 10, 11, 12, 13 });
-	//TODO pozbyc sie tych spanów
-
-	constexpr static std::span<AiUnitMetric> unitInputSpan = std::span(aiUnitMetric);
-
-	constexpr static std::span<AiBuildingMetric> buildingInputSpan = std::span(aiBuildingMetric);
-
-	constexpr static std::span<AiResourceMetric> resourceAllInputSpan = std::span(aiResourceMetric);
-	constexpr static std::span<AiPlayerMetric> basicInputSpan = std::span(aiBasicMetric);
-
-	constexpr static std::span<AiPlayerMetric> attackOrDefenceInputSpan = std::span(aiAttackOrDefence);
-	constexpr static std::span<AiPlayerMetric> whereAttackInputSpan = std::span(aiWhereAttack);
-	constexpr static std::span<AiPlayerMetric> whereDefendInputSpan = std::span(aiWhereDefend);
-
 private:
 	inline static std::vector<float> basic;
 	inline static std::vector<float> output; //TODO mem perf mozna zastapic czyms lzejszym
