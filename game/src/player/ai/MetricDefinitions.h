@@ -31,6 +31,7 @@ constexpr inline struct MetricDefinitions {
 
 	const std::span<const float> getUnitNormForSum(db_unit* unit, db_unit_level* level) const {
 		outputSum.clear();
+
 		for (auto const& v : aiUnitMetric) {
 			outputSum.push_back(v.fn(unit, level) * v.weightForSum);
 		}
@@ -114,61 +115,61 @@ constexpr inline struct MetricDefinitions {
 
 
 	static inline AiUnitMetric aiUnitMetric[] = { //db_unit* u, db_unit_level* l
-		{[](auto u, auto l) -> float { return u->getSumCost(); }, 400, UNITS_SUM_X},
+		{[](auto u, auto l) -> float { return u->getSumCost(); }, 400},
 		//TODO czy grupowe ma sens?
-		{[](auto u, auto l) -> float { return l->maxHp; }, 300, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return l->armor; }, 1, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return l->sightRadius; }, 20, UNITS_SUM_X},
+		{[](auto u, auto l) -> float { return l->maxHp; }, 300},
+		{[](auto u, auto l) -> float { return l->armor; }, 1},
+		{[](auto u, auto l) -> float { return l->sightRadius; }, 20},
 					
-		{[](auto u, auto l) -> float { return l->collect; }, 1, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return l->attack; }, 10, UNITS_SUM_X}, //index 5
-		{[](auto u, auto l) -> float { return l->attackReload; }, 200, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return l->attackRange; }, 20, UNITS_SUM_X},
+		{[](auto u, auto l) -> float { return l->collect; }, 1},
+		{[](auto u, auto l) -> float { return l->attack; }, 10}, //index 5
+		{[](auto u, auto l) -> float { return l->attackReload; }, 200},
+		{[](auto u, auto l) -> float { return l->attackRange; }, 20},
 					
-		{[](auto u, auto l) -> float { return u->typeInfantry; }, 1, UNITS_SUM_X}, //8
-		{[](auto u, auto l) -> float { return u->typeRange; }, 1, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return u->typeCalvary; }, 1, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return u->typeWorker; }, 1, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return u->typeSpecial; }, 1, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return u->typeMelee; }, 1, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return u->typeHeavy; }, 1, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return u->typeLight; }, 1, UNITS_SUM_X}, //15
+		{[](auto u, auto l) -> float { return u->typeInfantry; }, 1}, //8
+		{[](auto u, auto l) -> float { return u->typeRange; }, 1},
+		{[](auto u, auto l) -> float { return u->typeCalvary; }, 1},
+		{[](auto u, auto l) -> float { return u->typeWorker; }, 1},
+		{[](auto u, auto l) -> float { return u->typeSpecial; }, 1},
+		{[](auto u, auto l) -> float { return u->typeMelee; }, 1},
+		{[](auto u, auto l) -> float { return u->typeHeavy; }, 1},
+		{[](auto u, auto l) -> float { return u->typeLight; }, 1}, //15
 					
-		{[](auto u, auto l) -> float { return l->bonusInfantry; }, 1, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return l->bonusRange; }, 1, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return l->bonusCalvary; }, 1, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return l->bonusWorker; }, 1, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return l->bonusSpecial; }, 1, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return l->bonusMelee; }, 1, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return l->bonusHeavy; }, 1, UNITS_SUM_X},
-		{[](auto u, auto l) -> float { return l->bonusLight; }, 1, UNITS_SUM_X},
+		{[](auto u, auto l) -> float { return l->bonusInfantry; }, 1},
+		{[](auto u, auto l) -> float { return l->bonusRange; }, 1},
+		{[](auto u, auto l) -> float { return l->bonusCalvary; }, 1},
+		{[](auto u, auto l) -> float { return l->bonusWorker; }, 1},
+		{[](auto u, auto l) -> float { return l->bonusSpecial; }, 1},
+		{[](auto u, auto l) -> float { return l->bonusMelee; }, 1},
+		{[](auto u, auto l) -> float { return l->bonusHeavy; }, 1},
+		{[](auto u, auto l) -> float { return l->bonusLight; }, 1},
 	};
 
 	static inline AiBuildingMetric aiBuildingMetric[] = { //db_building* b, db_building_level* l
-		{[](auto b, auto l) -> float { return b->getSumCost(); }, 400, BUILDINGS_SUM_X},
-		{[](auto b, auto l) -> float { return l->maxHp; }, 500, BUILDINGS_SUM_X},
-		{[](auto b, auto l) -> float { return l->armor; }, 1, BUILDINGS_SUM_X},
-		{[](auto b, auto l) -> float { return l->sightRadius; }, 50, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float { return b->getSumCost(); }, 400},
+		{[](auto b, auto l) -> float { return l->maxHp; }, 500},
+		{[](auto b, auto l) -> float { return l->armor; }, 1},
+		{[](auto b, auto l) -> float { return l->sightRadius; }, 50},
 
-		{[](auto b, auto l) -> float { return l->collect; }, 2, BUILDINGS_SUM_X},
-		{[](auto b, auto l) -> float { return l->attack; }, 20, BUILDINGS_SUM_X}, //5
-		{[](auto b, auto l) -> float { return l->attackReload; }, 200, BUILDINGS_SUM_X},
-		{[](auto b, auto l) -> float { return l->attackRange; }, 20, BUILDINGS_SUM_X},
-		{[](auto b, auto l) -> float { return l->resourceRange; }, 20, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float { return l->collect; }, 2},
+		{[](auto b, auto l) -> float { return l->attack; }, 20}, //5
+		{[](auto b, auto l) -> float { return l->attackReload; }, 200},
+		{[](auto b, auto l) -> float { return l->attackRange; }, 20},
+		{[](auto b, auto l) -> float { return l->resourceRange; }, 20},
 		//TODO stad duzo wyrzuciæ
 
-		{[](auto b, auto l) -> float { return b->typeCenter; }, 1, BUILDINGS_SUM_X}, //9
-		{[](auto b, auto l) -> float { return b->typeHome; }, 1, BUILDINGS_SUM_X},
-		{[](auto b, auto l) -> float { return b->typeDefence; }, 1, BUILDINGS_SUM_X},
-		{[](auto b, auto l) -> float { return b->typeResourceFood; }, 1, BUILDINGS_SUM_X}, //12
-		{[](auto b, auto l) -> float { return b->typeResourceWood; }, 1, BUILDINGS_SUM_X},
-		{[](auto b, auto l) -> float { return b->typeResourceStone; }, 1, BUILDINGS_SUM_X},
-		{[](auto b, auto l) -> float { return b->typeResourceGold; }, 1, BUILDINGS_SUM_X}, //15
-		{[](auto b, auto l) -> float { return b->typeTechBlacksmith; }, 1, BUILDINGS_SUM_X}, //16
-		{[](auto b, auto l) -> float { return b->typeTechUniversity; }, 1, BUILDINGS_SUM_X},
-		{[](auto b, auto l) -> float { return b->typeUnitBarracks; }, 1, BUILDINGS_SUM_X}, //18
-		{[](auto b, auto l) -> float { return b->typeUnitRange; }, 1, BUILDINGS_SUM_X},
-		{[](auto b, auto l) -> float { return b->typeUnitCavalry; }, 1, BUILDINGS_SUM_X},
+		{[](auto b, auto l) -> float { return b->typeCenter; }, 1}, //9
+		{[](auto b, auto l) -> float { return b->typeHome; }, 1},
+		{[](auto b, auto l) -> float { return b->typeDefence; }, 1},
+		{[](auto b, auto l) -> float { return b->typeResourceFood; }, 1}, //12
+		{[](auto b, auto l) -> float { return b->typeResourceWood; }, 1},
+		{[](auto b, auto l) -> float { return b->typeResourceStone; }, 1},
+		{[](auto b, auto l) -> float { return b->typeResourceGold; }, 1}, //15
+		{[](auto b, auto l) -> float { return b->typeTechBlacksmith; }, 1}, //16
+		{[](auto b, auto l) -> float { return b->typeTechUniversity; }, 1},
+		{[](auto b, auto l) -> float { return b->typeUnitBarracks; }, 1}, //18
+		{[](auto b, auto l) -> float { return b->typeUnitRange; }, 1},
+		{[](auto b, auto l) -> float { return b->typeUnitCavalry; }, 1},
 	};
 
 	//TODO moze to zwracac od razy przedzia³em jakos
