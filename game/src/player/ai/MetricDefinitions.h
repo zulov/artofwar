@@ -91,7 +91,7 @@ constexpr inline struct MetricDefinitions {
 		}
 		return basic;
 	}
-
+	//TODO te 3 sie troszke dubluj¹ ogran¹æ indeksami? ale z drugiej srony chce sie ich pozbyc
 	const std::span<const float> getAttackOrDefenceNorm(Player* one, Player* two) const {
 		return getAiPlayerMetricNorm(one, two, aiAttackOrDefence);
 	}
@@ -102,6 +102,10 @@ constexpr inline struct MetricDefinitions {
 
 	const std::span<const float> getWhereDefendNorm(Player* one, Player* two) const {
 		return getAiPlayerMetricNorm(one, two, aiWhereDefend);
+	}
+
+	static float diffOfCenters(CenterType type1, Player* p1, CenterType type2, Player* p2, float defaultVal) {
+		return Game::getEnvironment()->getDiffOfCenters(type1, p1->getId(), type2, p2->getId(), defaultVal);
 	}
 
 	const std::span<const unsigned char> getUnitTypesIdxs() const { return aiUnitsTypesIdxs; }
@@ -122,7 +126,7 @@ constexpr inline struct MetricDefinitions {
 		{[](auto u, auto l) -> float { return l->sightRadius; }, 20},
 					
 		{[](auto u, auto l) -> float { return l->collect; }, 1},
-		{[](auto u, auto l) -> float { return l->attack; }, 10}, //index 5
+		{[](auto u, auto l) -> float { return l->attack; }, 10}, //5
 		{[](auto u, auto l) -> float { return l->attackReload; }, 200},
 		{[](auto u, auto l) -> float { return l->attackRange; }, 20},
 					
@@ -203,79 +207,30 @@ constexpr inline struct MetricDefinitions {
 	static inline AiPlayerMetric aiAttackOrDefence[] = { //Player* p1, Player* p2
 		{[](auto p1, auto p2) -> float { return p1->getPossession()->getAttackSum(); }, 1000},
 		{[](auto p1, auto p2) -> float { return p1->getPossession()->getDefenceAttackSum(); }, 100},
-		{
-			[](auto p1, auto p2) -> float {
-				return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::BUILDING,
-				                                                p1->getId(), 0.f);
-			}
-		},
-		{
-			[](auto p1, auto p2) -> float {
-				return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::BUILDING,
-				                                                p2->getId(), 1.f);
-			}
-		},
-		{
-			[](auto p1, auto p2) -> float {
-				return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p2->getId(), CenterType::BUILDING,
-				                                                p1->getId(), 1.f);
-			}
-		},
-		{
-			[](auto p1, auto p2) -> float {
-				return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p2->getId(), CenterType::BUILDING,
-				                                                p2->getId(), 0.f);
-			}
-		},
+		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }},
+		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }},
+		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p1, 1.f); }},
+		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p2, 0.f); }},
 	};
 
 	static inline AiPlayerMetric aiWhereAttack[] = { //Player* p1, Player* p2
 		{[](auto p1, auto p2) -> float { return p1->getPossession()->getAttackSum(); }, 1000},
-		{
-			[](auto p1, auto p2) -> float {
-				return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::ECON,
-				                                                p2->getId(), 1.f);
-			}
-		},
-		{
-			[](auto p1, auto p2) -> float {
-				return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::BUILDING,
-				                                                p2->getId(), 1.f);
-			}
-		},
-		{
-			[](auto p1, auto p2) -> float {
-				return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::ARMY,
-				                                                p2->getId(), 1.f);
-			}
-		},
+		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p2, 1.f); }},
+		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }},
+		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }},
 	};
 
 	static inline AiPlayerMetric aiWhereDefend[] = { //Player* p1, Player* p2
 		{[](auto p1, auto p2) -> float { return p1->getPossession()->getAttackSum(); }, 1000},
 		{[](auto p1, auto p2) -> float { return p1->getPossession()->getDefenceAttackSum(); }, 100},
-		{
-			[](auto p1, auto p2) -> float {
-				return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::ECON,
-				                                                p1->getId(), 0.f);
-			}
-		},
-		{
-			[](auto p1, auto p2) -> float {
-				return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::BUILDING,
-				                                                p1->getId(), 0.f);
-			}
-		},
-		{
-			[](auto p1, auto p2) -> float {
-				return Game::getEnvironment()->getDiffOfCenters(CenterType::ARMY, p1->getId(), CenterType::ARMY,
-				                                                p2->getId(), 1.f);
-			}
-		},
+		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p1, 0.f); }},
+		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }},
+		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }}
 		//TODO musi byæ do przeciwnika bo inaczej zawsze do siebie
 	};
 
-	//TODO improve nie indeksy ale enumy?
+
+	//TODO improve nie indeksy ale enumy?, albo zawsze nowa tablica, beda powtorzenia
 	constexpr static std::array aiUnitsTypesIdxs = std::to_array<unsigned char>({ 8, 9, 10, 11, 12, 12, 13, 14, 15 });
 
 	constexpr static std::array aiBuildingOtherIdxs = std::to_array<unsigned char>({ 9, 10 });//TODO moze cos wiecej?
@@ -285,10 +240,11 @@ constexpr inline struct MetricDefinitions {
 	constexpr static std::array aiBuildingDefIdxs = std::to_array<unsigned char>({ 0, 1, 2, 3, 5, 6, 7 });
 	constexpr static std::array aiBuildingTypesIdxs = std::to_array<unsigned char>({ 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 });
 
+	//te indeksy mozna zlikwidoac te wyzej ciezko bo byly by liczone kilka razy
 	constexpr static std::array aiResInputIdxs = std::to_array<unsigned char>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
 	constexpr static std::array aiResWithoutBonusIdxs = std::to_array<unsigned char>({ 10, 11, 12, 13 });
 private:
-	inline static std::vector<float> basic;
+	inline static std::array<float, std::size(aiBasicMetric)> basic;
 	inline static std::vector<float> output; //TODO mem perf mozna zastapic czyms lzejszym
 	inline static std::vector<float> outputSum;
 	//inline static std::vector<float> outputSmall;
@@ -300,7 +256,7 @@ constexpr char UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiUnitMetric);
 constexpr char BUILDING_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingMetric);
 constexpr char UNIT_TYPES_SIZE = std::size(METRIC_DEFINITIONS.aiUnitsTypesIdxs);
 
-constexpr char BUILDING_OTHER_SIZE = METRIC_DEFINITIONS.aiBuildingOtherIdxs.size();
+constexpr char BUILDING_OTHER_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingOtherIdxs);
 constexpr char BUILDING_DEF_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingDefIdxs);
 constexpr char BUILDING_RES_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingResIdxs);
 constexpr char BUILDING_TECH_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingTechIdxs);
