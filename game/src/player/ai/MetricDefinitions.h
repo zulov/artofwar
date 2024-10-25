@@ -84,10 +84,11 @@ constexpr inline struct MetricDefinitions {
 		return asSpan(output);
 	}
 
-	const std::vector<float>& getBasicNorm(Player* one, Player* two) const {
-		basic.clear();
+	const std::span<float> getBasicNorm(Player* one, Player* two) const {
+		int i = 0;
 		for (auto const& v : aiBasicMetric) {
-			basic.push_back(v.fn(one, two) * v.weight);
+			basic[i] = v.fn(one, two) * v.weight;
+			++i;
 		}
 		return basic;
 	}
