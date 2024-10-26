@@ -120,21 +120,6 @@ inline void resetSpan(std::span<float> vec, float val = 0.f) {
 	std::fill_n(vec.begin(), vec.size(), val);
 }
 
-template <typename T, std::size_t N>
-const std::span<const T> asSpan(const std::array<T, N>& arr) {
-	return std::span(arr.data(), arr.size());
-}
-
-template <typename T, std::size_t N>
-const std::span<const T> asSpan2(const std::array<T, N>& arr) {
-	return std::span(arr.data(), arr.size());
-}
-
-template <typename T, std::size_t N>
-const std::span<const T> asSpan3(const std::array<T, N>& arr) {
-	return std::span(arr.data(), arr.size());
-}
-
 template <typename T>
 const std::span<const T> asSpan(const std::vector<T>& arr) {
 	return std::span(arr.data(), arr.size());

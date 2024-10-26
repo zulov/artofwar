@@ -66,19 +66,17 @@ constexpr inline struct MetricDefinitions {
 		                       level);
 	}
 
-	// const std::vector<float> getResourceNorm(Resources& resources, Possession& possession) const {
-	// 	output.clear();
-	// 	for (auto const& v : resourceAllInputSpan) {
-	// 		output.push_back(v.fn(resources, possession) * v.weight);
-	// 	}
-	// 	return output;
-	// }
-
-	const std::span<const float> getResourceNorm(Resources* resources, Possession* possession,
-	                                         std::span<const unsigned char> idxs) const {
+	const std::span<const float> getResourceNorm(Resources* resources, Possession* possession) const {
 		output.clear();
-		for (auto idx : idxs) {
-			auto& v = aiResourceMetric[idx];
+		for (auto const& v : aiResourceMetric) {
+			output.push_back(v.fn(resources, possession) * v.weight);
+		}
+		return asSpan(output);
+	}
+
+	const std::span<const float> getResourceWithOutBonusNorm(Resources* resources, Possession* possession) const {
+		output.clear();
+		for (auto const& v : aiResourceWithoutBonusMetric) {
 			output.push_back(v.fn(resources, possession) * v.weight);
 		}
 		return asSpan(output);
@@ -116,7 +114,6 @@ constexpr inline struct MetricDefinitions {
 	const std::span<const unsigned char> getBuildingTechIdxs() const { return aiBuildingTechIdxs;}
 	const std::span<const unsigned char> getBuildingUnitsIdxs() const { return aiBuildingUnitsIdxs; }
 	const std::span<const unsigned char> getBuildingTypesIdxs() const { return aiBuildingTypesIdxs;}
-	const std::span<const unsigned char> getResWithoutBonusIdxs() const { return aiResWithoutBonusIdxs; }
 
 
 	static inline AiUnitMetric aiUnitMetric[] = { //db_unit* u, db_unit_level* l
@@ -191,10 +188,14 @@ constexpr inline struct MetricDefinitions {
 					
 		{[](auto r, auto p) -> float { return p->getFreeWorkersNumber(); }, 100},
 		{[](auto r, auto p) -> float { return p->getWorkersNumber(); }, 100},
-		{[](auto r, auto p) -> float { return p->getResWithOutBonus()[0]; }, 20}, //10
+
+	};
+
+	static inline AiResourceMetric aiResourceWithoutBonusMetric[] = { //Resources* r, Possession* p
+		{[](auto r, auto p) -> float { return p->getResWithOutBonus()[0]; }, 20},
 		{[](auto r, auto p) -> float { return p->getResWithOutBonus()[1]; }, 20},
 		{[](auto r, auto p) -> float { return p->getResWithOutBonus()[2]; }, 20},
-		{[](auto r, auto p) -> float { return p->getResWithOutBonus()[3]; }, 20},
+		{[](auto r, auto p) -> float { return p->getResWithOutBonus()[3]; }, 20}
 	};
 
 	static inline AiPlayerMetric aiBasicMetric[] = {//Player* p1, Player* p2
@@ -241,14 +242,10 @@ constexpr inline struct MetricDefinitions {
 	constexpr static std::array aiBuildingDefIdxs = std::to_array<unsigned char>({ 0, 1, 2, 3, 5, 6, 7 });
 	constexpr static std::array aiBuildingTypesIdxs = std::to_array<unsigned char>({ 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 });
 
-	//te indeksy mozna zlikwidoac te wyzej ciezko bo byly by liczone kilka razy
-	constexpr static std::array aiResInputIdxs = std::to_array<unsigned char>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-	constexpr static std::array aiResWithoutBonusIdxs = std::to_array<unsigned char>({ 10, 11, 12, 13 });
 private:
 	inline static std::array<float, std::size(aiBasicMetric)> basic;
 	inline static std::vector<float> output; //TODO mem perf mozna zastapic czyms lzejszym
-	inline static std::vector<float> outputSum;
-	//inline static std::vector<float> outputSmall;
+	inline static std::vector<float> outputSum; //TODO usuanc kopiowanie do vectora po to by kopiowac dalej
 } METRIC_DEFINITIONS;
 
 
@@ -262,11 +259,11 @@ constexpr char BUILDING_DEF_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingDefIdx
 constexpr char BUILDING_RES_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingResIdxs);
 constexpr char BUILDING_TECH_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingTechIdxs);
 constexpr char BUILDING_UNITS_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingUnitsIdxs);
-constexpr char BUILDING_RES_BONUS_SIZE = std::size(METRIC_DEFINITIONS.aiResWithoutBonusIdxs);
+constexpr char BUILDING_RES_BONUS_SIZE = std::size(METRIC_DEFINITIONS.aiResourceWithoutBonusMetric);
 
 constexpr char BUILDING_TYPES_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingTypesIdxs);
 
-constexpr char RESOURCE_AI_SIZE = std::size(METRIC_DEFINITIONS.aiResInputIdxs);
+constexpr char RESOURCE_AI_SIZE = std::size(METRIC_DEFINITIONS.aiResourceMetric);
 
 constexpr char ATTACK_OR_DEFENCE_SIZE = std::size(METRIC_DEFINITIONS.aiAttackOrDefence);
 constexpr char WHERE_ATTACK_SIZE = std::size(METRIC_DEFINITIONS.aiWhereAttack);

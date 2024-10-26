@@ -19,8 +19,7 @@ std::span<const float> AiInputProvider::getResourceInput(char playerId) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
 	return combineWithBasic(resourceIdInputArray,
-	                        METRIC_DEFINITIONS.getResourceNorm(player->getResources(), player->getPossession(),
-	                                                          METRIC_DEFINITIONS.aiResInputIdxs), player);
+	                        METRIC_DEFINITIONS.getResourceNorm(player->getResources(), player->getPossession()), player);
 }
 
 std::span<const float> AiInputProvider::getUnitsInput(char playerId) {
@@ -82,8 +81,7 @@ std::span<const float> AiInputProvider::getBuildingsTypeInput(char playerId, Par
 
 	if (type == ParentBuildingType::RESOURCE) {
 		return combineWithBasic(buildingsResInput,
-		                        METRIC_DEFINITIONS.getResourceNorm(player->getResources(), player->getPossession(),
-		                                                           METRIC_DEFINITIONS.aiResWithoutBonusIdxs), player);
+		                        METRIC_DEFINITIONS.getResourceWithOutBonusNorm(player->getResources(), player->getPossession()), player);
 	}
 	switch (type) {
 	case ParentBuildingType::OTHER: return combineWithBasic(buildingsOtherInput, player->getPossession()->getBuildingsMetrics(type), player);
@@ -107,5 +105,5 @@ std::span<const float> AiInputProvider::combineWithBasic(std::array<float, N>& o
 	assert(validateSpan(__LINE__, __FILE__, toJoin));
 	assert(validateSpan(__LINE__, __FILE__, output));
 	assert(output.size() == BASIC_SIZE + toJoin.size());
-	return asSpan2(output);
+	return output;
 }
