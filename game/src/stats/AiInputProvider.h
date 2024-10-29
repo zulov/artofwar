@@ -28,10 +28,9 @@ public:
 
 private:
 	template <std::size_t N>
-	std::span<const float> combineWithBasic(std::array<float, N>& output, std::span<const float> toJoin,
-	                                        Player* player);
+	std::span<float> writeBasic(std::array<float, N>& output, Player* player);
 
-	std::array<float, BASIC_SIZE + RESOURCE_AI_SIZE> resourceIdInputArray;
+	std::array<float, BASIC_SIZE + RESOURCE_AI_SIZE> resourceIdInput;
 	std::array<float, BASIC_SIZE + UNIT_SIZE> unitsInput;
 	std::array<float, BASIC_SIZE + BUILDING_SIZE> buildingsInput;
 

@@ -21,7 +21,7 @@ struct AiPlayerMetric;
 class Player;
 
 constexpr inline struct MetricDefinitions {
-	const std::span<const float> getAiPlayerMetricNorm(Player* one, Player* two, std::span<AiPlayerMetric> metric) const {
+	const std::span<const float> getAiPlayerMetric(Player* one, Player* two, std::span<AiPlayerMetric> metric) const {
 		output.clear();
 		for (auto const& v : metric) {
 			output.push_back(v.fn(one, two) * v.weight);
@@ -29,7 +29,7 @@ constexpr inline struct MetricDefinitions {
 		return asSpan(output);
 	}
 
-	const std::span<const float> getUnitNormForSum(db_unit* unit, db_unit_level* level) const {
+	const std::span<const float> getUnitForSum(db_unit* unit, db_unit_level* level) const {
 		outputSum.clear();
 
 		for (auto const& v : aiUnitMetric) {
@@ -38,7 +38,7 @@ constexpr inline struct MetricDefinitions {
 		return asSpan(outputSum);
 	}
 
-	const std::span<const float> getUnitNorm(db_unit* unit, db_unit_level* level) const {
+	const std::span<const float> getUnit(db_unit* unit, db_unit_level* level) const {
 		output.clear();
 		for (auto const& v : aiUnitMetric) {
 			output.push_back(v.fn(unit, level) * v.weight);
@@ -46,9 +46,9 @@ constexpr inline struct MetricDefinitions {
 		return asSpan(output);
 	}
 
-	const std::vector<float> getBuildingNorm(std::span<AiBuildingMetric> span,
-	                                         const std::function<float(const AiBuildingMetric&)>& getWeight,
-	                                         db_building* building, db_building_level* level) const {
+	const std::vector<float> getBuilding(std::span<AiBuildingMetric> span,
+	                                     const std::function<float(const AiBuildingMetric&)>& getWeight,
+	                                     db_building* building, db_building_level* level) const {
 		std::vector<float> result;
 		result.reserve(span.size());
 		for (auto const& v : span) {
@@ -57,50 +57,51 @@ constexpr inline struct MetricDefinitions {
 		return result;
 	}
 
-	const std::vector<float> getBuildingNorm(db_building* building, db_building_level* level) const {
-		return getBuildingNorm(aiBuildingMetric, [](const AiBuildingMetric& m) { return m.weight; }, building, level);
+	const std::vector<float> getBuilding(db_building* building, db_building_level* level) const {
+		return getBuilding(aiBuildingMetric, [](const AiBuildingMetric& m) { return m.weight; }, building, level);
 	}
 
-	const std::vector<float> getBuildingNormForSum(db_building* building, db_building_level* level) const {
-		return getBuildingNorm(aiBuildingMetric, [](const AiBuildingMetric& m) { return m.weightForSum; }, building,
-		                       level);
+	const std::vector<float> getBuildingForSum(db_building* building, db_building_level* level) const {
+		return getBuilding(aiBuildingMetric, [](const AiBuildingMetric& m) { return m.weightForSum; }, building,
+		                   level);
 	}
 
-	const std::span<const float> getResourceNorm(Resources* resources, Possession* possession) const {
-		output.clear();
+	void writeResource(std::span<float> output, Resources* resources, Possession* possession) const {
+		int i = 0;
 		for (auto const& v : aiResourceMetric) {
-			output.push_back(v.fn(resources, possession) * v.weight);
+			output[i] = v.fn(resources, possession) * v.weight;
 		}
-		return asSpan(output);
+		assert(output.size() == i);
 	}
 
-	const std::span<const float> getResourceWithOutBonusNorm(Resources* resources, Possession* possession) const {
+	const std::span<const float> getResourceWithOutBonus(Resources* resources, Possession* possession) const {
 		output.clear();
 		for (auto const& v : aiResourceWithoutBonusMetric) {
 			output.push_back(v.fn(resources, possession) * v.weight);
 		}
-		return asSpan(output);
+		return output;
 	}
 
-	const std::span<float> getBasicNorm(Player* one, Player* two) const {
+	const std::span<float> writeBasic(std::span<float> output, Player* one, Player* two) const {
 		int i = 0;
 		for (auto const& v : aiBasicMetric) {
-			basic[i] = v.fn(one, two) * v.weight;
+			output[i] = v.fn(one, two) * v.weight;
 			++i;
 		}
-		return basic;
-	}
-	//TODO te 3 sie troszke dubluj¹ ogran¹æ indeksami? ale z drugiej srony chce sie ich pozbyc
-	const std::span<const float> getAttackOrDefenceNorm(Player* one, Player* two) const {
-		return getAiPlayerMetricNorm(one, two, aiAttackOrDefence);
+		return std::span(output.begin() + i, output.size() - i);
 	}
 
-	const std::span<const float> getWhereAttackNorm(Player* one, Player* two) const {
-		return getAiPlayerMetricNorm(one, two, aiWhereAttack);
+	//TODO te 3 sie troszke dubluj¹ ogran¹æ indeksami? ale z drugiej srony chce sie ich pozbyc
+	const std::span<const float> getAttackOrDefenceNorm(Player* one, Player* two) const {
+		return getAiPlayerMetric(one, two, aiAttackOrDefence);
+	}
+
+	const std::span<const float> writeWhereAttack(Player* one, Player* two) const {
+		return getAiPlayerMetric(one, two, aiWhereAttack);
 	}
 
 	const std::span<const float> getWhereDefendNorm(Player* one, Player* two) const {
-		return getAiPlayerMetricNorm(one, two, aiWhereDefend);
+		return getAiPlayerMetric(one, two, aiWhereDefend);
 	}
 
 	static float diffOfCenters(CenterType type1, Player* p1, CenterType type2, Player* p2, float defaultVal) {
@@ -109,11 +110,11 @@ constexpr inline struct MetricDefinitions {
 
 	const std::span<const unsigned char> getUnitTypesIdxs() const { return aiUnitsTypesIdxs; }
 	const std::span<const unsigned char> getBuildingOtherIdxs() const { return aiBuildingOtherIdxs; }
-	const std::span<const unsigned char> getBuildingDefenceIdxs() const { return aiBuildingDefIdxs;}
-	const std::span<const unsigned char> getBuildingResourceIdxs() const { return aiBuildingResIdxs;}
-	const std::span<const unsigned char> getBuildingTechIdxs() const { return aiBuildingTechIdxs;}
+	const std::span<const unsigned char> getBuildingDefenceIdxs() const { return aiBuildingDefIdxs; }
+	const std::span<const unsigned char> getBuildingResourceIdxs() const { return aiBuildingResIdxs; }
+	const std::span<const unsigned char> getBuildingTechIdxs() const { return aiBuildingTechIdxs; }
 	const std::span<const unsigned char> getBuildingUnitsIdxs() const { return aiBuildingUnitsIdxs; }
-	const std::span<const unsigned char> getBuildingTypesIdxs() const { return aiBuildingTypesIdxs;}
+	const std::span<const unsigned char> getBuildingTypesIdxs() const { return aiBuildingTypesIdxs; }
 
 
 	static inline AiUnitMetric aiUnitMetric[] = { //db_unit* u, db_unit_level* l
@@ -122,12 +123,12 @@ constexpr inline struct MetricDefinitions {
 		{[](auto u, auto l) -> float { return l->maxHp; }, 300},
 		{[](auto u, auto l) -> float { return l->armor; }, 1},
 		{[](auto u, auto l) -> float { return l->sightRadius; }, 20},
-					
+
 		{[](auto u, auto l) -> float { return l->collect; }, 1},
 		{[](auto u, auto l) -> float { return l->attack; }, 10}, //5
 		{[](auto u, auto l) -> float { return l->attackReload; }, 200},
 		{[](auto u, auto l) -> float { return l->attackRange; }, 20},
-					
+
 		{[](auto u, auto l) -> float { return u->typeInfantry; }, 1}, //8
 		{[](auto u, auto l) -> float { return u->typeRange; }, 1},
 		{[](auto u, auto l) -> float { return u->typeCalvary; }, 1},
@@ -136,7 +137,7 @@ constexpr inline struct MetricDefinitions {
 		{[](auto u, auto l) -> float { return u->typeMelee; }, 1},
 		{[](auto u, auto l) -> float { return u->typeHeavy; }, 1},
 		{[](auto u, auto l) -> float { return u->typeLight; }, 1}, //15
-					
+
 		{[](auto u, auto l) -> float { return l->bonusInfantry; }, 1},
 		{[](auto u, auto l) -> float { return l->bonusRange; }, 1},
 		{[](auto u, auto l) -> float { return l->bonusCalvary; }, 1},
@@ -180,12 +181,12 @@ constexpr inline struct MetricDefinitions {
 		{[](auto r, auto p) -> float { return r->getGatherSpeeds()[1]; }, 10},
 		{[](auto r, auto p) -> float { return r->getGatherSpeeds()[2]; }, 10},
 		{[](auto r, auto p) -> float { return r->getGatherSpeeds()[3]; }, 10},
-					
+
 		{[](auto r, auto p) -> float { return r->getValues()[0]; }, 1000},
 		{[](auto r, auto p) -> float { return r->getValues()[1]; }, 1000},
 		{[](auto r, auto p) -> float { return r->getValues()[2]; }, 1000},
 		{[](auto r, auto p) -> float { return r->getValues()[3]; }, 1000},
-					
+
 		{[](auto r, auto p) -> float { return p->getFreeWorkersNumber(); }, 100},
 		{[](auto r, auto p) -> float { return p->getWorkersNumber(); }, 100},
 
@@ -198,7 +199,7 @@ constexpr inline struct MetricDefinitions {
 		{[](auto r, auto p) -> float { return p->getResWithOutBonus()[3]; }, 20}
 	};
 
-	static inline AiPlayerMetric aiBasicMetric[] = {//Player* p1, Player* p2
+	static inline AiPlayerMetric aiBasicMetric[] = { //Player* p1, Player* p2
 		{[](auto p1, auto p2) -> float { return p1->getScore(); }, 1000},
 		{[](auto p1, auto p2) -> float { return p1->getPossession()->getUnitsNumber(); }, 200},
 		{[](auto p1, auto p2) -> float { return p1->getPossession()->getBuildingsNumber(); }, 50},
@@ -233,17 +234,19 @@ constexpr inline struct MetricDefinitions {
 
 
 	//TODO improve nie indeksy ale enumy?, albo zawsze nowa tablica, beda powtorzenia
-	constexpr static std::array aiUnitsTypesIdxs = std::to_array<unsigned char>({ 8, 9, 10, 11, 12, 12, 13, 14, 15 });
+	constexpr static std::array aiUnitsTypesIdxs = std::to_array<unsigned char>({8, 9, 10, 11, 12, 12, 13, 14, 15});
 
-	constexpr static std::array aiBuildingOtherIdxs = std::to_array<unsigned char>({ 9, 10 });//TODO moze cos wiecej?
-	constexpr static std::array aiBuildingUnitsIdxs = std::to_array<unsigned char>({ 18, 19, 20 }); //TODO moze cos wiecej?
-	constexpr static std::array aiBuildingTechIdxs = std::to_array<unsigned char>({ 16, 17 }); //TODO moze cos wiecej?
-	constexpr static std::array aiBuildingResIdxs = std::to_array<unsigned char>({ 4, 8, 12, 13, 14, 15 });
-	constexpr static std::array aiBuildingDefIdxs = std::to_array<unsigned char>({ 0, 1, 2, 3, 5, 6, 7 });
-	constexpr static std::array aiBuildingTypesIdxs = std::to_array<unsigned char>({ 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 });
+	constexpr static std::array aiBuildingOtherIdxs = std::to_array<unsigned char>({9, 10}); //TODO moze cos wiecej?
+	constexpr static std::array aiBuildingUnitsIdxs = std::to_array<unsigned char>({18, 19, 20});
+	//TODO moze cos wiecej?
+	constexpr static std::array aiBuildingTechIdxs = std::to_array<unsigned char>({16, 17}); //TODO moze cos wiecej?
+	constexpr static std::array aiBuildingResIdxs = std::to_array<unsigned char>({4, 8, 12, 13, 14, 15});
+	constexpr static std::array aiBuildingDefIdxs = std::to_array<unsigned char>({0, 1, 2, 3, 5, 6, 7});
+	constexpr static std::array aiBuildingTypesIdxs = std::to_array<unsigned char>({9, 10, 11, 12, 13, 14, 15, 16, 17,
+		18, 19, 20});
 
 private:
-	inline static std::array<float, std::size(aiBasicMetric)> basic;
+	//inline static std::array<float, std::size(aiBasicMetric)> basic;
 	inline static std::vector<float> output; //TODO mem perf mozna zastapic czyms lzejszym
 	inline static std::vector<float> outputSum; //TODO usuanc kopiowanie do vectora po to by kopiowac dalej
 } METRIC_DEFINITIONS;

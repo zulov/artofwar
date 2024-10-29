@@ -54,15 +54,15 @@ struct db_container {
 	void finish() {
 		for (auto* level : unitsLevels) {
 			const auto unit = units[level->unit];
-			level->finish(METRIC_DEFINITIONS.getUnitNorm(unit, level),
-			              METRIC_DEFINITIONS.getUnitNormForSum(unit, level),
+			level->finish(METRIC_DEFINITIONS.getUnit(unit, level),
+			              METRIC_DEFINITIONS.getUnitForSum(unit, level),
 			              METRIC_DEFINITIONS.getUnitTypesIdxs());
 		}
 
 		for (auto* level : buildingsLevels) {
 			const auto building = buildings[level->building];
 			level->finish(
-				METRIC_DEFINITIONS.getBuildingNorm(building, level), METRIC_DEFINITIONS.getBuildingNormForSum(building, level),
+				METRIC_DEFINITIONS.getBuilding(building, level), METRIC_DEFINITIONS.getBuildingForSum(building, level),
 				METRIC_DEFINITIONS.getBuildingOtherIdxs(), METRIC_DEFINITIONS.getBuildingDefenceIdxs(),
 				METRIC_DEFINITIONS.getBuildingResourceIdxs(), METRIC_DEFINITIONS.getBuildingTechIdxs(),
 				METRIC_DEFINITIONS.getBuildingUnitsIdxs(), METRIC_DEFINITIONS.getBuildingTypesIdxs());
