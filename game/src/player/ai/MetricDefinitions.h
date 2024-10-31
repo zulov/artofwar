@@ -21,12 +21,11 @@ struct AiPlayerMetric;
 class Player;
 
 constexpr inline struct MetricDefinitions {
-	const std::span<const float> getAiPlayerMetric(Player* one, Player* two, std::span<AiPlayerMetric> metric) const {
-		output.clear();
+	void writeAiPlayerMetric(std::span<float> output, Player* one, Player* two, std::span<AiPlayerMetric> metric) const {
+		int i = 0;
 		for (auto const& v : metric) {
-			output.push_back(v.fn(one, two) * v.weight);
+			output[i++] = v.fn(one, two) * v.weight;
 		}
-		return asSpan(output);
 	}
 
 	const std::span<const float> getUnitForSum(db_unit* unit, db_unit_level* level) const {
@@ -58,11 +57,11 @@ constexpr inline struct MetricDefinitions {
 	}
 
 	const std::vector<float> getBuilding(db_building* building, db_building_level* level) const {
-		return getBuilding(aiBuildingMetric, [](const AiBuildingMetric& m) { return m.weight; }, building, level);
+		return getBuilding(aiBuildingMetric, [](const AiBuildingMetric& m){ return m.weight; }, building, level);
 	}
 
 	const std::vector<float> getBuildingForSum(db_building* building, db_building_level* level) const {
-		return getBuilding(aiBuildingMetric, [](const AiBuildingMetric& m) { return m.weightForSum; }, building,
+		return getBuilding(aiBuildingMetric, [](const AiBuildingMetric& m){ return m.weightForSum; }, building,
 		                   level);
 	}
 
@@ -74,10 +73,10 @@ constexpr inline struct MetricDefinitions {
 		assert(output.size() == i);
 	}
 
-	const std::span<const float> getResourceWithOutBonus(Resources* resources, Possession* possession) const {
-		output.clear();
+	const std::span<const float> writeResourceWithOutBonus(std::span<float> output, Resources* resources, Possession* possession) const {
+		int i = 0;
 		for (auto const& v : aiResourceWithoutBonusMetric) {
-			output.push_back(v.fn(resources, possession) * v.weight);
+			output[i++]=v.fn(resources, possession) * v.weight;
 		}
 		return output;
 	}
@@ -92,16 +91,16 @@ constexpr inline struct MetricDefinitions {
 	}
 
 	//TODO te 3 sie troszke dubluj¹ ogran¹æ indeksami? ale z drugiej srony chce sie ich pozbyc
-	const std::span<const float> getAttackOrDefenceNorm(Player* one, Player* two) const {
-		return getAiPlayerMetric(one, two, aiAttackOrDefence);
+	void writeAttackOrDefence(std::span<float> output, Player* one, Player* two) const {
+		writeAiPlayerMetric(output, one, two, aiAttackOrDefence);
 	}
 
-	const std::span<const float> writeWhereAttack(Player* one, Player* two) const {
-		return getAiPlayerMetric(one, two, aiWhereAttack);
+	void writeWhereAttack(std::span<float> output, Player* one, Player* two) const {
+		writeAiPlayerMetric(output, one, two, aiWhereAttack);
 	}
 
-	const std::span<const float> getWhereDefendNorm(Player* one, Player* two) const {
-		return getAiPlayerMetric(one, two, aiWhereDefend);
+	void writeWhereDefend(std::span<float> output, Player* one, Player* two) const {
+		writeAiPlayerMetric(output, one, two, aiWhereDefend);
 	}
 
 	static float diffOfCenters(CenterType type1, Player* p1, CenterType type2, Player* p2, float defaultVal) {
