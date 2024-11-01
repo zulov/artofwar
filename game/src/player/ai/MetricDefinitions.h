@@ -28,24 +28,24 @@ constexpr inline struct MetricDefinitions {
 		}
 	}
 
-	const std::span<const float> getUnitForSum(db_unit* unit, db_unit_level* level) const {
+	std::span<const float> getUnitForSum(db_unit* unit, db_unit_level* level) const {
 		outputSum.clear();
 
 		for (auto const& v : aiUnitMetric) {
 			outputSum.push_back(v.fn(unit, level) * v.weightForSum);
 		}
-		return asSpan(outputSum);
+		return outputSum;
 	}
 
-	const std::span<const float> getUnit(db_unit* unit, db_unit_level* level) const {
+	std::span<const float> getUnit(db_unit* unit, db_unit_level* level) const {
 		output.clear();
 		for (auto const& v : aiUnitMetric) {
 			output.push_back(v.fn(unit, level) * v.weight);
 		}
-		return asSpan(output);
+		return output;
 	}
 
-	const std::vector<float> getBuilding(std::span<AiBuildingMetric> span,
+	std::vector<float> getBuilding(std::span<AiBuildingMetric> span,
 	                                     const std::function<float(const AiBuildingMetric&)>& getWeight,
 	                                     db_building* building, db_building_level* level) const {
 		std::vector<float> result;
@@ -56,11 +56,11 @@ constexpr inline struct MetricDefinitions {
 		return result;
 	}
 
-	const std::vector<float> getBuilding(db_building* building, db_building_level* level) const {
+	std::vector<float> getBuilding(db_building* building, db_building_level* level) const {
 		return getBuilding(aiBuildingMetric, [](const AiBuildingMetric& m){ return m.weight; }, building, level);
 	}
 
-	const std::vector<float> getBuildingForSum(db_building* building, db_building_level* level) const {
+	std::vector<float> getBuildingForSum(db_building* building, db_building_level* level) const {
 		return getBuilding(aiBuildingMetric, [](const AiBuildingMetric& m){ return m.weightForSum; }, building,
 		                   level);
 	}
@@ -68,7 +68,7 @@ constexpr inline struct MetricDefinitions {
 	void writeResource(std::span<float> output, Resources* resources, Possession* possession) const {
 		int i = 0;
 		for (auto const& v : aiResourceMetric) {
-			output[i] = v.fn(resources, possession) * v.weight;
+			output[i++] = v.fn(resources, possession) * v.weight;
 		}
 		assert(output.size() == i);
 	}
@@ -84,8 +84,7 @@ constexpr inline struct MetricDefinitions {
 	const std::span<float> writeBasic(std::span<float> output, Player* one, Player* two) const {
 		int i = 0;
 		for (auto const& v : aiBasicMetric) {
-			output[i] = v.fn(one, two) * v.weight;
-			++i;
+			output[i++] = v.fn(one, two) * v.weight;
 		}
 		return std::span(output.begin() + i, output.size() - i);
 	}
@@ -245,7 +244,6 @@ constexpr inline struct MetricDefinitions {
 		18, 19, 20});
 
 private:
-	//inline static std::array<float, std::size(aiBasicMetric)> basic;
 	inline static std::vector<float> output; //TODO mem perf mozna zastapic czyms lzejszym
 	inline static std::vector<float> outputSum; //TODO usuanc kopiowanie do vectora po to by kopiowac dalej
 } METRIC_DEFINITIONS;

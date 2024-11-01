@@ -125,7 +125,7 @@ protected:
 
 	void setValarray(std::valarray<float>& valarray, const std::span<const unsigned char>& idxs) {
 		std::vector<float> temp;
-		temp.clear();
+
 		temp.reserve(idxs.size());
 		for (const unsigned char idx : idxs) {
 			temp.push_back(valuesNormAsVal[idx]);
@@ -138,7 +138,7 @@ public:
 	const std::valarray<float>& getValuesNormAsVal() const { return valuesNormAsVal; }
 	const std::vector<float>& getValuesNormForSum() const { return valuesNormForSum; }
 
-	const std::span<const float>& getTypesVal() const {
+	const std::span<const float> getTypesVal() const {
 		return std::span{std::begin(typesNormAsVal), typesNormAsVal.size()};
 	}
 };

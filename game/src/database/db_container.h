@@ -54,6 +54,7 @@ struct db_container {
 	void finish() {
 		for (auto* level : unitsLevels) {
 			const auto unit = units[level->unit];
+			level->dbUnitMetric = new db_unit_metric(newValues, newValuesForSum, valuesUnitsTypesIdxs);
 			level->finish(METRIC_DEFINITIONS.getUnit(unit, level),
 			              METRIC_DEFINITIONS.getUnitForSum(unit, level),
 			              METRIC_DEFINITIONS.getUnitTypesIdxs());

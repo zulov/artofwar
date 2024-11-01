@@ -30,6 +30,9 @@ private:
 	template <std::size_t N>
 	std::span<float> writeBasic(std::array<float, N>& output, Player* player);
 
+	template <std::size_t N>
+	std::span<const float> writeBasicWith(std::array<float, N>& output, Player* player, std::span<const float> second);
+	//TODO mem, zastapic to jedna pzrestrzenia na dane
 	std::array<float, BASIC_SIZE + RESOURCE_AI_SIZE> resourceIdInput;
 	std::array<float, BASIC_SIZE + UNIT_SIZE> unitsInput;
 	std::array<float, BASIC_SIZE + BUILDING_SIZE> buildingsInput;

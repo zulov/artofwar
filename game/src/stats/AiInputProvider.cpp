@@ -28,33 +28,28 @@ std::span<const float> AiInputProvider::getResourceInput(char playerId) {
 std::span<const float> AiInputProvider::getUnitsInput(char playerId) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
-	return writeBasic(unitsInput, player->getPossession()->getUnitsMetrics(), player);
-	return unitsInput;
+	return writeBasicWith(unitsInput, player, player->getPossession()->getUnitsMetrics());
 }
 
 std::span<const float> AiInputProvider::getBuildingsInput(char playerId) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
-	return writeBasic(buildingsInput, player->getPossession()->getBuildingsMetrics(), player);
-	return buildingsInput;
+	return writeBasicWith(buildingsInput, player, player->getPossession()->getBuildingsMetrics());
 }
 
 std::span<const float> AiInputProvider::getUnitsInputWithMetric(char playerId, const db_unit_metric* prop) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
-	return writeBasic(unitsWithMetric, prop->getTypesVal(), player);
-	return unitsWithMetric;
+	return writeBasicWith(unitsWithMetric, player, prop->getTypesVal());
 }
 
 std::span<const float> AiInputProvider::getBuildingsInputWithMetric(char playerId, const db_building_metric* prop,
                                                                     ParentBuildingType type) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 	if (type == ParentBuildingType::RESOURCE) {
-		writeBasic(buildingsResWhereInput, prop->getValuesNormAsValForType(type), player);
-		return buildingsResWhereInput;
+		return writeBasicWith(buildingsResWhereInput, player, prop->getValuesNormAsValForType(type));
 	}
-	writeBasic(buildingsWhereInput, prop->getTypesVal(), player);
-	return buildingsWhereInput;
+	return writeBasicWith(buildingsWhereInput, player, prop->getTypesVal());
 }
 
 std::span<const float> AiInputProvider::getAttackOrDefenceInput(char playerId) {
@@ -93,25 +88,21 @@ std::span<const float> AiInputProvider::getWhereDefend(char playerId) {
 }
 
 std::span<const float> AiInputProvider::getBuildingsTypeInput(char playerId, ParentBuildingType type) {
-	auto* player = Game::getPlayersMan()->getPlayer(playerId);
-
+	auto player = Game::getPlayersMan()->getPlayer(playerId);
+	auto possession = player->getPossession();
 	if (type == ParentBuildingType::RESOURCE) {
 		 METRIC_DEFINITIONS.writeResourceWithOutBonus(
 			 writeBasic(buildingsResInput, player), 
-			 player->getResources(), player->getPossession());
+			 player->getResources(), possession);
 		 return buildingsResInput;
 	}
 	switch (type) {
-	case ParentBuildingType::OTHER: return writeBasic(buildingsOtherInput,
-	                                                  player->getPossession()->getBuildingsMetrics(type), player);
-	case ParentBuildingType::DEFENCE: return writeBasic(buildingsDefenceInput,
-	                                                    player->getPossession()->getBuildingsMetrics(type), player);
+	case ParentBuildingType::OTHER: return writeBasicWith(buildingsOtherInput, player, possession->getBuildingsMetrics(type));
+	case ParentBuildingType::DEFENCE: return writeBasicWith(buildingsDefenceInput, player, possession->getBuildingsMetrics(type));
 	case ParentBuildingType::RESOURCE: assert(false);
-		return writeBasic(buildingsResInput, player->getPossession()->getBuildingsMetrics(type), player);
-	case ParentBuildingType::TECH: return writeBasic(buildingsTechInput,
-	                                                 player->getPossession()->getBuildingsMetrics(type), player);
-	case ParentBuildingType::UNITS: return writeBasic(buildingsUnitsInput,
-	                                                  player->getPossession()->getBuildingsMetrics(type), player);
+		return writeBasicWith(buildingsResInput, player, possession->getBuildingsMetrics(type));
+	case ParentBuildingType::TECH: return writeBasicWith(buildingsTechInput, player,possession->getBuildingsMetrics(type));
+	case ParentBuildingType::UNITS: return writeBasicWith(buildingsUnitsInput, player, possession->getBuildingsMetrics(type));
 	default: ;
 	}
 }
@@ -119,4 +110,11 @@ std::span<const float> AiInputProvider::getBuildingsTypeInput(char playerId, Par
 template <std::size_t N>
 std::span<float> AiInputProvider::writeBasic(std::array<float, N>& output, Player* player) {
 	return METRIC_DEFINITIONS.writeBasic(output, player, Game::getPlayersMan()->getEnemyFor(player->getId()));
+}
+
+template <std::size_t N>
+std::span<const float> AiInputProvider::writeBasicWith(std::array<float, N>& output, Player* player, std::span<const float> second) {
+	auto result = METRIC_DEFINITIONS.writeBasic(output, player, Game::getPlayersMan()->getEnemyFor(player->getId()));
+	std::copy(second.begin(), second.end(), result.begin());
+	return output;
 }

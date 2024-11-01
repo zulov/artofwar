@@ -3,7 +3,7 @@
 #include <vector>
 
 struct Brain;
-
+//TODO pref load all brains from sqllite as blobs?
 class BrainProvider {
 public:
 	~BrainProvider();
