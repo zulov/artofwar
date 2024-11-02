@@ -52,11 +52,10 @@ struct db_container {
 	}
 
 	void finish() {
+		std::array<float, UNIT_SIZE> unitMetricValues;
 		for (auto* level : unitsLevels) {
 			const auto unit = units[level->unit];
-			level->dbUnitMetric = new db_unit_metric(newValues, newValuesForSum, valuesUnitsTypesIdxs);
-			level->finish(METRIC_DEFINITIONS.getUnit(unit, level),
-			              METRIC_DEFINITIONS.getUnitForSum(unit, level),
+			level->finish(METRIC_DEFINITIONS.writeUnit(unitMetricValues, unit, level),
 			              METRIC_DEFINITIONS.getUnitTypesIdxs());
 		}
 

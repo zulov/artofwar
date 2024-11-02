@@ -26,22 +26,15 @@ constexpr inline struct MetricDefinitions {
 		for (auto const& v : metric) {
 			output[i++] = v.fn(one, two) * v.weight;
 		}
+		assert(validateSpan(__LINE__, __FILE__, output));
 	}
 
-	std::span<const float> getUnitForSum(db_unit* unit, db_unit_level* level) const {
-		outputSum.clear();
-
+	std::span<const float> writeUnit(std::span<float> output, db_unit* unit, db_unit_level* level) const {
+		int i = 0;
 		for (auto const& v : aiUnitMetric) {
-			outputSum.push_back(v.fn(unit, level) * v.weightForSum);
+			output[i++]=v.fn(unit, level) * v.weight;
 		}
-		return outputSum;
-	}
-
-	std::span<const float> getUnit(db_unit* unit, db_unit_level* level) const {
-		output.clear();
-		for (auto const& v : aiUnitMetric) {
-			output.push_back(v.fn(unit, level) * v.weight);
-		}
+		assert(validateSpan(__LINE__, __FILE__, output));
 		return output;
 	}
 
@@ -243,9 +236,6 @@ constexpr inline struct MetricDefinitions {
 	constexpr static std::array aiBuildingTypesIdxs = std::to_array<unsigned char>({9, 10, 11, 12, 13, 14, 15, 16, 17,
 		18, 19, 20});
 
-private:
-	inline static std::vector<float> output; //TODO mem perf mozna zastapic czyms lzejszym
-	inline static std::vector<float> outputSum; //TODO usuanc kopiowanie do vectora po to by kopiowac dalej
 } METRIC_DEFINITIONS;
 
 

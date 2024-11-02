@@ -227,12 +227,11 @@ struct db_build_upgrade {
 };
 
 struct db_unit_metric : db_basic_metric {
-	db_unit_metric(const std::span<const float> newValues, const std::span<const float> newValuesForSum,
-	               std::span<const unsigned char> typesIdxs) {
+	db_unit_metric(const std::span<const float> newValues, std::span<const unsigned char> typesIdxs, float multiplier) {
 		assert(validateSpan(__LINE__, __FILE__, newValues));
-		assert(validateSpan(__LINE__, __FILE__, newValuesForSum));
-
-		valuesNormForSum.insert(valuesNormForSum.end(), newValuesForSum.begin(), newValuesForSum.end());
+		valuesNormForSum.resize(newValues.size());
+		std::ranges::transform(newValues, valuesNormForSum.begin(),
+		                       [multiplier](float x) { return x * multiplier; });
 		valuesNormAsVal = std::valarray(newValues.data(), newValues.size());
 		setValarray(typesNormAsVal, typesIdxs);
 	}
@@ -275,9 +274,8 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 		sqMinSpeed(minSpeed * minSpeed),
 		node(node) { }
 
-	void finish(const std::span<const float> newValues, const std::span<const float> newValuesForSum,
-	            std::span<const unsigned char> valuesUnitsTypesIdxs) {
-		dbUnitMetric = new db_unit_metric(newValues, newValuesForSum, valuesUnitsTypesIdxs);
+	void finish(const std::span<const float> newValues, std::span<const unsigned char> valuesUnitsTypesIdxs) {
+		dbUnitMetric = new db_unit_metric(newValues, valuesUnitsTypesIdxs,);
 	}
 
 	~db_unit_level() {
