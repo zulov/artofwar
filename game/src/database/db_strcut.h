@@ -14,6 +14,9 @@
 #include "utils/OtherUtils.h"
 #include "utils/StringUtils.h"
 
+constexpr char UNITS_SUM_X = 100;
+constexpr char BUILDINGS_SUM_X = 10;
+
 struct db_unit;
 struct db_unit_metric;
 struct db_nation;
@@ -39,7 +42,7 @@ struct db_common_attack {
 
 	db_common_attack(float collect, float attack, short attackReload, short attackRange)
 		: attack(attack), attackReload(attackReload), attackRange(attackRange), collect(collect),
-		  sqAttackRange(attackRange * attackRange) { }
+		  sqAttackRange(attackRange * attackRange) {}
 
 	bool initFlag(float val) const {
 		return val > 0.f;
@@ -52,7 +55,7 @@ struct db_building_attack : db_common_attack {
 
 	db_building_attack(float collect, float attack, short attackReload, short attackRange)
 		: db_common_attack(collect, attack, attackReload, attackRange),
-		  canAttack(initFlag(attack)) { }
+		  canAttack(initFlag(attack)) {}
 };
 
 struct db_unit_attack : db_common_attack {
@@ -78,14 +81,14 @@ struct db_unit_attack : db_common_attack {
 		  bonusMelee(bonusMelee),
 		  bonusHeavy(bonusHeavy),
 		  bonusLight(bonusLight),
-		  bonusBuilding(bonusBuilding) { }
+		  bonusBuilding(bonusBuilding) {}
 };
 
 struct db_static {
 	const Urho3D::IntVector2 size;
 
 	explicit db_static(const Urho3D::IntVector2& size)
-		: size(size) { }
+		: size(size) {}
 };
 
 struct db_cost {
@@ -101,7 +104,7 @@ struct db_cost {
 		values({food, wood, stone, gold}),
 		sum(food + wood + stone + gold),
 		anyWoodOrStone(wood > 0 || stone > 0),
-		moreWoodThanStone(wood > stone) { }
+		moreWoodThanStone(wood > stone) {}
 };
 
 struct db_with_cost {
@@ -117,6 +120,15 @@ struct db_with_cost {
 };
 
 struct db_basic_metric {
+	db_basic_metric(const std::span<const float> newValues, float weightForSum) {
+		assert(validateSpan(__LINE__, __FILE__, newValues));
+		float y = 1 / weightForSum;
+		valuesNormForSum.resize(newValues.size());
+		std::ranges::transform(newValues, valuesNormForSum.begin(), [y](float x){ return x * y; });
+
+		valuesNormAsVal = std::valarray(newValues.data(), newValues.size());
+	}
+
 protected:
 	std::valarray<float> valuesNormAsVal;
 	std::valarray<float> typesNormAsVal;
@@ -150,17 +162,11 @@ struct db_building_metric : db_basic_metric {
 	std::valarray<float> techNormAsVal;
 	std::valarray<float> unitsNormAsVal;
 
-	db_building_metric(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
+	db_building_metric(const std::span<const float> newValues,
 	                   std::span<const unsigned char> otherIdxs, std::span<const unsigned char> defenceIdxs,
 	                   std::span<const unsigned char> resourceIdxs, std::span<const unsigned char> techIdxs,
-	                   std::span<const unsigned char> unitsIdxs, std::span<const unsigned char> typesIdxs) {
-		assert(validateSpan(__LINE__, __FILE__, newValues));
-		assert(validateSpan(__LINE__, __FILE__, newValuesForSum));
-
-		valuesNormForSum.insert(valuesNormForSum.end(), newValuesForSum.begin(), newValuesForSum.end());
-
-		valuesNormAsVal = std::valarray(newValues.data(), newValues.size());
-
+	                   std::span<const unsigned char> unitsIdxs,
+	                   std::span<const unsigned char> typesIdxs): db_basic_metric(newValues, BUILDINGS_SUM_X) {
 		setValarray(otherNormAsVal, otherIdxs); //TODO bug czy to jest zainicjowane
 		setValarray(defenceNormAsVal, defenceIdxs);
 		setValarray(resourceNormAsVal, resourceIdxs);
@@ -190,7 +196,7 @@ struct db_level {
 	const char level;
 
 	explicit db_level(char level)
-		: level(level) { }
+		: level(level) {}
 };
 
 struct db_with_hp {
@@ -199,7 +205,7 @@ struct db_with_hp {
 	const float armor;
 
 	explicit db_with_hp(unsigned short maxHp, float armor)
-		: maxHp(maxHp), invMaxHp(1.f / maxHp), armor(armor) { }
+		: maxHp(maxHp), invMaxHp(1.f / maxHp), armor(armor) {}
 };
 
 struct db_base : db_with_hp {
@@ -211,7 +217,7 @@ struct db_base : db_with_hp {
 
 	db_base(unsigned short maxHp, float armor, float sightRadius)
 		: db_with_hp(maxHp, armor), sightRadius(sightRadius), sqSightRadius(sightRadius * sightRadius),
-		  interestRange(sightRadius * 0.8f), sqInterestRange(interestRange * interestRange) { }
+		  interestRange(sightRadius * 0.8f), sqInterestRange(interestRange * interestRange) {}
 };
 
 struct db_with_model {
@@ -223,16 +229,12 @@ struct db_build_upgrade {
 	short upgradeTime = -1;
 
 	db_build_upgrade(short buildTime, short upgradeTime)
-		: buildTime(buildTime), upgradeTime(upgradeTime) { }
+		: buildTime(buildTime), upgradeTime(upgradeTime) {}
 };
 
 struct db_unit_metric : db_basic_metric {
-	db_unit_metric(const std::span<const float> newValues, std::span<const unsigned char> typesIdxs, float multiplier) {
-		assert(validateSpan(__LINE__, __FILE__, newValues));
-		valuesNormForSum.resize(newValues.size());
-		std::ranges::transform(newValues, valuesNormForSum.begin(),
-		                       [multiplier](float x) { return x * multiplier; });
-		valuesNormAsVal = std::valarray(newValues.data(), newValues.size());
+	db_unit_metric(const std::span<const float> newValues, std::span<const unsigned char> typesIdxs):
+		db_basic_metric(newValues, UNITS_SUM_X) {
 		setValarray(typesNormAsVal, typesIdxs);
 	}
 };
@@ -272,10 +274,10 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 		minSpeed(minSpeed),
 		maxForce(maxForce),
 		sqMinSpeed(minSpeed * minSpeed),
-		node(node) { }
+		node(node) {}
 
 	void finish(const std::span<const float> newValues, std::span<const unsigned char> valuesUnitsTypesIdxs) {
-		dbUnitMetric = new db_unit_metric(newValues, valuesUnitsTypesIdxs,);
+		dbUnitMetric = new db_unit_metric(newValues, valuesUnitsTypesIdxs);
 	}
 
 	~db_unit_level() {
@@ -313,7 +315,7 @@ struct db_unit : db_with_icon, db_with_cost {
 		typeSpecial(typeSpecial),
 		typeMelee(typeMelee),
 		typeHeavy(typeHeavy),
-		typeLight(typeLight) { }
+		typeLight(typeLight) {}
 
 	std::optional<db_unit_level*> getLevel(short level) {
 		if (levels.size() > level) {
@@ -432,7 +434,7 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 		  db_base(maxHp, armor, sightRng), db_build_upgrade(buildSpeed, upgradeSpeed),
 		  building(building), nodeName(nodeName), queueMaxCapacity(queueMaxCapacity), resourceRange(resourceRng),
 		  foodStorage(foodStorage), goldStoreage(goldStoreage), stoneRefineCapacity(stoneRefineCapacity),
-		  goldRefineCapacity(goldRefineCapacity){ }
+		  goldRefineCapacity(goldRefineCapacity) {}
 
 	~db_building_level() {
 		clear_vector(unitsPerNation);
@@ -441,11 +443,11 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 		//clear_vector(dbBuildingMetricPerNation);
 	}
 
-	void finish(const std::vector<float>& newValues, const std::vector<float>& newValuesForSum,
+	void finish(const std::span<const float> newValues,
 	            std::span<const unsigned char> valuesOtherIdxs, std::span<const unsigned char> valuesDefenceIdxs,
 	            std::span<const unsigned char> valuesResourceIdxs, std::span<const unsigned char> valuesTechIdxs,
 	            std::span<const unsigned char> valuesUnitsIdxs, std::span<const unsigned char> typesIdxs) {
-		dbBuildingMetric = new db_building_metric(newValues, newValuesForSum, valuesOtherIdxs, valuesDefenceIdxs,
+		dbBuildingMetric = new db_building_metric(newValues, valuesOtherIdxs, valuesDefenceIdxs,
 		                                          valuesResourceIdxs, valuesTechIdxs, valuesUnitsIdxs, typesIdxs);
 	}
 };
@@ -461,7 +463,7 @@ struct db_nation : db_with_name {
 	db_nation(short id, char* name, char* actionPrefix, char* orderPrefix)
 		: db_with_name(id, name),
 		  actionPrefix(split(actionPrefix, SPLIT_SIGN)),
-		  orderPrefix(split(orderPrefix, SPLIT_SIGN)) { }
+		  orderPrefix(split(orderPrefix, SPLIT_SIGN)) {}
 
 	std::vector<std::string> splitAi(std::string* param) const {
 		return split(split(param[id], SPLIT_SIGN_2)[SimGlobals::CURRENT_RUN], SPLIT_SIGN);
@@ -491,5 +493,5 @@ struct db_resource : db_with_icon, db_static, db_with_hp, db_with_model {
 	            short sizeZ, short maxUsers, unsigned mini_map_color, float collectSpeed, bool rotatable)
 		: db_with_icon(id, name, icon), db_static({sizeX, sizeZ}), db_with_hp(maxHp, 0.f),
 		  resourceId(resourceId), nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)),
-		  maxUsers(maxUsers), mini_map_color(mini_map_color), collectSpeed(collectSpeed), rotatable(rotatable) { }
+		  maxUsers(maxUsers), mini_map_color(mini_map_color), collectSpeed(collectSpeed), rotatable(rotatable) {}
 };

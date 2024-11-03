@@ -32,30 +32,19 @@ constexpr inline struct MetricDefinitions {
 	std::span<const float> writeUnit(std::span<float> output, db_unit* unit, db_unit_level* level) const {
 		int i = 0;
 		for (auto const& v : aiUnitMetric) {
-			output[i++]=v.fn(unit, level) * v.weight;
+			output[i++] = v.fn(unit, level) * v.weight;
 		}
 		assert(validateSpan(__LINE__, __FILE__, output));
 		return output;
 	}
 
-	std::vector<float> getBuilding(std::span<AiBuildingMetric> span,
-	                                     const std::function<float(const AiBuildingMetric&)>& getWeight,
-	                                     db_building* building, db_building_level* level) const {
-		std::vector<float> result;
-		result.reserve(span.size());
-		for (auto const& v : span) {
-			result.push_back(v.fn(building, level) * getWeight(v));
+	std::span<const float> writeBuilding(std::span<float> output, db_building* building, db_building_level* level) const {
+		int i = 0;
+		for (auto const& v : aiBuildingMetric) {
+			output[i++] = v.fn(building, level) * v.weight;
 		}
-		return result;
-	}
-
-	std::vector<float> getBuilding(db_building* building, db_building_level* level) const {
-		return getBuilding(aiBuildingMetric, [](const AiBuildingMetric& m){ return m.weight; }, building, level);
-	}
-
-	std::vector<float> getBuildingForSum(db_building* building, db_building_level* level) const {
-		return getBuilding(aiBuildingMetric, [](const AiBuildingMetric& m){ return m.weightForSum; }, building,
-		                   level);
+		assert(validateSpan(__LINE__, __FILE__, output));
+		return output;
 	}
 
 	void writeResource(std::span<float> output, Resources* resources, Possession* possession) const {
@@ -223,18 +212,17 @@ constexpr inline struct MetricDefinitions {
 		//TODO musi byæ do przeciwnika bo inaczej zawsze do siebie
 	};
 
-
+	//to nie musi byc array tylko tabelka
 	//TODO improve nie indeksy ale enumy?, albo zawsze nowa tablica, beda powtorzenia
-	constexpr static std::array aiUnitsTypesIdxs = std::to_array<unsigned char>({8, 9, 10, 11, 12, 12, 13, 14, 15});
+	constexpr static unsigned char aiUnitsTypesIdxs[] = {8, 9, 10, 11, 12, 12, 13, 14, 15};
 
-	constexpr static std::array aiBuildingOtherIdxs = std::to_array<unsigned char>({9, 10}); //TODO moze cos wiecej?
-	constexpr static std::array aiBuildingUnitsIdxs = std::to_array<unsigned char>({18, 19, 20});
+	constexpr static unsigned char aiBuildingOtherIdxs[] = {9, 10}; //TODO moze cos wiecej?
+	constexpr static unsigned char aiBuildingUnitsIdxs[] = {18, 19, 20};
 	//TODO moze cos wiecej?
-	constexpr static std::array aiBuildingTechIdxs = std::to_array<unsigned char>({16, 17}); //TODO moze cos wiecej?
-	constexpr static std::array aiBuildingResIdxs = std::to_array<unsigned char>({4, 8, 12, 13, 14, 15});
-	constexpr static std::array aiBuildingDefIdxs = std::to_array<unsigned char>({0, 1, 2, 3, 5, 6, 7});
-	constexpr static std::array aiBuildingTypesIdxs = std::to_array<unsigned char>({9, 10, 11, 12, 13, 14, 15, 16, 17,
-		18, 19, 20});
+	constexpr static unsigned char aiBuildingTechIdxs[] = {16, 17}; //TODO moze cos wiecej?
+	constexpr static unsigned char aiBuildingResIdxs[] = {4, 8, 12, 13, 14, 15};
+	constexpr static unsigned char aiBuildingDefIdxs[] = {0, 1, 2, 3, 5, 6, 7};
+	constexpr static unsigned char aiBuildingTypesIdxs[] = {9, 10, 11, 12, 13, 14, 15, 16, 17,18, 19, 20};
 
 } METRIC_DEFINITIONS;
 
