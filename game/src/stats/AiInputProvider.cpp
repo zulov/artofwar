@@ -18,11 +18,9 @@ AiInputProvider::AiInputProvider() {
 std::span<const float> AiInputProvider::getResourceInput(char playerId) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 
-	METRIC_DEFINITIONS.writeResource(
+	return METRIC_DEFINITIONS.writeResource( zwraca za maly span bo bez poczatku (basic)
 		writeBasic(resourceIdInput, player),
 		player->getResources(), player->getPossession());
-	assert(validateSpan(__LINE__, __FILE__, resourceIdInput));
-	return resourceIdInput;
 }
 
 std::span<const float> AiInputProvider::getUnitsInput(char playerId) {
@@ -55,36 +53,25 @@ std::span<const float> AiInputProvider::getBuildingsInputWithMetric(char playerI
 std::span<const float> AiInputProvider::getAttackOrDefenceInput(char playerId) {
 	const auto plyMng = Game::getPlayersMan();
 
-	METRIC_DEFINITIONS.writeAttackOrDefence(attackOrDefenceInput,plyMng->getPlayer(playerId), plyMng->getEnemyFor(playerId));
-
-	assert(validateSpan(__LINE__, __FILE__, attackOrDefenceInput));
-	return attackOrDefenceInput;
+	return METRIC_DEFINITIONS.writeAttackOrDefence(attackOrDefenceInput,plyMng->getPlayer(playerId), plyMng->getEnemyFor(playerId));
 }
 
 std::span<const float> AiInputProvider::getWhereAttack(char playerId) {
 	const auto plyMng = Game::getPlayersMan();
 	auto* player = plyMng->getPlayer(playerId);
 
-	METRIC_DEFINITIONS.writeWhereAttack(
+	return METRIC_DEFINITIONS.writeWhereAttack(
 		writeBasic(whereAttackInput, player),
 		player, plyMng->getEnemyFor(playerId));
-	assert(validateSpan(__LINE__, __FILE__, whereAttackInput));
-
-	//
-	// return writeBasic(whereAttackInput,
-	//                   METRIC_DEFINITIONS.writeWhereAttack(player, plyMng->getEnemyFor(playerId)), player);
-	return whereAttackInput;
 }
 
 std::span<const float> AiInputProvider::getWhereDefend(char playerId) {
 	const auto plyMng = Game::getPlayersMan();
 	auto* player = plyMng->getPlayer(playerId);
 
-	METRIC_DEFINITIONS.writeWhereDefend(
+	return METRIC_DEFINITIONS.writeWhereDefend(
 		writeBasic(whereDefendInput, player),
 		player, plyMng->getEnemyFor(playerId));
-	assert(validateSpan(__LINE__, __FILE__, whereDefendInput));
-	return whereDefendInput;
 }
 
 std::span<const float> AiInputProvider::getBuildingsTypeInput(char playerId, ParentBuildingType type) {
