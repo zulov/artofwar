@@ -55,14 +55,16 @@ struct db_container {
 		std::array<float, UNIT_SIZE> unitMetricValues;
 		for (auto* level : unitsLevels) {
 			const auto unit = units[level->unit];
-			level->finish(METRIC_DEFINITIONS.writeUnit(unitMetricValues, unit, level),
+			METRIC_DEFINITIONS.writeUnit(unitMetricValues, unit, level);
+			level->finish(unitMetricValues,
 			              METRIC_DEFINITIONS.getUnitTypesIdxs());
 		}
 		std::array<float, BUILDING_SIZE> buildingMetricValues;
 		for (auto* level : buildingsLevels) {
 			const auto building = buildings[level->building];
+			METRIC_DEFINITIONS.writeBuilding(buildingMetricValues, building, level);
 			level->finish(
-				METRIC_DEFINITIONS.writeBuilding(buildingMetricValues, building, level),
+				buildingMetricValues,
 				METRIC_DEFINITIONS.getBuildingOtherIdxs(), METRIC_DEFINITIONS.getBuildingDefenceIdxs(),
 				METRIC_DEFINITIONS.getBuildingResourceIdxs(), METRIC_DEFINITIONS.getBuildingTechIdxs(),
 				METRIC_DEFINITIONS.getBuildingUnitsIdxs(), METRIC_DEFINITIONS.getBuildingTypesIdxs());

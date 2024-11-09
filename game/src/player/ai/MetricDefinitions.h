@@ -10,6 +10,7 @@
 #include "player/Resources.h"
 #include "player/Possession.h"
 
+
 class Possession;
 struct db_building_level;
 struct db_building;
@@ -30,35 +31,30 @@ constexpr inline struct MetricDefinitions {
 	}
 
 	template <typename T, typename L, typename MetricArray>
-	std::span<const float> writeInput(std::span<float> output, T* one, L* two, const MetricArray& metrics) const {
+	void writeInput(std::span<float> output, T* one, L* two, const MetricArray& metrics) const {
 		int i = 0;
 		for (auto const& v : metrics) {
 			output[i++] = v.fn(one, two) * v.weight;
 		}
 		assert(output.size() == i);
 		assert(validateSpan(__LINE__, __FILE__, output));
-		return output;
 	}
 
-	std::span<const float> writeUnit(std::span<float> output, db_unit* unit, db_unit_level* level) const {
-		return writeInput(output, unit, level, aiUnitMetric);
+	void writeUnit(std::span<float> output, db_unit* unit, db_unit_level* level) const {
+		writeInput(output, unit, level, aiUnitMetric);
 	}
 
-	std::span<const float> writeBuilding(std::span<float> output, db_building* building,
-	                                     db_building_level* level) const {
-		return writeInput(output, building, level, aiBuildingMetric);
+	void writeBuilding(std::span<float> output, db_building* building, db_building_level* level) const {
+		writeInput(output, building, level, aiBuildingMetric);
 	}
 
-	std::span<const float> writeResource(std::span<float> output, Player* one, Player* two) const {
+	void writeResource(std::span<float> output, Player* one, Player* two) const {
 		writeInput(writeBasic(output, one, two), one->getResources(), one->getPossession(), aiResourceMetric);
-		return output;
 	}
 
-	const std::span<const float>
-	writeResourceWithOutBonus(std::span<float> output, Player* player, Player* enemy) const {
+	void writeResourceWithOutBonus(std::span<float> output, Player* player, Player* enemy) const {
 		writeInput(writeBasic(output, player, enemy), player->getResources(), player->getPossession(),
 		           aiResourceWithoutBonusMetric);
-		return output;
 	}
 
 	const std::span<float> writeBasic(std::span<float> output, Player* one, Player* two) const {
@@ -70,18 +66,16 @@ constexpr inline struct MetricDefinitions {
 	}
 
 	//TODO te 3 sie troszke dubluj¹ ogran¹æ indeksami? ale z drugiej srony chce sie ich pozbyc
-	std::span<const float> writeAttackOrDefence(std::span<float> output, Player* one, Player* two) const {
-		return writeInput(output, one, two, aiAttackOrDefence);
+	void writeAttackOrDefence(std::span<float> output, Player* one, Player* two) const {
+		writeInput(output, one, two, aiAttackOrDefence);
 	}
 
-	std::span<const float> writeWhereAttack(std::span<float> output, Player* one, Player* two) const {
+	void writeWhereAttack(std::span<float> output, Player* one, Player* two) const {
 		writeInput(writeBasic(output, one, two), one, two, aiWhereAttack);
-		return output;
 	}
 
-	std::span<const float> writeWhereDefend(std::span<float> output, Player* one, Player* two) const {
+	void writeWhereDefend(std::span<float> output, Player* one, Player* two) const {
 		writeInput(writeBasic(output, one, two), one, two, aiWhereDefend);
-		return output;
 	}
 
 	static float diffOfCenters(CenterType type1, Player* p1, CenterType type2, Player* p2, float defaultVal) {

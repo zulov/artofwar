@@ -20,7 +20,8 @@ std::span<const float> AiInputProvider::getResourceInput(char playerId) {
 	auto* player = plyMng->getPlayer(playerId);
 	const auto enemy = plyMng->getEnemyFor(playerId);
 
-	return METRIC_DEFINITIONS.writeResource(resourceIdInput,player, enemy);
+	METRIC_DEFINITIONS.writeResource(resourceIdInput,player, enemy);
+	return resourceIdInput;
 }
 
 std::span<const float> AiInputProvider::getUnitsInput(char playerId) {
@@ -53,7 +54,8 @@ std::span<const float> AiInputProvider::getBuildingsInputWithMetric(char playerI
 std::span<const float> AiInputProvider::getAttackOrDefenceInput(char playerId) {
 	const auto plyMng = Game::getPlayersMan();
 
-	return METRIC_DEFINITIONS.writeAttackOrDefence(attackOrDefenceInput,plyMng->getPlayer(playerId), plyMng->getEnemyFor(playerId));
+	METRIC_DEFINITIONS.writeAttackOrDefence(attackOrDefenceInput,plyMng->getPlayer(playerId), plyMng->getEnemyFor(playerId));
+	return attackOrDefenceInput;
 }
 
 std::span<const float> AiInputProvider::getWhereAttack(char playerId) {
@@ -61,7 +63,8 @@ std::span<const float> AiInputProvider::getWhereAttack(char playerId) {
 	const auto enemy = plyMng->getEnemyFor(playerId);
 	auto* player = plyMng->getPlayer(playerId);
 
-	return METRIC_DEFINITIONS.writeWhereAttack(whereAttackInput,player,enemy);
+	METRIC_DEFINITIONS.writeWhereAttack(whereAttackInput,player,enemy);
+	return whereAttackInput;
 }
 
 std::span<const float> AiInputProvider::getWhereDefend(char playerId) {
@@ -69,7 +72,8 @@ std::span<const float> AiInputProvider::getWhereDefend(char playerId) {
 	const auto enemy = plyMng->getEnemyFor(playerId);
 	auto* player = plyMng->getPlayer(playerId);
 
-	return METRIC_DEFINITIONS.writeWhereDefend(whereDefendInput,player,enemy);
+	METRIC_DEFINITIONS.writeWhereDefend(whereDefendInput,player,enemy);
+	return whereDefendInput;
 }
 
 std::span<const float> AiInputProvider::getBuildingsTypeInput(char playerId, ParentBuildingType type) {
@@ -77,7 +81,8 @@ std::span<const float> AiInputProvider::getBuildingsTypeInput(char playerId, Par
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(player->getId());
 	const auto possession = player->getPossession();
 	if (type == ParentBuildingType::RESOURCE) {
-		return METRIC_DEFINITIONS.writeResourceWithOutBonus(buildingsResInput,player, enemy);
+		 METRIC_DEFINITIONS.writeResourceWithOutBonus(buildingsResInput,player, enemy);
+		 return buildingsResInput;
 	}
 	switch (type) {
 	case ParentBuildingType::OTHER: return writeBasicWith(buildingsOtherInput, player, possession->getBuildingsMetrics(type));
