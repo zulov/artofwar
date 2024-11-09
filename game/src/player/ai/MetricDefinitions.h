@@ -20,7 +20,8 @@ struct AiPlayerMetric;
 class Player;
 
 constexpr inline struct MetricDefinitions {
-	std::span<const float> writeAiPlayerMetric(std::span<float> output, Player* one, Player* two, std::span<AiPlayerMetric> metric) const {
+	std::span<const float> writeAiPlayerMetric(std::span<float> output, Player* one, Player* two,
+	                                           std::span<AiPlayerMetric> metric) const {
 		int i = 0;
 		for (auto const& v : metric) {
 			output[i++] = v.fn(one, two) * v.weight;
@@ -43,16 +44,21 @@ constexpr inline struct MetricDefinitions {
 		return writeInput(output, unit, level, aiUnitMetric);
 	}
 
-	std::span<const float> writeBuilding(std::span<float> output, db_building* building, db_building_level* level) const {
+	std::span<const float> writeBuilding(std::span<float> output, db_building* building,
+	                                     db_building_level* level) const {
 		return writeInput(output, building, level, aiBuildingMetric);
 	}
 
-	std::span<const float> writeResource(std::span<float> output, Resources* resources, Possession* possession) const {
-		return writeInput(output, resources, possession, aiResourceMetric);
+	std::span<const float> writeResource(std::span<float> output, Player* one, Player* two) const {
+		writeInput(writeBasic(output, one, two), one->getResources(), one->getPossession(), aiResourceMetric);
+		return output;
 	}
 
-	const std::span<const float> writeResourceWithOutBonus(std::span<float> output, Resources* resources, Possession* possession) const {
-		return writeInput(output, resources, possession, aiResourceWithoutBonusMetric);
+	const std::span<const float>
+	writeResourceWithOutBonus(std::span<float> output, Player* player, Player* enemy) const {
+		writeInput(writeBasic(output, player, enemy), player->getResources(), player->getPossession(),
+		           aiResourceWithoutBonusMetric);
+		return output;
 	}
 
 	const std::span<float> writeBasic(std::span<float> output, Player* one, Player* two) const {
@@ -69,11 +75,13 @@ constexpr inline struct MetricDefinitions {
 	}
 
 	std::span<const float> writeWhereAttack(std::span<float> output, Player* one, Player* two) const {
-		return writeInput(output, one, two, aiWhereAttack);
+		writeInput(writeBasic(output, one, two), one, two, aiWhereAttack);
+		return output;
 	}
 
 	std::span<const float> writeWhereDefend(std::span<float> output, Player* one, Player* two) const {
-		return writeInput(output, one, two, aiWhereDefend);
+		writeInput(writeBasic(output, one, two), one, two, aiWhereDefend);
+		return output;
 	}
 
 	static float diffOfCenters(CenterType type1, Player* p1, CenterType type2, Player* p2, float defaultVal) {
@@ -214,8 +222,7 @@ constexpr inline struct MetricDefinitions {
 	constexpr static unsigned char aiBuildingTechIdxs[] = {16, 17}; //TODO moze cos wiecej?
 	constexpr static unsigned char aiBuildingResIdxs[] = {4, 8, 12, 13, 14, 15};
 	constexpr static unsigned char aiBuildingDefIdxs[] = {0, 1, 2, 3, 5, 6, 7};
-	constexpr static unsigned char aiBuildingTypesIdxs[] = {9, 10, 11, 12, 13, 14, 15, 16, 17,18, 19, 20};
-
+	constexpr static unsigned char aiBuildingTypesIdxs[] = {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 } METRIC_DEFINITIONS;
 
 

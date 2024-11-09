@@ -16,11 +16,11 @@ AiInputProvider::AiInputProvider() {
 }
 
 std::span<const float> AiInputProvider::getResourceInput(char playerId) {
-	auto* player = Game::getPlayersMan()->getPlayer(playerId);
+	const auto plyMng = Game::getPlayersMan();
+	auto* player = plyMng->getPlayer(playerId);
+	const auto enemy = plyMng->getEnemyFor(playerId);
 
-	return METRIC_DEFINITIONS.writeResource( zwraca za maly span bo bez poczatku (basic)
-		writeBasic(resourceIdInput, player),
-		player->getResources(), player->getPossession());
+	return METRIC_DEFINITIONS.writeResource(resourceIdInput,player, enemy);
 }
 
 std::span<const float> AiInputProvider::getUnitsInput(char playerId) {
@@ -58,30 +58,26 @@ std::span<const float> AiInputProvider::getAttackOrDefenceInput(char playerId) {
 
 std::span<const float> AiInputProvider::getWhereAttack(char playerId) {
 	const auto plyMng = Game::getPlayersMan();
+	const auto enemy = plyMng->getEnemyFor(playerId);
 	auto* player = plyMng->getPlayer(playerId);
 
-	return METRIC_DEFINITIONS.writeWhereAttack(
-		writeBasic(whereAttackInput, player),
-		player, plyMng->getEnemyFor(playerId));
+	return METRIC_DEFINITIONS.writeWhereAttack(whereAttackInput,player,enemy);
 }
 
 std::span<const float> AiInputProvider::getWhereDefend(char playerId) {
 	const auto plyMng = Game::getPlayersMan();
+	const auto enemy = plyMng->getEnemyFor(playerId);
 	auto* player = plyMng->getPlayer(playerId);
 
-	return METRIC_DEFINITIONS.writeWhereDefend(
-		writeBasic(whereDefendInput, player),
-		player, plyMng->getEnemyFor(playerId));
+	return METRIC_DEFINITIONS.writeWhereDefend(whereDefendInput,player,enemy);
 }
 
 std::span<const float> AiInputProvider::getBuildingsTypeInput(char playerId, ParentBuildingType type) {
-	auto player = Game::getPlayersMan()->getPlayer(playerId);
-	auto possession = player->getPossession();
+	const auto player = Game::getPlayersMan()->getPlayer(playerId);
+	const auto enemy = Game::getPlayersMan()->getEnemyFor(player->getId());
+	const auto possession = player->getPossession();
 	if (type == ParentBuildingType::RESOURCE) {
-		 METRIC_DEFINITIONS.writeResourceWithOutBonus(
-			 writeBasic(buildingsResInput, player), 
-			 player->getResources(), possession);
-		 return buildingsResInput;
+		return METRIC_DEFINITIONS.writeResourceWithOutBonus(buildingsResInput,player, enemy);
 	}
 	switch (type) {
 	case ParentBuildingType::OTHER: return writeBasicWith(buildingsOtherInput, player, possession->getBuildingsMetrics(type));
