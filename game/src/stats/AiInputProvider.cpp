@@ -10,7 +10,7 @@
 
 
 std::span<const float> AiInputProvider::getResourceInput(Player* player, Player* enemy) {
-	METRIC_DEFINITIONS.writeResource(resourceIdInput,player, enemy);
+	METRIC_DEFINITIONS.writeResource(resourceIdInput, player, enemy);
 	return resourceIdInput;
 }
 
@@ -51,16 +51,14 @@ std::span<const float> AiInputProvider::getWhereDefend(Player* player, Player* e
 
 std::span<const float> AiInputProvider::getBuildingsTypeInput(Player* player, Player* enemy, ParentBuildingType type) {
 	const auto possession = player->getPossession();
-	if (type == ParentBuildingType::RESOURCE) {
-		 METRIC_DEFINITIONS.writeResourceWithOutBonus(buildingsResInput,player, enemy);
-		 return buildingsResInput;
-	}
 	switch (type) {
 	case ParentBuildingType::OTHER: return writeBasicWith(buildingsOtherInput, player, possession->getBuildingsMetrics(type));
 	case ParentBuildingType::DEFENCE: return writeBasicWith(buildingsDefenceInput, player, possession->getBuildingsMetrics(type));
-	case ParentBuildingType::RESOURCE: assert(false);
-		return writeBasicWith(buildingsResInput, player, possession->getBuildingsMetrics(type));
-	case ParentBuildingType::TECH: return writeBasicWith(buildingsTechInput, player,possession->getBuildingsMetrics(type));
+	case ParentBuildingType::RESOURCE: {
+		METRIC_DEFINITIONS.writeResourceWithOutBonus(buildingsResInput, player, enemy);
+		return buildingsResInput;
+	}
+	case ParentBuildingType::TECH: return writeBasicWith(buildingsTechInput, player, possession->getBuildingsMetrics(type));
 	case ParentBuildingType::UNITS: return writeBasicWith(buildingsUnitsInput, player, possession->getBuildingsMetrics(type));
 	default: ;
 	}
