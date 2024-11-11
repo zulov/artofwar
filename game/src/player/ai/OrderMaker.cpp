@@ -70,14 +70,15 @@ std::vector<Physical*>* OrderMaker::getThingsToAttack(const CenterType centerTyp
 }
 
 void OrderMaker::armyAction() {
-	auto const resultAoD = attackOrDefence->decide(aiInput->getAttackOrDefenceInput(playerId));
+	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
+	auto const resultAoD = attackOrDefence->decide(aiInput->getAttackOrDefenceInput(player, enemy));
 	std::span<float> whereGo;
 	char playerToGo = playerId;
 	if (randFromTwo(resultAoD[0])) {
-		playerToGo = Game::getPlayersMan()->getEnemyIdFor(playerId);
-		whereGo = whereAttack->decide(aiInput->getWhereAttack(playerId));
+		playerToGo = enemy->getId();
+		whereGo = whereAttack->decide(aiInput->getWhereAttack(player, enemy));
 	} else {
-		whereGo = whereDefence->decide(aiInput->getWhereDefend(playerId));
+		whereGo = whereDefence->decide(aiInput->getWhereDefend(player, enemy));
 	}
 	const CenterType centerType = static_cast<CenterType>(biggestWithRand(whereGo));
 	const auto posOpt = Game::getEnvironment()->getCenterOf(centerType, playerToGo);
@@ -171,7 +172,8 @@ std::vector<Unit*> OrderMaker::getSubGroup(std::vector<std::vector<Unit*>>& grou
 }
 
 void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
-	const auto input = aiInput->getResourceInput(playerId);
+	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
+	const auto input = aiInput->getResourceInput(player, enemy);
 	const auto result = whichResource->decide(input);
 	if (freeWorkers.size() == 1) {
 		const auto resourceId = biggestWithRand(result);

@@ -21,15 +21,6 @@ struct AiPlayerMetric;
 class Player;
 
 constexpr inline struct MetricDefinitions {
-	std::span<const float> writeAiPlayerMetric(std::span<float> output, Player* one, Player* two,
-	                                           std::span<AiPlayerMetric> metric) const {
-		int i = 0;
-		for (auto const& v : metric) {
-			output[i++] = v.fn(one, two) * v.weight;
-		}
-		assert(validateSpan(__LINE__, __FILE__, output));
-	}
-
 	template <typename T, typename L, typename MetricArray>
 	void writeInput(std::span<float> output, T* one, L* two, const MetricArray& metrics) const {
 		int i = 0;

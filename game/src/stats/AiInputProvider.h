@@ -10,21 +10,21 @@ struct db_basic_metric;
 
 class AiInputProvider {
 public:
-	AiInputProvider();
+	AiInputProvider() = default;
 	AiInputProvider(const AiInputProvider&) = delete;
 
-	std::span<const float> getResourceInput(char playerId);
-	std::span<const float> getUnitsInput(char playerId);
-	std::span<const float> getBuildingsInput(char playerId);
+	std::span<const float> getResourceInput(Player* player, Player* enemy);
+	std::span<const float> getUnitsInput(Player* player);
+	std::span<const float> getBuildingsInput(Player* player);
 
-	std::span<const float> getUnitsInputWithMetric(char playerId, const db_unit_metric* prop);
-	std::span<const float> getBuildingsInputWithMetric(char playerId, const db_building_metric* prop,
+	std::span<const float> getUnitsInputWithMetric(Player* player, const db_unit_metric* prop);
+	std::span<const float> getBuildingsInputWithMetric(Player* player, const db_building_metric* prop,
 	                                                   ParentBuildingType type);
 
-	std::span<const float> getAttackOrDefenceInput(char playerId);
-	std::span<const float> getWhereAttack(char playerId);
-	std::span<const float> getWhereDefend(char playerId);
-	std::span<const float> getBuildingsTypeInput(char playerId, ParentBuildingType type);
+	std::span<const float> getAttackOrDefenceInput(Player* player, Player* enemy);
+	std::span<const float> getWhereAttack(Player* player, Player* enemy);
+	std::span<const float> getWhereDefend(Player* player, Player* enemy);
+	std::span<const float> getBuildingsTypeInput(Player* player, Player* enemy, ParentBuildingType type);
 
 private:
 	template <std::size_t N>

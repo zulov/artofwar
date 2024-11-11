@@ -15,6 +15,7 @@
 #include "env/Environment.h"
 #include "math/MathUtils.h"
 #include "objects/building/ParentBuildingType.h"
+#include "player/PlayersManager.h"
 #include "player/Possession.h"
 #include "player/Resources.h"
 #include "stats/AiInputProvider.h"
@@ -42,8 +43,9 @@ ActionMaker::ActionMaker(Player* player, db_nation* nation):
 
 
 void ActionMaker::action() {
+	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
 	if (isEnoughResToWorker()) {
-		const auto resInput = aiInput->getResourceInput(playerId);
+		const auto resInput = aiInput->getResourceInput(player, enemy);
 		const auto resResult = ifWorker->decide(resInput);
 		if (randFromTwo(resResult[0])) {
 			createWorker();
@@ -51,14 +53,14 @@ void ActionMaker::action() {
 	}
 
 	if (isEnoughResToAnyUnit()) {
-		const auto unitsInput = aiInput->getUnitsInput(playerId);
+		const auto unitsInput = aiInput->getUnitsInput(player);
 		const auto unitsResult = ifUnit->decide(unitsInput);
 		if (randFromTwo(unitsResult[0])) {
 			createUnit(unitsInput);
 		}
 	}
 	if (isEnoughResToAnyBuilding()) {
-		const auto buildingsInput = aiInput->getBuildingsInput(playerId);
+		const auto buildingsInput = aiInput->getBuildingsInput(player);
 		const auto buildingsResult = ifBuilding->decide(buildingsInput);
 		if (randFromTwo(buildingsResult[0])) {
 			createBuilding(buildingsInput);
@@ -79,8 +81,9 @@ bool ActionMaker::createBuilding(const std::span<const float> buildingsInput) {
 			return false;
 		}
 	}
+	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
 
-	const auto aiTypeInput = aiInput->getBuildingsTypeInput(playerId, type);
+	const auto aiTypeInput = aiInput->getBuildingsTypeInput(player, enemy, type);
 	const auto output = getWhichBuilding(type, aiTypeInput);
 
 	return createBuilding(chooseBuilding(output, type), type);
@@ -289,8 +292,7 @@ std::optional<Urho3D::Vector2> ActionMaker::findPosToBuild(db_building* building
 	if (type == ParentBuildingType::RESOURCE) {
 		return Game::getEnvironment()->getPosToCreateResBonus(building, playerId);
 	}
-	const auto input = aiInput->getBuildingsInputWithMetric(playerId,
-	                                                                  player->getLevelForBuilding(building->id)
+	const auto input = aiInput->getBuildingsInputWithMetric(player, player->getLevelForBuilding(building->id)
 	                                                                  ->dbBuildingMetric, type);
 
 	return Game::getEnvironment()->getPosToCreate(whereBuilding->decide(input), type, building, playerId);
@@ -318,7 +320,7 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) const {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
 	if (allPossible.empty()) { return nullptr; }
 	if (allPossible.size() == 1) { return allPossible.at(0); }
-	const auto input = aiInput->getUnitsInputWithMetric(playerId, player->getLevelForUnit(unit->id)->dbUnitMetric);
+	const auto input = aiInput->getUnitsInputWithMetric(player, player->getLevelForUnit(unit->id)->dbUnitMetric);
 	const auto result = whereUnit->decide(input);
 
 	return getBuildingClosestArea(allPossible, result);
@@ -328,7 +330,8 @@ Building* ActionMaker::getBuildingToDeployWorker(db_unit* unit) const {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
 	if (allPossible.empty()) { return nullptr; }
 	if (allPossible.size() == 1) { return allPossible.at(0); }
-	const auto input = aiInput->getResourceInput(playerId);
+	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
+	const auto input = aiInput->getResourceInput(player, enemy);
 
 	const auto result = whereWorker->decide(input);
 
