@@ -62,7 +62,7 @@ public:
 
 	float getFieldSize() const;
 	std::vector<unsigned>* getAreas(const std::span<float> result, ParentBuildingType type, char player);
-	std::vector<unsigned> getAreasResBonus(char id, char player) const;
+	std::vector<unsigned> getAreasResBonus(unsigned char id, char player) const;
 
 	void addCollect(Unit* unit, short resId, float value) const;
 	void addAttack(char player, const Urho3D::Vector3& position, float value) const;

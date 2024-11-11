@@ -430,11 +430,10 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(const std::span<float
 
 std::optional<Urho3D::Vector2> Environment::getPosToCreateResBonus(db_building* building, char player) {
 	std::vector<unsigned> allIndexes;
-	for (const char id : building->resourceTypes) {
-		auto indexes = influenceManager.getAreasResBonus(id, player);
-		//TODO  jak bedzie kilka resourceTypes to trzeba by to brac po koleji dla największch wartosci niezelzenie od tego jaki jest resource
-		allIndexes.insert(allIndexes.end(), indexes.begin(), indexes.end());
-	}
+
+	auto indexes = influenceManager.getAreasResBonus(building->resourceType, player);
+
+	allIndexes.insert(allIndexes.end(), indexes.begin(), indexes.end());
 
 	return getPosFromIndexes(building, player, &allIndexes);
 }

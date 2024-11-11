@@ -42,7 +42,7 @@ int static loadGraphSettings(void* data, int argc, char** argv, char** azColName
 
 int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
-	setEntity(getContainer(data)->buildings,
+	setEntity(getContainer(data)->buildings,//TODO resource Types zbic do jednego pola
 	          new db_building(atoi(argv[0]), argv[1], argv[2], atoi(argv[3]), atoi(argv[4]),
 	                          atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]),
 	                          atoi(argv[10]), atoi(argv[11]), atoi(argv[12]), atoi(argv[13]), atoi(argv[14]),

@@ -45,7 +45,7 @@ public:
 	void incStateSize(CellState cellState);
 	void decStateSize();
 
-	void setResBonuses(char player, const std::vector<char>& resIds, float bonus);
+	void setResBonuses(char player, unsigned char resId, float bonus);
 	void resetResBonuses();
 	float getResBonus(char player, short resId) const;
 

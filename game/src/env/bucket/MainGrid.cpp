@@ -343,7 +343,7 @@ void MainGrid::addResourceBonuses(Building* building, std::vector<int>& changedI
 		std::ranges::copy(indexes, std::back_inserter(changedIndexes));
 
 		for (const int index : indexes) {
-			complexData[index].setResBonuses(building->getPlayer(), dbBuilding->resourceTypes, level->collect);
+			complexData[index].setResBonuses(building->getPlayer(), dbBuilding->resourceType, level->collect);
 		}
 	}
 }

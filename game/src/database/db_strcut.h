@@ -354,15 +354,20 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 	bool typeUnitRange;
 	bool typeUnitCavalry;
 
+	//TODO init
+	bool typeResourceFoodBonus;
+	bool typeResourceWoodBonus;
+	bool typeResourceStoneBonus;
+	bool typeResourceGoldBonus;
+
 	bool ruinable;
 	short toResource;
 
 	unsigned char maxUsers;
 	bool typeResourceAny;
-	std::vector<char> resourceTypes;
-	bool hasResourceType[RESOURCES_SIZE];
-	bool parentType[magic_enum::enum_count<ParentBuildingType>()];
+	unsigned char resourceType;
 
+	bool parentType[magic_enum::enum_count<ParentBuildingType>()];
 
 	std::vector<db_building_level*> levels;
 
@@ -381,14 +386,10 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 		  typeUnitBarracks(typeUnitBarracks), typeUnitRange(typeUnitRange), typeUnitCavalry(typeUnitCavalry),
 		  ruinable(ruinable), toResource(toResource), maxUsers(sizeX * 2 + sizeZ * 2 + 4),
 		  typeResourceAny(typeResourceFood || typeResourceWood || typeResourceStone || typeResourceGold) {
-		hasResourceType[0] = typeResourceFood;
-		hasResourceType[1] = typeResourceWood;
-		hasResourceType[2] = typeResourceStone;
-		hasResourceType[3] = typeResourceGold;
-		if (typeResourceFood) { resourceTypes.push_back(0); }
-		if (typeResourceWood) { resourceTypes.push_back(1); }
-		if (typeResourceStone) { resourceTypes.push_back(2); }
-		if (typeResourceGold) { resourceTypes.push_back(3); }
+		if (typeResourceFood) { resourceType = 0; }
+		if (typeResourceWood) { resourceType = 1; }
+		if (typeResourceStone) { resourceType = 2; }
+		if (typeResourceGold) { resourceType = 3; }
 		parentType[cast(ParentBuildingType::OTHER)] = typeCenter || typeHome;
 		parentType[cast(ParentBuildingType::DEFENCE)] = typeDefence;
 		parentType[cast(ParentBuildingType::RESOURCE)]

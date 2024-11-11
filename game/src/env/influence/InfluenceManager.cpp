@@ -397,7 +397,7 @@ InfluenceManager::getAreas(const std::span<float> result, ParentBuildingType typ
 	return getAreas(mapsForAiPerPlayer[player], result, player);
 }
 
-std::vector<unsigned> InfluenceManager::getAreasResBonus(char id, char player) const {
+std::vector<unsigned> InfluenceManager::getAreasResBonus(unsigned char id, char player) const {
 	return mapsResNotInBonusPerPlayer[player][id]->getMaxIdxs();
 }
 

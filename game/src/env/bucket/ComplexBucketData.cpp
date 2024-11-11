@@ -52,13 +52,12 @@ void ComplexBucketData::decStateSize() {
 	}
 }
 
-void ComplexBucketData::setResBonuses(char player, const std::vector<char>& resIds, float bonus) {
+void ComplexBucketData::setResBonuses(char player, unsigned char resId, float bonus) {
 	auto& vals = resourceBonuses[player];
-	for (const char resId : resIds) {
-		auto& val = vals[resId];
-		if (val < bonus) {
-			val = bonus;
-		}
+
+	auto& val = vals[resId];
+	if (val < bonus) {
+		val = bonus;
 	}
 }
 

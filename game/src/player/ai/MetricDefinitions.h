@@ -86,31 +86,31 @@ constexpr inline struct MetricDefinitions {
 		{[](auto u, auto l) -> float { return u->getSumCost(); }, 400},
 		//TODO czy grupowe ma sens?
 		{[](auto u, auto l) -> float { return l->maxHp; }, 300},
-		{[](auto u, auto l) -> float { return l->armor; }, 1},
+		{[](auto u, auto l) -> float { return l->armor; }},
 		{[](auto u, auto l) -> float { return l->sightRadius; }, 20},
 
-		{[](auto u, auto l) -> float { return l->collect; }, 1},
+		{[](auto u, auto l) -> float { return l->collect; }},
 		{[](auto u, auto l) -> float { return l->attack; }, 10}, //5
 		{[](auto u, auto l) -> float { return l->attackReload; }, 200},
 		{[](auto u, auto l) -> float { return l->attackRange; }, 20},
 
-		{[](auto u, auto l) -> float { return u->typeInfantry; }, 1}, //8
-		{[](auto u, auto l) -> float { return u->typeRange; }, 1},
-		{[](auto u, auto l) -> float { return u->typeCalvary; }, 1},
-		{[](auto u, auto l) -> float { return u->typeWorker; }, 1},
-		{[](auto u, auto l) -> float { return u->typeSpecial; }, 1},
-		{[](auto u, auto l) -> float { return u->typeMelee; }, 1},
-		{[](auto u, auto l) -> float { return u->typeHeavy; }, 1},
-		{[](auto u, auto l) -> float { return u->typeLight; }, 1}, //15
+		{[](auto u, auto l) -> float { return u->typeInfantry; }}, //8
+		{[](auto u, auto l) -> float { return u->typeRange; }},
+		{[](auto u, auto l) -> float { return u->typeCalvary; }},
+		{[](auto u, auto l) -> float { return u->typeWorker; }},
+		{[](auto u, auto l) -> float { return u->typeSpecial; }},
+		{[](auto u, auto l) -> float { return u->typeMelee; }},
+		{[](auto u, auto l) -> float { return u->typeHeavy; }},
+		{[](auto u, auto l) -> float { return u->typeLight; }}, //15
 
-		{[](auto u, auto l) -> float { return l->bonusInfantry; }, 1},
-		{[](auto u, auto l) -> float { return l->bonusRange; }, 1},
-		{[](auto u, auto l) -> float { return l->bonusCalvary; }, 1},
-		{[](auto u, auto l) -> float { return l->bonusWorker; }, 1},
-		{[](auto u, auto l) -> float { return l->bonusSpecial; }, 1},
-		{[](auto u, auto l) -> float { return l->bonusMelee; }, 1},
-		{[](auto u, auto l) -> float { return l->bonusHeavy; }, 1},
-		{[](auto u, auto l) -> float { return l->bonusLight; }, 1},
+		{[](auto u, auto l) -> float { return l->bonusInfantry; }},
+		{[](auto u, auto l) -> float { return l->bonusRange; }},
+		{[](auto u, auto l) -> float { return l->bonusCalvary; }},
+		{[](auto u, auto l) -> float { return l->bonusWorker; }},
+		{[](auto u, auto l) -> float { return l->bonusSpecial; }},
+		{[](auto u, auto l) -> float { return l->bonusMelee; }},
+		{[](auto u, auto l) -> float { return l->bonusHeavy; }},
+		{[](auto u, auto l) -> float { return l->bonusLight; }},
 	};
 
 	static inline AiBuildingMetric aiBuildingMetric[] = { //db_building* b, db_building_level* l
@@ -126,18 +126,18 @@ constexpr inline struct MetricDefinitions {
 		{[](auto b, auto l) -> float { return l->resourceRange; }, 20},
 		//TODO stad duzo wyrzuciæ
 
-		{[](auto b, auto l) -> float { return b->typeCenter; }, 1}, //9
-		{[](auto b, auto l) -> float { return b->typeHome; }, 1},
-		{[](auto b, auto l) -> float { return b->typeDefence; }, 1},
-		{[](auto b, auto l) -> float { return b->typeResourceFood; }, 1}, //12
-		{[](auto b, auto l) -> float { return b->typeResourceWood; }, 1},
-		{[](auto b, auto l) -> float { return b->typeResourceStone; }, 1},
-		{[](auto b, auto l) -> float { return b->typeResourceGold; }, 1}, //15
-		{[](auto b, auto l) -> float { return b->typeTechBlacksmith; }, 1}, //16
-		{[](auto b, auto l) -> float { return b->typeTechUniversity; }, 1},
-		{[](auto b, auto l) -> float { return b->typeUnitBarracks; }, 1}, //18
-		{[](auto b, auto l) -> float { return b->typeUnitRange; }, 1},
-		{[](auto b, auto l) -> float { return b->typeUnitCavalry; }, 1},
+		{[](auto b, auto l) -> float { return b->typeCenter; }}, //9
+		{[](auto b, auto l) -> float { return b->typeHome; }},
+		{[](auto b, auto l) -> float { return b->typeDefence; }},
+		{[](auto b, auto l) -> float { return b->typeResourceFood; }}, //12
+		{[](auto b, auto l) -> float { return b->typeResourceWood; }},
+		{[](auto b, auto l) -> float { return b->typeResourceStone; }},
+		{[](auto b, auto l) -> float { return b->typeResourceGold; }}, //15
+		{[](auto b, auto l) -> float { return b->typeTechBlacksmith; }}, //16
+		{[](auto b, auto l) -> float { return b->typeTechUniversity; }},
+		{[](auto b, auto l) -> float { return b->typeUnitBarracks; }}, //18
+		{[](auto b, auto l) -> float { return b->typeUnitRange; }},
+		{[](auto b, auto l) -> float { return b->typeUnitCavalry; }},
 	};
 
 	//TODO moze to zwracac od razy przedzia³em jakos

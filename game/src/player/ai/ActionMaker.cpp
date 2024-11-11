@@ -177,9 +177,9 @@ db_building* ActionMaker::chooseBuilding(std::span<float> result, ParentBuilding
 		return buildings.at(0);
 	}
 	if (type == ParentBuildingType::RESOURCE) {
-		int res = biggestWithRand(result);
-		for (auto building : buildings) {
-			if (building->hasResourceType[res]) { return building; }
+		const int res = biggestWithRand(result);
+		for (const auto building : buildings) {
+			if (building->resourceType==res) { return building; }
 		}
 		return nullptr;
 	}
