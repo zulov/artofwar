@@ -365,7 +365,7 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 
 	unsigned char maxUsers;
 	bool typeResourceAny;
-	unsigned char resourceType;
+	char resourceType;
 
 	bool parentType[magic_enum::enum_count<ParentBuildingType>()];
 
@@ -375,21 +375,17 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 
 
 	db_building(short id, char* name, char* icon, short sizeX, short sizeZ,
-	            bool typeCenter, bool typeHome, bool typeDefence, bool typeResourceFood, bool typeResourceWood,
-	            bool typeResourceStone, bool typeResourceGold, bool typeTechBlacksmith, bool typeTechUniversity,
+	            bool typeCenter, bool typeHome, bool typeDefence, char typeResource, bool typeTechBlacksmith,
+	            bool typeTechUniversity,
 	            bool typeUnitBarracks, bool typeUnitRange, bool typeUnitCavalry, bool ruinable, short toResource)
 		: db_with_icon(id, name, icon), db_static({sizeX, sizeZ}),
-		  typeCenter(typeCenter), typeHome(typeHome), typeDefence(typeDefence),
-		  typeResourceFood(typeResourceFood), typeResourceWood(typeResourceWood),
-		  typeResourceStone(typeResourceStone), typeResourceGold(typeResourceGold),
+		  typeCenter(typeCenter), typeHome(typeHome), typeDefence(typeDefence), resourceType(typeResource),
+		  typeResourceFood(typeResource == 0), typeResourceWood(typeResource == 1),
+		  typeResourceStone(typeResource == 2), typeResourceGold(typeResource == 3),
 		  typeTechBlacksmith(typeTechBlacksmith), typeTechUniversity(typeTechUniversity),
 		  typeUnitBarracks(typeUnitBarracks), typeUnitRange(typeUnitRange), typeUnitCavalry(typeUnitCavalry),
 		  ruinable(ruinable), toResource(toResource), maxUsers(sizeX * 2 + sizeZ * 2 + 4),
-		  typeResourceAny(typeResourceFood || typeResourceWood || typeResourceStone || typeResourceGold) {
-		if (typeResourceFood) { resourceType = 0; }
-		if (typeResourceWood) { resourceType = 1; }
-		if (typeResourceStone) { resourceType = 2; }
-		if (typeResourceGold) { resourceType = 3; }
+		  typeResourceAny(typeResource >= 0) {
 		parentType[cast(ParentBuildingType::OTHER)] = typeCenter || typeHome;
 		parentType[cast(ParentBuildingType::DEFENCE)] = typeDefence;
 		parentType[cast(ParentBuildingType::RESOURCE)]
