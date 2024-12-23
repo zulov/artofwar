@@ -3,23 +3,28 @@
 
 struct SQLConsts {
 
-	inline const static std::string PHYSICAL_COL =
+	inline const static std::string BASIC_COL =
 		"id_db		INT NOT NULL,"
-		"hp_coef	INT NOT NULL,"
-		"player		INT NOT NULL,"
-		"level		INT NOT NULL,";
+		"hp_coef	INT NOT NULL,";
+
+	inline const static std::string PHYSICAL_COL =
+		BASIC_COL
+		+ "player		INT NOT NULL,"
+		+ "level		INT NOT NULL,";
 
 	inline const static std::string STATIC_COL =
-		PHYSICAL_COL
-		+ "bucket_x		INT NOT NULL,"
-		+ "bucket_y		INT NOT NULL,"
-		+ "state		INT NOT NULL,"
-		+ "next_state	INT NOT NULL,";
+		"bucket_x		INT NOT NULL,"
+		"bucket_y		INT NOT NULL,"
+		"state		INT NOT NULL,"
+		"next_state	INT NOT NULL";
 
 	inline const static std::string BUILDING_COL =
+		PHYSICAL_COL +
 		STATIC_COL +
-		"deploy_Idx		INT NOT NULL";
-	inline const static std::string RESOURCE_COL = STATIC_COL;
+		",deploy_Idx		INT NOT NULL";
+
+	inline const static std::string RESOURCE_COL = BASIC_COL + STATIC_COL ;
+
 	inline const static std::string UNIT_COL =
 		PHYSICAL_COL +
 		"position_x		INT NOT NULL,"
@@ -38,8 +43,10 @@ struct SQLConsts {
 
 	inline const static std::string PLAYER_RESOURCES_COL =
 		"player		INT NOT NULL,"
-		"resource	INT NOT NULL,"
-		"amount		INT NOT NULL";
+		"food		INT NOT NULL,"
+		"wood		INT NOT NULL,"
+		"stone		INT NOT NULL,"
+		"gold		INT NOT NULL";
 
 	inline const static std::string CONFIG_COL =
 		"precision	INT NOT NULL,"

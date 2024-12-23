@@ -184,5 +184,5 @@ std::string Static::getValues(int precision) {
 		+ std::to_string(cordsCell.x_) + ","
 		+ std::to_string(cordsCell.y_) + ","
 		+ std::to_string(cast(state)) + ","
-		+ std::to_string(cast(nextState)) + ",";
+		+ std::to_string(cast(nextState));
 }

@@ -189,7 +189,7 @@ std::optional<int> Building::getDeploy() {
 }
 
 std::string Building::getValues(int precision) {
-	return Static::getValues(precision)
+	return Static::getValues(precision) + ","
 		+ std::to_string(deployIndex);
 }
 

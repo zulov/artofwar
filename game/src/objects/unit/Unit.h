@@ -173,7 +173,7 @@ private:
 
 	ChargeData* chargeData{};
 
-	Physical* thingToInteract{}; //TODO jak to wczytac :O
+	Physical* thingToInteract{}; //TODO jak to wczytac :O error!!!
 
 	int sparseIndexInGrid;
 

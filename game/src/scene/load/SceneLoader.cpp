@@ -75,9 +75,9 @@ int static load_resources_entities(void* data, int argc, char** argv, char** azC
 	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
 	float p = xyz->precision;
-	xyz->resource_entities->push_back(new dbload_resource_entities(fatoi(argv[0]), fatoi(argv[1]) / p, -1,
-	                                                               -1, fatoi(argv[4]), fatoi(argv[5]),
-	                                                               fatoi(argv[6]), fatoi(argv[7])));
+	xyz->resource_entities->push_back(new dbload_resource_entities(fatoi(argv[0]), fatoi(argv[1]) / p,
+	                                                               fatoi(argv[2]), fatoi(argv[3]),
+	                                                               fatoi(argv[4]), fatoi(argv[5])));
 
 	return 0;
 }

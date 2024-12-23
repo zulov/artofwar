@@ -8,6 +8,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
+#include "utils/PrintUtils.h"
 
 SceneSaver::SceneSaver(int precision): loadingState(7), precision(precision) {
 	//TODO zapisywanie powinno byc tylko miedzy klatkami
@@ -20,10 +21,13 @@ void SceneSaver::createUnitsTable() const {
 }
 
 void SceneSaver::createTable(const std::string& sql) const {
-	const char* charSql = (SQLConsts::CREATE_TABLE + sql).c_str();
+	auto createSql = SQLConsts::CREATE_TABLE + sql;
+	const char* charSql = createSql.c_str();
+
+	std::cout<<(createSql);
 	char* error;
 	const int rc = sqlite3_exec(database, charSql, nullptr, nullptr, &error);
-	ifError(rc, error, sql);
+	ifError(rc, error, createSql);
 }
 
 void SceneSaver::createBuildingsTable() const {
