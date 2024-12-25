@@ -15,8 +15,7 @@ IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, Physical* toUse,
 }
 
 bool IndividualOrder::expired() {
-	return unit == nullptr
-		|| toUse != nullptr && !toUse->isAlive();
+	return toUse != nullptr && !toUse->isAlive();
 }
 
 bool IndividualOrder::add() {

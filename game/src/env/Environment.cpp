@@ -179,7 +179,7 @@ Environment::getResources(const Urho3D::Vector3& center, int id, float radius, f
 	const float sqPrevRadius = prevRadius < 0.f ? prevRadius : prevRadius * prevRadius;
 	neights->clear();
 	for (auto neight : resourceStaticGrid.get(center, radius)) {
-		if (id == -1 || id == neight->getId()) {
+		if (id == -1 || id == neight->getDbId()) {
 			auto dist = sqDistAs2D(center, neight->getPosition());
 			if (dist <= sqRadius && dist > sqPrevRadius) {
 				neights->push_back(neight);
@@ -194,7 +194,7 @@ std::vector<Physical*>*
 Environment::getBuildingsFromTeamNotEq(Physical* physical, int id, float radius) {
 	auto team = physical->getTeam();
 	auto condition = [id, team](const Physical* physical) {
-		return (id < 0 || physical->getId() == id) && (physical->getTeam() != team || team < 0);
+		return (id < 0 || physical->getDbId() == id) && (physical->getTeam() != team || team < 0);
 	};
 	return getNeighbours(physical, buildingGrid, radius, condition);
 }

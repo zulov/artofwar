@@ -14,9 +14,8 @@
 #include "player/PlayersManager.h"
 #include "scene/load/dbload_container.h"
 
-
-Physical::Physical(Urho3D::Vector3& _position, bool withNode):
-	position(_position) {
+Physical::Physical(Urho3D::Vector3& _position, unsigned uId, bool withNode):
+	position(_position), uId(uId) {
 	if (withNode) {
 		node = Game::getScene()->CreateChild();
 		node->SetVar("link", this);
@@ -67,7 +66,7 @@ char Physical::getLevelNum() {
 
 std::string Physical::getValues(int precision) {
 	int hp_coef = hp * precision;
-	auto v = std::to_string(getId()) + ","
+	auto v = std::to_string(getDbId()) + ","
 		+ std::to_string(hp_coef) + ",";
 	if (getType() == ObjectType::RESOURCE) {
 		return v;
@@ -129,9 +128,9 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 	}
 }
 
-void Physical::setPlayerAndTeam(int player) {
-	setPlayer(player);
-	setTeam(Game::getPlayersMan()->getPlayer(player)->getTeam());
+void Physical::setPlayerAndTeam(char playerId, char teamId) {
+	player = playerId;
+	team = teamId;
 }
 
 void Physical::ensureMaterialCloned() {

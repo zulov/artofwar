@@ -206,7 +206,7 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 	// std::vector<float> diffs;
 	// diffs.reserve(buildings.size());
 	// for (auto building : buildings) {
-	// 	auto opt = player->getNextLevelForBuilding(building->id);
+	// 	auto opt = player->getNextLevelForBuilding(building->dbId);
 	// 	if (opt.has_value()) {
 	// 		diffs.push_back(dist(center, opt.value()->dbBuildingMetricUp));
 	// 	} else {
@@ -219,7 +219,7 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 	// auto inx = lowestWithRand(diffs);
 	//
 	// const auto building = buildings[inx];
-	// auto opt = player->getNextLevelForBuilding(building->id);
+	// auto opt = player->getNextLevelForBuilding(building->dbId);
 	// if (opt.has_value()) {
 	// 	logBuildingLevel(building, opt);
 	// 	return opt.value();
@@ -259,7 +259,7 @@ db_unit_level* ActionMaker::chooseUnitLevelUp() {
 	// std::vector<float> diffs;
 	// diffs.reserve(units.size());
 	// for (auto unit : units) {
-	// 	auto opt = player->getNextLevelForUnit(unit->id);
+	// 	auto opt = player->getNextLevelForUnit(unit->dbId);
 	// 	if (opt.has_value()) {
 	// 		diffs.push_back(dist(center, opt.value()->dbUnitMetricUp));
 	// 	} else {
@@ -272,7 +272,7 @@ db_unit_level* ActionMaker::chooseUnitLevelUp() {
 	// auto inx = lowestWithRand(diffs);
 	//
 	// auto unit = units[inx];
-	// auto opt = player->getNextLevelForUnit(unit->id);
+	// auto opt = player->getNextLevelForUnit(unit->dbId);
 	// if (opt.has_value()) {
 	// 	logUnitLevel(unit, opt);
 	// 	return opt.value();

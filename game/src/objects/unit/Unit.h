@@ -50,10 +50,10 @@ class Unit : public Physical {
 	friend class ShotState;
 	friend class MoveState;
 public:
-	Unit(Urho3D::Vector3& _position, int id, int player, int level);
+	Unit(Urho3D::Vector3& _position, short dbId, char playerId, char teamId, int level, unsigned uId);
 	~Unit() override;
 
-	void populate() override;
+	void populate();
 	void checkAim();
 	void updatePosition() const;
 	bool move(float timeStep, const CameraInfo* camInfo);

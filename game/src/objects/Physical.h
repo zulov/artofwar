@@ -23,12 +23,12 @@ struct dbload_physical;
 class Physical {
 	friend class CreationCommand;
 public:
-	explicit Physical(Urho3D::Vector3& _position, bool withNode);
+	explicit Physical(Urho3D::Vector3& _position, unsigned uId, bool withNode);
 	virtual ~Physical();
 	void clearNodeWithOutDelete();
 
 	virtual bool isAlive() const;
-	short getId() const { return id; }
+	short getDbId() const { return dbId; }
 	virtual char getSecondaryId() const { return -1; }
 
 	virtual float getHealthBarSize() const;
@@ -43,8 +43,6 @@ public:
 	virtual ObjectType getType() const = 0;
 
 	signed char getTeam() const { return team; }
-	void setTeam(unsigned char team) { this->team = team; }
-	void setPlayer(unsigned char player) { this->player = player; }
 	virtual char getPlayer() const { return player; }
 
 	void load(dbload_physical* dbloadPhysical);
@@ -67,8 +65,6 @@ public:
 
 	float getHealthPercent() const { return hp * invMaxHp; }
 	const Urho3D::Vector3& getPosition() const { return position; }
-
-	virtual void populate() { }
 
 	virtual bool isToDispose() const { return false; }
 
@@ -118,7 +114,7 @@ protected:
 
 	virtual Urho3D::Color getColor(db_player_colors* col) const = 0;
 	void loadXml(const Urho3D::String& xmlName);
-	void setPlayerAndTeam(int player);
+	void setPlayerAndTeam(char playerId, char teamId);
 
 	Urho3D::Node* node{};
 	Urho3D::Vector3 position;
@@ -128,7 +124,8 @@ protected:
 
 	int indexInInfluence = -1;
 	int indexInMainGrid = -1;
-	short id = -1; // optm
+	unsigned uId;
+	short dbId = -1; // optm
 
 	char team, player = -1;
 

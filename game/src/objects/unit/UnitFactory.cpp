@@ -3,6 +3,7 @@
 #include "Unit.h"
 #include "scene/load/dbload_container.h"
 #include "env/Environment.h"
+#include "player/PlayersManager.h"
 #include "state/StateManager.h"
 
 
@@ -14,13 +15,13 @@ UnitFactory::~UnitFactory() {
 	StateManager::dispose();
 }
 
-std::vector<Unit*>& UnitFactory::create(unsigned number, int id, Urho3D::Vector2& center, int player, int level) {
+std::vector<Unit*>& UnitFactory::create(unsigned number, int id, Urho3D::Vector2& center, int playerId, int level) {
 	units.clear();
 	units.reserve(number);
 	int y = 0;
 	const int xMax = number / sqrt(number);
 	const float sideSize = xMax / 2;
-
+	auto player = Game::getPlayersMan()->getPlayer(playerId);
 	while (units.size() < number) {
 		for (int x = 0; x < xMax; ++x) {
 			auto position = Urho3D::Vector3(x + center.x_ - sideSize, 0, y + center.y_ - sideSize);

@@ -7,12 +7,12 @@
 #include "env/Environment.h"
 
 
-Player::Player(int nationId, char team, char id, int color, Urho3D::String name, bool active):
-	queue(new QueueManager(1)), dbNation(Game::getDatabase()->getNation(nationId)),
-	actionMaker(this, dbNation), orderMaker(this, dbNation),
-	name(std::move(name)), team(team),
-	color(color), id(id), active(active), resources(new Resources()), possession(new Possession(nationId)) {
-
+Player::Player(int nationId, char team, char id, int color, Urho3D::String name, bool active, unsigned currentUId):
+	team(team), id(id),
+	active(active), color(color),
+	currentUId(currentUId), dbNation(Game::getDatabase()->getNation(nationId)),
+	queue(new QueueManager(1)), possession(new Possession(nationId)), resources(new Resources()), actionMaker(this, dbNation), orderMaker(this, dbNation),
+	name(std::move(name)) {
 	unitLevels = new char[Game::getDatabase()->getUnits().size()];
 	buildingLevels = new char[Game::getDatabase()->getBuildings().size()];
 

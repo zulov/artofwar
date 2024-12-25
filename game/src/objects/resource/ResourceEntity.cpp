@@ -38,7 +38,7 @@ void ResourceEntity::populate() {
 	Static::populate();
 	invMaxHp = dbResource->invMaxHp;
 	hp = dbResource->maxHp;
-	id = dbResource->id;
+	dbId = dbResource->id;
 }
 
 unsigned short ResourceEntity::getMaxHpBarSize() const {

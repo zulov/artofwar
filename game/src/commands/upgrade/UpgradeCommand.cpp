@@ -14,7 +14,7 @@ void UpgradeCommand::execute(SimulationObjectManager* simulationObjectManager) c
 	char level = Game::getPlayersMan()->getPlayer(player)->upgradeLevel(type, id);
 	if (type == QueueActionType::BUILDING_LEVEL && level > 0) {
 		for (auto building : *simulationObjectManager->getBuildings()) {
-			if (building->getPlayer() == player && building->getId() == id) {
+			if (building->getPlayer() == player && building->getDbId() == id) {
 				building->levelUp(level);
 			}
 		}

@@ -36,7 +36,7 @@ Building::~Building() {
 }
 
 void Building::postCreate() {
-	queue->add(1, QueueActionType::BUILDING_CREATE, getId(), 1);
+	queue->add(1, QueueActionType::BUILDING_CREATE, getDbId(), 1);
 	setShaderParam(this, "Progress", 0.0);
 }
 
@@ -59,7 +59,7 @@ char Building::getLevelNum() {
 void Building::populate() {
 	Static::populate();
 	hp = dbLevel->maxHp;
-	id = dbBuilding->id;
+	dbId = dbBuilding->id;
 	invMaxHp = dbLevel->invMaxHp;
 	delete queue; //TODO optimize //TODO bug co jezeli cos jets w kolejce!!!!
 	if (dbLevel->queueMaxCapacity > 0) {

@@ -148,7 +148,7 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, float r
 			auto& content = getNotSafeContentAt(i, j);
 			std::ranges::copy_if(content, std::back_inserter(*tempSelected),
 			                     [clicked](Physical* p) {
-				                     return p->getId() == clicked->getId() && p->getPlayer() == clicked->getPlayer() &&
+				                     return p->getDbId() == clicked->getDbId() && p->getPlayer() == clicked->getPlayer() &&
 					                     p->isAlive();
 			                     });
 		}

@@ -11,6 +11,6 @@ void SelectedInfoType::clear() {
 }
 
 void SelectedInfoType::add(Physical* physical) {
-	assert(physical->getId() == id);
+	assert(physical->getDbId() == id);
 	data.push_back(physical);
 }

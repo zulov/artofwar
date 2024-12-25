@@ -204,7 +204,7 @@ float Possession::getDefenceAttackSum() {
 
 void Possession::add(Building* building) {
 	buildings.push_back(building);
-	buildingsPerId[building->getId()]->push_back(building);
+	buildingsPerId[building->getDbId()]->push_back(building);
 }
 
 void Possession::add(Unit* unit) {

@@ -14,7 +14,7 @@ class Player {
 	friend class ActionMaker;
 	friend class OrderMaker;
 public:
-	Player(int nationId, char team, char id, int color, Urho3D::String name, bool active);
+	Player(int nationId, char team, char id, int color, Urho3D::String name, bool active, unsigned currentUId);
 	~Player();
 
 	std::string getValues(int precision) const;
@@ -58,6 +58,7 @@ private:
 	char id;//przed possession,resources
 	bool active;
 	int color;
+	unsigned currentUId;
 
 	db_nation* dbNation; //Must by first
 	QueueManager* queue;

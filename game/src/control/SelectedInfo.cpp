@@ -44,7 +44,7 @@ void SelectedInfo::reset() {
 }
 
 void SelectedInfo::select(Physical* entity) {
-	auto id = entity->getId();
+	auto id = entity->getDbId();
 	if (id >= 0) {
 		selectedByType.at(id)->add(entity);
 		if (selectedByType.at(id)->getData().size() == 1) {

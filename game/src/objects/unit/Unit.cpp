@@ -21,17 +21,16 @@
 #include "state/StateManager.h"
 #include "camera/CameraInfo.h"
 #include "math/MathUtils.h"
-#include "player/Player.h"
 #include "utils/consts.h"
 #include "utils/Flags.h"
 #include "objects/NodeUtils.h"
 
-Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical(_position, !SIM_GLOBALS.HEADLESS),
+Unit::Unit(Urho3D::Vector3& _position, short dbId, char playerId, char teamId, int level, unsigned uId) : Physical(_position, uId, !SIM_GLOBALS.HEADLESS),
                                                                         state(UnitState::STOP),
                                                                         nextState(UnitState::STOP) {
-	dbUnit = Game::getDatabase()->getUnit(id);
+	dbUnit = Game::getDatabase()->getUnit(dbId);
 	dbLevel = dbUnit->getLevel(level).value(); //TODO bug value
-	setPlayerAndTeam(player);
+	setPlayerAndTeam(playerId, teamId);
 	loadXml("Objects/units/" + dbLevel->node);
 	populate();
 
@@ -53,7 +52,7 @@ void Unit::populate() {
 	maxSpeed = dbLevel->maxSpeed;
 	invMaxHp = dbLevel->invMaxHp;
 	hp = dbLevel->maxHp;
-	id = dbUnit->id;
+	dbId = dbUnit->id;
 }
 
 void Unit::checkAim() {

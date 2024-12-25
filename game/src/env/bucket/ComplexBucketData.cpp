@@ -11,7 +11,7 @@ void ComplexBucketData::setStatic(Static* object) {
 		additionalInfo = object->getPlayer();
 	} else {
 		state = CellState::RESOURCE;
-		additionalInfo = object->getId();
+		additionalInfo = object->getDbId();
 	}
 }
 
