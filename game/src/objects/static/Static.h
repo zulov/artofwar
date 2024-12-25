@@ -9,7 +9,7 @@ enum class CellState : char;
 
 class Static : public Physical {
 public:
-	Static(Urho3D::Vector3& _position, int indexInGrid, bool withNode, unsigned uId);
+	Static(Urho3D::Vector3& _position, int indexInGrid, unsigned uId);
 	~Static() override;
 
 	void setNextState(StaticState stateTo) { nextState = stateTo; }
@@ -53,7 +53,7 @@ public:
 	Urho3D::IntVector2 getSurroundSize(Urho3D::IntVector2 oSize, int res);
 	unsigned char getHealthBarThick() const override { return 6; }
 protected:
-	void populate() override;
+	void populate();
 
 	StaticState state = StaticState::CREATING;
 	StaticState	nextState = StaticState::CREATING;

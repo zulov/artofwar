@@ -14,7 +14,7 @@ class ResourceEntity : public Static {
 public:
 	ResourceEntity(Urho3D::Vector3 _position, db_resource* db_resource, int indexInGrid, bool withNode);
 	~ResourceEntity() override = default;
-	void populate() override;
+	void populate();
 
 	std::pair<float, bool> absorbAttack(float collectSpeed) override;
 	ResourceEntity* load(dbload_resource_entities* resource);

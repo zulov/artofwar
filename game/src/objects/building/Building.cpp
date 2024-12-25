@@ -20,9 +20,10 @@
 #include "env/Environment.h"
 
 
-Building::Building(Urho3D::Vector3 _position, db_building* db_building, char player, int level, int indexInGrid, bool withNode):
-	Static(_position, indexInGrid, withNode) {
-	setPlayerAndTeam(player);
+Building::Building(Urho3D::Vector3 _position, db_building* db_building, char playerId, char teamId, int level, int indexInGrid, unsigned uId):
+	Static(_position, indexInGrid, uId) {
+	player = playerId;
+	team = teamId;
 	dbBuilding = db_building;
 	levelUp(level);
 }

@@ -11,7 +11,7 @@
 #include "env/Environment.h"
 #include "utils/OtherUtils.h"
 
-Static::Static(Urho3D::Vector3& _position, int indexInGrid, bool withNode, unsigned uId) : Physical(_position, uId, withNode) {
+Static::Static(Urho3D::Vector3& _position, int indexInGrid, unsigned uId) : Physical(_position, uId) {
 	Static::setBucketInMainGrid(indexInGrid);
 }
 

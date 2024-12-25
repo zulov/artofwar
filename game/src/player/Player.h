@@ -58,7 +58,8 @@ private:
 	char id;//przed possession,resources
 	bool active;
 	int color;
-	unsigned currentUId;
+	unsigned currentBuildingUId;
+	unsigned currentUnitUId;
 
 	db_nation* dbNation; //Must by first
 	QueueManager* queue;

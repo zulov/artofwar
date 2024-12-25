@@ -13,10 +13,10 @@ class QueueElement;
 
 class Building : public Static {
 public:
-	Building(Urho3D::Vector3 _position, db_building* db_building, char player, int level, int indexInGrid, bool withNode);
+	Building(Urho3D::Vector3 _position, db_building* db_building, char playerId, char teamId, int level, int indexInGrid, unsigned uId);
 	~Building() override;
 
-	void populate() override;
+	void populate();
 	void levelUp(char level);
 	void postCreate();
 	Building* load(dbload_building* dbloadBuilding);
