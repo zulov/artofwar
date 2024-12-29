@@ -205,6 +205,7 @@
     <ClCompile Include="src\env\influence\VisibilityManager.cpp" />
     <ClCompile Include="src\utils\DebugUtils.h" />
     <ClCompile Include="src\utils\DebugUtils.cpp" />
+    <ClCompile Include="src\objects\UId.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />

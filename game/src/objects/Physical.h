@@ -5,6 +5,7 @@
 #include <vector>
 #include <Urho3D/Graphics/Material.h>
 
+#include "UId.h"
 #include "database/db_other_struct.h"
 #include "objects/ObjectEnums.h"
 #include "Urho3D/Math/Vector3.h"
@@ -124,7 +125,7 @@ protected:
 
 	int indexInInfluence = -1;
 	int indexInMainGrid = -1;
-	unsigned uId;
+	UId uId;
 	short dbId = -1; // optm
 
 	char team, player = -1;
