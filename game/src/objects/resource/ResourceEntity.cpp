@@ -15,19 +15,18 @@
 #include "player/PlayersManager.h"
 
 
-ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, db_resource* db_resource, int indexInGrid,
-                               bool withNode)
-	: Static(_position, indexInGrid, withNode) {
+ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, db_resource* db_resource, int indexInGrid, UId uid)
+	: Static(_position, indexInGrid, uid) {
 	dbResource = db_resource;
 	state = StaticState::ALIVE;
-	if (withNode) {
+	if (node) {
 		loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(RandIntType::RESOURCE_NODE,
 		                                                                      dbResource->nodeName.Size())]);
 		if (dbResource->rotatable) {
 			node->SetRotation(Urho3D::Quaternion(0, RandGen::nextRand(RandFloatType::RESOURCE_ROTATION, 360.f), 0.0f));
 		}
 	}
-	ResourceEntity::populate();
+	populate();
 }
 
 const Urho3D::IntVector2 ResourceEntity::getGridSize() const {

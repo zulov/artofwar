@@ -50,7 +50,7 @@ class Unit : public Physical {
 	friend class ShotState;
 	friend class MoveState;
 public:
-	Unit(Urho3D::Vector3& _position, short dbId, char playerId, char teamId, int level, unsigned uId);
+	Unit(Urho3D::Vector3& _position, short dbId, char playerId, char teamId, int level, UId uId);
 	~Unit() override;
 
 	void populate();

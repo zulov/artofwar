@@ -9,7 +9,7 @@ enum class CellState : char;
 
 class Static : public Physical {
 public:
-	Static(Urho3D::Vector3& _position, int indexInGrid, unsigned uId);
+	Static(Urho3D::Vector3& _position, int indexInGrid, UId uId);
 	~Static() override;
 
 	void setNextState(StaticState stateTo) { nextState = stateTo; }

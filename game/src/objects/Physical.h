@@ -24,7 +24,7 @@ struct dbload_physical;
 class Physical {
 	friend class CreationCommand;
 public:
-	explicit Physical(Urho3D::Vector3& _position, unsigned uId);
+	explicit Physical(Urho3D::Vector3& _position, UId uId);
 	virtual ~Physical();
 	void clearNodeWithOutDelete();
 

@@ -10,7 +10,7 @@ ResourceEntity* ResourceFactory::create(int id, Urho3D::IntVector2 bucketCords) 
 	const auto env = Game::getEnvironment();
 	if (env->validateStatic(db_resource->size, bucketCords, false)) {
 		return new ResourceEntity(env->getValidPosition(db_resource->size, bucketCords), db_resource,
-		                          env->getIndex(bucketCords.x_, bucketCords.y_), !SIM_GLOBALS.HEADLESS);
+		                          env->getIndex(bucketCords.x_, bucketCords.y_));
 	}
 	return nullptr;
 }

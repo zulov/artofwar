@@ -14,7 +14,7 @@
 #include "player/PlayersManager.h"
 #include "scene/load/dbload_container.h"
 
-Physical::Physical(Urho3D::Vector3& _position, unsigned uId):
+Physical::Physical(Urho3D::Vector3& _position, UId uId):
 	position(_position), uId(uId) {
 	if (!SIM_GLOBALS.HEADLESS) {
 		node = Game::getScene()->CreateChild();

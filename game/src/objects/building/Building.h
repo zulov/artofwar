@@ -13,7 +13,7 @@ class QueueElement;
 
 class Building : public Static {
 public:
-	Building(Urho3D::Vector3 _position, db_building* db_building, char playerId, char teamId, int level, int indexInGrid, unsigned uId);
+	Building(Urho3D::Vector3 _position, db_building* db_building, char playerId, char teamId, int level, int indexInGrid, UId uId);
 	~Building() override;
 
 	void populate();
