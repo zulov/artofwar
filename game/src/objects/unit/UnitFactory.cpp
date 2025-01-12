@@ -41,7 +41,7 @@ std::vector<Unit*>& UnitFactory::load(dbload_unit* unit) {
 
 	auto position = Urho3D::Vector3(unit->pos_x, Game::getEnvironment()->getGroundHeightAt(unit->pos_x, unit->pos_z), unit->pos_z);
 
-	auto newUnit = new Unit(position, unit->id_db, unit->player, unit->level);
+	auto newUnit = new Unit(position, unit->id_db, unit->player, unit->level, UId(unit->uid));
 	newUnit->load(unit);
 
 	units.push_back(newUnit);

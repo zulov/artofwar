@@ -5,18 +5,18 @@
 #include "scene/load/dbload_container.h"
 #include "env/Environment.h"
 
-ResourceEntity* ResourceFactory::create(int id, Urho3D::IntVector2 bucketCords) const {
+ResourceEntity* ResourceFactory::create(int id, Urho3D::IntVector2 bucketCords, UId uid) const {
 	db_resource* db_resource = Game::getDatabase()->getResource(id);
 	const auto env = Game::getEnvironment();
 	if (env->validateStatic(db_resource->size, bucketCords, false)) {
 		return new ResourceEntity(env->getValidPosition(db_resource->size, bucketCords), db_resource,
-		                          env->getIndex(bucketCords.x_, bucketCords.y_));
+		                          env->getIndex(bucketCords.x_, bucketCords.y_), uid);
 	}
 	return nullptr;
 }
 
 ResourceEntity* ResourceFactory::load(dbload_resource_entities* resource) const {
-	auto ress = create(resource->id_db, {resource->buc_x, resource->buc_y});
+	auto ress = create(resource->id_db, {resource->buc_x, resource->buc_y}, UId(resource->uid));
 	if (ress) {
 		return ress->load(resource);
 	}

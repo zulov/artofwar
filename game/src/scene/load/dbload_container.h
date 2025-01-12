@@ -16,12 +16,10 @@ struct dbload_physical {
 	short id_db;
 	char player;
 	char level;
+	unsigned uid;
 
-	dbload_physical(short idDb, float hp, short player, short level)
-		: id_db(idDb),
-		  hp(hp),
-		  player(player),
-		  level(level) { }
+	dbload_physical(short idDb, float hp, short player, short level, unsigned uid)
+		: hp(hp), id_db(idDb), player(player), level(level), uid(uid) { }
 };
 
 struct dbload_static : dbload_physical {
