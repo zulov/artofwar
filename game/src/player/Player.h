@@ -14,7 +14,7 @@ class Player {
 	friend class ActionMaker;
 	friend class OrderMaker;
 public:
-	Player(int nationId, char team, char id, int color, Urho3D::String name, bool active, unsigned currentUId);
+	Player(int nationId, char team, char id, int color, Urho3D::String name, bool active, unsigned currentBuildingUId, unsigned currentUnitUId);
 	~Player();
 
 	std::string getValues(int precision) const;
@@ -51,6 +51,10 @@ public:
 	std::optional<db_building_level*> getNextLevelForBuilding(short id) const;
 	void addKilled(Physical* physical) const;
 	void resetScore();
+
+	unsigned getNextBuildingId() { return currentBuildingUId++; }
+	unsigned getNextUnitId() { return currentUnitUId++; }
+
 private:
 	int score = -1;
 

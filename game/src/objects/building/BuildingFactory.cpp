@@ -6,22 +6,27 @@
 #include "env/Environment.h"
 #include "player/PlayersManager.h"
 
-Building* BuildingFactory::create(int id, const Urho3D::IntVector2& bucketCords, int level, int playerId, UId uid) const {
+Building* BuildingFactory::create(int id, const Urho3D::IntVector2& bucketCords, char level, Player* player, unsigned uid) const {
 	const auto db_building = Game::getDatabase()->getBuilding(id);
 	const auto env = Game::getEnvironment();
-	auto player = Game::getPlayersMan()->getPlayer(playerId);
+
 	if (env->validateStatic(db_building->size, bucketCords, true)) {
 		return new Building(env->getValidPosition(db_building->size, bucketCords), db_building, player->getId(), player->getTeam(), level,
-		                    env->getIndex(bucketCords.x_, bucketCords.y_), uid);
+		                    env->getIndex(bucketCords.x_, bucketCords.y_), UId(uid));
 	}
 
 	return nullptr;
 }
 
-Building* BuildingFactory::load(dbload_building* building) const {
-	const Urho3D::IntVector2 bucketCords(building->buc_x, building->buc_y);
+Building* BuildingFactory::create(int id, const Urho3D::IntVector2& bucketCords, char level, char playerId) const {
+	auto player = Game::getPlayersMan()->getPlayer(playerId);
+	return create(id, bucketCords, level, player, player->getNextBuildingId());
+}
 
-	auto build = create(building->id_db, bucketCords, building->level, building->player, UId(building->uid));
+Building* BuildingFactory::load(dbload_building* building) const {
+	auto build = create(
+		building->id_db, { building->buc_x, building->buc_y },
+		building->level, Game::getPlayersMan()->getPlayer(building->player), building->uid);
 	if (build) {
 		return build->load(building);
 	}

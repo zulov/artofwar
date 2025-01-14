@@ -29,8 +29,8 @@ struct dbload_static : dbload_physical {
 	char nextState;
 
 	dbload_static(int idDb, float hp, int player, int bucX, int bucY, int level, int state,
-	              int nextState)
-		: dbload_physical(idDb, hp, player, level),
+	              int nextState, unsigned uid)
+		: dbload_physical(idDb, hp, player, level, uid),
 		  buc_x(bucX),
 		  buc_y(bucY),
 		  state(state),
@@ -45,8 +45,8 @@ struct dbload_unit : dbload_physical {
 	float vel_z;
 
 	dbload_unit(int idDb, float hp, int player, int level, float posX, float posZ, int state,
-	            float velX, float velZ)
-		: dbload_physical(idDb, hp, player, level),
+	            float velX, float velZ, unsigned uid)
+		: dbload_physical(idDb, hp, player, level, uid),
 		  pos_x(posX),
 		  pos_z(posZ),
 		  state(state),
@@ -58,15 +58,15 @@ struct dbload_building : dbload_static {
 	int deploy_idx;
 
 	dbload_building(int idDb, float hpCoef, int player, int level, int bucX, int bucY, int state, int nextState,
-	                int deploy_idx)
-		: dbload_static(idDb, hpCoef, player, bucX, bucY, level, state, nextState),
+	                int deploy_idx, unsigned uid)
+		: dbload_static(idDb, hpCoef, player, bucX, bucY, level, state, nextState, uid),
 		  deploy_idx(deploy_idx) { }
 };
 
 struct dbload_resource_entities : dbload_static {
 	dbload_resource_entities(int idDb, float hpCoef, int bucX, int bucY, int state,
-	                         int nextState) : dbload_static(idDb, hpCoef, -1, bucX, bucY, -1, state,
-	                                                        nextState) { }
+	                         int nextState, unsigned uid) : dbload_static(idDb, hpCoef, -1, bucX, bucY, -1, state,
+	                                                        nextState, uid) { }
 };
 
 struct dbload_player {
@@ -76,14 +76,20 @@ struct dbload_player {
 	char nation;
 	char color;
 	Urho3D::String name;
+	unsigned buildingUid;
+	unsigned unitUid;
 
-	dbload_player(int id, bool isActive, int team, int nation, char* name, int color)
+	dbload_player(int id, bool isActive, int team, int nation, char* name, int color, unsigned buildingUid,
+	              unsigned unitUid)
 		: is_active(isActive),
 		  id(id),
 		  team(team),
 		  nation(nation),
 		  color(color),
-		  name(name) { }
+		  name(name),
+		  buildingUid(buildingUid),
+		  unitUid(unitUid) {
+	}
 };
 
 struct dbload_resource {
