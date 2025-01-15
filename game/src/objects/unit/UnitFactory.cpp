@@ -3,6 +3,7 @@
 #include "Unit.h"
 #include "scene/load/dbload_container.h"
 #include "env/Environment.h"
+#include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "state/StateManager.h"
 
@@ -15,7 +16,7 @@ UnitFactory::~UnitFactory() {
 	StateManager::dispose();
 }
 
-std::vector<Unit*>& UnitFactory::create(unsigned number, int id, Urho3D::Vector2& center, int playerId, int level) {
+std::vector<Unit*>& UnitFactory::create(unsigned number, short id, Urho3D::Vector2& center, short playerId, short level) {
 	units.clear();
 	units.reserve(number);
 	int y = 0;
@@ -28,7 +29,7 @@ std::vector<Unit*>& UnitFactory::create(unsigned number, int id, Urho3D::Vector2
 
 			position.y_ = Game::getEnvironment()->getGroundHeightAt(position.x_, position.z_);
 
-			units.push_back(new Unit(position, id, player, level));
+			units.push_back(new Unit(position, id, playerId, player->getTeam(), level, UId(player->getNextUnitId())));
 			if (units.size() >= number) { break; }
 		}
 		++y;
@@ -40,8 +41,8 @@ std::vector<Unit*>& UnitFactory::load(dbload_unit* unit) {
 	units.clear();
 
 	auto position = Urho3D::Vector3(unit->pos_x, Game::getEnvironment()->getGroundHeightAt(unit->pos_x, unit->pos_z), unit->pos_z);
-
-	auto newUnit = new Unit(position, unit->id_db, unit->player, unit->level, UId(unit->uid));
+	auto teamId = Game::getPlayersMan()->getPlayer(unit->player)->getTeam();
+	auto newUnit = new Unit(position, unit->id_db, unit->player, unit->level, teamId, UId(unit->uid));
 	newUnit->load(unit);
 
 	units.push_back(newUnit);

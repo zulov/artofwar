@@ -34,8 +34,8 @@ int static load_config(void* data, int argc, char** argv, char** azColName) {
 int static load_players(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
-	xyz->players->push_back(new dbload_player(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]),
-	                                          atoi(argv[3]), argv[4], atoi(argv[5])));
+	xyz->players->push_back(new dbload_player(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), argv[4],
+	                                          atoi(argv[5]), atoi(argv[6]), atoi(argv[7])));
 
 	return 0;
 }

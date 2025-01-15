@@ -58,7 +58,7 @@ void SimulationObjectManager::addBuilding(int id, const Urho3D::IntVector2& _buc
 	}
 }
 
-ResourceEntity* SimulationObjectManager::addResource(int id, const Urho3D::IntVector2& _bucketCords) const {
+ResourceEntity* SimulationObjectManager::addResource(int id, const Urho3D::IntVector2& _bucketCords) {
 	if (const auto res = resourceFactory.create(id, _bucketCords)) {
 		addResource(res, false);
 		return res;

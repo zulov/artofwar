@@ -31,7 +31,12 @@ void PlayersManager::load(std::vector<dbload_player*>* players, std::vector<dblo
 }
 
 void PlayersManager::addPlayer(NewGamePlayer& player) {
-	auto newPlayer = new Player(player.nation, player.team, player.id, player.color, player.name, player.active);
+	const auto newPlayer = new Player(
+		player.nation, player.team, player.id,
+		player.color, player.name, player.active,
+		UId::create(ObjectType::BUILDING, player.id),
+		UId::create(ObjectType::UNIT, player.id)
+	);
 	if (player.active) {
 		activePlayer = newPlayer;
 	}

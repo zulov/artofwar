@@ -3,13 +3,15 @@
 
 struct UId {
 	const unsigned v;
+
 	explicit UId(unsigned v)
 		: v(v) {
 	}
+
 	unsigned getId() const { return v; }
 
 	char getPlayer() const {
-		return (v << 2) >> 29;
+		return getType() == ObjectType::RESOURCE ? -1 : (v << 2) >> 29;
 	}
 
 	ObjectType getType() const {
@@ -24,7 +26,12 @@ struct UId {
 		}
 	}
 
+	static unsigned create(ObjectType type, char player = -1) {
+		unsigned v = static_cast<char>(type);
+		return ((v << 3) + (player < 0 ? 0 : player)) << 27;
+	}
 };
+
 // 00_000 000 00000000 00000000 00000000 
 // 2  bits type id
 // 3  player
