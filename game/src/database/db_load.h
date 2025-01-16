@@ -33,8 +33,7 @@ int static loadHudSizes(void* data, int argc, char** argv, char** azColName) {
 
 int static loadGraphSettings(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
-	setEntity(getContainer(data)->graphSettings, new db_graph_settings(atoi(argv[0]), atoi(argv[1]), argv[2],
-	                                                                   atoi(argv[3]),
+	setEntity(getContainer(data)->graphSettings, new db_graph_settings(atoi(argv[0]), atoi(argv[1]), argv[2],atoi(argv[3]),
 	                                                                   atof(argv[4]), atof(argv[5]), argv[6],
 	                                                                   atoi(argv[7]), atoi(argv[8]), atoi(argv[9])));
 	return 0;
