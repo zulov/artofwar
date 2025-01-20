@@ -5,6 +5,8 @@
 #include "scene/load/dbload_container.h"
 #include "env/Environment.h"
 
+ResourceFactory::ResourceFactory(unsigned currentUnitUId) : currentUId(currentUnitUId) {}
+
 ResourceEntity* ResourceFactory::create(int id, Urho3D::IntVector2 bucketCords) {
 	return create(id, bucketCords, UId(++currentUId));
 }
@@ -22,7 +24,7 @@ ResourceEntity* ResourceFactory::create(int id, Urho3D::IntVector2 bucketCords, 
 	const auto env = Game::getEnvironment();
 	if (env->validateStatic(db_resource->size, bucketCords, false)) {
 		return new ResourceEntity(env->getValidPosition(db_resource->size, bucketCords), db_resource,
-			env->getIndex(bucketCords.x_, bucketCords.y_), uid);
+		                          env->getIndex(bucketCords.x_, bucketCords.y_), uid);
 	}
 	return nullptr;
 }

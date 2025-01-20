@@ -11,7 +11,7 @@ class Physical;
 
 class SimulationObjectManager {
 public:
-	SimulationObjectManager();
+	SimulationObjectManager(unsigned currentResourceUid);
 	~SimulationObjectManager();
 	void clearNodesWithoutDelete();
 

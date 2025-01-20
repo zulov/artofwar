@@ -14,7 +14,7 @@
 #include "math/VectorUtils.h"
 
 
-SimulationObjectManager::SimulationObjectManager() {
+SimulationObjectManager::SimulationObjectManager(unsigned currentResourceUid): resourceFactory(currentResourceUid) {
 	units = new std::vector<Unit*>();
 	buildings = new std::vector<Building*>();
 	resources = new std::vector<ResourceEntity*>();
@@ -131,7 +131,7 @@ void SimulationObjectManager::cleanAndDisposeResources() {
 }
 
 void SimulationObjectManager::refreshResBonuses() {
-	auto isResourceBuilding = [](const Building* building) {
+	auto isResourceBuilding = [](const Building* building){
 		return building->getDb()->typeResourceAny;
 	};
 
