@@ -25,10 +25,9 @@
 #include "objects/projectile/ProjectileManager.h"
 #include "objects/unit/order/OrderUtils.h"
 
-Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
-	simObjectManager = new SimulationObjectManager();
+Simulation::Simulation(Environment* enviroment, unsigned currentResourceUid): env(enviroment),colorScheme(SimColorMode::BASIC) {
+	simObjectManager = new SimulationObjectManager(currentResourceUid);
 	Game::setActionCenter(new ActionCenter(simObjectManager));
-	colorScheme = SimColorMode::BASIC;
 
 	units = simObjectManager->getUnits();
 	buildings = simObjectManager->getBuildings();
@@ -50,25 +49,25 @@ void Simulation::clearNodesWithoutDelete() const {
 
 void Simulation::updateInfluenceMaps(bool force) const {
 	if (force || canUpdate(PerFrameAction::INFLUENCE_UNITS_1)) {
-		enviroment->updateInfluenceUnits1(units);
+		env->updateInfluenceUnits1(units);
 	}
 	if (force || canUpdate(PerFrameAction::INFLUENCE_UNITS_2)) {
-		enviroment->updateInfluenceUnits2(units);
+		env->updateInfluenceUnits2(units);
 	}
 	if (force || canUpdate(PerFrameAction::INFLUENCE_RESOURCES)) {
-		enviroment->updateInfluenceResources(resources);
+		env->updateInfluenceResources(resources);
 	}
 	if (force || canUpdate(PerFrameAction::INFLUENCE_OTHER)) {
-		enviroment->updateInfluenceOther(buildings, units);
+		env->updateInfluenceOther(buildings, units);
 	}
 	if (force || canUpdate(PerFrameAction::INFLUENCE_HISTORY_RESET)) {
-		enviroment->updateInfluenceHistoryReset();
+		env->updateInfluenceHistoryReset();
 	}
 	if (force || canUpdate(PerFrameAction::INFLUENCE_QUAD_OTHER)) {
-		enviroment->updateQuadOther();
+		env->updateQuadOther();
 	}
 	if (force || canUpdate(PerFrameAction::VISIBILITY)) {
-		enviroment->updateVisibility(buildings, units, resources);
+		env->updateVisibility(buildings, units, resources);
 	}
 }
 
@@ -216,7 +215,7 @@ void Simulation::applyForce() const {
 		unit->applyForce(TIME_PER_UPDATE);
 		auto pos = unit->getPosition();
 		//TODO to przeniesc do mova? to moze byc problem gdy jest przesuwanie poza klatka
-		const float y = enviroment->getGroundHeightAt(pos);
+		const float y = env->getGroundHeightAt(pos);
 		unit->updateHeight(y, TIME_PER_UPDATE);
 	}
 }
@@ -235,7 +234,7 @@ void Simulation::updateBuildingQueues() const {
 		if (done) {
 			switch (done->getType()) {
 			case QueueActionType::UNIT_CREATE: {
-				const auto center = enviroment->getCenter(build->getDeploy().value());
+				const auto center = env->getCenter(build->getDeploy().value());
 				Game::getActionCenter()->addUnits(done->getAmount(),
 				                                  done->getId(), center,
 				                                  build->getPlayer());
@@ -336,10 +335,10 @@ void Simulation::moveUnitsAndCheck(const float timeStep) {
 
 		unit->checkAim();
 		if (hasMoved) {
-			enviroment->update(unit);
+			env->update(unit);
 		} else { unit->setIndexChanged(false); }
 	}
-	enviroment->invalidateCaches();
+	env->invalidateCaches();
 
 	if (colorSchemeChanged || colorScheme != SimColorMode::BASIC) {
 		for (const auto unit : *units) {
@@ -363,7 +362,7 @@ void Simulation::calculateForces() {
 			break;
 		case UnitState::ATTACK: {
 			//TODO improve getMaxSeparationDistance powino sie dodac jeszcze minimal dist
-			const auto neighbours = enviroment->getNeighboursWithCache(unit, unit->getMaxSeparationDistance());
+			const auto neighbours = env->getNeighboursWithCache(unit, unit->getMaxSeparationDistance());
 
 			force.separationUnits(newForce, unit, neighbours);
 			force.inCell(newForce, unit);
@@ -373,7 +372,7 @@ void Simulation::calculateForces() {
 			//TODO improve getMaxSeparationDistance powino sie dodac jeszcze minimal dist
 			const bool invalid = force.escapeFromInvalidPosition(newForce, unit);
 			if (!invalid) {
-				const auto neighbours = enviroment->getNeighboursWithCache(unit, unit->getMaxSeparationDistance());
+				const auto neighbours = env->getNeighboursWithCache(unit, unit->getMaxSeparationDistance());
 
 				force.separationUnits(newForce, unit, neighbours);
 				force.separationObstacle(newForce, unit);

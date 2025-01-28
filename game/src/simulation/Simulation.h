@@ -24,7 +24,6 @@ class CreationCommandList;
 class SimulationObjectManager;
 class UpgradeCommandList;
 class CommandList;
-class AiManager;
 
 namespace Urho3D {
 	class Node;
@@ -33,7 +32,7 @@ namespace Urho3D {
 
 class Simulation {
 public:
-	explicit Simulation(Environment* enviroment);
+	explicit Simulation(Environment* enviroment, unsigned currentResourceUid);
 	~Simulation();
 	void clearNodesWithoutDelete() const;
 
@@ -79,8 +78,6 @@ private:
 	std::vector<ResourceEntity*>* resources;
 
 	FrameInfo* frameInfo;
-	Environment* enviroment;
+	Environment* env;
 	SimulationObjectManager* simObjectManager;
-
-	AiManager* aiManager;
 };
