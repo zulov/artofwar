@@ -37,7 +37,7 @@ public:
 	void clearNodesWithoutDelete() const;
 
 	void updateInfluenceMaps(bool force) const;
-	bool canUpdate(PerFrameAction type) const;
+	bool canUpdate(PerFrameAction type, bool force) const;
 
 	FrameInfo* update(float timeStep);
 	void initScene(SceneLoader& loader) const;

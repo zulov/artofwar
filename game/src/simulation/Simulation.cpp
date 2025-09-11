@@ -48,31 +48,31 @@ void Simulation::clearNodesWithoutDelete() const {
 }
 
 void Simulation::updateInfluenceMaps(bool force) const {
-	if (force || canUpdate(PerFrameAction::INFLUENCE_UNITS_1)) {
+	if (canUpdate(PerFrameAction::INFLUENCE_UNITS_1, force)) {
 		env->updateInfluenceUnits1(units);
 	}
-	if (force || canUpdate(PerFrameAction::INFLUENCE_UNITS_2)) {
+	if (canUpdate(PerFrameAction::INFLUENCE_UNITS_2, force)) {
 		env->updateInfluenceUnits2(units);
 	}
-	if (force || canUpdate(PerFrameAction::INFLUENCE_RESOURCES)) {
+	if (canUpdate(PerFrameAction::INFLUENCE_RESOURCES, force)) {
 		env->updateInfluenceResources(resources);
 	}
-	if (force || canUpdate(PerFrameAction::INFLUENCE_OTHER)) {
+	if (canUpdate(PerFrameAction::INFLUENCE_OTHER, force)) {
 		env->updateInfluenceOther(buildings, units);
 	}
-	if (force || canUpdate(PerFrameAction::INFLUENCE_HISTORY_RESET)) {
+	if (canUpdate(PerFrameAction::INFLUENCE_HISTORY_RESET, force)) {
 		env->updateInfluenceHistoryReset();
 	}
-	if (force || canUpdate(PerFrameAction::INFLUENCE_QUAD_OTHER)) {
+	if (canUpdate(PerFrameAction::INFLUENCE_QUAD_OTHER, force)) {
 		env->updateQuadOther();
 	}
-	if (force || canUpdate(PerFrameAction::VISIBILITY)) {
+	if (canUpdate(PerFrameAction::VISIBILITY, force)) {
 		env->updateVisibility(buildings, units, resources);
 	}
 }
 
-bool Simulation::canUpdate(PerFrameAction type) const {
-	return PER_FRAME_ACTION.get(type, currentFrame, secondsElapsed);
+bool Simulation::canUpdate(PerFrameAction type, bool force) const {
+	return force || PER_FRAME_ACTION.get(type, currentFrame, secondsElapsed);
 }
 
 FrameInfo* Simulation::update(float timeStep) {

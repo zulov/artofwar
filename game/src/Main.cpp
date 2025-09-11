@@ -1,4 +1,4 @@
-#include "Main.h"
+﻿#include "Main.h"
 
 #include <numeric>
 #include <Urho3D/Core/CoreEvents.h>
@@ -321,7 +321,7 @@ void Main::save(const Urho3D::String& name) {
 }
 
 void Main::createSimulation() {
-	simulation = new Simulation(Game::getEnvironment());
+	simulation = new Simulation(Game::getEnvironment(),0);//TODO error yo był numer?
 }
 
 void Main::setSimpleManagers() {
