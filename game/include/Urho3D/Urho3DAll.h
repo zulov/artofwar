@@ -24,7 +24,7 @@
 
 #include <Urho3D/Urho3D.h>
 
-#if URHO3D_ANGELSCRIPT
+#if defined(URHO3D_ANGELSCRIPT)
 #include <Urho3D/AngelScript/APITemplates.h>
 #include <Urho3D/AngelScript/Addons.h>
 #include <Urho3D/AngelScript/Generated_Includes.h>
@@ -88,6 +88,7 @@
 #include <Urho3D/Core/CoreEvents.h>
 #include <Urho3D/Core/EventProfiler.h>
 #include <Urho3D/Core/Main.h>
+#include <Urho3D/Core/MiniDump.h>
 #include <Urho3D/Core/Mutex.h>
 #include <Urho3D/Core/Object.h>
 #include <Urho3D/Core/ProcessUtils.h>
@@ -99,7 +100,7 @@
 #include <Urho3D/Core/Timer.h>
 #include <Urho3D/Core/Variant.h>
 #include <Urho3D/Core/WorkQueue.h>
-#if URHO3D_DATABASE
+#if defined(URHO3D_DATABASE)
 #include <Urho3D/Database/Database.h>
 #include <Urho3D/Database/DatabaseEvents.h>
 #include <Urho3D/Database/DbConnection.h>
@@ -164,7 +165,7 @@
 #include <Urho3D/Graphics/View.h>
 #include <Urho3D/Graphics/Viewport.h>
 #include <Urho3D/Graphics/Zone.h>
-#if URHO3D_IK
+#if defined(URHO3D_IK)
 #include <Urho3D/IK/IK.h>
 #include <Urho3D/IK/IKConstraint.h>
 #include <Urho3D/IK/IKEffector.h>
@@ -191,7 +192,7 @@
 #include <Urho3D/Input/InputConstants.h>
 #include <Urho3D/Input/InputEvents.h>
 #include <Urho3D/LibraryInfo.h>
-#if URHO3D_LUA
+#if defined(URHO3D_LUA)
 #include <Urho3D/LuaScript/LuaFile.h>
 #include <Urho3D/LuaScript/LuaFunction.h>
 #include <Urho3D/LuaScript/LuaScript.h>
@@ -219,7 +220,7 @@
 #include <Urho3D/Math/Vector2.h>
 #include <Urho3D/Math/Vector3.h>
 #include <Urho3D/Math/Vector4.h>
-#if URHO3D_NAVIGATION
+#if defined(URHO3D_NAVIGATION)
 #include <Urho3D/Navigation/CrowdAgent.h>
 #include <Urho3D/Navigation/CrowdManager.h>
 #include <Urho3D/Navigation/DynamicNavigationMesh.h>
@@ -231,7 +232,7 @@
 #include <Urho3D/Navigation/Obstacle.h>
 #include <Urho3D/Navigation/OffMeshConnection.h>
 #endif
-#if URHO3D_NETWORK
+#if defined(URHO3D_NETWORK)
 #include <Urho3D/Network/Connection.h>
 #include <Urho3D/Network/HttpRequest.h>
 #include <Urho3D/Network/Network.h>
@@ -239,7 +240,7 @@
 #include <Urho3D/Network/NetworkPriority.h>
 #include <Urho3D/Network/Protocol.h>
 #endif
-#if URHO3D_PHYSICS
+#if defined(URHO3D_PHYSICS)
 #include <Urho3D/Physics/CollisionShape.h>
 #include <Urho3D/Physics/Constraint.h>
 #include <Urho3D/Physics/PhysicsEvents.h>
@@ -247,7 +248,7 @@
 #include <Urho3D/Physics/PhysicsWorld.h>
 #include <Urho3D/Physics/RaycastVehicle.h>
 #include <Urho3D/Physics/RigidBody.h>
-#if URHO3D_PHYSICS2D
+#if defined(URHO3D_PHYSICS2D)
 #include <Urho3D/Physics2D/CollisionBox2D.h>
 #include <Urho3D/Physics2D/CollisionChain2D.h>
 #include <Urho3D/Physics2D/CollisionCircle2D.h>
@@ -331,7 +332,7 @@
 #include <Urho3D/UI/UISelectable.h>
 #include <Urho3D/UI/View3D.h>
 #include <Urho3D/UI/Window.h>
-#if URHO3D_URHO2D
+#if defined(URHO3D_URHO2D)
 #include <Urho3D/Urho2D/AnimatedSprite2D.h>
 #include <Urho3D/Urho2D/AnimationSet2D.h>
 #include <Urho3D/Urho2D/Drawable2D.h>

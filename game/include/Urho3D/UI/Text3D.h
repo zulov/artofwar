@@ -1,5 +1,6 @@
 //
 // Copyright (c) 2008-2022 the Urho3D project.
+// Copyright (c) 2022-2025 the U3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -85,6 +86,9 @@ public:
     /// Set wordwrap. In wordwrap mode the text element will respect its current width. Otherwise it resizes itself freely.
     /// @property
     void SetWordwrap(bool enable);
+    /// The text will be automatically translated. The text value used as string identifier.
+    /// @property
+    void SetAutoLocalizable(bool enable);
     /// Set text effect.
     /// @property
     void SetTextEffect(TextEffect textEffect);
@@ -149,6 +153,9 @@ public:
     /// Return wordwrap mode.
     /// @property
     bool GetWordwrap() const;
+    /// Return auto localizable mode.
+    /// @property
+    bool GetAutoLocalizable() const { return text_.GetAutoLocalizable(); }
     /// Return text effect.
     /// @property
     TextEffect GetTextEffect() const;
@@ -233,6 +240,8 @@ protected:
     void UpdateTextMaterials(bool forceUpdate = false);
     /// Recalculate camera facing and fixed screen size.
     void CalculateFixedScreenSize(const FrameInfo& frame);
+    /// Handle change Language.
+    void HandleChangeLanguage(StringHash eventType, VariantMap& eventData);
 
     /// Internally used text element.
     Text text_;

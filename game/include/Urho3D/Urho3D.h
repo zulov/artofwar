@@ -54,6 +54,7 @@
 #  define URHO3D_DEPRECATED_NO_EXPORT URHO3D_NO_EXPORT URHO3D_DEPRECATED
 #endif
 
+/* NOLINTNEXTLINE(readability-avoid-unconditional-preprocessor-if) */
 #if 0 /* DEFINE_NO_DEPRECATED */
 #  ifndef URHO3D_NO_DEPRECATED
 #    define URHO3D_NO_DEPRECATED
@@ -70,7 +71,14 @@
 
 #define NONSCRIPTABLE 
 
+#ifndef URHO3D_D3D11
 #define URHO3D_D3D11
+#endif
+#ifndef URHO3D_SSE
 #define URHO3D_SSE
+#endif
+#ifndef URHO3D_LOGGING
+#define URHO3D_LOGGING
+#endif
 
 #endif /* URHO3D_API_H */

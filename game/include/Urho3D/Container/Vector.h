@@ -1171,7 +1171,7 @@ private:
     static void CopyElements(T* dest, const T* src, unsigned count)
     {
         if (count)
-            memcpy(dest, src, count * sizeof(T));
+            memcpy((void*)dest, (const void*)src, count * sizeof(T));
     }
 };
 

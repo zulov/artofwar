@@ -97,7 +97,7 @@ URHO3D_EVENT(E_TEXTEDITING, TextEditing)
     URHO3D_PARAM(P_CURSOR, Cursor);                // int
     URHO3D_PARAM(P_SELECTION_LENGTH, SelectionLength);  // int
 }
-
+/*
 /// Joystick connected.
 URHO3D_EVENT(E_JOYSTICKCONNECTED, JoystickConnected)
 {
@@ -139,7 +139,7 @@ URHO3D_EVENT(E_JOYSTICKHATMOVE, JoystickHatMove)
     URHO3D_PARAM(P_HAT, Button);                   // int
     URHO3D_PARAM(P_POSITION, Position);            // int
 }
-
+*/
 /// Finger pressed on the screen.
 URHO3D_EVENT(E_TOUCHBEGIN, TouchBegin)
 {

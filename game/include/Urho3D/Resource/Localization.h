@@ -1,5 +1,6 @@
 //
 // Copyright (c) 2008-2022 the Urho3D project.
+// Copyright (c) 2022-2025 the U3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -40,28 +41,29 @@ public:
     ~Localization() override;
 
     /// Return the number of languages.
-    /// @property
     int GetNumLanguages() const { return (int)languages_.Size(); }
-
+    
     /// Return the index number of current language. The index is determined by the order of loading.
-    /// @property
-    int GetLanguageIndex() const { return languageIndex_; }
-
+    int GetLanguageIndex() const { return (int)languageIndex_; }
     /// Return the index number of language. The index is determined by the order of loading.
-    int GetLanguageIndex(const String& language);
+    int GetLanguageIndex(const String& language) const;
+
     /// Return the name of current language.
-    /// @property
-    String GetLanguage();
+    const String& GetLanguage() const;
     /// Return the name of language.
-    String GetLanguage(int index);
+    const String& GetLanguage(int index) const;
+
+    /// Return a string in the current language. Returns String::EMPTY if id is empty. Returns id if translation is not found and logs a warning.
+    const String& Get(const String& id) const;
+
     /// Set current language.
     void SetLanguage(int index);
     /// Set current language.
     void SetLanguage(const String& language);
-    /// Return a string in the current language. Returns String::EMPTY if id is empty. Returns id if translation is not found and logs a warning.
-    String Get(const String& id);
+
     /// Clear all loaded strings.
     void Reset();
+
     /// Load strings from JSONFile. The file should be UTF8 without BOM.
     void LoadJSONFile(const String& name, const String& language = String::EMPTY);
     /// Load strings from JSONValue.
@@ -73,7 +75,7 @@ private:
     /// Language names.
     Vector<String> languages_;
     /// Index of current language.
-    int languageIndex_;
+    unsigned languageIndex_;
     /// Storage strings: <Language <StringId, Value> >.
     HashMap<StringHash, HashMap<StringHash, String> > strings_;
 };

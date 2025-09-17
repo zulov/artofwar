@@ -25,8 +25,7 @@ CameraManager::CameraManager() {
 		float border = 256.f;
 		auto graphics = Game::getGraphics();
 		if (graphics) {
-			const int width = Game::getGraphics()->GetWidth();
-			const int height = Game::getGraphics()->GetHeight();
+			auto [width, height] = Game::getGraphics()->GetSize();
 			widthEdge = width / border;
 			heightEdge = height / border;
 

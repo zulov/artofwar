@@ -19,13 +19,13 @@ inline bool isGround(Urho3D::Node* node) {
 }
 
 inline void resultQuery(const Urho3D::IntVector2& pos, Urho3D::PODVector<Urho3D::RayQueryResult>& results) {
+	auto [width, height] = Game::getGraphics()->GetSize();
 	const auto cameraRay = Game::getCameraManager()->getComponent()
-	                                                ->GetScreenRay((float)pos.x_ / Game::getGraphics()->GetWidth(),
-	                                                               (float)pos.y_ / Game::getGraphics()->GetHeight());
+	                                                ->GetScreenRay((float)pos.x_ / width, (float)pos.y_ / height);
 
 
 	Urho3D::RayOctreeQuery query(results, cameraRay, Urho3D::RAY_TRIANGLE, 300, Urho3D::DRAWABLE_GEOMETRY);
-	Game::getScene()->Node::GetComponent<Urho3D::Octree>()->Raycast(query);
+	Game::getScene()->GetComponent<Urho3D::Octree>()->Raycast(query);
 }
 
 inline bool skipRayCast(const Urho3D::IntVector2 pos) {
@@ -42,7 +42,7 @@ bool raycast(hit_data& hitData) {
 	Urho3D::PODVector<Urho3D::RayQueryResult> results;
 	resultQuery(pos, results);
 
-	for (const auto result : results) {
+	for (const auto &result : results) {
 		const auto node = result.node_;
 		if (isGround(node)) {
 			hitData.set(result, true);

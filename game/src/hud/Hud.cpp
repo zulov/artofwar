@@ -69,10 +69,8 @@ void Hud::createCursor() const {
 
 	Game::getUI()->SetCursor(cursor);
 
-	auto graphics = Game::getGraphics();
-	if (graphics) {
-		cursor->SetPosition(graphics->GetWidth() / 2, graphics->GetHeight() / 2);
-	}
+	auto [width, height] = Game::getGraphics()->GetSize();
+	cursor->SetPosition(width / 2, height / 2);
 }
 
 void Hud::createMyPanels() {

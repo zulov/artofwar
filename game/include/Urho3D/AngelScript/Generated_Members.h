@@ -8782,6 +8782,28 @@ template <class T> void RegisterMembers_CollisionGeometryData(asIScriptEngine* e
 
 #ifdef URHO3D_URHO2D
 
+// class FrameSet2D | File: ../Urho2D/TileMapDefs2D.h
+template <class T> void RegisterMembers_FrameSet2D(asIScriptEngine* engine, const char* className)
+{
+    RegisterMembers_RefCounted<T>(engine, className);
+
+    // unsigned FrameSet2D::GetCurrentFrameGid() const
+    engine->RegisterObjectMethod(className, "uint GetCurrentFrameGid() const", AS_METHODPR(T, GetCurrentFrameGid, () const, unsigned), AS_CALL_THISCALL);
+
+    // unsigned FrameSet2D::GetNumFrames() const
+    engine->RegisterObjectMethod(className, "uint GetNumFrames() const", AS_METHODPR(T, GetNumFrames, () const, unsigned), AS_CALL_THISCALL);
+
+    // void FrameSet2D::Load(const XMLElement& element)
+    engine->RegisterObjectMethod(className, "void Load(const XMLElement&in)", AS_METHODPR(T, Load, (const XMLElement&), void), AS_CALL_THISCALL);
+
+    // void FrameSet2D::UpdateTimer(float timeStep)
+    engine->RegisterObjectMethod(className, "void UpdateTimer(float)", AS_METHODPR(T, UpdateTimer, (float), void), AS_CALL_THISCALL);
+
+    #ifdef REGISTER_MEMBERS_MANUAL_PART_FrameSet2D
+        REGISTER_MEMBERS_MANUAL_PART_FrameSet2D();
+    #endif
+}
+
 // class PropertySet2D | File: ../Urho2D/TileMapDefs2D.h
 template <class T> void RegisterMembers_PropertySet2D(asIScriptEngine* engine, const char* className)
 {
@@ -8832,8 +8854,27 @@ template <class T> void RegisterMembers_Tile2D(asIScriptEngine* engine, const ch
     // bool Tile2D::HasProperty(const String& name) const
     engine->RegisterObjectMethod(className, "bool HasProperty(const String&in) const", AS_METHODPR(T, HasProperty, (const String&) const, bool), AS_CALL_THISCALL);
 
+    // bool Tile2D::IsAnimated() const
+    engine->RegisterObjectMethod(className, "bool IsAnimated() const", AS_METHODPR(T, IsAnimated, () const, bool), AS_CALL_THISCALL);
+
     #ifdef REGISTER_MEMBERS_MANUAL_PART_Tile2D
         REGISTER_MEMBERS_MANUAL_PART_Tile2D();
+    #endif
+}
+
+// struct TileFrameInfo2D | File: ../Urho2D/TileMapDefs2D.h
+template <class T> void RegisterMembers_TileFrameInfo2D(asIScriptEngine* engine, const char* className)
+{
+    RegisterMembers_RefCounted<T>(engine, className);
+
+    // unsigned TileFrameInfo2D::gid_
+    engine->RegisterObjectProperty(className, "uint gid", offsetof(T, gid_));
+
+    // unsigned TileFrameInfo2D::duration_
+    engine->RegisterObjectProperty(className, "uint duration", offsetof(T, duration_));
+
+    #ifdef REGISTER_MEMBERS_MANUAL_PART_TileFrameInfo2D
+        REGISTER_MEMBERS_MANUAL_PART_TileFrameInfo2D();
     #endif
 }
 
@@ -10815,22 +10856,22 @@ template <class T> void RegisterMembers_Localization(asIScriptEngine* engine, co
 {
     RegisterMembers_Object<T>(engine, className);
 
-    // String Localization::Get(const String& id)
-    engine->RegisterObjectMethod(className, "String Get(const String&in)", AS_METHODPR(T, Get, (const String&), String), AS_CALL_THISCALL);
+    // const String& Localization::Get(const String& id) const
+    engine->RegisterObjectMethod(className, "const String& Get(const String&in) const", AS_METHODPR(T, Get, (const String&) const, const String&), AS_CALL_THISCALL);
 
-    // String Localization::GetLanguage()
-    engine->RegisterObjectMethod(className, "String GetLanguage()", AS_METHODPR(T, GetLanguage, (), String), AS_CALL_THISCALL);
-    engine->RegisterObjectMethod(className, "String get_language()", AS_METHODPR(T, GetLanguage, (), String), AS_CALL_THISCALL);
+    // const String& Localization::GetLanguage() const
+    engine->RegisterObjectMethod(className, "const String& GetLanguage() const", AS_METHODPR(T, GetLanguage, () const, const String&), AS_CALL_THISCALL);
+    engine->RegisterObjectMethod(className, "const String& get_language() const", AS_METHODPR(T, GetLanguage, () const, const String&), AS_CALL_THISCALL);
 
-    // String Localization::GetLanguage(int index)
-    engine->RegisterObjectMethod(className, "String GetLanguage(int)", AS_METHODPR(T, GetLanguage, (int), String), AS_CALL_THISCALL);
+    // const String& Localization::GetLanguage(int index) const
+    engine->RegisterObjectMethod(className, "const String& GetLanguage(int) const", AS_METHODPR(T, GetLanguage, (int) const, const String&), AS_CALL_THISCALL);
 
     // int Localization::GetLanguageIndex() const
     engine->RegisterObjectMethod(className, "int GetLanguageIndex() const", AS_METHODPR(T, GetLanguageIndex, () const, int), AS_CALL_THISCALL);
     engine->RegisterObjectMethod(className, "int get_languageIndex() const", AS_METHODPR(T, GetLanguageIndex, () const, int), AS_CALL_THISCALL);
 
-    // int Localization::GetLanguageIndex(const String& language)
-    engine->RegisterObjectMethod(className, "int GetLanguageIndex(const String&in)", AS_METHODPR(T, GetLanguageIndex, (const String&), int), AS_CALL_THISCALL);
+    // int Localization::GetLanguageIndex(const String& language) const
+    engine->RegisterObjectMethod(className, "int GetLanguageIndex(const String&in) const", AS_METHODPR(T, GetLanguageIndex, (const String&) const, int), AS_CALL_THISCALL);
 
     // int Localization::GetNumLanguages() const
     engine->RegisterObjectMethod(className, "int GetNumLanguages() const", AS_METHODPR(T, GetNumLanguages, () const, int), AS_CALL_THISCALL);
@@ -10902,6 +10943,8 @@ template <class T> void RegisterMembers_Log(asIScriptEngine* engine, const char*
     // Not registered because have @nobind mark
     // static void Log::WriteFormat(int level, const char* format,...)
     // Error: type "const char*" can not automatically bind
+    // template <typename Arg0, typename... Args> static void Log::Write(int level, const char* format, Arg0&& arg0, Args&& ... args)
+    // Not registered because template
 
     // static void Log::WriteRaw(const String& message, bool error = false)
     engine->SetDefaultNamespace(className);engine->RegisterGlobalFunction("void WriteRaw(const String&in, bool = false)", AS_FUNCTIONPR(T::WriteRaw, (const String&, bool), void), AS_CALL_CDECL);engine->SetDefaultNamespace("");
@@ -13842,6 +13885,9 @@ template <class T> void RegisterMembers_ObjectAnimation(asIScriptEngine* engine,
     // void ObjectAnimation::RemoveAttributeAnimation(ValueAnimation* attributeAnimation)
     engine->RegisterObjectMethod(className, "void RemoveAttributeAnimation(ValueAnimation@+)", AS_METHODPR(T, RemoveAttributeAnimation, (ValueAnimation*), void), AS_CALL_THISCALL);
 
+    // bool ObjectAnimation::Save(Serializer& dest, const String& extension) const
+    engine->RegisterObjectMethod(className, "bool Save(Serializer&, const String&in) const", AS_METHODPR(T, Save, (Serializer&, const String&) const, bool), AS_CALL_THISCALL);
+
     // bool ObjectAnimation::SaveJSON(JSONValue& dest) const
     engine->RegisterObjectMethod(className, "bool SaveJSON(JSONValue&) const", AS_METHODPR(T, SaveJSON, (JSONValue&) const, bool), AS_CALL_THISCALL);
 
@@ -14437,6 +14483,9 @@ template <class T> void RegisterMembers_ValueAnimation(asIScriptEngine* engine, 
     // bool ValueAnimation::LoadXML(const XMLElement& source)
     engine->RegisterObjectMethod(className, "bool LoadXML(const XMLElement&in)", AS_METHODPR(T, LoadXML, (const XMLElement&), bool), AS_CALL_THISCALL);
 
+    // bool ValueAnimation::Save(Serializer& dest, const String& extension) const
+    engine->RegisterObjectMethod(className, "bool Save(Serializer&, const String&in) const", AS_METHODPR(T, Save, (Serializer&, const String&) const, bool), AS_CALL_THISCALL);
+
     // bool ValueAnimation::SaveJSON(JSONValue& dest) const
     engine->RegisterObjectMethod(className, "bool SaveJSON(JSONValue&) const", AS_METHODPR(T, SaveJSON, (JSONValue&) const, bool), AS_CALL_THISCALL);
 
@@ -14534,6 +14583,9 @@ template <class T> void RegisterMembers_AnimationSet2D(asIScriptEngine* engine, 
 
     // bool AnimationSet2D::HasAnimation(const String& animationName) const
     engine->RegisterObjectMethod(className, "bool HasAnimation(const String&in) const", AS_METHODPR(T, HasAnimation, (const String&) const, bool), AS_CALL_THISCALL);
+
+    // bool AnimationSet2D::HasSpriteSheet() const
+    engine->RegisterObjectMethod(className, "bool HasSpriteSheet() const", AS_METHODPR(T, HasSpriteSheet, () const, bool), AS_CALL_THISCALL);
 
     // static void AnimationSet2D::RegisterObject(Context* context)
     // Not registered because have @nobind mark
@@ -14914,6 +14966,9 @@ template <class T> void RegisterMembers_TmxFile2D(asIScriptEngine* engine, const
     // Vector<SharedPtr<TileMapObject2D>> TmxFile2D::GetTileCollisionShapes(unsigned gid) const
     engine->RegisterObjectMethod(className, "Array<TileMapObject2D@>@ GetTileCollisionShapes(uint) const", AS_FUNCTION_OBJFIRST(TmxFile2D_VectorlesSharedPtrlesTileMapObject2Dgregre_GetTileCollisionShapes_unsigned_template<TmxFile2D>), AS_CALL_CDECL_OBJFIRST);
 
+    // FrameSet2D* TmxFile2D::GetTileFrameSet(unsigned gid) const
+    engine->RegisterObjectMethod(className, "FrameSet2D@+ GetTileFrameSet(uint) const", AS_METHODPR(T, GetTileFrameSet, (unsigned) const, FrameSet2D*), AS_CALL_THISCALL);
+
     // PropertySet2D* TmxFile2D::GetTilePropertySet(unsigned gid) const
     engine->RegisterObjectMethod(className, "PropertySet2D@+ GetTilePropertySet(uint) const", AS_METHODPR(T, GetTilePropertySet, (unsigned) const, PropertySet2D*), AS_CALL_THISCALL);
 
@@ -14926,6 +14981,9 @@ template <class T> void RegisterMembers_TmxFile2D(asIScriptEngine* engine, const
     // void TmxFile2D::SetSpriteTextureEdgeOffset(float offset)
     engine->RegisterObjectMethod(className, "void SetSpriteTextureEdgeOffset(float)", AS_METHODPR(T, SetSpriteTextureEdgeOffset, (float), void), AS_CALL_THISCALL);
     engine->RegisterObjectMethod(className, "void set_edgeOffset(float)", AS_METHODPR(T, SetSpriteTextureEdgeOffset, (float), void), AS_CALL_THISCALL);
+
+    // void TmxFile2D::UpdateAnimationTimers(float timeStep)
+    engine->RegisterObjectMethod(className, "void UpdateAnimationTimers(float)", AS_METHODPR(T, UpdateAnimationTimers, (float), void), AS_CALL_THISCALL);
 
     // static void TmxFile2D::RegisterObject(Context* context)
     // Not registered because have @nobind mark
@@ -21430,6 +21488,9 @@ template <class T> void RegisterMembers_TileMap2D(asIScriptEngine* engine, const
     // ResourceRef TileMap2D::GetTmxFileAttr() const
     engine->RegisterObjectMethod(className, "ResourceRef GetTmxFileAttr() const", AS_METHODPR(T, GetTmxFileAttr, () const, ResourceRef), AS_CALL_THISCALL);
 
+    // void TileMap2D::OnNodeSet(Node* node) override
+    engine->RegisterObjectMethod(className, "void OnNodeSet(Node@+)", AS_METHODPR(T, OnNodeSet, (Node*), void), AS_CALL_THISCALL);
+
     // virtual void Component::OnSetEnabled()
     engine->RegisterObjectMethod(className, "void OnSetEnabled()", AS_METHODPR(T, OnSetEnabled, (), void), AS_CALL_THISCALL);
 
@@ -21524,6 +21585,9 @@ template <class T> void RegisterMembers_TileMapLayer2D(asIScriptEngine* engine, 
     // void TileMapLayer2D::SetVisible(bool visible)
     engine->RegisterObjectMethod(className, "void SetVisible(bool)", AS_METHODPR(T, SetVisible, (bool), void), AS_CALL_THISCALL);
     engine->RegisterObjectMethod(className, "void set_visible(bool)", AS_METHODPR(T, SetVisible, (bool), void), AS_CALL_THISCALL);
+
+    // void TileMapLayer2D::UpdateAnimations()
+    engine->RegisterObjectMethod(className, "void UpdateAnimations()", AS_METHODPR(T, UpdateAnimations, (), void), AS_CALL_THISCALL);
 
     #ifdef REGISTER_MEMBERS_MANUAL_PART_TileMapLayer2D
         REGISTER_MEMBERS_MANUAL_PART_TileMapLayer2D();
@@ -23139,6 +23203,9 @@ template <class T> void RegisterMembers_Text3D(asIScriptEngine* engine, const ch
 {
     RegisterMembers_Drawable<T>(engine, className);
 
+    // bool Text3D::GetAutoLocalizable() const
+    engine->RegisterObjectMethod(className, "bool GetAutoLocalizable() const", AS_METHODPR(T, GetAutoLocalizable, () const, bool), AS_CALL_THISCALL);
+    engine->RegisterObjectMethod(className, "bool get_autoLocalizable() const", AS_METHODPR(T, GetAutoLocalizable, () const, bool), AS_CALL_THISCALL);
     // Vector2 Text3D::GetCharPosition(unsigned index)
     engine->RegisterObjectMethod(className, "Vector2 GetCharPosition(uint)", AS_METHODPR(T, GetCharPosition, (unsigned), Vector2), AS_CALL_THISCALL);
     engine->RegisterObjectMethod(className, "Vector2 get_charPositions(uint)", AS_METHODPR(T, GetCharPosition, (unsigned), Vector2), AS_CALL_THISCALL);
@@ -23261,6 +23328,9 @@ template <class T> void RegisterMembers_Text3D(asIScriptEngine* engine, const ch
 
     // void Text3D::SetAlignment(HorizontalAlignment hAlign, VerticalAlignment vAlign)
     engine->RegisterObjectMethod(className, "void SetAlignment(HorizontalAlignment, VerticalAlignment)", AS_METHODPR(T, SetAlignment, (HorizontalAlignment, VerticalAlignment), void), AS_CALL_THISCALL);
+    // void Text3D::SetAutoLocalizable(bool enable)
+    engine->RegisterObjectMethod(className, "void SetAutoLocalizable(bool)", AS_METHODPR(T, SetAutoLocalizable, (bool), void), AS_CALL_THISCALL);
+    engine->RegisterObjectMethod(className, "void set_autoLocalizable(bool)", AS_METHODPR(T, SetAutoLocalizable, (bool), void), AS_CALL_THISCALL);
 
     // void Text3D::SetColor(const Color& color)
     engine->RegisterObjectMethod(className, "void SetColor(const Color&in)", AS_METHODPR(T, SetColor, (const Color&), void), AS_CALL_THISCALL);
