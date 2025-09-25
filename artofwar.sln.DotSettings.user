@@ -3,11 +3,13 @@
 	<s:String x:Key="/Default/Environment/Hierarchy/Build/SolBuilderDuo/UseMsbuildSolutionBuilder/@EntryValue">NewVersion</s:String>
 	
 	<s:Int64 x:Key="/Default/Environment/SearchAndNavigation/DefaultOccurrencesGroupingIndex/@EntryValue">7</s:Int64>
-	
-	
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=7a726f5c_002D1b78_002D485a_002D9f5e_002D437dc24eae26/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="GridCalculator1" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;Solution /&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d441c19b_002D7172_002D4d5d_002Da30c_002D7fc321e2367e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from UidTest.cpp" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;ProjectFile&gt;5829691B-4F4E-48D8-BB6F-CDF1206E0FA7/f:UidTest.cpp&lt;/ProjectFile&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
+	
+	
+	
+	
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Coef/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=dbload/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=DEFENCE/@EntryIndexedValue">True</s:Boolean>

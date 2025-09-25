@@ -3,9 +3,9 @@
 
 struct NewGamePlayer {
 	Urho3D::String name;
-	int nation;
-	int team;
+	char nation;
+	char team;
 	int color;
-	int id;
+	char id;
 	bool active;
 };
