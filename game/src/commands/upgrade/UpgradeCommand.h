@@ -15,8 +15,8 @@ public:
 	void setSimulationObjectManager(SimulationObjectManager* _simulationObjectManager);
 private:
 	QueueActionType type;
-	short id;
 	char player;
+	short id;
 
 	SimulationObjectManager* simulationObjectManager;
 };

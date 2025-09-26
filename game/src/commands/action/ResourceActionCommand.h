@@ -14,7 +14,7 @@ public:
 	void execute() override;
 
 private:
+	std::vector<ResourceEntity*> resources;
 	ResourceActionType action;
 	char player;
-	std::vector<ResourceEntity*> resources;
 };

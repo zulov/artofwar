@@ -47,12 +47,12 @@ void ActionCenter::executeLists() {
 	creation.execute();
 }
 
-bool ActionCenter::addUnits(int number, short id, Urho3D::Vector2 position, char player) {
+bool ActionCenter::addUnits(unsigned number, short id, Urho3D::Vector2 position, char player) {
 	auto level = Game::getPlayersMan()->getPlayer(player)->getLevelForUnit(id)->level;
 	return addUnits(number, id, position, player, level);
 }
 
-bool ActionCenter::addUnits(int number, short id, Urho3D::Vector2& position, char player, int level) {
+bool ActionCenter::addUnits(unsigned number, short id, Urho3D::Vector2& position, char player, int level) {
 	auto command = creation.addUnits(number, id, position, player, level);
 	if (command) {
 		creation.add(command);

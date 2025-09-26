@@ -6,7 +6,7 @@ class PhysicalCommand;
 class CommandList {
 public:
 	CommandList() = default;
-	virtual ~CommandList();
+	~CommandList();
 	void add(PhysicalCommand* command);
 	void add(PhysicalCommand* first, PhysicalCommand* second);
 

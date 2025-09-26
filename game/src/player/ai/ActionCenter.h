@@ -33,12 +33,12 @@ public:
 	void executeActions();
 	void executeLists();
 
-	bool addUnits(int number, short id, Urho3D::Vector2 position, char player);
+	bool addUnits(unsigned number, short id, Urho3D::Vector2 position, char player);
 	bool addBuilding(short id, Urho3D::Vector2& position, char player, bool force);
 	bool addResource(short id, int index, float hp = -1.f);
 
 private:
-	bool addUnits(int number, short id, Urho3D::Vector2& position, char player, int level);
+	bool addUnits(unsigned number, short id, Urho3D::Vector2& position, char player, int level);
 	bool addBuilding(short id, Urho3D::Vector2& position, char player, int level, bool force);
 
 	CreationCommandList creation;
