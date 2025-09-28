@@ -11,7 +11,6 @@ SceneLoader::~SceneLoader() {
 
 void SceneLoader::load() {
 	loadPlayers();
-	loadResources();
 
 	loadUnits();
 	loadBuildings();
@@ -34,17 +33,11 @@ int static load_config(void* data, int argc, char** argv, char** azColName) {
 int static load_players(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
-	xyz->players->push_back(new dbload_player(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), argv[4],
-	                                          atoi(argv[5]), atoi(argv[6]), atoi(argv[7])));
-
-	return 0;
-}
-
-int static load_resources(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	const auto xyz = static_cast<dbload_container*>(data);
 	int p = xyz->precision;
-	xyz->resources->push_back(new dbload_resource(atoi(argv[0]), atof(argv[1]) / p, atof(argv[2]) / p, atof(argv[3]) / p, atof(argv[4]) / p));
+	xyz->players->push_back(new dbload_player(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), argv[4],
+	                                          atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+	                                          atoi(argv[8]) / p, atoi(argv[9]) / p, atoi(argv[10]) / p,
+	                                          atoi(argv[11]) / p));
 
 	return 0;
 }
@@ -53,7 +46,7 @@ int static load_units(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
 	int p = xyz->precision;
-	xyz->units->push_back(new dbload_unit(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[2]),atoi(argv[3]),
+	xyz->units->push_back(new dbload_unit(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[2]), atoi(argv[3]),
 	                                      atoi(argv[4]), atof(argv[5]) / p, atof(argv[6]) / p,
 	                                      atoi(argv[7]), atof(argv[8]) / p, atof(argv[9]) / p));
 
@@ -64,7 +57,7 @@ int static load_buildings(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
 	int p = xyz->precision;
-	xyz->buildings->push_back(new dbload_building(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[9]),atoi(argv[3]),
+	xyz->buildings->push_back(new dbload_building(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[9]), atoi(argv[3]),
 	                                              atoi(argv[4]), atoi(argv[5]), atoi(argv[6]),
 	                                              atoi(argv[7]), atoi(argv[8]), atoi(argv[9])));
 
@@ -75,7 +68,7 @@ int static load_resources_entities(void* data, int argc, char** argv, char** azC
 	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
 	float p = xyz->precision;
-	xyz->resource_entities->push_back(new dbload_resource_entities(fatoi(argv[0]), fatoi(argv[1]) / p, fatoi(argv[2]),
+	xyz->resources->push_back(new dbload_resource(fatoi(argv[0]), fatoi(argv[1]) / p, fatoi(argv[2]),
 	                                                               fatoi(argv[3]), fatoi(argv[4]),
 	                                                               fatoi(argv[5]), fatoi(argv[6])));
 
@@ -85,8 +78,8 @@ int static load_resources_entities(void* data, int argc, char** argv, char** azC
 int static load_resources_entities_size(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
-	
-	xyz->resource_entities->reserve(atoi(argv[0]));
+
+	xyz->resources->reserve(atoi(argv[0]));
 
 	return 0;
 }
@@ -102,11 +95,11 @@ dbload_container* SceneLoader::getData() const {
 }
 
 void SceneLoader::createLoad(const Urho3D::String& fileName, bool tryReuse) {
-	if(fileName == lastLoad && tryReuse) {
+	if (fileName == lastLoad && tryReuse) {
 		return;
 	}
 	reset();
-	
+
 	lastLoad = fileName;
 	std::string name = std::string("saves/") + fileName.CString();
 	int rc = sqlite3_open_v2(name.c_str(), &database, SQLITE_OPEN_READONLY, nullptr);
@@ -121,46 +114,33 @@ dbload_config* SceneLoader::getConfig() const {
 	return dbLoad->config;
 }
 
-std::vector<dbload_player*>* SceneLoader::loadPlayers() {
-	if (dbLoad->players) { return dbLoad->players; }
+void SceneLoader::loadPlayers() const {
+	if (dbLoad->players) { return; }
 	dbLoad->players = new std::vector<dbload_player*>();
 
 	load(SQLConsts::SELECT + "players", load_players);
-	return dbLoad->players;
 }
 
-std::vector<dbload_resource*>* SceneLoader::loadResources() {
-	if (dbLoad->resources) { return dbLoad->resources; }
-	dbLoad->resources = new std::vector<dbload_resource*>();
-
-	load(SQLConsts::SELECT + "resources", load_resources);
-	return dbLoad->resources;
-}
-
-std::vector<dbload_unit*>* SceneLoader::loadUnits() {
-	if (dbLoad->units) { return dbLoad->units; }
+void SceneLoader::loadUnits() const {
+	if (dbLoad->units) { return; }
 	dbLoad->units = new std::vector<dbload_unit*>();
 
 	load(SQLConsts::SELECT + "units", load_units);
-	return dbLoad->units;
 }
 
-std::vector<dbload_building*>* SceneLoader::loadBuildings() {
-	if (dbLoad->buildings) { return dbLoad->buildings; }
+void SceneLoader::loadBuildings() const {
+	if (dbLoad->buildings) { return; }
 	dbLoad->buildings = new std::vector<dbload_building*>();
 
 	load(SQLConsts::SELECT + "buildings", load_buildings);
-	return dbLoad->buildings;
 }
 
-std::vector<dbload_resource_entities*>* SceneLoader::loadResourcesEntities() {
-	if (dbLoad->resource_entities) { return dbLoad->resource_entities; }
-	dbLoad->resource_entities = new std::vector<dbload_resource_entities*>();
-	
-	load(SQLConsts::COUNT + "resource_entities", load_resources_entities_size);
-	load(SQLConsts::SELECT + "resource_entities", load_resources_entities);
-	
-	return dbLoad->resource_entities;
+void SceneLoader::loadResourcesEntities() const {
+	if (dbLoad->resources) { return; }
+	dbLoad->resources = new std::vector<dbload_resource*>();
+
+	load(SQLConsts::COUNT + "resources", load_resources_entities_size);
+	load(SQLConsts::SELECT + "resources", load_resources_entities);
 }
 
 void SceneLoader::load(const std::string& sql, int (*load)(void*, int, char**, char**)) const {

@@ -29,7 +29,7 @@ public:
 
 	void load(dbload_unit* unit);
 	void load(dbload_building* building) const;
-	void load(dbload_resource_entities* resource) const;
+	void load(dbload_resource* resource) const;
 	void refreshAllStatic();
 
 private:

@@ -74,7 +74,7 @@ void SimulationObjectManager::load(dbload_building* building) const {
 	addBuilding(buildingFactory.load(building), true);
 }
 
-void SimulationObjectManager::load(dbload_resource_entities* resource) const {
+void SimulationObjectManager::load(dbload_resource* resource) const {
 	addResource(resourceFactory.load(resource), true);
 }
 

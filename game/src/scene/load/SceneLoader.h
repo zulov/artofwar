@@ -11,7 +11,6 @@ struct dbload_building;
 struct dbload_container;
 struct dbload_player;
 struct dbload_resource;
-struct dbload_resource_entities;
 struct dbload_unit;
 
 
@@ -25,12 +24,11 @@ public:
 	dbload_container* getData() const;
 	void createLoad(const Urho3D::String& fileName, bool tryReuse);
 	dbload_config* getConfig() const;
-	std::vector<dbload_player*>* loadPlayers();
-	std::vector<dbload_resource*>* loadResources();
+	void loadPlayers() const;
 
-	std::vector<dbload_unit*>* loadUnits();
-	std::vector<dbload_building*>* loadBuildings();
-	std::vector<dbload_resource_entities*>* loadResourcesEntities();
+	void loadUnits() const;
+	void loadBuildings() const;
+	void loadResourcesEntities() const;
 	void close();
 	void end();
 private:

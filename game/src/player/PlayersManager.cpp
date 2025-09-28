@@ -10,7 +10,7 @@ PlayersManager::~PlayersManager() {
 	clear_vector(allPlayers);
 }
 
-void PlayersManager::load(std::vector<dbload_player*>* players, std::vector<dbload_resource*>* resources) {
+void PlayersManager::load(std::vector<dbload_player*>* players) {
 	for (auto player : *players) {
 		auto newPlayer = new Player(player->nation, player->team, player->id, player->color, player->name,
 		                            player->is_active, player->buildingUid, player->unitUid);

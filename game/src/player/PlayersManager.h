@@ -9,13 +9,12 @@ class Player;
 struct NewGameForm;
 struct NewGamePlayer;
 struct dbload_player;
-struct dbload_resource;
 
 class PlayersManager {
 public:
 	PlayersManager() = default;
 	~PlayersManager();
-	void load(std::vector<dbload_player*>* players, std::vector<dbload_resource*>* resources);
+	void load(std::vector<dbload_player*>* players);
 	void addPlayer(NewGamePlayer& player);
 	void load(NewGameForm* form);
 	Player* getActivePlayer() const;

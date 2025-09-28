@@ -6,7 +6,7 @@ namespace Urho3D {
 	class Vector3;
 }
 
-struct dbload_resource_entities;
+struct dbload_resource;
 struct db_resource;
 enum class ResourceActionType : char;
 
@@ -17,7 +17,7 @@ public:
 	void populate();
 
 	std::pair<float, bool> absorbAttack(float collectSpeed) override;
-	ResourceEntity* load(dbload_resource_entities* resource);
+	ResourceEntity* load(dbload_resource* resource);
 
 	char getPlayer() const override { return -1; }
 	const Urho3D::IntVector2 getGridSize() const override;

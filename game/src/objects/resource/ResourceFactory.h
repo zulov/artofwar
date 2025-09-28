@@ -7,7 +7,7 @@ namespace Urho3D {
 	class Vector2;
 }
 
-struct dbload_resource_entities;
+struct dbload_resource;
 class ResourceEntity;
 
 class ResourceFactory {
@@ -16,7 +16,7 @@ public:
 	~ResourceFactory() = default;
 
 	ResourceEntity* create(int id, Urho3D::IntVector2 bucketCords);
-	ResourceEntity* load(dbload_resource_entities* resource) const;
+	ResourceEntity* load(dbload_resource* resource) const;
 
 private:
 	ResourceEntity* create(int id, Urho3D::IntVector2 bucketCords, UId uid) const;

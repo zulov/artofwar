@@ -155,7 +155,7 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 	for (const auto unit : *loader.getData()->units) {
 		simObjectManager->load(unit);
 	}
-	for (const auto resource : *loader.getData()->resource_entities) {
+	for (const auto resource : *loader.getData()->resources) {
 		simObjectManager->load(resource);
 	}
 	for (const auto building : *loader.getData()->buildings) {

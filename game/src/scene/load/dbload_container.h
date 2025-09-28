@@ -30,7 +30,7 @@ struct dbload_static : dbload_physical {
 
 	dbload_static(short idDb, float hp, unsigned uid, char player, int bucX, int bucY, char level, char state,
 	              char nextState)
-		: dbload_physical(idDb, hp, uid, player, level,state, nextState),
+		: dbload_physical(idDb, hp, uid, player, level, state, nextState),
 		  buc_x(bucX),
 		  buc_y(bucY) {}
 };
@@ -41,7 +41,7 @@ struct dbload_unit : dbload_physical {
 	float vel_x;
 	float vel_z;
 
-	dbload_unit(int idDb, float hp, unsigned uid, char player, char level, float posX, float posZ, char state,
+	dbload_unit(short idDb, float hp, unsigned uid, char player, char level, float posX, float posZ, char state,
 	            float velX, float velZ)
 		: dbload_physical(idDb, hp, uid, player, level, state, -1),
 		  pos_x(posX),
@@ -60,8 +60,8 @@ struct dbload_building : dbload_static {
 		  deploy_idx(deploy_idx) {}
 };
 
-struct dbload_resource_entities : dbload_static {
-	dbload_resource_entities(short idDb, float hpCoef, unsigned uid, int bucX, int bucY, char state,
+struct dbload_resource : dbload_static {
+	dbload_resource(short idDb, float hpCoef, unsigned uid, int bucX, int bucY, char state,
 	                         char nextState) : dbload_static(idDb, hpCoef, uid, -1, bucX, bucY, -1, state,
 	                                                         nextState) {}
 };
@@ -75,9 +75,13 @@ struct dbload_player {
 	Urho3D::String name;
 	unsigned buildingUid;
 	unsigned unitUid;
+	float food;
+	float wood;
+	float stone;
+	float gold;
 
-	dbload_player(int id, bool isActive, int team, int nation, char* name, int color, unsigned buildingUid,
-	              unsigned unitUid)
+	dbload_player(int id, bool isActive, char team, char nation, char* name, int color,
+	              unsigned buildingUid, unsigned unitUid, float food, float wood, float stone, float gold)
 		: is_active(isActive),
 		  id(id),
 		  team(team),
@@ -85,18 +89,7 @@ struct dbload_player {
 		  color(color),
 		  name(name),
 		  buildingUid(buildingUid),
-		  unitUid(unitUid) {}
-};
-
-struct dbload_resource {
-	short player;
-	float food;
-	float wood;
-	float stone;
-	float gold;
-
-	dbload_resource(short player, float food, float wood, float stone, float gold)
-		: player(player),
+		  unitUid(unitUid),
 		  food(food),
 		  wood(wood),
 		  stone(stone),
@@ -112,20 +105,18 @@ struct dbload_container {
 	~dbload_container() {
 		delete config;
 		clear_and_delete_vector(players);
-		clear_and_delete_vector(resources);
 
 		clear_and_delete_vector(units);
 		clear_and_delete_vector(buildings);
-		clear_and_delete_vector(resource_entities);
+		clear_and_delete_vector(resources);
 	}
 
 	int precision;
 	dbload_config* config;
 
 	std::vector<dbload_player*>* players{};
-	std::vector<dbload_resource*>* resources{};
 
 	std::vector<dbload_unit*>* units{};
 	std::vector<dbload_building*>* buildings{};
-	std::vector<dbload_resource_entities*>* resource_entities{};
+	std::vector<dbload_resource*>* resources{};
 };

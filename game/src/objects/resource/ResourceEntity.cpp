@@ -119,7 +119,7 @@ std::pair<float, bool> ResourceEntity::absorbAttack(float collectSpeed) {
 	return {toReturn, true};
 }
 
-ResourceEntity* ResourceEntity::load(dbload_resource_entities* resource) {
+ResourceEntity* ResourceEntity::load(dbload_resource* resource) {
 	Static::load(resource);
 	return this;
 }

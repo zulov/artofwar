@@ -11,7 +11,7 @@ ResourceEntity* ResourceFactory::create(int id, Urho3D::IntVector2 bucketCords) 
 	return create(id, bucketCords, UId(++currentUId));
 }
 
-ResourceEntity* ResourceFactory::load(dbload_resource_entities* resource) const {
+ResourceEntity* ResourceFactory::load(dbload_resource* resource) const {
 	auto ress = create(resource->id_db, {resource->buc_x, resource->buc_y}, UId(resource->uid));
 	if (ress) {
 		return ress->load(resource);
