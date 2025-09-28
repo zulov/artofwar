@@ -53,10 +53,9 @@ int static load_units(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
 	int p = xyz->precision;
-	xyz->units->push_back(new dbload_unit(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[2]),
-	                                      atoi(argv[3]), atof(argv[4]) / p, atof(argv[5]) / p,
-	                                      atoi(argv[6]), atof(argv[7]) / p, atof(argv[8]) / p,
-	                                      atoi(argv[9])));
+	xyz->units->push_back(new dbload_unit(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[2]),atoi(argv[3]),
+	                                      atoi(argv[4]), atof(argv[5]) / p, atof(argv[6]) / p,
+	                                      atoi(argv[7]), atof(argv[8]) / p, atof(argv[9]) / p));
 
 	return 0;
 }
@@ -65,10 +64,9 @@ int static load_buildings(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
 	int p = xyz->precision;
-	xyz->buildings->push_back(new dbload_building(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[2]),
-	                                              atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),
-	                                              atoi(argv[6]), atoi(argv[7]), atoi(argv[8]),
-	                                              atoi(argv[9])));
+	xyz->buildings->push_back(new dbload_building(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[9]),atoi(argv[3]),
+	                                              atoi(argv[4]), atoi(argv[5]), atoi(argv[6]),
+	                                              atoi(argv[7]), atoi(argv[8]), atoi(argv[9])));
 
 	return 0;
 }
@@ -77,10 +75,9 @@ int static load_resources_entities(void* data, int argc, char** argv, char** azC
 	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
 	float p = xyz->precision;
-	xyz->resource_entities->push_back(new dbload_resource_entities(fatoi(argv[0]), fatoi(argv[1]) / p,
-	                                                               fatoi(argv[2]), fatoi(argv[3]),
-	                                                               fatoi(argv[4]), fatoi(argv[5]),
-	                                                               fatoi(argv[6])));
+	xyz->resource_entities->push_back(new dbload_resource_entities(fatoi(argv[0]), fatoi(argv[1]) / p, fatoi(argv[2]),
+	                                                               fatoi(argv[3]), fatoi(argv[4]),
+	                                                               fatoi(argv[5]), fatoi(argv[6])));
 
 	return 0;
 }

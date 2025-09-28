@@ -13,60 +13,57 @@ struct dbload_config {
 
 struct dbload_physical {
 	float hp;
+	unsigned uid;
 	short id_db;
 	char player;
 	char level;
-	unsigned uid;
+	char state;
+	char nextState;
 
-	dbload_physical(short idDb, float hp, short player, short level, unsigned uid)
-		: hp(hp), id_db(idDb), player(player), level(level), uid(uid) { }
+	dbload_physical(short idDb, float hp, unsigned uid, short player, short level, char state, char nextState)
+		: hp(hp), uid(uid), id_db(idDb), player(player), level(level), state(state), nextState(nextState) {}
 };
 
 struct dbload_static : dbload_physical {
 	short buc_x;
 	short buc_y;
-	char state;
-	char nextState;
 
-	dbload_static(int idDb, float hp, int player, int bucX, int bucY, int level, int state,
-	              int nextState, unsigned uid)
-		: dbload_physical(idDb, hp, player, level, uid),
+	dbload_static(short idDb, float hp, unsigned uid, char player, int bucX, int bucY, char level, char state,
+	              char nextState)
+		: dbload_physical(idDb, hp, uid, player, level,state, nextState),
 		  buc_x(bucX),
-		  buc_y(bucY),
-		  state(state),
-		  nextState(nextState) { }
+		  buc_y(bucY) {}
 };
 
 struct dbload_unit : dbload_physical {
 	float pos_x;
 	float pos_z;
-	int state;
 	float vel_x;
 	float vel_z;
 
-	dbload_unit(int idDb, float hp, int player, int level, float posX, float posZ, int state,
-	            float velX, float velZ, unsigned uid)
-		: dbload_physical(idDb, hp, player, level, uid),
+	dbload_unit(int idDb, float hp, unsigned uid, char player, char level, float posX, float posZ, char state,
+	            float velX, float velZ)
+		: dbload_physical(idDb, hp, uid, player, level, state, -1),
 		  pos_x(posX),
 		  pos_z(posZ),
-		  state(state),
 		  vel_x(velX),
-		  vel_z(velZ) { }
+		  vel_z(velZ) {}
 };
 
 struct dbload_building : dbload_static {
 	int deploy_idx;
 
-	dbload_building(int idDb, float hpCoef, int player, int level, int bucX, int bucY, int state, int nextState,
-	                int deploy_idx, unsigned uid)
-		: dbload_static(idDb, hpCoef, player, bucX, bucY, level, state, nextState, uid),
-		  deploy_idx(deploy_idx) { }
+	dbload_building(short idDb, float hpCoef, unsigned uid, char player, char level, int bucX, int bucY, char state,
+	                char nextState,
+	                int deploy_idx)
+		: dbload_static(idDb, hpCoef, uid, player, bucX, bucY, level, state, nextState),
+		  deploy_idx(deploy_idx) {}
 };
 
 struct dbload_resource_entities : dbload_static {
-	dbload_resource_entities(int idDb, float hpCoef, int bucX, int bucY, int state,
-	                         int nextState, unsigned uid) : dbload_static(idDb, hpCoef, -1, bucX, bucY, -1, state,
-	                                                        nextState, uid) { }
+	dbload_resource_entities(short idDb, float hpCoef, unsigned uid, int bucX, int bucY, char state,
+	                         char nextState) : dbload_static(idDb, hpCoef, uid, -1, bucX, bucY, -1, state,
+	                                                         nextState) {}
 };
 
 struct dbload_player {
@@ -88,8 +85,7 @@ struct dbload_player {
 		  color(color),
 		  name(name),
 		  buildingUid(buildingUid),
-		  unitUid(unitUid) {
-	}
+		  unitUid(unitUid) {}
 };
 
 struct dbload_resource {
@@ -104,8 +100,7 @@ struct dbload_resource {
 		  food(food),
 		  wood(wood),
 		  stone(stone),
-		  gold(gold) {
-	}
+		  gold(gold) {}
 };
 
 struct dbload_container {
