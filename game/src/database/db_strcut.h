@@ -299,7 +299,7 @@ struct db_unit : db_with_icon, db_with_cost {
 
 	bool possibleStates[magic_enum::enum_count<UnitState>()];
 
-	std::vector<db_unit_level*> levels;
+	std::vector<db_unit_level*> levels;//todo array
 
 	std::vector<db_nation*> nations;
 	std::vector<unsigned char> ordersIds;
@@ -317,7 +317,7 @@ struct db_unit : db_with_icon, db_with_cost {
 		typeHeavy(typeHeavy),
 		typeLight(typeLight) {}
 
-	std::optional<db_unit_level*> getLevel(short level) {
+	std::optional<db_unit_level*> getLevel(char level) {
 		if (levels.size() > level) {
 			return levels.at(level);
 		}

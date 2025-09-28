@@ -10,60 +10,27 @@
 #include "player/Resources.h"
 #include "utils/PrintUtils.h"
 
-SceneSaver::SceneSaver(int precision): loadingState(7), precision(precision) {
+SceneSaver::SceneSaver(int precision) : loadingState(7), precision(precision) {
 	//TODO zapisywanie powinno byc tylko miedzy klatkami
-}
-
-void SceneSaver::createUnitsTable() const {
-	const std::string sql = "units(" + SQLConsts::UNIT_COL + ");";
-
-	createTable(sql);
 }
 
 void SceneSaver::createTable(const std::string& sql) const {
 	auto createSql = SQLConsts::CREATE_TABLE + sql;
 	const char* charSql = createSql.c_str();
 
-	std::cout<<(createSql);
+	std::cout << (createSql);
 	char* error;
 	const int rc = sqlite3_exec(database, charSql, nullptr, nullptr, &error);
 	ifError(rc, error, createSql);
 }
 
-void SceneSaver::createBuildingsTable() const {
-	const std::string sql = "buildings(" + SQLConsts::BUILDING_COL + ");";
-
-	createTable(sql);
-}
-
-void SceneSaver::createResourceEntitiesTable() const {
-	const std::string sql = "resource_entities(" + SQLConsts::RESOURCE_COL + ");";
-
-	createTable(sql);
-}
-
-void SceneSaver::createPlayerTable() const {
-	const std::string sql = "players(" + SQLConsts::PLAYER_COL + ");";
-	createTable(sql);
-}
-
-void SceneSaver::createConfigTable() const {
-	const std::string sql = "config(" + SQLConsts::CONFIG_COL + ");";
-	createTable(sql);
-}
-
-void SceneSaver::createResourceTable() const {
-	const std::string sql = "resources(" + SQLConsts::PLAYER_RESOURCES_COL + ");";
-	createTable(sql);
-}
-
 void SceneSaver::createTables() const {
-	createUnitsTable();
-	createBuildingsTable();
-	createResourceEntitiesTable();
-	createPlayerTable();
-	createConfigTable();
-	createResourceTable();
+	createTable(SQLConsts::UNIT_COL);
+	createTable(SQLConsts::BUILDING_COL);
+	createTable(SQLConsts::RESOURCE_COL);
+	createTable(SQLConsts::PLAYER_COL);
+	createTable(SQLConsts::CONFIG_COL);
+	createTable(SQLConsts::PLAYER_RESOURCES_COL);
 }
 
 void SceneSaver::createDatabase(const Urho3D::String& fileName) {

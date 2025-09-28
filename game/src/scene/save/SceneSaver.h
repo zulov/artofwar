@@ -30,14 +30,7 @@ public:
 	void close();
 private:
 	void executeInsert(std::string& sql) const;
-
-	void createUnitsTable() const;
 	void createTable(const std::string& sql) const;
-	void createBuildingsTable() const;
-	void createResourceEntitiesTable() const;
-	void createPlayerTable() const;
-	void createConfigTable() const;
-	void createResourceTable() const;
 
 	sqlite3* database;
 	int precision;

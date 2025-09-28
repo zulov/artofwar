@@ -30,10 +30,8 @@ struct Loading {
 
 	void inc(std::string _msg) {
 		if (ifPrint) {
-			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-				std::chrono::system_clock::now() - start);
-			std::cout << (int)currentStage << " completed (" << msg.c_str() << ") at " << duration.count() << " ms" <<
-				std::endl;
+			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
+			std::cout << (int)currentStage << " completed (" << msg.c_str() << ") at " << duration.count() << " ms" << std::endl;
 			start = std::chrono::system_clock::now();
 			msg = std::move(_msg);
 		}
@@ -48,7 +46,6 @@ struct Loading {
 	unsigned char currentStage;
 	const unsigned char stagesNumber;
 private:
-
 	const bool ifPrint;
 	std::string msg = "";
 	std::chrono::system_clock::time_point start;
