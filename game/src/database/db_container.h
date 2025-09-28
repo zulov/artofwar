@@ -56,8 +56,7 @@ struct db_container {
 		for (auto* level : unitsLevels) {
 			const auto unit = units[level->unit];
 			METRIC_DEFINITIONS.writeUnit(unitMetricValues, unit, level);
-			level->finish(unitMetricValues,
-			              METRIC_DEFINITIONS.getUnitTypesIdxs());
+			level->finish(unitMetricValues, METRIC_DEFINITIONS.getUnitTypesIdxs());
 		}
 		std::array<float, BUILDING_SIZE> buildingMetricValues;
 		for (auto* level : buildingsLevels) {

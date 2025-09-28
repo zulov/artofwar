@@ -81,7 +81,7 @@ constexpr inline struct MetricDefinitions {
 	const std::span<const unsigned char> getBuildingUnitsIdxs() const { return aiBuildingUnitsIdxs; }
 	const std::span<const unsigned char> getBuildingTypesIdxs() const { return aiBuildingTypesIdxs; }
 
-
+	//TODO unordered_map<Enum, AiUnitMetric>
 	static inline AiUnitMetric aiUnitMetric[] = { //db_unit* u, db_unit_level* l
 		{[](auto u, auto l) -> float { return u->getSumCost(); }, 400},
 		//TODO czy grupowe ma sens?

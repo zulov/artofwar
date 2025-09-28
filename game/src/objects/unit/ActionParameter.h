@@ -6,12 +6,9 @@ class Physical;
 struct ActionParameter {
 	ActionParameter() = default;
 
-	explicit ActionParameter(Aim* aim) : aim(aim) {
-	}
+	explicit ActionParameter(Aim* aim) : aim(aim) {}
 
-	ActionParameter(Physical* thing)
-		: thingToInteract(thing) {
-	}
+	explicit ActionParameter(Physical* thing) : thingToInteract(thing) {}
 
 	bool isThingAlive() const;
 	void reset(const ActionParameter& actionParameter, bool withDelete);

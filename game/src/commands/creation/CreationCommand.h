@@ -16,8 +16,10 @@ public:
 	void setHp(float value) { hp = value; }
 
 private:
-	Urho3D::Vector2 position; // TODO Union
-	Urho3D::IntVector2 bucketCords; // TODO Union
+	union {
+		Urho3D::Vector2 position;
+		Urho3D::IntVector2 bucketCords;
+	};
 	unsigned number = 1;
 	float hp = -1.f;
 	short id;
