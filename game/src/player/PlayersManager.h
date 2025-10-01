@@ -14,7 +14,7 @@ class PlayersManager {
 public:
 	PlayersManager() = default;
 	~PlayersManager();
-	void load(std::vector<dbload_player*>* players);
+	void load(const std::vector<dbload_player*>* players);
 	void addPlayer(NewGamePlayer& player);
 	void load(NewGameForm* form);
 	Player* getActivePlayer() const;

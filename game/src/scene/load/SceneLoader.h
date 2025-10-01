@@ -24,7 +24,7 @@ public:
 	dbload_container* getData() const;
 	void createLoad(const Urho3D::String& fileName, bool tryReuse);
 	dbload_config* getConfig() const;
-	void loadPlayers() const;
+	const std::vector<dbload_player*>* loadPlayers() const;
 
 	void loadUnits() const;
 	void loadBuildings() const;

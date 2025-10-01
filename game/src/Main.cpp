@@ -359,7 +359,7 @@ void Main::load(const Urho3D::String& saveName, NewGameForm* form) {
 				Game::getPlayersMan()->load(form);
 			} else {
 				loader.createLoad(saveName, SIM_GLOBALS.CURRENT_RUN > 0);
-				Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());
+				Game::getPlayersMan()->load(loader.loadPlayers());
 			}
 
 			if (!engineParameters_[Urho3D::EP_HEADLESS].GetBool()) {

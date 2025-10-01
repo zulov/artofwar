@@ -114,11 +114,12 @@ dbload_config* SceneLoader::getConfig() const {
 	return dbLoad->config;
 }
 
-void SceneLoader::loadPlayers() const {
-	if (dbLoad->players) { return; }
+const std::vector<dbload_player*>* SceneLoader::loadPlayers() const {
+	if (dbLoad->players) { return dbLoad->players; }
 	dbLoad->players = new std::vector<dbload_player*>();
 
 	load(SQLConsts::SELECT + "players", load_players);
+	return dbLoad->players;
 }
 
 void SceneLoader::loadUnits() const {

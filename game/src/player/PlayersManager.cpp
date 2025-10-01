@@ -10,23 +10,16 @@ PlayersManager::~PlayersManager() {
 	clear_vector(allPlayers);
 }
 
-void PlayersManager::load(std::vector<dbload_player*>* players) {
+void PlayersManager::load(const std::vector<dbload_player*>* players) {
 	for (auto player : *players) {
 		auto newPlayer = new Player(player->nation, player->team, player->id, player->color, player->name,
 		                            player->is_active, player->buildingUid, player->unitUid);
+		newPlayer->setResourceAmount(player->food, player->wood, player->stone, player->gold);
 		if (player->is_active) {
 			activePlayer = newPlayer;
 		}
 		allPlayers.push_back(newPlayer);
 		teams[player->team].push_back(newPlayer);
-	}
-
-	for (const auto resource : *resources) {
-		for (const auto player : allPlayers) {
-			if (player->getId() == resource->player) {
-				player->setResourceAmount(resource->food, resource->wood,resource->stone, resource->gold);
-			}
-		}
 	}
 }
 
