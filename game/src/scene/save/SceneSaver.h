@@ -23,9 +23,8 @@ public:
 	void createSave(const Urho3D::String& fileName);
 	void saveUnits(std::vector<Unit*>* units);
 	void saveBuildings(std::vector<Building*>* buildings);
-	void saveResourceEntities(std::vector<ResourceEntity*>* resources);
+	void saveResources(std::vector<ResourceEntity*>* resources);
 	void savePlayers(std::vector<Player*>& players);
-	void saveResources(const std::vector<Player*>& players);
 	void saveConfig(int mapId, int size);
 	void close();
 private:

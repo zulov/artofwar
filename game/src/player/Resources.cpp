@@ -50,8 +50,7 @@ void Resources::add(int id, float value) {
 
 std::string Resources::getValues(int precision, int player) const {
 	std::string str = "(" + std::to_string(player) + 
-		"," + std::to_string((int)(values[0] * precision))+"," + std::to_string((int)(values[1] * precision)) + 
-		"," + std::to_string((int)(values[2] * precision))+"," + std::to_string((int)(values[3] * precision)) + 
+		
 		"),";
 
 	return str;

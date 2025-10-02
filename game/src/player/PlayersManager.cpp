@@ -62,7 +62,6 @@ void PlayersManager::changeActive(short i) {
 
 void PlayersManager::save(SceneSaver& saver) {
 	saver.savePlayers(allPlayers);
-	saver.saveResources(allPlayers);
 }
 
 void PlayersManager::update(FrameInfo* frameInfo) {

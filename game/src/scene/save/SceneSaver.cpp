@@ -81,10 +81,10 @@ void SceneSaver::saveBuildings(std::vector<Building*>* buildings) {
 	executeInsert(sql);
 }
 
-void SceneSaver::saveResourceEntities(std::vector<ResourceEntity*>* resources) {
-	loadingState.inc("saving resource_entities");
+void SceneSaver::saveResources(std::vector<ResourceEntity*>* resources) {
+	loadingState.inc("saving resources");
 	if (resources->empty()) { return; }
-	std::string sql = "INSERT INTO resource_entities VALUES ";
+	std::string sql = "INSERT INTO resources VALUES ";
 	for (auto resourceEntity : *resources) {
 		sql += " (" + resourceEntity->getValues(precision) + "),";
 	}
@@ -97,16 +97,6 @@ void SceneSaver::savePlayers(std::vector<Player*>& players) {
 	std::string sql = "INSERT INTO players VALUES ";
 	for (auto player : players) {
 		sql += " (" + player->getValues(precision) + "),";
-	}
-	executeInsert(sql);
-}
-
-void SceneSaver::saveResources(const std::vector<Player*>& players) {
-	loadingState.inc("saving resources");
-	if (players.empty()) { return; }
-	std::string sql = "INSERT INTO resources VALUES ";
-	for (const auto player : players) {
-		sql += player->getResources()->getValues(precision, player->getId());
 	}
 	executeInsert(sql);
 }

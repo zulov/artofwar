@@ -271,7 +271,7 @@ void Simulation::updateQueues() const {
 void Simulation::save(SceneSaver& saver) const {
 	saver.saveUnits(units);
 	saver.saveBuildings(buildings);
-	saver.saveResourceEntities(resources);
+	saver.saveResources(resources);
 }
 
 void Simulation::changeCoef(int i, int wheel) {

@@ -43,7 +43,11 @@ struct SQLConsts {
 		"team		INT NOT NULL,"
 		"nation		INT NOT NULL,"
 		"name		TEXT NOT NULL,"
-		"color		INT NOT NULL);";
+		"color		INT NOT NULL,"
+		"food		INT NOT NULL,"
+		"wood		INT NOT NULL,"
+		"stone		INT NOT NULL,"
+		"gold		INT NOT NULL);";
 
 	inline const static std::string PLAYER_RESOURCES_COL =
 		"resources("

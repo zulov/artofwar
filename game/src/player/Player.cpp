@@ -1,4 +1,5 @@
 #include "player/Player.h"
+
 #include "Game.h"
 #include "Possession.h"
 #include "Resources.h"
@@ -7,10 +8,13 @@
 #include "env/Environment.h"
 
 
-Player::Player(int nationId, char team, char id, int color, Urho3D::String name, bool active, unsigned currentBuildingUId, unsigned currentUnitUId):
+Player::Player(int nationId, char team, char id, int color, Urho3D::String name, bool active,
+               unsigned currentBuildingUId, unsigned currentUnitUId) :
 	team(team), id(id), active(active), color(color),
-	currentBuildingUId(currentBuildingUId), currentUnitUId(currentUnitUId), dbNation(Game::getDatabase()->getNation(nationId)),
-	queue(new QueueManager(1)), possession(new Possession(nationId)), resources(new Resources()), actionMaker(this, dbNation), orderMaker(this, dbNation),
+	currentBuildingUId(currentBuildingUId), currentUnitUId(currentUnitUId),
+	dbNation(Game::getDatabase()->getNation(nationId)),
+	queue(new QueueManager(1)), possession(new Possession(nationId)), resources(new Resources()),
+	actionMaker(this, dbNation), orderMaker(this, dbNation),
 	name(std::move(name)) {
 	unitLevels = new char[Game::getDatabase()->getUnits().size()];
 	buildingLevels = new char[Game::getDatabase()->getBuildings().size()];
@@ -28,12 +32,17 @@ Player::~Player() {
 }
 
 std::string Player::getValues(int precision) const {
+	auto resVals = resources->getValues();
 	return std::to_string(id) + ","
 		+ std::to_string(active) + ","
 		+ std::to_string(team) + ","
 		+ std::to_string(dbNation->id) + ",'"
 		+ name.CString() + "','"
-		+ std::to_string(color) + "'";
+		+ std::to_string(color) + "'"
+		+ std::to_string((int)(resVals[0] * precision)) + ","
+		+ std::to_string((int)(resVals[1] * precision)) + ","
+		+ std::to_string((int)(resVals[2] * precision)) + ","
+	+ std::to_string((int)(resVals[3] * precision));
 }
 
 void Player::setResourceAmount(float food, float wood, float stone, float gold) const {
