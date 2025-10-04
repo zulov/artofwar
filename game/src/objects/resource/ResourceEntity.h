@@ -10,7 +10,7 @@ struct dbload_resource;
 struct db_resource;
 enum class ResourceActionType : char;
 
-class ResourceEntity : public Static {
+class ResourceEntity : public Static {//TODO rename to resource
 public:
 	ResourceEntity(Urho3D::Vector3 _position, db_resource* db_resource, int indexInGrid, UId uid);
 	~ResourceEntity() override = default;

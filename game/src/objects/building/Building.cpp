@@ -145,6 +145,7 @@ void Building::levelUp(char level) {
 
 Building* Building::load(dbload_building* dbloadBuilding) {
 	Static::load(dbloadBuilding);
+	loadQueue
 	return this;
 }
 
@@ -156,7 +157,7 @@ QueueElement* Building::updateQueue() {
 	return queue->update();
 }
 
-void Building::updateAi(bool ifBuildingAction) {
+void Building::updateAi(bool ifBuildingAction) {//TODO fun to check if not null and alive
 	if (thingToInteract &&
 		(!thingToInteract->isAlive() || sqDistAs2D(thingToInteract->getPosition(), position) >
 			dbLevel->sqAttackRange)) {
