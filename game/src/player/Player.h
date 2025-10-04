@@ -52,8 +52,8 @@ public:
 	void addKilled(Physical* physical) const;
 	void resetScore();
 
-	unsigned getNextBuildingId() { return currentBuildingUId++; }
-	unsigned getNextUnitId() { return currentUnitUId++; }
+	unsigned getNextBuildingId() { return ++currentBuildingUId; }
+	unsigned getNextUnitId() { return ++currentUnitUId; }
 
 private:
 	int score = -1;

@@ -36,8 +36,7 @@ void SceneSaver::createTables() const {
 void SceneSaver::createDatabase(const Urho3D::String& fileName) {
 	database = nullptr;
 	std::string name = std::string("saves/") + fileName.CString() + ".db";
-	const int rc = sqlite3_open(name.c_str(), &database);
-	if (rc) {
+	if (const int rc = sqlite3_open(name.c_str(), &database)) {
 		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
 		sqlite3_close_v2(database);
 	}

@@ -38,7 +38,7 @@ std::string Player::getValues(int precision) const {
 		+ std::to_string(team) + ","
 		+ std::to_string(dbNation->id) + ",'"
 		+ name.CString() + "','"
-		+ std::to_string(color) + "'"
+		+ std::to_string(color) + "',"
 		+ std::to_string((int)(resVals[0] * precision)) + ","
 		+ std::to_string((int)(resVals[1] * precision)) + ","
 		+ std::to_string((int)(resVals[2] * precision)) + ","

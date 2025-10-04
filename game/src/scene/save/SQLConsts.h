@@ -25,7 +25,7 @@ struct SQLConsts {
 		STATIC_COL +
 		",deploy_Idx	INT NOT NULL);";
 
-	inline const static std::string RESOURCE_COL = "resource_entities(" +
+	inline const static std::string RESOURCE_COL = "resources(" +
 		BASIC_COL + STATIC_COL + ");";
 
 	inline const static std::string UNIT_COL = "units(" +

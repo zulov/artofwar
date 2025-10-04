@@ -54,8 +54,7 @@ struct dbload_building : dbload_static {
 	int deploy_idx;
 
 	dbload_building(short idDb, float hpCoef, unsigned uid, char player, char level, int bucX, int bucY, char state,
-	                char nextState,
-	                int deploy_idx)
+	                char nextState, int deploy_idx)
 		: dbload_static(idDb, hpCoef, uid, player, bucX, bucY, level, state, nextState),
 		  deploy_idx(deploy_idx) {}
 };

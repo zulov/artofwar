@@ -67,7 +67,8 @@ char Physical::getLevelNum() {
 std::string Physical::getValues(int precision) {
 	int hp_coef = hp * precision;
 	auto v = std::to_string(getDbId()) + ","
-		+ std::to_string(hp_coef) + ",";
+		+ std::to_string(hp_coef) + ","
+		+ std::to_string(uId.v) + ",";
 	if (getType() == ObjectType::RESOURCE) {
 		return v;
 	}
