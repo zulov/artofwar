@@ -4,7 +4,7 @@
 #include "Game.h"
 #include "objects/NodeUtils.h"
 #include "objects/queue/QueueActionType.h"
-#include "objects/queue/SimpleQueueManager.h"
+#include "objects/queue/QueueManager.h"
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
@@ -20,8 +20,8 @@
 #include "env/Environment.h"
 
 
-Building::Building(Urho3D::Vector3 _position, db_building* db_building, char playerId, char teamId, int level, int indexInGrid, UId uId):
-	Static(_position, indexInGrid, uId) {
+Building::Building(Urho3D::Vector3 _position, db_building* db_building, char playerId, char teamId, char level, int indexInGrid, UId uId):
+	Static(_position, indexInGrid, uId), queue(dbLevel->queueMaxCapacity) {
 	player = playerId;
 	team = teamId;
 	dbBuilding = db_building;
@@ -33,11 +33,10 @@ Building::~Building() {
 	if (node) {
 		node->RemoveAllChildren();
 	}
-	delete queue;
 }
 
 void Building::postCreate() {
-	queue->add(1, QueueActionType::BUILDING_CREATE, getDbId(), 1);
+	queue.add(1, QueueActionType::BUILDING_CREATE, getDbId(), 1);
 	setShaderParam(this, "Progress", 0.0);
 }
 
@@ -50,7 +49,7 @@ float Building::getHealthBarSize() const {
 	if (isReady()) {
 		return Physical::getHealthBarSize();
 	}
-	return getMaxHpBarSize() * queue->getAt(0)->getProgress();
+	return getMaxHpBarSize() * queue.first()->getProgress();
 }
 
 char Building::getLevelNum() {
@@ -62,12 +61,7 @@ void Building::populate() {
 	hp = dbLevel->maxHp;
 	dbId = dbBuilding->id;
 	invMaxHp = dbLevel->invMaxHp;
-	delete queue; //TODO optimize //TODO bug co jezeli cos jets w kolejce!!!!
-	if (dbLevel->queueMaxCapacity > 0) {
-		queue = new QueueManager(dbLevel->queueMaxCapacity);
-	} else {
-		queue = new SimpleQueueManager();
-	}
+	queue.resize(dbLevel->queueMaxCapacity);
 }
 
 std::pair<float, bool> Building::absorbAttack(float attackCoef) {
@@ -109,21 +103,21 @@ float Building::getAttackVal(Physical* aim) {
 	return dbLevel->attack;
 }
 
-void Building::action(BuildingActionType type, short id) const {
+void Building::action(BuildingActionType type, short id) {
 	if (!isReady()) { return; }
 	Resources* resources = Game::getPlayersMan()->getPlayer(getPlayer())->getResources();
 
 	switch (type) {
 	case BuildingActionType::UNIT_CREATE:
 		if (resources->reduce(Game::getDatabase()->getUnit(id)->costs)) {
-			queue->add(1, QueueActionType::UNIT_CREATE, id, 30);
+			queue.add(1, QueueActionType::UNIT_CREATE, id, 30);
 		}
 		break;
 	case BuildingActionType::UNIT_LEVEL: {
 		auto opt = Game::getPlayersMan()->getPlayer(getPlayer())->getNextLevelForUnit(id);
 		if (opt.has_value()) {
 			if (resources->reduce(opt.value()->costs)) {
-				queue->add(1, QueueActionType::UNIT_LEVEL, id, 1);
+				queue.add(1, QueueActionType::UNIT_LEVEL, id, 1);
 			}
 		}
 	}
@@ -145,22 +139,22 @@ void Building::levelUp(char level) {
 
 Building* Building::load(dbload_building* dbloadBuilding) {
 	Static::load(dbloadBuilding);
-	loadQueue
+	//TODO loadQueue
 	return this;
 }
 
 QueueElement* Building::updateQueue() {
 	if (!isReady() && !SIM_GLOBALS.HEADLESS) {
-		setShaderParam(this, "Progress", queue->getAt(0)->getProgress());
+		setShaderParam(this, "Progress", queue.getAt(0)->getProgress());
 	}
 
-	return queue->update();
+	return queue.update();
 }
 
 void Building::updateAi(bool ifBuildingAction) {//TODO fun to check if not null and alive
 	if (thingToInteract &&
-		(!thingToInteract->isAlive() || sqDistAs2D(thingToInteract->getPosition(), position) >
-			dbLevel->sqAttackRange)) {
+		(!thingToInteract->isAlive() || 
+			sqDistAs2D(thingToInteract->getPosition(), position) > dbLevel->sqAttackRange)) {
 		thingToInteract = nullptr;
 		currentFrameState = 0;
 	}

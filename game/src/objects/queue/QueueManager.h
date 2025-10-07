@@ -1,21 +1,20 @@
 #pragma once
 #include <vector>
 
-#include "AbstractQueueManager.h"
-
 enum class QueueActionType : char;
 class QueueElement;
 
-class QueueManager : public AbstractQueueManager {
+class QueueManager  {
 public:
 	explicit QueueManager(unsigned short maxCapacity);
-	virtual ~QueueManager();
+	~QueueManager();
 
-	void add(short number, QueueActionType type, short id, unsigned short localMaxCapacity) override;
-	QueueElement* update() override;
-	short getSize() const override;
-	QueueElement* getAt(short i) override;
+	void add(short number, QueueActionType type, short id, unsigned short localMaxCapacity);
+	QueueElement* update();
+	short getSize() const;
+	QueueElement* getAt(short i);
 private:
+	//TODO  QueueElement*[maxCapacity]
 	std::vector<QueueElement*> queue;
 
 	unsigned short maxCapacity;

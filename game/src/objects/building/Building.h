@@ -1,4 +1,5 @@
 #pragma once
+#include "objects/queue/QueueManager.h"
 #include "objects/static/Static.h"
 
 
@@ -13,7 +14,7 @@ class QueueElement;
 
 class Building : public Static {
 public:
-	Building(Urho3D::Vector3 _position, db_building* db_building, char playerId, char teamId, int level, int indexInGrid, UId uId);
+	Building(Urho3D::Vector3 _position, db_building* db_building, char playerId, char teamId, char level, int indexInGrid, UId uId);
 	~Building() override;
 
 	void populate();
@@ -27,7 +28,7 @@ public:
 	std::optional<int> getDeploy();
 
 	//TODO target to nie to samo co gdzie sie maja pojawiac!
-	AbstractQueueManager* getQueue() const { return queue; }
+	const QueueManager& getQueue() const { return queue; }
 	bool isReady() const { return state != StaticState::CREATING; }
 
 	Urho3D::String getInfo() const override;
@@ -37,7 +38,7 @@ public:
 
 	ObjectType getType() const override { return ObjectType::BUILDING; }
 	float getAttackVal(Physical* aim) override;
-	void action(BuildingActionType type, short id) const;
+	void action(BuildingActionType type, short id);
 	std::string getValues(int precision) override;
 	unsigned short getMaxHpBarSize() const override;
 	float getHealthBarSize() const override;
@@ -66,6 +67,6 @@ private:
 	db_building* dbBuilding;
 	db_building_level* dbLevel;
 
-	AbstractQueueManager* queue{};
+	QueueManager queue;
 	Physical* thingToInteract{};
 };
