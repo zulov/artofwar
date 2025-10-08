@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 
 enum class QueueActionType : char;
 class QueueElement;
@@ -13,9 +12,11 @@ public:
 	QueueElement* update();
 	short getSize() const;
 	QueueElement* getAt(short i);
+	QueueElement* first();
+	void resize(short maxSize);
+
 private:
-	//TODO  QueueElement*[maxCapacity]
-	std::vector<QueueElement*> queue;
+	QueueElement** queue{};
 
 	unsigned short maxCapacity;
 };

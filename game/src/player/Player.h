@@ -44,7 +44,7 @@ public:
 	int getWorkersNumber() const;
 
 	QueueElement* updateQueue() const;
-	QueueManager* getQueue() const;
+	const QueueManager& getQueue() const { return queue; }
 	db_unit_level* getLevelForUnit(short id) const;
 	db_building_level* getLevelForBuilding(short id) const;
 	std::optional<db_unit_level*> getNextLevelForUnit(short id) const;
@@ -66,7 +66,7 @@ private:
 	unsigned currentUnitUId;
 
 	db_nation* dbNation; //Must by first
-	QueueManager* queue;
+	QueueManager queue;
 	Possession* possession;
 	Resources* resources;
 	ActionMaker actionMaker;

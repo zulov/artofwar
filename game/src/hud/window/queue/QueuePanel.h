@@ -12,11 +12,11 @@ public:
 	~QueuePanel();
 
 	void show(SelectedInfo* selectedInfo);
-	void show(AbstractQueueManager* queue);
+	void show(const QueueManager& queue);
 	void update(SelectedInfo* selectedInfo);
 private:
 	void finish(int from);
-	void update(AbstractQueueManager* queue, short& j) const;
+	void update(const QueueManager& queue, short& j) const;
 	void createBody() override;
 	void HandleReduce(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 	char MAX_ICON_SELECTION = 31;

@@ -10,7 +10,6 @@
 #include "database/DatabaseCache.h"
 #include "objects/NamesCache.h"
 #include "objects/building/Building.h"
-#include "objects/queue/AbstractQueueManager.h"
 #include "objects/queue/QueueElement.h"
 
 
@@ -25,16 +24,15 @@ QueuePanel::~QueuePanel() {
 	delete[] elements;
 }
 
-void QueuePanel::update(AbstractQueueManager* queue, short& j) const {
-	const short size = Urho3D::Min(queue->getSize(), MAX_ICON_SELECTION);
+void QueuePanel::update(const QueueManager& queue, short& j) const {
+	const short size = Urho3D::Min(queue.getSize(), MAX_ICON_SELECTION);
 	for (int i = 0; i < size; ++i) {
-		QueueElement* element = queue->getAt(i);
+		QueueElement* element = queue.getAt(i);
 		elements[j]->show();
 		auto name = getIconName(element->getType(), element->getAmount(), element->getId());
 		auto texture = getTexture("textures/hud/icon/" + name);
 		if (element->getMaxCapacity() > 1) {
-			elements[j]->
-				setText(Urho3D::String(element->getAmount()) + "/" + Urho3D::String(element->getMaxCapacity()));
+			elements[j]->setText(Urho3D::String(element->getAmount()) + "/" + Urho3D::String(element->getMaxCapacity()));
 		} else {
 			elements[j]->hideText();
 		}
@@ -52,7 +50,7 @@ void QueuePanel::show(SelectedInfo* selectedInfo) {
 	update(selectedInfo);
 }
 
-void QueuePanel::show(AbstractQueueManager* queue) {
+void QueuePanel::show(const QueueManager& queue) {
 	short j = 0;
 	update(queue, j);
 	finish(j);

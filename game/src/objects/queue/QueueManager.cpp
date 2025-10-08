@@ -51,3 +51,8 @@ short QueueManager::getSize() const {
 QueueElement* QueueManager::getAt(short i) {
 	return queue.at(i);
 }
+
+void QueueManager::resize(short maxSize) {
+	delete[] queue;
+	queue = new QueueElement * [maxSize];
+}
