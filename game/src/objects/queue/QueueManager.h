@@ -1,22 +1,22 @@
 #pragma once
+#include <vector>
 
 enum class QueueActionType : char;
 class QueueElement;
 
-class QueueManager  {
+class QueueManager {
 public:
-	explicit QueueManager(unsigned short maxCapacity);
+	QueueManager() = default;
 	~QueueManager();
 
-	void add(short number, QueueActionType type, short id, unsigned short localMaxCapacity);
+	void add(short number, QueueActionType type, short id);
 	QueueElement* update();
 	short getSize() const;
-	QueueElement* getAt(short i);
-	QueueElement* first();
-	void resize(short maxSize);
+	QueueElement* getAt(short i) const;
+	QueueElement* first() const;
+	void changeMaxUnitsGroupSize(unsigned char maxUnitsGroupSize);
 
 private:
-	QueueElement** queue{};
-
-	unsigned short maxCapacity;
+	std::vector<QueueElement*> queue;
+	unsigned char maxUnitsGroup;
 };

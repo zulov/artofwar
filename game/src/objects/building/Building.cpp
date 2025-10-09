@@ -21,7 +21,7 @@
 
 
 Building::Building(Urho3D::Vector3 _position, db_building* db_building, char playerId, char teamId, char level, int indexInGrid, UId uId):
-	Static(_position, indexInGrid, uId), queue(dbLevel->queueMaxCapacity) {
+	Static(_position, indexInGrid, uId), dbLevel(db_building->getLevel(level).value()) {
 	player = playerId;
 	team = teamId;
 	dbBuilding = db_building;
@@ -36,7 +36,7 @@ Building::~Building() {
 }
 
 void Building::postCreate() {
-	queue.add(1, QueueActionType::BUILDING_CREATE, getDbId(), 1);
+	queue.add(1, QueueActionType::BUILDING_CREATE, getDbId());
 	setShaderParam(this, "Progress", 0.0);
 }
 
@@ -61,7 +61,7 @@ void Building::populate() {
 	hp = dbLevel->maxHp;
 	dbId = dbBuilding->id;
 	invMaxHp = dbLevel->invMaxHp;
-	queue.resize(dbLevel->queueMaxCapacity);
+	queue.changeMaxUnitsGroupSize(dbLevel->queueMaxCapacity);
 }
 
 std::pair<float, bool> Building::absorbAttack(float attackCoef) {
@@ -110,14 +110,14 @@ void Building::action(BuildingActionType type, short id) {
 	switch (type) {
 	case BuildingActionType::UNIT_CREATE:
 		if (resources->reduce(Game::getDatabase()->getUnit(id)->costs)) {
-			queue.add(1, QueueActionType::UNIT_CREATE, id, 30);
+			queue.add(1, QueueActionType::UNIT_CREATE, id);
 		}
 		break;
 	case BuildingActionType::UNIT_LEVEL: {
 		auto opt = Game::getPlayersMan()->getPlayer(getPlayer())->getNextLevelForUnit(id);
 		if (opt.has_value()) {
 			if (resources->reduce(opt.value()->costs)) {
-				queue.add(1, QueueActionType::UNIT_LEVEL, id, 1);
+				queue.add(1, QueueActionType::UNIT_LEVEL, id);
 			}
 		}
 	}
@@ -145,7 +145,7 @@ Building* Building::load(dbload_building* dbloadBuilding) {
 
 QueueElement* Building::updateQueue() {
 	if (!isReady() && !SIM_GLOBALS.HEADLESS) {
-		setShaderParam(this, "Progress", queue.getAt(0)->getProgress());
+		setShaderParam(this, "Progress", queue.first()->getProgress());
 	}
 
 	return queue.update();

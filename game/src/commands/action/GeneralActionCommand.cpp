@@ -18,7 +18,7 @@ void GeneralActionCommand::execute() {
 		auto opt = playerEnt->getNextLevelForBuilding(id); //TODO ten id to powinien byc id levelu konkretnego
 		if (opt.has_value()) {
 			if (playerEnt->getResources()->reduce(opt.value()->costs)) {
-				playerEnt->getQueue()->add(1, QueueActionType::BUILDING_LEVEL, id, 1);
+				playerEnt->getQueue().add(1, QueueActionType::BUILDING_LEVEL, id);
 			}
 		}
 	}

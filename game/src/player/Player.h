@@ -43,8 +43,8 @@ public:
 
 	int getWorkersNumber() const;
 
-	QueueElement* updateQueue() const;
-	const QueueManager& getQueue() const { return queue; }
+	QueueElement* updateQueue();
+	QueueManager& getQueue() { return queue; }
 	db_unit_level* getLevelForUnit(short id) const;
 	db_building_level* getLevelForBuilding(short id) const;
 	std::optional<db_unit_level*> getNextLevelForUnit(short id) const;

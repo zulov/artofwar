@@ -54,7 +54,7 @@ struct dbload_building : dbload_static {
 	int deploy_idx;
 	unsigned thingToInteract;
 	unsigned short  currentFrameState;
-	std::vector<dbload_queue*>;
+	//TODO std::vector<dbload_queue*>;
 
 	dbload_building(short idDb, float hpCoef, unsigned uid, char player, char level, int bucX, int bucY, char state,
 	                char nextState, int deploy_idx)

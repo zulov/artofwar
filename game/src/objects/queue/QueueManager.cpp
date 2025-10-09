@@ -1,16 +1,16 @@
 #include "QueueManager.h"
+
+#include "QueueActionType.h"
 #include "QueueElement.h"
-#include "QueueUtils.h"
-
-
-QueueManager::QueueManager(unsigned short maxCapacity): maxCapacity(maxCapacity) {}
+#include "utils/DeleteUtils.h"
 
 
 QueueManager::~QueueManager() {
 	clear_vector(queue);
 }
 
-void QueueManager::add(short number, QueueActionType type, short id, unsigned short localMaxCapacity) {
+
+void QueueManager::add(short number, QueueActionType type, short id) {
 	for (auto i : queue) {
 		if (i->checkType(type, id)) {
 			number = i->add(number);
@@ -18,9 +18,7 @@ void QueueManager::add(short number, QueueActionType type, short id, unsigned sh
 	}
 
 	while (number > 0) {
-		auto element = new QueueElement(type, id, std::min(maxCapacity, localMaxCapacity),
-		                                getSecToComplete(type, id, 0),
-		                                getSecPerInstance(type, id, 0));
+		auto element = new QueueElement(type, id, type == QueueActionType::UNIT_CREATE ? maxUnitsGroup : 1);
 		number = element->add(number);
 		queue.push_back(element);
 	}
@@ -48,11 +46,14 @@ short QueueManager::getSize() const {
 	return queue.size();
 }
 
-QueueElement* QueueManager::getAt(short i) {
+QueueElement* QueueManager::getAt(short i) const {
 	return queue.at(i);
 }
 
-void QueueManager::resize(short maxSize) {
-	delete[] queue;
-	queue = new QueueElement * [maxSize];
+QueueElement* QueueManager::first() const {
+	return queue.at(0);
+}
+
+void QueueManager::changeMaxUnitsGroupSize(unsigned char maxUnitsGroupSize) {
+	maxUnitsGroup = maxUnitsGroupSize;
 }

@@ -13,7 +13,7 @@ Player::Player(int nationId, char team, char id, int color, Urho3D::String name,
 	team(team), id(id), active(active), color(color),
 	currentBuildingUId(currentBuildingUId), currentUnitUId(currentUnitUId),
 	dbNation(Game::getDatabase()->getNation(nationId)),
-	queue(1), possession(new Possession(nationId)), resources(new Resources()),
+	possession(new Possession(nationId)), resources(new Resources()),
 	actionMaker(this, dbNation), orderMaker(this, dbNation),
 	name(std::move(name)) {
 	unitLevels = new char[Game::getDatabase()->getUnits().size()];
@@ -135,7 +135,7 @@ int Player::getWorkersNumber() const {
 	return possession->getWorkersNumber();
 }
 
-QueueElement* Player::updateQueue() const {
+QueueElement* Player::updateQueue() {
 	return queue.update();
 }
 
