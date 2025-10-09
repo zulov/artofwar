@@ -91,16 +91,17 @@ struct db_static {
 		: size(size) {}
 };
 
+//TODO mem uprościć usunac tabele kosztowe
 struct db_cost {
-	const unsigned short food, wood, stone, gold;
+	//const unsigned short food, wood, stone, gold;
 	const std::array<unsigned short, 4> values;
 
 	const unsigned short sum = 0;
 	const bool anyWoodOrStone;
 	const bool moreWoodThanStone;
 
-	db_cost(unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold) : food(food),
-		wood(wood), stone(stone), gold(gold),
+	db_cost(unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold) :
+	//food(food), wood(wood), stone(stone), gold(gold),
 		values({food, wood, stone, gold}),
 		sum(food + wood + stone + gold),
 		anyWoodOrStone(wood > 0 || stone > 0),
