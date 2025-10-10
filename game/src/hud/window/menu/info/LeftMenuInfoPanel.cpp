@@ -61,13 +61,13 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 	case ActionType::UNIT_CREATE: {
 		const auto dbUnit = Game::getDatabase()->getUnit(id);
 
-		return stringFrom(dbUnit->name, dbUnit->costs);
+		return stringFrom(dbUnit->name, dbUnit);
 	}
 	case ActionType::UNIT_LEVEL: {
 		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextLevelForUnit(id);
 		if (opt.has_value()) {
 			const auto dbLevel = opt.value();
-			return stringFrom(dbLevel->name, dbLevel->costs);
+			return stringFrom(dbLevel->name, dbLevel);
 		}
 	}
 	case ActionType::UNIT_UPGRADE:
@@ -75,14 +75,14 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 	case ActionType::BUILDING_CREATE: {
 		const auto dbBuilding = Game::getDatabase()->getBuilding(id);
 
-		return stringFrom(dbBuilding->name, dbBuilding->costs);
+		return stringFrom(dbBuilding->name, dbBuilding);
 	}
 	case ActionType::BUILDING_LEVEL: {
 		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextLevelForBuilding(id);
 
 		if (opt.has_value()) {
 			auto dbLevel = opt.value();
-			return stringFrom(dbLevel->name, dbLevel->costs);
+			return stringFrom(dbLevel->name, dbLevel);
 		}
 	}
 	case ActionType::ORDER:

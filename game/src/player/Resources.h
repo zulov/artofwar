@@ -20,8 +20,8 @@ public:
 	explicit Resources(float valueForAll);
 	Resources(const Resources&) = delete;
 
-	bool reduce(const db_cost* costs);
-	bool hasEnough(const db_cost* costs) const;
+	bool reduce(const db_with_cost* costs);
+	bool hasEnough(const db_with_cost* costs) const;
 	void add(int id, float value);
 
 	std::span<float> getValues() { return values; }

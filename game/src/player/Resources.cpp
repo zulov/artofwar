@@ -23,7 +23,7 @@ void Resources::init(float valueForAll) {
 	resetSpan(sumValues);
 }
 
-bool Resources::reduce(const db_cost* costs) {
+bool Resources::reduce(const db_with_cost* costs) {
 	if (hasEnough(costs)) {
 		for (int i = 0; i < costs->values.size(); ++i) {
 			values[i] -= costs->values[i];
@@ -33,7 +33,7 @@ bool Resources::reduce(const db_cost* costs) {
 	return false;
 }
 
-bool Resources::hasEnough(const db_cost* costs) const {
+bool Resources::hasEnough(const db_with_cost* costs) const {
 	for (int i = 0; i < costs->values.size(); ++i) {
 		if (values[i] < costs->values[i]) {
 			return false;

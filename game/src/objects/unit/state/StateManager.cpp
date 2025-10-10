@@ -38,10 +38,10 @@ StateManager::StateManager() {
 	states[cast(UnitState::DISPOSE)] = new DisposeState();
 
 	initStates(
-	           {
-		           UnitState::GO, UnitState::MOVE, UnitState::FOLLOW, UnitState::STOP, UnitState::DEAD,
-		           UnitState::DISPOSE
-	           });
+		{
+			UnitState::GO, UnitState::MOVE, UnitState::FOLLOW, UnitState::STOP, UnitState::DEAD,
+			UnitState::DISPOSE
+		});
 
 	initOrders({UnitAction::GO, UnitAction::DEAD, UnitAction::STOP, UnitAction::FOLLOW});
 }
@@ -189,12 +189,12 @@ void StateManager::startState(Static* obj) {
 			auto building = (Building*)obj;
 			if (obj->getHp() <= 0.f) {
 				if (building->getDb()->ruinable) {
-					auto costs = building->getDb()->costs;
-					if (costs->anyWoodOrStone) {
-						short id = costs->moreWoodThanStone ? 6 : 5;
-						float amount = costs->moreWoodThanStone ? costs->wood : costs->stone;
+					auto costs = building->getDb();
+					if (costs->maxFromWoodOrStone > 0) {
+						short id = costs->moreWoodThanStone ? 6 : 5; //TODO hardcoded
 
-						Game::getActionCenter()->addResource(id, building->getMainGridIndex(), amount * 0.2f);
+						Game::getActionCenter()->addResource(id, building->getMainGridIndex(),
+						                                     costs->maxFromWoodOrStone * 0.2f);
 					}
 				}
 			} else {

@@ -109,14 +109,14 @@ void Building::action(BuildingActionType type, short id) {
 
 	switch (type) {
 	case BuildingActionType::UNIT_CREATE:
-		if (resources->reduce(Game::getDatabase()->getUnit(id)->costs)) {
+		if (resources->reduce(Game::getDatabase()->getUnit(id))) {
 			queue.add(1, QueueActionType::UNIT_CREATE, id);
 		}
 		break;
 	case BuildingActionType::UNIT_LEVEL: {
 		auto opt = Game::getPlayersMan()->getPlayer(getPlayer())->getNextLevelForUnit(id);
 		if (opt.has_value()) {
-			if (resources->reduce(opt.value()->costs)) {
+			if (resources->reduce(opt.value())) {
 				queue.add(1, QueueActionType::UNIT_LEVEL, id);
 			}
 		}

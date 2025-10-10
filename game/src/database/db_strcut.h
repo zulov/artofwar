@@ -92,32 +92,21 @@ struct db_static {
 };
 
 //TODO mem uprościć usunac tabele kosztowe
-struct db_cost {
-	//const unsigned short food, wood, stone, gold;
+struct db_with_cost {
 	const std::array<unsigned short, 4> values;
 
+	const unsigned short maxFromWoodOrStone;
 	const unsigned short sum = 0;
-	const bool anyWoodOrStone;
 	const bool moreWoodThanStone;
 
-	db_cost(unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold) :
-	//food(food), wood(wood), stone(stone), gold(gold),
+	db_with_cost(unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold) :
 		values({food, wood, stone, gold}),
+		maxFromWoodOrStone(std::max(values[1], values[2])),
 		sum(food + wood + stone + gold),
-		anyWoodOrStone(wood > 0 || stone > 0),
-		moreWoodThanStone(wood > stone) {}
-};
-
-struct db_with_cost {
-	db_cost* costs{};
-
-	unsigned short getSumCost() const {
-		return costs ? costs->sum : 0;
+		moreWoodThanStone(wood > stone) {
 	}
 
-	~db_with_cost() {
-		delete costs;
-	}
+	unsigned short getSumCost() const { return sum; }
 };
 
 struct db_basic_metric {
@@ -125,7 +114,7 @@ struct db_basic_metric {
 		assert(validateSpan(__LINE__, __FILE__, newValues));
 		float y = 1 / weightForSum;
 		valuesNormForSum.resize(newValues.size());
-		std::ranges::transform(newValues, valuesNormForSum.begin(), [y](float x){ return x * y; });
+		std::ranges::transform(newValues, valuesNormForSum.begin(), [y](float x) { return x * y; });
 
 		valuesNormAsVal = std::valarray(newValues.data(), newValues.size());
 	}
@@ -167,7 +156,7 @@ struct db_building_metric : db_basic_metric {
 	                   std::span<const unsigned char> otherIdxs, std::span<const unsigned char> defenceIdxs,
 	                   std::span<const unsigned char> resourceIdxs, std::span<const unsigned char> techIdxs,
 	                   std::span<const unsigned char> unitsIdxs,
-	                   std::span<const unsigned char> typesIdxs): db_basic_metric(newValues, BUILDINGS_SUM_X) {
+	                   std::span<const unsigned char> typesIdxs) : db_basic_metric(newValues, BUILDINGS_SUM_X) {
 		setValarray(otherNormAsVal, otherIdxs); //TODO bug czy to jest zainicjowane
 		setValarray(defenceNormAsVal, defenceIdxs);
 		setValarray(resourceNormAsVal, resourceIdxs);
@@ -234,7 +223,7 @@ struct db_build_upgrade {
 };
 
 struct db_unit_metric : db_basic_metric {
-	db_unit_metric(const std::span<const float> newValues, std::span<const unsigned char> typesIdxs):
+	db_unit_metric(const std::span<const float> newValues, std::span<const unsigned char> typesIdxs) :
 		db_basic_metric(newValues, UNITS_SUM_X) {
 		setValarray(typesNormAsVal, typesIdxs);
 	}
@@ -259,11 +248,13 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 
 	db_unit_metric* dbUnitMetric = nullptr; //TODO jak to zrobic
 
-	db_unit_level(short id, short level, short unit, char* name, char* node, short buildTime, short upgradeTime,
-	              float minDist, float mass, float minSpeed, float maxSpeed, int maxForce,
-	              short maxHp, float armor, float sightRng, float collect, float atck, float atckRld, short atckRng,
-	              float bI, float bR, float bC, float bW, float bS, float bM, float bH, float bL, float bB):
-		db_with_name(id, name), db_level(level),
+	db_unit_level(short id, short level, short unit, char* name, char* node,
+	              unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
+	              short buildTime, short upgradeTime, float minDist, float mass, float minSpeed, float maxSpeed,
+	              int maxForce, short maxHp, float armor, float sightRng, float collect, float atck, float atckRld,
+	              short atckRng, float bI, float bR, float bC, float bW, float bS, float bM, float bH, float bL,
+	              float bB) :
+		db_with_name(id, name), db_level(level), db_with_cost(food, wood, stone, gold),
 		db_unit_attack(collect, atck, atckRld, atckRng, bI, bR, bC, bW, bS, bM, bH, bL, bB),
 		db_base(maxHp, armor, sightRng), db_build_upgrade(buildTime, upgradeTime),
 		unit(unit),
@@ -275,7 +266,8 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 		minSpeed(minSpeed),
 		maxForce(maxForce),
 		sqMinSpeed(minSpeed * minSpeed),
-		node(node) {}
+		node(node) {
+	}
 
 	void finish(const std::span<const float> newValues, std::span<const unsigned char> valuesUnitsTypesIdxs) {
 		dbUnitMetric = new db_unit_metric(newValues, valuesUnitsTypesIdxs);
@@ -300,14 +292,16 @@ struct db_unit : db_with_icon, db_with_cost {
 
 	bool possibleStates[magic_enum::enum_count<UnitState>()];
 
-	std::vector<db_unit_level*> levels;//todo array
+	std::vector<db_unit_level*> levels; //todo array
 
 	std::vector<db_nation*> nations;
 	std::vector<unsigned char> ordersIds;
 
-	db_unit(short id, char* name, char* icon, char actionState, bool typeInfantry, bool typeRange,
-	        bool typeCalvary, bool typeWorker, bool typeSpecial, bool typeMelee, bool typeHeavy, bool typeLight) :
-		db_with_icon(id, name, icon),
+	db_unit(short id, char* name, char* icon,
+	        unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
+	        char actionState, bool typeInfantry, bool typeRange, bool typeCalvary, bool typeWorker,
+	        bool typeSpecial, bool typeMelee, bool typeHeavy, bool typeLight) :
+		db_with_icon(id, name, icon), db_with_cost(food, wood, stone, gold),
 		actionState(UnitState(actionState)),
 		typeInfantry(typeInfantry),
 		typeRange(typeRange),
@@ -375,11 +369,12 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 	std::vector<db_nation*> nations;
 
 
-	db_building(short id, char* name, char* icon, short sizeX, short sizeZ,
-	            bool typeCenter, bool typeHome, bool typeDefence, char typeResource, bool typeTechBlacksmith,
-	            bool typeTechUniversity,
-	            bool typeUnitBarracks, bool typeUnitRange, bool typeUnitCavalry, bool ruinable, short toResource)
-		: db_with_icon(id, name, icon), db_static({sizeX, sizeZ}),
+	db_building(short id, char* name, char* icon,
+	            unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
+	            short sizeX, short sizeZ, bool typeCenter, bool typeHome, bool typeDefence, char typeResource,
+	            bool typeTechBlacksmith, bool typeTechUniversity, bool typeUnitBarracks, bool typeUnitRange,
+	            bool typeUnitCavalry, bool ruinable, short toResource)
+		: db_with_icon(id, name, icon), db_with_cost(food, wood, stone, gold), db_static({sizeX, sizeZ}),
 		  typeCenter(typeCenter), typeHome(typeHome), typeDefence(typeDefence), resourceType(typeResource),
 		  typeResourceFood(typeResource == 0), typeResourceWood(typeResource == 1),
 		  typeResourceStone(typeResource == 2), typeResourceGold(typeResource == 3),
@@ -423,16 +418,18 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 	//std::vector<db_building_metric*> dbBuildingMetricPerNation;
 	db_building_metric* dbBuildingMetric;
 
-	db_building_level(short id, short level, short building, char* name, char* nodeName, short queueMaxCapacity,
-	                  short buildSpeed, short upgradeSpeed, short maxHp, float armor, float sightRng,
-	                  float collect, float atckR, short atckRRld, float atckRRng, float resourceRng, short foodStorage,
-	                  short goldStoreage, float stoneRefineCapacity, float goldRefineCapacity)
-		: db_with_name(id, name), db_level(level),
+	db_building_level(short id, short level, short building, char* name, char* nodeName,
+	                  unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
+	                  short queueMaxCapacity, short buildSpeed, short upgradeSpeed, short maxHp, float armor,
+	                  float sightRng, float collect, float atckR, short atckRRld, float atckRRng, float resourceRng,
+	                  short foodStorage, short goldStoreage, float stoneRefineCapacity, float goldRefineCapacity)
+		: db_with_name(id, name), db_with_cost(food, wood, stone, gold), db_level(level),
 		  db_building_attack(collect, atckR, atckRRld, atckRRng),
 		  db_base(maxHp, armor, sightRng), db_build_upgrade(buildSpeed, upgradeSpeed),
 		  building(building), nodeName(nodeName), queueMaxCapacity(queueMaxCapacity), resourceRange(resourceRng),
 		  foodStorage(foodStorage), goldStoreage(goldStoreage), stoneRefineCapacity(stoneRefineCapacity),
-		  goldRefineCapacity(goldRefineCapacity) {}
+		  goldRefineCapacity(goldRefineCapacity) {
+	}
 
 	~db_building_level() {
 		clear_vector(unitsPerNation);

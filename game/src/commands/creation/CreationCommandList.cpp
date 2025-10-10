@@ -22,12 +22,12 @@ CreationCommand* CreationCommandList::addUnits(unsigned number, short id, Urho3D
 CreationCommand* CreationCommandList::addBuilding(short id, Urho3D::Vector2& position, char player, int level) const {
 	Resources* resources = Game::getPlayersMan()->getPlayer(player)->getResources();
 	db_building* building = Game::getDatabase()->getBuilding(id);
-	if (resources->hasEnough(building->costs)) {
+	if (resources->hasEnough(building)) {
 		const auto env = Game::getEnvironment();
 		if (env->isVisible(player, position)) {
 			const auto cords = env->getCords(position);
 			if (env->validateStatic(building->size, cords, true)) {
-				resources->reduce(building->costs);
+				resources->reduce(building);
 				return new CreationCommand(ObjectType::BUILDING, id, cords, level, player);
 			}
 		}

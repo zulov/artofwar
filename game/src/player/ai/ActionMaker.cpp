@@ -144,7 +144,7 @@ bool ActionMaker::createUnit(db_unit* unit) const {
 }
 
 bool ActionMaker::enoughResources(const db_with_cost* withCosts, Player* player) const {
-	return withCosts && player->getResources()->hasEnough(withCosts->costs);
+	return withCosts && player->getResources()->hasEnough(withCosts);
 }
 
 bool ActionMaker::createBuilding(db_building* building, ParentBuildingType type) const {

@@ -73,36 +73,6 @@ int static loadHudVars(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
-static void addCost(char** argv, db_with_cost* withCost) {
-	withCost->costs = new db_cost(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
-}
-
-int static loadCostUnit(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	addCost(argv, getContainer(data)->units[atoi(argv[0])]);
-
-	return 0;
-}
-
-int static loadCostUnitLevel(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	addCost(argv, getContainer(data)->unitsLevels[atoi(argv[0])]);
-
-	return 0;
-}
-
-int static loadCostBuildingLevel(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	addCost(argv, getContainer(data)->buildingsLevels[atoi(argv[0])]);
-	return 0;
-}
-
-int static loadCostBuilding(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	addCost(argv, getContainer(data)->buildings[atoi(argv[0])]);
-	return 0;
-}
-
 int static loadOrders(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	setEntity(getContainer(data)->orders, new db_order(atoi(argv[0]), argv[1], argv[2]));
