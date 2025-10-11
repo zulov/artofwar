@@ -18,7 +18,7 @@ int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	setEntity(getContainer(data)->units, new db_unit(atoi(argv[0]), argv[1], argv[2],
 	                                                 atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]),
-	                                                 atoi(argv[3]), atoi(argv[8]), atoi(argv[9]), atoi(argv[10]),
+	                                                 atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), atoi(argv[10]),
 	                                                 atoi(argv[11]), atoi(argv[12]), atoi(argv[13]), atoi(argv[14]),
 	                                                 atoi(argv[15])));
 	return 0;
@@ -74,12 +74,6 @@ int static loadHudVars(void* data, int argc, char** argv, char** azColName) {
 	const int id = atoi(argv[0]);
 	getContainer(data)->hudVars.push_back(new db_hud_vars(id, atoi(argv[1]), argv[2], atof(argv[3])));
 
-	return 0;
-}
-
-int static loadOrders(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	setEntity(getContainer(data)->orders, new db_order(atoi(argv[0]), argv[1], argv[2]));
 	return 0;
 }
 

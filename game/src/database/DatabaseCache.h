@@ -42,7 +42,6 @@ public:
 	db_nation* getNation(int i) const { return dbContainer->nations[i]; }
 
 	db_resource* getResource(int i) const { return dbContainer->resources[i]; }
-	db_order* getOrder(int i) const { return dbContainer->orders[i]; }
 
 	std::vector<db_player_colors*>& getPlayerColors() const { return dbContainer->playerColors; }
 	db_player_colors* getPlayerColor(int i) const { return dbContainer->playerColors[i]; }

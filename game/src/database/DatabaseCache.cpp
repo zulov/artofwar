@@ -57,8 +57,6 @@ void DatabaseCache::loadData(const std::string& name) {
 
 	execute(SQLConsts::SELECT + "resource order by id desc", loadResource);
 
-	execute(SQLConsts::SELECT + "orders order by id desc", loadOrders);
-
 	execute(SQLConsts::SELECT + "player_color order by id desc", loadPlayerColors);
 
 	execute(SQLConsts::SELECT + "unit_level order by unit,level", loadUnitLevels);

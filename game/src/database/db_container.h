@@ -28,7 +28,6 @@ struct db_container {
 	std::vector<db_nation*> nations;
 	std::vector<db_resource*> resources;
 	std::vector<db_player_colors*> playerColors;
-	std::vector<db_order*> orders;
 
 	explicit db_container() = default;
 
@@ -44,7 +43,6 @@ struct db_container {
 		clear_vector(resources);
 		clear_vector(nations);
 		clear_vector(units);
-		clear_vector(orders);
 		clear_vector(buildings);
 		clear_vector(playerColors);
 		clear_vector(unitsLevels);

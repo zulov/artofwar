@@ -8,7 +8,6 @@
 #include "objects/unit/state/UnitState.h"
 #include "db_basic_struct.h"
 #include "math/SpanUtils.h"
-#include "player/ai/ActionMaker.h"
 #include "simulation/SimGlobals.h"
 #include "utils/DeleteUtils.h"
 #include "utils/OtherUtils.h"
@@ -300,7 +299,7 @@ struct db_unit : db_with_icon, db_with_cost {
 	db_unit(short id, char* name, char* icon,
 	        unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
 	        char actionState, bool typeInfantry, bool typeRange, bool typeCalvary, bool typeWorker,
-	        bool typeSpecial, bool typeMelee, bool typeHeavy, bool typeLight) :
+	        bool typeSpecial, bool typeMelee, bool typeHeavy, bool typeLight) ://TODO typeHeavy polaczyc z typeLight, usunac actionState?
 		db_with_icon(id, name, icon), db_with_cost(food, wood, stone, gold),
 		actionState(UnitState(actionState)),
 		typeInfantry(typeInfantry),
