@@ -56,14 +56,12 @@ void DatabaseCache::loadData(const std::string& name) {
 	execute(SQLConsts::SELECT + "building order by id desc", loadBuildings);
 
 	execute(SQLConsts::SELECT + "resource order by id desc", loadResource);
-	execute(SQLConsts::SELECT + "building_cost", loadCostBuilding);
-	execute(SQLConsts::SELECT + "unit_cost", loadCostUnit);
 
 	execute(SQLConsts::SELECT + "orders order by id desc", loadOrders);
 
 	execute(SQLConsts::SELECT + "player_color order by id desc", loadPlayerColors);
 
-	execute(SQLConsts::SELECT + "unit_level order by level", loadUnitLevels);
+	execute(SQLConsts::SELECT + "unit_level order by unit,level", loadUnitLevels);
 	execute(SQLConsts::SELECT + "building_level order by level", loadBuildingLevels);
 
 	execute(SQLConsts::SELECT + "unit_to_nation order by unit", loadUnitToNation);
@@ -71,9 +69,6 @@ void DatabaseCache::loadData(const std::string& name) {
 
 	execute(SQLConsts::SELECT + "unit_to_building_level order by unit", loadUnitToBuildingLevels);
 	//TODO make sure its sorted set_intersection
-
-	execute(SQLConsts::SELECT + "unit_level_cost", loadCostUnitLevel);
-	execute(SQLConsts::SELECT + "building_level_cost", loadCostBuildingLevel);
 
 	dbContainer->finish();
 

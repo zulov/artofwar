@@ -3,7 +3,7 @@
 #include <iosfwd>
 
 #include "db_other_struct.h"
-
+//TODO perf atoi->bool zmienic na ifa
 static unsigned fromHex(char** argv, int index) {
 	unsigned x;
 	std::stringstream ss;
@@ -16,10 +16,11 @@ static db_container* getContainer(void* data) { return static_cast<db_container*
 
 int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
-	setEntity(getContainer(data)->units, new db_unit(atoi(argv[0]), argv[1], argv[2], atoi(argv[3]),
-	                                                 atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
-	                                                 atoi(argv[8]), atoi(argv[9]), atoi(argv[10]),
-	                                                 atoi(argv[11])));
+	setEntity(getContainer(data)->units, new db_unit(atoi(argv[0]), argv[1], argv[2],
+	                                                 atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]),
+	                                                 atoi(argv[3]), atoi(argv[8]), atoi(argv[9]), atoi(argv[10]),
+	                                                 atoi(argv[11]), atoi(argv[12]), atoi(argv[13]), atoi(argv[14]),
+	                                                 atoi(argv[15])));
 	return 0;
 }
 
@@ -33,7 +34,8 @@ int static loadHudSizes(void* data, int argc, char** argv, char** azColName) {
 
 int static loadGraphSettings(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
-	setEntity(getContainer(data)->graphSettings, new db_graph_settings(atoi(argv[0]), atoi(argv[1]), argv[2],atoi(argv[3]),
+	setEntity(getContainer(data)->graphSettings, new db_graph_settings(atoi(argv[0]), atoi(argv[1]), argv[2],
+	                                                                   atoi(argv[3]),
 	                                                                   atof(argv[4]), atof(argv[5]), argv[6],
 	                                                                   atoi(argv[7]), atoi(argv[8]), atoi(argv[9])));
 	return 0;
@@ -42,10 +44,12 @@ int static loadGraphSettings(void* data, int argc, char** argv, char** azColName
 int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	setEntity(getContainer(data)->buildings, //TODO resource Types zbic do jednego pola
-	          new db_building(atoi(argv[0]), argv[1], argv[2], atoi(argv[3]), atoi(argv[4]),
-	                          atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]),
-	                          atoi(argv[10]), atoi(argv[11]), atoi(argv[12]), atoi(argv[13]), atoi(argv[14]),
-	                          atoi(argv[15])
+	          new db_building(atoi(argv[0]), argv[1], argv[2],
+	                          atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]),
+	                          atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), atoi(argv[10]),
+	                          atoi(argv[11]), atoi(argv[12]), atoi(argv[13]),
+	                          atoi(argv[14]), atoi(argv[15]), atoi(argv[16]),
+	                          atoi(argv[17]), atoi(argv[18]),atoi(argv[19])
 	          ));
 	return 0;
 }
@@ -112,9 +116,10 @@ int static loadBuildingLevels(void* data, int argc, char** argv, char** azColNam
 	const auto xyz = getContainer(data);
 	auto level = new db_building_level(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), argv[3], argv[4],
 	                                   atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]),
-	                                   atof(argv[9]), atof(argv[10]), atof(argv[11]), atof(argv[12]),
-	                                   atoi(argv[13]), atof(argv[14]), atof(argv[15]), atoi(argv[16]),
-	                                   atoi(argv[17]), atoi(argv[18]), atoi(argv[19]));
+	                                   atoi(argv[9]), atoi(argv[10]), atoi(argv[11]), atoi(argv[12]),
+	                                   atof(argv[13]), atof(argv[14]), atof(argv[15]), atof(argv[16]),
+	                                   atoi(argv[17]), atof(argv[18]), atof(argv[19]), atoi(argv[20]),
+	                                   atoi(argv[21]), atoi(argv[22]), atoi(argv[23]));
 	setEntity(xyz->buildingsLevels, level);
 	xyz->buildings[level->building]->levels.push_back(level);
 	for (auto nation : xyz->nations) {
@@ -135,16 +140,19 @@ int static loadBuildingLevels(void* data, int argc, char** argv, char** azColNam
 int static loadUnitLevels(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	const auto xyz = getContainer(data);
-	auto levelId = atoi(argv[0]);
-	int unitId = atoi(argv[2]);
 
-	auto level = new db_unit_level(levelId, atoi(argv[1]), atoi(argv[2]), argv[3], argv[4], atoi(argv[5]),
-	                               atoi(argv[6]), atof(argv[7]), atof(argv[8]), atof(argv[9]), atof(argv[10]),
-	                               atoi(argv[11]), atoi(argv[12]), atof(argv[13]), atof(argv[14]), atof(argv[15]),
-	                               atof(argv[16]), atof(argv[17]), atoi(argv[18]), atof(argv[19]), atof(argv[20]),
-	                               atof(argv[21]), atof(argv[22]), atof(argv[23]), atof(argv[24]), atof(argv[25]),
-	                               atof(argv[26]), atof(argv[27]));
-	setEntity(xyz->unitsLevels, level);
+	int unitId = atoi(argv[1]);
+
+	auto level = new db_unit_level(atoi(argv[0]), unitId, argv[2], argv[3],
+	                               atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+	                               atoi(argv[8]), atoi(argv[9]), atof(argv[10]),
+	                               atof(argv[11]), atof(argv[12]), atof(argv[13]),
+	                               atoi(argv[14]), atoi(argv[15]), atof(argv[16]),
+	                               atof(argv[17]), atof(argv[18]), atof(argv[19]),
+	                               atof(argv[20]), atoi(argv[21]), atof(argv[22]), atof(argv[23]),
+	                               atof(argv[24]), atof(argv[25]), atof(argv[26]), atof(argv[27]),
+	                               atof(argv[28]), atof(argv[29]), atof(argv[30]));
+	xyz->unitsLevels.push_back(level); //TODO check if order is important
 	xyz->units[unitId]->levels.push_back(level);
 
 	return 0;

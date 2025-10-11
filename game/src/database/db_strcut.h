@@ -248,13 +248,13 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 
 	db_unit_metric* dbUnitMetric = nullptr; //TODO jak to zrobic
 
-	db_unit_level(short id, short level, short unit, char* name, char* node,
+	db_unit_level(short level, short unit, char* name, char* node,
 	              unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
 	              short buildTime, short upgradeTime, float minDist, float mass, float minSpeed, float maxSpeed,
 	              int maxForce, short maxHp, float armor, float sightRng, float collect, float atck, float atckRld,
 	              short atckRng, float bI, float bR, float bC, float bW, float bS, float bM, float bH, float bL,
 	              float bB) :
-		db_with_name(id, name), db_level(level), db_with_cost(food, wood, stone, gold),
+		db_with_name(-1, name), db_level(level), db_with_cost(food, wood, stone, gold),
 		db_unit_attack(collect, atck, atckRld, atckRng, bI, bR, bC, bW, bS, bM, bH, bL, bB),
 		db_base(maxHp, armor, sightRng), db_build_upgrade(buildTime, upgradeTime),
 		unit(unit),
