@@ -17,11 +17,13 @@
 #include "commands/action/ResourceActionType.h"
 #include "database/db_other_struct.h"
 #include "math/VectorUtils.h"
+#include "objects/unit/order/UnitConst.h"
 
 static constexpr const char* ICONS_PATH = "textures/hud/icon/";
 
 MenuPanel::MenuPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style) : EventPanel(root, _style, "LeftMenuWindow",
-		 {GameState::RUNNING, GameState::PAUSE}) {}
+	{GameState::RUNNING, GameState::PAUSE}) {
+}
 
 MenuPanel::~MenuPanel() {
 	delete infoPanel;
@@ -258,16 +260,23 @@ void MenuPanel::setIcons(const std::vector<T*>& icons, Urho3D::String path, Acti
 	resetRestButtons(k);
 }
 
+
+void MenuPanel::setOrderIcons(const std::vector<char>& ids, Urho3D::String path) {
+	int k = 0;
+	maxPage = ids.size() / BUTTONS_NUMBER + 1;
+	for (int i = page * BUTTONS_NUMBER; i < ids.size() && i < (page + 1) * BUTTONS_NUMBER; ++i) {
+		setNext(k, path + "orders/" + magic_enum::enum_name(static_cast<UnitOrderType>(i)).data() + ".png", i, ActionType::ORDER);
+	}
+	resetRestButtons(k);
+}
+
 void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
-	std::vector<db_with_icon*> orders;
+	std::vector<char> orders;
 	for (auto id : getOrderForUnit(selectedInfo)) {
-		db_order* order = Game::getDatabase()->getOrder(id);
-		if (order) {
-			orders.push_back(order);
-		}
+		orders.push_back(id);
 	}
 
-	setIcons(orders, "orders/", ActionType::ORDER);
+	setOrderIcons(orders, "orders/");
 }
 
 void MenuPanel::formationOrder() {

@@ -3,12 +3,6 @@
 
 #include "db_basic_struct.h"
 
-struct db_order : db_with_icon {
-
-	db_order(short id, char* icon, char* name) : db_with_icon(id, name, icon) {
-	}
-};
-
 struct db_map : db_with_name {
 	const Urho3D::String xmlName;
 

@@ -18,7 +18,7 @@
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/GroupOrder.h"
 #include "objects/unit/order/IndividualOrder.h"
-#include "objects/unit/order/enums/UnitActionType.h"
+#include "objects/unit/order/UnitConst.h"
 #include "player/PlayersManager.h"
 #include "player/ai/ActionCenter.h"
 #include "env/Environment.h"

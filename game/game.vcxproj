@@ -448,7 +448,6 @@
     <ClInclude Include="src\env\CloseIndexes.h" />
     <ClInclude Include="src\commands\action\BuildingActionType.h" />
     <ClInclude Include="src\commands\action\ResourceActionType.h" />
-    <ClInclude Include="src\objects\unit\order\enums\UnitActionType.h" />
     <ClInclude Include="src\commands\action\ResourceActionCommand.h" />
     <ClInclude Include="src\commands\action\BuildingActionCommand.h" />
     <ClInclude Include="src\player\ai\ActionCenter.h" />
@@ -566,7 +565,7 @@
     <ClInclude Include="src\hud\window\minimap\MiniMapPanel.h" />
     <ClInclude Include="src\hud\MySprite.h" />
     <ClInclude Include="src\utils\StringUtils.h" />
-    <ClInclude Include="src\objects\unit\order\enums\UnitAction.h" />
+    <ClInclude Include="src\objects\unit\order\UnitConst.h" />
     <ClInclude Include="src\objects\Physical.h" />
     <ClInclude Include="src\player\Player.h" />
     <ClInclude Include="src\player\PlayersManager.h" />

@@ -15,7 +15,7 @@
 #include "database/DatabaseCache.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
-#include "objects/unit/order/enums/UnitAction.h"
+#include "objects/unit/order/UnitConst.h"
 #include "player/ai/ActionCenter.h"
 #include "utils/consts.h"
 #include "utils/OtherUtils.h"

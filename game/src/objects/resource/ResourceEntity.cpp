@@ -8,7 +8,7 @@
 #include "math/RandGen.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/unit/Unit.h"
-#include "objects/unit/order/enums/UnitAction.h"
+#include "objects/unit/order/UnitConst.h"
 #include "objects/unit/state/StateManager.h"
 #include "scene/load/dbload_container.h"
 #include "env/Environment.h"

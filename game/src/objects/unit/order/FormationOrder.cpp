@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "IndividualOrder.h"
 #include "objects/unit/Unit.h"
-#include "enums/UnitAction.h"
+#include "UnitConst.h"
 #include "simulation/formation/Formation.h"
 #include "env/Environment.h"
 

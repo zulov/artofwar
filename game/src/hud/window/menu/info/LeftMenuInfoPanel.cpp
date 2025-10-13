@@ -9,6 +9,7 @@
 #include "objects/ActionType.h"
 #include "objects/NamesCache.h"
 #include "objects/Physical.h"
+#include "objects/unit/order/UnitConst.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "utils/NamesUtils.h"
@@ -85,8 +86,11 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 			return stringFrom(dbLevel->name, dbLevel);
 		}
 	}
-	case ActionType::ORDER:
-		return Game::getLocalization()->Get(Game::getDatabase()->getOrder(id)->name);
+	case ActionType::ORDER: {
+		std::string str = "ord_";
+		str.append(magic_enum::enum_name(UnitOrderType(id)).data());
+		return Game::getLocalization()->Get(str.c_str());
+	}
 	case ActionType::FORMATION:
 	case ActionType::RESOURCE:
 		return hudData->getText();

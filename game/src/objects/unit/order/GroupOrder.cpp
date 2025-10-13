@@ -3,7 +3,7 @@
 #include <utility>
 #include "FormationOrder.h"
 #include "Game.h"
-#include "enums/UnitActionType.h"
+#include "UnitConst.h"
 #include "objects/unit/GroupUtils.h"
 #include "objects/unit/Unit.h"
 #include "simulation/formation/FormationManager.h"

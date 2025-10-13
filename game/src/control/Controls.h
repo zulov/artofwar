@@ -2,10 +2,11 @@
 #include <vector>
 #include "ControlsState.h"
 #include "MouseButton.h"
-#include "objects/unit/order/enums/UnitAction.h"
+#include "objects/unit/order/UnitConst.h"
 #include "database/db_strcut.h"
 #include "objects/building/Building.h"
 
+class UnitOrder;
 struct FrameInfo;
 enum class ActionType : char;
 constexpr char MAX_DEPLOY_MARK_NUMBER = 5;
@@ -23,7 +24,6 @@ enum class ResourceActionType : char;
 class HudData;
 class Physical;
 class SelectedInfo;
-class UnitOrder;
 struct ActionParameter;
 struct hit_data;
 

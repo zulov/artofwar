@@ -13,7 +13,7 @@
 #include "objects/unit/ChargeData.h"
 #include "objects/unit/SimColorMode.h"
 #include "order/IndividualOrder.h"
-#include "order/enums/UnitAction.h"
+#include "order/UnitConst.h"
 #include "scene/load/dbload_container.h"
 #include "env/Environment.h"
 #include "simulation/force/ForceStats.h"

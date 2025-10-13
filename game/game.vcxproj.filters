@@ -470,10 +470,9 @@
     <ClInclude Include="src\math\RandGen.h" />
     <ClInclude Include="src\player\ai\ActionCenter.h" />
     <ClInclude Include="src\math\RandType.h" />
-    <ClInclude Include="src\objects\unit\order\enums\UnitAction.h">
+    <ClInclude Include="src\objects\unit\order\UnitConst.h">
       <Filter>objects\unit</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\unit\order\enums\UnitActionType.h" />
     <ClInclude Include="src\objects\unit\order\FormationOrder.h" />
     <ClInclude Include="src\objects\unit\order\GroupOrder.h" />
     <ClInclude Include="src\objects\unit\order\IndividualOrder.h" />

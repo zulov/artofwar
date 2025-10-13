@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "objects/unit/Unit.h"
-#include "objects/unit/order/enums/UnitAction.h"
+#include "objects/unit/order/UnitConst.h"
 #include "objects/unit/state/UnitState.h"
 
 class ResourceEntity;
