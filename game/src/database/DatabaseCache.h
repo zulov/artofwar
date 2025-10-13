@@ -9,7 +9,6 @@ struct db_unit;
 struct db_building;
 struct db_nation;
 struct db_resource;
-struct db_order;
 struct db_player_colors;
 
 class DatabaseCache {

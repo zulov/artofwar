@@ -19,7 +19,6 @@ constexpr char BUILDINGS_SUM_X = 10;
 struct db_unit;
 struct db_unit_metric;
 struct db_nation;
-struct db_order;
 struct db_building_level;
 struct db_cost;
 struct db_unit_level;
