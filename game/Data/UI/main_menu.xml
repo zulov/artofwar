@@ -27,7 +27,7 @@
 	<attribute name="Position" value="{spaceX} 0"/>
 </element>
 
-<element type="MainMenuButton"  style="Button">
+<element type="MainMenuButton" style="Button">
 	<attribute name="Horiz Alignment" value="Center"/>
 	<attribute name="Min Size" value="{iconX*4} {iconY}"/>
 	<attribute name="Max Size" value="{iconX*4} {iconY}"/>

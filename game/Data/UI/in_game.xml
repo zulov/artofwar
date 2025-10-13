@@ -40,7 +40,7 @@
 	<attribute name="Position" value="{spaceX} 0"/>
 </element>
 
-<element type="InGameButton"  style="Button">
+<element type="InGameButton" style="Button">
 	<attribute name="Horiz Alignment" value="Center"/>
 	<attribute name="Min Size" value="{iconX*4} {iconY}"/>
 	<attribute name="Max Size" value="{iconX*4} {iconY}"/>
@@ -80,7 +80,7 @@
 	<attribute name="Min Size" value="{iconX*4} {iconY/2}"/>
 </element>
 
-<element type="FileConfirmButton"  style="Button">
+<element type="FileConfirmButton" style="Button">
 	<attribute name="Min Size" value="{iconX*2} {iconY}"/>
 </element>
 
