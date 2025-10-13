@@ -21,7 +21,7 @@
 #include "stats/AiInputProvider.h"
 
 
-ActionMaker::ActionMaker(Player* player, db_nation* nation):
+ActionMaker::ActionMaker(Player* player, db_nation* nation) :
 	player(player), playerId(player->getId()), possession(player->getPossession()), nation(nation),
 	ifWorker(BrainProvider::get(nation->actionPrefix[0] + "ifWorker.csv")),
 	whereWorker(BrainProvider::get(nation->actionPrefix[1] + "whereWorker.csv")),
@@ -39,7 +39,8 @@ ActionMaker::ActionMaker(Player* player, db_nation* nation):
 	ifUnit(BrainProvider::get(nation->actionPrefix[11] + "ifUnit.csv")),
 	whichUnit(BrainProvider::get(nation->actionPrefix[12] + "whichUnit.csv")),
 	whereUnit(BrainProvider::get(nation->actionPrefix[13] + "whereUnit.csv")),
-	aiInput(Game::getAiInputProvider()) {}
+	aiInput(Game::getAiInputProvider()) {
+}
 
 
 void ActionMaker::action() {
@@ -89,7 +90,8 @@ bool ActionMaker::createBuilding(const std::span<const float> buildingsInput) {
 	return createBuilding(chooseBuilding(output, type), type);
 }
 
-std::span<float> ActionMaker::getWhichBuilding(ParentBuildingType type, const std::span<const float> aiTypeInput) const {
+std::span<float>
+ActionMaker::getWhichBuilding(ParentBuildingType type, const std::span<const float> aiTypeInput) const {
 	switch (type) {
 	case ParentBuildingType::OTHER:
 		return whichBuildingTypeOther->decide(aiTypeInput);
@@ -120,7 +122,7 @@ bool ActionMaker::createUnit(std::span<const float> unitsInput) {
 bool ActionMaker::createUnit(db_unit* unit, Building* building) const {
 	if (building) {
 		Game::getActionCenter()->add(
-		                             new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id));
+			new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id));
 		return true;
 	}
 	//TODO try to build
@@ -179,7 +181,7 @@ db_building* ActionMaker::chooseBuilding(std::span<float> result, ParentBuilding
 	if (type == ParentBuildingType::RESOURCE) {
 		const int res = biggestWithRand(result);
 		for (const auto building : buildings) {
-			if (building->resourceType==res) { return building; }
+			if (building->resourceType == res) { return building; }
 		}
 		return nullptr;
 	}
@@ -293,7 +295,7 @@ std::optional<Urho3D::Vector2> ActionMaker::findPosToBuild(db_building* building
 		return Game::getEnvironment()->getPosToCreateResBonus(building, playerId);
 	}
 	const auto input = aiInput->getBuildingsInputWithMetric(player, player->getLevelForBuilding(building->id)
-	                                                                  ->dbBuildingMetric, type);
+	                                                                      ->dbBuildingMetric, type);
 
 	return Game::getEnvironment()->getPosToCreate(whereBuilding->decide(input), type, building, playerId);
 }
@@ -383,8 +385,7 @@ bool ActionMaker::levelUpBuilding() {
 	const auto level = chooseBuildingLevelUp();
 	if (enoughResources(level, player)) {
 		Game::getActionCenter()->add(
-		                             new GeneralActionCommand(level->building, GeneralActionType::BUILDING_LEVEL,
-		                                                      playerId));
+			new GeneralActionCommand(level->building, GeneralActionType::BUILDING_LEVEL, playerId));
 		return true;
 	}
 	return false;
@@ -396,8 +397,7 @@ bool ActionMaker::levelUpUnit() {
 		Building* building = getBuildingToLevelUpUnit(level);
 		if (building) {
 			Game::getActionCenter()->add(
-			                             new BuildingActionCommand(building, BuildingActionType::UNIT_LEVEL,
-			                                                       level->unit));
+				new BuildingActionCommand(building, BuildingActionType::UNIT_LEVEL, level->unit));
 			return true;
 		}
 	}

@@ -33,22 +33,23 @@ private:
 	template <std::size_t N>
 	std::span<const float> writeBasicWith(std::array<float, N>& output, Player* player, std::span<const float> second);
 	//TODO mem, zastapic to jedna pzrestrzenia na dane
-	std::array<float, BASIC_SIZE + RESOURCE_AI_SIZE> resourceIdInput;
-	std::array<float, BASIC_SIZE + UNIT_SIZE> unitsInput;
-	std::array<float, BASIC_SIZE + BUILDING_SIZE> buildingsInput;
-
-	std::array<float, ATTACK_OR_DEFENCE_SIZE> attackOrDefenceInput;
-	std::array<float, BASIC_SIZE + WHERE_ATTACK_SIZE> whereAttackInput;
-	std::array<float, BASIC_SIZE + WHERE_DEFEND_SIZE> whereDefendInput;
-
-	std::array<float, BASIC_SIZE + UNIT_TYPES_SIZE> unitsWithMetric;
-
-	std::array<float, BASIC_SIZE + BUILDING_OTHER_SIZE> buildingsOtherInput;
-	std::array<float, BASIC_SIZE + BUILDING_DEF_SIZE> buildingsDefenceInput;
-	std::array<float, BASIC_SIZE + BUILDING_RES_BONUS_SIZE> buildingsResInput;
-	std::array<float, BASIC_SIZE + BUILDING_TECH_SIZE> buildingsTechInput;
-	std::array<float, BASIC_SIZE + BUILDING_UNITS_SIZE> buildingsUnitsInput;
-
-	std::array<float, BASIC_SIZE + BUILDING_TYPES_SIZE> buildingsWhereInput;
-	std::array<float, BASIC_SIZE + BUILDING_RES_SIZE> buildingsResWhereInput;
+	std::array<float, BASIC_SIZE + std::max()> input;
+	// std::array<float, BASIC_SIZE + RESOURCE_AI_SIZE> resourceIdInput;
+	// std::array<float, BASIC_SIZE + UNIT_SIZE> unitsInput;
+	// std::array<float, BASIC_SIZE + BUILDING_SIZE> buildingsInput;
+	//
+	// std::array<float, ATTACK_OR_DEFENCE_SIZE> attackOrDefenceInput;
+	// std::array<float, BASIC_SIZE + WHERE_ATTACK_SIZE> whereAttackInput;
+	// std::array<float, BASIC_SIZE + WHERE_DEFEND_SIZE> whereDefendInput;
+	//
+	// std::array<float, BASIC_SIZE + UNIT_TYPES_SIZE> unitsWithMetric;
+	//
+	// std::array<float, BASIC_SIZE + BUILDING_OTHER_SIZE> buildingsOtherInput;
+	// std::array<float, BASIC_SIZE + BUILDING_DEF_SIZE> buildingsDefenceInput;
+	// std::array<float, BASIC_SIZE + BUILDING_RES_BONUS_SIZE> buildingsResInput;
+	// std::array<float, BASIC_SIZE + BUILDING_TECH_SIZE> buildingsTechInput;
+	// std::array<float, BASIC_SIZE + BUILDING_UNITS_SIZE> buildingsUnitsInput;
+	//
+	// std::array<float, BASIC_SIZE + BUILDING_TYPES_SIZE> buildingsWhereInput;
+	// std::array<float, BASIC_SIZE + BUILDING_RES_SIZE> buildingsResWhereInput;
 };
