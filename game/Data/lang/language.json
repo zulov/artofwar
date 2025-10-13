@@ -174,31 +174,31 @@
 	"custom":{
 		"pl":"Własne"
 	},
-	"ord_go":{
+	"ord_GO":{
 		"pl":"Idź"
 	},
-	"ord_stop":{
+	"ord_STOP":{
 		"pl":"Zatrzymaj"
 	},
-	"ord_charge":{
+	"ord_CHARGE":{
 		"pl":"Szarżuj"
 	},
-	"ord_attack":{
+	"ord_ATTACK":{
 		"pl":"Atakuj"
 	},
-	"ord_patrol":{
+	"ord_PATROL":{
 		"pl":"Patroluj"
 	},
-	"ord_dead":{
+	"ord_DEAD":{
 		"pl":"Giń"
 	},
-	"ord_defend":{
+	"ord_DEFEND":{
 		"pl":"Broń"
 	},
-	"ord_follow":{
+	"ord_FOLLLOW":{
 		"pl":"Podążaj"
 	},
-	"ord_collect":{
+	"ord_COLLECT":{
 		"pl":"Zbieraj"
 	},
 	"res_act_get_worker":{

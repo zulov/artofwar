@@ -261,11 +261,11 @@ void MenuPanel::setIcons(const std::vector<T*>& icons, Urho3D::String path, Acti
 }
 
 
-void MenuPanel::setOrderIcons(const std::vector<char>& ids, Urho3D::String path) {
+void MenuPanel::setOrderIcons(const std::vector<char>& ids) {
 	int k = 0;
 	maxPage = ids.size() / BUTTONS_NUMBER + 1;
 	for (int i = page * BUTTONS_NUMBER; i < ids.size() && i < (page + 1) * BUTTONS_NUMBER; ++i) {
-		setNext(k, path + "orders/" + magic_enum::enum_name(static_cast<UnitOrderType>(i)).data() + ".png", i, ActionType::ORDER);
+		setNext(k, Urho3D::String("orders/") + magic_enum::enum_name(static_cast<UnitOrderType>(i)).data() + ".png", i, ActionType::ORDER);
 	}
 	resetRestButtons(k);
 }
@@ -276,7 +276,7 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 		orders.push_back(id);
 	}
 
-	setOrderIcons(orders, "orders/");
+	setOrderIcons(orders);
 }
 
 void MenuPanel::formationOrder() {

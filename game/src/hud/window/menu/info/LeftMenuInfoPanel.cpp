@@ -87,9 +87,7 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 		}
 	}
 	case ActionType::ORDER: {
-		std::string str = "ord_";
-		str.append(magic_enum::enum_name(UnitOrderType(id)).data());
-		return Game::getLocalization()->Get(str.c_str());
+		return Game::getLocalization()->Get(Urho3D::String("ord_") + magic_enum::enum_name(UnitOrderType(id)).data());
 	}
 	case ActionType::FORMATION:
 	case ActionType::RESOURCE:

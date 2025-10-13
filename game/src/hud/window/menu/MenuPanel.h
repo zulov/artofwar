@@ -69,7 +69,7 @@ private:
 	std::vector<unsigned char> getOrderForUnit(SelectedInfo* selectedInfo) const;
 	template <typename T>
 	void setIcons(const std::vector<T*>& icons, Urho3D::String path, ActionType type);
-	void setOrderIcons(const std::vector<char>& ids, Urho3D::String path);
+	void setOrderIcons(const std::vector<char>& ids);
 
 	Urho3D::Button* buttons[BUTTONS_NUMBER];
 	std::vector<HudData*> hudElements;
