@@ -10,69 +10,50 @@
 
 
 std::span<const float> AiInputProvider::getResourceInput(Player* player, Player* enemy) {
-	METRIC_DEFINITIONS.writeResource(input, player, enemy);
-	return resourceIdInput;
+	return METRIC_DEFINITIONS.writeResource(player, enemy);
 }
 
 std::span<const float> AiInputProvider::getUnitsInput(Player* player) {
-	return writeBasicWith(player, player->getPossession()->getUnitsMetrics());
+	return basicWithSpan(player, player->getPossession()->getUnitsMetrics());
 }
 
 std::span<const float> AiInputProvider::getBuildingsInput(Player* player) {
-	return writeBasicWith( player, player->getPossession()->getBuildingsMetrics());
+	return basicWithSpan(player, player->getPossession()->getBuildingsMetrics());
 }
 
 std::span<const float> AiInputProvider::getUnitsInputWithMetric(Player* player, const db_unit_metric* prop) {
-	return writeBasicWith(player, prop->getTypesVal());
+	return basicWithSpan(player, prop->getTypesVal());
 }
 
 std::span<const float> AiInputProvider::getBuildingsInputWithMetric(Player* player, const db_building_metric* prop,
                                                                     ParentBuildingType type) {
-	if (type == ParentBuildingType::RESOURCE) {
-		return writeBasicWith(player, prop->getValuesNormAsValForType(type));
-	}
-	return writeBasicWith(player, prop->getTypesVal());
+	auto span = type == ParentBuildingType::RESOURCE ? prop->getValuesNormAsValForType(type) : prop->getTypesVal();
+	return basicWithSpan(player, span);
 }
 
 std::span<const float> AiInputProvider::getAttackOrDefenceInput(Player* player, Player* enemy) {
-	METRIC_DEFINITIONS.writeAttackOrDefence(player, enemy);
-	return attackOrDefenceInput;
+	return METRIC_DEFINITIONS.writeAttackOrDefence(player, enemy);
 }
 
 std::span<const float> AiInputProvider::getWhereAttack(Player* player, Player* enemy) {
-	METRIC_DEFINITIONS.writeWhereAttack(player, enemy);
-	return whereAttackInput;
+	return METRIC_DEFINITIONS.writeWhereAttack(player, enemy);
 }
 
 std::span<const float> AiInputProvider::getWhereDefend(Player* player, Player* enemy) {
-	METRIC_DEFINITIONS.writeWhereDefend(player, enemy);
-	return whereDefendInput;
+	return METRIC_DEFINITIONS.writeWhereDefend(player, enemy);
 }
 
 std::span<const float> AiInputProvider::getBuildingsTypeInput(Player* player, Player* enemy, ParentBuildingType type) {
-	const auto possession = player->getPossession();
 	switch (type) {
-	case ParentBuildingType::OTHER: return writeBasicWith(player, possession->getBuildingsMetrics(type));
-	case ParentBuildingType::DEFENCE: return writeBasicWith(player, possession->getBuildingsMetrics(type));
-	case ParentBuildingType::RESOURCE: {
-		METRIC_DEFINITIONS.writeResourceWithOutBonus(player, enemy);
-		return buildingsResInput;
-	}
-	case ParentBuildingType::TECH: return writeBasicWith(player, possession->getBuildingsMetrics(type));
-	case ParentBuildingType::UNITS: return writeBasicWith(player, possession->getBuildingsMetrics(type));
-	default: ;
+	case ParentBuildingType::RESOURCE: return METRIC_DEFINITIONS.writeResourceWithOutBonus(player, enemy);
+	case ParentBuildingType::OTHER:
+	case ParentBuildingType::DEFENCE:
+	case ParentBuildingType::TECH:
+	case ParentBuildingType::UNITS:
+		return basicWithSpan(player, player->getPossession()->getBuildingsMetrics(type));
 	}
 }
 
-// template <std::size_t N>
-// std::span<float> AiInputProvider::writeBasic(std::array<float, N>& output, Player* player) {
-// 	return METRIC_DEFINITIONS.writeBasic(output, player, Game::getPlayersMan()->getEnemyFor(player->getId()));
-// }
-
-std::span<const float> AiInputProvider::writeBasicWith(Player* player, std::span<const float> second) {
-	
-	auto result = METRIC_DEFINITIONS.writeBasic(player, Game::getPlayersMan()->getEnemyFor(player->getId()));//przesuniery o basic skad paczatek
-	//assert(result.size() > BASIC_SIZE + second.size());
-	std::ranges::copy(second, result.begin());
-	return std::span(input.begin(), input.begin() + BASIC_SIZE + second.size());
+std::span<const float> AiInputProvider::basicWithSpan(Player* player, std::span<const float> span) {
+	return METRIC_DEFINITIONS.basicWithSpan(player, Game::getPlayersMan()->getEnemyFor(player->getId()), span);
 }

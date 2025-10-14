@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <span>
+#include <iterator>
 
 #include "AiMetric.h"
 #include "env/Environment.h"
@@ -24,8 +25,8 @@ constexpr unsigned char METRIC_OUTPUT_MAX_SIZE = 64;
 
 constexpr inline struct MetricDefinitions {
 	template <typename T, typename L, typename MetricArray>
-	std::span<float>  appendMetrics(T* one, L* two, const MetricArray& metrics) const {
-		auto size = std::size(metrics);
+	std::span<float> appendMetrics(T* one, L* two, const MetricArray& metrics) const {
+		char size = std::size(metrics);
 		assert(METRIC_OUTPUT_MAX_SIZE > size);
 		int i = 0;
 		for (auto const& v : metrics) {
@@ -39,7 +40,8 @@ constexpr inline struct MetricDefinitions {
 
 	template <typename T, typename L, typename P, typename K, typename MetricArray>
 	std::span<float> basicWithMetrics(T* one, L* two, P* three, K* four, const MetricArray& metrics) const {
-		auto size = std::size(aiBasicMetric) + std::size(metrics)
+		char size1 = std::size(metrics);
+		char size = size1 + std::size(aiBasicMetric);
 		assert(METRIC_OUTPUT_MAX_SIZE > size);
 		int i = 0;
 		for (auto const& v : aiBasicMetric) {
@@ -55,8 +57,9 @@ constexpr inline struct MetricDefinitions {
 	}
 
 	template <typename T, typename L>
-	std::span<float> basicWithSpan(T* one, L* two, const std::span<float> second) const {
-		auto size = std::size(aiBasicMetric) + std::size(second)
+	std::span<float> basicWithSpan(T* one, L* two, const std::span<const float> second) const {
+		char size1 = std::size(aiBasicMetric);
+		char size = size1 + std::size(aiBasicMetric);
 		assert(METRIC_OUTPUT_MAX_SIZE > size);
 		int i = 0;
 		for (auto const& v : aiBasicMetric) {
@@ -80,35 +83,25 @@ constexpr inline struct MetricDefinitions {
 	}
 
 	const std::span<float> writeResource(Player* one, Player* two) const {
-		appendMetrics(writeBasic(output, one, two), one->getResources(), one->getPossession(), aiResourceMetric);
+		return basicWithMetrics(one, two, one->getResources(), one->getPossession(), aiResourceMetric);
 	}
 
 	const std::span<float> writeResourceWithOutBonus(Player* player, Player* enemy) const {
-		appendMetrics(writeBasic(output, player, enemy), player->getResources(), player->getPossession(),
-		              aiResourceWithoutBonusMetric);
-		return std::span(output.begin(), output.begin() + BASIC_SIZE + std::size(aiResourceWithoutBonusMetric));
-	}
-
-	//Zwraca przesunêty pocz¹tek
-	const std::span<float> writeBasic(std::span<float> output, Player* one, Player* two) const {
-		int i = 0;
-		for (auto const& v : aiBasicMetric) {
-			output[i++] = v.fn(one, two) * v.weight;
-		}
-		return std::span(output.begin() + i, output.size() - i);
+		return basicWithMetrics(player, enemy, player->getResources(), player->getPossession(),
+		                        aiResourceWithoutBonusMetric);
 	}
 
 	//TODO te 3 sie troszke dubluj¹ ogran¹æ indeksami? ale z drugiej srony chce sie ich pozbyc
-	void writeAttackOrDefence(Player* one, Player* two) const {
-		appendMetrics(output, one, two, aiAttackOrDefence);
+	const std::span<float> writeAttackOrDefence(Player* one, Player* two) const {
+		return appendMetrics(one, two, aiAttackOrDefence);
 	}
 
-	void writeWhereAttack(Player* one, Player* two) const {
-		appendMetrics(writeBasic(output, one, two), one, two, aiWhereAttack);
+	const std::span<float> writeWhereAttack(Player* one, Player* two) const {
+		return basicWithMetrics(one, two, one, two, aiWhereAttack);
 	}
 
-	void writeWhereDefend(Player* one, Player* two) const {
-		appendMetrics(writeBasic(output, one, two), one, two, aiWhereDefend);
+	const std::span<float> writeWhereDefend(Player* one, Player* two) const {
+		return basicWithMetrics(one, two, one, two, aiWhereDefend);
 	}
 
 	static float diffOfCenters(CenterType type1, Player* p1, CenterType type2, Player* p2, float defaultVal) {
@@ -260,7 +253,6 @@ constexpr inline struct MetricDefinitions {
 	constexpr static unsigned char aiBuildingTypesIdxs[] = {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 	static std::array<float, METRIC_OUTPUT_MAX_SIZE> output;
 } METRIC_DEFINITIONS;
-
 
 constexpr unsigned char BASIC_SIZE = std::size(METRIC_DEFINITIONS.aiBasicMetric);
 constexpr unsigned char UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiUnitMetric);

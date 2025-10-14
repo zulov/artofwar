@@ -2,6 +2,7 @@
 
 #include <numeric>
 
+#include "Possession.h"
 #include "database/DatabaseCache.h"
 #include "math/SpanUtils.h"
 #include "math/VectorUtils.h"
