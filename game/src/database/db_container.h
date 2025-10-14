@@ -37,7 +37,6 @@ struct db_container {
 		clear_vector(resolutions);
 		clear_vector(graphSettings);
 		clear_vector(settings);
-
 		clear_vector(maps);
 
 		clear_vector(resources);
@@ -50,18 +49,16 @@ struct db_container {
 	}
 
 	void finish() {
-		std::array<float, UNIT_SIZE> unitMetricValues;
 		for (auto* level : unitsLevels) {
-			const auto unit = units[level->unit];
-			METRIC_DEFINITIONS.writeUnit(unitMetricValues, unit, level);
-			level->finish(unitMetricValues, METRIC_DEFINITIONS.getUnitTypesIdxs());
-		}
-		std::array<float, BUILDING_SIZE> buildingMetricValues;
-		for (auto* level : buildingsLevels) {
-			const auto building = buildings[level->building];
-			METRIC_DEFINITIONS.writeBuilding(buildingMetricValues, building, level);
 			level->finish(
-				buildingMetricValues,
+				METRIC_DEFINITIONS.writeUnit(units[level->unit], level),
+				METRIC_DEFINITIONS.getUnitTypesIdxs()
+			);
+		}
+
+		for (auto* level : buildingsLevels) {
+			level->finish(
+				METRIC_DEFINITIONS.writeBuilding(buildings[level->building], level),
 				METRIC_DEFINITIONS.getBuildingOtherIdxs(), METRIC_DEFINITIONS.getBuildingDefenceIdxs(),
 				METRIC_DEFINITIONS.getBuildingResourceIdxs(), METRIC_DEFINITIONS.getBuildingTechIdxs(),
 				METRIC_DEFINITIONS.getBuildingUnitsIdxs(), METRIC_DEFINITIONS.getBuildingTypesIdxs());

@@ -20,34 +20,76 @@ struct db_unit;
 struct AiPlayerMetric;
 class Player;
 
+constexpr unsigned char METRIC_OUTPUT_MAX_SIZE = 64;
+
 constexpr inline struct MetricDefinitions {
 	template <typename T, typename L, typename MetricArray>
-	void writeInput(std::span<float> output, T* one, L* two, const MetricArray& metrics) const {
+	std::span<float>  appendMetrics(T* one, L* two, const MetricArray& metrics) const {
+		auto size = std::size(metrics);
+		assert(METRIC_OUTPUT_MAX_SIZE > size);
 		int i = 0;
 		for (auto const& v : metrics) {
 			output[i++] = v.fn(one, two) * v.weight;
 		}
-		assert(output.size() == i);
-		assert(validateSpan(__LINE__, __FILE__, output));
+		auto result = std::span(output.begin(), output.begin() + size);
+		assert(i == size);
+		assert(validateSpan(__LINE__, __FILE__, result));
+		return result;
 	}
 
-	void writeUnit(std::span<float> output, db_unit* unit, db_unit_level* level) const {
-		writeInput(output, unit, level, aiUnitMetric);
+	template <typename T, typename L, typename P, typename K, typename MetricArray>
+	std::span<float> basicWithMetrics(T* one, L* two, P* three, K* four, const MetricArray& metrics) const {
+		auto size = std::size(aiBasicMetric) + std::size(metrics)
+		assert(METRIC_OUTPUT_MAX_SIZE > size);
+		int i = 0;
+		for (auto const& v : aiBasicMetric) {
+			output[i++] = v.fn(one, two) * v.weight;
+		}
+		for (auto const& v : metrics) {
+			output[i++] = v.fn(three, four) * v.weight;
+		}
+		auto result = std::span(output.begin(), output.begin() + size);
+		assert(i == size);
+		assert(validateSpan(__LINE__, __FILE__, result));
+		return result;
 	}
 
-	void writeBuilding(std::span<float> output, db_building* building, db_building_level* level) const {
-		writeInput(output, building, level, aiBuildingMetric);
+	template <typename T, typename L>
+	std::span<float> basicWithSpan(T* one, L* two, const std::span<float> second) const {
+		auto size = std::size(aiBasicMetric) + std::size(second)
+		assert(METRIC_OUTPUT_MAX_SIZE > size);
+		int i = 0;
+		for (auto const& v : aiBasicMetric) {
+			output[i++] = v.fn(one, two) * v.weight;
+		}
+		for (auto const& v : second) {
+			output[i++] = v;
+		}
+		auto result = std::span(output.begin(), output.begin() + size);
+		assert(i == size);
+		assert(validateSpan(__LINE__, __FILE__, result));
+		return result;
 	}
 
-	void writeResource(std::span<float> output, Player* one, Player* two) const {
-		writeInput(writeBasic(output, one, two), one->getResources(), one->getPossession(), aiResourceMetric);
+	const std::span<const float> writeUnit(db_unit* unit, db_unit_level* level) const {
+		return appendMetrics(unit, level, aiUnitMetric);
 	}
 
-	void writeResourceWithOutBonus(std::span<float> output, Player* player, Player* enemy) const {
-		writeInput(writeBasic(output, player, enemy), player->getResources(), player->getPossession(),
-		           aiResourceWithoutBonusMetric);
+	const std::span<const float> writeBuilding(db_building* building, db_building_level* level) const {
+		return appendMetrics(building, level, aiBuildingMetric);
 	}
 
+	const std::span<float> writeResource(Player* one, Player* two) const {
+		appendMetrics(writeBasic(output, one, two), one->getResources(), one->getPossession(), aiResourceMetric);
+	}
+
+	const std::span<float> writeResourceWithOutBonus(Player* player, Player* enemy) const {
+		appendMetrics(writeBasic(output, player, enemy), player->getResources(), player->getPossession(),
+		              aiResourceWithoutBonusMetric);
+		return std::span(output.begin(), output.begin() + BASIC_SIZE + std::size(aiResourceWithoutBonusMetric));
+	}
+
+	//Zwraca przesunêty pocz¹tek
 	const std::span<float> writeBasic(std::span<float> output, Player* one, Player* two) const {
 		int i = 0;
 		for (auto const& v : aiBasicMetric) {
@@ -57,16 +99,16 @@ constexpr inline struct MetricDefinitions {
 	}
 
 	//TODO te 3 sie troszke dubluj¹ ogran¹æ indeksami? ale z drugiej srony chce sie ich pozbyc
-	void writeAttackOrDefence(std::span<float> output, Player* one, Player* two) const {
-		writeInput(output, one, two, aiAttackOrDefence);
+	void writeAttackOrDefence(Player* one, Player* two) const {
+		appendMetrics(output, one, two, aiAttackOrDefence);
 	}
 
-	void writeWhereAttack(std::span<float> output, Player* one, Player* two) const {
-		writeInput(writeBasic(output, one, two), one, two, aiWhereAttack);
+	void writeWhereAttack(Player* one, Player* two) const {
+		appendMetrics(writeBasic(output, one, two), one, two, aiWhereAttack);
 	}
 
-	void writeWhereDefend(std::span<float> output, Player* one, Player* two) const {
-		writeInput(writeBasic(output, one, two), one, two, aiWhereDefend);
+	void writeWhereDefend(Player* one, Player* two) const {
+		appendMetrics(writeBasic(output, one, two), one, two, aiWhereDefend);
 	}
 
 	static float diffOfCenters(CenterType type1, Player* p1, CenterType type2, Player* p2, float defaultVal) {
@@ -82,7 +124,8 @@ constexpr inline struct MetricDefinitions {
 	const std::span<const unsigned char> getBuildingTypesIdxs() const { return aiBuildingTypesIdxs; }
 
 	//TODO unordered_map<Enum, AiUnitMetric>
-	static inline AiUnitMetric aiUnitMetric[] = { //db_unit* u, db_unit_level* l
+	static inline AiUnitMetric aiUnitMetric[] = {
+		//db_unit* u, db_unit_level* l
 		{[](auto u, auto l) -> float { return u->getSumCost(); }, 400},
 		//TODO czy grupowe ma sens?
 		{[](auto u, auto l) -> float { return l->maxHp; }, 300},
@@ -113,7 +156,8 @@ constexpr inline struct MetricDefinitions {
 		{[](auto u, auto l) -> float { return l->bonusLight; }},
 	};
 
-	static inline AiBuildingMetric aiBuildingMetric[] = { //db_building* b, db_building_level* l
+	static inline AiBuildingMetric aiBuildingMetric[] = {
+		//db_building* b, db_building_level* l
 		{[](auto b, auto l) -> float { return b->getSumCost(); }, 400},
 		{[](auto b, auto l) -> float { return l->maxHp; }, 500},
 		{[](auto b, auto l) -> float { return l->armor; }, 1},
@@ -141,7 +185,8 @@ constexpr inline struct MetricDefinitions {
 	};
 
 	//TODO moze to zwracac od razy przedzia³em jakos
-	static inline AiResourceMetric aiResourceMetric[] = { //Resources* r, Possession* p
+	static inline AiResourceMetric aiResourceMetric[] = {
+		//Resources* r, Possession* p
 		{[](auto r, auto p) -> float { return r->getGatherSpeeds()[0]; }, 10},
 		{[](auto r, auto p) -> float { return r->getGatherSpeeds()[1]; }, 10},
 		{[](auto r, auto p) -> float { return r->getGatherSpeeds()[2]; }, 10},
@@ -157,14 +202,16 @@ constexpr inline struct MetricDefinitions {
 
 	};
 
-	static inline AiResourceMetric aiResourceWithoutBonusMetric[] = { //Resources* r, Possession* p
+	static inline AiResourceMetric aiResourceWithoutBonusMetric[] = {
+		//Resources* r, Possession* p
 		{[](auto r, auto p) -> float { return p->getResWithOutBonus()[0]; }, 20},
 		{[](auto r, auto p) -> float { return p->getResWithOutBonus()[1]; }, 20},
 		{[](auto r, auto p) -> float { return p->getResWithOutBonus()[2]; }, 20},
 		{[](auto r, auto p) -> float { return p->getResWithOutBonus()[3]; }, 20}
 	};
 
-	static inline AiPlayerMetric aiBasicMetric[] = { //Player* p1, Player* p2
+	static inline AiPlayerMetric aiBasicMetric[] = {
+		//Player* p1, Player* p2
 		{[](auto p1, auto p2) -> float { return p1->getScore(); }, 1000},
 		{[](auto p1, auto p2) -> float { return p1->getPossession()->getUnitsNumber(); }, 200},
 		{[](auto p1, auto p2) -> float { return p1->getPossession()->getBuildingsNumber(); }, 50},
@@ -172,7 +219,8 @@ constexpr inline struct MetricDefinitions {
 		{[](auto p1, auto p2) -> float { return p2->getScore(); }, 1000}
 	};
 
-	static inline AiPlayerMetric aiAttackOrDefence[] = { //Player* p1, Player* p2
+	static inline AiPlayerMetric aiAttackOrDefence[] = {
+		//Player* p1, Player* p2
 		{[](auto p1, auto p2) -> float { return p1->getPossession()->getAttackSum(); }, 1000},
 		{[](auto p1, auto p2) -> float { return p1->getPossession()->getDefenceAttackSum(); }, 100},
 		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }},
@@ -181,14 +229,16 @@ constexpr inline struct MetricDefinitions {
 		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p2, 0.f); }},
 	};
 
-	static inline AiPlayerMetric aiWhereAttack[] = { //Player* p1, Player* p2
+	static inline AiPlayerMetric aiWhereAttack[] = {
+		//Player* p1, Player* p2
 		{[](auto p1, auto p2) -> float { return p1->getPossession()->getAttackSum(); }, 1000},
 		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p2, 1.f); }},
 		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }},
 		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }},
 	};
 
-	static inline AiPlayerMetric aiWhereDefend[] = { //Player* p1, Player* p2
+	static inline AiPlayerMetric aiWhereDefend[] = {
+		//Player* p1, Player* p2
 		{[](auto p1, auto p2) -> float { return p1->getPossession()->getAttackSum(); }, 1000},
 		{[](auto p1, auto p2) -> float { return p1->getPossession()->getDefenceAttackSum(); }, 100},
 		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p1, 0.f); }},
@@ -208,25 +258,16 @@ constexpr inline struct MetricDefinitions {
 	constexpr static unsigned char aiBuildingResIdxs[] = {4, 8, 12, 13, 14, 15};
 	constexpr static unsigned char aiBuildingDefIdxs[] = {0, 1, 2, 3, 5, 6, 7};
 	constexpr static unsigned char aiBuildingTypesIdxs[] = {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+	static std::array<float, METRIC_OUTPUT_MAX_SIZE> output;
 } METRIC_DEFINITIONS;
 
 
-constexpr char BASIC_SIZE = std::size(METRIC_DEFINITIONS.aiBasicMetric);
-constexpr char UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiUnitMetric);
-constexpr char BUILDING_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingMetric);
-constexpr char UNIT_TYPES_SIZE = std::size(METRIC_DEFINITIONS.aiUnitsTypesIdxs);
+constexpr unsigned char BASIC_SIZE = std::size(METRIC_DEFINITIONS.aiBasicMetric);
+constexpr unsigned char UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiUnitMetric);
+constexpr unsigned char BUILDING_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingMetric);
 
-constexpr char BUILDING_OTHER_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingOtherIdxs);
-constexpr char BUILDING_DEF_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingDefIdxs);
-constexpr char BUILDING_RES_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingResIdxs);
-constexpr char BUILDING_TECH_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingTechIdxs);
-constexpr char BUILDING_UNITS_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingUnitsIdxs);
-constexpr char BUILDING_RES_BONUS_SIZE = std::size(METRIC_DEFINITIONS.aiResourceWithoutBonusMetric);
-
-constexpr char BUILDING_TYPES_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingTypesIdxs);
-
-constexpr char RESOURCE_AI_SIZE = std::size(METRIC_DEFINITIONS.aiResourceMetric);
-
-constexpr char ATTACK_OR_DEFENCE_SIZE = std::size(METRIC_DEFINITIONS.aiAttackOrDefence);
-constexpr char WHERE_ATTACK_SIZE = std::size(METRIC_DEFINITIONS.aiWhereAttack);
-constexpr char WHERE_DEFEND_SIZE = std::size(METRIC_DEFINITIONS.aiWhereDefend);
+constexpr unsigned char BUILDING_OTHER_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingOtherIdxs);
+constexpr unsigned char BUILDING_DEF_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingDefIdxs);
+constexpr unsigned char BUILDING_RES_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingResIdxs);
+constexpr unsigned char BUILDING_TECH_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingTechIdxs);
+constexpr unsigned char BUILDING_UNITS_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingUnitsIdxs);
