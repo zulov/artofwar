@@ -3,6 +3,7 @@
 #include <functional>
 #include <span>
 #include <iterator>
+#include <array>
 
 #include "AiMetric.h"
 #include "env/Environment.h"
@@ -58,7 +59,7 @@ constexpr inline struct MetricDefinitions {
 
 	template <typename T, typename L>
 	std::span<float> basicWithSpan(T* one, L* two, const std::span<const float> second) const {
-		char size1 = std::size(aiBasicMetric);
+		char size1 = std::size(second);
 		char size = size1 + std::size(aiBasicMetric);
 		assert(METRIC_OUTPUT_MAX_SIZE > size);
 		int i = 0;
@@ -251,7 +252,7 @@ constexpr inline struct MetricDefinitions {
 	constexpr static unsigned char aiBuildingResIdxs[] = {4, 8, 12, 13, 14, 15};
 	constexpr static unsigned char aiBuildingDefIdxs[] = {0, 1, 2, 3, 5, 6, 7};
 	constexpr static unsigned char aiBuildingTypesIdxs[] = {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
-	static std::array<float, METRIC_OUTPUT_MAX_SIZE> output;
+	inline static std::array<float, METRIC_OUTPUT_MAX_SIZE> output{};
 } METRIC_DEFINITIONS;
 
 constexpr unsigned char BASIC_SIZE = std::size(METRIC_DEFINITIONS.aiBasicMetric);

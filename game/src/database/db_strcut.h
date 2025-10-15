@@ -20,7 +20,6 @@ struct db_unit;
 struct db_unit_metric;
 struct db_nation;
 struct db_building_level;
-struct db_cost;
 struct db_unit_level;
 
 

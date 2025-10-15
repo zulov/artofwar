@@ -46,8 +46,7 @@ ActionMaker::ActionMaker(Player* player, db_nation* nation) :
 void ActionMaker::action() {
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
 	if (isEnoughResToWorker()) {
-		const auto resInput = aiInput->getResourceInput(player, enemy);
-		const auto resResult = ifWorker->decide(resInput);
+		const auto resResult = ifWorker->decide(aiInput->getResourceInput(player, enemy));
 		if (randFromTwo(resResult[0])) {
 			createWorker();
 		}
@@ -84,8 +83,7 @@ bool ActionMaker::createBuilding(const std::span<const float> buildingsInput) {
 	}
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
 
-	const auto aiTypeInput = aiInput->getBuildingsTypeInput(player, enemy, type);
-	const auto output = getWhichBuilding(type, aiTypeInput);
+	const auto output = getWhichBuilding(type, aiInput->getBuildingsTypeInput(player, enemy, type));
 
 	return createBuilding(chooseBuilding(output, type), type);
 }
@@ -294,8 +292,9 @@ std::optional<Urho3D::Vector2> ActionMaker::findPosToBuild(db_building* building
 	if (type == ParentBuildingType::RESOURCE) {
 		return Game::getEnvironment()->getPosToCreateResBonus(building, playerId);
 	}
-	const auto input = aiInput->getBuildingsInputWithMetric(player, player->getLevelForBuilding(building->id)
-	                                                                      ->dbBuildingMetric, type);
+	const auto input = aiInput->getBuildingsInputWithMetric(player,
+	                                                        player->getLevelForBuilding(building->id)->dbBuildingMetric,
+	                                                        type);
 
 	return Game::getEnvironment()->getPosToCreate(whereBuilding->decide(input), type, building, playerId);
 }
@@ -333,9 +332,8 @@ Building* ActionMaker::getBuildingToDeployWorker(db_unit* unit) const {
 	if (allPossible.empty()) { return nullptr; }
 	if (allPossible.size() == 1) { return allPossible.at(0); }
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
-	const auto input = aiInput->getResourceInput(player, enemy);
 
-	const auto result = whereWorker->decide(input);
+	const auto result = whereWorker->decide(aiInput->getResourceInput(player, enemy));
 
 	return getBuildingClosestArea(allPossible, result);
 }

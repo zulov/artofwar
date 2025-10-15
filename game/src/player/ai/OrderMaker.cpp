@@ -172,8 +172,8 @@ std::vector<Unit*> OrderMaker::getSubGroup(std::vector<std::vector<Unit*>>& grou
 
 void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
-	const auto input = aiInput->getResourceInput(player, enemy);
-	const auto result = whichResource->decide(input);
+
+	const auto result = whichResource->decide(aiInput->getResourceInput(player, enemy));
 	if (freeWorkers.size() == 1) {
 		const auto resourceId = biggestWithRand(result);
 		const auto worker = freeWorkers.at(0);

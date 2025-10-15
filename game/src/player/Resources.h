@@ -9,7 +9,6 @@
 
 class Possession;
 struct db_with_cost;
-struct db_cost;
 
 class Resources {
 public:

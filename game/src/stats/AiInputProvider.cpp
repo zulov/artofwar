@@ -27,8 +27,7 @@ std::span<const float> AiInputProvider::getUnitsInputWithMetric(Player* player, 
 
 std::span<const float> AiInputProvider::getBuildingsInputWithMetric(Player* player, const db_building_metric* prop,
                                                                     ParentBuildingType type) {
-	auto span = type == ParentBuildingType::RESOURCE ? prop->getValuesNormAsValForType(type) : prop->getTypesVal();
-	return basicWithSpan(player, span);
+	return basicWithSpan(player, type == ParentBuildingType::RESOURCE ? prop->getValuesNormAsValForType(type) : prop->getTypesVal());
 }
 
 std::span<const float> AiInputProvider::getAttackOrDefenceInput(Player* player, Player* enemy) {
