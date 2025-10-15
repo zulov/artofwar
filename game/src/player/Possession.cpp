@@ -242,7 +242,7 @@ void Possession::ensureReady() {
 
 	for (const auto unit : units) {
 		auto per = unit->getHealthPercent();
-		levels[unit->getLevel()->id] += per;
+		levels[unit->getLevel()->id] += per;//ID to -1
 
 		//TODO to dac jako któtkie
 		if (isFreeSolider(unit)) {
