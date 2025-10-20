@@ -11,10 +11,6 @@ struct PossessionMetric {
 		resetArray(freeArmySum);
 		resetArray(buildingsSum);
 
-		resetArray(buildingsOther);
-		resetArray(buildingsDefence);
-		resetArray(buildingsTech);
-		resetArray(buildingsUnits);
 		resetArray(resWithoutBonus);
 	}
 
@@ -22,9 +18,5 @@ struct PossessionMetric {
 	std::array<float, UNIT_SIZE> freeArmySum; //TODO to dac jako któtkie
 	std::array<float, BUILDING_SIZE> buildingsSum;
 
-	std::array<float, BUILDING_OTHER_SIZE> buildingsOther;
-	std::array<float, BUILDING_DEF_SIZE> buildingsDefence;
-	std::array<float, BUILDING_TECH_SIZE> buildingsTech;
-	std::array<float, BUILDING_UNITS_SIZE> buildingsUnits;
 	std::array<float, RESOURCES_SIZE> resWithoutBonus;
 };

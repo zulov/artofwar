@@ -1,7 +1,6 @@
 #pragma once
 
 #include "db_strcut.h"
-#include "player/ai/MetricDefinitions.h"
 #include "utils/DeleteUtils.h"
 
 struct db_hud_vars;
@@ -48,20 +47,13 @@ struct db_container {
 		clear_vector(buildingsLevels);
 	}
 
-	void finish() {
+	void finish() const {
 		for (auto* level : unitsLevels) {
-			level->finish(
-				METRIC_DEFINITIONS.writeUnit(units[level->unit], level),
-				METRIC_DEFINITIONS.getUnitTypesIdxs()
-			);
+			level->finish(units[level->unit]);
 		}
 
 		for (auto* level : buildingsLevels) {
-			level->finish(
-				METRIC_DEFINITIONS.writeBuilding(buildings[level->building], level),
-				METRIC_DEFINITIONS.getBuildingOtherIdxs(), METRIC_DEFINITIONS.getBuildingDefenceIdxs(),
-				METRIC_DEFINITIONS.getBuildingResourceIdxs(), METRIC_DEFINITIONS.getBuildingTechIdxs(),
-				METRIC_DEFINITIONS.getBuildingUnitsIdxs(), METRIC_DEFINITIONS.getBuildingTypesIdxs());
+			level->finish(buildings[level->building]);
 		}
 	}
 };

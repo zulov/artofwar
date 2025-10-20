@@ -8,6 +8,7 @@
 #include "objects/unit/state/UnitState.h"
 #include "db_basic_struct.h"
 #include "math/SpanUtils.h"
+#include "player/ai/MetricDefinitions.h"
 #include "simulation/SimGlobals.h"
 #include "utils/DeleteUtils.h"
 #include "utils/OtherUtils.h"
@@ -39,7 +40,8 @@ struct db_common_attack {
 
 	db_common_attack(float collect, float attack, short attackReload, short attackRange)
 		: attack(attack), attackReload(attackReload), attackRange(attackRange), collect(collect),
-		  sqAttackRange(attackRange * attackRange) {}
+		  sqAttackRange(attackRange * attackRange) {
+	}
 
 	bool initFlag(float val) const {
 		return val > 0.f;
@@ -52,7 +54,8 @@ struct db_building_attack : db_common_attack {
 
 	db_building_attack(float collect, float attack, short attackReload, short attackRange)
 		: db_common_attack(collect, attack, attackReload, attackRange),
-		  canAttack(initFlag(attack)) {}
+		  canAttack(initFlag(attack)) {
+	}
 };
 
 struct db_unit_attack : db_common_attack {
@@ -78,14 +81,16 @@ struct db_unit_attack : db_common_attack {
 		  bonusMelee(bonusMelee),
 		  bonusHeavy(bonusHeavy),
 		  bonusLight(bonusLight),
-		  bonusBuilding(bonusBuilding) {}
+		  bonusBuilding(bonusBuilding) {
+	}
 };
 
 struct db_static {
 	const Urho3D::IntVector2 size;
 
 	explicit db_static(const Urho3D::IntVector2& size)
-		: size(size) {}
+		: size(size) {
+	}
 };
 
 //TODO mem uprościć usunac tabele kosztowe
@@ -183,7 +188,8 @@ struct db_level {
 	const char level;
 
 	explicit db_level(char level)
-		: level(level) {}
+		: level(level) {
+	}
 };
 
 struct db_with_hp {
@@ -192,7 +198,8 @@ struct db_with_hp {
 	const float armor;
 
 	explicit db_with_hp(unsigned short maxHp, float armor)
-		: maxHp(maxHp), invMaxHp(1.f / maxHp), armor(armor) {}
+		: maxHp(maxHp), invMaxHp(1.f / maxHp), armor(armor) {
+	}
 };
 
 struct db_base : db_with_hp {
@@ -204,7 +211,8 @@ struct db_base : db_with_hp {
 
 	db_base(unsigned short maxHp, float armor, float sightRadius)
 		: db_with_hp(maxHp, armor), sightRadius(sightRadius), sqSightRadius(sightRadius * sightRadius),
-		  interestRange(sightRadius * 0.8f), sqInterestRange(interestRange * interestRange) {}
+		  interestRange(sightRadius * 0.8f), sqInterestRange(interestRange * interestRange) {
+	}
 };
 
 struct db_with_model {
@@ -216,7 +224,8 @@ struct db_build_upgrade {
 	short upgradeTime = -1;
 
 	db_build_upgrade(short buildTime, short upgradeTime)
-		: buildTime(buildTime), upgradeTime(upgradeTime) {}
+		: buildTime(buildTime), upgradeTime(upgradeTime) {
+	}
 };
 
 struct db_unit_metric : db_basic_metric {
@@ -243,7 +252,7 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 
 	const Urho3D::String node;
 
-	db_unit_metric* dbUnitMetric = nullptr; //TODO jak to zrobic
+	db_unit_metric* dbUnitMetric = nullptr;
 
 	db_unit_level(short id, short level, short unit, char* name, char* node,
 	              unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
@@ -266,8 +275,9 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 		node(node) {
 	}
 
-	void finish(const std::span<const float> newValues, std::span<const unsigned char> valuesUnitsTypesIdxs) {
-		dbUnitMetric = new db_unit_metric(newValues, valuesUnitsTypesIdxs);
+	void finish(db_unit* dbUnit) {
+		dbUnitMetric = new db_unit_metric(METRIC_DEFINITIONS.writeUnit(dbUnit, this),
+		                                  METRIC_DEFINITIONS.getUnitTypesIdxs());
 	}
 
 	~db_unit_level() {
@@ -297,7 +307,8 @@ struct db_unit : db_with_icon, db_with_cost {
 	db_unit(short id, char* name, char* icon,
 	        unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
 	        char actionState, bool typeInfantry, bool typeRange, bool typeCalvary, bool typeWorker,
-	        bool typeSpecial, bool typeMelee, bool typeHeavy, bool typeLight) ://TODO typeHeavy polaczyc z typeLight, usunac actionState?
+	        bool typeSpecial, bool typeMelee, bool typeHeavy,
+	        bool typeLight) : //TODO typeHeavy polaczyc z typeLight, usunac actionState?
 		db_with_icon(id, name, icon), db_with_cost(food, wood, stone, gold),
 		actionState(UnitState(actionState)),
 		typeInfantry(typeInfantry),
@@ -307,7 +318,8 @@ struct db_unit : db_with_icon, db_with_cost {
 		typeSpecial(typeSpecial),
 		typeMelee(typeMelee),
 		typeHeavy(typeHeavy),
-		typeLight(typeLight) {}
+		typeLight(typeLight) {
+	}
 
 	std::optional<db_unit_level*> getLevel(char level) {
 		if (levels.size() > level) {
@@ -435,12 +447,14 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 		//clear_vector(dbBuildingMetricPerNation);
 	}
 
-	void finish(const std::span<const float> newValues,
-	            std::span<const unsigned char> valuesOtherIdxs, std::span<const unsigned char> valuesDefenceIdxs,
-	            std::span<const unsigned char> valuesResourceIdxs, std::span<const unsigned char> valuesTechIdxs,
-	            std::span<const unsigned char> valuesUnitsIdxs, std::span<const unsigned char> typesIdxs) {
-		dbBuildingMetric = new db_building_metric(newValues, valuesOtherIdxs, valuesDefenceIdxs,
-		                                          valuesResourceIdxs, valuesTechIdxs, valuesUnitsIdxs, typesIdxs);
+	void finish(db_building* dbBuilding) {
+		dbBuildingMetric = new db_building_metric(METRIC_DEFINITIONS.writeBuilding(dbBuilding, this),
+		                                          METRIC_DEFINITIONS.getBuildingOtherIdxs(),
+		                                          METRIC_DEFINITIONS.getBuildingDefenceIdxs(),
+		                                          METRIC_DEFINITIONS.getBuildingResourceIdxs(),
+		                                          METRIC_DEFINITIONS.getBuildingTechIdxs(),
+		                                          METRIC_DEFINITIONS.getBuildingUnitsIdxs(),
+		                                          METRIC_DEFINITIONS.getBuildingTypesIdxs());
 	}
 };
 
@@ -455,7 +469,8 @@ struct db_nation : db_with_name {
 	db_nation(short id, char* name, char* actionPrefix, char* orderPrefix)
 		: db_with_name(id, name),
 		  actionPrefix(split(actionPrefix, SPLIT_SIGN)),
-		  orderPrefix(split(orderPrefix, SPLIT_SIGN)) {}
+		  orderPrefix(split(orderPrefix, SPLIT_SIGN)) {
+	}
 
 	std::vector<std::string> splitAi(std::string* param) const {
 		return split(split(param[id], SPLIT_SIGN_2)[SimGlobals::CURRENT_RUN], SPLIT_SIGN);
@@ -485,5 +500,6 @@ struct db_resource : db_with_icon, db_static, db_with_hp, db_with_model {
 	            short sizeZ, short maxUsers, unsigned mini_map_color, float collectSpeed, bool rotatable)
 		: db_with_icon(id, name, icon), db_static({sizeX, sizeZ}), db_with_hp(maxHp, 0.f),
 		  resourceId(resourceId), nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)),
-		  maxUsers(maxUsers), mini_map_color(mini_map_color), collectSpeed(collectSpeed), rotatable(rotatable) {}
+		  maxUsers(maxUsers), mini_map_color(mini_map_color), collectSpeed(collectSpeed), rotatable(rotatable) {
+	}
 };

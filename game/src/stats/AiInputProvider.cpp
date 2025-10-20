@@ -43,6 +43,7 @@ std::span<const float> AiInputProvider::getWhereDefend(Player* player, Player* e
 }
 
 std::span<const float> AiInputProvider::getBuildingsTypeInput(Player* player, Player* enemy, ParentBuildingType type) {
+	to jest powrorzone poziom nizej
 	switch (type) {
 	case ParentBuildingType::RESOURCE: return METRIC_DEFINITIONS.writeResourceWithOutBonus(player, enemy);
 	case ParentBuildingType::OTHER:
