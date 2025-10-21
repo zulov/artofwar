@@ -154,17 +154,14 @@ struct db_building_metric : db_basic_metric {
 	std::valarray<float> techNormAsVal;
 	std::valarray<float> unitsNormAsVal;
 
-	db_building_metric(const std::span<const float> newValues,
-	                   std::span<const unsigned char> otherIdxs, std::span<const unsigned char> defenceIdxs,
-	                   std::span<const unsigned char> resourceIdxs, std::span<const unsigned char> techIdxs,
-	                   std::span<const unsigned char> unitsIdxs,
-	                   std::span<const unsigned char> typesIdxs) : db_basic_metric(newValues, BUILDINGS_SUM_X) {
-		setValarray(otherNormAsVal, otherIdxs); //TODO bug czy to jest zainicjowane
-		setValarray(defenceNormAsVal, defenceIdxs);
-		setValarray(resourceNormAsVal, resourceIdxs);
-		setValarray(techNormAsVal, techIdxs);
-		setValarray(unitsNormAsVal, unitsIdxs);
-		setValarray(typesNormAsVal, typesIdxs);
+	db_building_metric(db_building* dbBuilding, db_building_level* dbLevel) :
+		db_basic_metric(METRIC_DEFINITIONS.writeBuilding(dbBuilding, dbLevel), BUILDINGS_SUM_X) {
+		setValarray(otherNormAsVal, METRIC_DEFINITIONS.getBuildingOtherIdxs()); //TODO bug czy to jest zainicjowane
+		setValarray(defenceNormAsVal, METRIC_DEFINITIONS.getBuildingDefenceIdxs());
+		setValarray(resourceNormAsVal, METRIC_DEFINITIONS.getBuildingResourceIdxs());
+		setValarray(techNormAsVal, METRIC_DEFINITIONS.getBuildingTechIdxs());
+		setValarray(unitsNormAsVal, METRIC_DEFINITIONS.getBuildingUnitsIdxs());
+		setValarray(typesNormAsVal, METRIC_DEFINITIONS.getBuildingTypesIdxs());
 	}
 
 	const std::valarray<float>& getValuesNormAsValForType(ParentBuildingType type) const {
@@ -229,9 +226,9 @@ struct db_build_upgrade {
 };
 
 struct db_unit_metric : db_basic_metric {
-	db_unit_metric(const std::span<const float> newValues, std::span<const unsigned char> typesIdxs) :
-		db_basic_metric(newValues, UNITS_SUM_X) {
-		setValarray(typesNormAsVal, typesIdxs);
+	db_unit_metric(db_unit* dbUnit, db_unit_level* dbLevel) :
+		db_basic_metric(METRIC_DEFINITIONS.writeUnit(dbUnit, dbLevel), UNITS_SUM_X) {
+		setValarray(typesNormAsVal, METRIC_DEFINITIONS.getUnitTypesIdxs());
 	}
 };
 
@@ -276,8 +273,7 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 	}
 
 	void finish(db_unit* dbUnit) {
-		dbUnitMetric = new db_unit_metric(METRIC_DEFINITIONS.writeUnit(dbUnit, this),
-		                                  METRIC_DEFINITIONS.getUnitTypesIdxs());
+		dbUnitMetric = new db_unit_metric(dbUnit, this);
 	}
 
 	~db_unit_level() {
@@ -448,13 +444,7 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 	}
 
 	void finish(db_building* dbBuilding) {
-		dbBuildingMetric = new db_building_metric(METRIC_DEFINITIONS.writeBuilding(dbBuilding, this),
-		                                          METRIC_DEFINITIONS.getBuildingOtherIdxs(),
-		                                          METRIC_DEFINITIONS.getBuildingDefenceIdxs(),
-		                                          METRIC_DEFINITIONS.getBuildingResourceIdxs(),
-		                                          METRIC_DEFINITIONS.getBuildingTechIdxs(),
-		                                          METRIC_DEFINITIONS.getBuildingUnitsIdxs(),
-		                                          METRIC_DEFINITIONS.getBuildingTypesIdxs());
+		dbBuildingMetric = new db_building_metric(dbBuilding, this);
 	}
 };
 
