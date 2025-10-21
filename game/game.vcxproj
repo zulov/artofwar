@@ -407,7 +407,7 @@
     <ClInclude Include="src\database\db_container.h" />
     <ClInclude Include="src\database\db_grah_structs.h" />
     <ClInclude Include="src\database\db_other_struct.h" />
-    <ClInclude Include="src\math\SpanUtils.h" />
+    <ClInclude Include="src\utils\SpanUtils.h" />
     <ClInclude Include="src\objects\unit\GroupUtils.h" />
     <ClInclude Include="src\objects\unit\state\StateUtils.h" />
     <ClInclude Include="src\player\ai\AiMetric.h" />

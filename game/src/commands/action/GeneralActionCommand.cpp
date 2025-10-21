@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "objects/queue/QueueActionType.h"
 #include "GeneralActionType.h"
+#include "database/db_strcut.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"

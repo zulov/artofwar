@@ -1,8 +1,14 @@
 #pragma once
 #include <functional>
 
-#include "player/Player.h"
 
+class Player;
+class Possession;
+class Resources;
+struct db_building_level;
+struct db_building;
+struct db_unit_level;
+struct db_unit;
 
 struct AiMetric {
 	const float weight;

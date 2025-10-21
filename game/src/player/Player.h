@@ -3,7 +3,6 @@
 #include "objects/queue/QueueManager.h"
 #include "ai/ActionMaker.h"
 #include "ai/OrderMaker.h"
-#include "database/db_strcut.h"
 
 class Possession;
 class Resources;
@@ -24,7 +23,7 @@ public:
 
 	Resources* getResources() const { return resources; }
 	Possession* getPossession() const { return possession; }
-	short getNation() const { return dbNation->id; }
+	short getNation() const;
 	char getTeam() const { return team; }
 	char getId() const { return id; } //TODO bug id playera a jego index to czêsto nie to samo
 	int getColor() const { return color; }
@@ -65,10 +64,10 @@ private:
 	unsigned currentBuildingUId;
 	unsigned currentUnitUId;
 
-	db_nation* dbNation; //Must by first
-	QueueManager queue;
+	db_nation* dbNation; //Must be first
 	Possession* possession;
 	Resources* resources;
+	QueueManager queue;
 	ActionMaker actionMaker;
 	OrderMaker orderMaker;
 	Urho3D::String name;

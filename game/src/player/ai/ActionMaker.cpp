@@ -81,9 +81,8 @@ bool ActionMaker::createBuilding(const std::span<const float> buildingsInput) {
 			return false;
 		}
 	}
-	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
 
-	const auto output = getWhichBuilding(type, aiInput->getBuildingsTypeInput(player, enemy, type));
+	const auto output = getWhichBuilding(type, aiInput->getBuildingsTypeInput(player, type));
 
 	return createBuilding(chooseBuilding(output, type), type);
 }

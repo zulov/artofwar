@@ -43,7 +43,7 @@ std::string Player::getValues(int precision) const {
 		+ std::to_string((int)(resVals[0] * precision)) + ","
 		+ std::to_string((int)(resVals[1] * precision)) + ","
 		+ std::to_string((int)(resVals[2] * precision)) + ","
-	+ std::to_string((int)(resVals[3] * precision));
+		+ std::to_string((int)(resVals[3] * precision));
 }
 
 void Player::setResourceAmount(float food, float wood, float stone, float gold) const {
@@ -74,6 +74,8 @@ char Player::upgradeLevel(QueueActionType type, int id) const {
 	}
 	return -1;
 }
+
+short Player::getNation() const { return dbNation->id; }
 
 db_unit_level* Player::getLevelForUnit(short id) const {
 	return Game::getDatabase()->getUnit(id)->getLevel(unitLevels[id]).value();

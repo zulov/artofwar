@@ -520,7 +520,7 @@
     <ClInclude Include="src\database\db_other_struct.h" />
     <ClInclude Include="src\camera\CameraInfo.h" />
     <ClInclude Include="src\scene\save\SQLConsts.h" />
-    <ClInclude Include="src\math\SpanUtils.h" />
+    <ClInclude Include="src\utils\SpanUtils.h" />
     <ClInclude Include="src\objects\unit\GroupUtils.h" />
     <ClInclude Include="src\utils\Flags.h" />
     <ClInclude Include="src\env\influence\map\VisibilityMap.h" />

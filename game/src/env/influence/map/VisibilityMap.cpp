@@ -2,7 +2,7 @@
 
 #include "VisibilityType.h"
 #include "math/MathUtils.h"
-#include "math/SpanUtils.h"
+#include "utils/SpanUtils.h"
 #include "objects/Physical.h"
 #include "env/bucket/levels/LevelCache.h"
 #include "env/bucket/levels/LevelCacheProvider.h"

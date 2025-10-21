@@ -5,7 +5,7 @@
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"
 #include "math/MathUtils.h"
-#include "math/SpanUtils.h"
+#include "utils/SpanUtils.h"
 #include "objects/Physical.h"
 #include "env/GridCalculator.h"
 #include "env/GridCalculatorProvider.h"

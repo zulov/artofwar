@@ -6,27 +6,20 @@
 #include <array>
 
 #include "AiMetric.h"
+#include "Game.h"
 #include "env/Environment.h"
 #include "env/influence/CenterType.h"
 #include "player/Player.h"
 #include "player/Resources.h"
 #include "player/Possession.h"
+#include "utils/SpanUtils.h"
 
-
-class Possession;
-struct db_building_level;
-struct db_building;
-struct AiBuildingMetric;
-struct db_unit_level;
-struct db_unit;
-struct AiPlayerMetric;
-class Player;
 
 constexpr unsigned char METRIC_OUTPUT_MAX_SIZE = 64;
 
 constexpr inline struct MetricDefinitions {
 	template <typename T, typename L, typename MetricArray>
-	std::span<float> appendMetrics(T* one, L* two, const MetricArray& metrics) const {
+	std::span<float> writeMetrics(T* one, L* two, const MetricArray& metrics) const {
 		char size = std::size(metrics);
 		assert(METRIC_OUTPUT_MAX_SIZE > size);
 		int i = 0;
@@ -75,12 +68,30 @@ constexpr inline struct MetricDefinitions {
 		return result;
 	}
 
+	template <typename T, typename L>
+	std::span<float> basicWithSpanSelective(T* one, L* two, const std::span<const float> second, const std::span<const unsigned char> indxes) const {
+		char size1 = std::size(indxes);
+		char size = size1 + std::size(aiBasicMetric);
+		assert(METRIC_OUTPUT_MAX_SIZE > size);
+		int i = 0;
+		for (auto const& v : aiBasicMetric) {
+			output[i++] = v.fn(one, two) * v.weight;
+		}
+		for (auto j : indxes) {
+			output[i++] = second[j];
+		}
+		auto result = std::span(output.begin(), output.begin() + size);
+		assert(i == size);
+		assert(validateSpan(__LINE__, __FILE__, result));
+		return result;
+	}
+
 	const std::span<const float> writeUnit(db_unit* unit, db_unit_level* level) const {
-		return appendMetrics(unit, level, aiUnitMetric);
+		return writeMetrics(unit, level, aiUnitMetric);
 	}
 
 	const std::span<const float> writeBuilding(db_building* building, db_building_level* level) const {
-		return appendMetrics(building, level, aiBuildingMetric);
+		return writeMetrics(building, level, aiBuildingMetric);
 	}
 
 	const std::span<float> writeResource(Player* one, Player* two) const {
@@ -88,13 +99,12 @@ constexpr inline struct MetricDefinitions {
 	}
 
 	const std::span<float> writeResourceWithOutBonus(Player* player, Player* enemy) const {
-		return basicWithMetrics(player, enemy, player->getResources(), player->getPossession(),
-		                        aiResourceWithoutBonusMetric);
+		return basicWithMetrics(player, enemy, player->getResources(), player->getPossession(), aiResourceWithoutBonusMetric);
 	}
 
 	//TODO te 3 sie troszke dubluj¹ ogran¹æ indeksami? ale z drugiej srony chce sie ich pozbyc
 	const std::span<float> writeAttackOrDefence(Player* one, Player* two) const {
-		return appendMetrics(one, two, aiAttackOrDefence);
+		return writeMetrics(one, two, aiAttackOrDefence);
 	}
 
 	const std::span<float> writeWhereAttack(Player* one, Player* two) const {
@@ -255,12 +265,6 @@ constexpr inline struct MetricDefinitions {
 	inline static std::array<float, METRIC_OUTPUT_MAX_SIZE> output{};
 } METRIC_DEFINITIONS;
 
-constexpr unsigned char BASIC_SIZE = std::size(METRIC_DEFINITIONS.aiBasicMetric);
-constexpr unsigned char UNIT_SIZE = std::size(METRIC_DEFINITIONS.aiUnitMetric);
-constexpr unsigned char BUILDING_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingMetric);
-
-constexpr unsigned char BUILDING_OTHER_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingOtherIdxs);
-constexpr unsigned char BUILDING_DEF_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingDefIdxs);
-constexpr unsigned char BUILDING_RES_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingResIdxs);
-constexpr unsigned char BUILDING_TECH_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingTechIdxs);
-constexpr unsigned char BUILDING_UNITS_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingUnitsIdxs);
+constexpr unsigned char BASIC_METRIC_SIZE = std::size(METRIC_DEFINITIONS.aiBasicMetric);
+constexpr unsigned char UNIT_METRIC_SIZE = std::size(METRIC_DEFINITIONS.aiUnitMetric);
+constexpr unsigned char BUILDING_METRIC_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingMetric);

@@ -48,6 +48,8 @@
 #include "env/influence/CenterType.h"
 #include "hud/UiUtils.h"
 #include "player/Possession.h"
+#include "player/Resources.h"
+#include "player/ai/PossessionMetric.h"
 #include "simulation/formation/FormationManager.h"
 #include "stats/AiInputProvider.h"
 #include "utils/DebugUtils.h"
@@ -133,7 +135,7 @@ void Main::Start() {
 }
 
 void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>> funcs1,
-                       std::initializer_list<const std::function<std::span<const float>(Player*)>> funcs2) const {
+                       std::initializer_list<const std::function<const std::span<const float>(Player*)>> funcs2) const {
 	std::ofstream outFile(("result/" + outputName).CString(), std::ios_base::out);
 	for (const auto player : Game::getPlayersMan()->getAllPlayers()) {
 		outFile << std::to_string(player->getId());
@@ -163,8 +165,8 @@ void Main::writeOutput() const {
 			            [](Player* p) -> std::span<float> { return p->getResources()->getValues(); },
 			            [](Player* p) -> std::span<float> { return p->getResources()->getSumValues(); },
 
-			            [](Player* p) -> std::span<float> { return p->getPossession()->getUnitsMetrics(); },
-			            [](Player* p) -> std::span<float> { return p->getPossession()->getBuildingsMetrics(); }
+			            [](Player* p) -> const std::span<const float> { return p->getPossession()->getMetrics()->unitsSum; },
+			            [](Player* p) -> const std::span<const float> { return p->getPossession()->getMetrics()->buildingsSum; }
 		            });
 	}
 }

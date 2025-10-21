@@ -7,7 +7,7 @@
 #include "objects/building/ParentBuildingType.h"
 #include "objects/unit/state/UnitState.h"
 #include "db_basic_struct.h"
-#include "math/SpanUtils.h"
+#include "utils/SpanUtils.h"
 #include "player/ai/MetricDefinitions.h"
 #include "simulation/SimGlobals.h"
 #include "utils/DeleteUtils.h"

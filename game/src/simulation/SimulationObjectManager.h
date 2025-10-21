@@ -23,7 +23,7 @@ public:
 	void addBuilding(int id, const Urho3D::IntVector2& _bucketCords, char level, char player) const;
 	ResourceEntity* addResource(int id, const Urho3D::IntVector2& _bucketCords);
 
-	void dispose();
+	void dispose() const;
 
 	void removeFromGrids();
 
@@ -37,10 +37,7 @@ private:
 	void addBuilding(Building* building, bool bulkAdd) const;
 	void addResource(ResourceEntity* resource, bool bulkAdd) const;
 
-	void cleanAndDisposeUnits();
-	void cleanAndDisposeBuildings();
-	void cleanAndDisposeResources();
-	void refreshResBonuses();
+	void refreshResBonuses() const;
 
 	UnitFactory unitFactory;
 	BuildingFactory buildingFactory;

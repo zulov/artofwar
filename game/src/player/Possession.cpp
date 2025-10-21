@@ -3,7 +3,7 @@
 #include "Resources.h"
 #include "ai/PossessionMetric.h"
 #include "database/DatabaseCache.h"
-#include "math/SpanUtils.h"
+#include "utils/SpanUtils.h"
 #include "math/VectorUtils.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/building/Building.h"
@@ -136,46 +136,9 @@ void Possession::addKilled(Physical* physical) {
 	resourcesDestroyed += physical->getCostSum();
 }
 
-std::span<float> Possession::getUnitsMetrics() {
+const PossessionMetric* Possession::getMetrics() {
 	ensureReady();
-	return metric->unitsSum;
-}
-
-std::span<float> Possession::getFreeArmyMetrics() {
-	ensureReady();
-	return metric->freeArmySum;
-}
-
-std::span<float> Possession::getBuildingsMetrics() {
-	ensureReady();
-	return metric->buildingsSum;
-}
-
-
-std::span<float> Possession::refreshBuildingSum(const std::span<const unsigned char> idxs, std::span<float> out) const {
-	assert(idxs.size() == out.size());
-	for (int i = 0; i < idxs.size(); ++i) {
-		out[i] = metric->buildingsSum[idxs[i]];
-	}
-	return out;
-}
-
-std::span<float> Possession::getBuildingsMetrics(ParentBuildingType type) {
-	ensureReady();
-	switch (type) {
-	case ParentBuildingType::OTHER:
-		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingOtherIdxs(), metric->buildingsOther);
-	case ParentBuildingType::DEFENCE:
-		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingDefenceIdxs(), metric->buildingsDefence);
-	case ParentBuildingType::RESOURCE:
-		assert(false);
-	//return refreshResource(METRIC_DEFINITIONS.getResWithoutBonusIdxs(), buildingsResSumSpan);
-	case ParentBuildingType::TECH:
-		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingTechIdxs(), metric->buildingsTech);
-	case ParentBuildingType::UNITS:
-		return refreshBuildingSum(METRIC_DEFINITIONS.getBuildingUnitsIdxs(), metric->buildingsUnits);
-	default: ;
-	}
+	return metric;
 }
 
 std::vector<Unit*> Possession::getFreeArmy() {

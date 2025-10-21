@@ -1,7 +1,6 @@
 #pragma once
 #include <span>
 #include "database/db_strcut.h"
-#include "player/ai/MetricDefinitions.h"
 
 class Player;
 struct db_unit_metric;
@@ -23,7 +22,8 @@ public:
 	std::span<const float> getAttackOrDefenceInput(Player* player, Player* enemy);
 	std::span<const float> getWhereAttack(Player* player, Player* enemy);
 	std::span<const float> getWhereDefend(Player* player, Player* enemy);
-	std::span<const float> getBuildingsTypeInput(Player* player, Player* enemy, ParentBuildingType type);
+	std::span<const float> getBuildingsTypeInput(Player* player, ParentBuildingType type);
 private:
 	std::span<const float> basicWithSpan(Player* player, std::span<const float> span);
+	std::span<const float> basicWithSpanSelective(Player* player,Player*enemy, std::span<const unsigned char> idxs);
 };

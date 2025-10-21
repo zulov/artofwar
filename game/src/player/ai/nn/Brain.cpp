@@ -1,7 +1,7 @@
 #include "Brain.h"
 
 #include "Layer.h"
-#include "math/SpanUtils.h"
+#include "utils/SpanUtils.h"
 #include "utils/DeleteUtils.h"
 #include "utils/StringUtils.h"
 

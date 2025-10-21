@@ -3,6 +3,7 @@
 #include <Urho3D/IO/Log.h>
 
 #include "Game.h"
+#include "database/db_strcut.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
@@ -113,24 +114,7 @@ void SimulationObjectManager::addResource(ResourceEntity* resource, bool bulkAdd
 	}
 }
 
-void SimulationObjectManager::cleanAndDisposeUnits() {
-	if (StateManager::isSthToDispose()) {
-		for (const auto unit : *units) {
-			unit->clean(); //TODO bug? to powinno być niepotrzebne
-		}
-	}
-	cleanAndDispose(units, StateManager::isUnitToDispose());
-}
-
-void SimulationObjectManager::cleanAndDisposeBuildings() {
-	cleanAndDispose(buildings, StateManager::isBuildingToDispose());
-}
-
-void SimulationObjectManager::cleanAndDisposeResources() {
-	cleanAndDispose(resources, StateManager::isResourceToDispose());
-}
-
-void SimulationObjectManager::refreshResBonuses() {
+void SimulationObjectManager::refreshResBonuses() const {
 	auto isResourceBuilding = [](const Building* building){
 		return building->getDb()->typeResourceAny;
 	};
@@ -143,10 +127,15 @@ void SimulationObjectManager::refreshResBonuses() {
 	Game::getEnvironment()->reAddBonuses(resBuilding, resources);
 }
 
-void SimulationObjectManager::dispose() {
-	cleanAndDisposeUnits();
-	cleanAndDisposeBuildings();
-	cleanAndDisposeResources();
+void SimulationObjectManager::dispose() const {
+	if (StateManager::isSthToDispose()) {
+		for (const auto unit : *units) {
+			unit->clean(); //TODO bug? to powinno być niepotrzebne
+		}
+	}
+	cleanAndDispose(units, StateManager::isUnitToDispose());
+	cleanAndDispose(buildings, StateManager::isBuildingToDispose());
+	cleanAndDispose(resources, StateManager::isResourceToDispose());
 }
 
 void SimulationObjectManager::removeFromGrids() {

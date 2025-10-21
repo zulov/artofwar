@@ -43,10 +43,7 @@ public:
 
 	void addKilled(Physical* physical);
 
-	std::span<float> getUnitsMetrics();
-	std::span<float> getFreeArmyMetrics();
-	std::span<float> getBuildingsMetrics();
-	std::span<float> getBuildingsMetrics(ParentBuildingType type);
+	const PossessionMetric* getMetrics();
 
 	const std::vector<Unit*>& getWorkers() const { return workers; }
 	std::vector<Unit*> getFreeArmy();
