@@ -43,9 +43,9 @@ void ActionCenter::executeActions() {
 	action.execute();
 }
 
-void ActionCenter::executeLists() {
-	upgrade.execute();
+void ActionCenter::createAndUpgrade() {
 	creation.execute();
+	upgrade.execute();
 }
 
 bool ActionCenter::addUnits(unsigned number, short id, Urho3D::Vector2 position, char player) {

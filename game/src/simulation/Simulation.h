@@ -50,20 +50,21 @@ public:
 private:
 	void aiPlayers() const;
 	void calculateForces();
-	void moveUnitsAndCheck(float timeStep);
-	void performStateAction(float timeStep) const;
+    void moveUnitsAndCheck();
+    void colorUnits();
+    void performStateAction() const;
 	void executeStateTransition() const;
 	float updateTime(float timeStep) const;
 
 	void loadEntities(NewGameForm* form) const;
-	void loadEntities(SceneLoader& loader) const;
+	void loadEntities(dbload_container* data) const;
 	void countFrame();
 	void applyForce() const;
 	void levelUp(QueueElement* done, char player) const;
 	void updateBuildingQueues() const;
 	void updateQueues() const;
-	std::function<bool(Physical*)> getCondition(db_unit* dbUnit) const;
-	void selfAI() const;
+	std::function<bool(Physical*)> ifAttack(db_unit* dbUnit) const;
+	void objectAI() const;
 	void addTestEntities() const;
 
 	float accumulateTime = 0;

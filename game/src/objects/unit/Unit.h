@@ -55,7 +55,7 @@ public:
 
 	void populate();
 	void checkAim();
-	void updatePosition() const;
+	void updatePositionAndRotation() const;
 	bool move(float timeStep, const CameraInfo* camInfo);
 	bool ifVisible(bool hasMoved, const CameraInfo* camInfo) const;
 	void applyForce(float timeStep);
@@ -100,7 +100,7 @@ public:
 	float getMaxSeparationDistance() const;
 	short getPositionInState() const { return posInState; }
 	float getMinimalDistance() const;
-	UnitState getActionState() const;
+	UnitState getDesiredState() const;
 	UnitState getState() const { return state; }
 	UnitState getNextState() const { return nextState; }
 	short getFormation() const { return formation; }
@@ -173,7 +173,7 @@ private:
 
 	ChargeData* chargeData{};
 
-	Physical* thingToInteract{}; //TODO jak to wczytac :O error!!!
+	Physical* thingToInteract{}; //TODO wczytac z uId
 
 	int sparseIndexInGrid;
 
@@ -182,14 +182,14 @@ private:
 	int indexToInteract = -1; //TODO moze sie tego pozbyc
 
 	unsigned short currentFrameState = 0;
-	short posInState = -1, formation = -1;
+	short posInState = -1, formation = -1;//TODO formation id to pointer
 
 	UnitState state;
 	UnitState nextState;
 	bool stateChangePending = false;
 	char slotToInteract = -1;
 	unsigned char useSockets = 0;
-	char lastActionThingId = -1; //TODO reset po jakimœ czasie
+	char lastActionThingId = -1; //TODO reset po jakimï¿½ czasie
 	ActionParameter nextActionParameter;
 	Urho3D::Vector2 inCellPos;
 

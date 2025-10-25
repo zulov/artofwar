@@ -72,13 +72,14 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 }
 
 void Force::destOrFormation(Urho3D::Vector2& newForce, Unit* unit) {
-	if (unit->getFormation() < 0) {
+	//enum Single,leader,information
+	if (unit->getFormation() < 0) {//single
 		destination(newForce, unit, 1.f);
-	} else if (Game::getFormationManager()->isLeader(unit)) {
+	} else if (Game::getFormationManager()->isLeader(unit)) {//leader
 		const auto factor = Game::getFormationManager()->isMoving(unit) ? 1.0f : 0.05f;
 
 		destination(newForce, unit, factor);
-	} else {
+	} else {//information
 		formation(newForce, unit);
 	}
 }

@@ -5,10 +5,9 @@ class MoveState : public State
 {
 public:
 
-	MoveState(): State({
-		
+	MoveState(): State({	
 		UnitState::DEFEND, UnitState::DEAD,  UnitState::GO,  UnitState::FOLLOW, UnitState::ATTACK,
-		UnitState::COLLECT, UnitState::SHOT, UnitState::STOP,UnitState::CHARGE
+		UnitState::COLLECT, UnitState::SHOT, UnitState::STOP, UnitState::CHARGE
 	}) {
 	}
 

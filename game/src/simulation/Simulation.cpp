@@ -83,19 +83,19 @@ FrameInfo* Simulation::update(float timeStep) {
 		//TODO bug a co jesli kilka razy sie wykona, moga byc bledy np w control
 		frameInfo->set(currentFrame, secondsElapsed);
 
-		Game::getActionCenter()->executeLists();
+		Game::getActionCenter()->createAndUpgrade();
 
-		selfAI();
+		objectAI();
 		aiPlayers();
 
 		Game::getActionCenter()->executeActions();
 
 		calculateForces();
-		applyForce(); //zmiany stanu
+		applyForce(); //zmiany stanu MOVE <-> STOP
 
-		moveUnitsAndCheck(TIME_PER_UPDATE); //zmiany stanu
-		ProjectileManager::update(TIME_PER_UPDATE); //TODO czy to dobre miejsce? mog¹ tu ginaæ
-		performStateAction(TIME_PER_UPDATE); //tutaj moga umierac w tym zmiany stanu
+		moveUnitsAndCheck(); //zmiany stanu
+		ProjectileManager::update(TIME_PER_UPDATE); //TODO czy to dobre miejsce? mogï¿½ tu ginaï¿½
+		performStateAction(); //tutaj moga umierac w tym zmiany stanu
 		executeStateTransition();
 		updateQueues();
 		updateInfluenceMaps(false);
@@ -114,16 +114,16 @@ FrameInfo* Simulation::update(float timeStep) {
 	return frameInfo;
 }
 
-void Simulation::selfAI() const {
+void Simulation::objectAI() const {
 	const bool ifSelfAction = PER_FRAME_ACTION.get(PerFrameAction::SELF_AI, currentFrame);
 	if (ifSelfAction) {
 		for (const auto unit : *units) {
 			if (isFree(unit)) {
-				if (StateManager::canChangeState(unit, unit->getActionState())) {
-					switch (unit->getActionState()) {
+				if (StateManager::canChangeState(unit, unit->getDesiredState())) {
+					switch (unit->getDesiredState()) {
 					case UnitState::ATTACK:
 					case UnitState::SHOT:
-						tryToAttack(unit, getCondition(unit->getDb()));
+						tryToAttack(unit, ifAttack(unit->getDb()));
 						break;
 					case UnitState::COLLECT:
 						tryToCollect(unit);
@@ -138,7 +138,7 @@ void Simulation::selfAI() const {
 	}
 }
 
-std::function<bool(Physical*)> Simulation::getCondition(db_unit* dbUnit) const {
+std::function<bool(Physical*)> Simulation::ifAttack(db_unit* dbUnit) const {
 	if (dbUnit->typeRange) {
 		if (dbUnit->typeMelee) {
 			return belowCloseOrRange; //TODO bug? teraz to sie wyklucza?
@@ -151,14 +151,14 @@ std::function<bool(Physical*)> Simulation::getCondition(db_unit* dbUnit) const {
 	return alwaysFalse;
 }
 
-void Simulation::loadEntities(SceneLoader& loader) const {
-	for (const auto unit : *loader.getData()->units) {
+void Simulation::loadEntities(dbload_container* data) const {
+	for (const auto unit : *data->units) {
 		simObjectManager->load(unit);
 	}
-	for (const auto resource : *loader.getData()->resources) {
+	for (const auto resource : *data->resources) {
 		simObjectManager->load(resource);
 	}
-	for (const auto building : *loader.getData()->buildings) {
+	for (const auto building : *data->buildings) {
 		simObjectManager->load(building);
 	}
 	simObjectManager->refreshAllStatic();
@@ -283,9 +283,9 @@ void Simulation::changeColorMode(SimColorMode _colorMode) {
 	colorScheme = _colorMode;
 }
 
-void Simulation::performStateAction(float timeStep) const {
+void Simulation::performStateAction() const {
 	for (auto unit : *units) {
-		StateManager::execute(unit, timeStep);
+		StateManager::execute(unit, TIME_PER_UPDATE);
 	}
 }
 
@@ -297,41 +297,36 @@ void Simulation::executeStateTransition() const {
 }
 
 void Simulation::initScene(SceneLoader& loader) const {
-	loadEntities(loader);
+	loadEntities(loader.getData());
 	addTestEntities();
-	Game::getActionCenter()->executeLists();
+	Game::getActionCenter()->createAndUpgrade();
 }
 
 void Simulation::initScene(NewGameForm* form) const {
 	loadEntities(form);
 	//addTestEntities();
-	Game::getActionCenter()->executeLists();
+	Game::getActionCenter()->createAndUpgrade();
 }
 
 void Simulation::aiPlayers() const {
 	if (SIM_GLOBALS.NO_PLAYER_AI) { return; }
-	if (PER_FRAME_ACTION.get(PerFrameAction::AI_ACTION, currentFrame)) {
-		for (auto player : Game::getPlayersMan()->getAllPlayers()) {
-			if (SIM_GLOBALS.ALL_PLAYER_AI || Game::getPlayersMan()->getActivePlayer() != player) {
+	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
+		if (SIM_GLOBALS.ALL_PLAYER_AI || Game::getPlayersMan()->getActivePlayer() != player) {
+			if(PER_FRAME_ACTION.get(PerFrameAction::AI_ACTION, currentFrame)){
 				player->aiAction();
 			}
-		}
-	}
-
-	if (PER_FRAME_ACTION.get(PerFrameAction::AI_ORDER, currentFrame)) {
-		for (auto player : Game::getPlayersMan()->getAllPlayers()) {
-			if (SIM_GLOBALS.ALL_PLAYER_AI || Game::getPlayersMan()->getActivePlayer() != player) {
+			if(PER_FRAME_ACTION.get(PerFrameAction::AI_ORDER, currentFrame)){
 				player->aiOrder();
 			}
 		}
-	}
+	}	
 }
 
-void Simulation::moveUnitsAndCheck(const float timeStep) {
+void Simulation::moveUnitsAndCheck() {
 	const auto camInfo = Game::getCameraManager()->getCamInfo(UPDATE_DRAW_DISTANCE);
 
 	for (const auto unit : *units) {
-		const bool hasMoved = unit->move(timeStep, camInfo);
+		const bool hasMoved = unit->move(TIME_PER_UPDATE, camInfo);
 
 		unit->checkAim();
 		if (hasMoved) {
@@ -340,12 +335,16 @@ void Simulation::moveUnitsAndCheck(const float timeStep) {
 	}
 	env->invalidateCaches();
 
-	if (colorSchemeChanged || colorScheme != SimColorMode::BASIC) {
-		for (const auto unit : *units) {
-			unit->changeColor(colorScheme);
-		}
-		colorSchemeChanged = false;
-	}
+    colorUnits();
+}
+
+void Simulation::colorUnits(){
+    if (!SIM_GLOBALS.HEADLESS && (colorSchemeChanged || colorScheme != SimColorMode::BASIC)){
+        for (const auto unit : *units){
+            unit->changeColor(colorScheme);
+        }
+        colorSchemeChanged = false;
+    }
 }
 
 void Simulation::calculateForces() {

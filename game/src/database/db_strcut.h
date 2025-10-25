@@ -282,7 +282,7 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 };
 
 struct db_unit : db_with_icon, db_with_cost {
-	const UnitState actionState;
+	const UnitState desiredState;
 
 	const bool typeInfantry;
 	const bool typeRange;
@@ -306,7 +306,7 @@ struct db_unit : db_with_icon, db_with_cost {
 	        bool typeSpecial, bool typeMelee, bool typeHeavy,
 	        bool typeLight) : //TODO typeHeavy polaczyc z typeLight, usunac actionState?
 		db_with_icon(id, name, icon), db_with_cost(food, wood, stone, gold),
-		actionState(UnitState(actionState)),
+		desiredState(UnitState(actionState)),
 		typeInfantry(typeInfantry),
 		typeRange(typeRange),
 		typeCalvary(typeCalvary),

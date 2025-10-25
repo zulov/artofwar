@@ -23,9 +23,11 @@ public:
 	Building* load(dbload_building* dbloadBuilding);
 
 	QueueElement* updateQueue();
-	void updateAi(bool ifBuildingAction);
+    void updateAi(bool ifBuildingAction);
 
-	std::optional<int> getDeploy();
+    bool isDeadOrTooFar();
+
+    std::optional<int> getDeploy();
 
 	//TODO target to nie to samo co gdzie sie maja pojawiac!
 	const QueueManager& getQueue() const { return queue; }

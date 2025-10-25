@@ -152,16 +152,14 @@ QueueElement* Building::updateQueue() {
 }
 
 void Building::updateAi(bool ifBuildingAction) {//TODO fun to check if not null and alive
-	if (thingToInteract &&
-		(!thingToInteract->isAlive() || 
-			sqDistAs2D(thingToInteract->getPosition(), position) > dbLevel->sqAttackRange)) {
-		thingToInteract = nullptr;
+    if (thingToInteract && isDeadOrTooFar()){
+        thingToInteract = nullptr;
 		currentFrameState = 0;
-	}
-	if (isReady() && dbLevel->canAttack) {
+    }
+    if (isReady() && dbLevel->canAttack) {
 		if (thingToInteract) {
 			if (currentFrameState >= dbLevel->attackReload) {
-				ProjectileManager::shoot(this, thingToInteract, 7, player);
+				ProjectileManager::shoot(this, thingToInteract, 7, player);//TODO magic number
 				currentFrameState = 0;
 			} else {
 				++currentFrameState;
@@ -174,7 +172,11 @@ void Building::updateAi(bool ifBuildingAction) {//TODO fun to check if not null 
 			thingToInteract = closest;
 		}
 	}
+}
 
+bool Building::isDeadOrTooFar() {
+    return !thingToInteract->isAlive() ||
+           sqDistAs2D(thingToInteract->getPosition(), position) > dbLevel->sqAttackRange;
 }
 
 std::optional<int> Building::getDeploy() {

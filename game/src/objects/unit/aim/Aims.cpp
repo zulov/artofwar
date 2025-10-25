@@ -24,7 +24,7 @@ void Aims::clearExpired() {
 	}
 }
 
-bool Aims::process(Unit* unit) {
+bool Aims::process(Unit* unit) {//TODO bug to chyba źle zwraca nie wiem jaki był tego cel
 	if (current) {
 		if (current->ifReach(unit)) {
 			removeCurrentAim();

@@ -31,7 +31,7 @@ public:
 	void addUnitAction(UnitOrder* first, UnitOrder* second);
 
 	void executeActions();
-	void executeLists();
+	void createAndUpgrade();
 
 	bool addUnits(unsigned number, short id, Urho3D::Vector2 position, char player);
 	bool addBuilding(short id, Urho3D::Vector2& position, char player, bool force);

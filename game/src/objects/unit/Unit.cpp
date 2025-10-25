@@ -55,13 +55,14 @@ void Unit::populate() {
 	dbId = dbUnit->id;
 }
 
+//TODO sprobowac przeniesc do MoveState
 void Unit::checkAim() {
-	if (aims.process(this)) {
+	if (aims.process(this)) {//TODO co to miało robic
 		StateManager::changeState(this, UnitState::MOVE);
 	}
 }
 
-void Unit::updatePosition() const {
+void Unit::updatePositionAndRotation() const {
 	if (shouldUpdate) {
 		if (isInStates(state, {UnitState::ATTACK, UnitState::COLLECT, UnitState::SHOT}) && isFirstThingAlive()) {
 			setTransform(dirTo(position, thingToInteract->getPosition()));
@@ -82,7 +83,7 @@ bool Unit::move(float timeStep, const CameraInfo* camInfo) {
 		position.x_ += velocity.x_ * timeStep;
 		position.z_ += velocity.y_ * timeStep;
 		shouldUpdate = ifVisible(true, camInfo);
-		updatePosition();
+		updatePositionAndRotation();
 	} else {
 		shouldUpdate = ifVisible(false, camInfo);
 	}
@@ -483,8 +484,8 @@ float Unit::getMaxSeparationDistance() const {
 	return dbLevel->maxSep;
 }
 
-UnitState Unit::getActionState() const {
-	return dbUnit->actionState;
+UnitState Unit::getDesiredState() const {
+	return dbUnit->desiredState;
 }
 
 bool Unit::isFirstThingAlive() const {
