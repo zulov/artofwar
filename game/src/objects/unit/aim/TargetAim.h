@@ -5,7 +5,7 @@
 class TargetAim : public Aim {
 public:
 	explicit TargetAim(std::vector<int> _path);
-	~TargetAim() = default;
+	~TargetAim() override = default;
 
 	std::vector<Urho3D::Vector3> getDebugLines(Unit* unit) const override;
 	Urho3D::Vector2 getDirection(Unit* unit) override;

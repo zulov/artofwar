@@ -125,7 +125,9 @@ protected:
 
 	int indexInInfluence = -1;
 	int indexInMainGrid = -1;
+public:
 	UId uId;
+protected:
 	short dbId = -1; // optm
 
 	char team, player = -1;

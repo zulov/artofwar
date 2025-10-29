@@ -15,7 +15,7 @@ class FormationOrder : public UnitOrder {
 public:
 	FormationOrder(Formation* formation, short action, Urho3D::Vector2& vector, bool append = false);
 	FormationOrder(Formation* formation, short action, Physical* toUse, bool append = false);
-	~FormationOrder() = default;
+	~FormationOrder() override = default;
 	bool add() override;
 	bool expired() override;
 	short getSize() const override;

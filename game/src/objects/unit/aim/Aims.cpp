@@ -9,8 +9,7 @@ Aims::Aims(): current(nullptr) {
 }
 
 Aims::~Aims() {
-	delete current;
-	clear_vector(nextAims);
+	clear();
 }
 
 Urho3D::Vector2 Aims::getDirection(Unit* unit) const {
@@ -25,6 +24,7 @@ void Aims::clearExpired() {
 }
 
 bool Aims::process(Unit* unit) {//TODO bug to chyba źle zwraca nie wiem jaki był tego cel
+	clearExpired();//TODO quick fifx?
 	if (current) {
 		if (current->ifReach(unit)) {
 			removeCurrentAim();
@@ -32,8 +32,9 @@ bool Aims::process(Unit* unit) {//TODO bug to chyba źle zwraca nie wiem jaki by
 		}
 	} else if (!nextAims.empty()) {
 		auto toExecute = nextAims[0];
-		nextAims.erase(nextAims.begin());
+		
 		toExecute->execute();
+		nextAims.erase(nextAims.begin());
 		delete toExecute;
 	}
 
@@ -41,6 +42,7 @@ bool Aims::process(Unit* unit) {//TODO bug to chyba źle zwraca nie wiem jaki by
 }
 
 void Aims::add(IndividualOrder* order) {
+	assert(!order->expired());
 	if (!order->getAppend()) {
 		clear();
 	}

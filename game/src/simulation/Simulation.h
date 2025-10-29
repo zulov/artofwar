@@ -7,6 +7,7 @@
 #include "PerFrameAction.h"
 #include "database/db_strcut.h"
 
+struct dbload_container;
 struct FrameInfo;
 enum class UnitAction : char;
 enum class UnitState : char;

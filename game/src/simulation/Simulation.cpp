@@ -13,7 +13,6 @@
 #include "objects/queue/QueueElement.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/SimColorMode.h"
-#include "objects/unit/order/UnitConst.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/ai/ActionCenter.h"

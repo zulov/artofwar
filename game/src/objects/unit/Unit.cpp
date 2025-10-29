@@ -122,7 +122,6 @@ void Unit::forceGo(float boostCoef, float aimCoef, Urho3D::Vector2& force) const
 }
 
 Urho3D::Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
-	aims.clearExpired();
 	if (aims.hasCurrent()) {
 		auto force = aims.getDirection(this);
 		forceGo(boostCoef, aimCoef, force);
@@ -497,6 +496,7 @@ void Unit::clean() {
 	if (notAlive(thingToInteract)) {
 		thingToInteract = nullptr;
 	}
+	//aims.clearExpired();
 }
 
 float Unit::getSightRadius() const {

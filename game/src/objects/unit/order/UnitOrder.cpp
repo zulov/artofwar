@@ -57,9 +57,7 @@ ActionParameter UnitOrder::getChargeAim(Urho3D::Vector2& charge) {
 }
 
 void UnitOrder::execute() {
-	if (expired()) {
-		assert(false);
-	}
+	assert(!expired());
 	switch (static_cast<UnitAction>(id)) {
 	case UnitAction::GO:
 		return addTargetAim();

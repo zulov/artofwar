@@ -11,13 +11,13 @@
 #include "objects/unit/state/StateManager.h"
 #include "env/Environment.h"
 #include "utils/OtherUtils.h"
+#include "utils/PrintUtils.h"
 
 constexpr float THRESHOLD_MIN = 0.3f;
 constexpr float THRESHOLD_MAX = 0.5f;
 
 Formation::Formation(short _id, const std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2 _direction) :
 	id(_id), type(_type), state(FormationState::FORMING), direction(_direction), units(_units) {
-
 	for (auto* unit : units) {
 		unit->clearAims();
 		StateManager::toDefaultState(unit);
@@ -85,7 +85,7 @@ void Formation::setposInStateForLeader() const {
 
 void Formation::updateIds() {
 	if (changed) {
-		pathCache.clear();//TODO bug to powinno być czyszczone tak jak w pathFinder
+		pathCache.clear(); //TODO bug to powinno być czyszczone tak jak w pathFinder
 		updateSideSize();
 		electLeader();
 		setCenter();
@@ -151,7 +151,7 @@ void Formation::updateIds() {
 		}
 		std::vector<short> output;
 		output.reserve(restToAssign);
-		std::ranges::copy_if(tempVec, std::back_inserter(output), [](const short i) { return i >= 0; });
+		std::ranges::copy_if(tempVec, std::back_inserter(output), [](const short i){ return i >= 0; });
 
 		int i = 0;
 		for (auto unit : units) {
@@ -204,13 +204,11 @@ void Formation::innerUpdate() {
 		updateIds();
 		setCenter();
 		calculateCohesion();
-	} else {
-		changeState(FormationState::EMPTY);
 	}
 }
 
 void Formation::stopAllBesideLeader() {
-	pathCache.clear();//TODO bug to powinno być czyszczone tak jak w pathFinder
+	pathCache.clear(); //TODO bug to powinno być czyszczone tak jak w pathFinder
 	for (auto* unit : units) {
 		if (unit != leader) {
 			StateManager::toDefaultState(unit);
@@ -242,8 +240,9 @@ void Formation::update() {
 	switch (state) {
 	case FormationState::FORMING:
 		innerUpdate();
-
-		if (notWellFormed < THRESHOLD_MIN) {
+		if (units.empty()) {
+			changeState(FormationState::EMPTY);
+		} else if (notWellFormed < THRESHOLD_MIN) {
 			changeState(FormationState::MOVING);
 			if (!leader->hasAim()) {
 				removePending();
@@ -258,7 +257,9 @@ void Formation::update() {
 		break;
 	case FormationState::MOVING:
 		innerUpdate();
-		if (notWellFormed > THRESHOLD_MAX) {
+		if (units.empty()) {
+			changeState(FormationState::EMPTY);
+		} if (notWellFormed > THRESHOLD_MAX) {
 			changeState(FormationState::FORMING);
 		} else if (notWellFormedExact < THRESHOLD_MIN && !leader->hasAim()) {
 			removePending();
@@ -360,18 +361,17 @@ void Formation::semiReset() {
 void Formation::updateUnits() {
 	//TODO use std::stable partition
 	units.erase(
-		std::remove_if(
-			units.begin(), units.end(),
-			[this](Unit* unit) {
-				const bool ifErase = !unit->isAlive() || unit->getFormation() != id;
-				if (ifErase) {
-					if(unit->getFormation() == id) {
-						unit->resetFormation();
-					}
-					changed = true;
-				}
-				return ifErase;
-			}),
+		std::ranges::remove_if(units,
+		                       [this](Unit* unit){
+			                       const bool ifErase = !unit->isAlive() || unit->getFormation() != id;
+			                       if (ifErase) {
+				                       if (unit->getFormation() == id) {
+					                       unit->resetFormation();
+				                       }
+				                       changed = true;
+			                       }
+			                       return ifErase;
+		                       }).begin(),
 		units.end());
 }
 

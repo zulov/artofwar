@@ -54,8 +54,8 @@ public:
 	static void dispose();
 
 private:
-	void initOrders(std::initializer_list<UnitAction> states) const; //TODO move to level
-	void initStates(std::initializer_list<UnitState> states) const; //TODO move to level
+	void initOrders() const; //TODO move to level
+	void initStates() const; //TODO move to level
 
 
 	static void setStaticDead(Static* object);

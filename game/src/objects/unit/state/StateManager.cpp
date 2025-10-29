@@ -37,13 +37,9 @@ StateManager::StateManager() {
 	states[cast(UnitState::DEAD)] = new DeadState();
 	states[cast(UnitState::DISPOSE)] = new DisposeState();
 
-	initStates(
-		{
-			UnitState::GO, UnitState::MOVE, UnitState::FOLLOW, UnitState::STOP, UnitState::DEAD,
-			UnitState::DISPOSE
-		});
+	initStates();
 
-	initOrders({UnitAction::GO, UnitAction::DEAD, UnitAction::STOP, UnitAction::FOLLOW});
+	initOrders();
 }
 
 StateManager::~StateManager() {
@@ -66,6 +62,7 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParame
 		instance->unitStateChangePending = true;
 		return true;
 	}
+
 	Game::getLog()->Write(0, "fail to change state from " +
 	                      Urho3D::String(magic_enum::enum_name(unit->getNextState()).data()) + " to " +
 	                      Urho3D::String(magic_enum::enum_name(stateTo).data()));
@@ -229,11 +226,13 @@ void StateManager::dispose() {
 	instance = nullptr;
 }
 
-void StateManager::initOrders(std::initializer_list<UnitAction> states) const {
+void StateManager::initOrders() const {
 	std::vector<char> ids;
-	for (const auto state : states) {
-		ids.push_back(cast(state));
-	}
+
+	ids.push_back(cast(UnitAction::GO));
+	ids.push_back(cast(UnitAction::DEAD));
+	ids.push_back(cast(UnitAction::STOP));
+	ids.push_back(cast(UnitAction::FOLLOW));
 
 	for (auto unit : Game::getDatabase()->getUnits()) {
 		if (unit) {
@@ -255,16 +254,21 @@ void StateManager::initOrders(std::initializer_list<UnitAction> states) const {
 	}
 }
 
-void StateManager::initStates(std::initializer_list<UnitState> states) const {
+void StateManager::initStates() const {
 	constexpr char SIZE = magic_enum::enum_count<UnitState>();
-	bool possibleStates[SIZE];
-	std::fill_n(possibleStates, SIZE, false);
-	for (auto state : states) {
-		possibleStates[cast(state)] = true;
-	}
+	bool defaultPossibleStates[SIZE];
+	std::fill_n(defaultPossibleStates, SIZE, false);
+
+	defaultPossibleStates[cast(UnitState::GO)] = true;
+	defaultPossibleStates[cast(UnitState::MOVE)] = true;
+	defaultPossibleStates[cast(UnitState::FOLLOW)] = true;
+	defaultPossibleStates[cast(UnitState::STOP)] = true;
+	defaultPossibleStates[cast(UnitState::DEAD)] = true;
+	defaultPossibleStates[cast(UnitState::DISPOSE)] = true;
+
 	for (const auto unit : Game::getDatabase()->getUnits()) {
 		if (unit) {
-			std::copy_n(possibleStates, SIZE, unit->possibleStates);
+			std::copy_n(defaultPossibleStates, SIZE, unit->possibleStates);
 			if (unit->typeWorker) {
 				unit->possibleStates[cast(UnitState::COLLECT)] = true;
 			} else {

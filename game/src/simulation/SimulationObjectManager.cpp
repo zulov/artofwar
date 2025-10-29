@@ -130,7 +130,7 @@ void SimulationObjectManager::refreshResBonuses() const {
 void SimulationObjectManager::dispose() const {
 	if (StateManager::isSthToDispose()) {
 		for (const auto unit : *units) {
-			unit->clean(); //TODO bug? to powinno być niepotrzebne
+			unit->clean(); //TODO bug? to powinno być niepotrzebne,może nawet psuć
 		}
 	}
 	cleanAndDispose(units, StateManager::isUnitToDispose());

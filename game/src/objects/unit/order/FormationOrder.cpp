@@ -24,7 +24,7 @@ bool FormationOrder::add() {
 bool FormationOrder::expired() {
 	return formation == nullptr
 		|| formation->getSize() <= 0
-		|| toUse != nullptr && !toUse->isAlive();
+		|| (toUse != nullptr && !toUse->isAlive());
 }
 
 short FormationOrder::getSize() const {

@@ -12,6 +12,8 @@ IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, Urho3D::Vector2&
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, Physical* toUse, bool append):
 	UnitOrder(static_cast<short>(action), append, toUse), unit(unit) {
+	assert(toUse->isAlive());
+	uidtest = toUse->uId.v;
 }
 
 bool IndividualOrder::expired() {

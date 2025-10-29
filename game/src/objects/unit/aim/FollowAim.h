@@ -8,7 +8,7 @@ class Physical;
 class FollowAim : public Aim {
 public:
 	explicit FollowAim(Physical* physical, TargetAim* subTarget);
-	~FollowAim();
+	~FollowAim() override;
 
 	std::vector<Urho3D::Vector3> getDebugLines(Unit* follower) const override;
 	Urho3D::Vector2 getDirection(Unit* follower) override;
