@@ -5,7 +5,7 @@
 		<attribute name="Color" value="0.7 0.7 0.7 1" />
 		<attribute name="Cast Shadows" value="true" />
 		<attribute name="Depth Constant Bias" value="0.00025" />
-        <attribute name="Depth Slope Bias" value="0.5" />
+		<attribute name="Depth Slope Bias" value="0.5" />
 		<attribute name="Specular Intensity" value="0.5" />
 		<attribute name="Per Vertex" value="false" />
 		<attribute name="CSM Splits" value="1e+008 0 0 0" />
