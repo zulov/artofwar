@@ -28,6 +28,4 @@ private:
 	std::vector<int> getIndexesToAct() const;
 
 	Unit* unit;
-
-	unsigned uidtest = 0;
 };

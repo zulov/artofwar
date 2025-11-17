@@ -13,7 +13,6 @@ IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, Urho3D::Vector2&
 IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, Physical* toUse, bool append):
 	UnitOrder(static_cast<short>(action), append, toUse), unit(unit) {
 	assert(toUse->isAlive());
-	uidtest = toUse->uId.v;
 }
 
 bool IndividualOrder::expired() {
@@ -71,7 +70,7 @@ void IndividualOrder::simpleAction() const {
 }
 
 void IndividualOrder::followAndAct() {
-	//TODO to trzeba dobrze przemuœleæ
+	//TODO to trzeba dobrze przemuï¿½leï¿½
 	std::vector<int> indexes = getIndexesToAct();
 
 	if (!indexes.empty()) {
@@ -90,7 +89,7 @@ void IndividualOrder::followAndAct() {
 }
 
 std::vector<int> IndividualOrder::getIndexesToAct() const {
-	//TODO to coœ przemyœleæ
+	//TODO to coï¿½ przemyï¿½leï¿½
 	std::vector<int> indexes;
 	if (static_cast<UnitAction>(id) == UnitAction::ATTACK) {
 		if (unit->getDb()->typeRange) {
