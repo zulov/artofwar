@@ -151,7 +151,7 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	assert(currentIdx>=0);
 	if (mainGrid.onlyOneInside(currentIdx)) {
 		return getNeighbours(unit, radius);
-	}
+	}//TODO czy ten cache cos wogole daje?
 	const auto simpleNeight = mainGrid.getAllFromCache(currentIdx, radius);
 
 	const float sqRadius = radius * radius;

@@ -75,8 +75,7 @@ private:
 	unsigned char indexOfSecondCloseIndexes;
 	short gradient = -1;
 	Static* staticObj{};
+	float* resourceBonuses{};
 	int cost = 0;
-	float resourceBonuses[MAX_PLAYERS][RESOURCES_SIZE] = {{1.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f}};
-
 	bool belowCellLimit() const;
 };

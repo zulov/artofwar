@@ -1,4 +1,6 @@
 #include "ComplexBucketData.h"
+
+#include <algorithm>
 #include "objects/static/Static.h"
 #include "CellEnums.h"
 #include "utils/Flags.h"
@@ -9,7 +11,8 @@ void ComplexBucketData::setStatic(Static* object) {
 	if (object->getType() == ObjectType::BUILDING) {
 		state = CellState::BUILDING;
 		additionalInfo = object->getPlayer();
-	} else {
+	}
+	else {
 		state = CellState::RESOURCE;
 		additionalInfo = object->getDbId();
 	}
@@ -53,20 +56,22 @@ void ComplexBucketData::decStateSize() {
 }
 
 void ComplexBucketData::setResBonuses(char player, unsigned char resId, float bonus) {
-	auto& vals = resourceBonuses[player];
-
-	auto& val = vals[resId];
-	if (val < bonus) {
-		val = bonus;
+	if (resourceBonuses == nullptr) {//TODO mem perf dodaæ jakis pool obiektow
+		resourceBonuses = new float[MAX_PLAYERS * RESOURCES_SIZE];
+		resourceBonuses[player * MAX_PLAYERS + resId] = bonus; return;
 	}
+	auto& val = resourceBonuses[player * MAX_PLAYERS + resId];
+
+	val = std::max(val, bonus);
 }
 
 void ComplexBucketData::resetResBonuses() {
-	std::fill_n(&resourceBonuses[0][0], MAX_PLAYERS * RESOURCES_SIZE, 1.f);
+	delete resourceBonuses;
+	resourceBonuses = nullptr;
 }
 
 float ComplexBucketData::getResBonus(char player, short resId) const {
-	return resourceBonuses[player][resId];
+	return resourceBonuses == nullptr ? 1.f : resourceBonuses[player * MAX_PLAYERS + RESOURCES_SIZE];
 }
 
 bool ComplexBucketData::belowCellLimit() const {
@@ -79,13 +84,13 @@ void ComplexBucketData::setDeploy() {
 
 bool ComplexBucketData::cellIsCollectable() const {
 	return (state == CellState::NONE
-			|| state == CellState::COLLECT)
+		|| state == CellState::COLLECT)
 		&& belowCellLimit();
 }
 
 bool ComplexBucketData::cellIsAttackable() const {
 	return (state == CellState::NONE
-			|| state == CellState::ATTACK
-			|| state == CellState::DEPLOY)//deplot bug?
+		|| state == CellState::ATTACK
+		|| state == CellState::DEPLOY)//deplot bug?
 		&& belowCellLimit();
 }

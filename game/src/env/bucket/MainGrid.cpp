@@ -1,5 +1,6 @@
 ﻿#include "MainGrid.h"
 
+#include <algorithm>
 #include <exprtk/exprtk.hpp>
 #include <Urho3D/Resource/Image.h>
 #include <Urho3D/IO/Log.h>
@@ -96,7 +97,7 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, const Urho3D::IntVect
 	for (int i = sizeX.x_; i < sizeX.y_; ++i) {
 		int index = calculator->getNotSafeIndex(i, sizeZ.x_);
 		for (int j = sizeZ.x_; j < sizeZ.y_; ++j) {
-			if (!isBuildable(index)) {
+			if (!complexData[index].isBuildable()) {
 				return false;
 			}
 			++index;
@@ -329,20 +330,20 @@ void MainGrid::addResourceBonuses(Building* building, std::vector<int>& changedI
 	const auto [dbBuilding, level] = building->getData();
 
 	if (dbBuilding->typeResourceAny) {
-		std::vector<int> indexes;
+		std::vector<int> indexesWithBonus;
 
 		for (const int cell : building->getOccupiedCells()) {
 			const auto levels = levelCache->get(level->resourceRange, cell);
 
 			for (const auto idx : *levels) {
-				indexes.push_back(cell + idx);
+				indexesWithBonus.push_back(cell + idx);
 			}
 		}
-		std::ranges::sort(indexes);
-		indexes.erase(std::ranges::unique(indexes).begin(), indexes.end());
-		std::ranges::copy(indexes, std::back_inserter(changedIndexes));
+		std::ranges::sort(indexesWithBonus);
+		indexesWithBonus.erase(std::ranges::unique(indexesWithBonus).begin(), indexesWithBonus.end());
+		std::ranges::copy(indexesWithBonus, std::back_inserter(changedIndexes));
 
-		for (const int index : indexes) {
+		for (const int index : indexesWithBonus) {
 			complexData[index].setResBonuses(building->getPlayer(), dbBuilding->resourceType, level->collect);
 		}
 	}
@@ -352,9 +353,7 @@ float MainGrid::getBonuses(char player, const ResourceEntity* resource) const {
 	float best = .0f;
 	for (const int cell : resource->getOccupiedCells()) {
 		const float val = complexData[cell].getResBonus(player, resource->getResourceId());
-		if (val > best) {
-			best = val;
-		}
+		best = std::max(val, best);
 	}
 	return best;
 }
