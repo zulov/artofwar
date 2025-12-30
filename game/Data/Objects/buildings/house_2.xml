@@ -1,4 +1,4 @@
-<node>
+d<node>
 <attribute name="Scale" value="1 1 1" />
 <component type="StaticModel">
 	<attribute name="Model" value="Model;Models/buildings/human_house.mdl" />

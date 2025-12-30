@@ -1,6 +1,7 @@
 #include "Brain.h"
 
 #include "Layer.h"
+#include "utils/CountUtils.h"
 #include "utils/SpanUtils.h"
 #include "utils/DeleteUtils.h"
 #include "utils/StringUtils.h"
@@ -44,7 +45,6 @@ const std::span<float> Brain::decide(std::span<const float> data) {
 			         ->setValues(allLayers.at(i - 1)->getValues());
 		}
 	}
-
 	const auto& result = allLayers.back()->getValues();
 	const auto res1 = std::span(const_cast<float*>(result.data()), result.rows());
 	assert(validateSpan(__LINE__, __FILE__, res1));
