@@ -52,7 +52,7 @@
 #include "player/ai/PossessionMetric.h"
 #include "simulation/formation/FormationManager.h"
 #include "stats/AiInputProvider.h"
-#include "utils/DebugUtils.h"
+#include "utils/CountUtils.h"
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
@@ -195,8 +195,8 @@ void Main::Stop() {
 	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
 	                                                                            std::chrono::system_clock::now() -
 	                                                                            SimGlobals::SUPER_START);
-	PRINT_X2Y();
-	PRINT_COUNTERS();
+	Count::print_x2y();
+	Count::print_counters();
 	std::cout << "ENDED at " << duration.count() << " ms" << std::endl;
 }
 

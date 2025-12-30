@@ -1,25 +1,26 @@
-#include "DebugUtils.h"
+#include "CountUtils.h"
 
 #include <iostream>
 #include <map>
 
 #include "StringUtils.h"
-int counterX = 0;
-int counterY = 0;
-std::map<std::string, int> counters;
 
-void COUNT_X() {
+int Count::counterX;
+int Count::counterY;
+std::map<std::string, int> Count::counters;
+
+void Count::x() {
 	++counterX;
 }
 
-void COUNT_Y() {
+void Count::y() {
 	++counterY;
 }
-void COUNT(const std::string& s) {
-	++counters[s];
+void Count::inc(const std::string& name) {
+	++counters[name];
 }
 
-void PRINT_X2Y() {
+void Count::print_x2y() {
 	if (counterX + counterY > 0) {
 		float sum = 100.f / (counterX + counterY);
 		std::cout << "X: " << counterX << " Y: " << counterY << "| X-Y "
@@ -27,8 +28,8 @@ void PRINT_X2Y() {
 			<< asStringF(counterY * sum, 1) << "%" << std::endl;
 	}
 }
-void PRINT_COUNTERS() {
-	if(counters.size()>0) {
+void Count::print_counters() {
+	if(!counters.empty()) {
 		std::cout << "Counters:" << std::endl;
 		for (const auto& pair : counters) {
 			std::cout << pair.first << ": " << pair.second << std::endl;

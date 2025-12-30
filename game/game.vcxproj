@@ -395,8 +395,8 @@
     <ClCompile Include="src\env\influence\map\VisibilityMap.cpp" />
     <ClCompile Include="src\env\bucket\StaticGrid.cpp" />
     <ClCompile Include="src\env\influence\VisibilityManager.cpp" />
-    <ClCompile Include="src\utils\DebugUtils.cpp" />
-    <ClCompile Include="src\utils\DebugUtils.h" />
+    <ClCompile Include="src\utils\CountUtils.cpp" />
+    <ClCompile Include="src\utils\CountUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\env\path\PathCache.h" />

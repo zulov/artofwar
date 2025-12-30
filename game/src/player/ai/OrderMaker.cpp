@@ -19,7 +19,7 @@
 #include "objects/unit/order/GroupOrder.h"
 #include "env/influence/CenterType.h"
 #include "player/Possession.h"
-#include "utils/DebugUtils.h"
+#include "utils/CountUtils.h"
 #include "utils/OtherUtils.h"
 
 constexpr float SEMI_CLOSE = 30.f;
@@ -209,5 +209,5 @@ void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 		}
 		all -= workers.size();
 	}
-	if (rest.size() > 0) { COUNT("collect rest"); }
+	if (rest.size() > 0) { Count::inc("collect rest"); }
 }
