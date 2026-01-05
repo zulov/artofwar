@@ -5,18 +5,18 @@
 #include "PostProcess.hlsl"
 
 void VS(float4 iPos : POSITION,
-    out float2 oScreenPos : TEXCOORD0,
-    out float4 oPos : OUTPOSITION)
+	out float2 oScreenPos : TEXCOORD0,
+	out float4 oPos : OUTPOSITION)
 {
-    float4x3 modelMatrix = iModelMatrix;
-    float3 worldPos = GetWorldPos(modelMatrix);
-    oPos = GetClipPos(worldPos);
-    oScreenPos = GetScreenPosPreDiv(oPos);
+	float4x3 modelMatrix = iModelMatrix;
+	float3 worldPos = GetWorldPos(modelMatrix);
+	oPos = GetClipPos(worldPos);
+	oScreenPos = GetScreenPosPreDiv(oPos);
 }
 
 void PS(float2 iScreenPos : TEXCOORD0,
-    out float4 oColor : OUTCOLOR0)
+	out float4 oColor : OUTCOLOR0)
 {
-    float3 color = Sample2D(DiffMap, iScreenPos).rgb;
-    oColor = float4(ToInverseGamma(color), 1.0);
+	float3 color = Sample2D(DiffMap, iScreenPos).rgb;
+	oColor = float4(ToInverseGamma(color), 1.0);
 }

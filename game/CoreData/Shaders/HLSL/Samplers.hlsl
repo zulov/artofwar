@@ -83,9 +83,9 @@ SamplerState sLightRampMap : register(s8);
 SamplerState sLightSpotMap : register(s9);
 SamplerState sLightCubeMap : register(s9);
 #ifdef VSM_SHADOW
-    SamplerState sShadowMap : register(s10);
+	SamplerState sShadowMap : register(s10);
 #else
-    SamplerComparisonState sShadowMap : register(s10);
+	SamplerComparisonState sShadowMap : register(s10);
 #endif
 SamplerState sFaceSelectCubeMap : register(s11);
 SamplerState sIndirectionCubeMap : register(s12);
@@ -99,18 +99,18 @@ SamplerState sZoneVolumeMap : register(s15);
 float3 DecodeNormal(float4 normalInput)
 {
 #ifdef PACKEDNORMAL
-    float3 normal;
-    normal.xy = normalInput.ag * 2.0 - 1.0;
-    normal.z = sqrt(max(1.0 - dot(normal.xy, normal.xy), 0.0));
-    return normal;
+	float3 normal;
+	normal.xy = normalInput.ag * 2.0 - 1.0;
+	normal.z = sqrt(max(1.0 - dot(normal.xy, normal.xy), 0.0));
+	return normal;
 #else
-    return normalInput.rgb * 2.0 - 1.0;
+	return normalInput.rgb * 2.0 - 1.0;
 #endif
 }
 
 float ReconstructDepth(float hwDepth)
 {
-    return dot(float2(hwDepth, cDepthReconstruct.y / (hwDepth - cDepthReconstruct.x)), cDepthReconstruct.zw);
+	return dot(float2(hwDepth, cDepthReconstruct.y / (hwDepth - cDepthReconstruct.x)), cDepthReconstruct.zw);
 }
 
 #endif
