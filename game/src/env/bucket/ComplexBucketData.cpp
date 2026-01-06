@@ -71,7 +71,7 @@ void ComplexBucketData::resetResBonuses() {
 }
 
 float ComplexBucketData::getResBonus(char player, short resId) const {
-	return resourceBonuses == nullptr ? 1.f : resourceBonuses[player * MAX_PLAYERS + RESOURCES_SIZE];
+	return resourceBonuses == nullptr ? 1.f : resourceBonuses[player * MAX_PLAYERS + resId];
 }
 
 bool ComplexBucketData::belowCellLimit() const {
@@ -91,6 +91,6 @@ bool ComplexBucketData::cellIsCollectable() const {
 bool ComplexBucketData::cellIsAttackable() const {
 	return (state == CellState::NONE
 		|| state == CellState::ATTACK
-		|| state == CellState::DEPLOY)//deplot bug?
+		|| state == CellState::DEPLOY)//deploy bug?
 		&& belowCellLimit();
 }
