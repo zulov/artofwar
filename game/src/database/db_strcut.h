@@ -362,6 +362,7 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 
 	bool ruinable;
 	short toResource;
+	short spawnResource; i co
 
 	unsigned char maxUsers;
 	bool typeResourceAny;
