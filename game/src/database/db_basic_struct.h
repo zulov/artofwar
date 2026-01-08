@@ -42,3 +42,8 @@ static void setEntity(std::vector<T*>& array, T* entity) {
 
 	array[id] = entity;
 }
+
+inline bool s2b(const char* s) {
+	assert(s[1] == '\0');
+	return s && s[0] == '1';
+}

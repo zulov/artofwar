@@ -350,7 +350,7 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 	bool typeTechBlacksmith;
 	bool typeTechUniversity;
 
-	bool typeUnitBarracks;
+	bool typeUnitBarracks; //IDEA moze te trzy w polaczyc w bazie?
 	bool typeUnitRange;
 	bool typeUnitCavalry;
 
@@ -361,8 +361,11 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 	bool typeResourceGoldBonus;
 
 	bool ruinable;
-	short toResource;
-	short spawnResource; i co
+	short toResource; //te dwa sie wykuczają? połączyc
+
+	short spawnResourceId;
+	short spawnResourceRange; // te dwa do levelu dac
+	short spawnResourceTime;
 
 	unsigned char maxUsers;
 	bool typeResourceAny;
@@ -410,7 +413,7 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 	const short queueMaxCapacity;
 	const float resourceRange;
 	const short foodStorage;
-	const short goldStoreage;
+	const short goldStorage;
 	const float stoneRefineCapacity;
 	const float goldRefineCapacity;
 
@@ -433,7 +436,7 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 		  db_building_attack(collect, atckR, atckRRld, atckRRng),
 		  db_base(maxHp, armor, sightRng), db_build_upgrade(buildSpeed, upgradeSpeed),
 		  building(building), nodeName(nodeName), queueMaxCapacity(queueMaxCapacity), resourceRange(resourceRng),
-		  foodStorage(foodStorage), goldStoreage(goldStoreage), stoneRefineCapacity(stoneRefineCapacity),
+		  foodStorage(foodStorage), goldStorage(goldStoreage), stoneRefineCapacity(stoneRefineCapacity),
 		  goldRefineCapacity(goldRefineCapacity) {
 	}
 
@@ -490,7 +493,7 @@ struct db_resource : db_with_icon, db_static, db_with_hp, db_with_model {
 	db_resource(short id, char resourceId, char* name, char* icon, unsigned short maxHp, char* nodeName, short sizeX,
 	            short sizeZ, short maxUsers, unsigned mini_map_color, float collectSpeed, bool rotatable)
 		: db_with_icon(id, name, icon), db_static({sizeX, sizeZ}), db_with_hp(maxHp, 0.f),
-		  resourceId(resourceId), nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)),
-		  maxUsers(maxUsers), mini_map_color(mini_map_color), collectSpeed(collectSpeed), rotatable(rotatable) {
+		  resourceId(resourceId), maxUsers(maxUsers), mini_map_color(mini_map_color),
+		  nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)), collectSpeed(collectSpeed), rotatable(rotatable) {
 	}
 };

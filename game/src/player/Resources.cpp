@@ -75,7 +75,7 @@ void Resources::update1s(Possession* possession) {
 	for (const auto building : possession->getBuildings()) {
 		const auto level = building->getLevel();
 		foodStorage += level->foodStorage;
-		goldStorage += level->goldStoreage;
+		goldStorage += level->goldStorage;
 		stoneRefineCapacity += level->stoneRefineCapacity;
 		goldRefineCapacity += level->goldRefineCapacity;
 	}

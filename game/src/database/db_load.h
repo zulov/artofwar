@@ -3,7 +3,7 @@
 #include <iosfwd>
 
 #include "db_other_struct.h"
-//TODO perf atoi->bool zmienic na ifa
+
 static unsigned fromHex(char** argv, int index) {
 	unsigned x;
 	std::stringstream ss;
@@ -18,9 +18,9 @@ int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	setEntity(getContainer(data)->units, new db_unit(atoi(argv[0]), argv[1], argv[2],
 	                                                 atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]),
-	                                                 atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), atoi(argv[10]),
-	                                                 atoi(argv[11]), atoi(argv[12]), atoi(argv[13]), atoi(argv[14]),
-	                                                 atoi(argv[15])));
+	                                                 atoi(argv[7]), s2b(argv[8]), s2b(argv[9]), s2b(argv[10]),
+	                                                 s2b(argv[11]), s2b(argv[12]), s2b(argv[13]), s2b(argv[14]),
+	                                                 s2b(argv[15])));
 	return 0;
 }
 
@@ -37,7 +37,7 @@ int static loadGraphSettings(void* data, int argc, char** argv, char** azColName
 	setEntity(getContainer(data)->graphSettings, new db_graph_settings(atoi(argv[0]), atoi(argv[1]), argv[2],
 	                                                                   atoi(argv[3]),
 	                                                                   atof(argv[4]), atof(argv[5]), argv[6],
-	                                                                   atoi(argv[7]), atoi(argv[8]), atoi(argv[9])));
+	                                                                   s2b(argv[7]), s2b(argv[8]), atoi(argv[9])));
 	return 0;
 }
 
@@ -46,10 +46,10 @@ int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	setEntity(getContainer(data)->buildings, //TODO resource Types zbic do jednego pola
 	          new db_building(atoi(argv[0]), argv[1], argv[2],
 	                          atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]),
-	                          atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), atoi(argv[10]),
-	                          atoi(argv[11]), atoi(argv[12]), atoi(argv[13]),
-	                          atoi(argv[14]), atoi(argv[15]), atoi(argv[16]),
-	                          atoi(argv[17]), atoi(argv[18]),atoi(argv[19])
+	                          atoi(argv[7]), atoi(argv[8]), s2b(argv[9]), s2b(argv[10]),
+	                          s2b(argv[11]), s2b(argv[12]), s2b(argv[13]),
+	                          s2b(argv[14]), s2b(argv[15]), s2b(argv[16]),
+	                          s2b(argv[17]), s2b(argv[18]), s2b(argv[19])
 	          ));
 	return 0;
 }
@@ -64,7 +64,7 @@ int static loadResource(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	const auto resource = new db_resource(atoi(argv[0]), atoi(argv[1]), argv[2], argv[3], atoi(argv[4]),
 	                                      argv[5], atoi(argv[6]), atoi(argv[7]), atoi(argv[8]),
-	                                      fromHex(argv, 9), atof(argv[10]), atoi(argv[11]) == 1);
+	                                      fromHex(argv, 9), atof(argv[10]), s2b(argv[11]) == 1);
 	setEntity(getContainer(data)->resources, resource);
 	return 0;
 }
