@@ -47,9 +47,9 @@ int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	          new db_building(atoi(argv[0]), argv[1], argv[2],
 	                          atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]),
 	                          atoi(argv[7]), atoi(argv[8]), s2b(argv[9]), s2b(argv[10]),
-	                          s2b(argv[11]), s2b(argv[12]), s2b(argv[13]),
+	                          s2b(argv[11]), atoi(argv[12]), s2b(argv[13]),
 	                          s2b(argv[14]), s2b(argv[15]), s2b(argv[16]),
-	                          s2b(argv[17]), s2b(argv[18]), s2b(argv[19])
+	                          s2b(argv[17]), s2b(argv[18]), atoi(argv[19])
 	          ));
 	return 0;
 }
