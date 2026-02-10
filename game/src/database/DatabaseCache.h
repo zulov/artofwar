@@ -2,6 +2,8 @@
 
 #include <string>
 #include <vector>
+#include <sqlite3/sqlite3.h>
+
 #include "db_container.h"
 
 class sqlite3;
@@ -15,6 +17,7 @@ class DatabaseCache {
 public:
 	explicit DatabaseCache(std::string postfix);
 	~DatabaseCache();
+
 
 	void loadBasic(const std::string& name);
 	void loadData(const std::string& name);
@@ -55,6 +58,10 @@ public:
 	int getResourcesSize() const { return dbContainer->resources.size(); }
 
 private:
+	void loadHudSizes2();
+	void loadGraphSettings2();
+	template < class Creator>
+	void loadFromDb(const std::string& tableName, Creator createFn);
 	db_container* dbContainer;
 	sqlite3* database;
 	std::string pathStr;

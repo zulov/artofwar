@@ -2,9 +2,7 @@
 #include "db_basic_struct.h"
 
 struct db_hud_size : db_with_name {
-
-	db_hud_size(short id, char* name) : db_with_name(id, name) {
-	}
+	db_hud_size(short id, const char* name) : db_with_name(id, name) {}
 };
 
 struct db_settings {
@@ -13,8 +11,7 @@ struct db_settings {
 
 	db_settings(short graph, short resolution)
 		: graph(graph),
-		  resolution(resolution) {
-	}
+		  resolution(resolution) {}
 };
 
 struct db_resolution : db_entity {
@@ -22,8 +19,7 @@ struct db_resolution : db_entity {
 	const short y;
 
 	db_resolution(short id, short x, short y)
-		: db_entity(id), x(x), y(y) {
-	}
+		: db_entity(id), x(x), y(y) {}
 };
 
 struct db_graph_settings : db_entity {
@@ -37,8 +33,8 @@ struct db_graph_settings : db_entity {
 	bool v_sync;
 	bool shadow;
 
-	db_graph_settings(short id, short hudSize, char* styles, int fullscreen, float maxFps, float minFps,
-	                  char* name, bool v_sync, bool shadow, short texture_quality)
+	db_graph_settings(short id, short hudSize, const char* styles, int fullscreen, float maxFps, float minFps,
+	                  const char* name, bool v_sync, bool shadow, short texture_quality)
 		: db_entity(id),
 		  hud_size(hudSize),
 		  max_fps(maxFps),
@@ -48,8 +44,7 @@ struct db_graph_settings : db_entity {
 		  texture_quality(texture_quality),
 		  fullscreen(fullscreen),
 		  v_sync(v_sync),
-		  shadow(shadow) {
-	}
+		  shadow(shadow) {}
 };
 
 struct db_hud_vars : db_with_name {
@@ -57,6 +52,5 @@ struct db_hud_vars : db_with_name {
 	float value;
 
 	db_hud_vars(short id, short hudSize, char* name, float value)
-		: db_with_name(id, name), hud_size(hudSize), value(value) {
-	}
+		: db_with_name(id, name), hud_size(hudSize), value(value) {}
 };

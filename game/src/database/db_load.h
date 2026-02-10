@@ -24,23 +24,6 @@ int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
-int static loadHudSizes(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-
-	getContainer(data)->hudSizes.push_back(new db_hud_size(atoi(argv[0]), argv[1]));
-
-	return 0;
-}
-
-int static loadGraphSettings(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	setEntity(getContainer(data)->graphSettings, new db_graph_settings(atoi(argv[0]), atoi(argv[1]), argv[2],
-	                                                                   atoi(argv[3]),
-	                                                                   atof(argv[4]), atof(argv[5]), argv[6],
-	                                                                   s2b(argv[7]), s2b(argv[8]), atoi(argv[9])));
-	return 0;
-}
-
 int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	setEntity(getContainer(data)->buildings, //TODO resource Types zbic do jednego pola
@@ -196,3 +179,9 @@ int static loadUnitToBuildingLevels(void* data, int argc, char** argv, char** az
 static int callback(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
+
+inline bool asBool(sqlite3_stmt* stmt, int iCol) { return sqlite3_column_int(stmt, iCol) != 0; }
+inline float asFloat(sqlite3_stmt* stmt, int iCol) { return static_cast<float>(sqlite3_column_double(stmt, iCol)); }
+inline int asInt(sqlite3_stmt* stmt, int iCol) { return sqlite3_column_int(stmt, iCol); }
+inline short asShort(sqlite3_stmt* stmt, int iCol) { return static_cast<int16_t>(sqlite3_column_int(stmt, iCol)); }
+inline const char* asText(sqlite3_stmt* stmt, int iCol) { return reinterpret_cast<const char*>(sqlite3_column_text(stmt, iCol)); }

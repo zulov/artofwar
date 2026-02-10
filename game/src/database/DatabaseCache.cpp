@@ -28,10 +28,10 @@ DatabaseCache::DatabaseCache(std::string postfix) {
 	dbContainer = new db_container();
 
 	pathStr = std::string("Data/");
-	if(!SIM_GLOBALS.HEADLESS) {
+	if (!SIM_GLOBALS.HEADLESS) {
 		loadBasic("Database/base" + postfix);
 	}
-	
+
 	loadData("Database/data" + postfix);
 	loadMaps("map/maps" + postfix);
 }
@@ -39,8 +39,8 @@ DatabaseCache::DatabaseCache(std::string postfix) {
 void DatabaseCache::loadBasic(const std::string& name) {
 	if (openDatabase(name)) { return; }
 
-	execute(SQLConsts::SELECT + "hud_size", loadHudSizes);
-	execute(SQLConsts::SELECT + "graph_settings", loadGraphSettings);
+	loadHudSizes2();
+	loadGraphSettings2();
 	execute(SQLConsts::SELECT + "hud_size_vars", loadHudVars);
 	execute(SQLConsts::SELECT + "resolution", loadResolution);
 	execute(SQLConsts::SELECT + "settings", loadSettings);
@@ -127,4 +127,38 @@ void DatabaseCache::refreshAfterParametersRead() const {
 	for (const auto nation : dbContainer->nations) {
 		nation->refresh();
 	}
+}
+
+void DatabaseCache::loadHudSizes2() {
+	loadFromDb("hud_size", [this](sqlite3_stmt* stmt){
+		dbContainer->hudSizes.push_back(new db_hud_size(asShort(stmt, 0), asText(stmt, 1)));
+	});
+}
+
+void DatabaseCache::loadGraphSettings2() {
+	loadFromDb("graph_settings", [this](sqlite3_stmt* stmt){
+		setEntity(dbContainer->graphSettings, new db_graph_settings(
+			          asShort(stmt, 0), asShort(stmt, 1), asText(stmt, 2),
+			          asInt(stmt, 3), asFloat(stmt, 4), asFloat(stmt, 5), asText(stmt, 6),
+			          asBool(stmt, 7), asBool(stmt, 8), asShort(stmt, 9)
+		          ));
+	});
+}
+
+template <typename Creator>
+void DatabaseCache::loadFromDb(const std::string& tableName, Creator createFn) {
+	std::string sqlStr = SQLConsts::SELECT + tableName;
+	const char* sql = sqlStr.c_str();
+	sqlite3_stmt* stmt = nullptr;
+
+	if (sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+		// obs³uga b³êdu
+		return;
+	}
+
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
+		createFn(stmt);
+	}
+
+	sqlite3_finalize(stmt);
 }
