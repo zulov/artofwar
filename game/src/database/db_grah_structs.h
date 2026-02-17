@@ -1,8 +1,10 @@
 #pragma once
 #include "db_basic_struct.h"
+#include "db_utils.h"
 
+//TODO dla prostych to jest dobry pomys³ ale dla d³ugich chyba lepiej konstruktor zwyk³y
 struct db_hud_size : db_with_name {
-	db_hud_size(short id, const char* name) : db_with_name(id, name) {}
+	db_hud_size(sqlite3_stmt* stmt) : db_with_name(asShort(stmt, 0), asText(stmt, 1)) {}
 };
 
 struct db_settings {

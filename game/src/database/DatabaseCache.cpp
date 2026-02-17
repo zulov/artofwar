@@ -130,9 +130,7 @@ void DatabaseCache::refreshAfterParametersRead() const {
 }
 
 void DatabaseCache::loadHudSizes2() {
-	loadFromDb("hud_size", [this](sqlite3_stmt* stmt){
-		dbContainer->hudSizes.push_back(new db_hud_size(asShort(stmt, 0), asText(stmt, 1)));
-	});
+	loadFromDb("hud_size", [this](sqlite3_stmt* stmt){ dbContainer->hudSizes.push_back(new db_hud_size(stmt)); });
 }
 
 void DatabaseCache::loadGraphSettings2() {
