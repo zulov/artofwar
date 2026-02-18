@@ -18,7 +18,6 @@ public:
 	explicit DatabaseCache(std::string postfix);
 	~DatabaseCache();
 
-
 	void loadBasic(const std::string& name);
 	void loadData(const std::string& name);
 	void loadMaps(const std::string& name);
@@ -28,7 +27,7 @@ public:
 	std::vector<db_hud_size*>& getHudSizes() const { return dbContainer->hudSizes; }
 	std::vector<db_hud_vars*>& getHudVars() const { return dbContainer->hudVars; }
 	std::vector<db_graph_settings*>& getGraphSettings() const { return dbContainer->graphSettings; }
-	db_settings* getSettings() const { return dbContainer->settings[0]; }
+	db_settings* getSettings() const { return dbContainer->settings; }
 	db_resolution* getResolution(int id) const { return dbContainer->resolutions[id]; }
 	std::vector<db_resolution*>& getResolutions() const { return dbContainer->resolutions; }
 
@@ -58,8 +57,13 @@ public:
 	int getResourcesSize() const { return dbContainer->resources.size(); }
 
 private:
-	void loadHudSizes2();
-	void loadGraphSettings2();
+	void loadNation();
+
+	void loadHudSizes();
+	void loadGraphSettings();
+	void loadHudVars();
+	void loadResolution();
+	void loadSettings();
 	template < class Creator>
 	void loadFromDb(const std::string& tableName, Creator createFn);
 	db_container* dbContainer;

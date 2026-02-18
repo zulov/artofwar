@@ -11,17 +11,15 @@ struct db_settings {
 	short graph;
 	short resolution;
 
-	db_settings(short graph, short resolution)
-		: graph(graph),
-		  resolution(resolution) {}
+	db_settings(sqlite3_stmt* stmt) : db_settings(asShort(stmt, 0),asShort(stmt, 1)) {}
+	db_settings(short graph, short resolution) : graph(graph), resolution(resolution) {}
 };
 
 struct db_resolution : db_entity {
 	const short x;
 	const short y;
 
-	db_resolution(short id, short x, short y)
-		: db_entity(id), x(x), y(y) {}
+	db_resolution(sqlite3_stmt* stmt) : db_entity(asShort(stmt, 0)), x(asShort(stmt, 1)), y(asShort(stmt, 2)) {}
 };
 
 struct db_graph_settings : db_entity {
@@ -53,6 +51,6 @@ struct db_hud_vars : db_with_name {
 	const short hud_size;
 	float value;
 
-	db_hud_vars(short id, short hudSize, char* name, float value)
-		: db_with_name(id, name), hud_size(hudSize), value(value) {}
+	db_hud_vars(sqlite3_stmt* stmt)
+		: db_with_name(asShort(stmt, 0), asText(stmt, 2)), hud_size(asShort(stmt, 1)), value(asFloat(stmt, 3)) {}
 };

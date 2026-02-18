@@ -37,26 +37,12 @@ int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
-int static loadNation(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	setEntity(getContainer(data)->nations, new db_nation(atoi(argv[0]), argv[1], argv[2], argv[3]));
-	return 0;
-}
-
 int static loadResource(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	const auto resource = new db_resource(atoi(argv[0]), atoi(argv[1]), argv[2], argv[3], atoi(argv[4]),
 	                                      argv[5], atoi(argv[6]), atoi(argv[7]), atoi(argv[8]),
 	                                      fromHex(argv, 9), atof(argv[10]), s2b(argv[11]) == 1);
 	setEntity(getContainer(data)->resources, resource);
-	return 0;
-}
-
-int static loadHudVars(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	const int id = atoi(argv[0]);
-	getContainer(data)->hudVars.push_back(new db_hud_vars(id, atoi(argv[1]), argv[2], atof(argv[3])));
-
 	return 0;
 }
 
@@ -70,21 +56,6 @@ int static loadPlayerColors(void* data, int argc, char** argv, char** azColName)
 	if (argc == 0) { return 0; }
 	setEntity(getContainer(data)->playerColors,
 	          new db_player_colors(atoi(argv[0]), fromHex(argv, 1), fromHex(argv, 2), argv[3]));
-	return 0;
-}
-
-int static loadResolution(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	setEntity(getContainer(data)->resolutions, new db_resolution(atoi(argv[0]), atoi(argv[1]), atoi(argv[2])));
-	return 0;
-}
-
-int static loadSettings(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	const auto xyz = getContainer(data);
-	ensureSize(1, xyz->settings);
-	xyz->settings[0] = new db_settings(atoi(argv[0]), atoi(argv[1]));
-
 	return 0;
 }
 

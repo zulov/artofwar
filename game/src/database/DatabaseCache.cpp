@@ -39,11 +39,11 @@ DatabaseCache::DatabaseCache(std::string postfix) {
 void DatabaseCache::loadBasic(const std::string& name) {
 	if (openDatabase(name)) { return; }
 
-	loadHudSizes2();
-	loadGraphSettings2();
-	execute(SQLConsts::SELECT + "hud_size_vars", loadHudVars);
-	execute(SQLConsts::SELECT + "resolution", loadResolution);
-	execute(SQLConsts::SELECT + "settings", loadSettings);
+	loadHudSizes();
+	loadGraphSettings();
+	loadHudVars();
+	loadResolution();
+	loadSettings();
 
 	sqlite3_close_v2(database);
 }
@@ -51,7 +51,7 @@ void DatabaseCache::loadBasic(const std::string& name) {
 void DatabaseCache::loadData(const std::string& name) {
 	if (openDatabase(name)) { return; }
 
-	execute(SQLConsts::SELECT + "nation order by id desc", loadNation);
+	loadNation();
 	execute(SQLConsts::SELECT + "unit order by id desc", loadUnits);
 	execute(SQLConsts::SELECT + "building order by id desc", loadBuildings);
 
@@ -114,8 +114,8 @@ void DatabaseCache::setGraphSettings(int i, db_graph_settings* graphSettings) {
 
 void DatabaseCache::setSettings(int i, db_settings* settings) {
 	settings->graph = 0;
-	delete dbContainer->settings[0];
-	dbContainer->settings[0] = settings;
+	delete dbContainer->settings;
+	dbContainer->settings = settings;
 	Urho3D::String sql = "UPDATE settings";
 	sql.Append(" SET graph = ").Append(Urho3D::String(settings->graph))
 	   .Append(", resolution = ").Append(Urho3D::String(settings->resolution));
@@ -128,12 +128,18 @@ void DatabaseCache::refreshAfterParametersRead() const {
 		nation->refresh();
 	}
 }
+//TODO zrobiæ listê str -> [this](sqlite3_stmt* stmt) i wczytac?
+void DatabaseCache::loadNation() {
+	loadFromDb("nation order by id desc", [this](sqlite3_stmt* stmt){
+		setEntity(dbContainer->nations, new db_nation(stmt));
+	});
+}
 
-void DatabaseCache::loadHudSizes2() {
+void DatabaseCache::loadHudSizes() {
 	loadFromDb("hud_size", [this](sqlite3_stmt* stmt){ dbContainer->hudSizes.push_back(new db_hud_size(stmt)); });
 }
 
-void DatabaseCache::loadGraphSettings2() {
+void DatabaseCache::loadGraphSettings() {
 	loadFromDb("graph_settings", [this](sqlite3_stmt* stmt){
 		setEntity(dbContainer->graphSettings, new db_graph_settings(
 			          asShort(stmt, 0), asShort(stmt, 1), asText(stmt, 2),
@@ -141,6 +147,19 @@ void DatabaseCache::loadGraphSettings2() {
 			          asBool(stmt, 7), asBool(stmt, 8), asShort(stmt, 9)
 		          ));
 	});
+}
+
+void DatabaseCache::loadHudVars() {
+	loadFromDb("hud_size_vars", [this](sqlite3_stmt* stmt){ dbContainer->hudVars.push_back(new db_hud_vars(stmt)); });
+}
+
+void DatabaseCache::loadResolution() {
+	loadFromDb("resolution",
+	           [this](sqlite3_stmt* stmt){ setEntity(dbContainer->resolutions, new db_resolution(stmt)); });
+}
+
+void DatabaseCache::loadSettings() {
+	loadFromDb("settings", [this](sqlite3_stmt* stmt){ dbContainer->settings = new db_settings(stmt); });
 }
 
 template <typename Creator>

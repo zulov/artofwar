@@ -13,6 +13,7 @@
 #include "utils/DeleteUtils.h"
 #include "utils/OtherUtils.h"
 #include "utils/StringUtils.h"
+#include "db_utils.h"
 
 constexpr char UNITS_SUM_X = 100;
 constexpr char BUILDINGS_SUM_X = 10;
@@ -460,11 +461,10 @@ struct db_nation : db_with_name {
 	std::vector<std::string> actionPrefix;
 	std::vector<std::string> orderPrefix;
 
-	db_nation(short id, char* name, char* actionPrefix, char* orderPrefix)
-		: db_with_name(id, name),
-		  actionPrefix(split(actionPrefix, SPLIT_SIGN)),
-		  orderPrefix(split(orderPrefix, SPLIT_SIGN)) {
-	}
+	db_nation(sqlite3_stmt* stmt)
+		: db_with_name(asShort(stmt, 0), asText(stmt, 1)),
+		  actionPrefix(split(asText(stmt, 2), SPLIT_SIGN)),
+		  orderPrefix(split(asText(stmt, 3), SPLIT_SIGN)) {}
 
 	std::vector<std::string> splitAi(std::string* param) const {
 		return split(split(param[id], SPLIT_SIGN_2)[SimGlobals::CURRENT_RUN], SPLIT_SIGN);
