@@ -46,12 +46,6 @@ int static loadResource(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
-int static loadMap(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	setEntity(getContainer(data)->maps, new db_map(atoi(argv[0]), argv[1], argv[2]));
-	return 0;
-}
-
 int static loadPlayerColors(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	setEntity(getContainer(data)->playerColors,
@@ -106,46 +100,6 @@ int static loadUnitLevels(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
-int static loadUnitToNation(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	const auto xyz = getContainer(data);
-
-	auto unit = xyz->units[atoi(argv[0])];
-	auto nation = xyz->nations[atoi(argv[1])];
-	nation->units.push_back(unit);
-	if (unit->typeWorker) {
-		nation->workers.push_back(unit);
-	}
-	unit->nations.push_back(nation);
-	return 0;
-}
-
-int static loadBuildingToNation(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	const auto xyz = getContainer(data);
-
-	auto building = xyz->buildings[atoi(argv[0])];
-	auto nation = xyz->nations[atoi(argv[1])];
-
-	nation->buildings.push_back(building);
-	building->nations.push_back(nation);
-	return 0;
-}
-
-int static loadUnitToBuildingLevels(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	const auto xyz = getContainer(data);
-
-	auto level = xyz->buildingsLevels[atoi(argv[0])];
-	auto unit = xyz->units[atoi(argv[1])];
-	level->allUnits.push_back(unit);
-	for (auto nation : unit->nations) {
-		level->unitsPerNation[nation->id]->push_back(unit);
-		level->unitsPerNationIds[nation->id]->push_back(unit->id);
-	}
-
-	return 0;
-}
 
 static int callback(void* data, int argc, char** argv, char** azColName) {
 	return 0;

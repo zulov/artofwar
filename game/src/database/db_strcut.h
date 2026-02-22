@@ -40,7 +40,7 @@ struct db_common_attack {
 	const short sqAttackRange;
 
 	db_common_attack(float collect, float attack, short attackReload, short attackRange)
-		: attack(attack), attackReload(attackReload), attackRange(attackRange), collect(collect),
+		: collect(collect), attack(attack), attackReload(attackReload), attackRange(attackRange),
 		  sqAttackRange(attackRange * attackRange) {
 	}
 
@@ -251,7 +251,7 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 	const Urho3D::String node;
 
 	db_unit_metric* dbUnitMetric = nullptr;
-
+	db_unit_level(sqlite3_stmt* stmt):db_unit_level(...){}
 	db_unit_level(short id, short level, short unit, char* name, char* node,
 	              unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
 	              short buildTime, short upgradeTime, float minDist, float mass, float minSpeed, float maxSpeed,
@@ -300,7 +300,7 @@ struct db_unit : db_with_icon, db_with_cost {
 
 	std::vector<db_nation*> nations;
 	std::vector<unsigned char> ordersIds;
-
+	db_unit (sqlite3_stmt* stmt):db_unit(...){}
 	db_unit(short id, char* name, char* icon,
 	        unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
 	        char actionState, bool typeInfantry, bool typeRange, bool typeCalvary, bool typeWorker,
@@ -378,7 +378,7 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 
 	std::vector<db_nation*> nations;
 
-
+	db_building(sqlite3_stmt* stmt):db_building(...){}
 	db_building(short id, char* name, char* icon,
 	            unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
 	            short sizeX, short sizeZ, bool typeCenter, bool typeHome, bool typeDefence, char typeResource,
@@ -427,7 +427,7 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 
 	//std::vector<db_building_metric*> dbBuildingMetricPerNation;
 	db_building_metric* dbBuildingMetric;
-
+	db_building_level(sqlite3_stmt* stmt):db_building_level(...){}
 	db_building_level(short id, short level, short building, char* name, char* nodeName,
 	                  unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
 	                  short queueMaxCapacity, short buildSpeed, short upgradeSpeed, short maxHp, float armor,
@@ -489,7 +489,7 @@ struct db_resource : db_with_icon, db_static, db_with_hp, db_with_model {
 	Urho3D::Vector<Urho3D::String> nodeName;
 	const float collectSpeed;
 	const bool rotatable;
-
+	db_resource(sqlite3_stmt* stmt):db_resource(...){}
 	db_resource(short id, char resourceId, char* name, char* icon, unsigned short maxHp, char* nodeName, short sizeX,
 	            short sizeZ, short maxUsers, unsigned mini_map_color, float collectSpeed, bool rotatable)
 		: db_with_icon(id, name, icon), db_static({sizeX, sizeZ}), db_with_hp(maxHp, 0.f),

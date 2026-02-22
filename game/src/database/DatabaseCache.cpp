@@ -9,7 +9,7 @@
 
 void DatabaseCache::execute(const std::string& sql, int (*load)(void*, int, char**, char**)) const {
 	char* error;
-	const int rc = sqlite3_exec(database, sql.c_str(), load, dbContainer, &error);
+	const int rc = sqlite3_exec(database, sql.c_str(), load, container, &error);
 	ifError(rc, error, sql);
 }
 
@@ -25,7 +25,7 @@ bool DatabaseCache::openDatabase(const std::string& name) {
 }
 
 DatabaseCache::DatabaseCache(std::string postfix) {
-	dbContainer = new db_container();
+	container = new db_container();
 
 	pathStr = std::string("Data/");
 	if (!SIM_GLOBALS.HEADLESS) {
@@ -39,11 +39,11 @@ DatabaseCache::DatabaseCache(std::string postfix) {
 void DatabaseCache::loadBasic(const std::string& name) {
 	if (openDatabase(name)) { return; }
 
-	loadHudSizes();
-	loadGraphSettings();
-	loadHudVars();
-	loadResolution();
-	loadSettings();
+	load("hud_size", [this](auto* s){ container->hudSizes.push_back(new db_hud_size(s)); });
+	load("graph_settings", [this](auto* s){ setEntity(container->graphSettings, new db_graph_settings(s)); });
+	load("hud_size_vars", [this](auto* s){ container->hudVars.push_back(new db_hud_vars(s)); });
+	load("resolution", [this](auto* s){ setEntity(container->resolutions, new db_resolution(s)); });
+	load("settings", [this](auto* s){ container->settings = new db_settings(s); });
 
 	sqlite3_close_v2(database);
 }
@@ -51,24 +51,68 @@ void DatabaseCache::loadBasic(const std::string& name) {
 void DatabaseCache::loadData(const std::string& name) {
 	if (openDatabase(name)) { return; }
 
-	loadNation();
-	execute(SQLConsts::SELECT + "unit order by id desc", loadUnits);
-	execute(SQLConsts::SELECT + "building order by id desc", loadBuildings);
+	load("nation order by id desc", [this](auto* s){ setEntity(container->nations, new db_nation(s)); });
+	load("unit order by id desc", [this](auto* s){ setEntity(container->units, new db_unit(s)); });
+	load("building order by id desc", [this](auto* s){ setEntity(container->buildings, new db_building(s)); });
 
-	execute(SQLConsts::SELECT + "resource order by id desc", loadResource);
+	load("resource order by id desc", [this](auto* s){ setEntity(container->resources, new db_resource(s)); });
 
-	execute(SQLConsts::SELECT + "player_color order by id desc", loadPlayerColors);
+	load("player_color order by id desc", [this](auto* s){
+		setEntity(container->playerColors, new db_player_colors(s));
+	});
 
-	execute(SQLConsts::SELECT + "unit_level order by unit,level", loadUnitLevels);
-	execute(SQLConsts::SELECT + "building_level order by level", loadBuildingLevels);
+	load("unit_level order by unit,level", [this](auto* s){
+		auto level = new db_unit_level(s);
+		setEntity(container->unitsLevels, level);
+		container->units[level->unit]->levels.push_back(level);
+	});
+	load("building_level order by level", [this](auto* s){
+		auto level = new db_building_level(s);
+		setEntity(container->buildingsLevels, level);
+		container->buildings[level->building]->levels.push_back(level);
+		for (auto nation : container->nations) {
+			if (nation) {
+				ensureSize(nation->id + 1, level->unitsPerNation);
+				ensureSize(nation->id + 1, level->unitsPerNationIds);
+				if (level->unitsPerNation[nation->id] == nullptr) {
+					level->unitsPerNation[nation->id] = new std::vector<db_unit*>();
+				}
+				if (level->unitsPerNationIds[nation->id] == nullptr) {
+					level->unitsPerNationIds[nation->id] = new std::vector<unsigned char>();
+				}
+			}
+		}
+	});
 
-	execute(SQLConsts::SELECT + "unit_to_nation order by unit", loadUnitToNation);
-	execute(SQLConsts::SELECT + "building_to_nation order by building", loadBuildingToNation);
+	load("unit_to_nation order by unit", [this](auto* s){
+		auto unit = container->units[atoi(argv[0])];
+		auto nation = container->nations[atoi(argv[1])];
+		nation->units.push_back(unit);
+		if (unit->typeWorker) {
+			nation->workers.push_back(unit);
+		}
+		unit->nations.push_back(nation);
+	});
+	load("building_to_nation order by building", [this](auto* s){
+		auto building = container->buildings[atoi(argv[0])];
+		auto nation = container->nations[atoi(argv[1])];
 
-	execute(SQLConsts::SELECT + "unit_to_building_level order by unit", loadUnitToBuildingLevels);
+		nation->buildings.push_back(building);
+		building->nations.push_back(nation);
+	});
+
+	load("unit_to_building_level order by unit", [this](auto* s){
+		auto level = container->buildingsLevels[atoi(argv[0])];
+		auto unit = container->units[atoi(argv[1])];
+		level->allUnits.push_back(unit);
+		for (auto nation : unit->nations) {
+			level->unitsPerNation[nation->id]->push_back(unit);
+			level->unitsPerNationIds[nation->id]->push_back(unit->id);
+		}
+	});
 	//TODO make sure its sorted set_intersection
 
-	dbContainer->finish();
+	container->finish();
 
 	sqlite3_close_v2(database);
 }
@@ -76,14 +120,14 @@ void DatabaseCache::loadData(const std::string& name) {
 void DatabaseCache::loadMaps(const std::string& name) {
 	if (openDatabase(name)) { return; }
 
-	execute(SQLConsts::SELECT + "map order by id desc", loadMap);
+	load("map order by id desc", [this](auto* s) { setEntity(container->maps, new db_map(s)); });
 
 	sqlite3_close_v2(database);
 }
 
 
 DatabaseCache::~DatabaseCache() {
-	delete dbContainer;
+	delete container;
 }
 
 void DatabaseCache::executeSingleBasic(const std::string& name, const char* sql) {
@@ -93,10 +137,10 @@ void DatabaseCache::executeSingleBasic(const std::string& name, const char* sql)
 }
 
 void DatabaseCache::setGraphSettings(int i, db_graph_settings* graphSettings) {
-	graphSettings->name = dbContainer->graphSettings[i]->name;
-	graphSettings->styles = dbContainer->graphSettings[i]->styles;
-	delete dbContainer->graphSettings[i];
-	dbContainer->graphSettings[i] = graphSettings;
+	graphSettings->name = container->graphSettings[i]->name;
+	graphSettings->styles = container->graphSettings[i]->styles;
+	delete container->graphSettings[i];
+	container->graphSettings[i] = graphSettings;
 	Urho3D::String sql = "UPDATE graph_settings";
 	sql.Append(" SET hud_size = ").Append(Urho3D::String(graphSettings->hud_size))
 	   //.Append("SET style =").Append(Urho3D::String(graphSettings->hud_size));
@@ -114,8 +158,8 @@ void DatabaseCache::setGraphSettings(int i, db_graph_settings* graphSettings) {
 
 void DatabaseCache::setSettings(int i, db_settings* settings) {
 	settings->graph = 0;
-	delete dbContainer->settings;
-	dbContainer->settings = settings;
+	delete container->settings;
+	container->settings = settings;
 	Urho3D::String sql = "UPDATE settings";
 	sql.Append(" SET graph = ").Append(Urho3D::String(settings->graph))
 	   .Append(", resolution = ").Append(Urho3D::String(settings->resolution));
@@ -124,46 +168,16 @@ void DatabaseCache::setSettings(int i, db_settings* settings) {
 }
 
 void DatabaseCache::refreshAfterParametersRead() const {
-	for (const auto nation : dbContainer->nations) {
+	for (const auto nation : container->nations) {
 		nation->refresh();
 	}
 }
+
 //TODO zrobiæ listê str -> [this](sqlite3_stmt* stmt) i wczytac?
-void DatabaseCache::loadNation() {
-	loadFromDb("nation order by id desc", [this](sqlite3_stmt* stmt){
-		setEntity(dbContainer->nations, new db_nation(stmt));
-	});
-}
-
-void DatabaseCache::loadHudSizes() {
-	loadFromDb("hud_size", [this](sqlite3_stmt* stmt){ dbContainer->hudSizes.push_back(new db_hud_size(stmt)); });
-}
-
-void DatabaseCache::loadGraphSettings() {
-	loadFromDb("graph_settings", [this](sqlite3_stmt* stmt){
-		setEntity(dbContainer->graphSettings, new db_graph_settings(
-			          asShort(stmt, 0), asShort(stmt, 1), asText(stmt, 2),
-			          asInt(stmt, 3), asFloat(stmt, 4), asFloat(stmt, 5), asText(stmt, 6),
-			          asBool(stmt, 7), asBool(stmt, 8), asShort(stmt, 9)
-		          ));
-	});
-}
-
-void DatabaseCache::loadHudVars() {
-	loadFromDb("hud_size_vars", [this](sqlite3_stmt* stmt){ dbContainer->hudVars.push_back(new db_hud_vars(stmt)); });
-}
-
-void DatabaseCache::loadResolution() {
-	loadFromDb("resolution",
-	           [this](sqlite3_stmt* stmt){ setEntity(dbContainer->resolutions, new db_resolution(stmt)); });
-}
-
-void DatabaseCache::loadSettings() {
-	loadFromDb("settings", [this](sqlite3_stmt* stmt){ dbContainer->settings = new db_settings(stmt); });
-}
+void DatabaseCache::loadNation() {}
 
 template <typename Creator>
-void DatabaseCache::loadFromDb(const std::string& tableName, Creator createFn) {
+void DatabaseCache::load(const std::string& tableName, Creator createFn) {
 	std::string sqlStr = SQLConsts::SELECT + tableName;
 	const char* sql = sqlStr.c_str();
 	sqlite3_stmt* stmt = nullptr;

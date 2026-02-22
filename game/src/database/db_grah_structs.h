@@ -11,7 +11,7 @@ struct db_settings {
 	short graph;
 	short resolution;
 
-	db_settings(sqlite3_stmt* stmt) : db_settings(asShort(stmt, 0),asShort(stmt, 1)) {}
+	db_settings(sqlite3_stmt* stmt) : db_settings(asShort(stmt, 0), asShort(stmt, 1)) {}
 	db_settings(short graph, short resolution) : graph(graph), resolution(resolution) {}
 };
 
@@ -32,6 +32,11 @@ struct db_graph_settings : db_entity {
 	bool fullscreen;
 	bool v_sync;
 	bool shadow;
+
+	db_graph_settings(sqlite3_stmt* stmt) : db_graph_settings(asShort(stmt, 0), asShort(stmt, 1), asText(stmt, 2),
+	                                                          asInt(stmt, 3), asFloat(stmt, 4), asFloat(stmt, 5),
+	                                                          asText(stmt, 6), asBool(stmt, 7), asBool(stmt, 8), asShort(stmt, 9)
+	) {}
 
 	db_graph_settings(short id, short hudSize, const char* styles, int fullscreen, float maxFps, float minFps,
 	                  const char* name, bool v_sync, bool shadow, short texture_quality)

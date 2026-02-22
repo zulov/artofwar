@@ -24,49 +24,44 @@ public:
 
 	void execute(const std::string& sql, int (* load)(void*, int, char**, char**)) const;
 	bool openDatabase(const std::string& name);
-	std::vector<db_hud_size*>& getHudSizes() const { return dbContainer->hudSizes; }
-	std::vector<db_hud_vars*>& getHudVars() const { return dbContainer->hudVars; }
-	std::vector<db_graph_settings*>& getGraphSettings() const { return dbContainer->graphSettings; }
-	db_settings* getSettings() const { return dbContainer->settings; }
-	db_resolution* getResolution(int id) const { return dbContainer->resolutions[id]; }
-	std::vector<db_resolution*>& getResolutions() const { return dbContainer->resolutions; }
+	std::vector<db_hud_size*>& getHudSizes() const { return container->hudSizes; }
+	std::vector<db_hud_vars*>& getHudVars() const { return container->hudVars; }
+	std::vector<db_graph_settings*>& getGraphSettings() const { return container->graphSettings; }
+	db_settings* getSettings() const { return container->settings; }
+	db_resolution* getResolution(int id) const { return container->resolutions[id]; }
+	std::vector<db_resolution*>& getResolutions() const { return container->resolutions; }
 
-	std::vector<db_map*>& getMaps() const { return dbContainer->maps; }
+	std::vector<db_map*>& getMaps() const { return container->maps; }
 
-	db_unit* getUnit(int i) const { return dbContainer->units[i]; }
-	std::vector<db_unit*>& getUnits() const { return dbContainer->units; }
+	db_unit* getUnit(int i) const { return container->units[i]; }
+	std::vector<db_unit*>& getUnits() const { return container->units; }
 
-	db_building* getBuilding(int i) const { return dbContainer->buildings[i]; }
-	std::vector<db_building*>& getBuildings() const { return dbContainer->buildings; }
+	db_building* getBuilding(int i) const { return container->buildings[i]; }
+	std::vector<db_building*>& getBuildings() const { return container->buildings; }
 
-	std::vector<db_nation*>& getNations() const { return dbContainer->nations; }
-	db_nation* getNation(int i) const { return dbContainer->nations[i]; }
+	std::vector<db_nation*>& getNations() const { return container->nations; }
+	db_nation* getNation(int i) const { return container->nations[i]; }
 
-	db_resource* getResource(int i) const { return dbContainer->resources[i]; }
+	db_resource* getResource(int i) const { return container->resources[i]; }
 
-	std::vector<db_player_colors*>& getPlayerColors() const { return dbContainer->playerColors; }
-	db_player_colors* getPlayerColor(int i) const { return dbContainer->playerColors[i]; }
+	std::vector<db_player_colors*>& getPlayerColors() const { return container->playerColors; }
+	db_player_colors* getPlayerColor(int i) const { return container->playerColors[i]; }
 
-	const std::vector<db_unit_level*>& getUnitLevels() const { return dbContainer->unitsLevels; }
-	const std::vector<db_building_level*>& getBuildingLevels() const { return dbContainer->buildingsLevels; }
+	const std::vector<db_unit_level*>& getUnitLevels() const { return container->unitsLevels; }
+	const std::vector<db_building_level*>& getBuildingLevels() const { return container->buildingsLevels; }
 
 	void executeSingleBasic(const std::string& name, const char* sql);
 	void setGraphSettings(int i, db_graph_settings* graphSettings);
 	void setSettings(int i, db_settings* settings);
 	void refreshAfterParametersRead() const;
-	int getResourcesSize() const { return dbContainer->resources.size(); }
+	int getResourcesSize() const { return container->resources.size(); }
 
 private:
 	void loadNation();
 
-	void loadHudSizes();
-	void loadGraphSettings();
-	void loadHudVars();
-	void loadResolution();
-	void loadSettings();
 	template < class Creator>
-	void loadFromDb(const std::string& tableName, Creator createFn);
-	db_container* dbContainer;
+	void load(const std::string& tableName, Creator createFn);
+	db_container* container;
 	sqlite3* database;
 	std::string pathStr;
 };
