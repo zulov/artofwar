@@ -3,7 +3,6 @@
 #include <sqlite3/sqlite3.h>
 #include <cstdio>
 #include <ios>
-#include <sstream>
 
 inline void ifError(int rc, char* error, const std::string& sql) {
 	if (rc != SQLITE_OK && rc != SQLITE_DONE) {

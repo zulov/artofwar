@@ -40,7 +40,7 @@ struct dbload_unit : dbload_physical {
 	float pos_z;
 	float vel_x;
 	float vel_z;
-
+	dbload_unit(sqlite3_stmt* stmt) (...) {}
 	dbload_unit(short idDb, float hp, unsigned uid, char player, char level, float posX, float posZ, char state,
 	            float velX, float velZ)
 		: dbload_physical(idDb, hp, uid, player, level, state, -1),
@@ -55,7 +55,7 @@ struct dbload_building : dbload_static {
 	unsigned thingToInteract;
 	unsigned short currentFrameState;
 	//TODO std::vector<dbload_queue*>;
-
+	dbload_building(sqlite3_stmt* stmt) (...) {}
 	dbload_building(short idDb, float hpCoef, unsigned uid, char player, char level, int bucX, int bucY, char state,
 	                char nextState, int deploy_idx)
 		: dbload_static(idDb, hpCoef, uid, player, bucX, bucY, level, state, nextState),
@@ -63,6 +63,7 @@ struct dbload_building : dbload_static {
 };
 
 struct dbload_resource : dbload_static {
+	dbload_resource(sqlite3_stmt* stmt) (...){}
 	dbload_resource(short idDb, float hpCoef, unsigned uid, int bucX, int bucY, char state,
 	                         char nextState) : dbload_static(idDb, hpCoef, uid, -1, bucX, bucY, -1, state,
 	                                                         nextState) {}
@@ -81,7 +82,7 @@ struct dbload_player {
 	float wood;
 	float stone;
 	float gold;
-
+	dbload_player(sqlite3_stmt* stmt) (...) {}
 	dbload_player(int id, bool isActive, char team, char nation, char* name, int color,
 	              unsigned buildingUid, unsigned unitUid, float food, float wood, float stone, float gold)
 		: is_active(isActive),

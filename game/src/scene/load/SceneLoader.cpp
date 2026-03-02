@@ -118,6 +118,7 @@ const std::vector<dbload_player*>* SceneLoader::loadPlayers() const {
 	if (dbLoad->players) { return dbLoad->players; }
 	dbLoad->players = new std::vector<dbload_player*>();
 
+	load("players", [this](auto* s) {}););
 	load(SQLConsts::SELECT + "players", load_players);
 	return dbLoad->players;
 }
