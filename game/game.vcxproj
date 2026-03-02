@@ -439,7 +439,6 @@
     <ClInclude Include="src\commands\action\GeneralActionCommand.h" />
     <ClInclude Include="src\commands\action\GeneralActionType.h" />
     <ClInclude Include="src\math\RandGen.h" />
-    <ClInclude Include="src\database\db_load.h" />
     <ClInclude Include="src\math\RandType.h" />
     <ClInclude Include="src\objects\unit\order\OrderUtils.h" />
     <ClInclude Include="src\player\ai\ActionMaker.h" />

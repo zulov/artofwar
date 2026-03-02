@@ -41,8 +41,7 @@ struct db_common_attack {
 
 	db_common_attack(float collect, float attack, short attackReload, short attackRange)
 		: collect(collect), attack(attack), attackReload(attackReload), attackRange(attackRange),
-		  sqAttackRange(attackRange * attackRange) {
-	}
+		  sqAttackRange(attackRange * attackRange) {}
 
 	bool initFlag(float val) const {
 		return val > 0.f;
@@ -55,8 +54,7 @@ struct db_building_attack : db_common_attack {
 
 	db_building_attack(float collect, float attack, short attackReload, short attackRange)
 		: db_common_attack(collect, attack, attackReload, attackRange),
-		  canAttack(initFlag(attack)) {
-	}
+		  canAttack(initFlag(attack)) {}
 };
 
 struct db_unit_attack : db_common_attack {
@@ -82,16 +80,14 @@ struct db_unit_attack : db_common_attack {
 		  bonusMelee(bonusMelee),
 		  bonusHeavy(bonusHeavy),
 		  bonusLight(bonusLight),
-		  bonusBuilding(bonusBuilding) {
-	}
+		  bonusBuilding(bonusBuilding) {}
 };
 
 struct db_static {
 	const Urho3D::IntVector2 size;
 
 	explicit db_static(const Urho3D::IntVector2& size)
-		: size(size) {
-	}
+		: size(size) {}
 };
 
 //TODO mem uprościć usunac tabele kosztowe
@@ -106,8 +102,7 @@ struct db_with_cost {
 		values({food, wood, stone, gold}),
 		maxFromWoodOrStone(std::max(values[1], values[2])),
 		sum(food + wood + stone + gold),
-		moreWoodThanStone(wood > stone) {
-	}
+		moreWoodThanStone(wood > stone) {}
 
 	unsigned short getSumCost() const { return sum; }
 };
@@ -117,7 +112,7 @@ struct db_basic_metric {
 		assert(validateSpan(__LINE__, __FILE__, newValues));
 		float y = 1 / weightForSum;
 		valuesNormForSum.resize(newValues.size());
-		std::ranges::transform(newValues, valuesNormForSum.begin(), [y](float x) { return x * y; });
+		std::ranges::transform(newValues, valuesNormForSum.begin(), [y](float x){ return x * y; });
 
 		valuesNormAsVal = std::valarray(newValues.data(), newValues.size());
 	}
@@ -186,8 +181,7 @@ struct db_level {
 	const char level;
 
 	explicit db_level(char level)
-		: level(level) {
-	}
+		: level(level) {}
 };
 
 struct db_with_hp {
@@ -196,8 +190,7 @@ struct db_with_hp {
 	const float armor;
 
 	explicit db_with_hp(unsigned short maxHp, float armor)
-		: maxHp(maxHp), invMaxHp(1.f / maxHp), armor(armor) {
-	}
+		: maxHp(maxHp), invMaxHp(1.f / maxHp), armor(armor) {}
 };
 
 struct db_base : db_with_hp {
@@ -209,8 +202,7 @@ struct db_base : db_with_hp {
 
 	db_base(unsigned short maxHp, float armor, float sightRadius)
 		: db_with_hp(maxHp, armor), sightRadius(sightRadius), sqSightRadius(sightRadius * sightRadius),
-		  interestRange(sightRadius * 0.8f), sqInterestRange(interestRange * interestRange) {
-	}
+		  interestRange(sightRadius * 0.8f), sqInterestRange(interestRange * interestRange) {}
 };
 
 struct db_with_model {
@@ -222,8 +214,7 @@ struct db_build_upgrade {
 	short upgradeTime = -1;
 
 	db_build_upgrade(short buildTime, short upgradeTime)
-		: buildTime(buildTime), upgradeTime(upgradeTime) {
-	}
+		: buildTime(buildTime), upgradeTime(upgradeTime) {}
 };
 
 struct db_unit_metric : db_basic_metric {
@@ -251,8 +242,21 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 	const Urho3D::String node;
 
 	db_unit_metric* dbUnitMetric = nullptr;
-	db_unit_level(sqlite3_stmt* stmt):db_unit_level(...){}
-	db_unit_level(short id, short level, short unit, char* name, char* node,
+
+	db_unit_level(sqlite3_stmt* stmt) : db_unit_level(asShort(stmt, 0), asShort(stmt, 1), asShort(stmt, 2),
+	                                                  asText(stmt, 3), asText(stmt, 4),
+	                                                  asUS(stmt, 5), asUS(stmt, 6), asUS(stmt, 7), asUS(stmt, 8),
+	                                                  asShort(stmt, 9), asShort(stmt, 10), asFloat(stmt, 11),
+	                                                  asFloat(stmt, 12), asFloat(stmt, 13), asFloat(stmt, 14),
+	                                                  asShort(stmt, 15), asShort(stmt, 16), asFloat(stmt, 17),
+	                                                  asFloat(stmt, 18), asFloat(stmt, 19), asFloat(stmt, 20),
+	                                                  asFloat(stmt, 21), asShort(stmt, 22), asFloat(stmt, 23),
+	                                                  asFloat(stmt, 24),
+	                                                  asFloat(stmt, 25), asFloat(stmt, 26), asFloat(stmt, 27),
+	                                                  asFloat(stmt, 28),
+	                                                  asFloat(stmt, 29), asFloat(stmt, 30), asFloat(stmt, 31)) {}
+
+	db_unit_level(short id, short level, short unit, const char* name, const char* node,
 	              unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
 	              short buildTime, short upgradeTime, float minDist, float mass, float minSpeed, float maxSpeed,
 	              int maxForce, short maxHp, float armor, float sightRng, float collect, float atck, float atckRld,
@@ -270,8 +274,7 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 		minSpeed(minSpeed),
 		maxForce(maxForce),
 		sqMinSpeed(minSpeed * minSpeed),
-		node(node) {
-	}
+		node(node) {}
 
 	void finish(db_unit* dbUnit) {
 		dbUnitMetric = new db_unit_metric(dbUnit, this);
@@ -300,8 +303,14 @@ struct db_unit : db_with_icon, db_with_cost {
 
 	std::vector<db_nation*> nations;
 	std::vector<unsigned char> ordersIds;
-	db_unit (sqlite3_stmt* stmt):db_unit(...){}
-	db_unit(short id, char* name, char* icon,
+
+	db_unit(sqlite3_stmt* stmt) : db_unit(asShort(stmt, 0), asText(stmt, 1), asText(stmt, 2),
+	                                      asUS(stmt, 3), asUS(stmt, 4), asUS(stmt, 5), asUS(stmt, 6),
+	                                      asByte(stmt, 7), asBool(stmt, 8), asBool(stmt, 9), asBool(stmt, 10),
+	                                      asBool(stmt, 11), asBool(stmt, 12), asBool(stmt, 13), asBool(stmt, 14),
+	                                      asBool(stmt, 15)) {}
+
+	db_unit(short id, const char* name, const char* icon,
 	        unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
 	        char actionState, bool typeInfantry, bool typeRange, bool typeCalvary, bool typeWorker,
 	        bool typeSpecial, bool typeMelee, bool typeHeavy,
@@ -315,8 +324,7 @@ struct db_unit : db_with_icon, db_with_cost {
 		typeSpecial(typeSpecial),
 		typeMelee(typeMelee),
 		typeHeavy(typeHeavy),
-		typeLight(typeLight) {
-	}
+		typeLight(typeLight) {}
 
 	std::optional<db_unit_level*> getLevel(char level) {
 		if (levels.size() > level) {
@@ -378,8 +386,14 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 
 	std::vector<db_nation*> nations;
 
-	db_building(sqlite3_stmt* stmt):db_building(...){}
-	db_building(short id, char* name, char* icon,
+	db_building(sqlite3_stmt* stmt) : db_building(asShort(stmt, 0), asText(stmt, 1), asText(stmt, 2),
+		asUS(stmt, 3), asUS(stmt, 4), asUS(stmt, 5), asUS(stmt, 6),
+		asShort(stmt, 7), asShort(stmt, 8), asBool(stmt, 9), asBool(stmt, 10),
+		asBool(stmt, 11), asShort(stmt, 12), asBool(stmt, 13),
+		asBool(stmt, 14), asBool(stmt, 15), asBool(stmt, 16),
+		asBool(stmt, 17), asBool(stmt, 18), asShort(stmt, 19)) {}
+
+	db_building(short id, const char* name, const char* icon,
 	            unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
 	            short sizeX, short sizeZ, bool typeCenter, bool typeHome, bool typeDefence, char typeResource,
 	            bool typeTechBlacksmith, bool typeTechUniversity, bool typeUnitBarracks, bool typeUnitRange,
@@ -427,19 +441,24 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 
 	//std::vector<db_building_metric*> dbBuildingMetricPerNation;
 	db_building_metric* dbBuildingMetric;
-	db_building_level(sqlite3_stmt* stmt):db_building_level(...){}
-	db_building_level(short id, short level, short building, char* name, char* nodeName,
+	db_building_level(sqlite3_stmt* stmt) : db_building_level(asShort(stmt, 0), asShort(stmt, 1), asShort(stmt, 2), asText(stmt, 3), asText(stmt, 4),
+		asUS(stmt, 5), asUS(stmt, 6), asUS(stmt, 7), asUS(stmt, 8),
+		asShort(stmt, 9), asShort(stmt, 10), asShort(stmt, 11), asShort(stmt, 12),
+		asFloat(stmt, 13), asFloat(stmt, 14), asFloat(stmt, 15), asFloat(stmt, 16),
+		asShort(stmt, 17), asFloat(stmt, 18), asFloat(stmt, 19), asShort(stmt, 20),
+		asShort(stmt, 21), asFloat(stmt, 22), asFloat(stmt, 23)) {}
+
+	db_building_level(short id, short level, short building, const char* name, const char* nodeName,
 	                  unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
 	                  short queueMaxCapacity, short buildSpeed, short upgradeSpeed, short maxHp, float armor,
 	                  float sightRng, float collect, float atckR, short atckRRld, float atckRRng, float resourceRng,
 	                  short foodStorage, short goldStoreage, float stoneRefineCapacity, float goldRefineCapacity)
 		: db_with_name(id, name), db_with_cost(food, wood, stone, gold), db_level(level),
-		  db_building_attack(collect, atckR, atckRRld, atckRRng),
-		  db_base(maxHp, armor, sightRng), db_build_upgrade(buildSpeed, upgradeSpeed),
-		  building(building), nodeName(nodeName), queueMaxCapacity(queueMaxCapacity), resourceRange(resourceRng),
-		  foodStorage(foodStorage), goldStorage(goldStoreage), stoneRefineCapacity(stoneRefineCapacity),
-		  goldRefineCapacity(goldRefineCapacity) {
-	}
+		  db_base(maxHp, armor, sightRng),
+		  db_building_attack(collect, atckR, atckRRld, atckRRng), db_build_upgrade(buildSpeed, upgradeSpeed),
+		  building(building), queueMaxCapacity(queueMaxCapacity), resourceRange(resourceRng), foodStorage(foodStorage),
+		  goldStorage(goldStoreage), stoneRefineCapacity(stoneRefineCapacity), goldRefineCapacity(goldRefineCapacity),
+		  nodeName(nodeName) {}
 
 	~db_building_level() {
 		clear_vector(unitsPerNation);
@@ -489,11 +508,16 @@ struct db_resource : db_with_icon, db_static, db_with_hp, db_with_model {
 	Urho3D::Vector<Urho3D::String> nodeName;
 	const float collectSpeed;
 	const bool rotatable;
-	db_resource(sqlite3_stmt* stmt):db_resource(...){}
-	db_resource(short id, char resourceId, char* name, char* icon, unsigned short maxHp, char* nodeName, short sizeX,
+
+	db_resource(sqlite3_stmt* stmt) : db_resource(asShort(stmt, 0), asByte(stmt, 1), asText(stmt, 2), asText(stmt, 3),
+	                                              asUS(stmt, 4),
+	                                              asText(stmt, 5), asShort(stmt, 6), asShort(stmt, 7), asShort(stmt, 8),
+	                                              asHex(stmt, 9), asFloat(stmt, 10), asBool(stmt, 11)) {}
+
+	db_resource(short id, char resourceId, const char* name, const char* icon, unsigned short maxHp,
+	            const char* nodeName, short sizeX,
 	            short sizeZ, short maxUsers, unsigned mini_map_color, float collectSpeed, bool rotatable)
 		: db_with_icon(id, name, icon), db_static({sizeX, sizeZ}), db_with_hp(maxHp, 0.f),
 		  resourceId(resourceId), maxUsers(maxUsers), mini_map_color(mini_map_color),
-		  nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)), collectSpeed(collectSpeed), rotatable(rotatable) {
-	}
+		  nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)), collectSpeed(collectSpeed), rotatable(rotatable) {}
 };

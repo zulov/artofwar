@@ -3,7 +3,6 @@
 #include <iostream>
 
 #include "db_grah_structs.h"
-#include "db_load.h"
 #include "db_utils.h"
 #include "scene/save/SQLConsts.h"
 
@@ -85,8 +84,8 @@ void DatabaseCache::loadData(const std::string& name) {
 	});
 
 	load("unit_to_nation order by unit", [this](auto* s){
-		auto unit = container->units[atoi(argv[0])];
-		auto nation = container->nations[atoi(argv[1])];
+		auto unit = container->units[asShort(s,0)];
+		auto nation = container->nations[asShort(s, 1)];
 		nation->units.push_back(unit);
 		if (unit->typeWorker) {
 			nation->workers.push_back(unit);
@@ -94,16 +93,16 @@ void DatabaseCache::loadData(const std::string& name) {
 		unit->nations.push_back(nation);
 	});
 	load("building_to_nation order by building", [this](auto* s){
-		auto building = container->buildings[atoi(argv[0])];
-		auto nation = container->nations[atoi(argv[1])];
+		auto building = container->buildings[asShort(s, 0)];
+		auto nation = container->nations[asShort(s, 1)];
 
 		nation->buildings.push_back(building);
 		building->nations.push_back(nation);
 	});
 
 	load("unit_to_building_level order by unit", [this](auto* s){
-		auto level = container->buildingsLevels[atoi(argv[0])];
-		auto unit = container->units[atoi(argv[1])];
+		auto level = container->buildingsLevels[asShort(s, 0)];
+		auto unit = container->units[asShort(s, 1)];
 		level->allUnits.push_back(unit);
 		for (auto nation : unit->nations) {
 			level->unitsPerNation[nation->id]->push_back(unit);
@@ -130,6 +129,7 @@ DatabaseCache::~DatabaseCache() {
 	delete container;
 }
 
+//TODO update to bette rversion
 void DatabaseCache::executeSingleBasic(const std::string& name, const char* sql) {
 	if (openDatabase(name)) { return; }
 	execute(sql, callback);

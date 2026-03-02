@@ -463,7 +463,6 @@
     <ClInclude Include="src\commands\action\BuildingActionType.h" />
     <ClInclude Include="src\objects\queue\QueueActionType.h" />
     <ClInclude Include="src\player\ai\ActionMaker.h" />
-    <ClInclude Include="src\database\db_load.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
     <ClInclude Include="src\math\VectorUtils.h" />
     <ClInclude Include="src\math\MathUtils.h" />
