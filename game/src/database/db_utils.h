@@ -16,6 +16,8 @@ inline void ifError(int rc, char* error, const std::string& sql) {
 inline bool asBool(sqlite3_stmt* stmt, int iCol) { return sqlite3_column_int(stmt, iCol) != 0; }
 inline float asFloat(sqlite3_stmt* stmt, int iCol) { return static_cast<float>(sqlite3_column_double(stmt, iCol)); }
 inline int asInt(sqlite3_stmt* stmt, int iCol) { return sqlite3_column_int(stmt, iCol); }
+inline float asItoF(sqlite3_stmt* stmt, int iCol, int precision) { return static_cast<float>(asInt(stmt, iCol)) / precision; }
+inline unsigned asUI(sqlite3_stmt* stmt, int iCol) { return sqlite3_column_int(stmt, iCol); }//TODO check
 inline short asShort(sqlite3_stmt* stmt, int iCol) { return static_cast<int16_t>(sqlite3_column_int(stmt, iCol)); }
 inline unsigned short asUS(sqlite3_stmt* stmt, int iCol) { return static_cast<uint16_t>(sqlite3_column_int(stmt, iCol)); }
 inline char asByte(sqlite3_stmt* stmt, int iCol) { return static_cast<int8_t>(sqlite3_column_int(stmt, iCol)); }

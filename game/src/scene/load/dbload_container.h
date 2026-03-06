@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 #include <Urho3D/Container/Str.h>
+
+#include "database/db_utils.h"
 #include "utils/DeleteUtils.h"
 
 struct dbload_config {
@@ -40,7 +42,9 @@ struct dbload_unit : dbload_physical {
 	float pos_z;
 	float vel_x;
 	float vel_z;
-	dbload_unit(sqlite3_stmt* stmt) (...) {}
+	dbload_unit(sqlite3_stmt* stmt, int p): dbload_unit(asShort(stmt, 0), asItoF(stmt, 1, p), asUI(stmt, 2), asByte(stmt, 3),
+		asByte(stmt, 4), asItoF(stmt, 5,p), asItoF(stmt, 6, p),
+		asByte(stmt, 7), asItoF(stmt, 8, p), asItoF(stmt, 9, p)) {}
 	dbload_unit(short idDb, float hp, unsigned uid, char player, char level, float posX, float posZ, char state,
 	            float velX, float velZ)
 		: dbload_physical(idDb, hp, uid, player, level, state, -1),
