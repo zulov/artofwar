@@ -86,8 +86,11 @@ struct dbload_player {
 	float wood;
 	float stone;
 	float gold;
-	dbload_player(sqlite3_stmt* stmt) (...) {}
-	dbload_player(int id, bool isActive, char team, char nation, char* name, int color,
+	dbload_player(sqlite3_stmt* stmt,int precision):dbload_player(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), argv[4],
+		atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+		atoi(argv[8]) / p, atoi(argv[9]) / p, atoi(argv[10]) / p,
+		atoi(argv[11]) / p)) {}
+	dbload_player(char id, bool isActive, char team, char nation, char* name, int color,
 	              unsigned buildingUid, unsigned unitUid, float food, float wood, float stone, float gold)
 		: is_active(isActive),
 		  id(id),

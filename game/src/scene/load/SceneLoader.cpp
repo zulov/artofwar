@@ -30,18 +30,6 @@ int static load_config(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
-int static load_players(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	const auto xyz = static_cast<dbload_container*>(data);
-	int p = xyz->precision;
-	xyz->players->push_back(new dbload_player(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), argv[4],
-	                                          atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
-	                                          atoi(argv[8]) / p, atoi(argv[9]) / p, atoi(argv[10]) / p,
-	                                          atoi(argv[11]) / p));
-
-	return 0;
-}
-
 int static load_units(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
@@ -118,7 +106,7 @@ const std::vector<dbload_player*>* SceneLoader::loadPlayers() const {
 	if (dbLoad->players) { return dbLoad->players; }
 	dbLoad->players = new std::vector<dbload_player*>();
 
-	load("players", [this](auto* s) {}););
+	load("players", [this](auto* s) {dbLoad->players->push_back(new dbload_player(s, dbLoad->precision)); });
 	load(SQLConsts::SELECT + "players", load_players);
 	return dbLoad->players;
 }
@@ -126,7 +114,7 @@ const std::vector<dbload_player*>* SceneLoader::loadPlayers() const {
 void SceneLoader::loadUnits() const {
 	if (dbLoad->units) { return; }
 	dbLoad->units = new std::vector<dbload_unit*>();
-
+	load("units", [this](auto* s) {});)
 	load(SQLConsts::SELECT + "units", load_units);
 }
 
