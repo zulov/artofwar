@@ -57,8 +57,8 @@ int static load_resources_entities(void* data, int argc, char** argv, char** azC
 	const auto xyz = static_cast<dbload_container*>(data);
 	float p = xyz->precision;
 	xyz->resources->push_back(new dbload_resource(fatoi(argv[0]), fatoi(argv[1]) / p, fatoi(argv[2]),
-	                                                               fatoi(argv[3]), fatoi(argv[4]),
-	                                                               fatoi(argv[5]), fatoi(argv[6])));
+	                                              fatoi(argv[3]), fatoi(argv[4]),
+	                                              fatoi(argv[5]), fatoi(argv[6])));
 
 	return 0;
 }
@@ -106,23 +106,21 @@ const std::vector<dbload_player*>* SceneLoader::loadPlayers() const {
 	if (dbLoad->players) { return dbLoad->players; }
 	dbLoad->players = new std::vector<dbload_player*>();
 
-	load("players", [this](auto* s) {dbLoad->players->push_back(new dbload_player(s, dbLoad->precision)); });
-	load(SQLConsts::SELECT + "players", load_players);
+	load("players", [this](auto* s){ dbLoad->players->push_back(new dbload_player(s, dbLoad->precision)); });
 	return dbLoad->players;
 }
 
 void SceneLoader::loadUnits() const {
 	if (dbLoad->units) { return; }
 	dbLoad->units = new std::vector<dbload_unit*>();
-	load("units", [this](auto* s) {});)
-	load(SQLConsts::SELECT + "units", load_units);
+	load("units", [this](auto* s){ dbLoad->units->push_back(new dbload_unit(s, dbLoad->precision)); });
 }
 
 void SceneLoader::loadBuildings() const {
 	if (dbLoad->buildings) { return; }
 	dbLoad->buildings = new std::vector<dbload_building*>();
 
-	load(SQLConsts::SELECT + "buildings", load_buildings);
+	load("buildings", [this](auto* s) { dbLoad->buildings->push_back(new dbload_building(s)); });
 }
 
 void SceneLoader::loadResourcesEntities() const {
@@ -130,13 +128,32 @@ void SceneLoader::loadResourcesEntities() const {
 	dbLoad->resources = new std::vector<dbload_resource*>();
 
 	load(SQLConsts::COUNT + "resources", load_resources_entities_size);
-	load(SQLConsts::SELECT + "resources", load_resources_entities);
+	load( "resources", load_resources_entities);
 }
 
-void SceneLoader::load(const std::string& sql, int (*load)(void*, int, char**, char**)) const {
-	char* error;
-	int rc = sqlite3_exec(database, sql.c_str(), load, dbLoad, &error);
-	ifError(rc, error, sql);
+//
+// void SceneLoader::load(const std::string& sql, int (*load)(void*, int, char**, char**)) const {
+// 	char* error;
+// 	int rc = sqlite3_exec(database, sql.c_str(), load, dbLoad, &error);
+// 	ifError(rc, error, sql);
+// }
+
+template <typename Creator>
+void SceneLoader::load(const std::string& tableName, Creator createFn) const {
+	std::string sqlStr = SQLConsts::SELECT + tableName;
+	const char* sql = sqlStr.c_str();
+	sqlite3_stmt* stmt = nullptr;
+
+	if (sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+		// obs³uga b³êdu
+		return;
+	}
+
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
+		createFn(stmt);
+	}
+
+	sqlite3_finalize(stmt);
 }
 
 void SceneLoader::end() {

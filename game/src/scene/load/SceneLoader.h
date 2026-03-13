@@ -29,10 +29,12 @@ public:
 	void loadUnits() const;
 	void loadBuildings() const;
 	void loadResourcesEntities() const;
+
 	void close();
 	void end();
 private:
-	void load(const std::string& sql, int (*load)(void*, int, char**, char**)) const;
+	template <class Creator>
+	void load(const std::string& tableName, Creator createFn) const;
 
 	sqlite3* database{};
 	dbload_container* dbLoad{};
