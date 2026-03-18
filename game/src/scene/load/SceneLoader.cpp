@@ -4,10 +4,7 @@
 #include "scene/save/SQLConsts.h"
 #include "utils/StringUtils.h"
 
-
-SceneLoader::~SceneLoader() {
-	end();
-}
+SceneLoader::~SceneLoader() { end(); }
 
 void SceneLoader::load() {
 	loadPlayers();
@@ -17,7 +14,6 @@ void SceneLoader::load() {
 	loadResourcesEntities();
 	close();
 }
-
 
 int static load_config(void* data, int argc, char** argv, char** azColName) {
 	if (argc == 0) { return 0; }
@@ -37,17 +33,6 @@ int static load_units(void* data, int argc, char** argv, char** azColName) {
 	xyz->units->push_back(new dbload_unit(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[2]), atoi(argv[3]),
 	                                      atoi(argv[4]), atof(argv[5]) / p, atof(argv[6]) / p,
 	                                      atoi(argv[7]), atof(argv[8]) / p, atof(argv[9]) / p));
-
-	return 0;
-}
-
-int static load_buildings(void* data, int argc, char** argv, char** azColName) {
-	if (argc == 0) { return 0; }
-	const auto xyz = static_cast<dbload_container*>(data);
-	int p = xyz->precision;
-	xyz->buildings->push_back(new dbload_building(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[2]), atoi(argv[3]),
-	                                              atoi(argv[4]), atoi(argv[5]), atoi(argv[6]),
-	                                              atoi(argv[7]), atoi(argv[8]), atoi(argv[9])));
 
 	return 0;
 }
@@ -78,14 +63,10 @@ void SceneLoader::reset() {
 	dbLoad = new dbload_container();
 }
 
-dbload_container* SceneLoader::getData() const {
-	return dbLoad;
-}
+dbload_container* SceneLoader::getData() const { return dbLoad; }
 
 void SceneLoader::createLoad(const Urho3D::String& fileName, bool tryReuse) {
-	if (fileName == lastLoad && tryReuse) {
-		return;
-	}
+	if (fileName == lastLoad && tryReuse) { return; }
 	reset();
 
 	lastLoad = fileName;
@@ -98,29 +79,27 @@ void SceneLoader::createLoad(const Urho3D::String& fileName, bool tryReuse) {
 	load(SQLConsts::SELECT + "config", load_config);
 }
 
-dbload_config* SceneLoader::getConfig() const {
-	return dbLoad->config;
-}
+dbload_config* SceneLoader::getConfig() const { return dbLoad->config; }
 
 const std::vector<dbload_player*>* SceneLoader::loadPlayers() const {
 	if (dbLoad->players) { return dbLoad->players; }
 	dbLoad->players = new std::vector<dbload_player*>();
 
-	load("players", [this](auto* s){ dbLoad->players->push_back(new dbload_player(s, dbLoad->precision)); });
+	load("players", [this](auto* s) { dbLoad->players->push_back(new dbload_player(s, dbLoad->precision)); });
 	return dbLoad->players;
 }
 
 void SceneLoader::loadUnits() const {
 	if (dbLoad->units) { return; }
 	dbLoad->units = new std::vector<dbload_unit*>();
-	load("units", [this](auto* s){ dbLoad->units->push_back(new dbload_unit(s, dbLoad->precision)); });
+	load("units", [this](auto* s) { dbLoad->units->push_back(new dbload_unit(s, dbLoad->precision)); });
 }
 
 void SceneLoader::loadBuildings() const {
 	if (dbLoad->buildings) { return; }
 	dbLoad->buildings = new std::vector<dbload_building*>();
 
-	load("buildings", [this](auto* s) { dbLoad->buildings->push_back(new dbload_building(s)); });
+	load("buildings", [this](auto* s) { dbLoad->buildings->push_back(new dbload_building(s, dbLoad->precision)); });
 }
 
 void SceneLoader::loadResourcesEntities() const {
@@ -128,7 +107,7 @@ void SceneLoader::loadResourcesEntities() const {
 	dbLoad->resources = new std::vector<dbload_resource*>();
 
 	load(SQLConsts::COUNT + "resources", load_resources_entities_size);
-	load( "resources", load_resources_entities);
+	load("resources", load_resources_entities);
 }
 
 //
@@ -149,9 +128,7 @@ void SceneLoader::load(const std::string& tableName, Creator createFn) const {
 		return;
 	}
 
-	while (sqlite3_step(stmt) == SQLITE_ROW) {
-		createFn(stmt);
-	}
+	while (sqlite3_step(stmt) == SQLITE_ROW) { createFn(stmt); }
 
 	sqlite3_finalize(stmt);
 }

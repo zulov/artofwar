@@ -22,8 +22,8 @@ struct dbload_physical {
 	char state;
 	char nextState;
 
-	dbload_physical(short idDb, float hp, unsigned uid, short player, short level, char state, char nextState)
-		: hp(hp), uid(uid), id_db(idDb), player(player), level(level), state(state), nextState(nextState) {}
+	dbload_physical(short idDb, float hp, unsigned uid, short player, short level, char state, char nextState) :
+		hp(hp), uid(uid), id_db(idDb), player(player), level(level), state(state), nextState(nextState) {}
 };
 
 struct dbload_static : dbload_physical {
@@ -31,10 +31,10 @@ struct dbload_static : dbload_physical {
 	short buc_y;
 
 	dbload_static(short idDb, float hp, unsigned uid, char player, int bucX, int bucY, char level, char state,
-	              char nextState)
-		: dbload_physical(idDb, hp, uid, player, level, state, nextState),
-		  buc_x(bucX),
-		  buc_y(bucY) {}
+	              char nextState) :
+		dbload_physical(idDb, hp, uid, player, level, state, nextState),
+		buc_x(bucX),
+		buc_y(bucY) {}
 };
 
 struct dbload_unit : dbload_physical {
@@ -42,16 +42,19 @@ struct dbload_unit : dbload_physical {
 	float pos_z;
 	float vel_x;
 	float vel_z;
-	dbload_unit(sqlite3_stmt* stmt, int p): dbload_unit(asShort(stmt, 0), asItoF(stmt, 1, p), asUI(stmt, 2), asByte(stmt, 3),
-		asByte(stmt, 4), asItoF(stmt, 5,p), asItoF(stmt, 6, p),
-		asByte(stmt, 7), asItoF(stmt, 8, p), asItoF(stmt, 9, p)) {}
+
+	dbload_unit(sqlite3_stmt* stmt, int p) :
+		dbload_unit(asShort(stmt, 0), asItoF(stmt, 1, p), asUI(stmt, 2), asByte(stmt, 3),
+		            asByte(stmt, 4), asItoF(stmt, 5, p), asItoF(stmt, 6, p),
+		            asByte(stmt, 7), asItoF(stmt, 8, p), asItoF(stmt, 9, p)) {}
+
 	dbload_unit(short idDb, float hp, unsigned uid, char player, char level, float posX, float posZ, char state,
-	            float velX, float velZ)
-		: dbload_physical(idDb, hp, uid, player, level, state, -1),
-		  pos_x(posX),
-		  pos_z(posZ),
-		  vel_x(velX),
-		  vel_z(velZ) {}
+	            float velX, float velZ) :
+		dbload_physical(idDb, hp, uid, player, level, state, -1),
+		pos_x(posX),
+		pos_z(posZ),
+		vel_x(velX),
+		vel_z(velZ) {}
 };
 
 struct dbload_building : dbload_static {
@@ -59,18 +62,25 @@ struct dbload_building : dbload_static {
 	unsigned thingToInteract;
 	unsigned short currentFrameState;
 	//TODO std::vector<dbload_queue*>;
-	dbload_building(sqlite3_stmt* stmt) (...) {}
+	dbload_building(sqlite3_stmt* stmt, int precision) :
+		dbload_building(
+				asShort(stmt, 0), asItoF(stmt, 1, precision), asUI(stmt, 2), asByte(stmt, 3),
+				asByte(stmt, 4), asInt(stmt, 5), asInt(stmt, 6),
+				asByte(stmt, 7), asByte(stmt, 8), asInt(stmt, 9)) {}
+
 	dbload_building(short idDb, float hpCoef, unsigned uid, char player, char level, int bucX, int bucY, char state,
-	                char nextState, int deploy_idx)
-		: dbload_static(idDb, hpCoef, uid, player, bucX, bucY, level, state, nextState),
-		  deploy_idx(deploy_idx) {}
+	                char nextState, int deploy_idx) :
+		dbload_static(idDb, hpCoef, uid, player, bucX, bucY, level, state, nextState),
+		deploy_idx(deploy_idx) {}
 };
 
 struct dbload_resource : dbload_static {
-	dbload_resource(sqlite3_stmt* stmt) (...){}
+	dbload_resource(sqlite3_stmt* stmt)(...) {}
+
 	dbload_resource(short idDb, float hpCoef, unsigned uid, int bucX, int bucY, char state,
-	                         char nextState) : dbload_static(idDb, hpCoef, uid, -1, bucX, bucY, -1, state,
-	                                                         nextState) {}
+	                char nextState) :
+		dbload_static(idDb, hpCoef, uid, -1, bucX, bucY, -1, state,
+		              nextState) {}
 };
 
 struct dbload_player {
@@ -86,24 +96,29 @@ struct dbload_player {
 	float wood;
 	float stone;
 	float gold;
-	dbload_player(sqlite3_stmt* stmt,int precision):dbload_player(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), argv[4],
-		atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
-		atoi(argv[8]) / p, atoi(argv[9]) / p, atoi(argv[10]) / p,
-		atoi(argv[11]) / p)) {}
+
+	dbload_player(sqlite3_stmt* stmt, int precision) :
+		dbload_player(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), argv[4],
+		              atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+		              atoi(argv[8]) / p, atoi(argv[9]) / p, atoi(argv[10]) / p,
+		              atoi(argv[11]) / p)
+
+	)
+ {}
 	dbload_player(char id, bool isActive, char team, char nation, char* name, int color,
-	              unsigned buildingUid, unsigned unitUid, float food, float wood, float stone, float gold)
-		: is_active(isActive),
-		  id(id),
-		  team(team),
-		  nation(nation),
-		  color(color),
-		  name(name),
-		  buildingUid(buildingUid),
-		  unitUid(unitUid),
-		  food(food),
-		  wood(wood),
-		  stone(stone),
-		  gold(gold) {}
+	              unsigned buildingUid, unsigned unitUid, float food, float wood, float stone, float gold) :
+		is_active(isActive),
+		id(id),
+		team(team),
+		nation(nation),
+		color(color),
+		name(name),
+		buildingUid(buildingUid),
+		unitUid(unitUid),
+		food(food),
+		wood(wood),
+		stone(stone),
+		gold(gold) {}
 };
 
 struct dbload_container {
