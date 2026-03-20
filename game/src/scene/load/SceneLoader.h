@@ -3,6 +3,7 @@
 #include <Urho3D/Container/Str.h>
 
 #include "Loading.h"
+#include "database/db_utils.h"
 
 struct dbload_config;
 
@@ -12,7 +13,6 @@ struct dbload_container;
 struct dbload_player;
 struct dbload_resource;
 struct dbload_unit;
-
 
 class SceneLoader {
 public:
@@ -32,9 +32,17 @@ public:
 
 	void close();
 	void end();
+
 private:
 	template <class Creator>
-	void load(const std::string& tableName, Creator createFn) const;
+	void load(const std::string& tableName, Creator createFn) const {
+		loadFromTable(database, SQLConsts::SELECT + tableName, createFn);
+	}
+
+	template <class Creator>
+	void count(const std::string& tableName, Creator createFn) const {
+		loadFromTable(database, SQLConsts::COUNT + tableName, createFn);
+	}
 
 	sqlite3* database{};
 	dbload_container* dbLoad{};

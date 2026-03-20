@@ -6,8 +6,8 @@
 #include "utils/DeleteUtils.h"
 
 struct dbload_config {
-	dbload_config(const dbload_config&) = delete;
-	dbload_config() = default;
+	dbload_config(sqlite3_stmt* stmt) : precision(asInt(stmt, 0)), map(asInt(stmt, 1)), size(asInt(stmt, 2)) {}
+
 	int precision;
 	int map;
 	int size;
@@ -62,9 +62,9 @@ struct dbload_building : dbload_static {
 	unsigned thingToInteract;
 	unsigned short currentFrameState;
 	//TODO std::vector<dbload_queue*>;
-	dbload_building(sqlite3_stmt* stmt, int precision) :
+	dbload_building(sqlite3_stmt* stmt, int p) :
 		dbload_building(
-				asShort(stmt, 0), asItoF(stmt, 1, precision), asUI(stmt, 2), asByte(stmt, 3),
+				asShort(stmt, 0), asItoF(stmt, 1, p), asUI(stmt, 2), asByte(stmt, 3),
 				asByte(stmt, 4), asInt(stmt, 5), asInt(stmt, 6),
 				asByte(stmt, 7), asByte(stmt, 8), asInt(stmt, 9)) {}
 
@@ -75,20 +75,21 @@ struct dbload_building : dbload_static {
 };
 
 struct dbload_resource : dbload_static {
-	dbload_resource(sqlite3_stmt* stmt)(...) {}
+	dbload_resource(sqlite3_stmt* stmt, int p) :
+		dbload_resource(asShort(stmt, 0), asItoF(stmt, 1, p),
+		                asUI(stmt, 2), asInt(stmt, 3), asInt(stmt, 4),
+		                asByte(stmt, 5), asByte(stmt, 6)) {}
 
-	dbload_resource(short idDb, float hpCoef, unsigned uid, int bucX, int bucY, char state,
-	                char nextState) :
-		dbload_static(idDb, hpCoef, uid, -1, bucX, bucY, -1, state,
-		              nextState) {}
+	dbload_resource(short idDb, float hpCoef, unsigned uid, int bucX, int bucY, char state, char nextState) :
+		dbload_static(idDb, hpCoef, uid, -1, bucX, bucY, -1, state, nextState) {}
 };
 
 struct dbload_player {
 	bool is_active;
-	char id;
-	char team;
-	char nation;
-	char color;
+	unsigned char id;
+	unsigned char team;
+	unsigned char nation;
+	unsigned char color;
 	Urho3D::String name;
 	unsigned buildingUid;
 	unsigned unitUid;
@@ -97,16 +98,15 @@ struct dbload_player {
 	float stone;
 	float gold;
 
-	dbload_player(sqlite3_stmt* stmt, int precision) :
-		dbload_player(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), argv[4],
-		              atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
-		              atoi(argv[8]) / p, atoi(argv[9]) / p, atoi(argv[10]) / p,
-		              atoi(argv[11]) / p)
+	dbload_player(sqlite3_stmt* stmt, int p) :
+		dbload_player(asUByte(stmt, 0), asBool(stmt, 1), asUByte(stmt, 2), asUByte(stmt, 3),
+		              asText(stmt, 4), asUByte(stmt, 5), asUI(stmt, 6), asUI(stmt, 7),
+		              asItoF(stmt, 8, p), asItoF(stmt, 9, p),
+		              asItoF(stmt, 10, p), asItoF(stmt, 11, p)) {}
 
-	)
- {}
-	dbload_player(char id, bool isActive, char team, char nation, char* name, int color,
-	              unsigned buildingUid, unsigned unitUid, float food, float wood, float stone, float gold) :
+	dbload_player(unsigned char id, bool isActive, unsigned char team, unsigned char nation, const char* name,
+	              unsigned char color, unsigned buildingUid, unsigned unitUid, float food, float wood, float stone,
+	              float gold) :
 		is_active(isActive),
 		id(id),
 		team(team),
@@ -122,10 +122,7 @@ struct dbload_player {
 };
 
 struct dbload_container {
-	dbload_container() {
-		precision = 1;
-		config = new dbload_config();
-	}
+	dbload_container() = default;
 
 	~dbload_container() {
 		delete config;
@@ -136,8 +133,7 @@ struct dbload_container {
 		clear_and_delete_vector(resources);
 	}
 
-	int precision;
-	dbload_config* config;
+	dbload_config* config{};
 
 	std::vector<dbload_player*>* players{};
 

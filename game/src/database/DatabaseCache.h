@@ -22,7 +22,7 @@ public:
 	void loadData(const std::string& name);
 	void loadMaps(const std::string& name);
 
-	void execute(const std::string& sql, int (* load)(void*, int, char**, char**)) const;
+	void execute(const std::string& sql, int (*load)(void*, int, char**, char**)) const;
 	bool openDatabase(const std::string& name);
 	std::vector<db_hud_size*>& getHudSizes() const { return container->hudSizes; }
 	std::vector<db_hud_vars*>& getHudVars() const { return container->hudVars; }
@@ -57,10 +57,10 @@ public:
 	int getResourcesSize() const { return container->resources.size(); }
 
 private:
-	void loadNation();
-
-	template < class Creator>
-	void load(const std::string& tableName, Creator createFn);
+	template <class Creator>
+	void load(const std::string& tableName, Creator createFn) const {
+		loadFromTable(database, SQLConsts::SELECT + tableName, createFn);
+	}
 	db_container* container;
 	sqlite3* database;
 	std::string pathStr;

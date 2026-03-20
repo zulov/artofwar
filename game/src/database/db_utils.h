@@ -1,8 +1,9 @@
 #pragma once
-#include <charconv>
 #include <sqlite3/sqlite3.h>
 #include <cstdio>
-#include <ios>
+#include <iostream>
+
+#include "scene/save/SQLConsts.h"
 
 inline void ifError(int rc, char* error, const std::string& sql) {
 	if (rc != SQLITE_OK && rc != SQLITE_DONE) {
@@ -13,20 +14,36 @@ inline void ifError(int rc, char* error, const std::string& sql) {
 	}
 }
 
+template <typename Creator>
+void loadFromTable(sqlite3* database, const std::string& sqlStr, Creator createFn) {
+	const char* sql = sqlStr.c_str();
+	sqlite3_stmt* stmt = nullptr;
+	int rc = sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr);
+	if (rc != SQLITE_OK) {
+		std::cerr << "[SQLite ERROR] sqlite3_prepare_v2 failed\n";
+		std::cerr << "Code: " << rc << "\n";
+		std::cerr << "Message: " << sqlite3_errmsg(database) << "\n";
+		std::cerr << "SQL: " << sqlStr << "\n";
+		return;
+		return;
+	}
+
+	while (sqlite3_step(stmt) == SQLITE_ROW) { createFn(stmt); }
+
+	sqlite3_finalize(stmt);
+}
+
 inline bool asBool(sqlite3_stmt* stmt, int iCol) { return sqlite3_column_int(stmt, iCol) != 0; }
 inline float asFloat(sqlite3_stmt* stmt, int iCol) { return static_cast<float>(sqlite3_column_double(stmt, iCol)); }
 inline int asInt(sqlite3_stmt* stmt, int iCol) { return sqlite3_column_int(stmt, iCol); }
 inline float asItoF(sqlite3_stmt* stmt, int iCol, int precision) { return static_cast<float>(asInt(stmt, iCol)) / precision; }
-inline unsigned asUI(sqlite3_stmt* stmt, int iCol) { return sqlite3_column_int(stmt, iCol); }//TODO check
+inline unsigned asUI(sqlite3_stmt* stmt, int iCol) { return sqlite3_column_int(stmt, iCol); } //TODO check
 inline short asShort(sqlite3_stmt* stmt, int iCol) { return static_cast<int16_t>(sqlite3_column_int(stmt, iCol)); }
 inline unsigned short asUS(sqlite3_stmt* stmt, int iCol) { return static_cast<uint16_t>(sqlite3_column_int(stmt, iCol)); }
 inline char asByte(sqlite3_stmt* stmt, int iCol) { return static_cast<int8_t>(sqlite3_column_int(stmt, iCol)); }
+inline unsigned char asUByte(sqlite3_stmt* stmt, int iCol) { return static_cast<unsigned char>(sqlite3_column_int(stmt, iCol)); }
 inline const char* asText(sqlite3_stmt* stmt, int iCol) { return reinterpret_cast<const char*>(sqlite3_column_text(stmt, iCol)); }
 
-inline const unsigned asHex(sqlite3_stmt* stmt, int iCol) {
-	return static_cast<unsigned>(std::strtoul(asText(stmt, iCol), nullptr, 16));
-}
+inline const unsigned asHex(sqlite3_stmt* stmt, int iCol) { return static_cast<unsigned>(std::strtoul(asText(stmt, iCol), nullptr, 16)); }
 
-static int callback(void* data, int argc, char** argv, char** azColName) {
-	return 0;
-}
+static int callback(void* data, int argc, char** argv, char** azColName) { return 0; }

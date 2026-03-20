@@ -4,7 +4,6 @@
 
 #include "db_grah_structs.h"
 #include "db_utils.h"
-#include "scene/save/SQLConsts.h"
 
 void DatabaseCache::execute(const std::string& sql, int (*load)(void*, int, char**, char**)) const {
 	char* error;
@@ -38,7 +37,7 @@ DatabaseCache::DatabaseCache(std::string postfix) {
 void DatabaseCache::loadBasic(const std::string& name) {
 	if (openDatabase(name)) { return; }
 
-	load("hud_size", [this](auto* s){ container->hudSizes.push_back(new db_hud_size(s)); });
+	load("hud_size", [this](auto* s) { container->hudSizes.push_back(new db_hud_size(s)); });
 	load("graph_settings", [this](auto* s){ setEntity(container->graphSettings, new db_graph_settings(s)); });
 	load("hud_size_vars", [this](auto* s){ container->hudVars.push_back(new db_hud_vars(s)); });
 	load("resolution", [this](auto* s){ setEntity(container->resolutions, new db_resolution(s)); });
@@ -54,18 +53,20 @@ void DatabaseCache::loadData(const std::string& name) {
 	load("unit order by id desc", [this](auto* s){ setEntity(container->units, new db_unit(s)); });
 	load("building order by id desc", [this](auto* s){ setEntity(container->buildings, new db_building(s)); });
 
-	load("resource order by id desc", [this](auto* s){ setEntity(container->resources, new db_resource(s)); });
+	load("resource order by id desc",
+				  [this](auto* s) { setEntity(container->resources, new db_resource(s)); });
 
-	load("player_color order by id desc", [this](auto* s){
+	load("player_color order by id desc",
+				  [this](auto* s) {
 		setEntity(container->playerColors, new db_player_colors(s));
 	});
 
-	load("unit_level order by unit,level", [this](auto* s){
+	load("unit_level order by unit,level", [this](auto* s) {
 		auto level = new db_unit_level(s);
 		setEntity(container->unitsLevels, level);
 		container->units[level->unit]->levels.push_back(level);
 	});
-	load("building_level order by level", [this](auto* s){
+	load("building_level order by level", [this](auto* s) {
 		auto level = new db_building_level(s);
 		setEntity(container->buildingsLevels, level);
 		container->buildings[level->building]->levels.push_back(level);
@@ -83,7 +84,7 @@ void DatabaseCache::loadData(const std::string& name) {
 		}
 	});
 
-	load("unit_to_nation order by unit", [this](auto* s){
+	load("unit_to_nation order by unit", [this](auto* s) {
 		auto unit = container->units[asShort(s,0)];
 		auto nation = container->nations[asShort(s, 1)];
 		nation->units.push_back(unit);
@@ -92,7 +93,7 @@ void DatabaseCache::loadData(const std::string& name) {
 		}
 		unit->nations.push_back(nation);
 	});
-	load("building_to_nation order by building", [this](auto* s){
+	load("building_to_nation order by building", [this](auto* s) {
 		auto building = container->buildings[asShort(s, 0)];
 		auto nation = container->nations[asShort(s, 1)];
 
@@ -100,7 +101,7 @@ void DatabaseCache::loadData(const std::string& name) {
 		building->nations.push_back(nation);
 	});
 
-	load("unit_to_building_level order by unit", [this](auto* s){
+	load("unit_to_building_level order by unit", [this](auto* s) {
 		auto level = container->buildingsLevels[asShort(s, 0)];
 		auto unit = container->units[asShort(s, 1)];
 		level->allUnits.push_back(unit);
@@ -171,25 +172,4 @@ void DatabaseCache::refreshAfterParametersRead() const {
 	for (const auto nation : container->nations) {
 		nation->refresh();
 	}
-}
-
-//TODO zrobiæ listê str -> [this](sqlite3_stmt* stmt) i wczytac?
-void DatabaseCache::loadNation() {}
-
-template <typename Creator>
-void DatabaseCache::load(const std::string& tableName, Creator createFn) {
-	std::string sqlStr = SQLConsts::SELECT + tableName;
-	const char* sql = sqlStr.c_str();
-	sqlite3_stmt* stmt = nullptr;
-
-	if (sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-		// obs³uga b³êdu
-		return;
-	}
-
-	while (sqlite3_step(stmt) == SQLITE_ROW) {
-		createFn(stmt);
-	}
-
-	sqlite3_finalize(stmt);
 }
