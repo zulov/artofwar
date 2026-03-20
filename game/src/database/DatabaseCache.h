@@ -5,6 +5,7 @@
 #include <sqlite3/sqlite3.h>
 
 #include "db_container.h"
+#include "scene/save/SQLConsts.h"
 
 class sqlite3;
 struct db_unit;

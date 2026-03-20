@@ -1,7 +1,5 @@
 #include "DatabaseCache.h"
 
-#include <iostream>
-
 #include "db_grah_structs.h"
 #include "db_utils.h"
 
@@ -12,14 +10,8 @@ void DatabaseCache::execute(const std::string& sql, int (*load)(void*, int, char
 }
 
 bool DatabaseCache::openDatabase(const std::string& name) {
-	const int rc = sqlite3_open_v2((pathStr + name).c_str(), &database, SQLITE_OPEN_READONLY, nullptr);
-	if (rc) {
-		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << " " << name << std::endl;
-		sqlite3_close_v2(database);
-		return true;
-	}
-	//std::cout << "Database Opened: " << name << std::endl;
-	return false;
+	database = openDb(pathStr + name);
+	return database;
 }
 
 DatabaseCache::DatabaseCache(std::string postfix) {
@@ -35,7 +27,7 @@ DatabaseCache::DatabaseCache(std::string postfix) {
 }
 
 void DatabaseCache::loadBasic(const std::string& name) {
-	if (openDatabase(name)) { return; }
+	if (!openDatabase(name)) { return; }
 
 	load("hud_size", [this](auto* s) { container->hudSizes.push_back(new db_hud_size(s)); });
 	load("graph_settings", [this](auto* s){ setEntity(container->graphSettings, new db_graph_settings(s)); });
@@ -47,7 +39,7 @@ void DatabaseCache::loadBasic(const std::string& name) {
 }
 
 void DatabaseCache::loadData(const std::string& name) {
-	if (openDatabase(name)) { return; }
+	if (!openDatabase(name)) { return; }
 
 	load("nation order by id desc", [this](auto* s){ setEntity(container->nations, new db_nation(s)); });
 	load("unit order by id desc", [this](auto* s){ setEntity(container->units, new db_unit(s)); });
@@ -118,7 +110,7 @@ void DatabaseCache::loadData(const std::string& name) {
 }
 
 void DatabaseCache::loadMaps(const std::string& name) {
-	if (openDatabase(name)) { return; }
+	if (!openDatabase(name)) { return; }
 
 	load("map order by id desc", [this](auto* s) { setEntity(container->maps, new db_map(s)); });
 
@@ -132,7 +124,7 @@ DatabaseCache::~DatabaseCache() {
 
 //TODO update to bette rversion
 void DatabaseCache::executeSingleBasic(const std::string& name, const char* sql) {
-	if (openDatabase(name)) { return; }
+	if (!openDatabase(name)) { return; }
 	execute(sql, callback);
 	sqlite3_close_v2(database);
 }

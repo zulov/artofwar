@@ -3,7 +3,16 @@
 #include <cstdio>
 #include <iostream>
 
-#include "scene/save/SQLConsts.h"
+inline sqlite3* openDb(const std::string& name) {
+	sqlite3* database;
+	const int rc = sqlite3_open_v2(name.c_str(), &database, SQLITE_OPEN_READONLY, nullptr);
+	if (rc) {
+		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
+		sqlite3_close_v2(database);
+		return nullptr;
+	}
+	return database;
+}
 
 inline void ifError(int rc, char* error, const std::string& sql) {
 	if (rc != SQLITE_OK && rc != SQLITE_DONE) {
@@ -24,7 +33,6 @@ void loadFromTable(sqlite3* database, const std::string& sqlStr, Creator createF
 		std::cerr << "Code: " << rc << "\n";
 		std::cerr << "Message: " << sqlite3_errmsg(database) << "\n";
 		std::cerr << "SQL: " << sqlStr << "\n";
-		return;
 		return;
 	}
 

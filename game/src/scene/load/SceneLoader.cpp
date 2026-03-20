@@ -28,11 +28,7 @@ void SceneLoader::createLoad(const Urho3D::String& fileName, bool tryReuse) {
 
 	lastLoad = fileName;
 	std::string name = std::string("saves/") + fileName.CString();
-	int rc = sqlite3_open_v2(name.c_str(), &database, SQLITE_OPEN_READONLY, nullptr);
-	if (rc) {
-		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
-		sqlite3_close_v2(database);
-	}
+	database = openDb(name);
 	load("config", [this](auto* s) { dbLoad->config = new dbload_config(s); });
 }
 
@@ -43,7 +39,7 @@ const std::vector<dbload_player*>* SceneLoader::loadPlayers() const {
 	dbLoad->players = new std::vector<dbload_player*>();
 
 	load("players",
-		 [this](auto* s) { dbLoad->players->push_back(new dbload_player(s, dbLoad->config->precision)); });
+	     [this](auto* s) { dbLoad->players->push_back(new dbload_player(s, dbLoad->config->precision)); });
 	return dbLoad->players;
 }
 
@@ -51,7 +47,7 @@ void SceneLoader::loadUnits() const {
 	if (dbLoad->units) { return; }
 	dbLoad->units = new std::vector<dbload_unit*>();
 	load("units",
-		 [this](auto* s) { dbLoad->units->push_back(new dbload_unit(s, dbLoad->config->precision)); });
+	     [this](auto* s) { dbLoad->units->push_back(new dbload_unit(s, dbLoad->config->precision)); });
 }
 
 void SceneLoader::loadBuildings() const {
@@ -59,7 +55,7 @@ void SceneLoader::loadBuildings() const {
 	dbLoad->buildings = new std::vector<dbload_building*>();
 
 	load("buildings",
-		 [this](auto* s) { dbLoad->buildings->push_back(new dbload_building(s, dbLoad->config->precision)); });
+	     [this](auto* s) { dbLoad->buildings->push_back(new dbload_building(s, dbLoad->config->precision)); });
 }
 
 void SceneLoader::loadResourcesEntities() const {
@@ -68,12 +64,10 @@ void SceneLoader::loadResourcesEntities() const {
 
 	count("resources", [this](auto* s) { dbLoad->resources->reserve(asInt(s, 0)); });
 	load("resources",
-		 [this](auto* s) { dbLoad->resources->push_back(new dbload_resource(s, dbLoad->config->precision)); });
+	     [this](auto* s) { dbLoad->resources->push_back(new dbload_resource(s, dbLoad->config->precision)); });
 }
 
-void SceneLoader::end() {
-	close();
-}
+void SceneLoader::end() { close(); }
 
 void SceneLoader::close() {
 	sqlite3_close_v2(database);

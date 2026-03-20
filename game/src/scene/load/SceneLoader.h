@@ -4,6 +4,7 @@
 
 #include "Loading.h"
 #include "database/db_utils.h"
+#include "scene/save/SQLConsts.h"
 
 struct dbload_config;
 
