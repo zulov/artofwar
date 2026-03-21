@@ -176,7 +176,7 @@ void Simulation::addTestEntities() const {
 		//Game::getActionCenter()->addUnits(10, 2, Urho3D::Vector2(0, 70), 1);
 
 		Game::getActionCenter()->addBuilding(10, p0, 0, true);
-		Game::getActionCenter()->addBuilding(17, p01, 0, true);
+		//Game::getActionCenter()->addBuilding(17, p01, 0, true);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.5f, 1, Urho3D::Vector2(300, 212), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.2f, 1, Urho3D::Vector2(290, 210), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 4, Urho3D::Vector2(10, 240), 1);

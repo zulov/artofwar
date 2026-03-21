@@ -205,6 +205,7 @@
     <ClCompile Include="src\utils\CountUtils.h" />
     <ClCompile Include="src\utils\CountUtils.cpp" />
     <ClCompile Include="src\objects\UId.h" />
+    <ClCompile Include="src\database\db_update_utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />

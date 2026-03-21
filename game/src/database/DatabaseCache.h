@@ -52,7 +52,7 @@ public:
 	const std::vector<db_building_level*>& getBuildingLevels() const { return container->buildingsLevels; }
 
 	void executeSingleBasic(const std::string& name, const char* sql);
-	void setGraphSettings(int i, db_graph_settings* graphSettings);
+	void setGraphSettings(int i, db_graph_settings* gs);
 	void setSettings(int i, db_settings* settings);
 	void refreshAfterParametersRead() const;
 	int getResourcesSize() const { return container->resources.size(); }

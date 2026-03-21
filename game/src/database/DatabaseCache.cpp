@@ -1,6 +1,7 @@
 #include "DatabaseCache.h"
 
 #include "db_grah_structs.h"
+#include "db_update_utils.h"
 #include "db_utils.h"
 
 void DatabaseCache::execute(const std::string& sql, int (*load)(void*, int, char**, char**)) const {
@@ -49,9 +50,7 @@ void DatabaseCache::loadData(const std::string& name) {
 				  [this](auto* s) { setEntity(container->resources, new db_resource(s)); });
 
 	load("player_color order by id desc",
-				  [this](auto* s) {
-		setEntity(container->playerColors, new db_player_colors(s));
-	});
+				  [this](auto* s) { setEntity(container->playerColors, new db_player_colors(s));});
 
 	load("unit_level order by unit,level", [this](auto* s) {
 		auto level = new db_unit_level(s);
@@ -122,31 +121,56 @@ DatabaseCache::~DatabaseCache() {
 	delete container;
 }
 
-//TODO update to bette rversion
+//TODO update to better version
 void DatabaseCache::executeSingleBasic(const std::string& name, const char* sql) {
 	if (!openDatabase(name)) { return; }
 	execute(sql, callback);
 	sqlite3_close_v2(database);
 }
 
-void DatabaseCache::setGraphSettings(int i, db_graph_settings* graphSettings) {
-	graphSettings->name = container->graphSettings[i]->name;
-	graphSettings->styles = container->graphSettings[i]->styles;
-	delete container->graphSettings[i];
-	container->graphSettings[i] = graphSettings;
-	Urho3D::String sql = "UPDATE graph_settings";
-	sql.Append(" SET hud_size = ").Append(Urho3D::String(graphSettings->hud_size))
-	   //.Append("SET style =").Append(Urho3D::String(graphSettings->hud_size));
-	   .Append(", fullscreen = ").Append(Urho3D::String((int)graphSettings->fullscreen))
-	   .Append(", max_fps =").Append(Urho3D::String(graphSettings->max_fps))
-	   .Append(", min_fps =").Append(Urho3D::String(graphSettings->min_fps))
-	   .Append(", name = ").Append("'" + Urho3D::String(graphSettings->name) + "'")
-	   .Append(", v_sync = ").Append(Urho3D::String((int)graphSettings->v_sync))
-	   .Append(", shadow = ").Append(Urho3D::String((int)graphSettings->shadow))
-	   .Append(", texture_quality =").Append(Urho3D::String(graphSettings->texture_quality))
-	   .Append(" WHERE id =").Append(Urho3D::String(i));
+void DatabaseCache::setGraphSettings(int id, db_graph_settings* gs) {
+	gs->name = container->graphSettings[id]->name;
+	gs->styles = container->graphSettings[id]->styles;
+	delete container->graphSettings[id];
+	container->graphSettings[id] = gs;
+	// Urho3D::String sql = "UPDATE graph_settings";
+	// sql.Append(" SET hud_size = ").Append(Urho3D::String(gs->hud_size))
+	//    //.Append("SET style =").Append(Urho3D::String(gs->hud_size));
+	//    .Append(", fullscreen = ").Append(Urho3D::String((int)gs->fullscreen))
+	//    .Append(", max_fps =").Append(Urho3D::String(gs->max_fps))
+	//    .Append(", min_fps =").Append(Urho3D::String(gs->min_fps))
+	//    .Append(", name = ").Append("'" + Urho3D::String(gs->name) + "'")
+	//    .Append(", v_sync = ").Append(Urho3D::String((int)gs->v_sync))
+	//    .Append(", shadow = ").Append(Urho3D::String((int)gs->shadow))
+	//    .Append(", texture_quality =").Append(Urho3D::String(gs->texture_quality))
+	//    .Append(" WHERE id =").Append(Urho3D::String(i));
+	//
+	// executeSingleBasic("base.db", sql.CString());
+	if (!openDatabase("base.db")) {
+		return;
+	}
+	    DbUpdate stmt(database,
+			  "UPDATE graphics_settings SET "
+			  "hud_size = :hud_size, "
+			  "fullscreen = :fullscreen, "
+			  "max_fps = :max_fps, "
+			  "min_fps = :min_fps, "
+			  "name = :name, "
+			  "v_sync = :v_sync, "
+			  "shadow = :shadow, "
+			  "texture_quality = :texture_quality "
+			  "WHERE id = :id;");
 
-	executeSingleBasic("base.db", sql.CString());
+	stmt.bind(":hud_size", gs->hud_size)
+			.bind(":fullscreen", gs->fullscreen)
+			.bind(":max_fps", gs->max_fps)
+			.bind(":min_fps", gs->min_fps)
+			.bind(":name", gs->name)
+			.bind(":v_sync", gs->v_sync)
+			.bind(":shadow", gs->shadow)
+			.bind(":texture_quality", gs->texture_quality)
+			.bind(":id", id)
+			.exec();
 }
 
 void DatabaseCache::setSettings(int i, db_settings* settings) {
