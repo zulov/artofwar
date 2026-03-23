@@ -131,5 +131,5 @@ void MainMenuSettingsPanel::HandleSaveSettings(Urho3D::StringHash eventType, Urh
 	                                           form->minFps, nullptr, form->vSync, form->shadow,
 	                                           form->textureQuality);
 	Game::getDatabase()->setGraphSettings(0, graphSettings);
-	Game::getDatabase()->setSettings(0, new db_settings(0, form->resolution));
+	Game::getDatabase()->setSettings(new db_settings(0, form->resolution));
 }

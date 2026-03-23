@@ -17,7 +17,7 @@ struct db_container {
 	std::vector<db_hud_vars*> hudVars;
 	std::vector<db_graph_settings*> graphSettings;
 	std::vector<db_resolution*> resolutions;
-	db_settings settings;
+	db_settings *settings;
 
 	std::vector<db_map*> maps;
 
@@ -36,8 +36,8 @@ struct db_container {
 		clear_vector(hudVars);
 		clear_vector(resolutions);
 		clear_vector(graphSettings);
-		delete settings;
 		clear_vector(maps);
+		delete settings;
 
 		clear_vector(resources);
 		clear_vector(nations);

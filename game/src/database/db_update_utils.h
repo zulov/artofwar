@@ -1,7 +1,7 @@
 #pragma once
 
 #include <sqlite3/sqlite3.h>
-#include <Urho3D/Core/
+#include <Urho3D/Container/Str.h>
 
 struct DbUpdate {
 	sqlite3_stmt* stmt = nullptr;
@@ -42,4 +42,11 @@ struct DbUpdate {
 	}
 
 	bool exec() { return sqlite3_step(stmt) == SQLITE_DONE; }
+	bool execAndClose() {
+		auto result = exec();
+		if (stmt)
+			sqlite3_finalize(stmt);
+		return result;
+	}
+
 };

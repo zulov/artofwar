@@ -23,7 +23,6 @@ public:
 	void loadData(const std::string& name);
 	void loadMaps(const std::string& name);
 
-	void execute(const std::string& sql, int (*load)(void*, int, char**, char**)) const;
 	bool openDatabase(const std::string& name);
 	std::vector<db_hud_size*>& getHudSizes() const { return container->hudSizes; }
 	std::vector<db_hud_vars*>& getHudVars() const { return container->hudVars; }
@@ -51,9 +50,8 @@ public:
 	const std::vector<db_unit_level*>& getUnitLevels() const { return container->unitsLevels; }
 	const std::vector<db_building_level*>& getBuildingLevels() const { return container->buildingsLevels; }
 
-	void executeSingleBasic(const std::string& name, const char* sql);
 	void setGraphSettings(int i, db_graph_settings* gs);
-	void setSettings(int i, db_settings* settings);
+	void setSettings(db_settings* settings);
 	void refreshAfterParametersRead() const;
 	int getResourcesSize() const { return container->resources.size(); }
 
