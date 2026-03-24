@@ -51,14 +51,6 @@ struct SQLConsts {
 		"stone			INT NOT NULL,"
 		"gold			INT NOT NULL);";
 
-	inline const static std::string PLAYER_RESOURCES_COL =
-		"resources("
-		"player	INT NOT NULL,"
-		"food	INT NOT NULL,"
-		"wood	INT NOT NULL,"
-		"stone	INT NOT NULL,"
-		"gold	INT NOT NULL);";
-
 	inline const static std::string CONFIG_COL ="config(" 
 		"precision	INT NOT NULL,"
 		"map		INT NOT NULL,"

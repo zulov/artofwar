@@ -400,6 +400,7 @@
     <ClCompile Include="src\utils\CountUtils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\database\db_insert_utils.h" />
     <ClInclude Include="src\env\path\PathCache.h" />
     <ClInclude Include="src\objects\building\ParentBuildingType.h" />
     <ClInclude Include="src\objects\projectile\ProjectileManager.h" />
@@ -526,7 +527,7 @@
     <ClInclude Include="src\hud\window\main_menu\new_game\NewGamePlayer.h" />
     <ClInclude Include="src\hud\window\main_menu\new_game\NewGameTeamLine.h" />
     <ClInclude Include="src\hud\window\main_menu\settings\SettingsForm.h" />
-    <ClInclude Include="src\Loading.h" />
+    <ClInclude Include="src\Progress.h" />
     <ClInclude Include="src\objects\static\Static.h" />
     <ClInclude Include="src\objects\unit\ActionParameter.h" />
     <ClInclude Include="src\objects\unit\aim\Aim.h" />

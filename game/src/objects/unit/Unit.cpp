@@ -20,6 +20,7 @@
 #include "simulation/formation/FormationManager.h"
 #include "state/StateManager.h"
 #include "camera/CameraInfo.h"
+#include "database/db_insert_utils.h"
 #include "math/MathUtils.h"
 #include "utils/consts.h"
 #include "utils/Flags.h"
@@ -436,6 +437,19 @@ bool Unit::hasStateChangePending() const {
 	return stateChangePending;
 }
 
+template <>
+void bindRow<Unit>(sqlite3_stmt* stmt, const ParamMap& p, const Unit& u) {
+	bindValue(stmt, p.map.at(":id_db"), u.getIdDb());
+	bindValue(stmt, p.map.at(":hp_coef"), u.getHpCoef());
+	bindValue(stmt, p.map.at(":uid"), u.getUid());
+	bindValue(stmt, p.map.at(":player"), u.getPlayer());
+	bindValue(stmt, p.map.at(":level"), u.getLevel());
+	bindValue(stmt, p.map.at(":pos_x"), u.getPositionX());
+	bindValue(stmt, p.map.at(":pos_z"), u.getPositionZ());
+	bindValue(stmt, p.map.at(":state"), u.getState());
+	bindValue(stmt, p.map.at(":vel_x"), u.getVelocityX());
+	bindValue(stmt, p.map.at(":vel_z"), u.getVelocityZ());
+}
 std::string Unit::getValues(int precision) {
 	const int position_x = position.x_ * precision;
 	const int position_z = position.z_ * precision;

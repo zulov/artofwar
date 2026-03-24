@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "Loading.h"
+#include "Progress.h"
 
 namespace Urho3D {
 	class String;
@@ -18,21 +18,21 @@ public:
 	explicit SceneSaver(int precision);
 	~SceneSaver() = default;
 
-	void createTables() const;
+	void createSave(const Urho3D::String& fileName, std::vector<Unit*>* units, std::vector<Building*>* buildings,
+					std::vector<ResourceEntity*>* resources, std::vector<Player*>& players, int mapId, int size);
+private:
 	void createDatabase(const Urho3D::String& fileName);
-	void createSave(const Urho3D::String& fileName);
+	void executeInsert(std::string& sql) const;
+	void createTable(const std::string& sql) const;
 	void saveUnits(std::vector<Unit*>* units);
 	void saveBuildings(std::vector<Building*>* buildings);
 	void saveResources(std::vector<ResourceEntity*>* resources);
 	void savePlayers(std::vector<Player*>& players);
 	void saveConfig(int mapId, int size);
 	void close();
-private:
-	void executeInsert(std::string& sql) const;
-	void createTable(const std::string& sql) const;
 
 	sqlite3* database;
 	int precision;
 
-	Loading loadingState;
+	Progress savingProgress;
 };

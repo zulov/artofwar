@@ -334,7 +334,7 @@ void Main::setSimpleManagers() {
 		->setColorPaletteRepo(new ColorPaletteRepo());
 }
 
-void Main::updateProgress(Loading& progress) const {
+void Main::updateProgress(Progress& progress) const {
 	if (!SIM_GLOBALS.HEADLESS) {
 		std::string msg = Game::getLocalization()->Get("load_msg_" +
 		                                               Urho3D::String((int)loadingProgress.currentStage)).CString();
@@ -571,7 +571,7 @@ void Main::SetupViewport() {
 void Main::disposeScene() {
 	if (inited) {
 		writeOutput();
-		Loading loading2(5, !SIM_GLOBALS.HEADLESS);
+		Progress loading2(5, !SIM_GLOBALS.HEADLESS);
 		Game::getScene()->SetUpdateEnabled(false);
 
 		loading2.reset("dispose simulation");

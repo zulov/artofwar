@@ -2,7 +2,7 @@
 
 #include <Urho3D/Container/Str.h>
 
-#include "Loading.h"
+#include "Progress.h"
 #include "database/db_utils.h"
 #include "scene/save/SQLConsts.h"
 

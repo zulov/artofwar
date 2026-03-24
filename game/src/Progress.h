@@ -5,14 +5,14 @@
 #include <utility>
 
 
-struct Loading {
-	Loading(unsigned char stages, bool ifPrint = true): stagesNumber(stages), ifPrint(ifPrint) {
+struct Progress {
+	Progress(unsigned char stages, bool ifPrint = true): stagesNumber(stages), ifPrint(ifPrint) {
 		reset();
 	}
 
-	Loading(const Loading&) = delete;
+	Progress(const Progress&) = delete;
 
-	~Loading() = default;
+	~Progress() = default;
 
 	float getProgress() const {
 		return currentStage / (float)stagesNumber;

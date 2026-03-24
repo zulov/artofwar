@@ -4,7 +4,7 @@
 #include <Urho3D/Engine/Application.h>
 #include "Benchmark.h"
 #include "GameState.h"
-#include "Loading.h"
+#include "Progress.h"
 #include "control/HealthBarProvider.h"
 #include "debug/DebugManager.h"
 #include "scene/load/SceneLoader.h"
@@ -73,7 +73,7 @@ private:
 	void running(float timeStep);
 	void createSimulation();
 	static void setSimpleManagers();
-	void updateProgress(Loading& progress) const;
+	void updateProgress(Progress& progress) const;
 	void changeState(GameState newState);
 
 	void writeOutput(std::initializer_list<const std::function<float(Player*)>> funcs1,
@@ -90,7 +90,7 @@ private:
 	Benchmark benchmark;
 	SceneSaver saver;
 	SceneLoader loader;
-	Loading loadingProgress;
+	Progress loadingProgress;
 	HealthBarProvider healthBarProvider;
 	DebugManager debugManager;
 	

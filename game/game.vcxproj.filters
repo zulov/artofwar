@@ -356,7 +356,7 @@
     <ClInclude Include="src\control\HitData.h" />
     <ClInclude Include="src\hud\window\loading\LoadingPanel.h" />
     <ClInclude Include="src\GameState.h" />
-    <ClInclude Include="src\Loading.h" />
+    <ClInclude Include="src\Progress.h" />
     <ClInclude Include="src\env\ContentInfo.h" />
     <ClInclude Include="src\hud\window\in_game_menu\InGameMenuPanel.h" />
     <ClInclude Include="src\scene\save\SceneSaver.h" />
@@ -537,6 +537,7 @@
     <ClInclude Include="src\player\ai\MetricDefinitions.h" />
     <ClInclude Include="src\player\ai\PossessionMetric.h" />
     <ClInclude Include="src\utils\PrintUtils.h" />
+    <ClInclude Include="src\database\db_insert_utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
