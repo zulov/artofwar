@@ -406,12 +406,12 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 		  typeUnitBarracks(typeUnitBarracks), typeUnitRange(typeUnitRange), typeUnitCavalry(typeUnitCavalry),
 		  ruinable(ruinable), toResource(toResource), maxUsers(sizeX * 2 + sizeZ * 2 + 4),
 		  typeResourceAny(typeResource >= 0) {
-		parentType[cast(ParentBuildingType::OTHER)] = typeCenter || typeHome;
-		parentType[cast(ParentBuildingType::DEFENCE)] = typeDefence;
-		parentType[cast(ParentBuildingType::RESOURCE)]
+		parentType[castC(ParentBuildingType::OTHER)] = typeCenter || typeHome;
+		parentType[castC(ParentBuildingType::DEFENCE)] = typeDefence;
+		parentType[castC(ParentBuildingType::RESOURCE)]
 			= typeResourceFood || typeResourceWood || typeResourceStone || typeResourceGold;
-		parentType[cast(ParentBuildingType::TECH)] = typeTechBlacksmith || typeTechUniversity;
-		parentType[cast(ParentBuildingType::UNITS)] = typeUnitBarracks || typeUnitRange || typeUnitCavalry;
+		parentType[castC(ParentBuildingType::TECH)] = typeTechBlacksmith || typeTechUniversity;
+		parentType[castC(ParentBuildingType::UNITS)] = typeUnitBarracks || typeUnitRange || typeUnitCavalry;
 	}
 
 	std::optional<db_building_level*> getLevel(short level) {

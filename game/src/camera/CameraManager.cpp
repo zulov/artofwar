@@ -43,7 +43,7 @@ CameraManager::~CameraManager() {
 
 void CameraManager::setCameraBehave(CameraBehaviorType _type) {
 	auto& pos = activeBehave->getPosition();
-	activeBehave = cameraBehaves[cast(_type)];
+	activeBehave = cameraBehaves[castC(_type)];
 	activeBehave->setPos(pos);
 	hasMoved = true;
 }

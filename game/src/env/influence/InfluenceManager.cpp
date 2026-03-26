@@ -445,7 +445,7 @@ void InfluenceManager::addAttack(char player, const Urho3D::Vector3& position, f
 }
 
 std::optional<Urho3D::Vector2> InfluenceManager::getCenterOf(CenterType id, char player) const {
-	return mapsForCentersPerPlayer[player][cast(id)]->getCenter();
+	return mapsForCentersPerPlayer[player][castC(id)]->getCenter();
 }
 
 bool InfluenceManager::isVisible(char player, const Urho3D::Vector2& pos) const {

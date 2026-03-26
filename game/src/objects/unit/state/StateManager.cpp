@@ -23,19 +23,19 @@
 StateManager* StateManager::instance = nullptr;
 
 StateManager::StateManager() {
-	states[cast(UnitState::STOP)] = new StopState();
-	states[cast(UnitState::MOVE)] = new MoveState();
-	states[cast(UnitState::GO)] = new GoState();
-	states[cast(UnitState::FOLLOW)] = new FollowState();
+	states[castC(UnitState::STOP)] = new StopState();
+	states[castC(UnitState::MOVE)] = new MoveState();
+	states[castC(UnitState::GO)] = new GoState();
+	states[castC(UnitState::FOLLOW)] = new FollowState();
 
-	states[cast(UnitState::ATTACK)] = new AttackState();
-	states[cast(UnitState::SHOT)] = new ShotState();
-	states[cast(UnitState::CHARGE)] = new ChargeState();
-	states[cast(UnitState::DEFEND)] = new DefendState();
-	states[cast(UnitState::COLLECT)] = new CollectState();
+	states[castC(UnitState::ATTACK)] = new AttackState();
+	states[castC(UnitState::SHOT)] = new ShotState();
+	states[castC(UnitState::CHARGE)] = new ChargeState();
+	states[castC(UnitState::DEFEND)] = new DefendState();
+	states[castC(UnitState::COLLECT)] = new CollectState();
 
-	states[cast(UnitState::DEAD)] = new DeadState();
-	states[cast(UnitState::DISPOSE)] = new DisposeState();
+	states[castC(UnitState::DEAD)] = new DeadState();
+	states[castC(UnitState::DISPOSE)] = new DisposeState();
 
 	initStates();
 
@@ -55,8 +55,8 @@ bool StateManager::toDefaultState(Unit* unit) {
 }
 
 bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter) {
-	State* stateFrom = instance->states[cast(unit->getNextState())];
-	State* toState = instance->states[cast(stateTo)];
+	State* stateFrom = instance->states[castC(unit->getNextState())];
+	State* toState = instance->states[castC(stateTo)];
 	if (canStartState(unit, stateTo, actionParameter, stateFrom, toState)) {
 		unit->setNextState(stateTo, actionParameter);
 		instance->unitStateChangePending = true;
@@ -73,7 +73,7 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParame
 bool StateManager::canStartState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter,
                                  State* stateFrom, State* toState) {
 	return stateFrom->validateTransition(stateTo)
-		&& unit->getDb()->possibleStates[cast(stateTo)]
+		&& unit->getDb()->possibleStates[castC(stateTo)]
 		&& toState->canStart(unit, actionParameter);
 }
 
@@ -82,7 +82,7 @@ bool StateManager::canChangeState(Unit* unit, UnitState stateTo) {
 }
 
 State* StateManager::getState(Unit* unit) {
-	return instance->states[cast(unit->getState())];
+	return instance->states[castC(unit->getState())];
 }
 
 void StateManager::execute(Unit* unit, float timeStamp) {
@@ -95,8 +95,8 @@ void StateManager::executeChange(const std::vector<Unit*>* units) {
 		for (const auto unit : *units) {
 			if (unit->hasStateChangePending()) {
 				const auto nextState = unit->getNextState();
-				State* stateFrom = instance->states[cast(unit->getState())];
-				State* toState = instance->states[cast(nextState)];
+				State* stateFrom = instance->states[castC(unit->getState())];
+				State* toState = instance->states[castC(nextState)];
 
 				if (canStartState(unit, nextState, unit->getNextActionParameter(), stateFrom, toState)) {
 					stateFrom->onEnd(unit);
@@ -229,24 +229,24 @@ void StateManager::dispose() {
 void StateManager::initOrders() const {
 	std::vector<char> ids;
 
-	ids.push_back(cast(UnitAction::GO));
-	ids.push_back(cast(UnitAction::DEAD));
-	ids.push_back(cast(UnitAction::STOP));
-	ids.push_back(cast(UnitAction::FOLLOW));
+	ids.push_back(castC(UnitAction::GO));
+	ids.push_back(castC(UnitAction::DEAD));
+	ids.push_back(castC(UnitAction::STOP));
+	ids.push_back(castC(UnitAction::FOLLOW));
 
 	for (auto unit : Game::getDatabase()->getUnits()) {
 		if (unit) {
 			unit->ordersIds.insert(unit->ordersIds.begin(), ids.begin(), ids.end());
 			if (unit->typeWorker) {
-				unit->ordersIds.push_back(cast(UnitAction::COLLECT));
+				unit->ordersIds.push_back(castC(UnitAction::COLLECT));
 			} else {
-				unit->ordersIds.push_back(cast(UnitAction::DEFEND));
+				unit->ordersIds.push_back(castC(UnitAction::DEFEND));
 			}
 			if (unit->typeCalvary) {
-				unit->ordersIds.push_back(cast(UnitAction::CHARGE));
+				unit->ordersIds.push_back(castC(UnitAction::CHARGE));
 			}
 			if (unit->typeMelee || unit->typeRange || unit->typeCalvary) {
-				unit->ordersIds.push_back(cast(UnitAction::ATTACK));
+				unit->ordersIds.push_back(castC(UnitAction::ATTACK));
 			}
 			unit->ordersIds.shrink_to_fit();
 			std::ranges::sort(unit->ordersIds);
@@ -259,29 +259,29 @@ void StateManager::initStates() const {
 	bool defaultPossibleStates[SIZE];
 	std::fill_n(defaultPossibleStates, SIZE, false);
 
-	defaultPossibleStates[cast(UnitState::GO)] = true;
-	defaultPossibleStates[cast(UnitState::MOVE)] = true;
-	defaultPossibleStates[cast(UnitState::FOLLOW)] = true;
-	defaultPossibleStates[cast(UnitState::STOP)] = true;
-	defaultPossibleStates[cast(UnitState::DEAD)] = true;
-	defaultPossibleStates[cast(UnitState::DISPOSE)] = true;
+	defaultPossibleStates[castC(UnitState::GO)] = true;
+	defaultPossibleStates[castC(UnitState::MOVE)] = true;
+	defaultPossibleStates[castC(UnitState::FOLLOW)] = true;
+	defaultPossibleStates[castC(UnitState::STOP)] = true;
+	defaultPossibleStates[castC(UnitState::DEAD)] = true;
+	defaultPossibleStates[castC(UnitState::DISPOSE)] = true;
 
 	for (const auto unit : Game::getDatabase()->getUnits()) {
 		if (unit) {
 			std::copy_n(defaultPossibleStates, SIZE, unit->possibleStates);
 			if (unit->typeWorker) {
-				unit->possibleStates[cast(UnitState::COLLECT)] = true;
+				unit->possibleStates[castC(UnitState::COLLECT)] = true;
 			} else {
-				unit->possibleStates[cast(UnitState::DEFEND)] = true;
+				unit->possibleStates[castC(UnitState::DEFEND)] = true;
 			}
 			if (unit->typeCalvary) {
-				unit->possibleStates[cast(UnitState::CHARGE)] = true;
+				unit->possibleStates[castC(UnitState::CHARGE)] = true;
 			}
 			if (unit->typeRange) {
-				unit->possibleStates[cast(UnitState::SHOT)] = true;
+				unit->possibleStates[castC(UnitState::SHOT)] = true;
 			}
 			if (unit->typeMelee || unit->typeRange || unit->typeCalvary) {
-				unit->possibleStates[cast(UnitState::ATTACK)] = true;
+				unit->possibleStates[castC(UnitState::ATTACK)] = true;
 			}
 		}
 	}

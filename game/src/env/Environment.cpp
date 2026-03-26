@@ -170,7 +170,7 @@ const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clic
 		return &Consts::EMPTY_PHYSICAL;
 	}
 
-	return grids[cast(clicked->getType())]->getArrayNeightSimilarAs(clicked, 20.f);
+	return grids[castC(clicked->getType())]->getArrayNeightSimilarAs(clicked, 20.f);
 }
 
 std::vector<Physical*>*
@@ -393,7 +393,7 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 	if (environmentDebugMode == EnvironmentDebugMode::MAIN_GRID) {
 		mainGrid.drawDebug(GridDebugType(index % magic_enum::enum_count<GridDebugType>()));
 	}
-	influenceManager.draw(ENV_TO_INF_MAP[cast(environmentDebugMode)], index);
+	influenceManager.draw(ENV_TO_INF_MAP[castC(environmentDebugMode)], index);
 }
 
 const std::vector<short>& Environment::getCloseIndexs(int center) const {

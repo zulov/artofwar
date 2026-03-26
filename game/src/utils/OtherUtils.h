@@ -1,6 +1,6 @@
 #pragma once
 template <typename T>
-char cast(T type) {
+char castC(T type) {
 	return static_cast<char>(type);
 }
 

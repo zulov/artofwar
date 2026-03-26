@@ -44,7 +44,7 @@ public:
 	std::string getValues(int precision) override;
 	unsigned short getMaxHpBarSize() const override;
 	float getHealthBarSize() const override;
-	char getLevelNum() override;
+	char getLevelNum() const override;
 	const Urho3D::IntVector2 getGridSize() const override;
 	void createDeploy();
 	void setDeploy(int cell);

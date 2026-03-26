@@ -160,7 +160,7 @@ bool ActionMaker::createBuilding(db_building* building, ParentBuildingType type)
 std::vector<db_building*> ActionMaker::getBuildingsInType(ParentBuildingType type) {
 	std::vector<db_building*> buildings;
 	for (auto dbBuilding : nation->buildings) {
-		if (dbBuilding->parentType[cast(type)]) {
+		if (dbBuilding->parentType[castC(type)]) {
 			buildings.push_back(dbBuilding);
 		}
 	}

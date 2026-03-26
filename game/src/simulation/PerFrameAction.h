@@ -106,7 +106,7 @@ private:
 
 public:
 	static bool get(PerFrameAction type, unsigned char frameNum, unsigned int second = 0) {
-		const auto val = data[cast(type)][frameNum];
+		const auto val = data[castC(type)][frameNum];
 		return val != 0 && (second+1) % val == 0;
 	}
 

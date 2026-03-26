@@ -76,9 +76,9 @@ void VisibilityManager::hideOrShow(VisibilityMap* current, Physical* physical) {
 	if (visibilityMode == VisibilityMode::ALL) {
 		type = VisibilityType::VISIBLE;
 	} else if (visibilityMode == VisibilityMode::ALL_PLAYERS) {
-		char val = cast(type);
+		char val = castC(type);
 		for (auto vis : visibilityPerPlayer) {
-			val |= cast(vis->getValueAt(pos.x_, pos.z_));
+			val |= castC(vis->getValueAt(pos.x_, pos.z_));
 		}
 		type = static_cast<VisibilityType>(val);
 	} else {
@@ -112,7 +112,7 @@ void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std:
 			if (visibilityMode == VisibilityMode::ALL) {
 				setToImage(data, parentIndexes, 0x00FFFFFF, true);
 			} else {
-				char combineTime = cast(VisibilityType::NONE);
+				char combineTime = castC(VisibilityType::NONE);
 				if (visibilityMode == VisibilityMode::ALL_PLAYERS) {
 					for (auto vis : visibilityPerPlayer) {
 						const char currentValue = vis->getValueAt(i);
@@ -164,5 +164,5 @@ int VisibilityManager::removeUnseen(char player, float* intersection) const {
 }
 
 void VisibilityManager::nextVisibilityType() {
-	visibilityMode = NEXT_VISIBILITY_MODES[cast(visibilityMode)];
+	visibilityMode = NEXT_VISIBILITY_MODES[castC(visibilityMode)];
 }

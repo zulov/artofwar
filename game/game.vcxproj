@@ -400,6 +400,7 @@
     <ClCompile Include="src\utils\CountUtils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\database\db_insert_defs.h" />
     <ClInclude Include="src\database\db_insert_utils.h" />
     <ClInclude Include="src\env\path\PathCache.h" />
     <ClInclude Include="src\objects\building\ParentBuildingType.h" />

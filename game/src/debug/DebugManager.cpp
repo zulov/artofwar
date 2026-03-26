@@ -9,7 +9,7 @@
 
 void DebugManager::change(Urho3D::Input* input, Simulation* simulation) {
 	if (input->GetKeyPress(Urho3D::KEY_F9)) {
-		simColorMode = nextColorMode[cast(simColorMode)];
+		simColorMode = nextColorMode[castC(simColorMode)];
 		simulation->changeColorMode(simColorMode);
 
 		Game::getLog()->Write(0, "Debug Mode Simulation change to "
@@ -17,7 +17,7 @@ void DebugManager::change(Urho3D::Input* input, Simulation* simulation) {
 	}
 
 	if (input->GetKeyPress(Urho3D::KEY_F10)) {
-		environmentDebugMode = nextEnvMode[cast(environmentDebugMode)];
+		environmentDebugMode = nextEnvMode[castC(environmentDebugMode)];
 		Game::getLog()->Write(2, "Debug Mode Environment change to "
 			 + Urho3D::String(magic_enum::enum_name(environmentDebugMode).data()));
 		environmentIndex = 0;

@@ -7,7 +7,7 @@
 State::State(std::initializer_list<UnitState> active) {
 	std::fill_n(nextStates, magic_enum::enum_count<UnitState>(), false);
 	for (auto state : active) {
-		nextStates[cast(state)] = true;
+		nextStates[castC(state)] = true;
 	}
 }
 
@@ -16,5 +16,5 @@ bool State::canStart(Unit* unit, const ActionParameter& parameter) {
 }
 
 bool State::validateTransition(UnitState stateTo) {
-	return nextStates[cast(stateTo)];
+	return nextStates[castC(stateTo)];
 }

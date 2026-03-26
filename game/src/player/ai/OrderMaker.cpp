@@ -41,14 +41,14 @@ OrderMaker::~OrderMaker() {
 
 UnitOrder* OrderMaker::unitOrderGo(std::vector<Unit*>& subArmy, Urho3D::Vector2& center) const {
 	if (subArmy.size() > 1) {
-		return new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::GO), center);
+		return new GroupOrder(subArmy, UnitActionType::ORDER, castC(UnitAction::GO), center);
 	}
 	return new IndividualOrder(subArmy.at(0), UnitAction::GO, center);
 }
 
 UnitOrder* OrderMaker::unitOrderCollect(std::vector<Unit*>& workers, Physical* closest) const {
 	if (workers.size() > 1) {
-		return new GroupOrder(workers, UnitActionType::ORDER, cast(UnitAction::COLLECT), closest);
+		return new GroupOrder(workers, UnitActionType::ORDER, castC(UnitAction::COLLECT), closest);
 	}
 	return new IndividualOrder(workers.at(0), UnitAction::COLLECT, closest);
 }
@@ -117,7 +117,7 @@ void OrderMaker::semiCloseAttack(const std::vector<Unit*>& subArmy, const std::v
 		if (closest) {
 			Game::getActionCenter()->addUnitAction(
 				new GroupOrder(subArmy, UnitActionType::ORDER,
-				               cast(UnitAction::ATTACK), closest));
+				               castC(UnitAction::ATTACK), closest));
 		}
 	}
 }

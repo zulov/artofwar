@@ -11,7 +11,7 @@ SimplePanel::SimplePanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style, Urho3
 	style(_style), styleName(std::move(styleName)), root(root) {
 	std::fill_n(visibleAt, magic_enum::enum_count<GameState>(), false);
 	for (auto a : active) {
-		visibleAt[cast(a)] = true;
+		visibleAt[castC(a)] = true;
 	}
 }
 
@@ -25,7 +25,7 @@ void SimplePanel::createWindow() {
 }
 
 void SimplePanel::updateStateVisibility(GameState state) {
-	setVisible(visibleAt[cast(state)]);
+	setVisible(visibleAt[castC(state)]);
 }
 
 void SimplePanel::setVisible(bool enable) {

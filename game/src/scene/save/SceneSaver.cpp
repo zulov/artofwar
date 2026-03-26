@@ -1,6 +1,7 @@
 #include "SceneSaver.h"
 
 #include "SQLConsts.h"
+#include "database/db_insert_defs.h"
 #include "database/db_insert_utils.h"
 #include "database/db_utils.h"
 #include "objects/building/Building.h"
@@ -66,15 +67,13 @@ void SceneSaver::saveUnits(std::vector<Unit*>* units) {
 	savingProgress.inc("saving units");
 	createTable(SQLConsts::UNIT_COL);
 	if (!units || units->empty()) {return;}
-	const char* sql = "INSERT INTO units (id_db, hp_coef, uid, player, level, position_x, position_z, state, velocity_x, velocity_z) "
-				   "VALUES (:id_db, :hp_coef, :uid, :player, :level, :pos_x, :pos_z, :state, :vel_x, :vel_z);";
+	constexpr auto sql = make_insert_sql("units", unit_columns);
 
     executeBatch(database, sql, [&](sqlite3_stmt* stmt) {
-		ParamMap p( stmt,
-				{":id_db", ":hp_coef", ":uid", ":player", ":level", ":pos_x", ":pos_z", ":state", ":vel_x", ":vel_z"});
-
-		for (auto u : *units) {
-			bindRow(stmt, p, *u);
+		//ParamMap param(stmt, {":id_db", ":hp_coef", ":uid", ":player", ":level", ":pos_x", ":pos_z", ":state", ":vel_x", ":vel_z"});
+		ParamMap param(stmt, prefix_with_colon(unit_columns));
+		for (const auto u : *units) {
+			bindRow(stmt, param,precision, u);
 			stepAndReset(stmt, sql);
 		}
 	});

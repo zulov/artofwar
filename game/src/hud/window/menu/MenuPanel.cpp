@@ -297,7 +297,7 @@ void MenuPanel::resetRestButtons(int from) const {
 }
 
 void MenuPanel::updateButtons(SelectedInfo* selectedInfo) {
-	setChecks(cast(subMode));
+	setChecks(castC(subMode));
 	switch (mode) {
 	case LeftMenuMode::BUILDING:
 		return buildingMenu();
@@ -349,9 +349,9 @@ void MenuPanel::basicResource(SelectedInfo* selectedInfo) {
 	int k = 0;
 	const auto l10n = Game::getLocalization();
 
-	setNext(k, "resource_action/get_worker.png", cast(ResourceActionType::COLLECT),
+	setNext(k, "resource_action/get_worker.png", castC(ResourceActionType::COLLECT),
 	        ActionType::RESOURCE, l10n->Get("res_act_get_worker"));
-	setNext(k, "resource_action/remove_workers.png", cast(ResourceActionType::CANCEL),
+	setNext(k, "resource_action/remove_workers.png", castC(ResourceActionType::CANCEL),
 	        ActionType::RESOURCE, l10n->Get("res_act_cancel_worker"));
 	maxPage = 1;
 	resetRestButtons(k);

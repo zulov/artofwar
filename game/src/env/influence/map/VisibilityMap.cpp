@@ -114,14 +114,14 @@ float VisibilityMap::getValueAsPercent(const int index) const {
 
 float VisibilityMap::getValueAt(int index) const {
 	assert(index < getResolution() * getResolution());
-	return cast(values[index]);
+	return castC(values[index]);
 }
 
 void VisibilityMap::computeMinMax() {
 	if (!minMaxInited) {
 		const auto [minPtr, maxPtr] = std::minmax_element(values, values + arraySize);
-		min = cast(*minPtr);
-		max = cast(*maxPtr);
+		min = castC(*minPtr);
+		max = castC(*maxPtr);
 		minIdx = std::distance(values, minPtr);
 		maxIdx = std::distance(values, maxPtr);
 		minMaxInited = true;

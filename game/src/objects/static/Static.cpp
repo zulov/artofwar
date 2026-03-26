@@ -183,6 +183,6 @@ std::string Static::getValues(int precision) {
 	return Physical::getValues(precision)
 		+ std::to_string(cordsCell.x_) + ","
 		+ std::to_string(cordsCell.y_) + ","
-		+ std::to_string(cast(state)) + ","
-		+ std::to_string(cast(nextState));
+		+ std::to_string(castC(state)) + ","
+		+ std::to_string(castC(nextState));
 }

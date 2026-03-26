@@ -207,14 +207,14 @@ void Controls::leftHold(MouseHeld& held) {
 }
 
 void Controls::rightHold(MouseHeld& held) const {
-	GroupOrder* first = new GroupOrder(selected, UnitActionType::ORDER, cast(UnitAction::GO),
+	GroupOrder* first = new GroupOrder(selected, UnitActionType::ORDER, castC(UnitAction::GO),
 	                                   held.firstAs2D());
 	GroupOrder* second;
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
-		second = new GroupOrder(selected, UnitActionType::ORDER, cast(UnitAction::GO),
+		second = new GroupOrder(selected, UnitActionType::ORDER, castC(UnitAction::GO),
 		                        held.secondAs2D(), true);
 	} else {
-		second = new GroupOrder(selected, UnitActionType::ORDER, cast(UnitAction::CHARGE),
+		second = new GroupOrder(selected, UnitActionType::ORDER, castC(UnitAction::CHARGE),
 		                        held.first2Second(), true); //TODO buf append nie dzia³a
 	}
 

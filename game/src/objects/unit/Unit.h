@@ -6,6 +6,7 @@
 
 #include "ActionParameter.h"
 #include "aim/Aims.h"
+#include "database/db_insert_utils.h"
 #include "objects/ObjectEnums.h"
 #include "objects/Physical.h"
 #include "state/UnitState.h"
@@ -49,6 +50,8 @@ class Unit : public Physical {
 	friend class DisposeState;
 	friend class ShotState;
 	friend class MoveState;
+	friend void bindRow<Unit>(sqlite3_stmt*, const ParamMap&, int, const Unit*);
+
 public:
 	Unit(Urho3D::Vector3& _position, short dbId, char playerId, char teamId, char level, UId uId);
 	~Unit() override;
@@ -131,7 +134,7 @@ public:
 
 	unsigned short getMaxHpBarSize() const override;
 	bool isAlive() const override;
-	char getLevelNum() override;
+	char getLevelNum() const override;
 	void clean();
 
 	float getSightRadius() const override;

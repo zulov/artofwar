@@ -538,6 +538,7 @@
     <ClInclude Include="src\player\ai\PossessionMetric.h" />
     <ClInclude Include="src\utils\PrintUtils.h" />
     <ClInclude Include="src\database\db_insert_utils.h" />
+    <ClInclude Include="src\database\db_insert_defs.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

@@ -60,7 +60,7 @@ void Physical::load(dbload_physical* dbloadPhysical) {
 	hp = dbloadPhysical->hp;
 }
 
-char Physical::getLevelNum() {
+char Physical::getLevelNum() const {
 	return -1;
 }
 

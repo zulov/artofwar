@@ -52,7 +52,7 @@ float Building::getHealthBarSize() const {
 	return getMaxHpBarSize() * queue.first()->getProgress();
 }
 
-char Building::getLevelNum() {
+char Building::getLevelNum() const {
 	return dbLevel->level;
 }
 

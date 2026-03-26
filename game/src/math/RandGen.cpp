@@ -45,14 +45,14 @@ void RandGen::resetIndexes() {
 }
 
 float RandGen::nextRand(RandFloatType type, float max) {
-	const auto id = cast(type);
+	const auto id = castC(type);
 	instance->indexesFloat[id]++;
 	instance->indexesFloat[id] = instance->indexesFloat[id] % RAND_TAB_SIZE;
 	return instance->dataFloat[instance->indexesFloat[id]] * max;
 }
 
 int RandGen::nextRand(RandIntType type, int max) {
-	const auto id = cast(type);
+	const auto id = castC(type);
 	instance->indexesInt[id]++;
 	instance->indexesInt[id] = instance->indexesInt[id] % RAND_TAB_SIZE;
 	return instance->dataInt[instance->indexesInt[id]] % max;

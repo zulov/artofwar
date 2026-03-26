@@ -382,7 +382,7 @@ void Unit::load(dbload_unit* unit) {
 	velocity = {unit->vel_x, unit->vel_z};
 }
 
-char Unit::getLevelNum() {
+char Unit::getLevelNum() const{
 	return dbLevel->level;
 }
 
@@ -435,33 +435,6 @@ ActionParameter& Unit::getNextActionParameter() {
 
 bool Unit::hasStateChangePending() const {
 	return stateChangePending;
-}
-
-template <>
-void bindRow<Unit>(sqlite3_stmt* stmt, const ParamMap& p, const Unit& u) {
-	bindValue(stmt, p.map.at(":id_db"), u.getIdDb());
-	bindValue(stmt, p.map.at(":hp_coef"), u.getHpCoef());
-	bindValue(stmt, p.map.at(":uid"), u.getUid());
-	bindValue(stmt, p.map.at(":player"), u.getPlayer());
-	bindValue(stmt, p.map.at(":level"), u.getLevel());
-	bindValue(stmt, p.map.at(":pos_x"), u.getPositionX());
-	bindValue(stmt, p.map.at(":pos_z"), u.getPositionZ());
-	bindValue(stmt, p.map.at(":state"), u.getState());
-	bindValue(stmt, p.map.at(":vel_x"), u.getVelocityX());
-	bindValue(stmt, p.map.at(":vel_z"), u.getVelocityZ());
-}
-std::string Unit::getValues(int precision) {
-	const int position_x = position.x_ * precision;
-	const int position_z = position.z_ * precision;
-	const int state = static_cast<int>(this->state);
-	const int velocity_x = velocity.x_ * precision;
-	const int velocity_z = velocity.y_ * precision;
-	return Physical::getValues(precision)
-		+ std::to_string(position_x) + "," +
-		std::to_string(position_z) + "," +
-		std::to_string(state) + "," +
-		std::to_string(velocity_x) + "," +
-		std::to_string(velocity_z);
 }
 
 void Unit::applyForce(float timeStep) {

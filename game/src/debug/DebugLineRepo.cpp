@@ -11,7 +11,7 @@ std::vector<Urho3D::CustomGeometry*> DebugLineRepo::geometry[];
 void DebugLineRepo::init(DebugLineType type) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
-			auto& geom = geometry[cast(type)];
+			auto& geom = geometry[castC(type)];
 			if (geom.empty()) {
 				geom.push_back(Game::getScene()->CreateChild()
 				                               ->GetOrCreateComponent<Urho3D::CustomGeometry>());
@@ -23,7 +23,7 @@ void DebugLineRepo::init(DebugLineType type) {
 void DebugLineRepo::init(DebugLineType type, short batches) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
-			auto& geom = geometry[cast(type)];
+			auto& geom = geometry[castC(type)];
 			if (geom.empty()) {
 				for (int i = 0; i < batches; ++i) {
 					geom.push_back(Game::getScene()->CreateChild()
@@ -55,7 +55,7 @@ DebugLineRepo::~DebugLineRepo() {
 void DebugLineRepo::commit(DebugLineType type, short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
-			auto* geom = geometry[cast(type)].at(batch);
+			auto* geom = geometry[castC(type)].at(batch);
 			switch (type) {
 			case DebugLineType::INFLUENCE:
 			case DebugLineType::MAIN_GRID:
@@ -76,7 +76,7 @@ void DebugLineRepo::beginGeometry(DebugLineType type, short batch) {
 				                           ? Urho3D::PrimitiveType::TRIANGLE_LIST
 				                           : Urho3D::PrimitiveType::LINE_LIST;
 
-			geometry[cast(type)].at(batch)->BeginGeometry(0, primitiveType);
+			geometry[castC(type)].at(batch)->BeginGeometry(0, primitiveType);
 		}
 	}
 }
@@ -84,7 +84,7 @@ void DebugLineRepo::beginGeometry(DebugLineType type, short batch) {
 void DebugLineRepo::clear(DebugLineType type, short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
-			auto* geom = geometry[cast(type)].at(batch);
+			auto* geom = geometry[castC(type)].at(batch);
 			geom->Clear();
 			geom->SetNumGeometries(1);
 		}
@@ -95,7 +95,7 @@ void DebugLineRepo::drawLine(DebugLineType type, const Urho3D::Vector3& first, c
                              const Urho3D::Color& color, short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
-			auto* geom = geometry[cast(type)].at(batch);
+			auto* geom = geometry[castC(type)].at(batch);
 			geom->DefineVertex(first);
 			geom->DefineColor(color);
 			geom->DefineVertex(second);
@@ -109,7 +109,7 @@ void DebugLineRepo::drawTriangle(DebugLineType type, const Urho3D::Vector3& firs
                                  const Urho3D::Vector3& third, const Urho3D::Color& color, short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
-			auto* geom = geometry[cast(type)].at(batch);
+			auto* geom = geometry[castC(type)].at(batch);
 			geom->DefineVertex(first);
 			geom->DefineColor(color);
 			geom->DefineVertex(second);

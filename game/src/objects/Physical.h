@@ -91,7 +91,7 @@ public:
 	virtual float getSightRadius() const { return -1.f; }
 	virtual Urho3D::String getInfo() const = 0;
 
-	virtual char getLevelNum();
+	virtual char getLevelNum() const;
 
 	virtual void addValues(std::span<float> vals) const { }
 
@@ -109,6 +109,7 @@ public:
 	void setIndexInInfluence(int index);
 	Urho3D::Node* getNode() const { return node; }
 	float getHp() const { return hp; }
+	unsigned getUid() const { return uId.v; }
 
 protected:
 	virtual void setModelData(float modelHeight) const =0;
