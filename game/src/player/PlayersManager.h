@@ -21,7 +21,6 @@ public:
 	Player* getPlayer(short i);
 	std::vector<Player*>& getTeam(short i);
 	void changeActive(short i);
-	void save(SceneSaver& saver);
 	void update(FrameInfo* frameInfo);
 	char getActivePlayerID() const;
 	static char getEnemyIdFor(char player);

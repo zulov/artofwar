@@ -19,15 +19,17 @@ public:
 	~SceneSaver() = default;
 
 	void createSave(const Urho3D::String& fileName, std::vector<Unit*>* units, std::vector<Building*>* buildings,
-					std::vector<ResourceEntity*>* resources, std::vector<Player*>& players, int mapId, int size);
+	                const std::vector<ResourceEntity*>* resources, const std::vector<Player*>& players, int mapId,
+	                int size);
+
 private:
 	void createDatabase(const Urho3D::String& fileName);
 	void executeInsert(std::string& sql) const;
 	void createTable(const std::string& sql) const;
-	void saveUnits(std::vector<Unit*>* units);
-	void saveBuildings(std::vector<Building*>* buildings);
-	void saveResources(std::vector<ResourceEntity*>* resources);
-	void savePlayers(std::vector<Player*>& players);
+	void saveUnits(const std::vector<Unit*>* units);
+	void saveBuildings(const std::vector<Building*>* buildings);
+	void saveResources(const std::vector<ResourceEntity*>* resources);
+	void savePlayers(const std::vector<Player*>& players);
 	void saveConfig(int mapId, int size);
 	void close();
 

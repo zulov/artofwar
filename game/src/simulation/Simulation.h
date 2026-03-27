@@ -44,9 +44,11 @@ public:
 	void initScene(SceneLoader& loader) const;
 	void initScene(NewGameForm* form) const;
 
-	void save(SceneSaver& saver) const;
 	void changeCoef(int i, int wheel);
 	void changeColorMode(SimColorMode _colorMode);
+	const std::vector<Unit*>* getUnits()const { return units; }
+	const std::vector<Building*>* getBuildings() const { return buildings; }
+	const std::vector<ResourceEntity*>* getResources() const { return resources; }
 
 private:
 	void aiPlayers() const;

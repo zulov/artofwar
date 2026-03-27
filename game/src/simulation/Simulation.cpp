@@ -18,7 +18,6 @@
 #include "player/ai/ActionCenter.h"
 #include "scene/load/dbload_container.h"
 #include "scene/load/SceneLoader.h"
-#include "scene/save/SceneSaver.h"
 #include "simulation/formation/FormationManager.h"
 #include "PerFrameAction.h"
 #include "objects/projectile/ProjectileManager.h"
@@ -265,12 +264,6 @@ void Simulation::updateQueues() const {
 			delete done;
 		}
 	}
-}
-
-void Simulation::save(SceneSaver& saver) const {
-	saver.saveUnits(units);
-	saver.saveBuildings(buildings);
-	saver.saveResources(resources);
 }
 
 void Simulation::changeCoef(int i, int wheel) {

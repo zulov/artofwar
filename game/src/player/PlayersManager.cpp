@@ -60,10 +60,6 @@ void PlayersManager::changeActive(short i) {
 	activePlayer = allPlayers[i];
 }
 
-void PlayersManager::save(SceneSaver& saver) {
-	saver.savePlayers(allPlayers);
-}
-
 void PlayersManager::update(FrameInfo* frameInfo) {
 	for (const auto player : allPlayers) {
 		player->updatePossession();

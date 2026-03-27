@@ -29,9 +29,9 @@ class ParamMap {
 public:
 	std::unordered_map<std::string, int> map;
 
-	ParamMap(sqlite3_stmt* stmt, std::initializer_list<const char*> names) {
+	ParamMap(sqlite3_stmt* stmt, const std::vector<std::string> &names) {
 		for (auto name : names) {
-			map[name] = sqlite3_bind_parameter_index(stmt, name);
+			map[name] = sqlite3_bind_parameter_index(stmt, name.c_str());
 		}
 	}
 
@@ -56,64 +56,36 @@ inline void bindS(sqlite3_stmt* stmt, int idx, const std::string& value) {
 template <typename T>
 void bindRow(sqlite3_stmt* stmt, const ParamMap& p, int precision, const T* x);
 
-#include <array>
+inline std::string make_insert_sql(const std::string& table, const std::vector<std::string>& cols) {
+	std::string sql = "INSERT INTO " + table + " (";
 
-template <size_t N, size_t BufSize = 512>
-constexpr auto make_insert_sql(const char* table, const std::array<const char*, N>& cols) {
-	std::array<char, BufSize> out{};
-	size_t pos = 0;
-
-	auto append = [&](const char* s) {
-		while (*s)
-			out[pos++] = *s++;
-	};
-
-	append("INSERT INTO ");
-	append(table);
-	append(" (");
-
-	// columns
-	for (size_t i = 0; i < N; ++i) {
-		append(cols[i]);
-		if (i + 1 < N)
-			append(", ");
+	for (size_t i = 0; i < cols.size(); ++i) {
+		sql += cols[i];
+		if (i + 1 < cols.size()) {
+			sql += ", ";	
+		}
 	}
 
-	append(") VALUES (");
+	sql += ") VALUES (";
 
-	// params (:col)
-	for (size_t i = 0; i < N; ++i) {
-		out[pos++] = ':';
-		append(cols[i]);
-		if (i + 1 < N)
-			append(", ");
+	for (size_t i = 0; i < cols.size(); ++i) {
+		sql += ":" + cols[i];
+		if (i + 1 < cols.size()) {
+			sql += ", ";
+		}
 	}
 
-	append(");");
-	out[pos] = '\0';
-
-	return out;
+	sql += ");";
+	return sql;
 }
 
-template <size_t N>
-constexpr auto prefix_with_colon(const std::array<const char*, N>& cols) {
-	std::array<std::array<char, 64>, N> storage{}; // holds ":column"
-	std::array<const char*, N> result{};
+inline std::vector<std::string> prefix_with_colon(const std::vector<std::string>& cols) {
+	std::vector<std::string> result;
+	result.reserve(cols.size());
 
-	for (size_t i = 0; i < N; ++i) {
-		auto& buf = storage[i];
-		size_t pos = 0;
-
-		buf[pos++] = ':';
-
-		const char* s = cols[i];
-		while (*s) {
-			buf[pos++] = *s++;
-		}
-
-		buf[pos] = '\0';
-		result[i] = buf.data();
+	for (const auto& c : cols) {
+		result.push_back(":" + c);
 	}
 
-	return std::pair{storage, result};
+	return result;
 }
