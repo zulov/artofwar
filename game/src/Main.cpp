@@ -314,12 +314,9 @@ void Main::InitLocalizationSystem() const {
 }
 
 void Main::save(const Urho3D::String& name) {
-	saver.createSave(name);
-	int mapId = 1; //TODO id mapy wpisac
-	saver.saveConfig(mapId, Game::getEnvironment()->getResolution());
-	simulation->save(saver);
-	Game::getPlayersMan()->save(saver);
-	saver.close();
+	// TODO id mapy wpisac
+	saver.createSave(name, simulation->getUnits(), simulation->getBuildings(), simulation->getResources(),
+					 Game::getPlayersMan()->getAllPlayers(), 1, Game::getEnvironment()->getResolution());	
 }
 
 void Main::createSimulation() {

@@ -35,8 +35,8 @@ void SceneSaver::createDatabase(const Urho3D::String& fileName) {
 	}
 }
 
-void SceneSaver::createSave(const Urho3D::String& fileName, std::vector<Unit*>* units,
-                            std::vector<Building*>* buildings, const std::vector<ResourceEntity*>* resources,
+void SceneSaver::createSave(const Urho3D::String& fileName, const std::vector<Unit*>* units,
+							const std::vector<Building*>* buildings, const std::vector<ResourceEntity*>* resources,
                             const std::vector<Player*>& players, int mapId, int size) {
 	savingProgress.reset("create database");
 
