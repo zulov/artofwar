@@ -20,7 +20,6 @@
 #include "simulation/formation/FormationManager.h"
 #include "state/StateManager.h"
 #include "camera/CameraInfo.h"
-#include "database/db_insert_utils.h"
 #include "math/MathUtils.h"
 #include "utils/consts.h"
 #include "utils/Flags.h"

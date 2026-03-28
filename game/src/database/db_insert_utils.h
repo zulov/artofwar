@@ -35,22 +35,41 @@ public:
 		}
 	}
 
-	int operator[](const std::string& key) const { return map.at(key); }
+	int operator[](const std::string& key) const { 
+		const auto it = map.find(key);
+		return it != map.end() ? it->second : -1;
+	}
 };
 
 
 inline void bindU(sqlite3_stmt* stmt, int idx, unsigned value) {
-	sqlite3_bind_int64(stmt, idx, static_cast<sqlite3_int64>(value));
+	if (idx > 0) {
+		sqlite3_bind_int64(stmt, idx, static_cast<sqlite3_int64>(value));
+	}
 }
 
-inline void bindI(sqlite3_stmt* stmt, int idx, int value) { sqlite3_bind_int(stmt, idx, value); }
+inline void bindI(sqlite3_stmt* stmt, int idx, int value) {
+	if (idx > 0) {
+		sqlite3_bind_int(stmt, idx, value);
+	}
+}
 
-inline void bindB(sqlite3_stmt* stmt, int idx, char value) { sqlite3_bind_int(stmt, idx, value); }
+inline void bindB(sqlite3_stmt * stmt, int idx, char value) {
+	if (idx > 0) {
+		sqlite3_bind_int(stmt, idx, value);
+	}
+}
 
-inline void bindF(sqlite3_stmt* stmt, int idx, float value) { sqlite3_bind_double(stmt, idx, value); }
+inline void bindF(sqlite3_stmt * stmt, int idx, float value) {
+	if (idx > 0) {
+		sqlite3_bind_double(stmt, idx, value);
+	}
+}
 
 inline void bindS(sqlite3_stmt* stmt, int idx, const std::string& value) {
-	sqlite3_bind_text(stmt, idx, value.c_str(), -1, SQLITE_TRANSIENT);
+	if (idx > 0) {
+		sqlite3_bind_text(stmt, idx, value.c_str(), -1, SQLITE_TRANSIENT);
+	}
 }
 
 template <typename T>

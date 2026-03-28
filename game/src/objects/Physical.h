@@ -9,6 +9,7 @@
 #include "database/db_other_struct.h"
 #include "objects/ObjectEnums.h"
 #include "Urho3D/Math/Vector3.h"
+#include "database/db_insert_utils.h"
 
 
 enum class VisibilityType : char;
@@ -23,6 +24,8 @@ struct dbload_physical;
 
 class Physical {
 	friend class CreationCommand;
+	friend void bindRow<Physical>(sqlite3_stmt*, const ParamMap&, int, const Physical*);
+
 public:
 	explicit Physical(Urho3D::Vector3& _position, UId uId);
 	virtual ~Physical();

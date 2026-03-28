@@ -16,11 +16,11 @@ SceneSaver::SceneSaver(int precision) :
 	//TODO zapisywanie powinno byc tylko miedzy klatkami
 }
 
-void SceneSaver::createTable(const std::string& sql) const {
-	auto createSql = SQLConsts::CREATE_TABLE + sql;
+void SceneSaver::createTable(const std::string& name, const std::string& sql) {
+	savingProgress.inc(std::format("saving {}", name));
+	auto createSql = SQLConsts::CREATE_TABLE + name + sql;
 	const char* charSql = createSql.c_str();
 
-	std::cout << (createSql);
 	char* error;
 	const int rc = sqlite3_exec(database, charSql, nullptr, nullptr, &error);
 	ifError(rc, error, createSql);
@@ -30,7 +30,7 @@ void SceneSaver::createDatabase(const Urho3D::String& fileName) {
 	database = nullptr;
 	std::string name = std::string("saves/") + fileName.CString() + ".db";
 	if (const int rc = sqlite3_open(name.c_str(), &database)) {
-		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
+		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << "\n\n" ;
 		sqlite3_close_v2(database);
 	}
 }
@@ -49,24 +49,12 @@ void SceneSaver::createSave(const Urho3D::String& fileName, const std::vector<Un
 	saveResources(resources);
 	savePlayers(players);
 	saveConfig(mapId, size);
-
 	sqlite3_exec(database, "COMMIT;", nullptr, nullptr, nullptr);
-}
-
-void SceneSaver::executeInsert(std::string& sql) const {
-	sql[sql.size() - 1] = ';';
-	sqlite3_stmt* stmt;
-	const int rc = sqlite3_prepare(database, sql.c_str(), -1, &stmt, NULL);
-	ifError(rc, NULL, sql);
-	const int rc1 = sqlite3_step(stmt);
-	ifError(rc1, NULL, sql);
-	const int rc2 = sqlite3_finalize(stmt);
-	ifError(rc2, NULL, sql);
+	close();
 }
 
 void SceneSaver::saveUnits(const std::vector<Unit*>* units) {
-	savingProgress.inc("saving units");
-	createTable(SQLConsts::UNIT_COL);
+	createTable(SQLConsts::UNIT_NAME, SQLConsts::UNIT_COL);
 
 	if (!units || units->empty()) { return; }
 
@@ -84,8 +72,7 @@ void SceneSaver::saveUnits(const std::vector<Unit*>* units) {
 }
 
 void SceneSaver::saveBuildings(const std::vector<Building*>* buildings) {
-	savingProgress.inc("saving buildings");
-	createTable(SQLConsts::BUILDING_COL);
+	createTable(SQLConsts::BUILDING_NAME, SQLConsts::BUILDING_COL);
 
 	if (!buildings || buildings->empty()) { return; }
 
@@ -104,8 +91,7 @@ void SceneSaver::saveBuildings(const std::vector<Building*>* buildings) {
 }
 
 void SceneSaver::saveResources(const std::vector<ResourceEntity*>* resources) {
-	savingProgress.inc("saving resources");
-	createTable(SQLConsts::RESOURCE_COL);
+	createTable(SQLConsts::RESOURCE_NAME, SQLConsts::RESOURCE_COL);
 
 	if (!resources || resources->empty()) { return; }
 
@@ -123,8 +109,7 @@ void SceneSaver::saveResources(const std::vector<ResourceEntity*>* resources) {
 }
 
 void SceneSaver::savePlayers(const std::vector<Player*>& players) {
-	savingProgress.inc("saving players");
-	createTable(SQLConsts::PLAYER_COL);
+	createTable(SQLConsts::PLAYER_NAME, SQLConsts::PLAYER_COL);
 
 	if (players.empty()) { return; }
 
@@ -142,8 +127,7 @@ void SceneSaver::savePlayers(const std::vector<Player*>& players) {
 }
 
 void SceneSaver::saveConfig(int mapId, int size) {
-	savingProgress.inc("saving config");
-	createTable(SQLConsts::CONFIG_COL);
+	createTable(SQLConsts::CONFIG_NAME, SQLConsts::CONFIG_COL);
 
 	const auto sql = make_insert_sql("config", config_columns).c_str();
 	const auto params = prefix_with_colon(config_columns);

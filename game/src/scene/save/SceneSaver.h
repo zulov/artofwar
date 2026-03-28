@@ -24,8 +24,7 @@ public:
 
 private:
 	void createDatabase(const Urho3D::String& fileName);
-	void executeInsert(std::string& sql) const;
-	void createTable(const std::string& sql) const;
+	void createTable(const std::string& name, const std::string& sql);
 	void saveUnits(const std::vector<Unit*>* units);
 	void saveBuildings(const std::vector<Building*>* buildings);
 	void saveResources(const std::vector<ResourceEntity*>* resources);

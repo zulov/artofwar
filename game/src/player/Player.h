@@ -3,6 +3,8 @@
 #include "objects/queue/QueueManager.h"
 #include "ai/ActionMaker.h"
 #include "ai/OrderMaker.h"
+#include "database/db_insert_utils.h"
+
 
 class Possession;
 class Resources;
@@ -12,6 +14,8 @@ enum class ActionType : char;
 class Player {
 	friend class ActionMaker;
 	friend class OrderMaker;
+	friend void bindRow<Player>(sqlite3_stmt*, const ParamMap&, int, const Player*);
+
 public:
 	Player(int nationId, char team, char id, int color, Urho3D::String name, bool active, unsigned currentBuildingUId, unsigned currentUnitUId);
 	~Player();
