@@ -64,18 +64,6 @@ char Physical::getLevelNum() const {
 	return -1;
 }
 
-std::string Physical::getValues(int precision) {
-	int hp_coef = hp * precision;
-	auto v = std::to_string(getDbId()) + ","
-		+ std::to_string(hp_coef) + ","
-		+ std::to_string(uId.v) + ",";
-	if (getType() == ObjectType::RESOURCE) {
-		return v;
-	}
-	return v + std::to_string(player) + ","
-		+ std::to_string(getLevelNum()) + ",";
-}
-
 int Physical::belowCloseLimit() const {
 	return Urho3D::Max(getMaxCloseUsers() - closeUsers, 0);
 }

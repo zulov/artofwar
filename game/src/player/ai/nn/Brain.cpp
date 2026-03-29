@@ -41,8 +41,7 @@ const std::span<float> Brain::decide(std::span<const float> data) {
 	bool sameInput = allLayers.front()->setInput(data);
 	if (!sameInput) {
 		for (int i = 1; i < allLayers.size(); i++) {
-			allLayers.at(i)
-			         ->setValues(allLayers.at(i - 1)->getValues());
+			allLayers.at(i)->setValues(allLayers.at(i - 1)->getValues());
 		}
 	}
 	const auto& result = allLayers.back()->getValues();

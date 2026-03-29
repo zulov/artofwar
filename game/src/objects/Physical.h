@@ -54,7 +54,6 @@ public:
 
 	virtual void setOccupiedIndexSlot(char index, bool value) { }
 
-	virtual std::string getValues(int precision);
 	virtual bool isUsable() const { return isAlive(); }
 
 	virtual int belowCloseLimit() const;

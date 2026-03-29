@@ -28,8 +28,6 @@ public:
 	Urho3D::String getInfo() const override;
 	const Urho3D::String& getName() const override;
 
-	std::string getValues(int precision) override;
-
 	void action(ResourceActionType type, char player);
 
 	bool canUse(int index) const override;

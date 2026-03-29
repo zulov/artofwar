@@ -30,22 +30,6 @@ Player::~Player() {
 	delete possession;
 }
 
-std::string Player::getValues(int precision) const {
-	auto resVals = resources->getValues();
-	return std::to_string(id) + ","
-		+ std::to_string(active) + ","
-		+ std::to_string(team) + ","
-		+ std::to_string(dbNation->id) + ",'"
-		+ name.CString() + "',"
-		+ std::to_string(color) + ","
-		+ std::to_string(currentBuildingUId) + ","
-		+ std::to_string(currentUnitUId) + ","
-		+ std::to_string((int)(resVals[0] * precision)) + ","
-		+ std::to_string((int)(resVals[1] * precision)) + ","
-		+ std::to_string((int)(resVals[2] * precision)) + ","
-		+ std::to_string((int)(resVals[3] * precision));
-}
-
 void Player::setResourceAmount(float food, float wood, float stone, float gold) const {
 	resources->setValue(food, wood, stone, gold);
 }
@@ -75,7 +59,7 @@ char Player::upgradeLevel(QueueActionType type, int id) const {
 	return -1;
 }
 
-short Player::getNation() const { return dbNation->id; }
+unsigned char Player::getNation() const { return dbNation->id; }
 
 db_unit_level* Player::getLevelForUnit(short id) const {
 	return Game::getDatabase()->getUnit(id)->getLevel(unitLevels[id]).value();

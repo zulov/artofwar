@@ -6,6 +6,7 @@
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
 #include "player/Player.h"
+#include "player/Resources.h"
 #include "utils/OtherUtils.h"
 
 template <>
@@ -13,8 +14,19 @@ void bindRow<Physical>(sqlite3_stmt* stmt, const ParamMap& p, int precision, con
 	bindI(stmt, p[":id_db"], x->getDbId());
 	bindI(stmt, p[":hp_coef"], (int)(x->getHp() * precision));
 	bindU(stmt, p[":uid"], x->getUid());
-	bindB(stmt, p[":player"], x->getPlayer());
-	bindB(stmt, p[":level"], x->getLevelNum());
+	if (x->getType() != ObjectType::RESOURCE) {
+		bindC(stmt, p[":player"], x->getPlayer());
+		bindC(stmt, p[":level"], x->getLevelNum());
+	}
+}
+
+template <>
+void bindRow<Static>(sqlite3_stmt* stmt, const ParamMap& p, int precision, const Static* x) {
+	const auto cordsCell = Game::getEnvironment()->getCords(x->indexInMainGrid);
+	bindI(stmt, p[":bucket_x"], cordsCell.x_);
+	bindI(stmt, p[":bucket_y"], cordsCell.y_);
+	bindI(stmt, p[":state"], castC(x->state));
+	bindI(stmt, p[":next_state"], castC(x->nextState));
 }
 
 const std::vector<std::string> unit_columns =
@@ -26,7 +38,7 @@ void bindRow<Unit>(sqlite3_stmt* stmt, const ParamMap& p, int precision, const U
 
 	bindI(stmt, p[":position_x"], x->position.x_ * precision);
 	bindI(stmt, p[":position_z"], x->position.z_ * precision);
-	bindB(stmt, p[":state"], castC(x->getState()));
+	bindC(stmt, p[":state"], castC(x->getState()));
 	bindI(stmt, p[":velocity_x"], x->velocity.x_ * precision);
 	bindI(stmt, p[":velocity_z"], x->velocity.y_ * precision);
 }
@@ -36,17 +48,10 @@ const std::vector<std::string> building_columns =
 
 template <>
 void bindRow<Building>(sqlite3_stmt* stmt, const ParamMap& p, int precision, const Building* x) {
-	const auto cordsCell = Game::getEnvironment()->getCords(x->indexInMainGrid);
-	bindI(stmt, p[":id_db"], x->getIdDb());
-	bindI(stmt, p[":hp_coef"], x->getHpCoef());
-	bindI(stmt, p[":uid"], x->getUid());
-	bindI(stmt, p[":player"], x->getPlayer());
-	bindI(stmt, p[":level"], x->getLevel());
-	bindI(stmt, p[":bucket_x"], cordsCell.x_);
-	bindI(stmt, p[":bucket_y"], cordsCell.y_);
-	bindI(stmt, p[":state"], castC(x->state));
-	bindI(stmt, p[":next_state"], castC(x->nextState))
-	bindI(stmt, p[":deploy_Idx"], x->deployIndex)
+	bindRow(stmt, p, precision, static_cast<const Physical*>(x));
+	bindRow(stmt, p, precision, static_cast<const Static*>(x));
+
+	bindI(stmt, p[":deploy_Idx"], x->deployIndex);
 }
 
 const std::vector<std::string> resources_columns =
@@ -54,13 +59,8 @@ const std::vector<std::string> resources_columns =
 
 template <>
 void bindRow<ResourceEntity>(sqlite3_stmt* stmt, const ParamMap& p, int precision, const ResourceEntity* x) {
-	bindI(stmt, p[":id_db"], x->getIdDb());
-	bindI(stmt, p[":hp_coef"], x->getHpCoef());
-	bindI(stmt, p[":uid"], x->getUid());
-	bindI(stmt, p[":bucket_x"], x->getBucketX());
-	bindI(stmt, p[":bucket_y"], x->getBucketY());
-	bindI(stmt, p[":state"], x->getState());
-	bindI(stmt, p[":next_state"], x->getNextState());
+	bindRow(stmt, p, precision, static_cast<const Physical*>(x));
+	bindRow(stmt, p, precision, static_cast<const Static*>(x));
 }
 
 const std::vector<std::string> players_columns =
@@ -68,18 +68,19 @@ const std::vector<std::string> players_columns =
 
 template <>
 void bindRow<Player>(sqlite3_stmt* stmt, const ParamMap& p, int precision, const Player* x) {
-	bindI(stmt, p[":id"], x->getId());
-	bindI(stmt, p[":is_active"], x->isActive());
-	bindI(stmt, p[":team"], x->getTeam());
-	bindI(stmt, p[":nation"], x->getNation());
-	bindI(stmt, p[":name"], x->getName()); // assume overload handles string
-	bindI(stmt, p[":color"], x->getColor());
-	bindI(stmt, p[":buildingUid"], x->getBuildingUid());
-	bindI(stmt, p[":unitUid"], x->getUnitUid());
-	bindI(stmt, p[":food"], x->getFood());
-	bindI(stmt, p[":wood"], x->getWood());
-	bindI(stmt, p[":stone"], x->getStone());
-	bindI(stmt, p[":gold"], x->getGold());
+	auto resVals = x->resources->getValues();
+	bindUC(stmt, p[":id"], x->getId());
+	bindB(stmt, p[":is_active"], x->active);
+	bindUC(stmt, p[":team"], x->team);
+	bindUC(stmt, p[":nation"], x->getNation());
+	bindT(stmt, p[":name"], x->name.CString()); // assume overload handles string
+	bindUC(stmt, p[":color"], x->color);
+	bindI(stmt, p[":buildingUid"], x->currentBuildingUId);
+	bindI(stmt, p[":unitUid"], x->currentUnitUId);
+	bindI(stmt, p[":food"], resVals[0] * precision);
+	bindI(stmt, p[":wood"], resVals[1] * precision);
+	bindI(stmt, p[":stone"], resVals[2] * precision);
+	bindI(stmt, p[":gold"], resVals[3] * precision);
 }
 
 const std::vector<std::string> config_columns = {"precision", "map", "size"};

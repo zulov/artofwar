@@ -20,18 +20,17 @@ public:
 	Player(int nationId, char team, char id, int color, Urho3D::String name, bool active, unsigned currentBuildingUId, unsigned currentUnitUId);
 	~Player();
 
-	std::string getValues(int precision) const;
 	void setResourceAmount(float food, float wood, float stone, float gold) const;
 	void setResourceAmount(float amount) const;
 	char upgradeLevel(QueueActionType type, int id) const;
 
 	Resources* getResources() const { return resources; }
 	Possession* getPossession() const { return possession; }
-	short getNation() const;
-	char getTeam() const { return team; }
-	char getId() const { return id; } //TODO bug id playera a jego index to czêsto nie to samo
-	int getColor() const { return color; }
-	Urho3D::String& getName() { return name; }
+	unsigned char getNation() const;
+	unsigned char getTeam() const { return team; }
+	unsigned char getId() const { return id; } // TODO bug id playera a jego index to czêsto nie to samo
+	unsigned char getColor() const { return color; }
+	const Urho3D::String& getName() const { return name; }
 
 	void updateResource1s() const;
 	void updateResourceMonth() const;
@@ -61,10 +60,10 @@ public:
 private:
 	int score = -1;
 
-	char team;
-	char id;//przed possession,resources
+	unsigned char team;
+	unsigned char id; // przed possession,resources
 	bool active;
-	int color;
+	unsigned char color;
 	unsigned currentBuildingUId;
 	unsigned currentUnitUId;
 

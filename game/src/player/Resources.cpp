@@ -49,14 +49,6 @@ void Resources::add(int id, float value) {
 	sumValues[id] += value;
 }
 
-std::string Resources::getValues(int precision, int player) const {
-	std::string str = "(" + std::to_string(player) + 
-		
-		"),";
-
-	return str;
-}
-
 void Resources::setValue(float food, float wood, float stone, float gold) {
 	values[0] = food;
 	values[1] = wood;

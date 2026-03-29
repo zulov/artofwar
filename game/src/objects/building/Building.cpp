@@ -186,11 +186,6 @@ std::optional<int> Building::getDeploy() {
 	return {};
 }
 
-std::string Building::getValues(int precision) {
-	return Static::getValues(precision) + ","
-		+ std::to_string(deployIndex);
-}
-
 const Urho3D::IntVector2 Building::getGridSize() const {
 	return dbBuilding->size;
 }

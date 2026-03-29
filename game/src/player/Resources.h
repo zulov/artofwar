@@ -27,7 +27,6 @@ public:
 	std::span<float> getGatherSpeeds() { return gatherSpeeds1s; }
 	std::span<float> getSumValues() { return sumValues; }
 
-	std::string getValues(int precision, int player) const;
 	void setValue(float food, float wood, float stone, float gold);
 
 	void update1s(Possession* possession);

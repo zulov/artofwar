@@ -54,10 +54,6 @@ const Urho3D::String& ResourceEntity::getName() const {
 	return dbResource->name;
 }
 
-std::string ResourceEntity::getValues(int precision) {
-	return Static::getValues(precision);
-}
-
 unsigned char ResourceEntity::getMaxCloseUsers() const {
 	return dbResource->maxUsers;
 }

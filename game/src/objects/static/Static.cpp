@@ -177,12 +177,3 @@ std::vector<int> Static::getIndexesForRangeUse(Unit* user) const {
 	}
 	return indexes;
 }
-
-std::string Static::getValues(int precision) {
-	const auto cordsCell = Game::getEnvironment()->getCords(indexInMainGrid);
-	return Physical::getValues(precision)
-		+ std::to_string(cordsCell.x_) + ","
-		+ std::to_string(cordsCell.y_) + ","
-		+ std::to_string(castC(state)) + ","
-		+ std::to_string(castC(nextState));
-}

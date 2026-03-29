@@ -128,7 +128,6 @@ public:
 	bool action(UnitAction unitAction, const ActionParameter& parameter);
 	bool action(UnitAction unitAction);
 
-	std::string getValues(int precision) override;
 	Urho3D::String getInfo() const override;
 	const Urho3D::String& getName() const override;
 

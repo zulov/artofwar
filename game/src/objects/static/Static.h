@@ -8,6 +8,7 @@ struct dbload_static;
 enum class CellState : char;
 
 class Static : public Physical {
+	friend void bindRow<Static>(sqlite3_stmt*, const ParamMap&, int, const Static*);
 public:
 	Static(Urho3D::Vector3& _position, int indexInGrid, UId uId);
 	~Static() override;
@@ -38,8 +39,6 @@ public:
 	std::vector<int> getIndexesForRangeUse(Unit* user) const override;
 	void addIndexesForUse(std::vector<int>& indexes) const override;
 	bool indexCanBeUse(int index) const override;
-
-	std::string getValues(int precision) override;
 
 	void setBucketInMainGrid(int _bucketIndex) override {
 		assert(_bucketIndex >= 0);
