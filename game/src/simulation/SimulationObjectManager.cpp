@@ -15,7 +15,7 @@
 #include "math/VectorUtils.h"
 
 
-SimulationObjectManager::SimulationObjectManager(unsigned currentResourceUid): resourceFactory(currentResourceUid) {
+SimulationObjectManager::SimulationObjectManager(): resourceFactory() {
 	units = new std::vector<Unit*>();
 	buildings = new std::vector<Building*>();
 	resources = new std::vector<ResourceEntity*>();
@@ -82,6 +82,8 @@ void SimulationObjectManager::load(dbload_resource* resource) const {
 void SimulationObjectManager::refreshAllStatic() {
 	Game::getEnvironment()->refreshAllStatic(resources, buildings);
 }
+
+void SimulationObjectManager::setResUid(unsigned resUid) { resourceFactory.setResUid(resUid); }
 
 void SimulationObjectManager::addUnits(std::vector<Unit*>& temp) const {
 	if (!temp.empty()) {

@@ -20,7 +20,8 @@ struct Progress {
 
 	void reset() {
 		currentStage = 0;
-		start = std::chrono::system_clock::now();
+		startOfStage = std::chrono::system_clock::now();
+		startOfProgress = startOfStage;
 	}
 
 	void reset(std::string _msg) {
@@ -30,10 +31,16 @@ struct Progress {
 
 	void inc(std::string _msg) {
 		if (ifPrint) {
-			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
-			std::cout << (int)currentStage << " completed (" << msg.c_str() << ") at " << duration.count() << " ms" << std::endl;
-			start = std::chrono::system_clock::now();
+			auto now = std::chrono::system_clock::now();
+			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - startOfStage);
+			std::cout << (int)currentStage << " /" << (int)stagesNumber << " (" << msg.c_str() << ") at " << duration.count()
+					  << " ms" << std::endl;
+			startOfStage = std::chrono::system_clock::now();
 			msg = std::move(_msg);
+			if (currentStage == stagesNumber) {
+				auto durationWhole = std::chrono::duration_cast<std::chrono::milliseconds>(now - startOfProgress);
+				std::cout << "Ended in " << durationWhole.count() << " ms" << std::endl;
+			}
 		}
 
 		inc();
@@ -48,5 +55,6 @@ struct Progress {
 private:
 	const bool ifPrint;
 	std::string msg = "";
-	std::chrono::system_clock::time_point start;
+	std::chrono::system_clock::time_point startOfStage;
+	std::chrono::system_clock::time_point startOfProgress;
 };

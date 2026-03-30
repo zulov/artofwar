@@ -33,7 +33,7 @@ namespace Urho3D {
 
 class Simulation {
 public:
-	explicit Simulation(Environment* enviroment, unsigned currentResourceUid);
+	explicit Simulation(Environment* enviroment);
 	~Simulation();
 	void clearNodesWithoutDelete() const;
 

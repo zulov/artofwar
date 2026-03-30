@@ -12,11 +12,12 @@ class ResourceEntity;
 
 class ResourceFactory {
 public:
-	ResourceFactory(unsigned currentUnitUId);
+	ResourceFactory() = default;
 	~ResourceFactory() = default;
 
 	ResourceEntity* create(int id, Urho3D::IntVector2 bucketCords);
 	ResourceEntity* load(dbload_resource* resource) const;
+	void setResUid(unsigned resUid);
 
 private:
 	ResourceEntity* create(int id, Urho3D::IntVector2 bucketCords, UId uid) const;

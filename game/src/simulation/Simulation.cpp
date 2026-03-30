@@ -23,8 +23,8 @@
 #include "objects/projectile/ProjectileManager.h"
 #include "objects/unit/order/OrderUtils.h"
 
-Simulation::Simulation(Environment* enviroment, unsigned currentResourceUid): env(enviroment),colorScheme(SimColorMode::BASIC) {
-	simObjectManager = new SimulationObjectManager(currentResourceUid);
+Simulation::Simulation(Environment* enviroment): env(enviroment),colorScheme(SimColorMode::BASIC) {
+	simObjectManager = new SimulationObjectManager();
 	Game::setActionCenter(new ActionCenter(simObjectManager));
 
 	units = simObjectManager->getUnits();
@@ -153,9 +153,12 @@ void Simulation::loadEntities(dbload_container* data) const {
 	for (const auto unit : *data->units) {
 		simObjectManager->load(unit);
 	}
+	unsigned resUid = 0;
 	for (const auto resource : *data->resources) {
+		if (resUid <= resource->uid) { resUid = resource->uid + 1; }
 		simObjectManager->load(resource);
 	}
+	simObjectManager->setResUid(resUid);
 	for (const auto building : *data->buildings) {
 		simObjectManager->load(building);
 	}

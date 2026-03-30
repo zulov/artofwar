@@ -11,7 +11,7 @@ class Physical;
 
 class SimulationObjectManager {
 public:
-	SimulationObjectManager(unsigned currentResourceUid);
+	SimulationObjectManager();
 	~SimulationObjectManager();
 	void clearNodesWithoutDelete();
 
@@ -31,6 +31,7 @@ public:
 	void load(dbload_building* building) const;
 	void load(dbload_resource* resource) const;
 	void refreshAllStatic();
+	void setResUid(unsigned resUid);
 
 private:
 	void addUnits(std::vector<Unit*>& temp) const;

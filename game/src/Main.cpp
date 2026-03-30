@@ -320,7 +320,7 @@ void Main::save(const Urho3D::String& name) {
 }
 
 void Main::createSimulation() {
-	simulation = new Simulation(Game::getEnvironment(),0);//TODO error yo był numer?
+	simulation = new Simulation(Game::getEnvironment());
 }
 
 void Main::setSimpleManagers() {

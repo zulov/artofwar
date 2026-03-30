@@ -12,7 +12,7 @@
 #include "player/Resources.h"
 
 SceneSaver::SceneSaver(int precision) :
-	precision(precision), savingProgress(6) {
+	precision(precision), savingProgress(5) {
 	//TODO zapisywanie powinno byc tylko miedzy klatkami
 }
 
