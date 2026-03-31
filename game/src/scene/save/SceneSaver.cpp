@@ -16,6 +16,26 @@ SceneSaver::SceneSaver(int precision) :
 	//TODO zapisywanie powinno byc tylko miedzy klatkami
 }
 
+void SceneSaver::createDatabase(const Urho3D::String& fileName) {
+	database = nullptr;
+	std::string name = std::string("saves/") + fileName.CString() + ".db";
+	if (const int rc = sqlite3_open(name.c_str(), &database)) {
+		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << "\n\n";
+		sqlite3_close_v2(database);
+	}
+
+	auto exec = [&](const char* sql) {
+		char* err = nullptr;
+		int rc = sqlite3_exec(database, sql, nullptr, nullptr, &err);
+		if (rc != SQLITE_OK) { sqlite3_free(err); }
+	};
+
+    exec("PRAGMA journal_mode = DELETE;");
+	exec("PRAGMA synchronous = NORMAL;");
+	exec("PRAGMA temp_store = MEMORY;");
+	exec("PRAGMA page_size = 1024");
+}
+
 void SceneSaver::createTable(const std::string& name, const std::string& sql) {
 	savingProgress.inc(std::format("saving {}", name));
 	auto createSql = SQLConsts::CREATE_TABLE + name + sql;
@@ -24,15 +44,6 @@ void SceneSaver::createTable(const std::string& name, const std::string& sql) {
 	char* error;
 	const int rc = sqlite3_exec(database, charSql, nullptr, nullptr, &error);
 	ifError(rc, error, createSql);
-}
-
-void SceneSaver::createDatabase(const Urho3D::String& fileName) {
-	database = nullptr;
-	std::string name = std::string("saves/") + fileName.CString() + ".db";
-	if (const int rc = sqlite3_open(name.c_str(), &database)) {
-		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << "\n\n" ;
-		sqlite3_close_v2(database);
-	}
 }
 
 void SceneSaver::createSave(const Urho3D::String& fileName, const std::vector<Unit*>* units,
@@ -49,8 +60,17 @@ void SceneSaver::createSave(const Urho3D::String& fileName, const std::vector<Un
 	saveResources(resources);
 	savePlayers(players);
 	saveConfig(mapId, size);
+	finalizeDatabase();
 	sqlite3_exec(database, "COMMIT;", nullptr, nullptr, nullptr);
 	close();
+}
+
+void SceneSaver::finalizeDatabase() {
+	char* err = nullptr;
+	sqlite3_exec(database, "VACUUM;", nullptr, nullptr, &err);
+	if (err) {
+		sqlite3_free(err);
+	}
 }
 
 void SceneSaver::saveUnits(const std::vector<Unit*>* units) {
