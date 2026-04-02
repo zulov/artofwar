@@ -10,6 +10,7 @@ inline sqlite3* openDb(const std::string& name) {
 		sqlite3_close_v2(database);
 		return nullptr;
 	}
+	sqlite3_busy_timeout(database, 100);
 	return database;
 }
 
