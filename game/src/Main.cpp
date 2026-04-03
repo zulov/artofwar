@@ -70,8 +70,7 @@ Main::Main(Urho3D::Context* context) : Application(context), useMouseMode_(Urho3
 
 void Main::Setup() {
 	miniReadParameters();
-	const std::string prefix = std::string(SIM_GLOBALS.DATABASE_NUMBER.CString()) + ".db";
-	Game::setDatabaseCache(new DatabaseCache(prefix));
+	Game::setDatabaseCache(new DatabaseCache());
 	if (!SIM_GLOBALS.HEADLESS) {
 		const db_settings* settings = Game::getDatabase()->getSettings();
 		const db_graph_settings* graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
@@ -687,7 +686,7 @@ void Main::readParameters() {
 			} else if (argument == "noplayerai") {
 				SimGlobals::NO_PLAYER_AI = true;
 			} else if (argument == "savename") {
-				saveToLoad = SIM_GLOBALS.DATABASE_NUMBER + value;
+				saveToLoad = value;
 			} else if (argument == "outputname" && !value.Empty()) {
 				SimGlobals::OUTPUT_NAMES = value.Split('|');
 				SimGlobals::MAX_RUNS = SimGlobals::OUTPUT_NAMES.Size();
@@ -728,11 +727,8 @@ void Main::miniReadParameters() const {
 		if (arguments[i].Length() > 1 && arguments[i][0] == '-') {
 			Urho3D::String argument = arguments[i].Substring(1).ToLower();
 			const Urho3D::String value = i + 1 < arguments.Size() ? arguments[i + 1] : Urho3D::String::EMPTY;
-
-			if (argument == "databasename" && !value.Empty()) {
-				SimGlobals::DATABASE_NUMBER = value;
-				++i;
-			} else if (argument == "headless") {
+			//TODO czy to dalej potrzbne
+			if (argument == "headless") {
 				SimGlobals::HEADLESS = true;
 			}
 		}

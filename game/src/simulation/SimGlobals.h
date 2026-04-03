@@ -23,8 +23,7 @@ inline struct SimGlobals {
 	inline static bool HEADLESS = false;
 	inline static bool FAKE_TERRAIN = false;
 	inline static bool RANDOM = false;
-	
-	inline static Urho3D::String DATABASE_NUMBER = "";
+
 	inline static std::string ACTION_AI_PATH[MAX_PLAYERS] = {"", ""};
 	inline static std::string ORDER_AI_PATH[MAX_PLAYERS] = {"", ""};
 

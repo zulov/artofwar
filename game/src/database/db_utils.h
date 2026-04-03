@@ -6,7 +6,7 @@
 inline sqlite3* openDb(const std::string& name) {
 	sqlite3* database;
 	if (const int rc = sqlite3_open_v2(name.c_str(), &database, SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, nullptr)) {
-		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
+		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << name << std::endl;
 		sqlite3_close_v2(database);
 		return nullptr;
 	}
