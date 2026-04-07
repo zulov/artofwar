@@ -4,33 +4,29 @@
 #include "utils/CountUtils.h"
 #include "utils/SpanUtils.h"
 #include "utils/DeleteUtils.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 
 
-Brain::Brain(const std::string& filename, std::vector<std::string>& lines): filename(filename) {
-	std::vector<float> w;
-	std::vector<float> b;
-	for (auto& line : lines) {
-		std::string token;
-		std::istringstream tokenStream(line);
-		while (std::getline(tokenStream, token, ';')) {
-			if (token.empty()) {
-				break;
-			}
+Brain::Brain(const std::string& filename, const std::vector<std::string>& lines): filename(filename) {
+		allLayers.reserve(lines.size());
 
-			w.push_back(toFloat(token));
+		std::vector<float> w;
+		std::vector<float> b;
+
+		// tune this if you know approximate counts
+		// w.reserve(512);
+		// b.reserve(512);
+
+		for (const auto& line : lines) {
+			w.clear();
+			b.clear();
+
+			parseLine(line, w, b);
+
+			allLayers.push_back(new Layer(w, b));
 		}
-		std::getline(tokenStream, token, ';');
-
-		while (std::getline(tokenStream, token, ';')) {
-			b.push_back(toFloat(token));
-		}
-
-		allLayers.push_back(new Layer(w, b));
-		w.clear();
-		b.clear();
 	}
-}
 
 Brain::~Brain() {
 	clear_vector(allLayers);

@@ -8,7 +8,7 @@ class Layer;
 //TODO remember AVX2 set
 class Brain {
 public:
-	explicit Brain(const std::string& filename, std::vector<std::string>& lines);
+	explicit Brain(const std::string& filename, const std::vector<std::string>& lines);
 	Brain(const Brain& rhs) = delete;
 	~Brain();
 
