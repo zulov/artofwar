@@ -191,63 +191,63 @@ constexpr inline struct MetricDefinitions {
 	//TODO moze to zwracac od razy przedzia³em jakos
 	static inline AiResourceMetric aiResourceMetric[] = {
 		//Resources* r, Possession* p
-		{[](auto r, auto p) -> float { return r->getGatherSpeeds()[0]; }, 10},
-		{[](auto r, auto p) -> float { return r->getGatherSpeeds()[1]; }, 10},
-		{[](auto r, auto p) -> float { return r->getGatherSpeeds()[2]; }, 10},
-		{[](auto r, auto p) -> float { return r->getGatherSpeeds()[3]; }, 10},
+		{[](auto r, auto p) { return r->getGatherSpeeds()[0]; }, 10},
+		{[](auto r, auto p) { return r->getGatherSpeeds()[1]; }, 10},
+		{[](auto r, auto p) { return r->getGatherSpeeds()[2]; }, 10},
+		{[](auto r, auto p) { return r->getGatherSpeeds()[3]; }, 10},
 
-		{[](auto r, auto p) -> float { return r->getValues()[0]; }, 1000},
-		{[](auto r, auto p) -> float { return r->getValues()[1]; }, 1000},
-		{[](auto r, auto p) -> float { return r->getValues()[2]; }, 1000},
-		{[](auto r, auto p) -> float { return r->getValues()[3]; }, 1000},
+		{[](auto r, auto p) { return r->getValues()[0]; }, 1000},
+		{[](auto r, auto p) { return r->getValues()[1]; }, 1000},
+		{[](auto r, auto p) { return r->getValues()[2]; }, 1000},
+		{[](auto r, auto p) { return r->getValues()[3]; }, 1000},
 
-		{[](auto r, auto p) -> float { return p->getFreeWorkersNumber(); }, 100},
-		{[](auto r, auto p) -> float { return p->getWorkersNumber(); }, 100},
+		{[](auto r, auto p) { return p->getFreeWorkersNumber(); }, 100},
+		{[](auto r, auto p) { return p->getWorkersNumber(); }, 100},
 
 	};
 
 	static inline AiResourceMetric aiResourceWithoutBonusMetric[] = {
 		//Resources* r, Possession* p
-		{[](auto r, auto p) -> float { return p->getResWithOutBonus()[0]; }, 20},
-		{[](auto r, auto p) -> float { return p->getResWithOutBonus()[1]; }, 20},
-		{[](auto r, auto p) -> float { return p->getResWithOutBonus()[2]; }, 20},
-		{[](auto r, auto p) -> float { return p->getResWithOutBonus()[3]; }, 20}
+		{[](auto r, auto p) { return p->getResWithOutBonus()[0]; }, 20},
+		{[](auto r, auto p) { return p->getResWithOutBonus()[1]; }, 20},
+		{[](auto r, auto p) { return p->getResWithOutBonus()[2]; }, 20},
+		{[](auto r, auto p) { return p->getResWithOutBonus()[3]; }, 20}
 	};
 
 	static inline AiPlayerMetric aiBasicMetric[] = {
 		//Player* p1, Player* p2
-		{[](auto p1, auto p2) -> float { return p1->getScore(); }, 1000},
-		{[](auto p1, auto p2) -> float { return p1->getPossession()->getUnitsNumber(); }, 200},
-		{[](auto p1, auto p2) -> float { return p1->getPossession()->getBuildingsNumber(); }, 50},
+		{[](auto p1, auto p2) { return p1->getScore(); }, 1000},
+		{[](auto p1, auto p2){ return p1->getPossession()->getUnitsNumber(); }, 200},
+		{[](auto p1, auto p2){ return p1->getPossession()->getBuildingsNumber(); }, 50},
 
-		{[](auto p1, auto p2) -> float { return p2->getScore(); }, 1000}
+		{[](auto p1, auto p2){ return p2->getScore(); }, 1000}
 	};
 
 	static inline AiPlayerMetric aiAttackOrDefence[] = {
 		//Player* p1, Player* p2
-		{[](auto p1, auto p2) -> float { return p1->getPossession()->getAttackSum(); }, 1000},
-		{[](auto p1, auto p2) -> float { return p1->getPossession()->getDefenceAttackSum(); }, 100},
-		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }},
-		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }},
-		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p1, 1.f); }},
-		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p2, 0.f); }},
+		{[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000},
+		{[](auto p1, auto p2) { return p1->getPossession()->getDefenceAttackSum(); }, 100},
+		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }},
+		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }},
+		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p1, 1.f); }},
+		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p2, 0.f); }},
 	};
 
 	static inline AiPlayerMetric aiWhereAttack[] = {
 		//Player* p1, Player* p2
-		{[](auto p1, auto p2) -> float { return p1->getPossession()->getAttackSum(); }, 1000},
-		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p2, 1.f); }},
-		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }},
-		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }},
+		{[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000},
+		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p2, 1.f); }},
+		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }},
+		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }},
 	};
 
 	static inline AiPlayerMetric aiWhereDefend[] = {
 		//Player* p1, Player* p2
-		{[](auto p1, auto p2) -> float { return p1->getPossession()->getAttackSum(); }, 1000},
-		{[](auto p1, auto p2) -> float { return p1->getPossession()->getDefenceAttackSum(); }, 100},
-		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p1, 0.f); }},
-		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }},
-		{[](auto p1, auto p2) -> float { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }}
+		{[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000},
+		{[](auto p1, auto p2) { return p1->getPossession()->getDefenceAttackSum(); }, 100},
+		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p1, 0.f); }},
+		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }},
+		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }}
 		//TODO musi byæ do przeciwnika bo inaczej zawsze do siebie
 	};
 

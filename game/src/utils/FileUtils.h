@@ -22,14 +22,12 @@ inline void parseLine(const std::string& line, std::vector<float>& w, std::vecto
 
 	bool parsing_weights = true;
 
-	// ✅ handle leading ';' → no weights
 	if (ptr < end && *ptr == ';') {
 		parsing_weights = false;
 		ptr++;
 	}
 
 	while (ptr < end) {
-		// detect section switch (;;)
 		if (*ptr == ';') {
 			if (ptr + 1 < end && ptr[1] == ';') {
 				parsing_weights = false;
@@ -44,7 +42,6 @@ inline void parseLine(const std::string& line, std::vector<float>& w, std::vecto
 		auto result = fast_float::from_chars(ptr, end, val);
 
 		if (result.ec != std::errc()) {
-			// skip invalid char
 			ptr++;
 			continue;
 		}
