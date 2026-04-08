@@ -18,7 +18,10 @@ bool Layer::setInput(std::span<const float> data) {
 }
 
 void Layer::setValues(const Eigen::VectorXf& mult) {
-	values = (weights * mult + bias).array().tanh();
+	values.noalias() = weights * mult;
+	values += bias;
+	values = values.array().tanh();
+	//values = (weights * mult + bias).array().tanh();
 }
 
 bool Layer::sameInput(std::span<const float> data) {
