@@ -1,44 +1,36 @@
 #include "Brain.h"
 
 #include "Layer.h"
-#include "utils/CountUtils.h"
 #include "utils/SpanUtils.h"
 #include "utils/DeleteUtils.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 
 
-Brain::Brain(const std::string& filename, const std::vector<std::string>& lines): filename(filename) {
-		allLayers.reserve(lines.size());
+Brain::Brain(const std::string& filename, const std::vector<std::string>& lines) :
+	filename(filename) {
+	allLayers.reserve(lines.size());
 
-		std::vector<float> w;
-		std::vector<float> b;
+	std::vector<float> w;
+	std::vector<float> b;
 
-		// tune this if you know approximate counts
-		// w.reserve(512);
-		// b.reserve(512);
+	for (const auto& line : lines) {
+		w.clear();
+		b.clear();
 
-		for (const auto& line : lines) {
-			w.clear();
-			b.clear();
+		parseLine(line, w, b);
 
-			parseLine(line, w, b);
-
-			allLayers.push_back(new Layer(w, b));
-		}
+		allLayers.push_back(new Layer(w, b));
 	}
-
-Brain::~Brain() {
-	clear_vector(allLayers);
 }
+
+Brain::~Brain() { clear_vector(allLayers); }
 
 const std::span<float> Brain::decide(std::span<const float> data) {
 	assert(validateSpan(__LINE__, __FILE__, data));
 	bool sameInput = allLayers.front()->setInput(data);
 	if (!sameInput) {
-		for (int i = 1; i < allLayers.size(); i++) {
-			allLayers.at(i)->setValues(allLayers.at(i - 1)->getValues());
-		}
+		for (int i = 1; i < allLayers.size(); i++) { allLayers.at(i)->setValues(allLayers.at(i - 1)->getValues()); }
 	}
 	const auto& result = allLayers.back()->getValues();
 	const auto res1 = std::span(const_cast<float*>(result.data()), result.rows());
@@ -46,6 +38,4 @@ const std::span<float> Brain::decide(std::span<const float> data) {
 	return res1;
 }
 
-std::string Brain::getName() const {
-	return filename;
-}
+std::string Brain::getName() const { return filename; }
