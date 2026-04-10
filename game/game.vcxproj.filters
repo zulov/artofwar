@@ -451,7 +451,6 @@
     <ClInclude Include="src\objects\unit\SimColorMode.h" />
     <ClInclude Include="src\player\ai\nn\Layer.h" />
     <ClInclude Include="src\player\ai\nn\Brain.h" />
-    <ClInclude Include="src\player\ai\nn\AFUtil.h" />
     <ClInclude Include="src\objects\ObjectEnums.h">
       <Filter>objects</Filter>
     </ClInclude>

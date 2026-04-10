@@ -13,6 +13,8 @@ inline float getSecToComplete(QueueActionType type, short id, int level) {
 		return Game::getDatabase()->getUnit(id)->getLevel(level).value()->upgradeTime; //TODO BUG value
 	case QueueActionType::BUILDING_LEVEL:
 		return Game::getDatabase()->getBuilding(id)->getLevel(level).value()->upgradeTime;
+	case QueueActionType::RESOURCE_CREATE:
+		return Game::getDatabase()->getBuilding(id)->getLevel(level).value()->spawnResourceTime;
 	default:
 		return 1;
 	}
@@ -26,6 +28,7 @@ inline float getSecPerInstance(QueueActionType type, short id, int level) {
 	case QueueActionType::BUILDING_CREATE:
 	case QueueActionType::UNIT_LEVEL:
 	case QueueActionType::BUILDING_LEVEL:
+	case QueueActionType::RESOURCE_CREATE:
 	default:
 		return 0;
 	}

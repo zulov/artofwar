@@ -105,7 +105,8 @@ float Building::getAttackVal(Physical* aim) {
 
 void Building::action(BuildingActionType type, short id) {
 	if (!isReady()) { return; }
-	Resources* resources = Game::getPlayersMan()->getPlayer(getPlayer())->getResources();
+	auto player = Game::getPlayersMan()->getPlayer(getPlayer());
+	Resources* resources = player->getResources();
 
 	switch (type) {
 	case BuildingActionType::UNIT_CREATE:
@@ -114,9 +115,9 @@ void Building::action(BuildingActionType type, short id) {
 		}
 		break;
 	case BuildingActionType::UNIT_LEVEL: {
-		auto opt = Game::getPlayersMan()->getPlayer(getPlayer())->getNextLevelForUnit(id);
-		if (opt.has_value()) {
-			if (resources->reduce(opt.value())) {
+		//TODO bug czy to dobre uzycie optionala
+		if (auto nextLevel = player->getNextLevelForUnit(id)) {
+			if (resources->reduce(*nextLevel)) {
 				queue.add(1, QueueActionType::UNIT_LEVEL, id);
 			}
 		}
@@ -156,21 +157,23 @@ void Building::updateAi(bool ifBuildingAction) {//TODO fun to check if not null 
         thingToInteract = nullptr;
 		currentFrameState = 0;
     }
-    if (isReady() && dbLevel->canAttack) {
-		if (thingToInteract) {
-			if (currentFrameState >= dbLevel->attackReload) {
-				ProjectileManager::shoot(this, thingToInteract, 7, player);//TODO magic number
-				currentFrameState = 0;
-			} else {
-				++currentFrameState;
-			}
-		} else if (ifBuildingAction) {
-			const auto thingsToInteract = Game::getEnvironment()->getNeighboursFromTeamNotEq(
-				this, dbLevel->attackRange);
-			const auto closest = Game::getEnvironment()->closestPhysicalSimple(
-				this, thingsToInteract, dbLevel->attackRange);
-			thingToInteract = closest;
-		}
+    if (dbLevel->canAttack) {
+	    if (thingToInteract) {
+		    if (currentFrameState >= dbLevel->attackReload) {
+			    ProjectileManager::shoot(this, thingToInteract, 7, player); // TODO magic number
+			    currentFrameState = 0;
+		    } else { ++currentFrameState; }
+	    } else if (ifBuildingAction) {
+		    const auto thingsToInteract =
+				    Game::getEnvironment()->getNeighboursFromTeamNotEq(this, dbLevel->attackRange);
+		    const auto closest =
+				    Game::getEnvironment()->closestPhysicalSimple(this, thingsToInteract, dbLevel->attackRange);
+		    thingToInteract = closest;
+	    }
+    }
+
+	if (dbBuilding->toResource>0 && dbLevel->spawnResourceRange>0 && queue.isEmpty()) {
+		queue.add(1, QueueActionType::RESOURCE_CREATE, dbBuilding->toResource);
 	}
 }
 

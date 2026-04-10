@@ -370,11 +370,7 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 	bool typeResourceGoldBonus;
 
 	bool ruinable;
-	short toResource; //te dwa sie wykuczają? połączyc
-
-	short spawnResourceId;
-	short spawnResourceRange; // te dwa do levelu dac
-	short spawnResourceTime;
+	short toResource;//ToDO to może dać do levelu
 
 	unsigned char maxUsers;
 	bool typeResourceAny;
@@ -431,6 +427,8 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 	const short goldStorage;
 	const float stoneRefineCapacity;
 	const float goldRefineCapacity;
+	const int spawnResourceTime;
+	const int spawnResourceRange;
 
 	const Urho3D::String nodeName;
 
@@ -441,24 +439,25 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 
 	//std::vector<db_building_metric*> dbBuildingMetricPerNation;
 	db_building_metric* dbBuildingMetric;
-	db_building_level(sqlite3_stmt* stmt) : db_building_level(asShort(stmt, 0), asShort(stmt, 1), asShort(stmt, 2), asText(stmt, 3), asText(stmt, 4),
-		asUS(stmt, 5), asUS(stmt, 6), asUS(stmt, 7), asUS(stmt, 8),
-		asShort(stmt, 9), asShort(stmt, 10), asShort(stmt, 11), asShort(stmt, 12),
-		asFloat(stmt, 13), asFloat(stmt, 14), asFloat(stmt, 15), asFloat(stmt, 16),
-		asShort(stmt, 17), asFloat(stmt, 18), asFloat(stmt, 19), asShort(stmt, 20),
-		asShort(stmt, 21), asFloat(stmt, 22), asFloat(stmt, 23)) {}
+	db_building_level(sqlite3_stmt* s) : db_building_level(asShort(s, 0), asShort(s, 1), asShort(s, 2), asText(s, 3), asText(s, 4),
+		asUS(s, 5), asUS(s, 6), asUS(s, 7), asUS(s, 8),
+		asShort(s, 9), asShort(s, 10), asShort(s, 11), asShort(s, 12),
+		asFloat(s, 13), asFloat(s, 14), asFloat(s, 15), asFloat(s, 16),
+		asShort(s, 17), asFloat(s, 18), asFloat(s, 19), asShort(s, 20),
+		asShort(s, 21), asFloat(s, 22), asFloat(s, 23), asInt(s, 24), asInt(s, 25)) {}
 
 	db_building_level(short id, short level, short building, const char* name, const char* nodeName,
 	                  unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
 	                  short queueMaxCapacity, short buildSpeed, short upgradeSpeed, short maxHp, float armor,
 	                  float sightRng, float collect, float atckR, short atckRRld, float atckRRng, float resourceRng,
-	                  short foodStorage, short goldStoreage, float stoneRefineCapacity, float goldRefineCapacity)
+					  short foodStorage, short goldStoreage, float stoneRefineCapacity, float goldRefineCapacity,
+					  int spawnResourceTime, int spawnResourceRange)
 		: db_with_name(id, name), db_with_cost(food, wood, stone, gold), db_level(level),
 		  db_base(maxHp, armor, sightRng),
 		  db_building_attack(collect, atckR, atckRRld, atckRRng), db_build_upgrade(buildSpeed, upgradeSpeed),
 		  building(building), queueMaxCapacity(queueMaxCapacity), resourceRange(resourceRng), foodStorage(foodStorage),
 		  goldStorage(goldStoreage), stoneRefineCapacity(stoneRefineCapacity), goldRefineCapacity(goldRefineCapacity),
-		  nodeName(nodeName) {}
+		nodeName(nodeName), spawnResourceTime(spawnResourceTime), spawnResourceRange(spawnResourceRange) {}
 
 	~db_building_level() {
 		clear_vector(unitsPerNation);

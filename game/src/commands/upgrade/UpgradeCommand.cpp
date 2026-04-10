@@ -7,7 +7,7 @@
 #include "objects/queue/QueueActionType.h"
 
 
-UpgradeCommand::UpgradeCommand(char player, short id, QueueActionType type): player(player), type(type), id(id) {
+UpgradeCommand::UpgradeCommand(char player, short id, QueueActionType type): type(type), player(player), id(id) {
 }
 
 void UpgradeCommand::execute(SimulationObjectManager* simulationObjectManager) const {

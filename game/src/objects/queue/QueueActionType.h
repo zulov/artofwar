@@ -5,4 +5,5 @@ enum class QueueActionType : char {
 	UNIT_UPGRADE,//TODO dodac to kiedys
 	BUILDING_LEVEL,
 	BUILDING_CREATE,
+	RESOURCE_CREATE,
 };

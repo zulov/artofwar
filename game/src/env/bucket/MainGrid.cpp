@@ -281,17 +281,18 @@ bool MainGrid::anyCloseEnough(std::vector<int> const& indexes, int center, float
 	});
 }
 
-std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector3& center, float range) const {
+std::vector<int> MainGrid::getIndexesInRange(int centerIndex, float range) const {
 	std::vector<int> allIndexes;
-	const auto centerIdx = calculator->indexFromPosition(center);
-
-	const auto levels = levelCache->get(range, centerIdx);
+	const auto levels = levelCache->get(range, centerIndex);
 
 	for (const auto idx : *levels) {
-		allIndexes.push_back(centerIdx + idx);
+		allIndexes.push_back(centerIndex + idx);
 	}
 
 	return allIndexes;
+}
+std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector3& center, float range) const {
+	return getIndexesInRange(calculator->indexFromPosition(center), range);
 }
 
 void MainGrid::addResBonuses(std::vector<Building*>& resBuildings) const {

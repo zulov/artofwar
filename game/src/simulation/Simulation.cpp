@@ -132,7 +132,7 @@ void Simulation::objectAI() const {
 		}
 	}
 	for (const auto building : *buildings) {
-		building->updateAi(ifSelfAction);
+		if (building->isReady()) { building->updateAi(ifSelfAction); }
 	}
 }
 
@@ -231,8 +231,7 @@ void Simulation::levelUp(QueueElement* done, char player) const {
 
 void Simulation::updateBuildingQueues() const {
 	for (const auto build : *buildings) {
-		const auto done = build->updateQueue();
-		if (done) {
+		if (const auto done = build->updateQueue()) {
 			switch (done->getType()) {
 			case QueueActionType::UNIT_CREATE: {
 				const auto center = env->getCenter(build->getDeploy().value());
@@ -248,6 +247,13 @@ void Simulation::updateBuildingQueues() const {
 				break;
 			case QueueActionType::BUILDING_CREATE:
 				build->complete();
+			case QueueActionType::RESOURCE_CREATE:
+				const auto [dbBuilding, level] = build->getData();
+				auto indexes = env->getIndexesInRange(build->getMainGridIndex(), static_cast<float>(level->spawnResourceRange));
+				auto index = indexes.find free sapce
+				if (index>0) {
+					Game::getActionCenter()->addResource(dbBuilding->toResource, indexes);
+				}
 			}
 			delete done;
 		}

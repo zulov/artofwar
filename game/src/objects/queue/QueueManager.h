@@ -12,6 +12,7 @@ public:
 	void add(short number, QueueActionType type, short id);
 	QueueElement* update();
 	short getSize() const;
+	bool isEmpty() const { return getSize() == 0; }
 	QueueElement* getAt(short i) const;
 	QueueElement* first() const;
 	void changeMaxUnitsGroupSize(unsigned char maxUnitsGroupSize);

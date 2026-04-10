@@ -137,6 +137,7 @@ public:
 	float getVisibilityScore(char player) const;
 
 	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
+	std::vector<int> getIndexesInRange(int index, float range) const;
 	Urho3D::Terrain* getTerrain() const { return terrain; }
 	void setTerrainShaderParam(const Urho3D::String& name, const Urho3D::Variant& value) const;
 	void flipTerrainShaderParam(const Urho3D::String& name) const;

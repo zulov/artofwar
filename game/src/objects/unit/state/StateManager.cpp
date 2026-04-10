@@ -169,7 +169,7 @@ void StateManager::startState(Static* obj) {
 		changeState(obj, StaticState::ALIVE);
 		break;
 	case StaticState::ALIVE:
-		if (obj->getType() == ObjectType::BUILDING) {
+		if (obj->getType() == ObjectType::BUILDING) {//TODO to mozre dac to building->updateAi
 			auto building = (Building*)obj;
 			auto res = building->getDb()->toResource;
 			if (res >= 0) {

@@ -55,6 +55,10 @@ float Environment::getVisibilityScore(char player) const {
 	return influenceManager.getVisibilityScore(player);
 }
 
+std::vector<int> Environment::getIndexesInRange(int index, float range) const {
+	return mainGrid.getIndexesInRange(index, range);
+}
+
 std::vector<int> Environment::getIndexesInRange(const Urho3D::Vector3& center, float range) const {
 	return mainGrid.getIndexesInRange(center, range);
 }

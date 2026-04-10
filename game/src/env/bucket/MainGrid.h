@@ -75,6 +75,7 @@ public:
 	bool cellIsAttackable(int index) const;
 	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
 	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
+	std::vector<int> getIndexesInRange(int centerIndex, float range) const;
 	void addResBonuses(std::vector<Building*>& resBuildings) const;
 	void reAddBonuses(std::vector<Building*>& resBuildings, std::vector<ResourceEntity*>* resources) const;
 	void refreshAllStatic(std::vector<ResourceEntity*>* resources, std::vector<Building*>* buildings);
