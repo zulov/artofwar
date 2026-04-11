@@ -20,6 +20,7 @@
 #include "scene/load/SceneLoader.h"
 #include "simulation/formation/FormationManager.h"
 #include "PerFrameAction.h"
+#include "database/DatabaseCache.h"
 #include "objects/projectile/ProjectileManager.h"
 #include "objects/unit/order/OrderUtils.h"
 
@@ -250,7 +251,10 @@ void Simulation::updateBuildingQueues() const {
 			case QueueActionType::RESOURCE_CREATE:
 				const auto [dbBuilding, level] = build->getData();
 				auto indexes = env->getIndexesInRange(build->getMainGridIndex(), static_cast<float>(level->spawnResourceRange));
-				auto index = indexes.find free sapce
+				auto dbResource = Game::getDatabase()->getResource(done->getId())
+
+				//TODO shuffle index
+								  env->validateStatic(dbResource->size, bucketCords, false)
 				if (index>0) {
 					Game::getActionCenter()->addResource(dbBuilding->toResource, indexes);
 				}
