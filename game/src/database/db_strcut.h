@@ -457,7 +457,7 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 		  db_building_attack(collect, atckR, atckRRld, atckRRng), db_build_upgrade(buildSpeed, upgradeSpeed),
 		  building(building), queueMaxCapacity(queueMaxCapacity), resourceRange(resourceRng), foodStorage(foodStorage),
 		  goldStorage(goldStoreage), stoneRefineCapacity(stoneRefineCapacity), goldRefineCapacity(goldRefineCapacity),
-		nodeName(nodeName), spawnResourceTime(spawnResourceTime), spawnResourceRange(spawnResourceRange) {}
+		spawnResourceTime(spawnResourceTime), spawnResourceRange(spawnResourceRange), nodeName(nodeName) {}
 
 	~db_building_level() {
 		clear_vector(unitsPerNation);

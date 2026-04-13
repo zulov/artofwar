@@ -248,15 +248,17 @@ void Simulation::updateBuildingQueues() const {
 				break;
 			case QueueActionType::BUILDING_CREATE:
 				build->complete();
+				break;
 			case QueueActionType::RESOURCE_CREATE:
 				const auto [dbBuilding, level] = build->getData();
 				auto indexes = env->getIndexesInRange(build->getMainGridIndex(), static_cast<float>(level->spawnResourceRange));
-				auto dbResource = Game::getDatabase()->getResource(done->getId())
+				auto dbResource = Game::getDatabase()->getResource(done->getId());
 
 				//TODO shuffle index
-								  env->validateStatic(dbResource->size, bucketCords, false)
-				if (index>0) {
-					Game::getActionCenter()->addResource(dbBuilding->toResource, indexes);
+				for (int index : indexes) {
+					if (env->validateStatic(dbResource->size, index, false)) {
+						Game::getActionCenter()->addResource(dbBuilding->toResource, index);
+					}
 				}
 			}
 			delete done;

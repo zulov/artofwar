@@ -343,6 +343,10 @@ bool Environment::validateStatic(const Urho3D::IntVector2& size, const Urho3D::I
 	return mainGrid.validateAdd(size, bucketCords, isBuilding);
 }
 
+bool Environment::validateStatic(const Urho3D::IntVector2& size, int index, bool isBuilding) const {
+	return mainGrid.validateAdd(size, calculator->getCords(index), isBuilding);
+}
+
 Urho3D::Vector2 Environment::getCenter(int index) const {
 	return calculator->getCenter(index);
 }

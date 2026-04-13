@@ -55,8 +55,8 @@ void DatabaseCache::loadData(const std::string& name) {
 		container->buildings[level->building]->levels.push_back(level);
 		for (auto nation : container->nations) {
 			if (nation) {
-				ensureSize(nation->id + 1, level->unitsPerNation);
-				ensureSize(nation->id + 1, level->unitsPerNationIds);
+				ensureSize(nation->id, level->unitsPerNation);
+				ensureSize(nation->id, level->unitsPerNationIds);
 				if (level->unitsPerNation[nation->id] == nullptr) {
 					level->unitsPerNation[nation->id] = new std::vector<db_unit*>();
 				}
