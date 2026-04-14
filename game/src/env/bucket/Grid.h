@@ -49,6 +49,7 @@ protected:
 	GridCalculator* calculator;
 	CloseIndexes* closeIndexes;
 
+	//TODO perf reuse buckets
 	Bucket* buckets;
 	LevelCache* levelCache;
 	int resolution;

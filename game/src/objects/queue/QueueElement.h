@@ -5,15 +5,16 @@ enum class ActionType : char;
 
 class QueueElement {
 public:
-	QueueElement(QueueActionType type, short id, unsigned char maxCapacity);
+	QueueElement(QueueActionType type, short id, short secondId, unsigned char maxCapacity);
 	~QueueElement() = default;
-	bool checkType(QueueActionType _type, short _id) const;
+	bool checkType(QueueActionType _type, short _id, short _secondId) const;
 	short add(short value);
 	void reduce(short value);
 	bool update();
 	
 	QueueActionType getType() const { return type; }
 	short getId() const { return id; }
+	short getLevelId() const { return levelId; }
 	short getAmount() const { return amount; }
 	short getMaxCapacity() const { return maxCapacity; }
 	float getProgress() const { return ((float)elapsedTicks) / ticksToComplete; }
@@ -23,6 +24,7 @@ private:
 
 	short id;
 	short amount;
+	short levelId;
 
 	short ticksToComplete;
 	short elapsedTicks;

@@ -1,4 +1,7 @@
 #include "Simulation.h"
+
+#include <Urho3D/Resource/ResourceCache.h>
+
 #include "Game.h"
 #include "SimulationObjectManager.h"
 #include "camera/CameraManager.h"
@@ -252,7 +255,7 @@ void Simulation::updateBuildingQueues() const {
 			case QueueActionType::RESOURCE_CREATE:
 				const auto [dbBuilding, level] = build->getData();
 				auto indexes = env->getIndexesInRange(build->getMainGridIndex(), static_cast<float>(level->spawnResourceRange));
-				auto dbResource = Game::getDatabase()->getResource(done->getId());
+				auto dbResource = Game::getDatabase()->getResource(dbBuilding->toResource);
 
 				//TODO shuffle index
 				for (int index : indexes) {

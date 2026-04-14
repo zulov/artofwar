@@ -29,7 +29,7 @@ void QueuePanel::update(const QueueManager& queue, short& j) const {
 	for (int i = 0; i < size; ++i) {
 		QueueElement* element = queue.getAt(i);
 		elements[j]->show();
-		auto name = getIconName(element->getType(), element->getAmount(), element->getId());
+		auto name = getIconName(element->getType(), element->getLevelId(), element->getId());
 		auto texture = getTexture("textures/hud/icon/" + name);
 		if (element->getMaxCapacity() > 1) {
 			elements[j]->setText(Urho3D::String(element->getAmount()) + "/" + Urho3D::String(element->getMaxCapacity()));

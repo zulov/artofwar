@@ -36,7 +36,7 @@ Building::~Building() {
 }
 
 void Building::postCreate() {
-	queue.add(1, QueueActionType::BUILDING_CREATE, getDbId());
+	queue.add(QueueActionType::BUILDING_CREATE, getDbId(), dbLevel->id);
 	setShaderParam(this, "Progress", 0.0);
 }
 
@@ -111,14 +111,14 @@ void Building::action(BuildingActionType type, short id) {
 	switch (type) {
 	case BuildingActionType::UNIT_CREATE:
 		if (resources->reduce(Game::getDatabase()->getUnit(id))) {
-			queue.add(1, QueueActionType::UNIT_CREATE, id);
+			queue.add(QueueActionType::UNIT_CREATE, id, player->getLevelForUnit(id)->id);
 		}
 		break;
 	case BuildingActionType::UNIT_LEVEL: {
 		//TODO bug czy to dobre uzycie optionala
 		if (auto nextLevel = player->getNextLevelForUnit(id)) {
 			if (resources->reduce(*nextLevel)) {
-				queue.add(1, QueueActionType::UNIT_LEVEL, id);
+				queue.add(QueueActionType::UNIT_LEVEL, id, (*nextLevel)->id);
 			}
 		}
 	}
@@ -173,7 +173,7 @@ void Building::updateAi(bool ifBuildingAction) {//TODO fun to check if not null 
     }
 
 	if (dbBuilding->toResource>0 && dbLevel->spawnResourceRange>0 && queue.isEmpty()) {
-		queue.add(1, QueueActionType::RESOURCE_CREATE, dbBuilding->id, dbBuilding->toResource);
+		queue.add(QueueActionType::RESOURCE_CREATE, dbBuilding->id, dbLevel->id);
 	}
 }
 

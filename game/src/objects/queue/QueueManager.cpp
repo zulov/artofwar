@@ -10,15 +10,16 @@ QueueManager::~QueueManager() {
 }
 
 
-void QueueManager::add(short number, QueueActionType type, short id) {
+void QueueManager::add(QueueActionType type, short id, short levelId, short number) {
 	for (auto i : queue) {
-		if (i->checkType(type, id)) {
+		if (i->checkType(type, id, levelId)) {
 			number = i->add(number);
 		}
 	}
 
 	while (number > 0) {
-		auto element = new QueueElement(type, id, type == QueueActionType::UNIT_CREATE ? maxUnitsGroup : 1);
+		unsigned char maxCap = type == QueueActionType::UNIT_CREATE ? maxUnitsGroup : 1;
+		auto element = new QueueElement(type, id, levelId, maxCap);
 		number = element->add(number);
 		queue.push_back(element);
 	}

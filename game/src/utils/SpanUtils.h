@@ -78,7 +78,7 @@ inline bool validateSpan(int line, std::string file, std::span<const float> vec)
 	return valid;
 }
 
-inline bool allPositive(int line, std::string file, std::span<float> vec) {
+inline bool allPositive(int line, std::string file, std::span<const float> vec) {
 	bool valid = true;
 	for (const auto val : vec) {
 		if (val < 0.f) {
