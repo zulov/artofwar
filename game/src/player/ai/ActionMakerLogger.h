@@ -10,7 +10,7 @@ inline void logThree(int ids[3], float vals[3], float max) {
 		for (int i = 0; i < 3; ++i) {
 			std::cout << ids[i] << "-" << (vals[i] / max * 100) << "%, ";
 		}
-		std::cout << std::endl;
+		std::cout << '\n';
 	}
 }
 
@@ -18,9 +18,9 @@ inline void logResult(int id, const bool result) {
 	if constexpr (LOG_ACTIONS_MAKER) {
 		std::cout << " -> " << id;
 		if (result) {
-			std::cout << "(DONE)" << std::endl;
+			std::cout << "(DONE)" << '\n';
 		} else {
-			std::cout << std::endl;
+			std::cout << '\n';
 		}
 	}
 }

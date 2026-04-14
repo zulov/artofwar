@@ -26,7 +26,7 @@ Brain::Brain(const std::string& filename, const std::vector<std::string>& lines)
 
 Brain::~Brain() { clear_vector(allLayers); }
 
-const std::span<float> Brain::decide(std::span<const float> data) {
+std::span<const float> Brain::decide(std::span<const float> data) {
 	assert(validateSpan(__LINE__, __FILE__, data));
 	bool sameInput = allLayers.front()->setInput(data);
 	if (!sameInput) {
@@ -35,7 +35,7 @@ const std::span<float> Brain::decide(std::span<const float> data) {
 		}
 	}
 	const auto& result = allLayers.back()->getValues();
-	const auto res1 = std::span(const_cast<float*>(result.data()), result.rows());
+	const auto res1 = std::span<const float>(result.data(), result.rows());
 	assert(validateSpan(__LINE__, __FILE__, res1));
 	return res1;
 }

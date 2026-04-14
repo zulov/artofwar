@@ -47,7 +47,7 @@ private:
 	bool createUnit(std::span<const float> unitsInput);
 	bool createWorker() const;
 
-	std::span<float> getWhichBuilding(ParentBuildingType type, const std::span<const float> aiTypeInput) const;
+	std::span<const float> getWhichBuilding(ParentBuildingType type, const std::span<const float> aiTypeInput) const;
 
 	std::optional<Urho3D::Vector2> findPosToBuild(db_building* building, ParentBuildingType type) const;
 	std::vector<Building*> getBuildingsCanDeploy(short unitId) const;
@@ -55,15 +55,15 @@ private:
 	float dist(std::valarray<float>& center, const db_basic_metric* metric);
 	float dist(std::valarray<float>& center, const db_building_metric* metric, ParentBuildingType type);
 
-	db_building* chooseBuilding(std::span<float> result, ParentBuildingType type);
+	db_building* chooseBuilding(std::span<const float> result, ParentBuildingType type);
 	db_building_level* chooseBuildingLevelUp();
-	db_unit* chooseUnit(std::span<float> result);
+	db_unit* chooseUnit(std::span<const float> result);
 	db_unit_level* chooseUnitLevelUp();
 
 	Building* getBuildingToDeploy(db_unit* unit) const;
 	Building* getBuildingToDeployWorker(db_unit* unit) const;
 	Building* getBuildingToLevelUpUnit(db_unit_level* level);
-	Building* getBuildingClosestArea(std::vector<Building*>& allPossible, std::span<float> result) const;
+	Building* getBuildingClosestArea(std::vector<Building*>& allPossible, std::span<const float> result) const;
 
 	bool isEnoughResToWorker() const;
 	bool isEnoughResToAnyUnit() const;

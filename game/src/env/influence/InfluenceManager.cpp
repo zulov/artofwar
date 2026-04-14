@@ -348,7 +348,7 @@ std::array<float, 5>& InfluenceManager::getInfluenceDataAt(char player, const Ur
 	return dataFromPos;
 }
 
-std::vector<int> InfluenceManager::getIndexesIterative(const std::span<float> result, float tolerance, int min,
+std::vector<int> InfluenceManager::getIndexesIterative(std::span<const float> result, float tolerance, int min,
                                                        std::span<InfluenceMapFloat*> maps) const {
 	assert(result.size() == maps.size());
 	for (auto map : maps) {
@@ -377,7 +377,7 @@ std::vector<int> InfluenceManager::getIndexesIterative(const std::span<float> re
 	return {};
 }
 
-std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span<float> result, char player,
+std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(std::span<const float> result, char player,
                                                                  float tolerance, int min) {
 	//TODO better!!!
 	if (result.size() == 8) {
@@ -390,7 +390,7 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span
 }
 
 std::vector<unsigned>*
-InfluenceManager::getAreas(const std::span<float> result, ParentBuildingType type, char player) {
+InfluenceManager::getAreas(std::span<const float> result, ParentBuildingType type, char player) {
 	if (type == ParentBuildingType::RESOURCE) {
 		return getAreas(mapsGatherSpeedPerPlayer[player], result, player);
 	}
@@ -402,7 +402,7 @@ std::vector<unsigned> InfluenceManager::getAreasResBonus(unsigned char id, char 
 }
 
 std::vector<unsigned>*
-InfluenceManager::getAreas(std::span<InfluenceMapFloat*> maps, const std::span<float> result, char player) const {
+InfluenceManager::getAreas(std::span<InfluenceMapFloat*> maps, std::span<const float> result, char player) const {
 	assert(result.size() == maps.size());
 
 	std::fill_n(intersection, arraySize, 0.f); //TODO perf move to removeunsean

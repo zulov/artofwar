@@ -1,6 +1,7 @@
 #include "ActionMaker.h"
 
 #include <format>
+#include <limits>
 #include "AiUtils.h"
 #include "Game.h"
 #include "commands/action/BuildingActionCommand.h"
@@ -87,7 +88,7 @@ bool ActionMaker::createBuilding(const std::span<const float> buildingsInput) {
 	return createBuilding(chooseBuilding(output, type), type);
 }
 
-std::span<float>
+std::span<const float>
 ActionMaker::getWhichBuilding(ParentBuildingType type, const std::span<const float> aiTypeInput) const {
 	switch (type) {
 	case ParentBuildingType::OTHER:
@@ -167,7 +168,7 @@ std::vector<db_building*> ActionMaker::getBuildingsInType(ParentBuildingType typ
 	return buildings;
 }
 
-db_building* ActionMaker::chooseBuilding(std::span<float> result, ParentBuildingType type) {
+db_building* ActionMaker::chooseBuilding(std::span<const float> result, ParentBuildingType type) {
 	const auto buildings = getBuildingsInType(type);
 	if (buildings.empty()) {
 		return nullptr;
@@ -226,7 +227,7 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 	return nullptr;
 }
 
-db_unit* ActionMaker::chooseUnit(std::span<float> result) {
+db_unit* ActionMaker::chooseUnit(std::span<const float> result) {
 	auto pred = [this](db_unit* unit) { return !unit->typeWorker; };
 	auto& units = nation->units;
 	std::vector<db_unit*> unitsWithoutWorker;
@@ -337,9 +338,9 @@ Building* ActionMaker::getBuildingToDeployWorker(db_unit* unit) const {
 	return getBuildingClosestArea(allPossible, result);
 }
 
-Building* ActionMaker::getBuildingClosestArea(std::vector<Building*>& allPossible, std::span<float> result) const {
+Building* ActionMaker::getBuildingClosestArea(std::vector<Building*>& allPossible, std::span<const float> result) const {
 	auto centers = Game::getEnvironment()->getAreas(playerId, result, 10);
-	float closestVal = 99999;
+	float closestVal = std::numeric_limits<float>::max();
 	Building* closest = allPossible[0];
 	for (const auto possible : allPossible) {
 		//TODO performance O(^2)

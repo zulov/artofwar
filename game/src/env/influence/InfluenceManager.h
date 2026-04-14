@@ -54,14 +54,14 @@ public:
 	content_info* getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfos, bool* checks,
 	                             int activePlayer) const;
 	std::array<float, 5>& getInfluenceDataAt(char player, const Urho3D::Vector2& pos);
-	std::vector<int> getIndexesIterative(const std::span<float> result, float tolerance, int min,
+	std::vector<int> getIndexesIterative(std::span<const float> result, float tolerance, int min,
 	                                     std::span<InfluenceMapFloat*> maps) const;
 
-	std::vector<Urho3D::Vector2> getAreasIterative(const std::span<float> result, char player, float tolerance,
+	std::vector<Urho3D::Vector2> getAreasIterative(std::span<const float> result, char player, float tolerance,
 	                                               int min);
 
 	float getFieldSize() const;
-	std::vector<unsigned>* getAreas(const std::span<float> result, ParentBuildingType type, char player);
+	std::vector<unsigned>* getAreas(std::span<const float> result, ParentBuildingType type, char player);
 	std::vector<unsigned> getAreasResBonus(unsigned char id, char player) const;
 
 	void addCollect(Unit* unit, short resId, float value) const;
@@ -74,7 +74,7 @@ public:
 	void nextVisibilityType() const;
 
 private:
-	std::vector<unsigned>* getAreas(std::span<InfluenceMapFloat*> maps, const std::span<float> result, char player) const;
+	std::vector<unsigned>* getAreas(std::span<InfluenceMapFloat*> maps, std::span<const float> result, char player) const;
 	int getIndexInInfluence(Unit* unit) const;
 
 	std::vector<unsigned>* bestIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;

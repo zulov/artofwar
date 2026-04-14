@@ -25,5 +25,5 @@ public:
 	std::span<const float> getBuildingsTypeInput(Player* player, ParentBuildingType type);
 private:
 	std::span<const float> basicWithSpan(Player* player, std::span<const float> span);
-	std::span<const float> basicWithSpanSelective(Player* player,Player*enemy, std::span<const unsigned char> idxs);
+	std::span<const float> basicWithSpanSelective(Player* player, Player* enemy, std::span<const unsigned char> idxs);
 };

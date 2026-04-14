@@ -102,7 +102,7 @@ constexpr inline struct MetricDefinitions {
 		return basicWithMetrics(player, enemy, player->getResources(), player->getPossession(), aiResourceWithoutBonusMetric);
 	}
 
-	//TODO te 3 sie troszke dubluj¹ ogran¹æ indeksami? ale z drugiej srony chce sie ich pozbyc
+	//TODO te 3 sie troszke dublujÂ¹ ogranÂ¹Ã¦ indeksami? ale z drugiej srony chce sie ich pozbyc
 	const std::span<float> writeAttackOrDefence(Player* one, Player* two) const {
 		return writeMetrics(one, two, aiAttackOrDefence);
 	}
@@ -172,7 +172,7 @@ constexpr inline struct MetricDefinitions {
 		{[](auto b, auto l) -> float { return l->attackReload; }, 200},
 		{[](auto b, auto l) -> float { return l->attackRange; }, 20},
 		{[](auto b, auto l) -> float { return l->resourceRange; }, 20},
-		//TODO stad duzo wyrzuciæ
+		//TODO stad duzo wyrzuciÃ¦
 
 		{[](auto b, auto l) -> float { return b->typeCenter; }}, //9
 		{[](auto b, auto l) -> float { return b->typeHome; }},
@@ -188,7 +188,7 @@ constexpr inline struct MetricDefinitions {
 		{[](auto b, auto l) -> float { return b->typeUnitCavalry; }},
 	};
 
-	//TODO moze to zwracac od razy przedzia³em jakos
+	//TODO moze to zwracac od razy przedziaÂ³em jakos
 	static inline AiResourceMetric aiResourceMetric[] = {
 		//Resources* r, Possession* p
 		{[](auto r, auto p) { return r->getGatherSpeeds()[0]; }, 10},
@@ -248,12 +248,12 @@ constexpr inline struct MetricDefinitions {
 		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p1, 0.f); }},
 		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }},
 		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }}
-		//TODO musi byæ do przeciwnika bo inaczej zawsze do siebie
+		//TODO musi byÃ¦ do przeciwnika bo inaczej zawsze do siebie
 	};
 
 	//to nie musi byc array tylko tabelka
 	//TODO improve nie indeksy ale enumy?, albo zawsze nowa tablica, beda powtorzenia
-	constexpr static unsigned char aiUnitsTypesIdxs[] = {8, 9, 10, 11, 12, 12, 13, 14, 15};
+	constexpr static unsigned char aiUnitsTypesIdxs[] = {8, 9, 10, 11, 12, 13, 14, 15};
 
 	constexpr static unsigned char aiBuildingOtherIdxs[] = {9, 10}; //TODO moze cos wiecej?
 	constexpr static unsigned char aiBuildingUnitsIdxs[] = {18, 19, 20};
