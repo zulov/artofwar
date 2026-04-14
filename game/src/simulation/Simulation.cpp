@@ -258,6 +258,7 @@ void Simulation::updateBuildingQueues() const {
 				for (int index : indexes) {
 					if (env->validateStatic(dbResource->size, index, false)) {
 						Game::getActionCenter()->addResource(dbBuilding->toResource, index);
+						break;
 					}
 				}
 			}
