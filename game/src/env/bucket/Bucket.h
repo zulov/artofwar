@@ -23,6 +23,7 @@ public:
 	void add(Physical* entity);
 	void add(const std::vector<Physical*>& things);
 	void remove(Physical* entity);
+	void clear();
 private:
 	std::vector<Physical*> content;
 };

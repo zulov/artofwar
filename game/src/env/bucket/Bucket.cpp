@@ -29,3 +29,7 @@ void Bucket::remove(Physical* entity) {
 		assert(false);
 	}
 }
+
+void Bucket::clear() {
+	content.clear();
+}

@@ -5,6 +5,7 @@
 #include <ranges>
 
 #include "Bucket.h"
+#include "BucketProvider.h"
 #include "levels/LevelCache.h"
 #include "objects/Physical.h"
 #include "utils/DeleteUtils.h"
@@ -15,7 +16,7 @@ StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRad
 	bucketsPerRadius.reserve(queryRadius.size());
 
 	for (int i = 0; i < queryRadius.size(); ++i) {
-		bucketsPerRadius.push_back(new Bucket[sqResolution]);
+		bucketsPerRadius.push_back(BucketProvider::get(sqResolution));
 		bool* arr = new bool[sqResolution];
 		std::fill_n(arr, sqResolution, false);
 		inited.push_back(arr);
@@ -23,7 +24,10 @@ StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRad
 }
 
 StaticGrid::~StaticGrid() {
-	clear_vector_array(bucketsPerRadius);
+	for (auto* b : bucketsPerRadius) {
+		BucketProvider::release(b, sqResolution);
+	}
+	bucketsPerRadius.clear();
 	clear_vector_array(inited);
 }
 

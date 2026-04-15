@@ -1,5 +1,6 @@
 #include "Grid.h"
 #include "Bucket.h"
+#include "BucketProvider.h"
 #include "control/MouseButton.h"
 #include "levels/LevelCache.h"
 #include "levels/LevelCacheProvider.h"
@@ -15,13 +16,13 @@ Grid::Grid(short resolution, float size, float maxQueryRadius)
 	  closeIndexes(CloseIndexesProvider::get(resolution)),
 	  levelCache(LevelCacheProvider::get(resolution, maxQueryRadius, calculator)),
 	  resolution(resolution), sqResolution(resolution * resolution) {
-	buckets = new Bucket[sqResolution];
+	buckets = BucketProvider::get(sqResolution);
 	tempSelected = new std::vector<Physical*>();
 	cache = new std::vector<Physical*>();
 }
 
 Grid::~Grid() {
-	delete[] buckets;
+	BucketProvider::release(buckets, sqResolution);
 	delete tempSelected;
 	delete cache;
 }
@@ -103,7 +104,7 @@ std::vector<Physical*>* Grid::getArrayNeight(MouseHeld& held, const char player)
 }
 
 std::vector<int> Grid::getCloseCenters(Urho3D::Vector2& center, float radius) const {
-	//TODO clean prawie to samo co wy¿ej
+	//TODO clean prawie to samo co wyï¿½ej
 	radius *= calculator->getFieldSize();
 	radius *= 0.5;
 	radius -= 0.1;
@@ -136,7 +137,7 @@ void Grid::invalidateCache(int currentIdx, float radius) {
 }
 
 std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, float radius) {
-	//TODO clean prawie to samo co wy¿ej
+	//TODO clean prawie to samo co wyï¿½ej
 	const auto posBeginX = calculator->getIndex(clicked->getPosition().x_ - radius);
 	const auto posBeginZ = calculator->getIndex(clicked->getPosition().z_ - radius);
 	const auto posEndX = calculator->getIndex(clicked->getPosition().x_ + radius);

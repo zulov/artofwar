@@ -397,9 +397,11 @@
     <ClCompile Include="src\env\bucket\StaticGrid.cpp" />
     <ClCompile Include="src\env\influence\VisibilityManager.cpp" />
     <ClCompile Include="src\utils\CountUtils.cpp" />
+    <ClCompile Include="src\env\bucket\BucketProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utils\CountUtils.h" />
+    <ClInclude Include="src\env\bucket\BucketProvider.h" />
     <ClInclude Include="src\database\db_insert_defs.h" />
     <ClInclude Include="src\database\db_insert_utils.h" />
     <ClInclude Include="src\env\path\PathCache.h" />
