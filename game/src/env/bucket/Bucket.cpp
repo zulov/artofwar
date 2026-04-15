@@ -19,12 +19,11 @@ void Bucket::add(const std::vector<Physical*>& things) {
 }
 
 void Bucket::remove(Physical* entity) {
-	auto pos = std::ranges::find(content, entity) - content.begin();
+	auto it = std::ranges::find(content, entity);
 
-	if (pos < content.size()) {
-		content.erase(content.begin() + pos);
-		// std::iter_swap(content.begin() + pos, content.end()-1);
-		// content.pop_back();
+	if (it != content.end()) {
+		std::iter_swap(it, content.end() - 1);
+		content.pop_back();
 	} else {
 		assert(false);
 	}

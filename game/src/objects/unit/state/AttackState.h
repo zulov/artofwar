@@ -31,7 +31,7 @@ public:
 	void setData(Unit* unit, Physical* const thing) {
 		setStartData(unit, thing, CellState::ATTACK);
 		if (thing->getType() == ObjectType::UNIT) {
-			setSlotData(unit, dynamic_cast<Unit*>(thing));
+			setSlotData(unit, static_cast<Unit*>(thing));
 		}
 	}
 

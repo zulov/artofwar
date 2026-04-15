@@ -75,7 +75,7 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	for (const auto worker : poss->getWorkers()) {
 		if (worker->getState() == UnitState::COLLECT) {
 			//TODO error thing to interact nie jest zapisywany!
-			const auto resId = dynamic_cast<ResourceEntity*>(worker->getThingToInteract())->getResourceId();
+			const auto resId = static_cast<ResourceEntity*>(worker->getThingToInteract())->getResourceId();
 			assert(resId >= 0 && resId <= 3);
 			if (resId >= 0) {
 				++workersPerRes[resId];

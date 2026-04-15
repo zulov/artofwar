@@ -17,6 +17,7 @@ public:
 	static void init();
 	static void dispose();
 	static void reset();
+	static void returnToPool(ProjectileBase* projectile);
 
 private:
 	ProjectileManager() = default;
@@ -25,4 +26,5 @@ private:
 	static ProjectileManager* instance;
 
 	std::vector<ProjectileBase*> projectiles;
+	std::vector<ProjectileBase*> freeList;
 };
