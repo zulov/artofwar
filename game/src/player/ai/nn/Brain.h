@@ -5,10 +5,11 @@
 #include <vector>
 
 class Layer;
+struct LayerData;
 //TODO remember AVX2 set
 class Brain {
 public:
-	explicit Brain(const std::string& filename, const std::vector<std::string>& lines);
+	explicit Brain(const std::string& filename, std::vector<LayerData>& layers);
 	Brain(const Brain& rhs) = delete;
 	~Brain();
 

@@ -8,7 +8,7 @@
 #include "utils/FileUtils.h"
 
 std::vector<Brain*> BrainProvider::brains;
-std::vector<std::string> BrainProvider::tempLines;
+std::vector<LayerData> BrainProvider::tempLayers;
 
 BrainProvider::~BrainProvider() {
 	clear_vector(brains);
@@ -20,13 +20,12 @@ Brain* BrainProvider::get(const std::string name) {
 			return brain;
 		}
 	}
-	loadLines(name, tempLines);
-	assert(!tempLines.empty());
-	if (tempLines.empty()) {
+	if (!loadBrainFile(name, tempLayers) || tempLayers.empty()) {
+		assert(false);
 		Game::getLog()->WriteRaw("No brain Found " + Urho3D::String(name.c_str()) + "\n", true);
 		return nullptr;
 	}
-	auto* const brain = new Brain(name, tempLines);
+	auto* const brain = new Brain(name, tempLayers);
 	brains.push_back(brain);
 	return brain;
 }

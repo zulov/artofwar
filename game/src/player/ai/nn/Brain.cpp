@@ -4,23 +4,14 @@
 #include "utils/SpanUtils.h"
 #include "utils/DeleteUtils.h"
 #include "utils/FileUtils.h"
-#include "utils/StringUtils.h"
 
 
-Brain::Brain(const std::string& filename, const std::vector<std::string>& lines) :
+Brain::Brain(const std::string& filename, std::vector<LayerData>& layers) :
 	filename(filename) {
-	allLayers.reserve(lines.size());
+	allLayers.reserve(layers.size());
 
-	std::vector<float> w;
-	std::vector<float> b;
-
-	for (const auto& line : lines) {
-		w.clear();
-		b.clear();
-
-		parseLine(line, w, b);
-
-		allLayers.push_back(new Layer(w, b));
+	for (auto& layer : layers) {
+		allLayers.push_back(new Layer(layer.weights, layer.biases));
 	}
 }
 

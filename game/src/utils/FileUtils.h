@@ -1,57 +1,75 @@
 #pragma once
 #include <fstream>
-#include <iostream>
 #include <string>
 #include <vector>
 #include <fast_float/fast_float.h>
 
-inline void loadLines(const std::string& path, std::vector<std::string>& lines) {
-	std::ifstream infile(path, std::fstream::in);
-	std::string data;
-	lines.clear();
-	while (std::getline(infile, data)) {
-		lines.push_back(std::move(data));
+struct LayerData {
+	std::vector<float> weights;
+	std::vector<float> biases;
+};
+
+inline bool loadBrainFile(const std::string& path, std::vector<LayerData>& layers) {
+	std::ifstream infile(path, std::ios::in | std::ios::ate | std::ios::binary);
+	if (!infile.is_open()) {
+		return false;
 	}
-	infile.close();
-}
 
-//TODO przeanalizowac to
-inline void parseLine(const std::string& line, std::vector<float>& w, std::vector<float>& b) {
-	const char* ptr = line.data();
-	const char* end = ptr + line.size();
+	const auto fileSize = infile.tellg();
+	infile.seekg(0, std::ios::beg);
 
-	bool parsing_weights = true;
+	std::string buffer(fileSize, '\0');
+	infile.read(&buffer[0], fileSize);
 
-	if (ptr < end && *ptr == ';') {
-		parsing_weights = false;
-		ptr++;
-	}
+	layers.clear();
+
+	const char* ptr = buffer.data();
+	const char* end = ptr + buffer.size();
 
 	while (ptr < end) {
-		if (*ptr == ';') {
-			if (ptr + 1 < end && ptr[1] == ';') {
-				parsing_weights = false;
-				ptr += 2;
+		LayerData layer;
+		bool parsing_weights = true;
+
+		if (ptr < end && *ptr == ';') {
+			parsing_weights = false;
+			ptr++;
+		}
+
+		while (ptr < end && *ptr != '\n' && *ptr != '\r') {
+			if (*ptr == ';') {
+				if (ptr + 1 < end && ptr[1] == ';') {
+					parsing_weights = false;
+					ptr += 2;
+					continue;
+				}
+				ptr++;
 				continue;
 			}
+
+			float val;
+			auto result = fast_float::from_chars(ptr, end, val);
+
+			if (result.ec != std::errc()) {
+				ptr++;
+				continue;
+			}
+
+			if (parsing_weights) {
+				layer.weights.push_back(val);
+			} else {
+				layer.biases.push_back(val);
+			}
+
+			ptr = result.ptr;
+		}
+
+		while (ptr < end && (*ptr == '\n' || *ptr == '\r')) {
 			ptr++;
-			continue;
 		}
 
-		float val;
-		auto result = fast_float::from_chars(ptr, end, val);
-
-		if (result.ec != std::errc()) {
-			ptr++;
-			continue;
+		if (!layer.weights.empty() || !layer.biases.empty()) {
+			layers.push_back(std::move(layer));
 		}
-
-		if (parsing_weights) {
-			w.push_back(val);
-		} else {
-			b.push_back(val);
-		}
-
-		ptr = result.ptr;
 	}
+	return true;
 }
