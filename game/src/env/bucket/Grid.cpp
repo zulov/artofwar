@@ -16,13 +16,13 @@ Grid::Grid(short resolution, float size, float maxQueryRadius)
 	  closeIndexes(CloseIndexesProvider::get(resolution)),
 	  levelCache(LevelCacheProvider::get(resolution, maxQueryRadius, calculator)),
 	  resolution(resolution), sqResolution(resolution * resolution) {
-	buckets = BucketProvider::get(sqResolution);
+	buckets = ArrayProvider<Bucket>::get(sqResolution);
 	tempSelected = new std::vector<Physical*>();
 	cache = new std::vector<Physical*>();
 }
 
 Grid::~Grid() {
-	BucketProvider::release(buckets, sqResolution);
+	ArrayProvider<Bucket>::release(buckets, sqResolution);
 	delete tempSelected;
 	delete cache;
 }

@@ -24,6 +24,18 @@ void ComplexBucketData::clear() {
 	staticObj = nullptr;
 }
 
+void ComplexBucketData::resetForReuse() {
+	state = CellState::NONE;
+	size = 0;
+	additionalInfo = -1;
+	isNeightOccupied = 0;
+	gradient = -1;
+	staticObj = nullptr;
+	delete[] resourceBonuses;
+	resourceBonuses = nullptr;
+	cost = 0;
+}
+
 void ComplexBucketData::setNeightOccupied(const unsigned char index) {
 	isNeightOccupied |= Flags::bitFlags[index];
 }
@@ -56,7 +68,7 @@ void ComplexBucketData::decStateSize() {
 }
 
 void ComplexBucketData::setResBonuses(char player, unsigned char resId, float bonus) {
-	if (resourceBonuses == nullptr) {//TODO mem perf dodaæ jakis pool obiektow
+	if (resourceBonuses == nullptr) {//TODO mem perf dodaï¿½ jakis pool obiektow
 		resourceBonuses = new float[MAX_PLAYERS * RESOURCES_SIZE];
 		resourceBonuses[player * MAX_PLAYERS + resId] = bonus; return;
 	}

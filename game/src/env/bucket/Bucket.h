@@ -24,6 +24,7 @@ public:
 	void add(const std::vector<Physical*>& things);
 	void remove(Physical* entity);
 	void clear();
+	void resetForReuse() { clear(); }
 private:
 	std::vector<Physical*> content;
 };

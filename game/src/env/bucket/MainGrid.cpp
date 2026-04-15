@@ -5,6 +5,7 @@
 #include <Urho3D/Resource/Image.h>
 #include <Urho3D/IO/Log.h>
 #include "Bucket.h"
+#include "BucketProvider.h"
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"
 #include "database/db_strcut.h"
@@ -19,7 +20,7 @@
 
 MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
 	Grid(resolution, size, maxQueryRadius),
-	complexData(new ComplexBucketData[sqResolution]),
+	complexData(ArrayProvider<ComplexBucketData>::get(sqResolution)),
 	pathFinder(resolution, size), countArray(new bool[sqResolution]) {
 	const auto quarter = calculator->getFieldSize() / 4;
 	pathFinder.setComplexBucketData(complexData);
@@ -37,7 +38,7 @@ MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
 }
 
 MainGrid::~MainGrid() {
-	delete[] complexData;
+	ArrayProvider<ComplexBucketData>::release(complexData, sqResolution);
 	delete[] countArray;
 }
 

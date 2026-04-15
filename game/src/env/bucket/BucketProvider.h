@@ -1,21 +1,44 @@
 #pragma once
 #include <vector>
 
-class Bucket;
-
-class BucketProvider {
+template <typename T>
+class ArrayProvider {
 public:
-	~BucketProvider();
+	~ArrayProvider() {
+		for (auto& entry : pool) {
+			delete[] entry.data;
+		}
+		pool.clear();
+	}
 
-	static Bucket* get(int sqResolution);
-	static void release(Bucket* buckets, int sqResolution);
+	static T* get(int size) {
+		for (auto it = pool.begin(); it != pool.end(); ++it) {
+			if (it->size == size) {
+				T* data = it->data;
+				pool.erase(it);
+				return data;
+			}
+		}
+		return new T[size];
+	}
+
+	static void release(T* data, int size) {
+		for (int i = 0; i < size; ++i) {
+			data[i].resetForReuse();
+		}
+		pool.push_back({data, size});
+	}
+
 private:
-	BucketProvider() = default;
+	ArrayProvider() = default;
 
 	struct PoolEntry {
-		Bucket* buckets;
-		int sqResolution;
+		T* data;
+		int size;
 	};
 
 	static std::vector<PoolEntry> pool;
 };
+
+template <typename T>
+std::vector<typename ArrayProvider<T>::PoolEntry> ArrayProvider<T>::pool;

@@ -23,6 +23,7 @@ public:
 	void setStatic(Static* object);
 	Static* getStatic() const { return staticObj; }
 	void clear();
+	void resetForReuse();
 
 	void setNeightOccupied(unsigned char index);
 	void setNeightFree(unsigned char index);
