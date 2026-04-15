@@ -79,7 +79,7 @@ public:
 	virtual std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(Unit* user) = 0;
 	std::optional<Urho3D::Vector2> getPosToUseBy(Unit* follower);
 
-	virtual unsigned short getMaxHpBarSize() const = 0;
+	virtual float getMaxHpBarSize() const = 0;
 
 	virtual std::pair<float, bool> absorbAttack(float attackCoef) = 0;
 

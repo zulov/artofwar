@@ -83,7 +83,7 @@ private:
 
 	BuildingActionType getBuildingActionType(ActionType type);
 
-	UnitOrder* vectorOrder(UnitAction order, Urho3D::Vector2* vector, bool shiftPressed,
+	UnitOrder* vectorOrder(UnitAction order, Urho3D::Vector2& vector, bool shiftPressed,
 	                       const std::vector<Physical*>& vec) const;
 	UnitOrder* thingOrder(UnitAction order, Physical* toUse, bool shiftPressed,
 	                      const std::vector<Physical*>& vec) const;

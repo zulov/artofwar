@@ -33,7 +33,7 @@ inline bool skipRayCast(const Urho3D::IntVector2 pos) {
 	return !ui->GetCursor()->IsVisible() || ui->GetElementAt(pos, true);
 }
 
-bool raycast(hit_data& hitData) {
+inline bool raycast(hit_data& hitData) {
 	const auto pos = Game::getUI()->GetCursorPosition();
 	if (skipRayCast(pos)) {
 		return false;
@@ -57,7 +57,7 @@ bool raycast(hit_data& hitData) {
 	return false;
 }
 
-bool raycastGround(hit_data& hitData) {
+inline bool raycastGround(hit_data& hitData) {
 	const auto pos = Game::getUI()->GetCursorPosition();
 	if (skipRayCast(pos)) {
 		return false;

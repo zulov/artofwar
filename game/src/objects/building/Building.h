@@ -43,7 +43,7 @@ public:
 	ObjectType getType() const override { return ObjectType::BUILDING; }
 	float getAttackVal(Physical* aim) override;
 	void action(BuildingActionType type, short id);
-	unsigned short getMaxHpBarSize() const override;
+	float getMaxHpBarSize() const override;
 	float getHealthBarSize() const override;
 	char getLevelNum() const override;
 	const Urho3D::IntVector2 getGridSize() const override;

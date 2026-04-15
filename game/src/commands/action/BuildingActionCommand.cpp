@@ -13,7 +13,7 @@ BuildingActionCommand::BuildingActionCommand(const std::vector<Physical*>& build
                                              short id) : id(id), action(action) {
 	this->buildings.reserve(buildings.size());
 	for (const auto building : buildings) {
-		auto build = reinterpret_cast<Building*>(building);
+		auto build = static_cast<Building*>(building);
 		if (build->isReady()) {
 			this->buildings.emplace_back(build);
 		}

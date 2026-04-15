@@ -1,3 +1,4 @@
+#pragma once
 #include "ObjectEnums.h"
 #include <assert.h>
 

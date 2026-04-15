@@ -13,6 +13,7 @@ void ProjectileManager::update(float timeStep) {
 	for (const auto projectile : instance->projectiles) {
 		projectile->update(timeStep);
 		//TODO perf free pool
+		//TODO check if inactive are updated
 	}
 }
 

@@ -20,7 +20,8 @@
 #include "env/Environment.h"
 
 
-Building::Building(Urho3D::Vector3 _position, db_building* db_building, char playerId, char teamId, char level, int indexInGrid, UId uId):
+Building::Building(Urho3D::Vector3 _position, db_building* db_building, char playerId, char teamId, char level,
+                   int indexInGrid, UId uId) :
 	Static(_position, indexInGrid, uId), dbLevel(db_building->getLevel(level).value()) {
 	player = playerId;
 	team = teamId;
@@ -29,32 +30,24 @@ Building::Building(Urho3D::Vector3 _position, db_building* db_building, char pla
 }
 
 
-Building::~Building() {
-	if (node) {
-		node->RemoveAllChildren();
-	}
-}
+Building::~Building() { if (node) { node->RemoveAllChildren(); } }
 
 void Building::postCreate() {
 	queue.add(QueueActionType::BUILDING_CREATE, getDbId(), dbLevel->id);
 	setShaderParam(this, "Progress", 0.0);
 }
 
-unsigned short Building::getMaxHpBarSize() const {
+float Building::getMaxHpBarSize() const {
 	const auto gridSize = getGridSize();
 	return Urho3D::Max(gridSize.x_, gridSize.y_) * 0.5f;
 }
 
 float Building::getHealthBarSize() const {
-	if (isReady()) {
-		return Physical::getHealthBarSize();
-	}
+	if (isReady()) { return Physical::getHealthBarSize(); }
 	return getMaxHpBarSize() * queue.first()->getProgress();
 }
 
-char Building::getLevelNum() const {
-	return dbLevel->level;
-}
+char Building::getLevelNum() const { return dbLevel->level; }
 
 void Building::populate() {
 	Static::populate();
@@ -65,9 +58,7 @@ void Building::populate() {
 }
 
 std::pair<float, bool> Building::absorbAttack(float attackCoef) {
-	if (hp <= 0) {
-		return {0.f, false};
-	}
+	if (hp <= 0) { return {0.f, false}; }
 	const auto val = (attackCoef + attackCoef * !isReady()) * (1 - dbLevel->armor);
 	hp -= val;
 
@@ -82,26 +73,20 @@ Urho3D::String Building::getInfo() const {
 	const auto l10n = Game::getLocalization();
 
 	return Urho3D::String(dbBuilding->name + " " + dbLevel->name)
-		.AppendWithFormat(l10n->Get("info_build").CString(),
-		                  asStringF(dbLevel->attack, 1).c_str(),
-		                  asStringF(dbLevel->armor).c_str(),
-		                  (int)hp, dbLevel->maxHp,
-		                  closeUsers, getMaxCloseUsers(),
-		                  rangeUsers, getMaxRangeUsers(),
-		                  magic_enum::enum_name(state).data());
+			.AppendWithFormat(l10n->Get("info_build").CString(),
+			                  asStringF(dbLevel->attack, 1).c_str(),
+			                  asStringF(dbLevel->armor).c_str(),
+			                  (int)hp, dbLevel->maxHp,
+			                  closeUsers, getMaxCloseUsers(),
+			                  rangeUsers, getMaxRangeUsers(),
+			                  magic_enum::enum_name(state).data());
 }
 
-unsigned char Building::getMaxCloseUsers() const {
-	return dbBuilding->maxUsers;
-}
+unsigned char Building::getMaxCloseUsers() const { return dbBuilding->maxUsers; }
 
-const Urho3D::String& Building::getName() const {
-	return dbBuilding->name;
-}
+const Urho3D::String& Building::getName() const { return dbBuilding->name; }
 
-float Building::getAttackVal(Physical* aim) {
-	return dbLevel->attack;
-}
+float Building::getAttackVal(Physical* aim) { return dbLevel->attack; }
 
 void Building::action(BuildingActionType type, short id) {
 	if (!isReady()) { return; }
@@ -117,9 +102,7 @@ void Building::action(BuildingActionType type, short id) {
 	case BuildingActionType::UNIT_LEVEL: {
 		//TODO bug czy to dobre uzycie optionala
 		if (auto nextLevel = player->getNextLevelForUnit(id)) {
-			if (resources->reduce(*nextLevel)) {
-				queue.add(QueueActionType::UNIT_LEVEL, id, (*nextLevel)->id);
-			}
+			if (resources->reduce(*nextLevel)) { queue.add(QueueActionType::UNIT_LEVEL, id, (*nextLevel)->id); }
 		}
 	}
 	break;
@@ -133,9 +116,7 @@ void Building::levelUp(char level) {
 	const int hpTemp = hp;
 	loadXml("Objects/buildings/" + dbLevel->nodeName);
 	populate();
-	if (hpTemp >= 0) {
-		hp = hpTemp;
-	}
+	if (hpTemp >= 0) { hp = hpTemp; }
 }
 
 Building* Building::load(dbload_building* dbloadBuilding) {
@@ -145,66 +126,55 @@ Building* Building::load(dbload_building* dbloadBuilding) {
 }
 
 QueueElement* Building::updateQueue() {
-	if (!isReady() && !SIM_GLOBALS.HEADLESS) {
-		setShaderParam(this, "Progress", queue.first()->getProgress());
-	}
+	if (!isReady() && !SIM_GLOBALS.HEADLESS) { setShaderParam(this, "Progress", queue.first()->getProgress()); }
 
 	return queue.update();
 }
 
-void Building::updateAi(bool ifBuildingAction) {//TODO fun to check if not null and alive
-    if (thingToInteract && isDeadOrTooFar()){
-        thingToInteract = nullptr;
+void Building::updateAi(bool ifBuildingAction) {
+	//TODO fun to check if not null and alive
+	if (thingToInteract && isDeadOrTooFar()) {
+		thingToInteract = nullptr;
 		currentFrameState = 0;
-    }
-    if (dbLevel->canAttack) {
-	    if (thingToInteract) {
-		    if (currentFrameState >= dbLevel->attackReload) {
-			    ProjectileManager::shoot(this, thingToInteract, 7, player); // TODO magic number
-			    currentFrameState = 0;
-		    } else { ++currentFrameState; }
-	    } else if (ifBuildingAction) {
-		    const auto thingsToInteract =
-				    Game::getEnvironment()->getNeighboursFromTeamNotEq(this, dbLevel->attackRange);
-		    const auto closest =
-				    Game::getEnvironment()->closestPhysicalSimple(this, thingsToInteract, dbLevel->attackRange);
-		    thingToInteract = closest;
-	    }
-    }
+	}
+	if (dbLevel->canAttack) {
+		if (thingToInteract) {
+			if (currentFrameState >= dbLevel->attackReload) {
+				ProjectileManager::shoot(this, thingToInteract, 7, player); // TODO magic number
+				currentFrameState = 0;
+			} else { ++currentFrameState; }
+		} else if (ifBuildingAction) {
+			const auto thingsToInteract =
+					Game::getEnvironment()->getNeighboursFromTeamNotEq(this, dbLevel->attackRange);
+			const auto closest =
+					Game::getEnvironment()->closestPhysicalSimple(this, thingsToInteract, dbLevel->attackRange);
+			thingToInteract = closest;
+		}
+	}
 
-	if (dbBuilding->toResource>0 && dbLevel->spawnResourceRange>0 && queue.isEmpty()) {
+	if (dbBuilding->toResource > 0 && dbLevel->spawnResourceRange > 0 && queue.isEmpty()) {
 		queue.add(QueueActionType::RESOURCE_CREATE, dbBuilding->id, dbLevel->id);
 	}
 }
 
 bool Building::isDeadOrTooFar() {
-    return !thingToInteract->isAlive() ||
-           sqDistAs2D(thingToInteract->getPosition(), position) > dbLevel->sqAttackRange;
+	return !thingToInteract->isAlive() ||
+			sqDistAs2D(thingToInteract->getPosition(), position) > dbLevel->sqAttackRange;
 }
 
 std::optional<int> Building::getDeploy() {
-	if (deployIndex > -1) {
-		return deployIndex;
-	}
+	if (deployIndex > -1) { return deployIndex; }
 	return {};
 }
 
-const Urho3D::IntVector2 Building::getGridSize() const {
-	return dbBuilding->size;
-}
+const Urho3D::IntVector2 Building::getGridSize() const { return dbBuilding->size; }
 
 void Building::createDeploy() {
 	deployIndex = -1;
-	for (auto i : getSurroundCells()) {
-		if (Game::getEnvironment()->cellIsPassable(i)) {
-			deployIndex = i;
-		}
-	}
+	for (auto i : getSurroundCells()) { if (Game::getEnvironment()->cellIsPassable(i)) { deployIndex = i; } }
 }
 
-void Building::setDeploy(int cell) {
-	deployIndex = cell;
-}
+void Building::setDeploy(int cell) { deployIndex = cell; }
 
 void Building::complete() {
 	StateManager::changeState(this, StaticState::ALIVE);
@@ -214,26 +184,14 @@ void Building::complete() {
 	//hp = hpTemp;
 }
 
-float Building::getSightRadius() const {
-	return dbLevel->sightRadius * (1 - 0.7f * !isReady());
-}
+float Building::getSightRadius() const { return dbLevel->sightRadius * (1 - 0.7f * !isReady()); }
 
-short Building::getCostSum() const {
-	return dbBuilding->getSumCost();
-}
+short Building::getCostSum() const { return dbBuilding->getSumCost(); }
 
-bool Building::canUse(int index) const {
-	return Game::getEnvironment()->cellIsAttackable(index);
-}
+bool Building::canUse(int index) const { return Game::getEnvironment()->cellIsAttackable(index); }
 
-db_building_level* Building::getLevel() const {
-	return dbLevel;
-}
+db_building_level* Building::getLevel() const { return dbLevel; }
 
-float Building::getModelHeight() const {
-	return dbLevel->modelHeight;
-}
+float Building::getModelHeight() const { return dbLevel->modelHeight; }
 
-void Building::setModelData(float modelHeight) const {
-	dbLevel->modelHeight = modelHeight;
-}
+void Building::setModelData(float modelHeight) const { dbLevel->modelHeight = modelHeight; }

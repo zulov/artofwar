@@ -40,7 +40,7 @@ public:
 	float potentialFoodLost() const { return std::max(0.f, values[0] - foodStorage) * foodLostRate; }
 
 	float getLastGoldGains() const { return lastGoldGain; }
-	float potentialGoldGain() const { return std::max(goldStorage, values[3]) * goldGainRate; }
+	float potentialGoldGain() const { return std::min(goldStorage, values[3]) * goldGainRate; }
 
 	float getStoneRefineCapacity() const { return stoneRefineCapacity; }
 	float getPotentialStoneRefinement() const {

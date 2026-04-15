@@ -30,7 +30,8 @@
 
 constexpr char CIRCLE_NUMBER = 5;
 
-Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectType::NONE) {
+Controls::Controls(Urho3D::Input* _input) :
+	input(_input), typeToCreate(ObjectType::NONE) {
 	if (!SIM_GLOBALS.HEADLESS) {
 		selectedInfo = new SelectedInfo();
 		selected.reserve(5000);
@@ -52,9 +53,7 @@ Controls::~Controls() {
 	if (!SIM_GLOBALS.HEADLESS) {
 		arrowNode->Remove();
 
-		for (auto mark : deployMark) {
-			mark->Remove();
-		}
+		for (auto mark : deployMark) { mark->Remove(); }
 	}
 }
 
@@ -67,15 +66,11 @@ void Controls::updateAdditionalInfo() const {
 			auto deployIndex = static_cast<Building*>(selected.at(i))->getDeploy().value();
 			deployMark[i]->SetPosition(Game::getEnvironment()->getPosWithHeightAt(deployIndex));
 		}
-		for (int i = min; i < MAX_DEPLOY_MARK_NUMBER; ++i) {
-			deployMark[i]->SetEnabled(false);
-		}
+		for (int i = min; i < MAX_DEPLOY_MARK_NUMBER; ++i) { deployMark[i]->SetEnabled(false); }
 	}
 	break;
 	default:
-		for (const auto mark : deployMark) {
-			mark->SetEnabled(false);
-		}
+		for (const auto mark : deployMark) { mark->SetEnabled(false); }
 	}
 }
 
@@ -83,11 +78,7 @@ void Controls::setCircle(int i, Urho3D::Vector4 val) const {
 	Game::getEnvironment()->setTerrainShaderParam("RangeData" + Urho3D::String(i), val);
 }
 
-void Controls::resetCircles() const {
-	for (int i = 0; i < CIRCLE_NUMBER; ++i) {
-		setCircle(i, Urho3D::Vector4());
-	}
-}
+void Controls::resetCircles() const { for (int i = 0; i < CIRCLE_NUMBER; ++i) { setCircle(i, Urho3D::Vector4()); } }
 
 void Controls::setCircleSight(int i, const Urho3D::Vector3& position, float radius, Urho3D::Color color) const {
 	color.a_ = 0;
@@ -95,9 +86,7 @@ void Controls::setCircleSight(int i, const Urho3D::Vector3& position, float radi
 }
 
 void Controls::unSelectAll() {
-	for (const auto& phy : selected) {
-		phy->unSelect();
-	}
+	for (const auto& phy : selected) { phy->unSelect(); }
 
 	selected.clear();
 	selectedInfo->setSelectedType(ObjectType::NONE);
@@ -106,20 +95,16 @@ void Controls::unSelectAll() {
 }
 
 void Controls::selectOne(Physical* entity, char player) {
-	const auto entityType = entity->getType();
-	if (!entity->isNodeEnabled()) {
-		return;
-	}
-	if (entity == nullptr || entityType != selectedInfo->getSelectedType()) {
-		unSelectAll();
-	}
+	if (entity == nullptr) { unSelectAll(); }
+	if (!entity->isNodeEnabled()) { return; }
+	if (entity->getType() != selectedInfo->getSelectedType()) { unSelectAll(); }
 	if (!entity->isSelected() && entity->isAlive()
 		&& (entity->getPlayer() < 0 || entity->getPlayer() == player)) {
 		entity->select();
 
 		selected.push_back(entity);
 
-		selectedInfo->setSelectedType(entityType);
+		selectedInfo->setSelectedType(entity->getType());
 		selectedInfo->setAllNumber(selected.size());
 		selectedInfo->select(entity);
 	}
@@ -127,28 +112,20 @@ void Controls::selectOne(Physical* entity, char player) {
 
 void Controls::select(const std::vector<Physical*>* entities) {
 	auto player = Game::getPlayersMan()->getActivePlayerID();
-	for (const auto physical : *entities) {
-		selectOne(physical, player);
-	}
+	for (const auto physical : *entities) { selectOne(physical, player); }
 	updateAdditionalInfo();
 }
 
 void Controls::leftClick(hit_data& hitData) {
-	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
-		unSelectAll();
-	}
-	if (hitData.isGround) {
-		unSelectAll();
-	} else {
+	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) { unSelectAll(); }
+	if (hitData.isGround) { unSelectAll(); } else {
 		selectOne(hitData.clicked, Game::getPlayersMan()->getActivePlayerID());
 	}
 	updateAdditionalInfo();
 }
 
 void Controls::leftDoubleClick(hit_data& hitData) {
-	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
-		unSelectAll();
-	}
+	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) { unSelectAll(); }
 	select(Game::getEnvironment()->getNeighboursSimilarAs(hitData.clicked));
 }
 
@@ -157,34 +134,31 @@ void Controls::leftClickBuild(hit_data& hitData) {
 	createBuilding({hitData.position.x_, hitData.position.z_});
 }
 
-UnitOrder* Controls::vectorOrder(UnitAction order, Urho3D::Vector2* vector, const bool shiftPressed,
+UnitOrder* Controls::vectorOrder(UnitAction order, Urho3D::Vector2& vector, const bool shiftPressed,
                                  const std::vector<Physical*>& vec) const {
-	if (vec.size() == 1) {
-		return new IndividualOrder(static_cast<Unit*>(vec.at(0)), order, *vector, shiftPressed);
-	}
-	return new GroupOrder(vec, UnitActionType::ORDER, static_cast<short>(order), *vector, shiftPressed);
+	if (vec.size() == 1) { return new IndividualOrder(static_cast<Unit*>(vec.at(0)), order, vector, shiftPressed); }
+	return new GroupOrder(vec, UnitActionType::ORDER, static_cast<short>(order), vector, shiftPressed);
 }
 
 UnitOrder* Controls::thingOrder(UnitAction order, Physical* toUse, const bool shiftPressed,
                                 const std::vector<Physical*>& vec) const {
-	if (vec.size() == 1) {
-		return new IndividualOrder(static_cast<Unit*>(vec.at(0)), order, toUse, shiftPressed);
-	}
+	if (vec.size() == 1) { return new IndividualOrder(static_cast<Unit*>(vec.at(0)), order, toUse, shiftPressed); }
 	return new GroupOrder(vec, UnitActionType::ORDER, static_cast<short>(order), toUse, shiftPressed);
 }
 
 UnitAction Controls::chooseAction(hit_data& hitData) const {
 	return hitData.clicked->getTeam() == selected.at(0)->getTeam()
-		       ? UnitAction::FOLLOW
-		       : UnitAction::ATTACK;
+			? UnitAction::FOLLOW
+			: UnitAction::ATTACK;
 }
 
 UnitOrder* Controls::createUnitOrder(hit_data& hitData) const {
 	const bool shiftPressed = input->GetKeyDown(Urho3D::KEY_SHIFT);
 	switch (hitData.getType()) {
-	case ObjectType::NONE:
-		return vectorOrder(UnitAction::GO, new Urho3D::Vector2(hitData.position.x_, hitData.position.z_), shiftPressed,
-		                   selected);
+	case ObjectType::NONE: {
+		auto vector = Urho3D::Vector2(hitData.position.x_, hitData.position.z_);
+		return vectorOrder(UnitAction::GO, vector, shiftPressed, selected);
+	}
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
 		return thingOrder(chooseAction(hitData), hitData.clicked, shiftPressed, selected);
@@ -194,14 +168,10 @@ UnitOrder* Controls::createUnitOrder(hit_data& hitData) const {
 	}
 }
 
-void Controls::rightClick(hit_data& hitData) const {
-	Game::getActionCenter()->addUnitAction(createUnitOrder(hitData));
-}
+void Controls::rightClick(hit_data& hitData) const { Game::getActionCenter()->addUnitAction(createUnitOrder(hitData)); }
 
 void Controls::leftHold(MouseHeld& held) {
-	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
-		unSelectAll();
-	}
+	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) { unSelectAll(); }
 
 	select(Game::getEnvironment()->getNeighbours(held, Game::getPlayersMan()->getActivePlayerID()));
 }
@@ -228,13 +198,8 @@ void Controls::releaseLeft() {
 		left.setSecond(hitData.position);
 		const float dist = left.sq2DDist();
 
-		if (left.timeUpDiff() < 0.2f && dist < clickDistance) {
-			leftDoubleClick(hitData);
-		} else if (dist > clickDistance) {
-			leftHold(left.held);
-		} else if (hitData.isSth()) {
-			leftClick(hitData);
-		}
+		if (left.timeUpDiff() < 0.2f && dist < clickDistance) { leftDoubleClick(hitData); } else if (dist >
+			clickDistance) { leftHold(left.held); } else if (hitData.isSth()) { leftClick(hitData); }
 	}
 	Game::getEnvironment()->setTerrainShaderParam("SelectionEnable", false);
 }
@@ -244,9 +209,7 @@ void Controls::releaseRight() {
 
 	if (selectedInfo->getSelectedType() == ObjectType::UNIT && raycast(hitData)) {
 		right.setSecond(hitData.position);
-		if (right.sq2DDist() > clickDistance) {
-			rightHold(right.held);
-		} else if (hitData.isSth()) {
+		if (right.sq2DDist() > clickDistance) { rightHold(right.held); } else if (hitData.isSth()) {
 			rightClick(hitData);
 		}
 	}
@@ -258,11 +221,7 @@ void Controls::releaseBuildLeft() {
 
 	if (raycastGround(hitData)) {
 		leftClickBuild(hitData);
-		if (input->GetKeyDown(Urho3D::KEY_CTRL)) {
-			cleanMouse();
-		} else {
-			toDefault();
-		}
+		if (input->GetKeyDown(Urho3D::KEY_CTRL)) { cleanMouse(); } else { toDefault(); }
 	}
 }
 
@@ -301,8 +260,8 @@ void Controls::order(short id, ActionType type) {
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::NONE:
 		return Game::getActionCenter()->add(
-		                                    new GeneralActionCommand(id, GeneralActionType::BUILDING_LEVEL,
-		                                                             Game::getPlayersMan()->getActivePlayerID()));
+				new GeneralActionCommand(id, GeneralActionType::BUILDING_LEVEL,
+				                         Game::getPlayersMan()->getActivePlayerID()));
 	case ObjectType::UNIT:
 		return actionUnit(id, type);
 	case ObjectType::BUILDING:
@@ -318,8 +277,8 @@ void Controls::executeOnUnits(short id) const {
 
 void Controls::executeOnResources(ResourceActionType action) const {
 	Game::getActionCenter()->add(
-	                             new ResourceActionCommand(selected, action,
-	                                                       Game::getPlayersMan()->getActivePlayerID()));
+			new ResourceActionCommand(selected, action,
+			                          Game::getPlayersMan()->getActivePlayerID()));
 }
 
 void Controls::executeOnBuildings(BuildingActionType action, short id) const {
@@ -394,16 +353,16 @@ void Controls::refreshSelected() {
 	const int sizeBefore = selected.size();
 	//TODO use std::stable_partition
 	selected.erase(
-	               std::remove_if(
-	                              selected.begin(), selected.end(),
-	                              [](Physical* physical) {
-		                              if (!physical->isAlive()) {
-			                              physical->unSelect();
-			                              return true;
-		                              }
-		                              return false;
-	                              }),
-	               selected.end());
+			std::remove_if(
+					selected.begin(), selected.end(),
+					[](Physical* physical) {
+						if (!physical->isAlive()) {
+							physical->unSelect();
+							return true;
+						}
+						return false;
+					}),
+			selected.end());
 
 	if (sizeBefore != selected.size()) {
 		//TODO perf nie koniecznie resetowac calosc
@@ -412,9 +371,7 @@ void Controls::refreshSelected() {
 }
 
 bool Controls::conditionToClean(const FrameInfo* frameInfo) const {
-	if (!frameInfo->isRealFrame()) {
-		return false;
-	}
+	if (!frameInfo->isRealFrame()) { return false; }
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::UNIT:
 		return StateManager::isUnitDead();
@@ -427,9 +384,7 @@ bool Controls::conditionToClean(const FrameInfo* frameInfo) const {
 }
 
 void Controls::cleanAndUpdate(const FrameInfo* frameInfo) {
-	if (conditionToClean(frameInfo)) {
-		refreshSelected();
-	}
+	if (conditionToClean(frameInfo)) { refreshSelected(); }
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::UNIT:
 		for (int i = 0; i < Urho3D::Min(selected.size(), 5); ++i) {
@@ -464,9 +419,7 @@ void Controls::updateSelection() const {
 
 			Game::getEnvironment()->setTerrainShaderParam("SelectionRect",
 			                                              Urho3D::Vector4(minX, minZ, maxX, maxZ));
-		} else {
-			Game::getEnvironment()->setTerrainShaderParam("SelectionEnable", false);
-		}
+		} else { Game::getEnvironment()->setTerrainShaderParam("SelectionEnable", false); }
 	}
 }
 
@@ -479,18 +432,12 @@ void Controls::updateArrow() const {
 		const float length = dir.Length();
 
 		if (length * length > clickDistance && Game::getTime() - right.lastDown > 0.3f) {
-			if (!arrowNode->IsEnabled()) {
-				arrowNode->SetEnabled(true);
-			}
+			if (!arrowNode->IsEnabled()) { arrowNode->SetEnabled(true); }
 			arrowNode->SetScale({length, 1, length / 3});
 			arrowNode->SetDirection({-dir.z_, 0, dir.x_});
 			arrowNode->SetPosition(right.held.first);
-		} else if (arrowNode->IsEnabled()) {
-			arrowNode->SetEnabled(false);
-		}
-	} else if (arrowNode->IsEnabled()) {
-		arrowNode->SetEnabled(false);
-	}
+		} else if (arrowNode->IsEnabled()) { arrowNode->SetEnabled(false); }
+	} else if (arrowNode->IsEnabled()) { arrowNode->SetEnabled(false); }
 }
 
 void Controls::toDefault() {
@@ -503,7 +450,7 @@ void Controls::toDefault() {
 
 void Controls::unitFormation(short id) const {
 	Game::getActionCenter()->addUnitAction(
-	                                       new GroupOrder(selected, UnitActionType::FORMATION, id, nullptr));
+			new GroupOrder(selected, UnitActionType::FORMATION, id, nullptr));
 }
 
 void Controls::control() {
@@ -519,32 +466,18 @@ void Controls::control() {
 
 void Controls::defaultControl() {
 	if (input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT)) {
-		if (!left.isHeld) {
-			clickDown(left);
-		} else {
-			updateSelection();
-		}
-	} else if (left.isHeld) {
-		releaseLeft();
-	}
+		if (!left.isHeld) { clickDown(left); } else { updateSelection(); }
+	} else if (left.isHeld) { releaseLeft(); }
 
 	if (input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) {
-		if (!right.isHeld) {
-			clickDown(right);
-		} else {
-			updateArrow();
-		}
-	} else if (right.isHeld) {
-		releaseRight();
-	}
+		if (!right.isHeld) { clickDown(right); } else { updateArrow(); }
+	} else if (right.isHeld) { releaseRight(); }
 
 	if (input->GetMouseButtonPress(Urho3D::MOUSEB_MIDDLE)) {
 		hit_data hitData;
 
 		if (raycast(hitData)) {
-			if (hitData.clicked) {
-				Game::getLog()->Write(3, hitData.clicked->getInfo());
-			}
+			if (hitData.clicked) { Game::getLog()->Write(3, hitData.clicked->getInfo()); }
 			Game::getLog()->Write(3, hitData.position.ToString());
 		}
 	}
@@ -582,28 +515,20 @@ void Controls::buildControl() {
 		}
 	}
 
-	if (input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT)) {
-		left.markHeld();
-	} else if (left.isHeld) {
+	if (input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT)) { left.markHeld(); } else if (left.isHeld) {
 		releaseBuildLeft();
 	}
 
-	if (input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) {
-		toDefault();
-	}
+	if (input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) { toDefault(); }
 }
 
 void Controls::orderControl() {
-	if (input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT)) {
-		left.markHeld();
-	} else if (left.isHeld) {
+	if (input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT)) { left.markHeld(); } else if (left.isHeld) {
 		switch (unitOrderType) {
 		case UnitAction::GO:
 		case UnitAction::ATTACK:
 		case UnitAction::FOLLOW:
-			if (orderAction()) {
-				toDefault();
-			}
+			if (orderAction()) { toDefault(); }
 			break;
 		case UnitAction::CHARGE:
 			break;
@@ -611,9 +536,5 @@ void Controls::orderControl() {
 		}
 	}
 
-	if (input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) {
-		right.markHeld();
-	} else if (right.isHeld) {
-		toDefault();
-	}
+	if (input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) { right.markHeld(); } else if (right.isHeld) { toDefault(); }
 }

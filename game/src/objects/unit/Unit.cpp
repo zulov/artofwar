@@ -359,7 +359,7 @@ void Unit::changeColor(SimColorMode mode) {
 		setShaderParam(this, "ColorPercent", 2.f);
 		break;
 	case SimColorMode::VELOCITY:
-		setShaderParam(this, "ColorPercent", velocity.LengthSquared() / maxSpeed * maxSpeed);
+		setShaderParam(this, "ColorPercent", velocity.LengthSquared() / (maxSpeed * maxSpeed));
 		break;
 	case SimColorMode::STATE:
 		setShaderParam(this, "ColorPercent", ((float)state) / magic_enum::enum_count<UnitState>());
@@ -383,10 +383,6 @@ void Unit::load(dbload_unit* unit) {
 
 char Unit::getLevelNum() const{
 	return dbLevel->level;
-}
-
-unsigned short Unit::getMaxHpBarSize() const {
-	return 0.4f;
 }
 
 float Unit::getAttackVal(Physical* aim) {

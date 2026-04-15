@@ -39,10 +39,6 @@ void ResourceEntity::populate() {
 	dbId = dbResource->id;
 }
 
-unsigned short ResourceEntity::getMaxHpBarSize() const {
-	return 1;
-}
-
 Urho3D::String ResourceEntity::getInfo() const {
 	const auto l10n = Game::getLocalization();
 	const auto bonus = bonuses[Game::getPlayersMan()->getActivePlayerID()] * dbResource->collectSpeed;
