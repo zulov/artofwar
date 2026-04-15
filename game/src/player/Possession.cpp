@@ -282,10 +282,6 @@ void Possession::ensureReady() {
 		}
 	}
 
-
-	idleArmyNumber = std::ranges::count_if(units, isFreeSolider);
-	armyNumber = std::ranges::count_if(units, isSolider);
-
 	resetSpan(metric->resWithoutBonus);
 	for (const auto worker : workers) {
 		if (worker->getState() == UnitState::COLLECT && worker->isFirstThingAlive()) {
