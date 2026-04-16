@@ -19,17 +19,11 @@ bool Layer::setInput(std::span<const float> data) {
 
 void Layer::setValues(const Eigen::VectorXf& mult) {
 	values.noalias() = weights * mult;
-	values += bias;
-	values = values.array().tanh();
-	//values = (weights * mult + bias).array().tanh();
+	values = (values + bias).array().tanh();
 }
 
 bool Layer::sameInput(std::span<const float> data) {
-	if (values.size() == 0) { return false; }
-	for (int i = 0; i < values.size(); ++i) {
-		if (data[i] != values[i]) {
-			return false;
-		}
-	}
-	return true;
+	if (values.size() == 0 || data.size() != values.size()) { return false; }
+	const auto mapped = Eigen::Map<const Eigen::VectorXf>(data.data(), data.size());
+	return mapped == values;
 }
