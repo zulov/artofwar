@@ -70,9 +70,10 @@ void ComplexBucketData::decStateSize() {
 void ComplexBucketData::setResBonuses(char player, unsigned char resId, float bonus) {
 	if (resourceBonuses == nullptr) {//TODO mem perf doda� jakis pool obiektow
 		resourceBonuses = new float[MAX_PLAYERS * RESOURCES_SIZE];
-		resourceBonuses[player * MAX_PLAYERS + resId] = bonus; return;
+		resourceBonuses[player * RESOURCES_SIZE + resId] = bonus;
+		return;
 	}
-	auto& val = resourceBonuses[player * MAX_PLAYERS + resId];
+	auto& val = resourceBonuses[player * RESOURCES_SIZE + resId];
 
 	val = std::max(val, bonus);
 }
@@ -83,7 +84,7 @@ void ComplexBucketData::resetResBonuses() {
 }
 
 float ComplexBucketData::getResBonus(char player, short resId) const {
-	return resourceBonuses == nullptr ? 1.f : resourceBonuses[player * MAX_PLAYERS + resId];
+	return resourceBonuses == nullptr ? 1.f : resourceBonuses[player * RESOURCES_SIZE + resId];
 }
 
 bool ComplexBucketData::belowCellLimit() const {
