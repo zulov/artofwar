@@ -198,159 +198,144 @@ inline struct MetricDefinitions {
 	const std::span<const unsigned char> getBuildingUnitsIdxs() const { return aiBuildingUnitsIdxs; }
 	const std::span<const unsigned char> getBuildingTypesIdxs() const { return aiBuildingTypesIdxs; }
 
-	static inline auto aiUnitMetric = buildMetricArray<UnitMetricIdx, AiUnitMetric>({
-		//db_unit* u, db_unit_level* l
-		{UnitMetricIdx::COST,            {[](auto u, auto l) -> float { return u->getSumCost(); }, 400}},
-		{UnitMetricIdx::MAX_HP,          {[](auto u, auto l) -> float { return l->maxHp; }, 300}},
-		{UnitMetricIdx::ARMOR,           {[](auto u, auto l) -> float { return l->armor; }}},
-		{UnitMetricIdx::SIGHT_RADIUS,    {[](auto u, auto l) -> float { return l->sightRadius; }, 20}},
+	using U = UnitMetricIdx;
+	using B = BuildingMetricIdx;
+	using R = ResourceMetricIdx;
+	using RNB = ResourceNoBonusMetricIdx;
+	using BM = BasicMetricIdx;
+	using AD = AttackOrDefenceMetricIdx;
+	using WA = WhereAttackMetricIdx;
+	using WD = WhereDefendMetricIdx;
 
-		{UnitMetricIdx::COLLECT,         {[](auto u, auto l) -> float { return l->collect; }}},
-		{UnitMetricIdx::ATTACK,          {[](auto u, auto l) -> float { return l->attack; }, 10}},
-		{UnitMetricIdx::ATTACK_RELOAD,   {[](auto u, auto l) -> float { return l->attackReload; }, 200}},
-		{UnitMetricIdx::ATTACK_RANGE,    {[](auto u, auto l) -> float { return l->attackRange; }, 20}},
-
-		{UnitMetricIdx::TYPE_INFANTRY,   {[](auto u, auto l) -> float { return u->typeInfantry; }}},
-		{UnitMetricIdx::TYPE_RANGE,      {[](auto u, auto l) -> float { return u->typeRange; }}},
-		{UnitMetricIdx::TYPE_CAVALRY,    {[](auto u, auto l) -> float { return u->typeCalvary; }}},
-		{UnitMetricIdx::TYPE_WORKER,     {[](auto u, auto l) -> float { return u->typeWorker; }}},
-		{UnitMetricIdx::TYPE_SPECIAL,    {[](auto u, auto l) -> float { return u->typeSpecial; }}},
-		{UnitMetricIdx::TYPE_MELEE,      {[](auto u, auto l) -> float { return u->typeMelee; }}},
-		{UnitMetricIdx::TYPE_HEAVY,      {[](auto u, auto l) -> float { return u->typeHeavy; }}},
-		{UnitMetricIdx::TYPE_LIGHT,      {[](auto u, auto l) -> float { return u->typeLight; }}},
-
-		{UnitMetricIdx::BONUS_INFANTRY,  {[](auto u, auto l) -> float { return l->bonusInfantry; }}},
-		{UnitMetricIdx::BONUS_RANGE,     {[](auto u, auto l) -> float { return l->bonusRange; }}},
-		{UnitMetricIdx::BONUS_CAVALRY,   {[](auto u, auto l) -> float { return l->bonusCalvary; }}},
-		{UnitMetricIdx::BONUS_WORKER,    {[](auto u, auto l) -> float { return l->bonusWorker; }}},
-		{UnitMetricIdx::BONUS_SPECIAL,   {[](auto u, auto l) -> float { return l->bonusSpecial; }}},
-		{UnitMetricIdx::BONUS_MELEE,     {[](auto u, auto l) -> float { return l->bonusMelee; }}},
-		{UnitMetricIdx::BONUS_HEAVY,     {[](auto u, auto l) -> float { return l->bonusHeavy; }}},
-		{UnitMetricIdx::BONUS_LIGHT,     {[](auto u, auto l) -> float { return l->bonusLight; }}},
+	static inline auto aiUnitMetric = buildMetricArray<U, AiUnitMetric>({
+		{U::COST,            {[](auto u, auto l) -> float { return u->getSumCost(); }, 400}},
+		{U::MAX_HP,          {[](auto u, auto l) -> float { return l->maxHp; }, 300}},
+		{U::ARMOR,           {[](auto u, auto l) { return l->armor; }}},
+		{U::SIGHT_RADIUS,    {[](auto u, auto l) { return l->sightRadius; }, 20}},
+		{U::COLLECT,         {[](auto u, auto l) { return l->collect; }}},
+		{U::ATTACK,          {[](auto u, auto l) { return l->attack; }, 10}},
+		{U::ATTACK_RELOAD,   {[](auto u, auto l) -> float { return l->attackReload; }, 200}},
+		{U::ATTACK_RANGE,    {[](auto u, auto l) -> float { return l->attackRange; }, 20}},
+		{U::TYPE_INFANTRY,   {[](auto u, auto l) -> float { return u->typeInfantry; }}},
+		{U::TYPE_RANGE,      {[](auto u, auto l) -> float { return u->typeRange; }}},
+		{U::TYPE_CAVALRY,    {[](auto u, auto l) -> float { return u->typeCalvary; }}},
+		{U::TYPE_WORKER,     {[](auto u, auto l) -> float { return u->typeWorker; }}},
+		{U::TYPE_SPECIAL,    {[](auto u, auto l) -> float { return u->typeSpecial; }}},
+		{U::TYPE_MELEE,      {[](auto u, auto l) -> float { return u->typeMelee; }}},
+		{U::TYPE_HEAVY,      {[](auto u, auto l) -> float { return u->typeHeavy; }}},
+		{U::TYPE_LIGHT,      {[](auto u, auto l) -> float { return u->typeLight; }}},
+		{U::BONUS_INFANTRY,  {[](auto u, auto l) { return l->bonusInfantry; }}},
+		{U::BONUS_RANGE,     {[](auto u, auto l) { return l->bonusRange; }}},
+		{U::BONUS_CAVALRY,   {[](auto u, auto l) { return l->bonusCalvary; }}},
+		{U::BONUS_WORKER,    {[](auto u, auto l) { return l->bonusWorker; }}},
+		{U::BONUS_SPECIAL,   {[](auto u, auto l) { return l->bonusSpecial; }}},
+		{U::BONUS_MELEE,     {[](auto u, auto l) { return l->bonusMelee; }}},
+		{U::BONUS_HEAVY,     {[](auto u, auto l) { return l->bonusHeavy; }}},
+		{U::BONUS_LIGHT,     {[](auto u, auto l) { return l->bonusLight; }}},
 	});
 
-	static inline auto aiBuildingMetric = buildMetricArray<BuildingMetricIdx, AiBuildingMetric>({
-		//db_building* b, db_building_level* l
-		{BuildingMetricIdx::COST,               {[](auto b, auto l) -> float { return b->getSumCost(); }, 400}},
-		{BuildingMetricIdx::MAX_HP,             {[](auto b, auto l) -> float { return l->maxHp; }, 500}},
-		{BuildingMetricIdx::ARMOR,              {[](auto b, auto l) -> float { return l->armor; }, 1}},
-		{BuildingMetricIdx::SIGHT_RADIUS,       {[](auto b, auto l) -> float { return l->sightRadius; }, 50}},
-
-		{BuildingMetricIdx::COLLECT,            {[](auto b, auto l) -> float { return l->collect; }, 2}},
-		{BuildingMetricIdx::ATTACK,             {[](auto b, auto l) -> float { return l->attack; }, 20}},
-		{BuildingMetricIdx::ATTACK_RELOAD,      {[](auto b, auto l) -> float { return l->attackReload; }, 200}},
-		{BuildingMetricIdx::ATTACK_RANGE,       {[](auto b, auto l) -> float { return l->attackRange; }, 20}},
-		{BuildingMetricIdx::RESOURCE_RANGE,     {[](auto b, auto l) -> float { return l->resourceRange; }, 20}},
-
-		{BuildingMetricIdx::TYPE_CENTER,        {[](auto b, auto l) -> float { return b->typeCenter; }}},
-		{BuildingMetricIdx::TYPE_HOME,          {[](auto b, auto l) -> float { return b->typeHome; }}},
-		{BuildingMetricIdx::TYPE_DEFENCE,       {[](auto b, auto l) -> float { return b->typeDefence; }}},
-		{BuildingMetricIdx::TYPE_RES_FOOD,      {[](auto b, auto l) -> float { return b->typeResourceFood; }}},
-		{BuildingMetricIdx::TYPE_RES_WOOD,      {[](auto b, auto l) -> float { return b->typeResourceWood; }}},
-		{BuildingMetricIdx::TYPE_RES_STONE,     {[](auto b, auto l) -> float { return b->typeResourceStone; }}},
-		{BuildingMetricIdx::TYPE_RES_GOLD,      {[](auto b, auto l) -> float { return b->typeResourceGold; }}},
-		{BuildingMetricIdx::TYPE_TECH_BLACKSMITH, {[](auto b, auto l) -> float { return b->typeTechBlacksmith; }}},
-		{BuildingMetricIdx::TYPE_TECH_UNIVERSITY, {[](auto b, auto l) -> float { return b->typeTechUniversity; }}},
-		{BuildingMetricIdx::TYPE_UNIT_BARRACKS, {[](auto b, auto l) -> float { return b->typeUnitBarracks; }}},
-		{BuildingMetricIdx::TYPE_UNIT_RANGE,    {[](auto b, auto l) -> float { return b->typeUnitRange; }}},
-		{BuildingMetricIdx::TYPE_UNIT_CAVALRY,  {[](auto b, auto l) -> float { return b->typeUnitCavalry; }}},
+	static inline auto aiBuildingMetric = buildMetricArray<B, AiBuildingMetric>({
+		{B::COST,               {[](auto b, auto l) -> float { return b->getSumCost(); }, 400}},
+		{B::MAX_HP,             {[](auto b, auto l) -> float { return l->maxHp; }, 500}},
+		{B::ARMOR,              {[](auto b, auto l) { return l->armor; }, 1}},
+		{B::SIGHT_RADIUS,       {[](auto b, auto l) { return l->sightRadius; }, 50}},
+		{B::COLLECT,            {[](auto b, auto l) { return l->collect; }, 2}},
+		{B::ATTACK,             {[](auto b, auto l) { return l->attack; }, 20}},
+		{B::ATTACK_RELOAD,      {[](auto b, auto l) -> float { return l->attackReload; }, 200}},
+		{B::ATTACK_RANGE,       {[](auto b, auto l) -> float { return l->attackRange; }, 20}},
+		{B::RESOURCE_RANGE,     {[](auto b, auto l) { return l->resourceRange; }, 20}},
+		{B::TYPE_CENTER,        {[](auto b, auto l) -> float { return b->typeCenter; }}},
+		{B::TYPE_HOME,          {[](auto b, auto l) -> float { return b->typeHome; }}},
+		{B::TYPE_DEFENCE,       {[](auto b, auto l) -> float { return b->typeDefence; }}},
+		{B::TYPE_RES_FOOD,      {[](auto b, auto l) -> float { return b->typeResourceFood; }}},
+		{B::TYPE_RES_WOOD,      {[](auto b, auto l) -> float { return b->typeResourceWood; }}},
+		{B::TYPE_RES_STONE,     {[](auto b, auto l) -> float { return b->typeResourceStone; }}},
+		{B::TYPE_RES_GOLD,      {[](auto b, auto l) -> float { return b->typeResourceGold; }}},
+		{B::TYPE_TECH_BLACKSMITH, {[](auto b, auto l) -> float { return b->typeTechBlacksmith; }}},
+		{B::TYPE_TECH_UNIVERSITY, {[](auto b, auto l) -> float { return b->typeTechUniversity; }}},
+		{B::TYPE_UNIT_BARRACKS, {[](auto b, auto l) -> float { return b->typeUnitBarracks; }}},
+		{B::TYPE_UNIT_RANGE,    {[](auto b, auto l) -> float { return b->typeUnitRange; }}},
+		{B::TYPE_UNIT_CAVALRY,  {[](auto b, auto l) -> float { return b->typeUnitCavalry; }}},
 	});
 
-	static inline auto aiResourceMetric = buildMetricArray<ResourceMetricIdx, AiResourceMetric>({
-		//Resources* r, Possession* p
-		{ResourceMetricIdx::GATHER_SPEED_FOOD,  {[](auto r, auto p) { return r->getGatherSpeeds()[0]; }, 10}},
-		{ResourceMetricIdx::GATHER_SPEED_WOOD,  {[](auto r, auto p) { return r->getGatherSpeeds()[1]; }, 10}},
-		{ResourceMetricIdx::GATHER_SPEED_STONE, {[](auto r, auto p) { return r->getGatherSpeeds()[2]; }, 10}},
-		{ResourceMetricIdx::GATHER_SPEED_GOLD,  {[](auto r, auto p) { return r->getGatherSpeeds()[3]; }, 10}},
-
-		{ResourceMetricIdx::VALUE_FOOD,         {[](auto r, auto p) { return r->getValues()[0]; }, 1000}},
-		{ResourceMetricIdx::VALUE_WOOD,         {[](auto r, auto p) { return r->getValues()[1]; }, 1000}},
-		{ResourceMetricIdx::VALUE_STONE,        {[](auto r, auto p) { return r->getValues()[2]; }, 1000}},
-		{ResourceMetricIdx::VALUE_GOLD,         {[](auto r, auto p) { return r->getValues()[3]; }, 1000}},
-
-		{ResourceMetricIdx::FREE_WORKERS,       {[](auto r, auto p) { return p->getFreeWorkersNumber(); }, 100}},
-		{ResourceMetricIdx::TOTAL_WORKERS,      {[](auto r, auto p) { return p->getWorkersNumber(); }, 100}},
+	static inline auto aiResourceMetric = buildMetricArray<R, AiResourceMetric>({
+		{R::GATHER_SPEED_FOOD,  {[](auto r, auto p) { return r->getGatherSpeeds()[0]; }, 10}},
+		{R::GATHER_SPEED_WOOD,  {[](auto r, auto p) { return r->getGatherSpeeds()[1]; }, 10}},
+		{R::GATHER_SPEED_STONE, {[](auto r, auto p) { return r->getGatherSpeeds()[2]; }, 10}},
+		{R::GATHER_SPEED_GOLD,  {[](auto r, auto p) { return r->getGatherSpeeds()[3]; }, 10}},
+		{R::VALUE_FOOD,         {[](auto r, auto p) { return r->getValues()[0]; }, 1000}},
+		{R::VALUE_WOOD,         {[](auto r, auto p) { return r->getValues()[1]; }, 1000}},
+		{R::VALUE_STONE,        {[](auto r, auto p) { return r->getValues()[2]; }, 1000}},
+		{R::VALUE_GOLD,         {[](auto r, auto p) { return r->getValues()[3]; }, 1000}},
+		{R::FREE_WORKERS,       {[](auto r, auto p) -> float { return p->getFreeWorkersNumber(); }, 100}},
+		{R::TOTAL_WORKERS,      {[](auto r, auto p) -> float { return p->getWorkersNumber(); }, 100}},
 	});
 
-	static inline auto aiResourceWithoutBonusMetric = buildMetricArray<ResourceNoBonusMetricIdx, AiResourceMetric>({
-		//Resources* r, Possession* p
-		{ResourceNoBonusMetricIdx::VALUE_FOOD,  {[](auto r, auto p) { return p->getResWithOutBonus()[0]; }, 20}},
-		{ResourceNoBonusMetricIdx::VALUE_WOOD,  {[](auto r, auto p) { return p->getResWithOutBonus()[1]; }, 20}},
-		{ResourceNoBonusMetricIdx::VALUE_STONE, {[](auto r, auto p) { return p->getResWithOutBonus()[2]; }, 20}},
-		{ResourceNoBonusMetricIdx::VALUE_GOLD,  {[](auto r, auto p) { return p->getResWithOutBonus()[3]; }, 20}},
+	static inline auto aiResourceWithoutBonusMetric = buildMetricArray<RNB, AiResourceMetric>({
+		{RNB::VALUE_FOOD,  {[](auto r, auto p) { return p->getResWithOutBonus()[0]; }, 20}},
+		{RNB::VALUE_WOOD,  {[](auto r, auto p) { return p->getResWithOutBonus()[1]; }, 20}},
+		{RNB::VALUE_STONE, {[](auto r, auto p) { return p->getResWithOutBonus()[2]; }, 20}},
+		{RNB::VALUE_GOLD,  {[](auto r, auto p) { return p->getResWithOutBonus()[3]; }, 20}},
 	});
 
-	static inline auto aiBasicMetric = buildMetricArray<BasicMetricIdx, AiPlayerMetric>({
-		//Player* p1, Player* p2
-		{BasicMetricIdx::SCORE,            {[](auto p1, auto p2) { return p1->getScore(); }, 1000}},
-		{BasicMetricIdx::UNITS_COUNT,      {[](auto p1, auto p2) { return p1->getPossession()->getUnitsNumber(); }, 200}},
-		{BasicMetricIdx::BUILDINGS_COUNT,  {[](auto p1, auto p2) { return p1->getPossession()->getBuildingsNumber(); }, 50}},
-		{BasicMetricIdx::ENEMY_SCORE,      {[](auto p1, auto p2) { return p2->getScore(); }, 1000}},
+	static inline auto aiBasicMetric = buildMetricArray<BM, AiPlayerMetric>({
+		{BM::SCORE,           {[](auto p1, auto p2) -> float { return p1->getScore(); }, 1000}},
+		{BM::UNITS_COUNT,     {[](auto p1, auto p2) -> float { return p1->getPossession()->getUnitsNumber(); }, 200}},
+		{BM::BUILDINGS_COUNT, {[](auto p1, auto p2) -> float { return p1->getPossession()->getBuildingsNumber(); }, 50}},
+		{BM::ENEMY_SCORE,     {[](auto p1, auto p2) -> float { return p2->getScore(); }, 1000}},
 	});
 
-	static inline auto aiAttackOrDefence = buildMetricArray<AttackOrDefenceMetricIdx, AiPlayerMetric>({
-		//Player* p1, Player* p2
-		{AttackOrDefenceMetricIdx::ATTACK_SUM,                  {[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000}},
-		{AttackOrDefenceMetricIdx::DEFENCE_SUM,                 {[](auto p1, auto p2) { return p1->getPossession()->getDefenceAttackSum(); }, 100}},
-		{AttackOrDefenceMetricIdx::ARMY_TO_OWN_BUILDING,        {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }}},
-		{AttackOrDefenceMetricIdx::ARMY_TO_ENEMY_BUILDING,      {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }}},
-		{AttackOrDefenceMetricIdx::ENEMY_ARMY_TO_OWN_BUILDING,  {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p1, 1.f); }}},
-		{AttackOrDefenceMetricIdx::ENEMY_ARMY_TO_ENEMY_BUILDING,{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p2, 0.f); }}},
+	static inline auto aiAttackOrDefence = buildMetricArray<AD, AiPlayerMetric>({
+		{AD::ATTACK_SUM,                  {[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000}},
+		{AD::DEFENCE_SUM,                 {[](auto p1, auto p2) { return p1->getPossession()->getDefenceAttackSum(); }, 100}},
+		{AD::ARMY_TO_OWN_BUILDING,        {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }}},
+		{AD::ARMY_TO_ENEMY_BUILDING,      {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }}},
+		{AD::ENEMY_ARMY_TO_OWN_BUILDING,  {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p1, 1.f); }}},
+		{AD::ENEMY_ARMY_TO_ENEMY_BUILDING,{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p2, 0.f); }}},
 	});
 
-	static inline auto aiWhereAttack = buildMetricArray<WhereAttackMetricIdx, AiPlayerMetric>({
-		//Player* p1, Player* p2
-		{WhereAttackMetricIdx::ATTACK_SUM,            {[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000}},
-		{WhereAttackMetricIdx::ARMY_TO_ENEMY_ECON,    {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p2, 1.f); }}},
-		{WhereAttackMetricIdx::ARMY_TO_ENEMY_BUILDING,{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }}},
-		{WhereAttackMetricIdx::ARMY_TO_ENEMY_ARMY,    {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }}},
+	static inline auto aiWhereAttack = buildMetricArray<WA, AiPlayerMetric>({
+		{WA::ATTACK_SUM,            {[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000}},
+		{WA::ARMY_TO_ENEMY_ECON,    {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p2, 1.f); }}},
+		{WA::ARMY_TO_ENEMY_BUILDING,{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }}},
+		{WA::ARMY_TO_ENEMY_ARMY,    {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }}},
 	});
 
-	static inline auto aiWhereDefend = buildMetricArray<WhereDefendMetricIdx, AiPlayerMetric>({
-		//Player* p1, Player* p2
-		{WhereDefendMetricIdx::ATTACK_SUM,            {[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000}},
-		{WhereDefendMetricIdx::DEFENCE_SUM,           {[](auto p1, auto p2) { return p1->getPossession()->getDefenceAttackSum(); }, 100}},
-		{WhereDefendMetricIdx::ARMY_TO_OWN_ECON,      {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p1, 0.f); }}},
-		{WhereDefendMetricIdx::ARMY_TO_OWN_BUILDING,   {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }}},
-		{WhereDefendMetricIdx::ARMY_TO_ENEMY_ARMY,     {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }}},
+	static inline auto aiWhereDefend = buildMetricArray<WD, AiPlayerMetric>({
+		{WD::ATTACK_SUM,          {[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000}},
+		{WD::DEFENCE_SUM,         {[](auto p1, auto p2) { return p1->getPossession()->getDefenceAttackSum(); }, 100}},
+		{WD::ARMY_TO_OWN_ECON,    {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p1, 0.f); }}},
+		{WD::ARMY_TO_OWN_BUILDING,{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }}},
+		{WD::ARMY_TO_ENEMY_ARMY,  {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }}},
 	});
 
 	constexpr static unsigned char aiUnitsTypesIdxs[] = {
-		idx(UnitMetricIdx::TYPE_INFANTRY), idx(UnitMetricIdx::TYPE_RANGE),
-		idx(UnitMetricIdx::TYPE_CAVALRY),  idx(UnitMetricIdx::TYPE_WORKER),
-		idx(UnitMetricIdx::TYPE_SPECIAL),  idx(UnitMetricIdx::TYPE_MELEE),
-		idx(UnitMetricIdx::TYPE_HEAVY),    idx(UnitMetricIdx::TYPE_LIGHT),
+		idx(U::TYPE_INFANTRY), idx(U::TYPE_RANGE), idx(U::TYPE_CAVALRY), idx(U::TYPE_WORKER),
+		idx(U::TYPE_SPECIAL),  idx(U::TYPE_MELEE), idx(U::TYPE_HEAVY),   idx(U::TYPE_LIGHT),
 	};
 
 	constexpr static unsigned char aiBuildingOtherIdxs[] = {
-		idx(BuildingMetricIdx::TYPE_CENTER), idx(BuildingMetricIdx::TYPE_HOME),
+		idx(B::TYPE_CENTER), idx(B::TYPE_HOME),
 	};
 	constexpr static unsigned char aiBuildingUnitsIdxs[] = {
-		idx(BuildingMetricIdx::TYPE_UNIT_BARRACKS), idx(BuildingMetricIdx::TYPE_UNIT_RANGE),
-		idx(BuildingMetricIdx::TYPE_UNIT_CAVALRY),
+		idx(B::TYPE_UNIT_BARRACKS), idx(B::TYPE_UNIT_RANGE), idx(B::TYPE_UNIT_CAVALRY),
 	};
 	constexpr static unsigned char aiBuildingTechIdxs[] = {
-		idx(BuildingMetricIdx::TYPE_TECH_BLACKSMITH), idx(BuildingMetricIdx::TYPE_TECH_UNIVERSITY),
+		idx(B::TYPE_TECH_BLACKSMITH), idx(B::TYPE_TECH_UNIVERSITY),
 	};
 	constexpr static unsigned char aiBuildingResIdxs[] = {
-		idx(BuildingMetricIdx::COLLECT), idx(BuildingMetricIdx::RESOURCE_RANGE),
-		idx(BuildingMetricIdx::TYPE_RES_FOOD), idx(BuildingMetricIdx::TYPE_RES_WOOD),
-		idx(BuildingMetricIdx::TYPE_RES_STONE), idx(BuildingMetricIdx::TYPE_RES_GOLD),
+		idx(B::COLLECT), idx(B::RESOURCE_RANGE),
+		idx(B::TYPE_RES_FOOD), idx(B::TYPE_RES_WOOD), idx(B::TYPE_RES_STONE), idx(B::TYPE_RES_GOLD),
 	};
 	constexpr static unsigned char aiBuildingDefIdxs[] = {
-		idx(BuildingMetricIdx::COST), idx(BuildingMetricIdx::MAX_HP),
-		idx(BuildingMetricIdx::ARMOR), idx(BuildingMetricIdx::SIGHT_RADIUS),
-		idx(BuildingMetricIdx::ATTACK), idx(BuildingMetricIdx::ATTACK_RELOAD),
-		idx(BuildingMetricIdx::ATTACK_RANGE),
+		idx(B::COST), idx(B::MAX_HP), idx(B::ARMOR), idx(B::SIGHT_RADIUS),
+		idx(B::ATTACK), idx(B::ATTACK_RELOAD), idx(B::ATTACK_RANGE),
 	};
 	constexpr static unsigned char aiBuildingTypesIdxs[] = {
-		idx(BuildingMetricIdx::TYPE_CENTER), idx(BuildingMetricIdx::TYPE_HOME),
-		idx(BuildingMetricIdx::TYPE_DEFENCE),
-		idx(BuildingMetricIdx::TYPE_RES_FOOD), idx(BuildingMetricIdx::TYPE_RES_WOOD),
-		idx(BuildingMetricIdx::TYPE_RES_STONE), idx(BuildingMetricIdx::TYPE_RES_GOLD),
-		idx(BuildingMetricIdx::TYPE_TECH_BLACKSMITH), idx(BuildingMetricIdx::TYPE_TECH_UNIVERSITY),
-		idx(BuildingMetricIdx::TYPE_UNIT_BARRACKS), idx(BuildingMetricIdx::TYPE_UNIT_RANGE),
-		idx(BuildingMetricIdx::TYPE_UNIT_CAVALRY),
+		idx(B::TYPE_CENTER), idx(B::TYPE_HOME), idx(B::TYPE_DEFENCE),
+		idx(B::TYPE_RES_FOOD), idx(B::TYPE_RES_WOOD), idx(B::TYPE_RES_STONE), idx(B::TYPE_RES_GOLD),
+		idx(B::TYPE_TECH_BLACKSMITH), idx(B::TYPE_TECH_UNIVERSITY),
+		idx(B::TYPE_UNIT_BARRACKS), idx(B::TYPE_UNIT_RANGE), idx(B::TYPE_UNIT_CAVALRY),
 	};
 	inline static std::array<float, METRIC_OUTPUT_MAX_SIZE> output{};
 } METRIC_DEFINITIONS;
