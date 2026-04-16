@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include "../game/src/env/CloseIndexes.h"
+#include "../game/src/env/CloseIndexes.cpp"
 
 class CloseIndexFixture : public ::testing::Test {
 public:
