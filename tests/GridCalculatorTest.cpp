@@ -5,24 +5,18 @@
 class GridCalculatorFixture : public ::testing::Test {
 public:
 	static GridCalculator* gc;
-	static GridCalculator* gcBig;
 
 protected:
 	static void SetUpTestCase() {
-		// Kod uruchamiany przed pierwszym testem wewnatrz `Test Case`
 		gc = new GridCalculator(4, 8);
-		gcBig = new GridCalculator(8, 8);
 	}
 
 	static void TearDownTestCase() {
 		delete gc;
-		delete gcBig;
-		// Kod uruchamiany po ostatnim tescie wewnatrz `Test Case`
 	}
 };
 
 GridCalculator* GridCalculatorFixture::gc = nullptr;
-GridCalculator* GridCalculatorFixture::gcBig = nullptr;
 
 
 TEST_F(GridCalculatorFixture, Center) {
@@ -54,8 +48,8 @@ TEST_F(GridCalculatorFixture, CombineTest) {
 			auto index = gc->indexFromPosition(i, j);
 			auto center = gc->getCenter(index);
 
-			EXPECT_TRUE(abs(center.x_ - i) <= 0.f);
-			EXPECT_TRUE(abs(center.y_ - j) <= 0.f);
+			EXPECT_FLOAT_EQ(center.x_, i);
+			EXPECT_FLOAT_EQ(center.y_, j);
 		}
 	}
 }
