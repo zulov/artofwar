@@ -37,6 +37,36 @@ enum class BuildingMetricIdx : unsigned char {
 	TYPE_UNIT_BARRACKS, TYPE_UNIT_RANGE, TYPE_UNIT_CAVALRY,
 };
 
+enum class ResourceMetricIdx : unsigned char {
+	GATHER_SPEED_FOOD, GATHER_SPEED_WOOD, GATHER_SPEED_STONE, GATHER_SPEED_GOLD,
+	VALUE_FOOD, VALUE_WOOD, VALUE_STONE, VALUE_GOLD,
+	FREE_WORKERS, TOTAL_WORKERS,
+};
+
+enum class ResourceNoBonusMetricIdx : unsigned char {
+	VALUE_FOOD, VALUE_WOOD, VALUE_STONE, VALUE_GOLD,
+};
+
+enum class BasicMetricIdx : unsigned char {
+	SCORE, UNITS_COUNT, BUILDINGS_COUNT, ENEMY_SCORE,
+};
+
+enum class AttackOrDefenceMetricIdx : unsigned char {
+	ATTACK_SUM, DEFENCE_SUM,
+	ARMY_TO_OWN_BUILDING, ARMY_TO_ENEMY_BUILDING,
+	ENEMY_ARMY_TO_OWN_BUILDING, ENEMY_ARMY_TO_ENEMY_BUILDING,
+};
+
+enum class WhereAttackMetricIdx : unsigned char {
+	ATTACK_SUM,
+	ARMY_TO_ENEMY_ECON, ARMY_TO_ENEMY_BUILDING, ARMY_TO_ENEMY_ARMY,
+};
+
+enum class WhereDefendMetricIdx : unsigned char {
+	ATTACK_SUM, DEFENCE_SUM,
+	ARMY_TO_OWN_ECON, ARMY_TO_OWN_BUILDING, ARMY_TO_ENEMY_ARMY,
+};
+
 constexpr unsigned char idx(UnitMetricIdx e) { return static_cast<unsigned char>(e); }
 constexpr unsigned char idx(BuildingMetricIdx e) { return static_cast<unsigned char>(e); }
 
@@ -226,68 +256,64 @@ inline struct MetricDefinitions {
 		{BuildingMetricIdx::TYPE_UNIT_CAVALRY,  {[](auto b, auto l) -> float { return b->typeUnitCavalry; }}},
 	});
 
-	//TODO moze to zwracac od razy przedzia³em jakos
-	static inline AiResourceMetric aiResourceMetric[] = {
+	static inline auto aiResourceMetric = buildMetricArray<ResourceMetricIdx, AiResourceMetric>({
 		//Resources* r, Possession* p
-		{[](auto r, auto p) { return r->getGatherSpeeds()[0]; }, 10},
-		{[](auto r, auto p) { return r->getGatherSpeeds()[1]; }, 10},
-		{[](auto r, auto p) { return r->getGatherSpeeds()[2]; }, 10},
-		{[](auto r, auto p) { return r->getGatherSpeeds()[3]; }, 10},
+		{ResourceMetricIdx::GATHER_SPEED_FOOD,  {[](auto r, auto p) { return r->getGatherSpeeds()[0]; }, 10}},
+		{ResourceMetricIdx::GATHER_SPEED_WOOD,  {[](auto r, auto p) { return r->getGatherSpeeds()[1]; }, 10}},
+		{ResourceMetricIdx::GATHER_SPEED_STONE, {[](auto r, auto p) { return r->getGatherSpeeds()[2]; }, 10}},
+		{ResourceMetricIdx::GATHER_SPEED_GOLD,  {[](auto r, auto p) { return r->getGatherSpeeds()[3]; }, 10}},
 
-		{[](auto r, auto p) { return r->getValues()[0]; }, 1000},
-		{[](auto r, auto p) { return r->getValues()[1]; }, 1000},
-		{[](auto r, auto p) { return r->getValues()[2]; }, 1000},
-		{[](auto r, auto p) { return r->getValues()[3]; }, 1000},
+		{ResourceMetricIdx::VALUE_FOOD,         {[](auto r, auto p) { return r->getValues()[0]; }, 1000}},
+		{ResourceMetricIdx::VALUE_WOOD,         {[](auto r, auto p) { return r->getValues()[1]; }, 1000}},
+		{ResourceMetricIdx::VALUE_STONE,        {[](auto r, auto p) { return r->getValues()[2]; }, 1000}},
+		{ResourceMetricIdx::VALUE_GOLD,         {[](auto r, auto p) { return r->getValues()[3]; }, 1000}},
 
-		{[](auto r, auto p) { return p->getFreeWorkersNumber(); }, 100},
-		{[](auto r, auto p) { return p->getWorkersNumber(); }, 100},
+		{ResourceMetricIdx::FREE_WORKERS,       {[](auto r, auto p) { return p->getFreeWorkersNumber(); }, 100}},
+		{ResourceMetricIdx::TOTAL_WORKERS,      {[](auto r, auto p) { return p->getWorkersNumber(); }, 100}},
+	});
 
-	};
-
-	static inline AiResourceMetric aiResourceWithoutBonusMetric[] = {
+	static inline auto aiResourceWithoutBonusMetric = buildMetricArray<ResourceNoBonusMetricIdx, AiResourceMetric>({
 		//Resources* r, Possession* p
-		{[](auto r, auto p) { return p->getResWithOutBonus()[0]; }, 20},
-		{[](auto r, auto p) { return p->getResWithOutBonus()[1]; }, 20},
-		{[](auto r, auto p) { return p->getResWithOutBonus()[2]; }, 20},
-		{[](auto r, auto p) { return p->getResWithOutBonus()[3]; }, 20}
-	};
+		{ResourceNoBonusMetricIdx::VALUE_FOOD,  {[](auto r, auto p) { return p->getResWithOutBonus()[0]; }, 20}},
+		{ResourceNoBonusMetricIdx::VALUE_WOOD,  {[](auto r, auto p) { return p->getResWithOutBonus()[1]; }, 20}},
+		{ResourceNoBonusMetricIdx::VALUE_STONE, {[](auto r, auto p) { return p->getResWithOutBonus()[2]; }, 20}},
+		{ResourceNoBonusMetricIdx::VALUE_GOLD,  {[](auto r, auto p) { return p->getResWithOutBonus()[3]; }, 20}},
+	});
 
-	static inline AiPlayerMetric aiBasicMetric[] = {
+	static inline auto aiBasicMetric = buildMetricArray<BasicMetricIdx, AiPlayerMetric>({
 		//Player* p1, Player* p2
-		{[](auto p1, auto p2) { return p1->getScore(); }, 1000},
-		{[](auto p1, auto p2){ return p1->getPossession()->getUnitsNumber(); }, 200},
-		{[](auto p1, auto p2){ return p1->getPossession()->getBuildingsNumber(); }, 50},
+		{BasicMetricIdx::SCORE,            {[](auto p1, auto p2) { return p1->getScore(); }, 1000}},
+		{BasicMetricIdx::UNITS_COUNT,      {[](auto p1, auto p2) { return p1->getPossession()->getUnitsNumber(); }, 200}},
+		{BasicMetricIdx::BUILDINGS_COUNT,  {[](auto p1, auto p2) { return p1->getPossession()->getBuildingsNumber(); }, 50}},
+		{BasicMetricIdx::ENEMY_SCORE,      {[](auto p1, auto p2) { return p2->getScore(); }, 1000}},
+	});
 
-		{[](auto p1, auto p2){ return p2->getScore(); }, 1000}
-	};
-
-	static inline AiPlayerMetric aiAttackOrDefence[] = {
+	static inline auto aiAttackOrDefence = buildMetricArray<AttackOrDefenceMetricIdx, AiPlayerMetric>({
 		//Player* p1, Player* p2
-		{[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000},
-		{[](auto p1, auto p2) { return p1->getPossession()->getDefenceAttackSum(); }, 100},
-		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }},
-		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }},
-		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p1, 1.f); }},
-		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p2, 0.f); }},
-	};
+		{AttackOrDefenceMetricIdx::ATTACK_SUM,                  {[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000}},
+		{AttackOrDefenceMetricIdx::DEFENCE_SUM,                 {[](auto p1, auto p2) { return p1->getPossession()->getDefenceAttackSum(); }, 100}},
+		{AttackOrDefenceMetricIdx::ARMY_TO_OWN_BUILDING,        {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }}},
+		{AttackOrDefenceMetricIdx::ARMY_TO_ENEMY_BUILDING,      {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }}},
+		{AttackOrDefenceMetricIdx::ENEMY_ARMY_TO_OWN_BUILDING,  {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p1, 1.f); }}},
+		{AttackOrDefenceMetricIdx::ENEMY_ARMY_TO_ENEMY_BUILDING,{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p2, 0.f); }}},
+	});
 
-	static inline AiPlayerMetric aiWhereAttack[] = {
+	static inline auto aiWhereAttack = buildMetricArray<WhereAttackMetricIdx, AiPlayerMetric>({
 		//Player* p1, Player* p2
-		{[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000},
-		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p2, 1.f); }},
-		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }},
-		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }},
-	};
+		{WhereAttackMetricIdx::ATTACK_SUM,            {[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000}},
+		{WhereAttackMetricIdx::ARMY_TO_ENEMY_ECON,    {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p2, 1.f); }}},
+		{WhereAttackMetricIdx::ARMY_TO_ENEMY_BUILDING,{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }}},
+		{WhereAttackMetricIdx::ARMY_TO_ENEMY_ARMY,    {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }}},
+	});
 
-	static inline AiPlayerMetric aiWhereDefend[] = {
+	static inline auto aiWhereDefend = buildMetricArray<WhereDefendMetricIdx, AiPlayerMetric>({
 		//Player* p1, Player* p2
-		{[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000},
-		{[](auto p1, auto p2) { return p1->getPossession()->getDefenceAttackSum(); }, 100},
-		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p1, 0.f); }},
-		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }},
-		{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }}
-		//TODO musi byæ do przeciwnika bo inaczej zawsze do siebie
-	};
+		{WhereDefendMetricIdx::ATTACK_SUM,            {[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000}},
+		{WhereDefendMetricIdx::DEFENCE_SUM,           {[](auto p1, auto p2) { return p1->getPossession()->getDefenceAttackSum(); }, 100}},
+		{WhereDefendMetricIdx::ARMY_TO_OWN_ECON,      {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p1, 0.f); }}},
+		{WhereDefendMetricIdx::ARMY_TO_OWN_BUILDING,   {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }}},
+		{WhereDefendMetricIdx::ARMY_TO_ENEMY_ARMY,     {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }}},
+	});
 
 	constexpr static unsigned char aiUnitsTypesIdxs[] = {
 		idx(UnitMetricIdx::TYPE_INFANTRY), idx(UnitMetricIdx::TYPE_RANGE),
@@ -329,6 +355,6 @@ inline struct MetricDefinitions {
 	inline static std::array<float, METRIC_OUTPUT_MAX_SIZE> output{};
 } METRIC_DEFINITIONS;
 
-constexpr unsigned char BASIC_METRIC_SIZE = std::size(METRIC_DEFINITIONS.aiBasicMetric);
+constexpr unsigned char BASIC_METRIC_SIZE = magic_enum::enum_count<BasicMetricIdx>();
 constexpr unsigned char UNIT_METRIC_SIZE = magic_enum::enum_count<UnitMetricIdx>();
 constexpr unsigned char BUILDING_METRIC_SIZE = magic_enum::enum_count<BuildingMetricIdx>();
