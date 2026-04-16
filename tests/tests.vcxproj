@@ -40,6 +40,7 @@
     <ClCompile Include="CloseIndexTest.cpp" />
     <ClCompile Include="GridCalculatorTest.cpp" />
     <ClCompile Include="LayerTest.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="MathUtilsTest.cpp" />
     <ClCompile Include="OtherUtilsTest.cpp" />
     <ClCompile Include="SpanUtilsTest.cpp" />
@@ -116,13 +117,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>X64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\game\include;..\game\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp23</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

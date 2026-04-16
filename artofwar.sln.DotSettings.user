@@ -3,9 +3,13 @@
 	<s:String x:Key="/Default/Environment/Hierarchy/Build/SolBuilderDuo/UseMsbuildSolutionBuilder/@EntryValue">NewVersion</s:String>
 	
 	<s:Int64 x:Key="/Default/Environment/SearchAndNavigation/DefaultOccurrencesGroupingIndex/@EntryValue">7</s:Int64>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d441c19b_002D7172_002D4d5d_002Da30c_002D7fc321e2367e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from UidTest.cpp" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;ProjectFile&gt;5829691B-4F4E-48D8-BB6F-CDF1206E0FA7/f:UidTest.cpp&lt;/ProjectFile&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=c435783b_002D2a12_002D4fff_002D8b61_002D439d477637de/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Session" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;GTest::5829691B-4F4E-48D8-BB6F-CDF1206E0FA7::Windows,Version=v10.0.26100::CloseIndexFixture.CheckBothIndex&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::5829691B-4F4E-48D8-BB6F-CDF1206E0FA7::Windows,Version=v10.0.26100::GridCalculatorFixture&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
+	
 	
 	
 	
