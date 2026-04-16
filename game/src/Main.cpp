@@ -1,4 +1,4 @@
-﻿#include "Main.h"
+#include "Main.h"
 
 #include <numeric>
 #include <Urho3D/Core/CoreEvents.h>
@@ -135,21 +135,26 @@ void Main::Start() {
 
 void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>> funcs1,
                        std::initializer_list<const std::function<const std::span<const float>(Player*)>> funcs2) const {
-	std::ofstream outFile(("result/" + outputName).CString(), std::ios_base::out);
+	std::string buffer;
+	buffer.reserve(1024);
 	for (const auto player : Game::getPlayersMan()->getAllPlayers()) {
-		outFile << std::to_string(player->getId());
+		buffer += std::to_string(player->getId());
 		for (auto& func : funcs1) {
-			outFile << ";" << func(player);
+			buffer += ';';
+			buffer += std::to_string(func(player));
 		}
 
 		for (auto& func : funcs2) {
 			for (const auto val : func(player)) {
-				outFile << ";" << val;
+				buffer += ';';
+				buffer += std::to_string(val);
 			}
 		}
-		outFile << "\n";
+		buffer += '\n';
 	}
-	outFile.close();
+
+	std::ofstream outFile(("result/" + outputName).CString(), std::ios_base::out);
+	outFile.write(buffer.data(), buffer.size());
 }
 
 void Main::writeOutput() const {
