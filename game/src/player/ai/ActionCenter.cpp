@@ -6,7 +6,7 @@
 #include "commands/action/UnitActionCommand.h"
 #include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 #include "env/Environment.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"

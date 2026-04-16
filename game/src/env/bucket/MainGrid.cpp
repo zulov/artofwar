@@ -1,4 +1,4 @@
-﻿#include "MainGrid.h"
+#include "MainGrid.h"
 
 #include <algorithm>
 #include <exprtk/exprtk.hpp>
@@ -8,7 +8,7 @@
 #include "BucketProvider.h"
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 #include "debug/DebugLineRepo.h"
 #include "levels/LevelCache.h"
 #include "math/MathUtils.h"
@@ -90,7 +90,7 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, const Urho3D::IntVect
                            bool isBuilding) const {
 	const auto sizeX = calculateSize(size.x_, bucketCords.x_);
 	const auto sizeZ = calculateSize(size.y_, bucketCords.y_);
-	//WARN to troche złe użycie tego ale działa
+	//WARN to troche zle uzycie tego ale dziala
 	if (!calculator->isValidIndex(sizeX.x_, sizeX.y_)
 		|| !calculator->isValidIndex(sizeZ.x_, sizeZ.y_)) {
 		return false;
@@ -427,7 +427,7 @@ int MainGrid::closestPassableCell(int posIndex) const {
 			return idx;
 		}
 	}
-	return posIndex; //TODO to zwrócic optional empty
+	return posIndex; //TODO to zwr�cic optional empty
 }
 
 void MainGrid::addStatic(Static* object, bool bulkAdd) {

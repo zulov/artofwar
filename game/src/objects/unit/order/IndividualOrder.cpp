@@ -1,6 +1,6 @@
 #include "IndividualOrder.h"
 #include "Game.h"
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/UnitConst.h"
 #include "env/Environment.h"

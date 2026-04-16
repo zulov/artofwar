@@ -1,6 +1,6 @@
 #pragma once
 #include <span>
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 
 class Player;
 struct db_unit_metric;

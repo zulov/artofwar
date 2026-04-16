@@ -5,7 +5,7 @@
 #include <functional>
 
 #include "PerFrameAction.h"
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 
 struct dbload_container;
 struct FrameInfo;

@@ -5,7 +5,7 @@
 #include "Game.h"
 #include "math/MathUtils.h"
 #include "../unit/Unit.h"
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 #include "objects/NodeUtils.h"
 #include "scene/load/dbload_container.h"
 #include "env/Environment.h"

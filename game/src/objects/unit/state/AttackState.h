@@ -1,6 +1,6 @@
 #pragma once
 #include "Game.h"
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 #include "State.h"
 #include "StateManager.h"
 #include "StateUtils.h"

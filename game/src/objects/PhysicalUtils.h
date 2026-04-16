@@ -1,6 +1,6 @@
 #pragma once
 #include "Physical.h"
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 #include "unit/Unit.h"
 #include "unit/state/StateManager.h"
 

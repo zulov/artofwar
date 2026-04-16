@@ -1,7 +1,7 @@
 #pragma once
 
 #include "db_grah_structs.h"
-#include "db_strcut.h"
+#include "db_struct.h"
 #include "utils/DeleteUtils.h"
 
 struct db_hud_vars;

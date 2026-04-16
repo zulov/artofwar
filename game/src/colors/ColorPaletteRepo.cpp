@@ -3,7 +3,7 @@
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include "Game.h"
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 #include "math/MathUtils.h"
 #include "env/bucket/CellEnums.h"
 #include "player/Player.h"

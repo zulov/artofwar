@@ -10,7 +10,7 @@
 #include "commands/action/GeneralActionType.h"
 #include "commands/action/ResourceActionCommand.h"
 #include "database/DatabaseCache.h"
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 #include "hud/HudData.h"
 #include "math/MathUtils.h"
 #include "objects/NodeUtils.h"

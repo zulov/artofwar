@@ -1,5 +1,5 @@
 #pragma once
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 #include <Urho3D/Container/Str.h>
 
 Urho3D::String stringFrom(const Urho3D::String& name, const db_with_cost* costs) {

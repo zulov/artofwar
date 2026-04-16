@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="1.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Release-ltcg|x64">
@@ -559,7 +559,7 @@
     <ClInclude Include="src\camera\CameraEnums.h" />
     <ClInclude Include="src\camera\CameraManager.h" />
     <ClInclude Include="src\database\DatabaseCache.h" />
-    <ClInclude Include="src\database\db_strcut.h" />
+    <ClInclude Include="src\database\db_struct.h" />
     <ClInclude Include="src\hud\window\debug\DebugPanel.h" />
     <ClInclude Include="src\objects\unit\state\FollowState.h" />
     <ClInclude Include="src\hud\HudData.h" />

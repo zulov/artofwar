@@ -1,9 +1,9 @@
-﻿#include "SimulationObjectManager.h"
+#include "SimulationObjectManager.h"
 
 #include <Urho3D/IO/Log.h>
 
 #include "Game.h"
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
@@ -132,7 +132,7 @@ void SimulationObjectManager::refreshResBonuses() const {
 void SimulationObjectManager::dispose() const {
 	if (StateManager::isSthToDispose()) {
 		for (const auto unit : *units) {
-			unit->clean(); //TODO bug? to powinno być niepotrzebne,może nawet psuć
+			unit->clean(); //TODO bug? to powinno byc niepotrzebne,moze nawet psuc
 		}
 	}
 	cleanAndDispose(units, StateManager::isUnitToDispose());

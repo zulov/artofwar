@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 
 constexpr bool LOG_ACTIONS_MAKER = false;
 

@@ -5,6 +5,8 @@
 #include <iterator>
 #include <array>
 
+#include <magic_enum.hpp>
+
 #include "AiMetric.h"
 #include "Game.h"
 #include "env/Environment.h"
@@ -17,7 +19,46 @@
 
 constexpr unsigned char METRIC_OUTPUT_MAX_SIZE = 64;
 
-constexpr inline struct MetricDefinitions {
+enum class UnitMetricIdx : unsigned char {
+	COST, MAX_HP, ARMOR, SIGHT_RADIUS,
+	COLLECT, ATTACK, ATTACK_RELOAD, ATTACK_RANGE,
+	TYPE_INFANTRY, TYPE_RANGE, TYPE_CAVALRY, TYPE_WORKER,
+	TYPE_SPECIAL, TYPE_MELEE, TYPE_HEAVY, TYPE_LIGHT,
+	BONUS_INFANTRY, BONUS_RANGE, BONUS_CAVALRY, BONUS_WORKER,
+	BONUS_SPECIAL, BONUS_MELEE, BONUS_HEAVY, BONUS_LIGHT,
+};
+
+enum class BuildingMetricIdx : unsigned char {
+	COST, MAX_HP, ARMOR, SIGHT_RADIUS,
+	COLLECT, ATTACK, ATTACK_RELOAD, ATTACK_RANGE, RESOURCE_RANGE,
+	TYPE_CENTER, TYPE_HOME, TYPE_DEFENCE,
+	TYPE_RES_FOOD, TYPE_RES_WOOD, TYPE_RES_STONE, TYPE_RES_GOLD,
+	TYPE_TECH_BLACKSMITH, TYPE_TECH_UNIVERSITY,
+	TYPE_UNIT_BARRACKS, TYPE_UNIT_RANGE, TYPE_UNIT_CAVALRY,
+};
+
+constexpr unsigned char idx(UnitMetricIdx e) { return static_cast<unsigned char>(e); }
+constexpr unsigned char idx(BuildingMetricIdx e) { return static_cast<unsigned char>(e); }
+
+template <typename Enum, typename Metric, size_t N>
+auto buildMetricArray(std::pair<Enum, Metric>(&&entries)[N]) {
+	constexpr auto SIZE = magic_enum::enum_count<Enum>();
+	static_assert(N == SIZE, "Metric entry count must match enum size");
+	std::array<Metric, SIZE> result{};
+	bool filled[SIZE] = {};
+	for (auto& [key, val] : entries) {
+		auto i = static_cast<size_t>(key);
+		assert(!filled[i] && "Duplicate metric enum key");
+		filled[i] = true;
+		result[i] = std::move(val);
+	}
+	for (size_t i = 0; i < SIZE; ++i) {
+		assert(filled[i] && "Missing metric enum key");
+	}
+	return result;
+}
+
+inline struct MetricDefinitions {
 	template <typename T, typename L, typename MetricArray>
 	std::span<float> writeMetrics(T* one, L* two, const MetricArray& metrics) const {
 		char size = std::size(metrics);
@@ -127,66 +168,63 @@ constexpr inline struct MetricDefinitions {
 	const std::span<const unsigned char> getBuildingUnitsIdxs() const { return aiBuildingUnitsIdxs; }
 	const std::span<const unsigned char> getBuildingTypesIdxs() const { return aiBuildingTypesIdxs; }
 
-	//TODO unordered_map<Enum, AiUnitMetric>
-	static inline AiUnitMetric aiUnitMetric[] = {
+	static inline auto aiUnitMetric = buildMetricArray<UnitMetricIdx, AiUnitMetric>({
 		//db_unit* u, db_unit_level* l
-		{[](auto u, auto l) -> float { return u->getSumCost(); }, 400},
-		//TODO czy grupowe ma sens?
-		{[](auto u, auto l) -> float { return l->maxHp; }, 300},
-		{[](auto u, auto l) -> float { return l->armor; }},
-		{[](auto u, auto l) -> float { return l->sightRadius; }, 20},
+		{UnitMetricIdx::COST,            {[](auto u, auto l) -> float { return u->getSumCost(); }, 400}},
+		{UnitMetricIdx::MAX_HP,          {[](auto u, auto l) -> float { return l->maxHp; }, 300}},
+		{UnitMetricIdx::ARMOR,           {[](auto u, auto l) -> float { return l->armor; }}},
+		{UnitMetricIdx::SIGHT_RADIUS,    {[](auto u, auto l) -> float { return l->sightRadius; }, 20}},
 
-		{[](auto u, auto l) -> float { return l->collect; }},
-		{[](auto u, auto l) -> float { return l->attack; }, 10}, //5
-		{[](auto u, auto l) -> float { return l->attackReload; }, 200},
-		{[](auto u, auto l) -> float { return l->attackRange; }, 20},
+		{UnitMetricIdx::COLLECT,         {[](auto u, auto l) -> float { return l->collect; }}},
+		{UnitMetricIdx::ATTACK,          {[](auto u, auto l) -> float { return l->attack; }, 10}},
+		{UnitMetricIdx::ATTACK_RELOAD,   {[](auto u, auto l) -> float { return l->attackReload; }, 200}},
+		{UnitMetricIdx::ATTACK_RANGE,    {[](auto u, auto l) -> float { return l->attackRange; }, 20}},
 
-		{[](auto u, auto l) -> float { return u->typeInfantry; }}, //8
-		{[](auto u, auto l) -> float { return u->typeRange; }},
-		{[](auto u, auto l) -> float { return u->typeCalvary; }},
-		{[](auto u, auto l) -> float { return u->typeWorker; }},
-		{[](auto u, auto l) -> float { return u->typeSpecial; }},
-		{[](auto u, auto l) -> float { return u->typeMelee; }},
-		{[](auto u, auto l) -> float { return u->typeHeavy; }},
-		{[](auto u, auto l) -> float { return u->typeLight; }}, //15
+		{UnitMetricIdx::TYPE_INFANTRY,   {[](auto u, auto l) -> float { return u->typeInfantry; }}},
+		{UnitMetricIdx::TYPE_RANGE,      {[](auto u, auto l) -> float { return u->typeRange; }}},
+		{UnitMetricIdx::TYPE_CAVALRY,    {[](auto u, auto l) -> float { return u->typeCalvary; }}},
+		{UnitMetricIdx::TYPE_WORKER,     {[](auto u, auto l) -> float { return u->typeWorker; }}},
+		{UnitMetricIdx::TYPE_SPECIAL,    {[](auto u, auto l) -> float { return u->typeSpecial; }}},
+		{UnitMetricIdx::TYPE_MELEE,      {[](auto u, auto l) -> float { return u->typeMelee; }}},
+		{UnitMetricIdx::TYPE_HEAVY,      {[](auto u, auto l) -> float { return u->typeHeavy; }}},
+		{UnitMetricIdx::TYPE_LIGHT,      {[](auto u, auto l) -> float { return u->typeLight; }}},
 
-		{[](auto u, auto l) -> float { return l->bonusInfantry; }},
-		{[](auto u, auto l) -> float { return l->bonusRange; }},
-		{[](auto u, auto l) -> float { return l->bonusCalvary; }},
-		{[](auto u, auto l) -> float { return l->bonusWorker; }},
-		{[](auto u, auto l) -> float { return l->bonusSpecial; }},
-		{[](auto u, auto l) -> float { return l->bonusMelee; }},
-		{[](auto u, auto l) -> float { return l->bonusHeavy; }},
-		{[](auto u, auto l) -> float { return l->bonusLight; }},
-	};
+		{UnitMetricIdx::BONUS_INFANTRY,  {[](auto u, auto l) -> float { return l->bonusInfantry; }}},
+		{UnitMetricIdx::BONUS_RANGE,     {[](auto u, auto l) -> float { return l->bonusRange; }}},
+		{UnitMetricIdx::BONUS_CAVALRY,   {[](auto u, auto l) -> float { return l->bonusCalvary; }}},
+		{UnitMetricIdx::BONUS_WORKER,    {[](auto u, auto l) -> float { return l->bonusWorker; }}},
+		{UnitMetricIdx::BONUS_SPECIAL,   {[](auto u, auto l) -> float { return l->bonusSpecial; }}},
+		{UnitMetricIdx::BONUS_MELEE,     {[](auto u, auto l) -> float { return l->bonusMelee; }}},
+		{UnitMetricIdx::BONUS_HEAVY,     {[](auto u, auto l) -> float { return l->bonusHeavy; }}},
+		{UnitMetricIdx::BONUS_LIGHT,     {[](auto u, auto l) -> float { return l->bonusLight; }}},
+	});
 
-	static inline AiBuildingMetric aiBuildingMetric[] = {
+	static inline auto aiBuildingMetric = buildMetricArray<BuildingMetricIdx, AiBuildingMetric>({
 		//db_building* b, db_building_level* l
-		{[](auto b, auto l) -> float { return b->getSumCost(); }, 400},
-		{[](auto b, auto l) -> float { return l->maxHp; }, 500},
-		{[](auto b, auto l) -> float { return l->armor; }, 1},
-		{[](auto b, auto l) -> float { return l->sightRadius; }, 50},
+		{BuildingMetricIdx::COST,               {[](auto b, auto l) -> float { return b->getSumCost(); }, 400}},
+		{BuildingMetricIdx::MAX_HP,             {[](auto b, auto l) -> float { return l->maxHp; }, 500}},
+		{BuildingMetricIdx::ARMOR,              {[](auto b, auto l) -> float { return l->armor; }, 1}},
+		{BuildingMetricIdx::SIGHT_RADIUS,       {[](auto b, auto l) -> float { return l->sightRadius; }, 50}},
 
-		{[](auto b, auto l) -> float { return l->collect; }, 2},
-		{[](auto b, auto l) -> float { return l->attack; }, 20}, //5
-		{[](auto b, auto l) -> float { return l->attackReload; }, 200},
-		{[](auto b, auto l) -> float { return l->attackRange; }, 20},
-		{[](auto b, auto l) -> float { return l->resourceRange; }, 20},
-		//TODO stad duzo wyrzuciæ
+		{BuildingMetricIdx::COLLECT,            {[](auto b, auto l) -> float { return l->collect; }, 2}},
+		{BuildingMetricIdx::ATTACK,             {[](auto b, auto l) -> float { return l->attack; }, 20}},
+		{BuildingMetricIdx::ATTACK_RELOAD,      {[](auto b, auto l) -> float { return l->attackReload; }, 200}},
+		{BuildingMetricIdx::ATTACK_RANGE,       {[](auto b, auto l) -> float { return l->attackRange; }, 20}},
+		{BuildingMetricIdx::RESOURCE_RANGE,     {[](auto b, auto l) -> float { return l->resourceRange; }, 20}},
 
-		{[](auto b, auto l) -> float { return b->typeCenter; }}, //9
-		{[](auto b, auto l) -> float { return b->typeHome; }},
-		{[](auto b, auto l) -> float { return b->typeDefence; }},
-		{[](auto b, auto l) -> float { return b->typeResourceFood; }}, //12
-		{[](auto b, auto l) -> float { return b->typeResourceWood; }},
-		{[](auto b, auto l) -> float { return b->typeResourceStone; }},
-		{[](auto b, auto l) -> float { return b->typeResourceGold; }}, //15
-		{[](auto b, auto l) -> float { return b->typeTechBlacksmith; }}, //16
-		{[](auto b, auto l) -> float { return b->typeTechUniversity; }},
-		{[](auto b, auto l) -> float { return b->typeUnitBarracks; }}, //18
-		{[](auto b, auto l) -> float { return b->typeUnitRange; }},
-		{[](auto b, auto l) -> float { return b->typeUnitCavalry; }},
-	};
+		{BuildingMetricIdx::TYPE_CENTER,        {[](auto b, auto l) -> float { return b->typeCenter; }}},
+		{BuildingMetricIdx::TYPE_HOME,          {[](auto b, auto l) -> float { return b->typeHome; }}},
+		{BuildingMetricIdx::TYPE_DEFENCE,       {[](auto b, auto l) -> float { return b->typeDefence; }}},
+		{BuildingMetricIdx::TYPE_RES_FOOD,      {[](auto b, auto l) -> float { return b->typeResourceFood; }}},
+		{BuildingMetricIdx::TYPE_RES_WOOD,      {[](auto b, auto l) -> float { return b->typeResourceWood; }}},
+		{BuildingMetricIdx::TYPE_RES_STONE,     {[](auto b, auto l) -> float { return b->typeResourceStone; }}},
+		{BuildingMetricIdx::TYPE_RES_GOLD,      {[](auto b, auto l) -> float { return b->typeResourceGold; }}},
+		{BuildingMetricIdx::TYPE_TECH_BLACKSMITH, {[](auto b, auto l) -> float { return b->typeTechBlacksmith; }}},
+		{BuildingMetricIdx::TYPE_TECH_UNIVERSITY, {[](auto b, auto l) -> float { return b->typeTechUniversity; }}},
+		{BuildingMetricIdx::TYPE_UNIT_BARRACKS, {[](auto b, auto l) -> float { return b->typeUnitBarracks; }}},
+		{BuildingMetricIdx::TYPE_UNIT_RANGE,    {[](auto b, auto l) -> float { return b->typeUnitRange; }}},
+		{BuildingMetricIdx::TYPE_UNIT_CAVALRY,  {[](auto b, auto l) -> float { return b->typeUnitCavalry; }}},
+	});
 
 	//TODO moze to zwracac od razy przedzia³em jakos
 	static inline AiResourceMetric aiResourceMetric[] = {
@@ -251,20 +289,46 @@ constexpr inline struct MetricDefinitions {
 		//TODO musi byæ do przeciwnika bo inaczej zawsze do siebie
 	};
 
-	//to nie musi byc array tylko tabelka
-	//TODO improve nie indeksy ale enumy?, albo zawsze nowa tablica, beda powtorzenia
-	constexpr static unsigned char aiUnitsTypesIdxs[] = {8, 9, 10, 11, 12, 13, 14, 15};
+	constexpr static unsigned char aiUnitsTypesIdxs[] = {
+		idx(UnitMetricIdx::TYPE_INFANTRY), idx(UnitMetricIdx::TYPE_RANGE),
+		idx(UnitMetricIdx::TYPE_CAVALRY),  idx(UnitMetricIdx::TYPE_WORKER),
+		idx(UnitMetricIdx::TYPE_SPECIAL),  idx(UnitMetricIdx::TYPE_MELEE),
+		idx(UnitMetricIdx::TYPE_HEAVY),    idx(UnitMetricIdx::TYPE_LIGHT),
+	};
 
-	constexpr static unsigned char aiBuildingOtherIdxs[] = {9, 10}; //TODO moze cos wiecej?
-	constexpr static unsigned char aiBuildingUnitsIdxs[] = {18, 19, 20};
-	//TODO moze cos wiecej?
-	constexpr static unsigned char aiBuildingTechIdxs[] = {16, 17}; //TODO moze cos wiecej?
-	constexpr static unsigned char aiBuildingResIdxs[] = {4, 8, 12, 13, 14, 15};
-	constexpr static unsigned char aiBuildingDefIdxs[] = {0, 1, 2, 3, 5, 6, 7};
-	constexpr static unsigned char aiBuildingTypesIdxs[] = {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+	constexpr static unsigned char aiBuildingOtherIdxs[] = {
+		idx(BuildingMetricIdx::TYPE_CENTER), idx(BuildingMetricIdx::TYPE_HOME),
+	};
+	constexpr static unsigned char aiBuildingUnitsIdxs[] = {
+		idx(BuildingMetricIdx::TYPE_UNIT_BARRACKS), idx(BuildingMetricIdx::TYPE_UNIT_RANGE),
+		idx(BuildingMetricIdx::TYPE_UNIT_CAVALRY),
+	};
+	constexpr static unsigned char aiBuildingTechIdxs[] = {
+		idx(BuildingMetricIdx::TYPE_TECH_BLACKSMITH), idx(BuildingMetricIdx::TYPE_TECH_UNIVERSITY),
+	};
+	constexpr static unsigned char aiBuildingResIdxs[] = {
+		idx(BuildingMetricIdx::COLLECT), idx(BuildingMetricIdx::RESOURCE_RANGE),
+		idx(BuildingMetricIdx::TYPE_RES_FOOD), idx(BuildingMetricIdx::TYPE_RES_WOOD),
+		idx(BuildingMetricIdx::TYPE_RES_STONE), idx(BuildingMetricIdx::TYPE_RES_GOLD),
+	};
+	constexpr static unsigned char aiBuildingDefIdxs[] = {
+		idx(BuildingMetricIdx::COST), idx(BuildingMetricIdx::MAX_HP),
+		idx(BuildingMetricIdx::ARMOR), idx(BuildingMetricIdx::SIGHT_RADIUS),
+		idx(BuildingMetricIdx::ATTACK), idx(BuildingMetricIdx::ATTACK_RELOAD),
+		idx(BuildingMetricIdx::ATTACK_RANGE),
+	};
+	constexpr static unsigned char aiBuildingTypesIdxs[] = {
+		idx(BuildingMetricIdx::TYPE_CENTER), idx(BuildingMetricIdx::TYPE_HOME),
+		idx(BuildingMetricIdx::TYPE_DEFENCE),
+		idx(BuildingMetricIdx::TYPE_RES_FOOD), idx(BuildingMetricIdx::TYPE_RES_WOOD),
+		idx(BuildingMetricIdx::TYPE_RES_STONE), idx(BuildingMetricIdx::TYPE_RES_GOLD),
+		idx(BuildingMetricIdx::TYPE_TECH_BLACKSMITH), idx(BuildingMetricIdx::TYPE_TECH_UNIVERSITY),
+		idx(BuildingMetricIdx::TYPE_UNIT_BARRACKS), idx(BuildingMetricIdx::TYPE_UNIT_RANGE),
+		idx(BuildingMetricIdx::TYPE_UNIT_CAVALRY),
+	};
 	inline static std::array<float, METRIC_OUTPUT_MAX_SIZE> output{};
 } METRIC_DEFINITIONS;
 
 constexpr unsigned char BASIC_METRIC_SIZE = std::size(METRIC_DEFINITIONS.aiBasicMetric);
-constexpr unsigned char UNIT_METRIC_SIZE = std::size(METRIC_DEFINITIONS.aiUnitMetric);
-constexpr unsigned char BUILDING_METRIC_SIZE = std::size(METRIC_DEFINITIONS.aiBuildingMetric);
+constexpr unsigned char UNIT_METRIC_SIZE = magic_enum::enum_count<UnitMetricIdx>();
+constexpr unsigned char BUILDING_METRIC_SIZE = magic_enum::enum_count<BuildingMetricIdx>();

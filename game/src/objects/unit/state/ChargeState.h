@@ -1,7 +1,7 @@
 #pragma once
 #include "State.h"
 #include "../Unit.h"
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 #include "math/MathUtils.h"
 #include "objects/unit/ChargeData.h"
 

@@ -1,7 +1,7 @@
 #include "Force.h"
 #include <Urho3D/IO/Log.h>
 #include "Game.h"
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 #include "math/MathUtils.h"
 #include "math/RandGen.h"
 #include "objects/unit/Unit.h"

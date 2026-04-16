@@ -1,4 +1,4 @@
-﻿#include "Unit.h"
+#include "Unit.h"
 
 #include <Urho3D/Resource/Localization.h>
 
@@ -6,7 +6,7 @@
 #include "colors/ColorPaletteRepo.h"
 #include "colors/ColorPallet.h"
 #include "database/DatabaseCache.h"
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 #include "debug/DebugLineRepo.h"
 #include "debug/DebugUnitType.h"
 #include "math/VectorUtils.h"
@@ -57,7 +57,7 @@ void Unit::populate() {
 
 //TODO sprobowac przeniesc do MoveState
 void Unit::checkAim() {
-	if (aims.process(this)) {//TODO co to miało robic
+	if (aims.process(this)) {//TODO co to mialo robic
 		StateManager::changeState(this, UnitState::MOVE);
 	}
 }
@@ -377,7 +377,7 @@ void Unit::setState(UnitState _state) {
 
 void Unit::load(dbload_unit* unit) {
 	Physical::load(unit);
-	state = UnitState(unit->state); //TODO nie wiem czy nie przepisaæpoprzez przejscie?
+	state = UnitState(unit->state); //TODO nie wiem czy nie przepisa�poprzez przejscie?
 	velocity = {unit->vel_x, unit->vel_z};
 }
 

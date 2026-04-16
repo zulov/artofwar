@@ -1,4 +1,4 @@
-﻿#include "Environment.h"
+#include "Environment.h"
 
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Terrain.h>
@@ -6,7 +6,7 @@
 #include "GridCalculator.h"
 #include "GridCalculatorProvider.h"
 #include "control/MouseButton.h"
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 #include "math/MathUtils.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
@@ -561,7 +561,7 @@ Physical* Environment::closestPhysical(int startIdx, const std::vector<Physical*
 
 	for (const auto entity : *things) {
 		if (entity->isAlive() && condition(entity)) {
-			//TODO perf ogranizcyc liczbe indeksów, np wybrac jeden dla obiektu
+			//TODO perf ogranizcyc liczbe indeks�w, np wybrac jeden dla obiektu
 			entity->addIndexesForUse(allIndexes);
 			thingsFiltered.push_back(entity);
 		}

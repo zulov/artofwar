@@ -1,5 +1,5 @@
 #pragma once
-#include "database/db_strcut.h"
+#include "database/db_struct.h"
 #include "Game.h"
 #include "env/Environment.h"
 #include "objects/PhysicalUtils.h"
