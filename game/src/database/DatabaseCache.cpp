@@ -4,8 +4,8 @@
 #include "db_update_utils.h"
 #include "db_utils.h"
 
-bool DatabaseCache::openDatabase(const std::string& name) {
-	database = openDb(pathStr + name);
+bool DatabaseCache::openDatabase(const std::string& name, bool readOnly) {
+	database = openDb(pathStr + name, readOnly);
 	return database;
 }
 
@@ -114,7 +114,7 @@ void DatabaseCache::setGraphSettings(int id, db_graph_settings* gs) {
 	gs->styles = container->graphSettings[id]->styles;
 	delete container->graphSettings[id];
 	container->graphSettings[id] = gs;
-	if (!openDatabase("base.db")) { return; }
+	if (!openDatabase("base.db", false)) { return; }
 	DbUpdate stmt(database,
 				"UPDATE graphics_settings SET "
 				"hud_size = :hud_size, "
@@ -137,14 +137,14 @@ void DatabaseCache::setGraphSettings(int id, db_graph_settings* gs) {
 	    .bind(":texture_quality", gs->texture_quality)
 	    .bind(":id", id)
 	    .execAndClose();
-	sqlite3_close(database);
+	sqlite3_close_v2(database);
 }
 
 void DatabaseCache::setSettings(db_settings* settings) {
 	settings->graph = 0;
 	delete container->settings;
 	container->settings = settings;
-	if (!openDatabase("base.db")) { return; }
+	if (!openDatabase("base.db", false)) { return; }
 	DbUpdate stmt(database,
 	              "UPDATE settings SET "
 	              "graph = :graph, "
@@ -153,7 +153,7 @@ void DatabaseCache::setSettings(db_settings* settings) {
 	stmt.bind(":graph", settings->graph)
 	    .bind(":resolution", settings->resolution)
 	    .execAndClose();
-	sqlite3_close(database);
+	sqlite3_close_v2(database);
 }
 
 void DatabaseCache::refreshAfterParametersRead() const {

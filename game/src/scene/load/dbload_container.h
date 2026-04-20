@@ -2,11 +2,12 @@
 #include <vector>
 #include <Urho3D/Container/Str.h>
 
+#include "database/db_columns.h"
 #include "database/db_utils.h"
 #include "utils/DeleteUtils.h"
 
 struct dbload_config {
-	dbload_config(sqlite3_stmt* stmt) : precision(asInt(stmt, 0)), map(asInt(stmt, 1)), size(asInt(stmt, 2)) {}
+	dbload_config(sqlite3_stmt* stmt) : precision(asInt(stmt, ConfigCol::precision)), map(asInt(stmt, ConfigCol::map)), size(asInt(stmt, ConfigCol::size)) {}
 
 	int precision;
 	int map;
@@ -44,9 +45,9 @@ struct dbload_unit : dbload_physical {
 	float vel_z;
 
 	dbload_unit(sqlite3_stmt* stmt, int p) :
-		dbload_unit(asShort(stmt, 0), asItoF(stmt, 1, p), asUI(stmt, 2), asByte(stmt, 3),
-		            asByte(stmt, 4), asItoF(stmt, 5, p), asItoF(stmt, 6, p),
-		            asByte(stmt, 7), asItoF(stmt, 8, p), asItoF(stmt, 9, p)) {}
+		dbload_unit(asShort(stmt, UnitCol::id_db), asItoF(stmt, UnitCol::hp_coef, p), asUI(stmt, UnitCol::uid), asByte(stmt, UnitCol::player),
+		            asByte(stmt, UnitCol::level), asItoF(stmt, UnitCol::position_x, p), asItoF(stmt, UnitCol::position_z, p),
+		            asByte(stmt, UnitCol::state), asItoF(stmt, UnitCol::velocity_x, p), asItoF(stmt, UnitCol::velocity_z, p)) {}
 
 	dbload_unit(short idDb, float hp, unsigned uid, char player, char level, float posX, float posZ, char state,
 	            float velX, float velZ) :
@@ -64,9 +65,9 @@ struct dbload_building : dbload_static {
 	//TODO std::vector<dbload_queue*>;
 	dbload_building(sqlite3_stmt* stmt, int p) :
 		dbload_building(
-				asShort(stmt, 0), asItoF(stmt, 1, p), asUI(stmt, 2), asByte(stmt, 3),
-				asByte(stmt, 4), asInt(stmt, 5), asInt(stmt, 6),
-				asByte(stmt, 7), asByte(stmt, 8), asInt(stmt, 9)) {}
+				asShort(stmt, BuildingCol::id_db), asItoF(stmt, BuildingCol::hp_coef, p), asUI(stmt, BuildingCol::uid), asByte(stmt, BuildingCol::player),
+				asByte(stmt, BuildingCol::level), asInt(stmt, BuildingCol::bucket_x), asInt(stmt, BuildingCol::bucket_y),
+				asByte(stmt, BuildingCol::state), asByte(stmt, BuildingCol::next_state), asInt(stmt, BuildingCol::deploy_Idx)) {}
 
 	dbload_building(short idDb, float hpCoef, unsigned uid, char player, char level, int bucX, int bucY, char state,
 	                char nextState, int deploy_idx) :
@@ -76,9 +77,9 @@ struct dbload_building : dbload_static {
 
 struct dbload_resource : dbload_static {
 	dbload_resource(sqlite3_stmt* stmt, int p) :
-		dbload_resource(asShort(stmt, 0), asItoF(stmt, 1, p),
-		                asUI(stmt, 2), asInt(stmt, 3), asInt(stmt, 4),
-		                asByte(stmt, 5), asByte(stmt, 6)) {}
+		dbload_resource(asShort(stmt, ResourceCol::id_db), asItoF(stmt, ResourceCol::hp_coef, p),
+		                asUI(stmt, ResourceCol::uid), asInt(stmt, ResourceCol::bucket_x), asInt(stmt, ResourceCol::bucket_y),
+		                asByte(stmt, ResourceCol::state), asByte(stmt, ResourceCol::next_state)) {}
 
 	dbload_resource(short idDb, float hpCoef, unsigned uid, int bucX, int bucY, char state, char nextState) :
 		dbload_static(idDb, hpCoef, uid, -1, bucX, bucY, -1, state, nextState) {}
@@ -99,10 +100,10 @@ struct dbload_player {
 	float gold;
 
 	dbload_player(sqlite3_stmt* stmt, int p) :
-		dbload_player(asUByte(stmt, 0), asBool(stmt, 1), asUByte(stmt, 2), asUByte(stmt, 3),
-		              asText(stmt, 4), asUByte(stmt, 5), asUI(stmt, 6), asUI(stmt, 7),
-		              asItoF(stmt, 8, p), asItoF(stmt, 9, p),
-		              asItoF(stmt, 10, p), asItoF(stmt, 11, p)) {}
+		dbload_player(asUByte(stmt, PlayerCol::id), asBool(stmt, PlayerCol::is_active), asUByte(stmt, PlayerCol::team), asUByte(stmt, PlayerCol::nation),
+		              asText(stmt, PlayerCol::name), asUByte(stmt, PlayerCol::color), asUI(stmt, PlayerCol::buildingUid), asUI(stmt, PlayerCol::unitUid),
+		              asItoF(stmt, PlayerCol::food, p), asItoF(stmt, PlayerCol::wood, p),
+		              asItoF(stmt, PlayerCol::stone, p), asItoF(stmt, PlayerCol::gold, p)) {}
 
 	dbload_player(unsigned char id, bool isActive, unsigned char team, unsigned char nation, const char* name,
 	              unsigned char color, unsigned buildingUid, unsigned unitUid, float food, float wood, float stone,

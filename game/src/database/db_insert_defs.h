@@ -1,6 +1,7 @@
-﻿#pragma once
+#pragma once
 
 #include "Game.h"
+#include "db_columns.h"
 #include "db_insert_utils.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
@@ -29,8 +30,7 @@ void bindRow<Static>(sqlite3_stmt* stmt, const ParamMap& p, int precision, const
 	bindI(stmt, p[":next_state"], castC(x->nextState));
 }
 
-const std::vector<std::string> unit_columns =
-		{"id_db", "hp_coef", "uid", "player", "level", "position_x", "position_z", "state", "velocity_x", "velocity_z"};
+const auto unit_columns = columnNames<UnitCol>();
 
 template <>
 void bindRow<Unit>(sqlite3_stmt* stmt, const ParamMap& p, int precision, const Unit* x) {
@@ -43,8 +43,7 @@ void bindRow<Unit>(sqlite3_stmt* stmt, const ParamMap& p, int precision, const U
 	bindI(stmt, p[":velocity_z"], x->velocity.y_ * precision);
 }
 
-const std::vector<std::string> building_columns =
-		{"id_db", "hp_coef", "uid", "player", "level", "bucket_x", "bucket_y", "state", "next_state", "deploy_Idx"};
+const auto building_columns = columnNames<BuildingCol>();
 
 template <>
 void bindRow<Building>(sqlite3_stmt* stmt, const ParamMap& p, int precision, const Building* x) {
@@ -54,8 +53,7 @@ void bindRow<Building>(sqlite3_stmt* stmt, const ParamMap& p, int precision, con
 	bindI(stmt, p[":deploy_Idx"], x->deployIndex);
 }
 
-const std::vector<std::string> resources_columns =
-		{"id_db", "hp_coef", "uid", "bucket_x", "bucket_y", "state", "next_state"};
+const auto resources_columns = columnNames<ResourceCol>();
 
 template <>
 void bindRow<ResourceEntity>(sqlite3_stmt* stmt, const ParamMap& p, int precision, const ResourceEntity* x) {
@@ -63,8 +61,7 @@ void bindRow<ResourceEntity>(sqlite3_stmt* stmt, const ParamMap& p, int precisio
 	bindRow(stmt, p, precision, static_cast<const Static*>(x));
 }
 
-const std::vector<std::string> players_columns =
-{"id", "is_active", "team", "nation", "name", "color", "buildingUid", "unitUid", "food", "wood", "stone", "gold"};
+const auto players_columns = columnNames<PlayerCol>();
 
 template <>
 void bindRow<Player>(sqlite3_stmt* stmt, const ParamMap& p, int precision, const Player* x) {
@@ -83,4 +80,4 @@ void bindRow<Player>(sqlite3_stmt* stmt, const ParamMap& p, int precision, const
 	bindI(stmt, p[":gold"], resVals[3] * precision);
 }
 
-const std::vector<std::string> config_columns = {"precision", "map", "size"};
+const auto config_columns = columnNames<ConfigCol>();

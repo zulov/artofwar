@@ -23,7 +23,7 @@ public:
 	void loadData(const std::string& name);
 	void loadMaps(const std::string& name);
 
-	bool openDatabase(const std::string& name);
+	bool openDatabase(const std::string& name, bool readOnly = true);
 	std::vector<db_hud_size*>& getHudSizes() const { return container->hudSizes; }
 	std::vector<db_hud_vars*>& getHudVars() const { return container->hudVars; }
 	std::vector<db_graph_settings*>& getGraphSettings() const { return container->graphSettings; }

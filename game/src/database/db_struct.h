@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <magic_enum.hpp>
 #include <span>
 #include <vector>
@@ -7,6 +7,7 @@
 #include "objects/building/ParentBuildingType.h"
 #include "objects/unit/state/UnitState.h"
 #include "db_basic_struct.h"
+#include "db_columns.h"
 #include "utils/SpanUtils.h"
 #include "player/ai/MetricDefinitions.h"
 #include "simulation/SimGlobals.h"
@@ -243,18 +244,19 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 
 	db_unit_metric* dbUnitMetric = nullptr;
 
-	db_unit_level(sqlite3_stmt* stmt) : db_unit_level(asShort(stmt, 0), asShort(stmt, 1), asShort(stmt, 2),
-	                                                  asText(stmt, 3), asText(stmt, 4),
-	                                                  asUS(stmt, 5), asUS(stmt, 6), asUS(stmt, 7), asUS(stmt, 8),
-	                                                  asShort(stmt, 9), asShort(stmt, 10), asFloat(stmt, 11),
-	                                                  asFloat(stmt, 12), asFloat(stmt, 13), asFloat(stmt, 14),
-	                                                  asShort(stmt, 15), asShort(stmt, 16), asFloat(stmt, 17),
-	                                                  asFloat(stmt, 18), asFloat(stmt, 19), asFloat(stmt, 20),
-	                                                  asFloat(stmt, 21), asShort(stmt, 22), asFloat(stmt, 23),
-	                                                  asFloat(stmt, 24),
-	                                                  asFloat(stmt, 25), asFloat(stmt, 26), asFloat(stmt, 27),
-	                                                  asFloat(stmt, 28),
-	                                                  asFloat(stmt, 29), asFloat(stmt, 30), asFloat(stmt, 31)) {}
+	db_unit_level(sqlite3_stmt* stmt) : db_unit_level(asShort(stmt, DbUnitLevelCol::id), asShort(stmt, DbUnitLevelCol::level), asShort(stmt, DbUnitLevelCol::unit),
+	                                                  asText(stmt, DbUnitLevelCol::name), asText(stmt, DbUnitLevelCol::node),
+	                                                  asUS(stmt, DbUnitLevelCol::food), asUS(stmt, DbUnitLevelCol::wood), asUS(stmt, DbUnitLevelCol::stone), asUS(stmt, DbUnitLevelCol::gold),
+	                                                  asShort(stmt, DbUnitLevelCol::build_time), asShort(stmt, DbUnitLevelCol::upgrade_time), asFloat(stmt, DbUnitLevelCol::min_dist),
+	                                                  asFloat(stmt, DbUnitLevelCol::mass), asFloat(stmt, DbUnitLevelCol::min_speed), asFloat(stmt, DbUnitLevelCol::max_speed),
+	                                                  asShort(stmt, DbUnitLevelCol::max_force), asShort(stmt, DbUnitLevelCol::max_hp), asFloat(stmt, DbUnitLevelCol::armor),
+	                                                  asFloat(stmt, DbUnitLevelCol::sight_range), asFloat(stmt, DbUnitLevelCol::collect), asFloat(stmt, DbUnitLevelCol::attack),
+	                                                  asFloat(stmt, DbUnitLevelCol::attack_reload), asShort(stmt, DbUnitLevelCol::attack_range),
+	                                                  asFloat(stmt, DbUnitLevelCol::bonus_infantry), asFloat(stmt, DbUnitLevelCol::bonus_range),
+	                                                  asFloat(stmt, DbUnitLevelCol::bonus_calvary), asFloat(stmt, DbUnitLevelCol::bonus_worker),
+	                                                  asFloat(stmt, DbUnitLevelCol::bonus_special), asFloat(stmt, DbUnitLevelCol::bonus_melee),
+	                                                  asFloat(stmt, DbUnitLevelCol::bonus_heavy), asFloat(stmt, DbUnitLevelCol::bonus_light),
+	                                                  asFloat(stmt, DbUnitLevelCol::bonus_building)) {}
 
 	db_unit_level(short id, short level, short unit, const char* name, const char* node,
 	              unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
@@ -304,11 +306,11 @@ struct db_unit : db_with_icon, db_with_cost {
 	std::vector<db_nation*> nations;
 	std::vector<unsigned char> ordersIds;
 
-	db_unit(sqlite3_stmt* stmt) : db_unit(asShort(stmt, 0), asText(stmt, 1), asText(stmt, 2),
-	                                      asUS(stmt, 3), asUS(stmt, 4), asUS(stmt, 5), asUS(stmt, 6),
-	                                      asByte(stmt, 7), asBool(stmt, 8), asBool(stmt, 9), asBool(stmt, 10),
-	                                      asBool(stmt, 11), asBool(stmt, 12), asBool(stmt, 13), asBool(stmt, 14),
-	                                      asBool(stmt, 15)) {}
+	db_unit(sqlite3_stmt* stmt) : db_unit(asShort(stmt, DbUnitCol::id), asText(stmt, DbUnitCol::name), asText(stmt, DbUnitCol::icon),
+	                                      asUS(stmt, DbUnitCol::food), asUS(stmt, DbUnitCol::wood), asUS(stmt, DbUnitCol::stone), asUS(stmt, DbUnitCol::gold),
+	                                      asByte(stmt, DbUnitCol::action_state), asBool(stmt, DbUnitCol::type_infantry), asBool(stmt, DbUnitCol::type_range), asBool(stmt, DbUnitCol::type_calvary),
+	                                      asBool(stmt, DbUnitCol::type_worker), asBool(stmt, DbUnitCol::type_special), asBool(stmt, DbUnitCol::type_melee), asBool(stmt, DbUnitCol::type_heavy),
+	                                      asBool(stmt, DbUnitCol::type_light)) {}
 
 	db_unit(short id, const char* name, const char* icon,
 	        unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
@@ -382,12 +384,12 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 
 	std::vector<db_nation*> nations;
 
-	db_building(sqlite3_stmt* stmt) : db_building(asShort(stmt, 0), asText(stmt, 1), asText(stmt, 2),
-		asUS(stmt, 3), asUS(stmt, 4), asUS(stmt, 5), asUS(stmt, 6),
-		asShort(stmt, 7), asShort(stmt, 8), asBool(stmt, 9), asBool(stmt, 10),
-		asBool(stmt, 11), asShort(stmt, 12), asBool(stmt, 13),
-		asBool(stmt, 14), asBool(stmt, 15), asBool(stmt, 16),
-		asBool(stmt, 17), asBool(stmt, 18), asShort(stmt, 19)) {}
+	db_building(sqlite3_stmt* stmt) : db_building(asShort(stmt, DbBuildingCol::id), asText(stmt, DbBuildingCol::name), asText(stmt, DbBuildingCol::icon),
+		asUS(stmt, DbBuildingCol::food), asUS(stmt, DbBuildingCol::wood), asUS(stmt, DbBuildingCol::stone), asUS(stmt, DbBuildingCol::gold),
+		asShort(stmt, DbBuildingCol::size_x), asShort(stmt, DbBuildingCol::size_z), asBool(stmt, DbBuildingCol::type_center), asBool(stmt, DbBuildingCol::type_home),
+		asBool(stmt, DbBuildingCol::type_defence), asShort(stmt, DbBuildingCol::type_resource), asBool(stmt, DbBuildingCol::type_tech_blacksmith),
+		asBool(stmt, DbBuildingCol::type_tech_university), asBool(stmt, DbBuildingCol::type_unit_barracks), asBool(stmt, DbBuildingCol::type_unit_range),
+		asBool(stmt, DbBuildingCol::type_unit_cavalry), asBool(stmt, DbBuildingCol::ruinable), asShort(stmt, DbBuildingCol::to_resource)) {}
 
 	db_building(short id, const char* name, const char* icon,
 	            unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
@@ -439,12 +441,13 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 
 	//std::vector<db_building_metric*> dbBuildingMetricPerNation;
 	db_building_metric* dbBuildingMetric;
-	db_building_level(sqlite3_stmt* s) : db_building_level(asShort(s, 0), asShort(s, 1), asShort(s, 2), asText(s, 3), asText(s, 4),
-		asUS(s, 5), asUS(s, 6), asUS(s, 7), asUS(s, 8),
-		asShort(s, 9), asShort(s, 10), asShort(s, 11), asShort(s, 12),
-		asFloat(s, 13), asFloat(s, 14), asFloat(s, 15), asFloat(s, 16),
-		asShort(s, 17), asFloat(s, 18), asFloat(s, 19), asShort(s, 20),
-		asShort(s, 21), asFloat(s, 22), asFloat(s, 23), asInt(s, 24), asInt(s, 25)) {}
+	db_building_level(sqlite3_stmt* s) : db_building_level(asShort(s, DbBuildingLevelCol::id), asShort(s, DbBuildingLevelCol::level), asShort(s, DbBuildingLevelCol::building), asText(s, DbBuildingLevelCol::name), asText(s, DbBuildingLevelCol::node_name),
+		asUS(s, DbBuildingLevelCol::food), asUS(s, DbBuildingLevelCol::wood), asUS(s, DbBuildingLevelCol::stone), asUS(s, DbBuildingLevelCol::gold),
+		asShort(s, DbBuildingLevelCol::queue_max_capacity), asShort(s, DbBuildingLevelCol::build_speed), asShort(s, DbBuildingLevelCol::upgrade_speed), asShort(s, DbBuildingLevelCol::max_hp),
+		asFloat(s, DbBuildingLevelCol::armor), asFloat(s, DbBuildingLevelCol::sight_range), asFloat(s, DbBuildingLevelCol::collect), asFloat(s, DbBuildingLevelCol::attack),
+		asShort(s, DbBuildingLevelCol::attack_reload), asFloat(s, DbBuildingLevelCol::attack_range), asFloat(s, DbBuildingLevelCol::resource_range),
+		asShort(s, DbBuildingLevelCol::food_storage), asShort(s, DbBuildingLevelCol::gold_storage), asFloat(s, DbBuildingLevelCol::stone_refine_capacity), asFloat(s, DbBuildingLevelCol::gold_refine_capacity),
+		asInt(s, DbBuildingLevelCol::spawn_resource_time), asInt(s, DbBuildingLevelCol::spawn_resource_range)) {}
 
 	db_building_level(short id, short level, short building, const char* name, const char* nodeName,
 	                  unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
@@ -480,9 +483,9 @@ struct db_nation : db_with_name {
 	std::vector<std::string> orderPrefix;
 
 	db_nation(sqlite3_stmt* stmt)
-		: db_with_name(asShort(stmt, 0), asText(stmt, 1)),
-		  actionPrefix(split(asText(stmt, 2), SPLIT_SIGN)),
-		  orderPrefix(split(asText(stmt, 3), SPLIT_SIGN)) {}
+		: db_with_name(asShort(stmt, DbNationCol::id), asText(stmt, DbNationCol::name)),
+		  actionPrefix(split(asText(stmt, DbNationCol::action_prefix), SPLIT_SIGN)),
+		  orderPrefix(split(asText(stmt, DbNationCol::order_prefix), SPLIT_SIGN)) {}
 
 	std::vector<std::string> splitAi(std::string* param) const {
 		return split(split(param[id], SPLIT_SIGN_2)[SimGlobals::CURRENT_RUN], SPLIT_SIGN);
@@ -508,10 +511,10 @@ struct db_resource : db_with_icon, db_static, db_with_hp, db_with_model {
 	const float collectSpeed;
 	const bool rotatable;
 
-	db_resource(sqlite3_stmt* stmt) : db_resource(asShort(stmt, 0), asByte(stmt, 1), asText(stmt, 2), asText(stmt, 3),
-	                                              asUS(stmt, 4),
-	                                              asText(stmt, 5), asShort(stmt, 6), asShort(stmt, 7), asShort(stmt, 8),
-	                                              asHex(stmt, 9), asFloat(stmt, 10), asBool(stmt, 11)) {}
+	db_resource(sqlite3_stmt* stmt) : db_resource(asShort(stmt, DbResourceCol::id), asByte(stmt, DbResourceCol::resource_id), asText(stmt, DbResourceCol::name), asText(stmt, DbResourceCol::icon),
+	                                              asUS(stmt, DbResourceCol::max_hp),
+	                                              asText(stmt, DbResourceCol::node_name), asShort(stmt, DbResourceCol::size_x), asShort(stmt, DbResourceCol::size_z), asShort(stmt, DbResourceCol::max_users),
+	                                              asHex(stmt, DbResourceCol::mini_map_color), asFloat(stmt, DbResourceCol::collect_speed), asBool(stmt, DbResourceCol::rotatable)) {}
 
 	db_resource(short id, char resourceId, const char* name, const char* icon, unsigned short maxHp,
 	            const char* nodeName, short sizeX,

@@ -5,7 +5,7 @@
 
 #include "db_utils.h"
 
-static void executeBatch(sqlite3* db, const char* sql, const std::function<void(sqlite3_stmt*)>& binderLoop) {
+inline void executeBatch(sqlite3* db, const char* sql, const std::function<void(sqlite3_stmt*)>& binderLoop) {
 	sqlite3_stmt* stmt = nullptr;
 
 	int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
@@ -16,7 +16,7 @@ static void executeBatch(sqlite3* db, const char* sql, const std::function<void(
 	sqlite3_finalize(stmt);
 }
 
-static void stepAndReset(sqlite3_stmt* stmt, const char* sql) {
+inline void stepAndReset(sqlite3_stmt* stmt, const char* sql) {
 	int rc = sqlite3_step(stmt);
 	ifError(rc, nullptr, sql);
 
@@ -30,7 +30,7 @@ public:
 	std::unordered_map<std::string, int> map;
 
 	ParamMap(sqlite3_stmt* stmt, const std::vector<std::string>& names) {
-		for (auto name : names) { map[name] = sqlite3_bind_parameter_index(stmt, name.c_str()); }
+		for (const auto& name : names) { map[name] = sqlite3_bind_parameter_index(stmt, name.c_str()); }
 	}
 
 	int operator[](const std::string& key) const {

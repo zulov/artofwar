@@ -1,17 +1,18 @@
 #pragma once
 #include "db_basic_struct.h"
+#include "db_columns.h"
 #include "db_utils.h"
 
-//TODO dla prostych to jest dobry pomys³ ale dla d³ugich chyba lepiej konstruktor zwyk³y
+//TODO dla prostych to jest dobry pomysï¿½ ale dla dï¿½ugich chyba lepiej konstruktor zwykï¿½y
 struct db_hud_size : db_with_name {
-	db_hud_size(sqlite3_stmt* stmt) : db_with_name(asShort(stmt, 0), asText(stmt, 1)) {}
+	db_hud_size(sqlite3_stmt* stmt) : db_with_name(asShort(stmt, HudSizeCol::id), asText(stmt, HudSizeCol::name)) {}
 };
 
 struct db_settings {
 	short graph;
 	short resolution;
 
-	db_settings(sqlite3_stmt* stmt) : db_settings(asShort(stmt, 0), asShort(stmt, 1)) {}
+	db_settings(sqlite3_stmt* stmt) : db_settings(asShort(stmt, SettingsCol::graph), asShort(stmt, SettingsCol::resolution)) {}
 	db_settings(short graph, short resolution) : graph(graph), resolution(resolution) {}
 };
 
@@ -19,7 +20,7 @@ struct db_resolution : db_entity {
 	const short x;
 	const short y;
 
-	db_resolution(sqlite3_stmt* stmt) : db_entity(asShort(stmt, 0)), x(asShort(stmt, 1)), y(asShort(stmt, 2)) {}
+	db_resolution(sqlite3_stmt* stmt) : db_entity(asShort(stmt, ResolutionCol::id)), x(asShort(stmt, ResolutionCol::x)), y(asShort(stmt, ResolutionCol::y)) {}
 };
 
 struct db_graph_settings : db_entity {
@@ -33,9 +34,9 @@ struct db_graph_settings : db_entity {
 	bool v_sync;
 	bool shadow;
 
-	db_graph_settings(sqlite3_stmt* stmt) : db_graph_settings(asShort(stmt, 0), asShort(stmt, 1), asText(stmt, 2),
-	                                                          asInt(stmt, 3), asFloat(stmt, 4), asFloat(stmt, 5),
-	                                                          asText(stmt, 6), asBool(stmt, 7), asBool(stmt, 8), asShort(stmt, 9)
+	db_graph_settings(sqlite3_stmt* stmt) : db_graph_settings(asShort(stmt, GraphSettingsCol::id), asShort(stmt, GraphSettingsCol::hud_size), asText(stmt, GraphSettingsCol::styles),
+	                                                          asInt(stmt, GraphSettingsCol::fullscreen), asFloat(stmt, GraphSettingsCol::max_fps), asFloat(stmt, GraphSettingsCol::min_fps),
+	                                                          asText(stmt, GraphSettingsCol::name), asBool(stmt, GraphSettingsCol::v_sync), asBool(stmt, GraphSettingsCol::shadow), asShort(stmt, GraphSettingsCol::texture_quality)
 	) {}
 
 	db_graph_settings(short id, short hudSize, const char* styles, int fullscreen, float maxFps, float minFps,
@@ -57,5 +58,5 @@ struct db_hud_vars : db_with_name {
 	float value;
 
 	db_hud_vars(sqlite3_stmt* stmt)
-		: db_with_name(asShort(stmt, 0), asText(stmt, 2)), hud_size(asShort(stmt, 1)), value(asFloat(stmt, 3)) {}
+		: db_with_name(asShort(stmt, HudVarsCol::id), asText(stmt, HudVarsCol::name)), hud_size(asShort(stmt, HudVarsCol::hud_size)), value(asFloat(stmt, HudVarsCol::value)) {}
 };
