@@ -11,7 +11,7 @@ struct db_resource;
 enum class ResourceActionType : char;
 
 class ResourceEntity : public Static {//TODO rename to resource
-	friend void bindRow<ResourceEntity>(sqlite3_stmt*, const ParamMap&, int, const ResourceEntity*);
+	friend void bindRow<ResourceEntity>(sqlite3_stmt*, int, const ResourceEntity*);
 
 public:
 	ResourceEntity(Urho3D::Vector3 _position, db_resource* db_resource, int indexInGrid, UId uid);

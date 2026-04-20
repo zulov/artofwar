@@ -18,10 +18,8 @@ inline sqlite3* openDb(const std::string& name, bool readOnly = true) {
 
 inline void ifError(int rc, char* error, const std::string& sql) {
 	if (rc != SQLITE_OK && rc != SQLITE_DONE) {
-		fprintf(stderr, "SQL error %d: %s\t", rc, error);
-		fprintf(stderr, sql.c_str());
-		fprintf(stderr, "\n");
-		sqlite3_free(error);
+		fprintf(stderr, "SQL error %d: %s\t%s\n", rc, error ? error : "(no details)", sql.c_str());
+		if (error) { sqlite3_free(error); }
 	}
 }
 

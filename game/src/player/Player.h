@@ -14,7 +14,7 @@ enum class ActionType : char;
 class Player {
 	friend class ActionMaker;
 	friend class OrderMaker;
-	friend void bindRow<Player>(sqlite3_stmt*, const ParamMap&, int, const Player*);
+	friend void bindRow<Player>(sqlite3_stmt*, int, const Player*);
 
 public:
 	Player(int nationId, char team, char id, int color, Urho3D::String name, bool active, unsigned currentBuildingUId, unsigned currentUnitUId);
@@ -28,7 +28,7 @@ public:
 	Possession* getPossession() const { return possession; }
 	unsigned char getNation() const;
 	unsigned char getTeam() const { return team; }
-	unsigned char getId() const { return id; } // TODO bug id playera a jego index to czêsto nie to samo
+	unsigned char getId() const { return id; } // TODO bug id playera a jego index to czï¿½sto nie to samo
 	unsigned char getColor() const { return color; }
 	const Urho3D::String& getName() const { return name; }
 

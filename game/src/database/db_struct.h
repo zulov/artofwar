@@ -172,7 +172,8 @@ struct db_building_metric : db_basic_metric {
 			return techNormAsVal;
 		case ParentBuildingType::UNITS:
 			return unitsNormAsVal;
-		default: ;
+		default:
+			return typesNormAsVal; //BUG? fallback - should all enum values be handled explicitly?
 		}
 	}
 };
@@ -364,11 +365,11 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 	bool typeUnitRange;
 	bool typeUnitCavalry;
 
-	//TODO init
-	bool typeResourceFoodBonus;
-	bool typeResourceWoodBonus;
-	bool typeResourceStoneBonus;
-	bool typeResourceGoldBonus;
+	//TODO init - initialized to false for now, set properly when bonus resource buildings are added
+	bool typeResourceFoodBonus = false;
+	bool typeResourceWoodBonus = false;
+	bool typeResourceStoneBonus = false;
+	bool typeResourceGoldBonus = false;
 
 	bool ruinable;
 	short toResource;//ToDO to może dać do levelu

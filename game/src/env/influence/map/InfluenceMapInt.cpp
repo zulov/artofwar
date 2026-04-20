@@ -1,5 +1,6 @@
 #include "InfluenceMapInt.h"
 #include <algorithm>
+#include <cassert>
 #include <numeric>
 
 #include "math/VectorUtils.h"
@@ -18,6 +19,7 @@ InfluenceMapInt::~InfluenceMapInt() {
 void InfluenceMapInt::update(Physical* thing, float value) {
 	const int index = calculator->indexFromPosition(thing->getPosition());
 
+	assert(values[index] + static_cast<unsigned char>(round(value)) >= values[index] && "unsigned char overflow in InfluenceMapInt::update");
 	values[index] += round(value);
 }
 
@@ -26,6 +28,7 @@ void InfluenceMapInt::updateInt(Physical* thing, int value) {
 }
 
 void InfluenceMapInt::updateInt(int index, int value) const {
+	assert(values[index] + static_cast<unsigned char>(value) >= values[index] && "unsigned char overflow in InfluenceMapInt::updateInt");
 	values[index] += value;
 }
 

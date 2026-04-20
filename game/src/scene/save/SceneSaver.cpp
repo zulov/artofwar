@@ -79,13 +79,10 @@ void SceneSaver::saveUnits(const std::vector<Unit*>* units) {
 
 	if (!units || units->empty()) { return; }
 	const auto sql = make_insert_sql("units", unit_columns);
-	const auto params = prefix_with_colon(unit_columns);
 
 	executeBatch(database, sql.c_str(), [&](sqlite3_stmt* stmt) {
-		ParamMap param(stmt, params);
-
 		for (auto* u : *units) {
-			bindRow(stmt, param, precision, u);
+			bindRow(stmt, precision, u);
 			stepAndReset(stmt, sql.c_str());
 		}
 	});
@@ -97,13 +94,10 @@ void SceneSaver::saveBuildings(const std::vector<Building*>* buildings) {
 	if (!buildings || buildings->empty()) { return; }
 
 	const auto sql = make_insert_sql("buildings", building_columns);
-	const auto params = prefix_with_colon(building_columns);
 
 	executeBatch(database, sql.c_str(), [&](sqlite3_stmt* stmt) {
-		ParamMap param(stmt, params);
-
 		for (auto* b : *buildings) {
-			bindRow(stmt, param, precision, b);
+			bindRow(stmt, precision, b);
 			stepAndReset(stmt, sql.c_str());
 		}
 	});
@@ -115,13 +109,10 @@ void SceneSaver::saveResources(const std::vector<ResourceEntity*>* resources) {
 	if (!resources || resources->empty()) { return; }
 
 	const auto sql = make_insert_sql("resources", resources_columns);
-	const auto params = prefix_with_colon(resources_columns);
 
 	executeBatch(database, sql.c_str(), [&](sqlite3_stmt* stmt) {
-		ParamMap param(stmt, params);
-
 		for (auto* r : *resources) {
-			bindRow(stmt, param, precision, r);
+			bindRow(stmt, precision, r);
 			stepAndReset(stmt, sql.c_str());
 		}
 	});
@@ -133,13 +124,10 @@ void SceneSaver::savePlayers(const std::vector<Player*>& players) {
 	if (players.empty()) { return; }
 
 	const auto sql = make_insert_sql("players", players_columns);
-	const auto params = prefix_with_colon(players_columns);
 
 	executeBatch(database, sql.c_str(), [&](sqlite3_stmt* stmt) {
-		ParamMap param(stmt, params);
-
 		for (auto* p : players) {
-			bindRow(stmt, param, precision, p);
+			bindRow(stmt, precision, p);
 			stepAndReset(stmt, sql.c_str());
 		}
 	});
@@ -149,13 +137,11 @@ void SceneSaver::saveConfig(int mapId, int size) {
 	createTable(SQLConsts::CONFIG_NAME, SQLConsts::CONFIG_COL);
 
 	const auto sql = make_insert_sql("config", config_columns);
-	const auto params = prefix_with_colon(config_columns);
 
 	executeBatch(database, sql.c_str(), [&](sqlite3_stmt* stmt) {
-		ParamMap p(stmt, params);
-		bindI(stmt, p[":precision"], precision);
-		bindI(stmt, p[":map"], mapId);
-		bindI(stmt, p[":size"], size);
+		bindI(stmt, ConfigCol::precision, precision);
+		bindI(stmt, ConfigCol::map, mapId);
+		bindI(stmt, ConfigCol::size, size);
 
 		stepAndReset(stmt, sql.c_str());
 	});

@@ -17,7 +17,7 @@ struct db_container {
 	std::vector<db_hud_vars*> hudVars;
 	std::vector<db_graph_settings*> graphSettings;
 	std::vector<db_resolution*> resolutions;
-	db_settings *settings;
+	db_settings *settings = nullptr;
 
 	std::vector<db_map*> maps;
 

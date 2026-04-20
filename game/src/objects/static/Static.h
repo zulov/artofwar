@@ -6,9 +6,14 @@
 
 struct dbload_static;
 enum class CellState : char;
+class Building;
+class ResourceEntity;
+struct sqlite3_stmt;
+template <typename T> void bindRow(sqlite3_stmt* stmt, int precision, const T* x);
 
 class Static : public Physical {
-	friend void bindRow<Static>(sqlite3_stmt*, const ParamMap&, int, const Static*);
+	friend void bindRow<Building>(sqlite3_stmt*, int, const Building*);
+	friend void bindRow<ResourceEntity>(sqlite3_stmt*, int, const ResourceEntity*);
 public:
 	Static(Urho3D::Vector3& _position, int indexInGrid, UId uId);
 	~Static() override;

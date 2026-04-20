@@ -13,7 +13,6 @@
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
-#include "env/ContentInfo.h"
 #include "env/GridCalculatorProvider.h"
 #include "utils/AssertUtils.h"
 #include "utils/OtherUtils.h"
@@ -41,28 +40,32 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 	mapsForAiPerPlayer.reserve(numberOfPlayers);
 	mapsForCentersPerPlayer.reserve(numberOfPlayers);
 	unsigned short resolution = mapSize / INF_GRID_FIELD_SIZE;
+	sharedTemplateV = InfluenceMapFloat::createTemplateV(0.5f, INF_LEVEL);
+	const unsigned int tempValsSize = resolution * resolution;
+	sharedTempVals = new float[tempValsSize];
+	std::fill_n(sharedTempVals, tempValsSize, 0.f);
 	for (int player = 0; player < numberOfPlayers; ++player) {
 		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(resolution, mapSize, 40));
 		buildingsInfluencePerPlayer.emplace_back(
-		                                         new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 2));
+		                                         new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 2, sharedTemplateV, sharedTempVals));
 		unitsInfluencePerPlayer.emplace_back(
-		                                     new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 40));
+		                                     new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, sharedTempVals));
 
 		for (auto& gs : gatherSpeed) {
-			gs.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
+			gs.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV, sharedTempVals));
 		}
 
 		for (auto& resNotInBonus : resNotInBonus) {
 			resNotInBonus.emplace_back(new InfluenceMapInt(resolution, mapSize, 5));
 		}
 
-		attackSpeed.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
+		attackSpeed.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV, sharedTempVals));
 		armyQuad.emplace_back(new InfluenceMapQuad(resolution, mapSize));
 		buildingsQuad.emplace_back(new InfluenceMapQuad(resolution, mapSize));
 		econQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
 	}
 
-	resourceInfluence = new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 40);
+	resourceInfluence = new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, sharedTempVals);
 	for (int player = 0; player < numberOfPlayers; ++player) {
 		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 8>{
 			                                buildingsInfluencePerPlayer[player],
@@ -102,13 +105,11 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 	visibilityManager = new VisibilityManager(numberOfPlayers, mapSize, terrain);
 
 	calculator = GridCalculatorProvider::get(resolution, mapSize);
-	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUENCE, MAX_DEBUG_PARTS_INFLUENCE);
 
 	arraySize = calculator->getResolution() * calculator->getResolution();
 	assert(arraySize <= std::numeric_limits<unsigned short>::max());
 	intersection = new float[arraySize];
-	tempIndexes = new std::vector<unsigned>();
 
 	assert(unitsNumberPerPlayer[0]->getResolution() == unitsInfluencePerPlayer[0]->getResolution()
 	       && calculator->getResolution() == unitsNumberPerPlayer[0]->getResolution());
@@ -133,10 +134,10 @@ InfluenceManager::~InfluenceManager() {
 	clear_vector(econQuad);
 
 	delete visibilityManager;
-	delete ci;
 
 	delete[]intersection;
-	delete tempIndexes;
+	delete[] sharedTemplateV;
+	delete[] sharedTempVals;
 }
 
 void InfluenceManager::update(std::vector<Unit*>* units) const {
@@ -165,6 +166,8 @@ void InfluenceManager::update(const std::vector<ResourceEntity*>* resources) con
 	for (const auto resource : (*resources)) {
 		resourceInfluence->tempUpdate(resource->getIndexInInfluence(), resource->getHealthPercent());
 	}
+	//BUG? resourceInfluence->updateFromTemp() is commented out -- values[] stays zeroed after reset(), 
+	// so getValueAt/cumulateErros reads zeros. Assert fires in debug. Is this intentional?
 	//resourceInfluence->updateFromTemp();
 }
 
@@ -304,7 +307,7 @@ void InfluenceManager::drawAll() const {
 
 content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfo,
                                                bool checks[], int activePlayer) const {
-	ci->reset(); //TODO przemyslec to, zbyt skomplikowane
+	ci.reset(); //TODO przemyslec to, zbyt skomplikowane
 	switch (state) {
 	case CellState::NONE:
 	case CellState::ATTACK:
@@ -314,28 +317,28 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 			for (int i = 0; i < unitsNumberPerPlayer.size(); ++i) {
 				char value = unitsNumberPerPlayer[i]->getValueAt(center);
 				if ((checks[3] && i == activePlayer || checks[4] && i != activePlayer) && value > 0) {
-					ci->unitsNumberPerPlayer[i] = value;
-					ci->hasUnit = true;
+					ci.unitsNumberPerPlayer[i] = value;
+					ci.hasUnit = true;
 				}
 			}
 		}
 		break;
 	case CellState::RESOURCE:
 		if (checks[1]) {
-			ci->hasResource = true;
-			ci->resourceNumber[additionalInfo]++;
+			ci.hasResource = true;
+			ci.resourceNumber[additionalInfo]++;
 		}
 		break;
 	case CellState::BUILDING:
 		if (checks[2]) {
-			ci->hasBuilding = true;
-			ci->buildingNumberPerPlayer[additionalInfo]++;
+			ci.hasBuilding = true;
+			ci.buildingNumberPerPlayer[additionalInfo]++;
 		}
 		break;
 	default: ;
 	}
 
-	return ci;
+	return &ci;
 }
 
 std::array<float, 5>& InfluenceManager::getInfluenceDataAt(char player, const Urho3D::Vector2& pos) {
@@ -470,15 +473,15 @@ void InfluenceManager::nextVisibilityType() const {
 
 std::vector<unsigned>* InfluenceManager::bestIndexes(float* values, const std::vector<unsigned>& indexes,
                                                      float minVal) const {
-	tempIndexes->clear();
+	tempIndexes.clear();
 
 	for (auto ptr = indexes.begin(); ptr < indexes.end(); ++ptr) {
 		if (values[*ptr] > minVal) {
 			break;
 		}
-		tempIndexes->emplace_back(*ptr);
+		tempIndexes.emplace_back(*ptr);
 	}
-	return tempIndexes;
+	return &tempIndexes;
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(const std::vector<int>& intersection) const {

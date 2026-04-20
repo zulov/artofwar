@@ -8,20 +8,26 @@
 #include "env/influence/VisibilityManager.h"
 
 InfluenceMapFloat::
-InfluenceMapFloat(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug):
+InfluenceMapFloat(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug,
+                  float* sharedTemplateV, float* sharedTempVals):
 	InfluenceMap(resolution, size, valueThresholdDebug),
 	coef(coef),
 	level(level) {
 	levelRes = level * 2 + 1;
 
 	values = new float[arraySize];
-	tempVals = new float[arraySize];
-	templateV = new float[levelRes * levelRes];
+	tempVals = sharedTempVals;
+	templateV = sharedTemplateV;
 
 	std::fill_n(values, arraySize, 0.f);
-	std::fill_n(tempVals, arraySize, 0.f);
 
-	auto* ptr = templateV;
+	assert(level > 0);
+}
+
+float* InfluenceMapFloat::createTemplateV(float coef, char level) {
+	const auto levelRes = level * 2 + 1;
+	auto* tv = new float[levelRes * levelRes];
+	auto* ptr = tv;
 	for (short i = -level; i <= level; ++i) {
 		const auto a = i * i;
 		for (short j = -level; j <= level; ++j) {
@@ -29,14 +35,11 @@ InfluenceMapFloat(unsigned short resolution, float size, float coef, char level,
 			*(ptr++) = 1 / ((a + b) * coef + 1.f);
 		}
 	}
-
-	assert(level > 0);
+	return tv;
 }
 
 InfluenceMapFloat::~InfluenceMapFloat() {
 	delete[] values;
-	delete[] tempVals;
-	delete[] templateV;
 }
 
 void InfluenceMapFloat::update(Physical* thing, float value) {

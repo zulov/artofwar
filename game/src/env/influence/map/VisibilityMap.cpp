@@ -1,4 +1,5 @@
 #include "VisibilityMap.h"
+#include <cassert>
 
 #include "VisibilityType.h"
 #include "math/MathUtils.h"
@@ -45,6 +46,7 @@ void VisibilityMap::finishAtIndex(int i) const {
 	const auto levels = levelCache->get(ranges[i], i);
 
 	for (const auto idx : *levels) {
+		assert(i + idx >= 0 && i + idx < arraySize && "out-of-bounds in VisibilityMap::finishAtIndex");
 		values[i + idx] = VisibilityType::VISIBLE;
 	}
 

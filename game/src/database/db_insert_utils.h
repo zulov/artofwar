@@ -1,6 +1,5 @@
 #pragma once
 #include <functional>
-#include <unordered_map>
 #include <sqlite3/sqlite3.h>
 
 #include "db_utils.h"
@@ -24,38 +23,23 @@ inline void stepAndReset(sqlite3_stmt* stmt, const char* sql) {
 	sqlite3_clear_bindings(stmt);
 }
 
+template <typename E>
+constexpr int bindIdx(E e) { return static_cast<int>(e) + 1; }
 
-class ParamMap {
-public:
-	std::unordered_map<std::string, int> map;
-
-	ParamMap(sqlite3_stmt* stmt, const std::vector<std::string>& names) {
-		for (const auto& name : names) { map[name] = sqlite3_bind_parameter_index(stmt, name.c_str()); }
-	}
-
-	int operator[](const std::string& key) const {
-		const auto it = map.find(key);
-		return it != map.end() ? it->second : -1;
-	}
-};
-
-
-inline void bindU(sqlite3_stmt* stmt, int idx, unsigned value) {
-	sqlite3_bind_int64(stmt, idx, static_cast<sqlite3_int64>(value));
+template <typename E> void bindU(sqlite3_stmt* stmt, E col, unsigned value) {
+	sqlite3_bind_int64(stmt, bindIdx(col), static_cast<sqlite3_int64>(value));
 }
-
-inline void bindI(sqlite3_stmt* stmt, int idx, int value) { sqlite3_bind_int(stmt, idx, value); }
-inline void bindC(sqlite3_stmt* stmt, int idx, char value) { sqlite3_bind_int(stmt, idx, value); }
-inline void bindUC(sqlite3_stmt* stmt, int idx, unsigned char value) { sqlite3_bind_int(stmt, idx, value); }
-inline void bindB(sqlite3_stmt* stmt, int idx, bool value) { sqlite3_bind_int(stmt, idx, value); }
-inline void bindF(sqlite3_stmt* stmt, int idx, float value) { sqlite3_bind_double(stmt, idx, value); }
-
-inline void bindT(sqlite3_stmt* stmt, int idx, const std::string& value) {
-	sqlite3_bind_text(stmt, idx, value.c_str(), -1, SQLITE_TRANSIENT);
+template <typename E> void bindI(sqlite3_stmt* stmt, E col, int value) { sqlite3_bind_int(stmt, bindIdx(col), value); }
+template <typename E> void bindC(sqlite3_stmt* stmt, E col, char value) { sqlite3_bind_int(stmt, bindIdx(col), value); }
+template <typename E> void bindUC(sqlite3_stmt* stmt, E col, unsigned char value) { sqlite3_bind_int(stmt, bindIdx(col), value); }
+template <typename E> void bindB(sqlite3_stmt* stmt, E col, bool value) { sqlite3_bind_int(stmt, bindIdx(col), value); }
+template <typename E> void bindF(sqlite3_stmt* stmt, E col, float value) { sqlite3_bind_double(stmt, bindIdx(col), value); }
+template <typename E> void bindT(sqlite3_stmt* stmt, E col, const std::string& value) {
+	sqlite3_bind_text(stmt, bindIdx(col), value.c_str(), -1, SQLITE_TRANSIENT);
 }
 
 template <typename T>
-void bindRow(sqlite3_stmt* stmt, const ParamMap& p, int precision, const T* x);
+void bindRow(sqlite3_stmt* stmt, int precision, const T* x);
 
 inline std::string make_insert_sql(const std::string& table, const std::vector<std::string>& cols) {
 	std::string sql = "INSERT INTO " + table + " (";
@@ -74,13 +58,4 @@ inline std::string make_insert_sql(const std::string& table, const std::vector<s
 
 	sql += ");";
 	return sql;
-}
-
-inline std::vector<std::string> prefix_with_colon(const std::vector<std::string>& cols) {
-	std::vector<std::string> result;
-	result.reserve(cols.size());
-
-	for (const auto& c : cols) { result.push_back(":" + c); }
-
-	return result;
 }

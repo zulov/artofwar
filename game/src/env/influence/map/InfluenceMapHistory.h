@@ -4,7 +4,8 @@
 class InfluenceMapHistory : public InfluenceMapFloat {
 public:
 	InfluenceMapHistory(unsigned short resolution, float size, float coef, char level, float minimalThreshold,
-	                    float vanishCoef, float valueThresholdDebug);
+	                    float vanishCoef, float valueThresholdDebug,
+	                    float* sharedTemplateV, float* sharedTempVals);
 	virtual ~InfluenceMapHistory() = default;
 
 	void reset() override;

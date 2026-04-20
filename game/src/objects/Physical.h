@@ -24,7 +24,6 @@ struct dbload_physical;
 
 class Physical {
 	friend class CreationCommand;
-	friend void bindRow<Physical>(sqlite3_stmt*, const ParamMap&, int, const Physical*);
 
 public:
 	explicit Physical(Urho3D::Vector3& _position, UId uId);

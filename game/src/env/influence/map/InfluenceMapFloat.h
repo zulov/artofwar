@@ -7,7 +7,8 @@
 
 class InfluenceMapFloat : public InfluenceMap {
 public:
-	InfluenceMapFloat(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug);
+	InfluenceMapFloat(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug,
+	                  float* sharedTemplateV, float* sharedTempVals);
 	virtual ~InfluenceMapFloat();
 
 	void update(Physical* thing, float value = 1.f) override;
@@ -28,6 +29,8 @@ public:
 	bool cumulateErros(float percent, float* intersection) const;
 
 	void updateFromTemp();
+
+	static float* createTemplateV(float coef, char level);
 
 protected:
 	float* values;

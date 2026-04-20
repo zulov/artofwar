@@ -13,7 +13,7 @@ struct db_unit;
 class QueueElement;
 
 class Building : public Static {
-	friend void bindRow<Building>(sqlite3_stmt*, const ParamMap&, int, const Building*);
+	friend void bindRow<Building>(sqlite3_stmt*, int, const Building*);
 
 public:
 	Building(Urho3D::Vector3 _position, db_building* db_building, char playerId, char teamId, char level, int indexInGrid, UId uId);
