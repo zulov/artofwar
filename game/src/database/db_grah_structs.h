@@ -12,7 +12,7 @@ struct db_settings {
 	short graph;
 	short resolution;
 
-	db_settings(sqlite3_stmt* stmt) : db_settings(asShort(stmt, SettingsCol::graph), asShort(stmt, SettingsCol::resolution)) {}
+	db_settings(sqlite3_stmt* s) : graph(asShort(s, SettingsCol::graph)), resolution(asShort(s, SettingsCol::resolution)) {}
 	db_settings(short graph, short resolution) : graph(graph), resolution(resolution) {}
 };
 
@@ -34,23 +34,18 @@ struct db_graph_settings : db_entity {
 	bool v_sync;
 	bool shadow;
 
-	db_graph_settings(sqlite3_stmt* stmt) : db_graph_settings(asShort(stmt, GraphSettingsCol::id), asShort(stmt, GraphSettingsCol::hud_size), asText(stmt, GraphSettingsCol::styles),
-	                                                          asInt(stmt, GraphSettingsCol::fullscreen), asFloat(stmt, GraphSettingsCol::max_fps), asFloat(stmt, GraphSettingsCol::min_fps),
-	                                                          asText(stmt, GraphSettingsCol::name), asBool(stmt, GraphSettingsCol::v_sync), asBool(stmt, GraphSettingsCol::shadow), asShort(stmt, GraphSettingsCol::texture_quality)
-	) {}
-
-	db_graph_settings(short id, short hudSize, const char* styles, int fullscreen, float maxFps, float minFps,
-	                  const char* name, bool v_sync, bool shadow, short texture_quality)
-		: db_entity(id),
-		  hud_size(hudSize),
-		  max_fps(maxFps),
-		  min_fps(minFps),
-		  styles(Urho3D::String(styles).Split(SPLIT_SIGN)),
-		  name(name),
-		  texture_quality(texture_quality),
-		  fullscreen(fullscreen),
-		  v_sync(v_sync),
-		  shadow(shadow) {}
+	using C = GraphSettingsCol;
+	db_graph_settings(sqlite3_stmt* s)
+		: db_entity(asShort(s, C::id)),
+		  hud_size(asShort(s, C::hud_size)),
+		  max_fps(asFloat(s, C::max_fps)),
+		  min_fps(asFloat(s, C::min_fps)),
+		  styles(Urho3D::String(asText(s, C::styles)).Split(SPLIT_SIGN)),
+		  name(asText(s, C::name)),
+		  texture_quality(asShort(s, C::texture_quality)),
+		  fullscreen(asInt(s, C::fullscreen)),
+		  v_sync(asBool(s, C::v_sync)),
+		  shadow(asBool(s, C::shadow)) {}
 };
 
 struct db_hud_vars : db_with_name {

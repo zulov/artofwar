@@ -17,9 +17,10 @@ struct db_player_colors : db_with_name {
 
 	Urho3D::Color unitColor;
 	Urho3D::Color buildingColor;
-	db_player_colors(sqlite3_stmt* stmt) :db_player_colors(asShort(stmt, PlayerColorsCol::id), asHex(stmt, PlayerColorsCol::unit), asHex(stmt, PlayerColorsCol::building), asText(stmt, PlayerColorsCol::name)){}
-	db_player_colors(short id, unsigned unit, unsigned building, const char* name)
-		: db_with_name(id, name),
-		  unit(unit), building(building),
+	using C = PlayerColorsCol;
+	db_player_colors(sqlite3_stmt* s)
+		: db_with_name(asShort(s, C::id), asText(s, C::name)),
+		  unit(asHex(s, C::unit)),
+		  building(asHex(s, C::building)),
 		  unitColor(unit), buildingColor(building) {}
 };

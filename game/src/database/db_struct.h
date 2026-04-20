@@ -244,39 +244,30 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 
 	db_unit_metric* dbUnitMetric = nullptr;
 
-	db_unit_level(sqlite3_stmt* stmt) : db_unit_level(asShort(stmt, DbUnitLevelCol::id), asShort(stmt, DbUnitLevelCol::level), asShort(stmt, DbUnitLevelCol::unit),
-	                                                  asText(stmt, DbUnitLevelCol::name), asText(stmt, DbUnitLevelCol::node),
-	                                                  asUS(stmt, DbUnitLevelCol::food), asUS(stmt, DbUnitLevelCol::wood), asUS(stmt, DbUnitLevelCol::stone), asUS(stmt, DbUnitLevelCol::gold),
-	                                                  asShort(stmt, DbUnitLevelCol::build_time), asShort(stmt, DbUnitLevelCol::upgrade_time), asFloat(stmt, DbUnitLevelCol::min_dist),
-	                                                  asFloat(stmt, DbUnitLevelCol::mass), asFloat(stmt, DbUnitLevelCol::min_speed), asFloat(stmt, DbUnitLevelCol::max_speed),
-	                                                  asShort(stmt, DbUnitLevelCol::max_force), asShort(stmt, DbUnitLevelCol::max_hp), asFloat(stmt, DbUnitLevelCol::armor),
-	                                                  asFloat(stmt, DbUnitLevelCol::sight_range), asFloat(stmt, DbUnitLevelCol::collect), asFloat(stmt, DbUnitLevelCol::attack),
-	                                                  asFloat(stmt, DbUnitLevelCol::attack_reload), asShort(stmt, DbUnitLevelCol::attack_range),
-	                                                  asFloat(stmt, DbUnitLevelCol::bonus_infantry), asFloat(stmt, DbUnitLevelCol::bonus_range),
-	                                                  asFloat(stmt, DbUnitLevelCol::bonus_calvary), asFloat(stmt, DbUnitLevelCol::bonus_worker),
-	                                                  asFloat(stmt, DbUnitLevelCol::bonus_special), asFloat(stmt, DbUnitLevelCol::bonus_melee),
-	                                                  asFloat(stmt, DbUnitLevelCol::bonus_heavy), asFloat(stmt, DbUnitLevelCol::bonus_light),
-	                                                  asFloat(stmt, DbUnitLevelCol::bonus_building)) {}
-
-	db_unit_level(short id, short level, short unit, const char* name, const char* node,
-	              unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
-	              short buildTime, short upgradeTime, float minDist, float mass, float minSpeed, float maxSpeed,
-	              int maxForce, short maxHp, float armor, float sightRng, float collect, float atck, float atckRld,
-	              short atckRng, float bI, float bR, float bC, float bW, float bS, float bM, float bH, float bL,
-	              float bB) :
-		db_with_name(id, name), db_level(level), db_with_cost(food, wood, stone, gold),
-		db_unit_attack(collect, atck, atckRld, atckRng, bI, bR, bC, bW, bS, bM, bH, bL, bB),
-		db_base(maxHp, armor, sightRng), db_build_upgrade(buildTime, upgradeTime),
-		unit(unit),
-		minDist(minDist),
-		maxSep(1.f),
-		mass(mass),
-		invMass(1 / mass),
-		maxSpeed(maxSpeed),
-		minSpeed(minSpeed),
-		maxForce(maxForce),
-		sqMinSpeed(minSpeed * minSpeed),
-		node(node) {}
+	using C = DbUnitLevelCol;
+	db_unit_level(sqlite3_stmt* s)
+		: db_with_name(asShort(s, C::id), asText(s, C::name)),
+		  db_level(asShort(s, C::level)),
+		  db_with_cost(asUS(s, C::food), asUS(s, C::wood), asUS(s, C::stone), asUS(s, C::gold)),
+		  db_unit_attack(asFloat(s, C::collect), asFloat(s, C::attack),
+		                 asFloat(s, C::attack_reload), asShort(s, C::attack_range),
+		                 asFloat(s, C::bonus_infantry), asFloat(s, C::bonus_range),
+		                 asFloat(s, C::bonus_calvary), asFloat(s, C::bonus_worker),
+		                 asFloat(s, C::bonus_special), asFloat(s, C::bonus_melee),
+		                 asFloat(s, C::bonus_heavy), asFloat(s, C::bonus_light),
+		                 asFloat(s, C::bonus_building)),
+		  db_base(asShort(s, C::max_hp), asFloat(s, C::armor), asFloat(s, C::sight_range)),
+		  db_build_upgrade(asShort(s, C::build_time), asShort(s, C::upgrade_time)),
+		  unit(asShort(s, C::unit)),
+		  minDist(asFloat(s, C::min_dist)),
+		  maxSep(1.f),
+		  mass(asFloat(s, C::mass)),
+		  invMass(1.f / mass),
+		  maxSpeed(asFloat(s, C::max_speed)),
+		  minSpeed(asFloat(s, C::min_speed)),
+		  maxForce(asShort(s, C::max_force)),
+		  sqMinSpeed(minSpeed * minSpeed),
+		  node(asText(s, C::node)) {}
 
 	void finish(db_unit* dbUnit) {
 		dbUnitMetric = new db_unit_metric(dbUnit, this);
@@ -306,27 +297,19 @@ struct db_unit : db_with_icon, db_with_cost {
 	std::vector<db_nation*> nations;
 	std::vector<unsigned char> ordersIds;
 
-	db_unit(sqlite3_stmt* stmt) : db_unit(asShort(stmt, DbUnitCol::id), asText(stmt, DbUnitCol::name), asText(stmt, DbUnitCol::icon),
-	                                      asUS(stmt, DbUnitCol::food), asUS(stmt, DbUnitCol::wood), asUS(stmt, DbUnitCol::stone), asUS(stmt, DbUnitCol::gold),
-	                                      asByte(stmt, DbUnitCol::action_state), asBool(stmt, DbUnitCol::type_infantry), asBool(stmt, DbUnitCol::type_range), asBool(stmt, DbUnitCol::type_calvary),
-	                                      asBool(stmt, DbUnitCol::type_worker), asBool(stmt, DbUnitCol::type_special), asBool(stmt, DbUnitCol::type_melee), asBool(stmt, DbUnitCol::type_heavy),
-	                                      asBool(stmt, DbUnitCol::type_light)) {}
-
-	db_unit(short id, const char* name, const char* icon,
-	        unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
-	        char actionState, bool typeInfantry, bool typeRange, bool typeCalvary, bool typeWorker,
-	        bool typeSpecial, bool typeMelee, bool typeHeavy,
-	        bool typeLight) : //TODO typeHeavy polaczyc z typeLight, usunac actionState?
-		db_with_icon(id, name, icon), db_with_cost(food, wood, stone, gold),
-		desiredState(UnitState(actionState)),
-		typeInfantry(typeInfantry),
-		typeRange(typeRange),
-		typeCalvary(typeCalvary),
-		typeWorker(typeWorker),
-		typeSpecial(typeSpecial),
-		typeMelee(typeMelee),
-		typeHeavy(typeHeavy),
-		typeLight(typeLight) {}
+	using C = DbUnitCol;
+	db_unit(sqlite3_stmt* s)
+		: db_with_icon(asShort(s, C::id), asText(s, C::name), asText(s, C::icon)),
+		  db_with_cost(asUS(s, C::food), asUS(s, C::wood), asUS(s, C::stone), asUS(s, C::gold)),
+		  desiredState(UnitState(asByte(s, C::action_state))),
+		  typeInfantry(asBool(s, C::type_infantry)),
+		  typeRange(asBool(s, C::type_range)),
+		  typeCalvary(asBool(s, C::type_calvary)),
+		  typeWorker(asBool(s, C::type_worker)),
+		  typeSpecial(asBool(s, C::type_special)),
+		  typeMelee(asBool(s, C::type_melee)),
+		  typeHeavy(asBool(s, C::type_heavy)),
+		  typeLight(asBool(s, C::type_light)) {}
 
 	std::optional<db_unit_level*> getLevel(char level) {
 		if (levels.size() > level) {
@@ -384,26 +367,28 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 
 	std::vector<db_nation*> nations;
 
-	db_building(sqlite3_stmt* stmt) : db_building(asShort(stmt, DbBuildingCol::id), asText(stmt, DbBuildingCol::name), asText(stmt, DbBuildingCol::icon),
-		asUS(stmt, DbBuildingCol::food), asUS(stmt, DbBuildingCol::wood), asUS(stmt, DbBuildingCol::stone), asUS(stmt, DbBuildingCol::gold),
-		asShort(stmt, DbBuildingCol::size_x), asShort(stmt, DbBuildingCol::size_z), asBool(stmt, DbBuildingCol::type_center), asBool(stmt, DbBuildingCol::type_home),
-		asBool(stmt, DbBuildingCol::type_defence), asShort(stmt, DbBuildingCol::type_resource), asBool(stmt, DbBuildingCol::type_tech_blacksmith),
-		asBool(stmt, DbBuildingCol::type_tech_university), asBool(stmt, DbBuildingCol::type_unit_barracks), asBool(stmt, DbBuildingCol::type_unit_range),
-		asBool(stmt, DbBuildingCol::type_unit_cavalry), asBool(stmt, DbBuildingCol::ruinable), asShort(stmt, DbBuildingCol::to_resource)) {}
-
-	db_building(short id, const char* name, const char* icon,
-	            unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
-	            short sizeX, short sizeZ, bool typeCenter, bool typeHome, bool typeDefence, char typeResource,
-	            bool typeTechBlacksmith, bool typeTechUniversity, bool typeUnitBarracks, bool typeUnitRange,
-	            bool typeUnitCavalry, bool ruinable, short toResource)
-		: db_with_icon(id, name, icon), db_with_cost(food, wood, stone, gold), db_static({sizeX, sizeZ}),
-		  typeCenter(typeCenter), typeHome(typeHome), typeDefence(typeDefence), resourceType(typeResource),
-		  typeResourceFood(typeResource == 0), typeResourceWood(typeResource == 1),
-		  typeResourceStone(typeResource == 2), typeResourceGold(typeResource == 3),
-		  typeTechBlacksmith(typeTechBlacksmith), typeTechUniversity(typeTechUniversity),
-		  typeUnitBarracks(typeUnitBarracks), typeUnitRange(typeUnitRange), typeUnitCavalry(typeUnitCavalry),
-		  ruinable(ruinable), toResource(toResource), maxUsers(sizeX * 2 + sizeZ * 2 + 4),
-		  typeResourceAny(typeResource >= 0) {
+	using C = DbBuildingCol;
+	db_building(sqlite3_stmt* s)
+		: db_with_icon(asShort(s, C::id), asText(s, C::name), asText(s, C::icon)),
+		  db_with_cost(asUS(s, C::food), asUS(s, C::wood), asUS(s, C::stone), asUS(s, C::gold)),
+		  db_static({asShort(s, C::size_x), asShort(s, C::size_z)}),
+		  typeCenter(asBool(s, C::type_center)),
+		  typeHome(asBool(s, C::type_home)),
+		  typeDefence(asBool(s, C::type_defence)),
+		  resourceType(asShort(s, C::type_resource)),
+		  typeResourceFood(resourceType == 0),
+		  typeResourceWood(resourceType == 1),
+		  typeResourceStone(resourceType == 2),
+		  typeResourceGold(resourceType == 3),
+		  typeTechBlacksmith(asBool(s, C::type_tech_blacksmith)),
+		  typeTechUniversity(asBool(s, C::type_tech_university)),
+		  typeUnitBarracks(asBool(s, C::type_unit_barracks)),
+		  typeUnitRange(asBool(s, C::type_unit_range)),
+		  typeUnitCavalry(asBool(s, C::type_unit_cavalry)),
+		  ruinable(asBool(s, C::ruinable)),
+		  toResource(asShort(s, C::to_resource)),
+		  maxUsers(size.x_ * 2 + size.y_ * 2 + 4),
+		  typeResourceAny(resourceType >= 0) {
 		parentType[castC(ParentBuildingType::OTHER)] = typeCenter || typeHome;
 		parentType[castC(ParentBuildingType::DEFENCE)] = typeDefence;
 		parentType[castC(ParentBuildingType::RESOURCE)]
@@ -441,26 +426,25 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 
 	//std::vector<db_building_metric*> dbBuildingMetricPerNation;
 	db_building_metric* dbBuildingMetric;
-	db_building_level(sqlite3_stmt* s) : db_building_level(asShort(s, DbBuildingLevelCol::id), asShort(s, DbBuildingLevelCol::level), asShort(s, DbBuildingLevelCol::building), asText(s, DbBuildingLevelCol::name), asText(s, DbBuildingLevelCol::node_name),
-		asUS(s, DbBuildingLevelCol::food), asUS(s, DbBuildingLevelCol::wood), asUS(s, DbBuildingLevelCol::stone), asUS(s, DbBuildingLevelCol::gold),
-		asShort(s, DbBuildingLevelCol::queue_max_capacity), asShort(s, DbBuildingLevelCol::build_speed), asShort(s, DbBuildingLevelCol::upgrade_speed), asShort(s, DbBuildingLevelCol::max_hp),
-		asFloat(s, DbBuildingLevelCol::armor), asFloat(s, DbBuildingLevelCol::sight_range), asFloat(s, DbBuildingLevelCol::collect), asFloat(s, DbBuildingLevelCol::attack),
-		asShort(s, DbBuildingLevelCol::attack_reload), asFloat(s, DbBuildingLevelCol::attack_range), asFloat(s, DbBuildingLevelCol::resource_range),
-		asShort(s, DbBuildingLevelCol::food_storage), asShort(s, DbBuildingLevelCol::gold_storage), asFloat(s, DbBuildingLevelCol::stone_refine_capacity), asFloat(s, DbBuildingLevelCol::gold_refine_capacity),
-		asInt(s, DbBuildingLevelCol::spawn_resource_time), asInt(s, DbBuildingLevelCol::spawn_resource_range)) {}
-
-	db_building_level(short id, short level, short building, const char* name, const char* nodeName,
-	                  unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold,
-	                  short queueMaxCapacity, short buildSpeed, short upgradeSpeed, short maxHp, float armor,
-	                  float sightRng, float collect, float atckR, short atckRRld, float atckRRng, float resourceRng,
-					  short foodStorage, short goldStoreage, float stoneRefineCapacity, float goldRefineCapacity,
-					  int spawnResourceTime, int spawnResourceRange)
-		: db_with_name(id, name), db_with_cost(food, wood, stone, gold), db_level(level),
-		  db_base(maxHp, armor, sightRng),
-		  db_building_attack(collect, atckR, atckRRld, atckRRng), db_build_upgrade(buildSpeed, upgradeSpeed),
-		  building(building), queueMaxCapacity(queueMaxCapacity), resourceRange(resourceRng), foodStorage(foodStorage),
-		  goldStorage(goldStoreage), stoneRefineCapacity(stoneRefineCapacity), goldRefineCapacity(goldRefineCapacity),
-		spawnResourceTime(spawnResourceTime), spawnResourceRange(spawnResourceRange), nodeName(nodeName) {}
+	using C = DbBuildingLevelCol;
+	db_building_level(sqlite3_stmt* s)
+		: db_with_name(asShort(s, C::id), asText(s, C::name)),
+		  db_with_cost(asUS(s, C::food), asUS(s, C::wood), asUS(s, C::stone), asUS(s, C::gold)),
+		  db_level(asShort(s, C::level)),
+		  db_base(asShort(s, C::max_hp), asFloat(s, C::armor), asFloat(s, C::sight_range)),
+		  db_building_attack(asFloat(s, C::collect), asFloat(s, C::attack),
+		                     asShort(s, C::attack_reload), asFloat(s, C::attack_range)),
+		  db_build_upgrade(asShort(s, C::build_speed), asShort(s, C::upgrade_speed)),
+		  building(asShort(s, C::building)),
+		  queueMaxCapacity(asShort(s, C::queue_max_capacity)),
+		  resourceRange(asFloat(s, C::resource_range)),
+		  foodStorage(asShort(s, C::food_storage)),
+		  goldStorage(asShort(s, C::gold_storage)),
+		  stoneRefineCapacity(asFloat(s, C::stone_refine_capacity)),
+		  goldRefineCapacity(asFloat(s, C::gold_refine_capacity)),
+		  spawnResourceTime(asInt(s, C::spawn_resource_time)),
+		  spawnResourceRange(asInt(s, C::spawn_resource_range)),
+		  nodeName(asText(s, C::node_name)) {}
 
 	~db_building_level() {
 		clear_vector(unitsPerNation);
@@ -511,15 +495,15 @@ struct db_resource : db_with_icon, db_static, db_with_hp, db_with_model {
 	const float collectSpeed;
 	const bool rotatable;
 
-	db_resource(sqlite3_stmt* stmt) : db_resource(asShort(stmt, DbResourceCol::id), asByte(stmt, DbResourceCol::resource_id), asText(stmt, DbResourceCol::name), asText(stmt, DbResourceCol::icon),
-	                                              asUS(stmt, DbResourceCol::max_hp),
-	                                              asText(stmt, DbResourceCol::node_name), asShort(stmt, DbResourceCol::size_x), asShort(stmt, DbResourceCol::size_z), asShort(stmt, DbResourceCol::max_users),
-	                                              asHex(stmt, DbResourceCol::mini_map_color), asFloat(stmt, DbResourceCol::collect_speed), asBool(stmt, DbResourceCol::rotatable)) {}
-
-	db_resource(short id, char resourceId, const char* name, const char* icon, unsigned short maxHp,
-	            const char* nodeName, short sizeX,
-	            short sizeZ, short maxUsers, unsigned mini_map_color, float collectSpeed, bool rotatable)
-		: db_with_icon(id, name, icon), db_static({sizeX, sizeZ}), db_with_hp(maxHp, 0.f),
-		  resourceId(resourceId), maxUsers(maxUsers), mini_map_color(mini_map_color),
-		  nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)), collectSpeed(collectSpeed), rotatable(rotatable) {}
+	using C = DbResourceCol;
+	db_resource(sqlite3_stmt* s)
+		: db_with_icon(asShort(s, C::id), asText(s, C::name), asText(s, C::icon)),
+		  db_static({asShort(s, C::size_x), asShort(s, C::size_z)}),
+		  db_with_hp(asUS(s, C::max_hp), 0.f),
+		  resourceId(asByte(s, C::resource_id)),
+		  maxUsers(asShort(s, C::max_users)),
+		  mini_map_color(asHex(s, C::mini_map_color)),
+		  nodeName(Urho3D::String(asText(s, C::node_name)).Split(SPLIT_SIGN)),
+		  collectSpeed(asFloat(s, C::collect_speed)),
+		  rotatable(asBool(s, C::rotatable)) {}
 };
