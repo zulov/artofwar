@@ -1,7 +1,7 @@
 #pragma once
 #include "objects/queue/QueueManager.h"
 #include "objects/static/Static.h"
-
+#include "database/db_insert_utils.h"
 
 struct ProjectileWithNode;
 class AbstractQueueManager;
