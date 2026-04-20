@@ -1,4 +1,4 @@
-﻿#include "InfluenceManager.h"
+#include "InfluenceManager.h"
 
 #include <exprtk/exprtk.hpp>
 

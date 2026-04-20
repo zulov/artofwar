@@ -27,7 +27,6 @@ struct db_unit_level;
 
 
 //TODO attack reload change to short from float chantge in db
-
 float inline safeDiv(float first, short second) {
 	second = second <= 0 ? 1 : second;
 	return first > 0.f ? first / second * FRAMES_IN_PERIOD : 0.f;

@@ -377,7 +377,7 @@ void Unit::setState(UnitState _state) {
 
 void Unit::load(dbload_unit* unit) {
 	Physical::load(unit);
-	state = UnitState(unit->state); //TODO nie wiem czy nie przepisaæpoprzez przejscie?
+	state = UnitState(unit->state); //TODO nie wiem czy nie przepisaï¿½poprzez przejscie?
 	velocity = {unit->vel_x, unit->vel_z};
 }
 

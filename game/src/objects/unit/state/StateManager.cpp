@@ -51,7 +51,7 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo) {
 }
 
 bool StateManager::toDefaultState(Unit* unit) {
-	return changeState(unit, UnitState::STOP, Consts::EMPTY_ACTION_PARAMETER); //TODO mo¿e lepiej move
+	return changeState(unit, UnitState::STOP, Consts::EMPTY_ACTION_PARAMETER); //TODO moï¿½e lepiej move
 }
 
 bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter) {

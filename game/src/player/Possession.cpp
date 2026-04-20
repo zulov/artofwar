@@ -208,7 +208,7 @@ void Possession::ensureReady() {
 		auto per = unit->getHealthPercent();
 		levels[unit->getLevel()->id] += per;//ID to -1
 
-		//TODO to dac jako któtkie
+		//TODO to dac jako ktï¿½tkie
 		if (isFreeSolider(unit)) {
 			levelsFree[unit->getLevel()->id] += per;
 		}

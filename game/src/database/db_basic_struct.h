@@ -14,7 +14,7 @@ struct db_entity {
 struct db_with_name : db_entity {
 	const Urho3D::String name;
 
-	db_with_name(short id, const Urho3D::String name)
+	db_with_name(short id, const Urho3D::String& name)
 		: db_entity(id), name(name) {
 	}
 };
@@ -22,7 +22,7 @@ struct db_with_name : db_entity {
 struct db_with_icon : db_with_name {
 	const Urho3D::String icon;
 
-	db_with_icon(short id, const Urho3D::String name, const Urho3D::String icon)
+	db_with_icon(short id, const Urho3D::String& name, const Urho3D::String& icon)
 		: db_with_name(id, name),  icon(icon) {
 	}
 };
@@ -35,15 +35,10 @@ void ensureSize(int size, std::vector<T*>& array) {
 }
 
 template <typename T>
-static void setEntity(std::vector<T*>& array, T* entity) {
+inline void setEntity(std::vector<T*>& array, T* entity) {
 	auto id = static_cast<db_entity*>(entity)->id;
 
 	ensureSize(id, array);
 
 	array[id] = entity;
-}
-
-inline bool s2b(const char* s) {
-	assert(s[1] == '\0');
-	return s && s[0] == '1';
 }
