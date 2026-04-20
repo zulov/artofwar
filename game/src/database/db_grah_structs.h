@@ -46,6 +46,19 @@ struct db_graph_settings : db_entity {
 		  fullscreen(asInt(s, C::fullscreen)),
 		  v_sync(asBool(s, C::v_sync)),
 		  shadow(asBool(s, C::shadow)) {}
+
+	db_graph_settings(short id, short hudSize, const char* styles, int fullscreen, float maxFps, float minFps,
+	                  const char* name, bool v_sync, bool shadow, short texture_quality)
+		: db_entity(id),
+		  hud_size(hudSize),
+		  max_fps(maxFps),
+		  min_fps(minFps),
+		  styles(Urho3D::String(styles).Split(SPLIT_SIGN)),
+		  name(name),
+		  texture_quality(texture_quality),
+		  fullscreen(fullscreen),
+		  v_sync(v_sync),
+		  shadow(shadow) {}
 };
 
 struct db_hud_vars : db_with_name {
