@@ -14,6 +14,7 @@
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
 #include "env/GridCalculatorProvider.h"
+#include "env/ContentInfo.h"
 #include "utils/AssertUtils.h"
 #include "utils/OtherUtils.h"
 
@@ -105,6 +106,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 	visibilityManager = new VisibilityManager(numberOfPlayers, mapSize, terrain);
 
 	calculator = GridCalculatorProvider::get(resolution, mapSize);
+	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUENCE, MAX_DEBUG_PARTS_INFLUENCE);
 
 	arraySize = calculator->getResolution() * calculator->getResolution();
@@ -134,6 +136,7 @@ InfluenceManager::~InfluenceManager() {
 	clear_vector(econQuad);
 
 	delete visibilityManager;
+	delete ci;
 
 	delete[]intersection;
 	delete[] sharedTemplateV;
@@ -307,7 +310,7 @@ void InfluenceManager::drawAll() const {
 
 content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfo,
                                                bool checks[], int activePlayer) const {
-	ci.reset(); //TODO przemyslec to, zbyt skomplikowane
+	ci->reset(); //TODO przemyslec to, zbyt skomplikowane
 	switch (state) {
 	case CellState::NONE:
 	case CellState::ATTACK:
@@ -317,28 +320,28 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 			for (int i = 0; i < unitsNumberPerPlayer.size(); ++i) {
 				char value = unitsNumberPerPlayer[i]->getValueAt(center);
 				if ((checks[3] && i == activePlayer || checks[4] && i != activePlayer) && value > 0) {
-					ci.unitsNumberPerPlayer[i] = value;
-					ci.hasUnit = true;
+					ci->unitsNumberPerPlayer[i] = value;
+					ci->hasUnit = true;
 				}
 			}
 		}
 		break;
 	case CellState::RESOURCE:
 		if (checks[1]) {
-			ci.hasResource = true;
-			ci.resourceNumber[additionalInfo]++;
+			ci->hasResource = true;
+			ci->resourceNumber[additionalInfo]++;
 		}
 		break;
 	case CellState::BUILDING:
 		if (checks[2]) {
-			ci.hasBuilding = true;
-			ci.buildingNumberPerPlayer[additionalInfo]++;
+			ci->hasBuilding = true;
+			ci->buildingNumberPerPlayer[additionalInfo]++;
 		}
 		break;
 	default: ;
 	}
 
-	return &ci;
+	return ci;
 }
 
 std::array<float, 5>& InfluenceManager::getInfluenceDataAt(char player, const Urho3D::Vector2& pos) {

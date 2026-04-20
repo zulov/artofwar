@@ -9,7 +9,6 @@
 #include "database/db_other_struct.h"
 #include "objects/ObjectEnums.h"
 #include "Urho3D/Math/Vector3.h"
-#include "database/db_insert_utils.h"
 
 
 enum class VisibilityType : char;

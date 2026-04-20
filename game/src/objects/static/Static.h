@@ -3,13 +3,12 @@
 #include "../Physical.h"
 #include "StaticState.h"
 #include "env/influence/map/VisibilityType.h"
+#include "database/db_insert_utils.h"
 
 struct dbload_static;
 enum class CellState : char;
 class Building;
 class ResourceEntity;
-struct sqlite3_stmt;
-template <typename T> void bindRow(sqlite3_stmt* stmt, int precision, const T* x);
 
 class Static : public Physical {
 	friend void bindRow<Building>(sqlite3_stmt*, int, const Building*);

@@ -29,7 +29,7 @@ namespace Urho3D {
 
 enum class CellState : char;
 class Unit;
-#include "env/ContentInfo.h"
+struct content_info;
 
 class InfluenceManager {
 public:
@@ -107,7 +107,7 @@ private:
 
 	VisibilityManager* visibilityManager;
 
-	mutable content_info ci;
+	mutable content_info* ci;
 	GridCalculator* calculator;
 	std::array<float, 5> dataFromPos;
 	short currentDebugBatch = 0;
