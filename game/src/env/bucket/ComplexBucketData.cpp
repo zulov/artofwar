@@ -79,7 +79,7 @@ void ComplexBucketData::setResBonuses(char player, unsigned char resId, float bo
 }
 
 void ComplexBucketData::resetResBonuses() {
-	delete resourceBonuses;
+	delete[] resourceBonuses;
 	resourceBonuses = nullptr;
 }
 
