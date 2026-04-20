@@ -330,5 +330,5 @@ bool StateManager::isResourceToDispose() {
 }
 
 bool StateManager::isSthToDispose() {
-	return instance->unitIsInDisposeState || instance->resourceIsInDisposeState || instance->resourceIsInDisposeState;
+	return instance->unitIsInDisposeState || instance->buildingIsInDisposeState || instance->resourceIsInDisposeState;
 }
