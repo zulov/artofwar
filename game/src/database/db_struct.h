@@ -336,6 +336,8 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 	bool typeHome;
 	bool typeDefence;
 
+	char resourceType;
+
 	bool typeResourceFood;
 	bool typeResourceWood;
 	bool typeResourceStone;
@@ -359,7 +361,6 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 
 	unsigned char maxUsers;
 	bool typeResourceAny;
-	char resourceType;
 
 	bool parentType[magic_enum::enum_count<ParentBuildingType>()];
 
@@ -375,7 +376,6 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 		  typeCenter(asBool(s, C::type_center)),
 		  typeHome(asBool(s, C::type_home)),
 		  typeDefence(asBool(s, C::type_defence)),
-		  resourceType(asShort(s, C::type_resource)),
 		  typeResourceFood(resourceType == 0),
 		  typeResourceWood(resourceType == 1),
 		  typeResourceStone(resourceType == 2),
@@ -385,6 +385,7 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 		  typeUnitBarracks(asBool(s, C::type_unit_barracks)),
 		  typeUnitRange(asBool(s, C::type_unit_range)),
 		  typeUnitCavalry(asBool(s, C::type_unit_cavalry)),
+		  resourceType(asShort(s, C::type_resource)),
 		  ruinable(asBool(s, C::ruinable)),
 		  toResource(asShort(s, C::to_resource)),
 		  maxUsers(size.x_ * 2 + size.y_ * 2 + 4),

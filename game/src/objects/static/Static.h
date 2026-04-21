@@ -3,7 +3,6 @@
 #include "../Physical.h"
 #include "StaticState.h"
 #include "env/influence/map/VisibilityType.h"
-#include "database/db_insert_utils.h"
 
 struct dbload_static;
 enum class CellState : char;
@@ -11,8 +10,6 @@ class Building;
 class ResourceEntity;
 
 class Static : public Physical {
-	friend void bindRow<Building>(sqlite3_stmt*, int, const Building*);
-	friend void bindRow<ResourceEntity>(sqlite3_stmt*, int, const ResourceEntity*);
 public:
 	Static(Urho3D::Vector3& _position, int indexInGrid, UId uId);
 	~Static() override;
