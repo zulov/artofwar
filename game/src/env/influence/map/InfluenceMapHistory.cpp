@@ -3,8 +3,8 @@
 
 InfluenceMapHistory::InfluenceMapHistory(unsigned short resolution, float size, float coef, char level,
                                          float minimalThreshold, float vanishCoef, float valueThresholdDebug,
-                                         float* sharedTemplateV, float* sharedTempVals):
-	InfluenceMapFloat(resolution, size, coef, level, valueThresholdDebug, sharedTemplateV, sharedTempVals),
+                                         float* sharedTemplateV):
+	InfluenceMapFloat(resolution, size, coef, level, valueThresholdDebug, sharedTemplateV),
 	minimalThreshold(minimalThreshold), vanishCoef(vanishCoef) {}
 
 void InfluenceMapHistory::reset() {

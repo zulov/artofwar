@@ -116,5 +116,4 @@ private:
 	float* intersection; // [arraySize] ;
 	mutable std::vector<unsigned> tempIndexes;
 	float* sharedTemplateV;
-	float* sharedTempVals;
 };

@@ -42,31 +42,28 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 	mapsForCentersPerPlayer.reserve(numberOfPlayers);
 	unsigned short resolution = mapSize / INF_GRID_FIELD_SIZE;
 	sharedTemplateV = InfluenceMapFloat::createTemplateV(0.5f, INF_LEVEL);
-	const unsigned int tempValsSize = resolution * resolution;
-	sharedTempVals = new float[tempValsSize];
-	std::fill_n(sharedTempVals, tempValsSize, 0.f);
 	for (int player = 0; player < numberOfPlayers; ++player) {
 		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(resolution, mapSize, 40));
 		buildingsInfluencePerPlayer.emplace_back(
-		                                         new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 2, sharedTemplateV, sharedTempVals));
+		                                         new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 2, sharedTemplateV));
 		unitsInfluencePerPlayer.emplace_back(
-		                                     new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, sharedTempVals));
+		                                     new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV));
 
 		for (auto& gs : gatherSpeed) {
-			gs.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV, sharedTempVals));
+			gs.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV));
 		}
 
 		for (auto& resNotInBonus : resNotInBonus) {
 			resNotInBonus.emplace_back(new InfluenceMapInt(resolution, mapSize, 5));
 		}
 
-		attackSpeed.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV, sharedTempVals));
+		attackSpeed.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV));
 		armyQuad.emplace_back(new InfluenceMapQuad(resolution, mapSize));
 		buildingsQuad.emplace_back(new InfluenceMapQuad(resolution, mapSize));
 		econQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
 	}
 
-	resourceInfluence = new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, sharedTempVals);
+	resourceInfluence = new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV);
 	for (int player = 0; player < numberOfPlayers; ++player) {
 		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 8>{
 			                                buildingsInfluencePerPlayer[player],
@@ -140,7 +137,6 @@ InfluenceManager::~InfluenceManager() {
 
 	delete[]intersection;
 	delete[] sharedTemplateV;
-	delete[] sharedTempVals;
 }
 
 void InfluenceManager::update(std::vector<Unit*>* units) const {

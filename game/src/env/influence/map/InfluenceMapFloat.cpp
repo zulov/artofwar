@@ -9,17 +9,18 @@
 
 InfluenceMapFloat::
 InfluenceMapFloat(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug,
-                  float* sharedTemplateV, float* sharedTempVals):
+                  float* sharedTemplateV):
 	InfluenceMap(resolution, size, valueThresholdDebug),
 	coef(coef),
 	level(level) {
 	levelRes = level * 2 + 1;
 
 	values = new float[arraySize];
-	tempVals = sharedTempVals;
+	tempVals = new float[arraySize];
 	templateV = sharedTemplateV;
 
 	std::fill_n(values, arraySize, 0.f);
+	std::fill_n(tempVals, arraySize, 0.f);
 
 	assert(level > 0);
 }
@@ -40,6 +41,7 @@ float* InfluenceMapFloat::createTemplateV(float coef, char level) {
 
 InfluenceMapFloat::~InfluenceMapFloat() {
 	delete[] values;
+	delete[] tempVals;
 }
 
 void InfluenceMapFloat::update(Physical* thing, float value) {

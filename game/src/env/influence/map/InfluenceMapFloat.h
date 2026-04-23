@@ -8,7 +8,7 @@
 class InfluenceMapFloat : public InfluenceMap {
 public:
 	InfluenceMapFloat(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug,
-	                  float* sharedTemplateV, float* sharedTempVals);
+	                  float* sharedTemplateV);
 	virtual ~InfluenceMapFloat();
 
 	void update(Physical* thing, float value = 1.f) override;
