@@ -227,6 +227,10 @@ void Main::subscribeToEvents() {
 }
 
 void Main::running(const float timeStep) {
+	if (timeStep<0.006f) {
+
+		std::cout << timeStep << "| ";	
+	}
 	FrameInfo* frameInfo;
 	for (int i = 0; i < SIM_GLOBALS.FRAME_PACK; ++i) {
 		frameInfo = simulation->update(timeStep);
