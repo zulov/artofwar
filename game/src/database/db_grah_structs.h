@@ -25,8 +25,8 @@ struct db_resolution : db_entity {
 
 struct db_graph_settings : db_entity {
 	short hud_size;
-	float max_fps;
-	float min_fps;
+	int max_fps;
+	int min_fps;
 	Urho3D::Vector<Urho3D::String> styles;
 	Urho3D::String name;
 	short texture_quality;
@@ -38,8 +38,8 @@ struct db_graph_settings : db_entity {
 	db_graph_settings(sqlite3_stmt* s)
 		: db_entity(asShort(s, C::id)),
 		  hud_size(asShort(s, C::hud_size)),
-		  max_fps(asFloat(s, C::max_fps)),
-		  min_fps(asFloat(s, C::min_fps)),
+		  max_fps(asInt(s, C::max_fps)),
+		  min_fps(asInt(s, C::min_fps)),
 		  styles(Urho3D::String(asText(s, C::styles)).Split(SPLIT_SIGN)),
 		  name(asText(s, C::name)),
 		  texture_quality(asShort(s, C::texture_quality)),
