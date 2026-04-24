@@ -40,10 +40,10 @@ void TopPanel::createBody() {
 	workers = new TopHudElement(window, style, getTexture(path + "worker.png"), "TopButtonsNarrow");
 
 	const Urho3D::String resIconPath = "textures/hud/icon/resource/";
-	elements[0] = new TopHudElement(window, style, getTexture(resIconPath + "food.png"));
-	elements[1] = new TopHudElement(window, style, getTexture(resIconPath + "wood.png"));
-	elements[2] = new TopHudElement(window, style, getTexture(resIconPath + "stone.png"));
-	elements[3] = new TopHudElement(window, style, getTexture(resIconPath + "gold.png"));
+	elements[cast(ResourceType::FOOD)] = new TopHudElement(window, style, getTexture(resIconPath + "food.png"));
+	elements[cast(ResourceType::WOOD)] = new TopHudElement(window, style, getTexture(resIconPath + "wood.png"));
+	elements[cast(ResourceType::STONE)] = new TopHudElement(window, style, getTexture(resIconPath + "stone.png"));
+	elements[cast(ResourceType::GOLD)] = new TopHudElement(window, style, getTexture(resIconPath + "gold.png"));
 
 
 	infoPanel = new TopInfoPanel(root, style);
@@ -95,28 +95,28 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	auto gather = resources->getGatherSpeeds();
 	auto without = poss->getResWithOutBonus();
 
-	elements[0]->setToolTip(l10nFormat("top_food_tooltip",
-	                                   asStringF(gather[0], 1).c_str(),
-	                                   (int)(workersPerRes[0] - without[0]),
-	                                   workersPerRes[0],
-	                                   (int)vals[0],
+	elements[cast(ResourceType::FOOD)]->setToolTip(l10nFormat("top_food_tooltip",
+	                                   asStringF(gather[cast(ResourceType::FOOD)], 1).c_str(),
+	                                   (int)(workersPerRes[cast(ResourceType::FOOD)] - without[cast(ResourceType::FOOD)]),
+	                                   workersPerRes[cast(ResourceType::FOOD)],
+	                                   (int)vals[cast(ResourceType::FOOD)],
 	                                   (int)resources->getFoodStorage(),
 	                                   (int)resources->getLastFoodLost(),
 	                                   (int)resources->potentialFoodLost()));
-	elements[1]->setToolTip(l10nFormat("top_wood_tooltip",
-	                                   asStringF(gather[1], 1).c_str(),
-	                                   (int)(workersPerRes[1] - without[1]),
-	                                   workersPerRes[1]));
-	elements[2]->setToolTip(l10nFormat("top_stone_tooltip",
-	                                   asStringF(gather[2], 1).c_str(),
-	                                   (int)(workersPerRes[2] - without[2]),
-	                                   workersPerRes[2],
+	elements[cast(ResourceType::WOOD)]->setToolTip(l10nFormat("top_wood_tooltip",
+	                                   asStringF(gather[cast(ResourceType::WOOD)], 1).c_str(),
+	                                   (int)(workersPerRes[cast(ResourceType::WOOD)] - without[cast(ResourceType::WOOD)]),
+	                                   workersPerRes[cast(ResourceType::WOOD)]));
+	elements[cast(ResourceType::STONE)]->setToolTip(l10nFormat("top_stone_tooltip",
+	                                   asStringF(gather[cast(ResourceType::STONE)], 1).c_str(),
+	                                   (int)(workersPerRes[cast(ResourceType::STONE)] - without[cast(ResourceType::STONE)]),
+	                                   workersPerRes[cast(ResourceType::STONE)],
 	                                   (int)resources->getStoneRefineCapacity(),
 	                                   (int)resources->getPotentialStoneRefinement()));
-	elements[3]->setToolTip(l10nFormat("top_gold_tooltip",
-	                                   asStringF(gather[3], 1).c_str(),
-	                                   (int)(workersPerRes[3] - without[3]), workersPerRes[3],
-	                                   (int)vals[3], (int)resources->getGoldStorage(),
+	elements[cast(ResourceType::GOLD)]->setToolTip(l10nFormat("top_gold_tooltip",
+	                                   asStringF(gather[cast(ResourceType::GOLD)], 1).c_str(),
+	                                   (int)(workersPerRes[cast(ResourceType::GOLD)] - without[cast(ResourceType::GOLD)]), workersPerRes[cast(ResourceType::GOLD)],
+	                                   (int)vals[cast(ResourceType::GOLD)], (int)resources->getGoldStorage(),
 	                                   (int)resources->getLastGoldGains(), (int)resources->getPotentialGoldGains(),
 	                                   (int)resources->getGoldRefineCapacity(),
 	                                   (int)resources->getPotentialGoldRefinement()));

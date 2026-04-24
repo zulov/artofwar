@@ -98,7 +98,6 @@ struct ForceStats {
 				}
 			}
 		}
-		longestLast = 0;
 		return stats;
 	}
 
@@ -107,8 +106,6 @@ struct ForceStats {
 	Urho3D::Vector2 destLast;
 	Urho3D::Vector2 formLast;
 	Urho3D::Vector2 escaLast;
-
-	float longestLast = 0;
 
 	float sepObstStat;
 	float sepUnitStat;

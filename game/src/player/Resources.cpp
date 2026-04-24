@@ -50,10 +50,10 @@ void Resources::add(int id, float value) {
 }
 
 void Resources::setValue(float food, float wood, float stone, float gold) {
-	values[0] = food;
-	values[1] = wood;
-	values[2] = stone;
-	values[3] = gold;
+	values[cast(ResourceType::FOOD)] = food;
+	values[cast(ResourceType::WOOD)] = wood;
+	values[cast(ResourceType::STONE)] = stone;
+	values[cast(ResourceType::GOLD)] = gold;
 }
 
 void Resources::update1s(Possession* possession) {
@@ -71,17 +71,17 @@ void Resources::update1s(Possession* possession) {
 		stoneRefineCapacity += level->stoneRefineCapacity;
 		goldRefineCapacity += level->goldRefineCapacity;
 	}
-	values[2] += getPotentialStoneRefinement();
-	values[3] += getPotentialGoldRefinement();
+	values[cast(ResourceType::STONE)] += getPotentialStoneRefinement();
+	values[cast(ResourceType::GOLD)] += getPotentialGoldRefinement();
 }
 
 void Resources::updateMonth() {
 	lastFoodLost = potentialFoodLost();
-	values[0] -= lastFoodLost;
+	values[cast(ResourceType::FOOD)] -= lastFoodLost;
 	assert(values[0] >= 0);
 }
 
 void Resources::updateYear() {
 	lastGoldGain = potentialGoldGain();
-	values[3] += potentialGoldGain();
+	values[cast(ResourceType::GOLD)] += potentialGoldGain();
 }

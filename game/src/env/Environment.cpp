@@ -204,7 +204,7 @@ Environment::getBuildingsFromTeamNotEq(Physical* physical, int id, float radius)
 }
 
 void Environment::updateInfluenceUnits1(std::vector<Unit*>* units) const {
-	influenceManager.update(units);
+	influenceManager.updateUnits(units);
 }
 
 void Environment::updateInfluenceUnits2(std::vector<Unit*>* units) const {
@@ -212,11 +212,11 @@ void Environment::updateInfluenceUnits2(std::vector<Unit*>* units) const {
 }
 
 void Environment::updateInfluenceResources(std::vector<ResourceEntity*>* resources) const {
-	influenceManager.update(resources);
+	influenceManager.updateResources(resources);
 }
 
 void Environment::updateInfluenceOther(std::vector<Building*>* buildings, std::vector<Unit*>* units) const {
-	influenceManager.update(buildings);
+	influenceManager.updateBuildings(buildings);
 	influenceManager.updateWithHistory();
 	influenceManager.updateNotInBonus(units);
 }
@@ -231,7 +231,7 @@ void Environment::updateVisibility(std::vector<Building*>* buildings, std::vecto
 }
 
 void Environment::updateInfluenceHistoryReset() const {
-	influenceManager.updateInfluenceHistoryReset();
+	influenceManager.resetHistoryThresholds();
 }
 
 void Environment::update(Unit* unit) const {
@@ -408,10 +408,6 @@ const std::vector<short>& Environment::getCloseIndexs(int center) const {
 	return mainGrid.getCloseIndexes(center);
 }
 
-std::array<float, 5>& Environment::getInfluenceDataAt(char player, const Urho3D::Vector2& pos) {
-	return influenceManager.getInfluenceDataAt(player, pos);
-}
-
 std::optional<Urho3D::Vector2> Environment::getPosFromIndexes(db_building* building, char player,
                                                               const std::vector<unsigned>* indexes) {
 	const float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
@@ -561,7 +557,7 @@ Physical* Environment::closestPhysical(int startIdx, const std::vector<Physical*
 
 	for (const auto entity : *things) {
 		if (entity->isAlive() && condition(entity)) {
-			//TODO perf ogranizcyc liczbe indeksów, np wybrac jeden dla obiektu
+			//TODO perf ogranizcyc liczbe indeksow, np wybrac jeden dla obiektu
 			entity->addIndexesForUse(allIndexes);
 			thingsFiltered.push_back(entity);
 		}

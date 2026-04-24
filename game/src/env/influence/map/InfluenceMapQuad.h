@@ -6,7 +6,6 @@
 #include "InfluenceMapI.h"
 
 struct GridCalculator;
-class Physical;
 
 class InfluenceMapQuad {
 public:
@@ -15,13 +14,11 @@ public:
 
 	std::optional<Urho3D::Vector2> getCenter();
 	void update(int index, float value = 1.f);
-	void updateInt(Physical* thing, int value = 1);
 	void updateInt(int index, int value = 1);
 	void reset();
 	void print(const Urho3D::String& name, std::span<float> map);
 	void print(Urho3D::String name);
 
-	unsigned short getResolution() const; //TODO to chyba niepotrzebne
 private:
 	int getMaxElement(const std::array<int, 4>& indexes, std::span<float> values) const;
 	GridCalculator* calculator;

@@ -19,7 +19,7 @@
 #include "utils/OtherUtils.h"
 
 
-InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain) {
+InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain) {
 	unitsNumberPerPlayer.reserve(numberOfPlayers);
 	buildingsInfluencePerPlayer.reserve(numberOfPlayers);
 	unitsInfluencePerPlayer.reserve(numberOfPlayers);
@@ -65,39 +65,36 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize, Urho3D::
 
 	resourceInfluence = new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV);
 	for (int player = 0; player < numberOfPlayers; ++player) {
-		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 8>{
+		std::array<InfluenceMapFloat*, RESOURCES_SIZE> gatherSpeedView;
+		std::array<InfluenceMapInt*, RESOURCES_SIZE> resNotInBonusView;
+		for (int r = 0; r < RESOURCES_SIZE; ++r) {
+			gatherSpeedView[r] = gatherSpeed[r][player];
+			resNotInBonusView[r] = resNotInBonus[r][player];
+		}
+
+		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, AI_MAP_COUNT>{
 			                                buildingsInfluencePerPlayer[player],
 			                                unitsInfluencePerPlayer[player],
 			                                resourceInfluence, //TODO czy to jest ważne?
 			                                attackSpeed[player],
-			                                gatherSpeed[0][player],
-			                                gatherSpeed[1][player],
-			                                gatherSpeed[2][player],
-			                                gatherSpeed[3][player],
+			                                gatherSpeedView[cast(ResourceType::FOOD)],
+			                                gatherSpeedView[cast(ResourceType::WOOD)],
+			                                gatherSpeedView[cast(ResourceType::STONE)],
+			                                gatherSpeedView[cast(ResourceType::GOLD)],
 		                                });
-		mapsForAiArmyPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 3>{
+		mapsForAiArmyPerPlayer.emplace_back(std::array<InfluenceMapFloat*, AI_ARMY_MAP_COUNT>{
 			                                    buildingsInfluencePerPlayer[player],
 			                                    unitsInfluencePerPlayer[player],
 			                                    attackSpeed[player],
 		                                    });
-		mapsForCentersPerPlayer.emplace_back(std::array<InfluenceMapQuad*, 3>{
+		mapsForCentersPerPlayer.emplace_back(std::array<InfluenceMapQuad*, CENTER_TYPE_COUNT>{
 			                                     econQuad[player],
 			                                     buildingsQuad[player],
 			                                     armyQuad[player]
 		                                     });
 
-		mapsGatherSpeedPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 4>{
-			                                      gatherSpeed[0][player],
-			                                      gatherSpeed[1][player],
-			                                      gatherSpeed[2][player],
-			                                      gatherSpeed[3][player],
-		                                      });
-		mapsResNotInBonusPerPlayer.emplace_back(std::array<InfluenceMapInt*, 4>{
-			                                        resNotInBonus[0][player],
-			                                        resNotInBonus[1][player],
-			                                        resNotInBonus[2][player],
-			                                        resNotInBonus[3][player],
-		                                        });
+		mapsGatherSpeedPerPlayer.emplace_back(gatherSpeedView);
+		mapsResNotInBonusPerPlayer.emplace_back(resNotInBonusView);
 		assert(validSizes(mapsForAiPerPlayer.at(player)));
 	}
 	visibilityManager = new VisibilityManager(numberOfPlayers, mapSize, terrain);
@@ -139,7 +136,7 @@ InfluenceManager::~InfluenceManager() {
 	delete[] sharedTemplateV;
 }
 
-void InfluenceManager::update(std::vector<Unit*>* units) const {
+void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 	MapsUtils::resetMaps(unitsInfluencePerPlayer);
 	if (SIM_GLOBALS.HEADLESS) {
 		for (const auto unit : (*units)) {
@@ -160,7 +157,7 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 	MapsUtils::finalize(unitsInfluencePerPlayer);
 }
 
-void InfluenceManager::update(const std::vector<ResourceEntity*>* resources) const {
+void InfluenceManager::updateResources(const std::vector<ResourceEntity*>* resources) const {
 	resourceInfluence->reset();
 	for (const auto resource : (*resources)) {
 		resourceInfluence->tempUpdate(resource->getIndexInInfluence(), resource->getHealthPercent());
@@ -179,7 +176,7 @@ void InfluenceManager::updateQuadUnits(const std::vector<Unit*>* units) const {
 	}
 }
 
-void InfluenceManager::update(const std::vector<Building*>* buildings) const {
+void InfluenceManager::updateBuildings(const std::vector<Building*>* buildings) const {
 	MapsUtils::resetMaps(buildingsInfluencePerPlayer);
 	MapsUtils::resetMaps(buildingsQuad);
 	for (const auto building : (*buildings)) {
@@ -224,14 +221,14 @@ void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::
 	visibilityManager->updateVisibility(buildings, units, resources);
 }
 
-void InfluenceManager::updateInfluenceHistoryReset() const {
+void InfluenceManager::resetHistoryThresholds() const {
 	for (auto& vec : gatherSpeed) {
 		MapsUtils::resetToZeroMaps(vec);
 	}
 	MapsUtils::resetToZeroMaps(attackSpeed);
 }
 
-void InfluenceManager::draw(InfluenceDataType type, char index) {
+void InfluenceManager::draw(InfluenceDataType type, unsigned char index) {
 	DebugLineRepo::clear(DebugLineType::INFLUENCE, currentDebugBatch);
 	DebugLineRepo::beginGeometry(DebugLineType::INFLUENCE, currentDebugBatch);
 
@@ -251,16 +248,16 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 		resourceInfluence->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 		break;
 	case InfluenceDataType::FOOD_SPEED:
-		MapsUtils::drawMap(currentDebugBatch, index, gatherSpeed[0]);
+		MapsUtils::drawMap(currentDebugBatch, index, gatherSpeed[cast(ResourceType::FOOD)]);
 		break;
 	case InfluenceDataType::WOOD_SPEED:
-		MapsUtils::drawMap(currentDebugBatch, index, gatherSpeed[1]);
+		MapsUtils::drawMap(currentDebugBatch, index, gatherSpeed[cast(ResourceType::WOOD)]);
 		break;
 	case InfluenceDataType::STONE_SPEED:
-		MapsUtils::drawMap(currentDebugBatch, index, gatherSpeed[2]);
+		MapsUtils::drawMap(currentDebugBatch, index, gatherSpeed[cast(ResourceType::STONE)]);
 		break;
 	case InfluenceDataType::GOLD_SPEED:
-		MapsUtils::drawMap(currentDebugBatch, index, gatherSpeed[3]);
+		MapsUtils::drawMap(currentDebugBatch, index, gatherSpeed[cast(ResourceType::GOLD)]);
 		break;
 	case InfluenceDataType::ATTACK_SPEED:
 		MapsUtils::drawMap(currentDebugBatch, index, attackSpeed);
@@ -293,10 +290,10 @@ void InfluenceManager::drawAll() const {
 	MapsUtils::drawAll(unitsInfluencePerPlayer, "units");
 	resourceInfluence->print("resource_");
 
-	MapsUtils::drawAll(gatherSpeed[0], "gatherFood");
-	MapsUtils::drawAll(gatherSpeed[1], "gatherWood");
-	MapsUtils::drawAll(gatherSpeed[2], "gatherStone");
-	MapsUtils::drawAll(gatherSpeed[3], "gatherGold");
+	constexpr const char* gatherNames[] = {"gatherFood", "gatherWood", "gatherStone", "gatherGold"};
+	for (int r = 0; r < RESOURCES_SIZE; ++r) {
+		MapsUtils::drawAll(gatherSpeed[r], gatherNames[r]);
+	}
 	MapsUtils::drawAll(attackSpeed, "attack");
 
 	MapsUtils::drawAll(armyQuad, "armyQuad");
@@ -340,16 +337,6 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 	return ci;
 }
 
-std::array<float, 5>& InfluenceManager::getInfluenceDataAt(char player, const Urho3D::Vector2& pos) {
-	auto& array = mapsForAiPerPlayer[player];
-	assert(array.size()==dataFromPos.size());
-	for (int i = 0; i < array.size(); ++i) {
-		array[i]->ensureReady();
-		dataFromPos[i] = array[i]->getValueAsPercent(pos);
-	}
-	return dataFromPos;
-}
-
 std::vector<int> InfluenceManager::getIndexesIterative(std::span<const float> result, float tolerance, int min,
                                                        std::span<InfluenceMapFloat*> maps) const {
 	assert(result.size() == maps.size());
@@ -379,32 +366,32 @@ std::vector<int> InfluenceManager::getIndexesIterative(std::span<const float> re
 	return {};
 }
 
-std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(std::span<const float> result, char player,
-                                                                 float tolerance, int min) {
+std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(std::span<const float> result, unsigned char player,
+                                                                 float tolerance, int min) const {
 	//TODO better!!!
-	if (result.size() == 8) {
+	if (result.size() == AI_MAP_COUNT) {
 		return centersFromIndexes(getIndexesIterative(result, tolerance, min, mapsForAiPerPlayer[player]));
 	}
-	if (result.size() == 3) {
+	if (result.size() == AI_ARMY_MAP_COUNT) {
 		return centersFromIndexes(getIndexesIterative(result, tolerance, min, mapsForAiArmyPerPlayer[player]));
 	}
 	assert(false);
 }
 
 std::vector<unsigned>*
-InfluenceManager::getAreas(std::span<const float> result, ParentBuildingType type, char player) {
+InfluenceManager::getAreas(std::span<const float> result, ParentBuildingType type, unsigned char player) const {
 	if (type == ParentBuildingType::RESOURCE) {
 		return getAreas(mapsGatherSpeedPerPlayer[player], result, player);
 	}
 	return getAreas(mapsForAiPerPlayer[player], result, player);
 }
 
-std::vector<unsigned> InfluenceManager::getAreasResBonus(unsigned char id, char player) const {
+std::vector<unsigned> InfluenceManager::getAreasResBonus(unsigned char id, unsigned char player) const {
 	return mapsResNotInBonusPerPlayer[player][id]->getMaxIdxs();
 }
 
 std::vector<unsigned>*
-InfluenceManager::getAreas(std::span<InfluenceMapFloat*> maps, std::span<const float> result, char player) const {
+InfluenceManager::getAreas(std::span<InfluenceMapFloat*> maps, std::span<const float> result, unsigned char player) const {
 	assert(result.size() == maps.size());
 
 	std::fill_n(intersection, arraySize, 0.f); //TODO perf move to removeunsean
@@ -435,22 +422,22 @@ int InfluenceManager::getIndexInInfluence(Unit* unit) const {
 void InfluenceManager::addCollect(Unit* unit, short resId, float value) const {
 	const auto playerId = unit->getPlayer();
 
-	assert(gatherSpeed[0][playerId]->getResolution() == calculator->getResolution());
+	assert(gatherSpeed[cast(ResourceType::FOOD)][playerId]->getResolution() == calculator->getResolution());
 	const auto index = getIndexInInfluence(unit);
 	gatherSpeed[resId][playerId]->tempUpdate(index, value);
 
 	econQuad[playerId]->update(index, value);
 }
 
-void InfluenceManager::addAttack(char player, const Urho3D::Vector3& position, float value) const {
+void InfluenceManager::addAttack(unsigned char player, const Urho3D::Vector3& position, float value) const {
 	attackSpeed[player]->tempUpdate(position, value);
 }
 
-std::optional<Urho3D::Vector2> InfluenceManager::getCenterOf(CenterType id, char player) const {
+std::optional<Urho3D::Vector2> InfluenceManager::getCenterOf(CenterType id, unsigned char player) const {
 	return mapsForCentersPerPlayer[player][castC(id)]->getCenter();
 }
 
-bool InfluenceManager::isVisible(char player, const Urho3D::Vector2& pos) const {
+bool InfluenceManager::isVisible(unsigned char player, const Urho3D::Vector2& pos) const {
 	return visibilityManager->isVisible(player, pos);
 }
 
@@ -458,7 +445,7 @@ Urho3D::Vector2 InfluenceManager::getCenter(int index) const {
 	return calculator->getCenter(index);
 }
 
-float InfluenceManager::getVisibilityScore(char player) const {
+float InfluenceManager::getVisibilityScore(unsigned char player) const {
 	return visibilityManager->getVisibilityScore(player);
 }
 

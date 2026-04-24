@@ -70,10 +70,10 @@ void bindRow<Player>(sqlite3_stmt* stmt, int precision, const Player* x) {
 	bindUC(stmt, PlayerCol::color, x->color);
 	bindI(stmt, PlayerCol::buildingUid, x->currentBuildingUId);
 	bindI(stmt, PlayerCol::unitUid, x->currentUnitUId);
-	bindI(stmt, PlayerCol::food, resVals[0] * precision);
-	bindI(stmt, PlayerCol::wood, resVals[1] * precision);
-	bindI(stmt, PlayerCol::stone, resVals[2] * precision);
-	bindI(stmt, PlayerCol::gold, resVals[3] * precision);
+	bindI(stmt, PlayerCol::food, resVals[cast(ResourceType::FOOD)] * precision);
+	bindI(stmt, PlayerCol::wood, resVals[cast(ResourceType::WOOD)] * precision);
+	bindI(stmt, PlayerCol::stone, resVals[cast(ResourceType::STONE)] * precision);
+	bindI(stmt, PlayerCol::gold, resVals[cast(ResourceType::GOLD)] * precision);
 }
 
 const auto config_columns = columnNames<ConfigCol>();

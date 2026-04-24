@@ -13,7 +13,6 @@ namespace Urho3D {
 }
 
 enum class ParentBuildingType : char;
-enum class AiActionType : char;
 
 class Player;
 class Building;

@@ -6,7 +6,6 @@
 #include "colors/ColorPaletteRepo.h"
 #include "math/MathUtils.h"
 #include "utils/SpanUtils.h"
-#include "objects/Physical.h"
 #include "env/GridCalculator.h"
 #include "env/GridCalculatorProvider.h"
 
@@ -81,17 +80,9 @@ int InfluenceMapQuad::getMaxElement(const std::array<int, 4>& indexes, std::span
 	return indexes[i];
 }
 
-unsigned short InfluenceMapQuad::getResolution() const {
-	return calculator->getResolution();
-}
-
 void InfluenceMapQuad::update(int index, float value) {
 	dataReady = false;
 	last[index] += value;
-}
-
-void InfluenceMapQuad::updateInt(Physical* thing, int value) {
-	updateInt(calculator->indexFromPosition(thing->getPosition()), value);
 }
 
 void InfluenceMapQuad::updateInt(int index, int value) {

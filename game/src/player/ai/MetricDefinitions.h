@@ -259,23 +259,23 @@ inline struct MetricDefinitions {
 	});
 
 	static inline auto aiResourceMetric = buildMetricArray<R, AiResourceMetric>({
-		{R::GATHER_SPEED_FOOD,  {[](auto r, auto p) { return r->getGatherSpeeds()[0]; }, 10}},
-		{R::GATHER_SPEED_WOOD,  {[](auto r, auto p) { return r->getGatherSpeeds()[1]; }, 10}},
-		{R::GATHER_SPEED_STONE, {[](auto r, auto p) { return r->getGatherSpeeds()[2]; }, 10}},
-		{R::GATHER_SPEED_GOLD,  {[](auto r, auto p) { return r->getGatherSpeeds()[3]; }, 10}},
-		{R::VALUE_FOOD,         {[](auto r, auto p) { return r->getValues()[0]; }, 1000}},
-		{R::VALUE_WOOD,         {[](auto r, auto p) { return r->getValues()[1]; }, 1000}},
-		{R::VALUE_STONE,        {[](auto r, auto p) { return r->getValues()[2]; }, 1000}},
-		{R::VALUE_GOLD,         {[](auto r, auto p) { return r->getValues()[3]; }, 1000}},
+		{R::GATHER_SPEED_FOOD,  {[](auto r, auto p) { return r->getGatherSpeeds()[cast(ResourceType::FOOD)]; }, 10}},
+		{R::GATHER_SPEED_WOOD,  {[](auto r, auto p) { return r->getGatherSpeeds()[cast(ResourceType::WOOD)]; }, 10}},
+		{R::GATHER_SPEED_STONE, {[](auto r, auto p) { return r->getGatherSpeeds()[cast(ResourceType::STONE)]; }, 10}},
+		{R::GATHER_SPEED_GOLD,  {[](auto r, auto p) { return r->getGatherSpeeds()[cast(ResourceType::GOLD)]; }, 10}},
+		{R::VALUE_FOOD,         {[](auto r, auto p) { return r->getValues()[cast(ResourceType::FOOD)]; }, 1000}},
+		{R::VALUE_WOOD,         {[](auto r, auto p) { return r->getValues()[cast(ResourceType::WOOD)]; }, 1000}},
+		{R::VALUE_STONE,        {[](auto r, auto p) { return r->getValues()[cast(ResourceType::STONE)]; }, 1000}},
+		{R::VALUE_GOLD,         {[](auto r, auto p) { return r->getValues()[cast(ResourceType::GOLD)]; }, 1000}},
 		{R::FREE_WORKERS,       {[](auto r, auto p) -> float { return p->getFreeWorkersNumber(); }, 100}},
 		{R::TOTAL_WORKERS,      {[](auto r, auto p) -> float { return p->getWorkersNumber(); }, 100}},
 	});
 
 	static inline auto aiResourceWithoutBonusMetric = buildMetricArray<RNB, AiResourceMetric>({
-		{RNB::VALUE_FOOD,  {[](auto r, auto p) { return p->getResWithOutBonus()[0]; }, 20}},
-		{RNB::VALUE_WOOD,  {[](auto r, auto p) { return p->getResWithOutBonus()[1]; }, 20}},
-		{RNB::VALUE_STONE, {[](auto r, auto p) { return p->getResWithOutBonus()[2]; }, 20}},
-		{RNB::VALUE_GOLD,  {[](auto r, auto p) { return p->getResWithOutBonus()[3]; }, 20}},
+		{RNB::VALUE_FOOD,  {[](auto r, auto p) { return p->getResWithOutBonus()[cast(ResourceType::FOOD)]; }, 20}},
+		{RNB::VALUE_WOOD,  {[](auto r, auto p) { return p->getResWithOutBonus()[cast(ResourceType::WOOD)]; }, 20}},
+		{RNB::VALUE_STONE, {[](auto r, auto p) { return p->getResWithOutBonus()[cast(ResourceType::STONE)]; }, 20}},
+		{RNB::VALUE_GOLD,  {[](auto r, auto p) { return p->getResWithOutBonus()[cast(ResourceType::GOLD)]; }, 20}},
 	});
 
 	static inline auto aiBasicMetric = buildMetricArray<BM, AiPlayerMetric>({

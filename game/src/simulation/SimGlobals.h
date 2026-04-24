@@ -3,10 +3,8 @@
 
 #include "utils/defines.h"
 constexpr bool FORCE_BENCHMARK_MODE = false;
-constexpr bool FORCE_AI_OUTPUT = false;
 constexpr bool FORCE_ALL_PLAYER_AI = false;
 constexpr bool FORCE_NO_PLAYER_AI = false;
-constexpr bool FORCE_HEADLESS = false;
 
 constexpr float UPDATE_DRAW_DISTANCE = 120.f;
 

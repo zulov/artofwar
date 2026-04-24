@@ -116,7 +116,6 @@ public:
 	void drawDebug(EnvironmentDebugMode environmentDebugMode, char index);
 
 	const std::vector<short>& getCloseIndexs(int center) const;
-	std::array<float, 5>& getInfluenceDataAt(char player, const Urho3D::Vector2& pos);
 	std::optional<Urho3D::Vector2> getPosFromIndexes(db_building* building, char player,
 	                                                 const std::vector<unsigned>* indexes);
 

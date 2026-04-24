@@ -100,7 +100,7 @@ struct db_with_cost {
 
 	db_with_cost(unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold) :
 		values({food, wood, stone, gold}),
-		maxFromWoodOrStone(std::max(values[1], values[2])),
+		maxFromWoodOrStone(std::max(values[cast(ResourceType::WOOD)], values[cast(ResourceType::STONE)])),
 		sum(food + wood + stone + gold),
 		moreWoodThanStone(wood > stone) {}
 
@@ -376,10 +376,10 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 		  typeCenter(asBool(s, C::type_center)),
 		  typeHome(asBool(s, C::type_home)),
 		  typeDefence(asBool(s, C::type_defence)),
-		  typeResourceFood(resourceType == 0),
-		  typeResourceWood(resourceType == 1),
-		  typeResourceStone(resourceType == 2),
-		  typeResourceGold(resourceType == 3),
+		  typeResourceFood(resourceType == cast(ResourceType::FOOD)),
+		  typeResourceWood(resourceType == cast(ResourceType::WOOD)),
+		  typeResourceStone(resourceType == cast(ResourceType::STONE)),
+		  typeResourceGold(resourceType == cast(ResourceType::GOLD)),
 		  typeTechBlacksmith(asBool(s, C::type_tech_blacksmith)),
 		  typeTechUniversity(asBool(s, C::type_tech_university)),
 		  typeUnitBarracks(asBool(s, C::type_unit_barracks)),
