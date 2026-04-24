@@ -165,9 +165,6 @@ void StateManager::executeChange(std::vector<ResourceEntity*>* resources) {
 void StateManager::startState(Static* obj) {
 	obj->setState(obj->getNextState());
 	switch (obj->getNextState()) {
-	case StaticState::FREE:
-		changeState(obj, StaticState::ALIVE);
-		break;
 	case StaticState::ALIVE:
 		if (obj->getType() == ObjectType::BUILDING) {//TODO to mozre dac to building->updateAi
 			auto building = (Building*)obj;

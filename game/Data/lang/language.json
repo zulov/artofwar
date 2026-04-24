@@ -232,12 +232,12 @@
 		"pl":"Kończenie ładowania"
 	},		
 	"info_build":{
-		"pl":"\nAtak: %s Obrona: %s\nHP: %d/%d\nUżytkowników: %d/%d %d/%d\nStan: %s"
+		"pl":"%s %s\nAtak: %s Obrona: %s\nHP: %d/%d\nUżytkowników: %d/%d %d/%d\nStan: %s"
 	},
 	"info_resource":{
 		"pl":"%s\nZasobów: %d/%d (%sx)\nUżytkowników: %d/%d"
 	},
 	"info_unit":{
-		"pl":"\nAtak: %s|%s|%s\nObrona: %s\nZdrowie: %d/%d\nUżytkowników: %d/%d %d/%d\nStan: %s"
+		"pl":"%s %s\nAtak: %s|%s|%s\nObrona: %s\nZdrowie: %d/%d\nUżytkowników: %d/%d %d/%d\nStan: %s"
 	}
 }

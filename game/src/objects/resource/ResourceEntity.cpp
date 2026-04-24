@@ -80,7 +80,7 @@ void ResourceEntity::action(ResourceActionType type, char player) {
 	}
 	break;
 	case ResourceActionType::CANCEL:
-		StateManager::changeState(this, StaticState::FREE);
+		StateManager::changeState(this, StaticState::ALIVE);
 		break;
 	}
 }
