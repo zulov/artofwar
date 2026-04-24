@@ -1,6 +1,8 @@
 #include "ComplexBucketData.h"
 
 #include <algorithm>
+#include <objects/resource/ResourceType.h>
+
 #include "objects/static/Static.h"
 #include "CellEnums.h"
 #include "utils/Flags.h"

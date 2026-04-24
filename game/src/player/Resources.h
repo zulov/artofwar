@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <span>
+#include <objects/resource/ResourceType.h>
 
 #include "utils/defines.h"
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <objects/resource/ResourceType.h>
+
 #include "../SimplePanel.h"
 #include "utils/defines.h"
 
