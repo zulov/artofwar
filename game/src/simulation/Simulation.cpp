@@ -239,9 +239,7 @@ void Simulation::updateBuildingQueues() const {
 			switch (done->getType()) {
 			case QueueActionType::UNIT_CREATE: {
 				const auto center = env->getCenter(build->getDeploy().value());
-				Game::getActionCenter()->addUnits(done->getAmount(),
-				                                  done->getId(), center,
-				                                  build->getPlayer());
+				Game::getActionCenter()->addUnits(done->getAmount(), done->getId(), center, build->getPlayer());
 			}
 			break;
 			case QueueActionType::UNIT_LEVEL:
@@ -254,10 +252,11 @@ void Simulation::updateBuildingQueues() const {
 				break;
 			case QueueActionType::RESOURCE_CREATE: {
 				const auto [dbBuilding, level] = build->getData();
-				auto indexes = env->getIndexesInRange(build->getMainGridIndex(), static_cast<float>(level->spawnResourceRange));
+				auto indexes = env->getIndexesInRange(build->getMainGridIndex(),
+				                                      static_cast<float>(level->spawnResourceRange));
 				auto dbResource = Game::getDatabase()->getResource(dbBuilding->toResource);
 
-				//TODO shuffle index
+				// TODO shuffle index
 				for (int index : indexes) {
 					if (env->validateStatic(dbResource->size, index, false)) {
 						Game::getActionCenter()->addResource(dbBuilding->toResource, index);
@@ -265,6 +264,7 @@ void Simulation::updateBuildingQueues() const {
 					}
 				}
 				break;
+			}
 			}
 			delete done;
 		}
