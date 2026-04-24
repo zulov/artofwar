@@ -1,6 +1,6 @@
 #include "Unit.h"
 
-#include <Urho3D/Resource/Localization.h>
+#include "utils/StringUtils.h"
 
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"
@@ -260,17 +260,16 @@ void Unit::setIndexToInteract(int index) {
 }
 
 Urho3D::String Unit::getInfo() const {
-	const auto l10n = Game::getLocalization();
-	return Urho3D::String(dbUnit->name + " " + dbLevel->name)
-		.AppendWithFormat(l10n->Get("info_unit").CString(),
-		                  asStringF(dbLevel->attack, 1).c_str(),
-		                  asStringF(dbLevel->attackRange, 1).c_str(),
-		                  asStringF(dbLevel->attackReload, 1).c_str(),
-		                  asStringF(dbLevel->armor).c_str(),
-		                  (int)hp, dbLevel->maxHp,
-		                  closeUsers, getMaxCloseUsers(),
-		                  rangeUsers, getMaxRangeUsers(),
-		                  magic_enum::enum_name(state).data());
+	return l10nFormat("info_unit",
+	                  dbUnit->name.CString(), dbLevel->name.CString(),
+	                  asStringF(dbLevel->attack, 1).c_str(),
+	                  asStringF(dbLevel->attackRange, 1).c_str(),
+	                  asStringF(dbLevel->attackReload, 1).c_str(),
+	                  asStringF(dbLevel->armor).c_str(),
+	                  (int)hp, dbLevel->maxHp,
+	                  closeUsers, getMaxCloseUsers(),
+	                  rangeUsers, getMaxRangeUsers(),
+	                  magic_enum::enum_name(state).data());
 }
 
 const Urho3D::String& Unit::getName() const {

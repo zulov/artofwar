@@ -13,7 +13,7 @@
 #include <magic_enum.hpp>
 #include <string>
 #include <Urho3D/IO/Log.h>
-#include <Urho3D/Resource/Localization.h>
+#include "utils/StringUtils.h"
 #include "math/MathUtils.h"
 #include "objects/projectile/ProjectileManager.h"
 #include "objects/queue/QueueElement.h"
@@ -70,16 +70,14 @@ std::pair<float, bool> Building::absorbAttack(float attackCoef) {
 }
 
 Urho3D::String Building::getInfo() const {
-	const auto l10n = Game::getLocalization();
-
-	return Urho3D::String(dbBuilding->name + " " + dbLevel->name)
-			.AppendWithFormat(l10n->Get("info_build").CString(),
-			                  asStringF(dbLevel->attack, 1).c_str(),
-			                  asStringF(dbLevel->armor).c_str(),
-			                  (int)hp, dbLevel->maxHp,
-			                  closeUsers, getMaxCloseUsers(),
-			                  rangeUsers, getMaxRangeUsers(),
-			                  magic_enum::enum_name(state).data());
+	return l10nFormat("info_build",
+	                  dbBuilding->name.CString(), dbLevel->name.CString(),
+	                  asStringF(dbLevel->attack, 1).c_str(),
+	                  asStringF(dbLevel->armor).c_str(),
+	                  (int)hp, dbLevel->maxHp,
+	                  closeUsers, getMaxCloseUsers(),
+	                  rangeUsers, getMaxRangeUsers(),
+	                  magic_enum::enum_name(state).data());
 }
 
 unsigned char Building::getMaxCloseUsers() const { return dbBuilding->maxUsers; }
