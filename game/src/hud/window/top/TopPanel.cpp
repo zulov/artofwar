@@ -61,7 +61,7 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	auto wholeArmy = Urho3D::String(poss->getArmyNumber());
 	units->setText(freeArmy, wholeArmy)
 	     ->setToolTip(l10nFormat("top_units_tooltip", poss->getFreeArmyNumber(), poss->getArmyNumber(),
-	                             poss->getInfantryNumber(), poss->getCalvaryNumber(),
+	                             poss->getInfantryNumber(), poss->getCavalryNumber(),
 	                             poss->getMeleeNumber(), poss->getRangeNumber(),
 	                             poss->getLightNumber(), poss->getHeavyNumber()));
 

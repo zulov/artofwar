@@ -244,10 +244,10 @@ void StateManager::initOrders() const {
 			} else {
 				unit->ordersIds.push_back(castC(UnitAction::DEFEND));
 			}
-			if (unit->typeCalvary) {
+			if (unit->typeCavalry) {
 				unit->ordersIds.push_back(castC(UnitAction::CHARGE));
 			}
-			if (unit->typeMelee || unit->typeRange || unit->typeCalvary) {
+			if (unit->typeMelee || unit->typeRange || unit->typeCavalry) {
 				unit->ordersIds.push_back(castC(UnitAction::ATTACK));
 			}
 			unit->ordersIds.shrink_to_fit();
@@ -276,13 +276,13 @@ void StateManager::initStates() const {
 			} else {
 				unit->possibleStates[castC(UnitState::DEFEND)] = true;
 			}
-			if (unit->typeCalvary) {
+			if (unit->typeCavalry) {
 				unit->possibleStates[castC(UnitState::CHARGE)] = true;
 			}
 			if (unit->typeRange) {
 				unit->possibleStates[castC(UnitState::SHOT)] = true;
 			}
-			if (unit->typeMelee || unit->typeRange || unit->typeCalvary) {
+			if (unit->typeMelee || unit->typeRange || unit->typeCavalry) {
 				unit->possibleStates[castC(UnitState::ATTACK)] = true;
 			}
 		}

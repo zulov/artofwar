@@ -34,7 +34,7 @@ Unit::Unit(Urho3D::Vector3& _position, short dbId, char playerId, char teamId, c
 	loadXml("Objects/units/" + dbLevel->node);
 	populate();
 
-	if (dbUnit->typeCalvary) {
+	if (dbUnit->typeCavalry) {
 		chargeData = new ChargeData(150, 2);
 	}
 	shouldUpdate = true;

@@ -35,7 +35,7 @@ enum class DbUnitCol : int {
 	id, name, icon,
 	food, wood, stone, gold,
 	action_state,
-	type_infantry, type_range, type_calvary, type_worker,
+	type_infantry, type_range, type_cavalry, type_worker,
 	type_special, type_melee, type_heavy, type_light
 };
 
@@ -44,7 +44,7 @@ enum class DbUnitLevelCol : int {
 	food, wood, stone, gold,
 	build_time, upgrade_time, min_dist, mass, min_speed, max_speed,
 	max_force, max_hp, armor, sight_range, collect, attack, attack_reload,
-	attack_range, bonus_infantry, bonus_range, bonus_calvary, bonus_worker,
+	attack_range, bonus_infantry, bonus_range, bonus_cavalry, bonus_worker,
 	bonus_special, bonus_melee, bonus_heavy, bonus_light, bonus_building
 };
 

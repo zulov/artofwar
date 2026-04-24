@@ -27,7 +27,7 @@
 #include "objects/projectile/ProjectileManager.h"
 #include "objects/unit/order/OrderUtils.h"
 
-Simulation::Simulation(Environment* enviroment): env(enviroment),colorScheme(SimColorMode::BASIC) {
+Simulation::Simulation(Environment* environment): env(environment),colorScheme(SimColorMode::BASIC) {
 	simObjectManager = new SimulationObjectManager();
 	Game::setActionCenter(new ActionCenter(simObjectManager));
 
@@ -252,7 +252,7 @@ void Simulation::updateBuildingQueues() const {
 			case QueueActionType::BUILDING_CREATE:
 				build->complete();
 				break;
-			case QueueActionType::RESOURCE_CREATE:
+			case QueueActionType::RESOURCE_CREATE: {
 				const auto [dbBuilding, level] = build->getData();
 				auto indexes = env->getIndexesInRange(build->getMainGridIndex(), static_cast<float>(level->spawnResourceRange));
 				auto dbResource = Game::getDatabase()->getResource(dbBuilding->toResource);
@@ -264,6 +264,7 @@ void Simulation::updateBuildingQueues() const {
 						break;
 					}
 				}
+				break;
 			}
 			delete done;
 		}

@@ -21,7 +21,6 @@ class Environment;
 class SceneSaver;
 class SceneLoader;
 class CreationCommandList;
-class CreationCommandList;
 class SimulationObjectManager;
 class UpgradeCommandList;
 class CommandList;
@@ -33,7 +32,7 @@ namespace Urho3D {
 
 class Simulation {
 public:
-	explicit Simulation(Environment* enviroment);
+	explicit Simulation(Environment* environment);
 	~Simulation();
 	void clearNodesWithoutDelete() const;
 

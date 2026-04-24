@@ -31,7 +31,7 @@ public:
 	unsigned getFreeArmyNumber();
 	unsigned getArmyNumber();
 	unsigned getInfantryNumber();
-	unsigned getCalvaryNumber();
+	unsigned getCavalryNumber();
 	unsigned getMeleeNumber();
 	unsigned getRangeNumber();
 	unsigned getLightNumber();
@@ -51,7 +51,6 @@ public:
 	float getAttackSum();
 	float getDefenceAttackSum();
 private:
-	std::span<float> refreshBuildingSum(std::span<const unsigned char> idxs, std::span<float> out) const;
 	std::vector<Building*> buildings;
 	std::vector<std::vector<Building*>*> buildingsPerId;
 
@@ -60,7 +59,7 @@ private:
 
 	unsigned idleWorkersNumber = 0;
 	unsigned idleArmyNumber = 0, armyNumber = 0;
-	unsigned typeInfantryNumber = 0, typeCalvaryNumber = 0;
+	unsigned typeInfantryNumber = 0, typeCavalryNumber = 0;
 	unsigned typeRangeNumber = 0, typeMeleeNumber = 0;
 	unsigned typeHeavyNumber = 0, typeLightNumber = 0;
 	unsigned typeSpecialNumber = 0;

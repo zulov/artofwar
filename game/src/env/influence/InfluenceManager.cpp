@@ -338,7 +338,7 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 }
 
 std::vector<int> InfluenceManager::getIndexesIterative(std::span<const float> result, float tolerance, int min,
-                                                       std::span<InfluenceMapFloat*> maps) const {
+                                                       std::span<InfluenceMapFloat* const> maps) const {
 	assert(result.size() == maps.size());
 	for (auto map : maps) {
 		map->ensureReady();
@@ -391,7 +391,7 @@ std::vector<unsigned> InfluenceManager::getAreasResBonus(unsigned char id, unsig
 }
 
 std::vector<unsigned>*
-InfluenceManager::getAreas(std::span<InfluenceMapFloat*> maps, std::span<const float> result, unsigned char player) const {
+InfluenceManager::getAreas(std::span<InfluenceMapFloat* const> maps, std::span<const float> result, unsigned char player) const {
 	assert(result.size() == maps.size());
 
 	std::fill_n(intersection, arraySize, 0.f); //TODO perf move to removeunsean

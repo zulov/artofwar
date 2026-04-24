@@ -60,7 +60,7 @@ struct db_building_attack : db_common_attack {
 struct db_unit_attack : db_common_attack {
 	const float bonusInfantry;
 	const float bonusRange;
-	const float bonusCalvary;
+	const float bonusCavalry;
 	const float bonusWorker;
 	const float bonusSpecial;
 	const float bonusMelee;
@@ -69,12 +69,12 @@ struct db_unit_attack : db_common_attack {
 	const float bonusBuilding;
 
 	db_unit_attack(float collect, float attack, short attackReload, short attackRange,
-	               float bonusInfantry, float bonusRange, float bonusCalvary, float bonusWorker,
+	               float bonusInfantry, float bonusRange, float bonusCavalry, float bonusWorker,
 	               float bonusSpecial, float bonusMelee, float bonusHeavy, float bonusLight, float bonusBuilding)
 		: db_common_attack(collect, attack, attackReload, attackRange),
 		  bonusInfantry(bonusInfantry),
 		  bonusRange(bonusRange),
-		  bonusCalvary(bonusCalvary),
+		  bonusCavalry(bonusCavalry),
 		  bonusWorker(bonusWorker),
 		  bonusSpecial(bonusSpecial),
 		  bonusMelee(bonusMelee),
@@ -252,7 +252,7 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 		  db_unit_attack(asFloat(s, C::collect), asFloat(s, C::attack),
 		                 asFloat(s, C::attack_reload), asShort(s, C::attack_range),
 		                 asFloat(s, C::bonus_infantry), asFloat(s, C::bonus_range),
-		                 asFloat(s, C::bonus_calvary), asFloat(s, C::bonus_worker),
+		                 asFloat(s, C::bonus_cavalry), asFloat(s, C::bonus_worker),
 		                 asFloat(s, C::bonus_special), asFloat(s, C::bonus_melee),
 		                 asFloat(s, C::bonus_heavy), asFloat(s, C::bonus_light),
 		                 asFloat(s, C::bonus_building)),
@@ -283,7 +283,7 @@ struct db_unit : db_with_icon, db_with_cost {
 
 	const bool typeInfantry;
 	const bool typeRange;
-	const bool typeCalvary;
+	const bool typeCavalry;
 	const bool typeWorker;
 	const bool typeSpecial;
 	const bool typeMelee;
@@ -304,7 +304,7 @@ struct db_unit : db_with_icon, db_with_cost {
 		  desiredState(UnitState(asByte(s, C::action_state))),
 		  typeInfantry(asBool(s, C::type_infantry)),
 		  typeRange(asBool(s, C::type_range)),
-		  typeCalvary(asBool(s, C::type_calvary)),
+		  typeCavalry(asBool(s, C::type_cavalry)),
 		  typeWorker(asBool(s, C::type_worker)),
 		  typeSpecial(asBool(s, C::type_special)),
 		  typeMelee(asBool(s, C::type_melee)),
@@ -321,7 +321,7 @@ struct db_unit : db_with_icon, db_with_cost {
 	float getBonuses(db_unit_attack* dbLevel) const {
 		return typeInfantry * dbLevel->bonusInfantry +
 			typeRange * dbLevel->bonusRange +
-			typeCalvary * dbLevel->bonusCalvary +
+			typeCavalry * dbLevel->bonusCavalry +
 			typeWorker * dbLevel->bonusWorker +
 			typeSpecial * dbLevel->bonusSpecial +
 			typeMelee * dbLevel->bonusMelee +

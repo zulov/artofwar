@@ -75,10 +75,10 @@ public:
 
 private:
 	// --- Private helpers ---
-	std::vector<unsigned>* getAreas(std::span<InfluenceMapFloat*> maps, std::span<const float> result,
+	std::vector<unsigned>* getAreas(std::span<InfluenceMapFloat* const> maps, std::span<const float> result,
 	                                unsigned char player) const;
 	std::vector<int> getIndexesIterative(std::span<const float> result, float tolerance, int min,
-	                                     std::span<InfluenceMapFloat*> maps) const;
+	                                     std::span<InfluenceMapFloat* const> maps) const;
 	std::vector<unsigned>* bestIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
 	std::vector<Urho3D::Vector2> centersFromIndexes(const std::vector<int>& intersection) const;
 	int getIndexInInfluence(Unit* unit) const;

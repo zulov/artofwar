@@ -9,6 +9,7 @@
 #include "objects/building/Building.h"
 #include "objects/building/ParentBuildingType.h"
 #include "objects/resource/ResourceEntity.h"
+#include "ai/MetricDefinitions.h"
 
 Possession::Possession(char nation) {
 	for (const auto building : Game::getDatabase()->getNation(nation)->buildings) {
@@ -94,9 +95,9 @@ unsigned Possession::getInfantryNumber() {
 	return typeInfantryNumber;
 }
 
-unsigned Possession::getCalvaryNumber() {
+unsigned Possession::getCavalryNumber() {
 	ensureReady();
-	return typeCalvaryNumber;
+	return typeCavalryNumber;
 }
 
 unsigned Possession::getMeleeNumber() {
@@ -155,15 +156,12 @@ bool Possession::hasAnyFreeArmy() const {
 
 float Possession::getAttackSum() {
 	ensureReady();
-	return metric->unitsSum[5];
-	//TODO hardcoded from AiUnitMetric {[](db_unit* u, db_unit_level* l) -> float { return l->attack; }, 10, UNITS_SUM_X},
+	return metric->unitsSum[static_cast<unsigned char>(UnitMetricIdx::ATTACK)];
 }
 
 float Possession::getDefenceAttackSum() {
 	ensureReady();
-	return metric->buildingsSum[5];
-
-	//TODO hardcoded from AiBuildingMetric {[](db_building* b, db_building_level* l) -> float { return l->attack; }, 20, BUILDINGS_SUM_X},
+	return metric->buildingsSum[static_cast<unsigned char>(BuildingMetricIdx::ATTACK)];
 }
 
 void Possession::add(Building* building) {
@@ -260,7 +258,7 @@ void Possession::ensureReady() {
 	idleArmyNumber = 0;
 	armyNumber = 0;
 	typeInfantryNumber = 0;
-	typeCalvaryNumber = 0;
+	typeCavalryNumber = 0;
 	typeRangeNumber = 0;
 	typeMeleeNumber = 0;
 	typeHeavyNumber = 0;
@@ -273,7 +271,7 @@ void Possession::ensureReady() {
 			const auto dbUnit = unit->getDb();
 			if (isFree(unit)) { ++idleArmyNumber; }
 			if (dbUnit->typeInfantry) { ++typeInfantryNumber; }
-			if (dbUnit->typeCalvary) { ++typeCalvaryNumber; }
+			if (dbUnit->typeCavalry) { ++typeCavalryNumber; }
 			if (dbUnit->typeRange) { ++typeRangeNumber; }
 			if (dbUnit->typeMelee) { ++typeMeleeNumber; }
 			if (dbUnit->typeLight) { ++typeLightNumber; }
