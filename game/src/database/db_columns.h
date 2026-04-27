@@ -5,33 +5,33 @@
 
 // --- Save/Load tables (scene) ---
 
-enum class UnitCol : int {
+enum class UnitCol : unsigned char {
 	id_db, hp_coef, uid, player, level,
 	position_x, position_z, state, velocity_x, velocity_z
 };
 
-enum class BuildingCol : int {
+enum class BuildingCol : unsigned char {
 	id_db, hp_coef, uid, player, level,
 	bucket_x, bucket_y, state, next_state, deploy_Idx
 };
 
-enum class ResourceCol : int {
+enum class ResourceCol : unsigned char {
 	id_db, hp_coef, uid,
 	bucket_x, bucket_y, state, next_state
 };
 
-enum class PlayerCol : int {
+enum class PlayerCol : unsigned char {
 	id, is_active, team, nation, name, color,
 	buildingUid, unitUid, food, wood, stone, gold
 };
 
-enum class ConfigCol : int {
+enum class ConfigCol : unsigned char {
 	precision, map, size
 };
 
 // --- Data tables (data.db) ---
 
-enum class DbUnitCol : int {
+enum class DbUnitCol : unsigned char {
 	id, name, icon,
 	food, wood, stone, gold,
 	action_state,
@@ -39,7 +39,7 @@ enum class DbUnitCol : int {
 	type_special, type_melee, type_heavy, type_light
 };
 
-enum class DbUnitLevelCol : int {
+enum class DbUnitLevelCol : unsigned char {
 	id, level, unit, name, node,
 	food, wood, stone, gold,
 	build_time, upgrade_time, min_dist, mass, min_speed, max_speed,
@@ -48,7 +48,7 @@ enum class DbUnitLevelCol : int {
 	bonus_special, bonus_melee, bonus_heavy, bonus_light, bonus_building
 };
 
-enum class DbBuildingCol : int {
+enum class DbBuildingCol : unsigned char {
 	id, name, icon,
 	food, wood, stone, gold,
 	size_x, size_z,
@@ -58,7 +58,7 @@ enum class DbBuildingCol : int {
 	ruinable, to_resource
 };
 
-enum class DbBuildingLevelCol : int {
+enum class DbBuildingLevelCol : unsigned char {
 	id, level, building, name, node_name,
 	food, wood, stone, gold,
 	queue_max_capacity, build_speed, upgrade_speed, max_hp,
@@ -68,11 +68,11 @@ enum class DbBuildingLevelCol : int {
 	spawn_resource_time, spawn_resource_range
 };
 
-enum class DbNationCol : int {
+enum class DbNationCol : unsigned char {
 	id, name, action_prefix, order_prefix
 };
 
-enum class DbResourceCol : int {
+enum class DbResourceCol : unsigned char {
 	id, resource_id, name, icon, max_hp,
 	node_name, size_x, size_z, max_users,
 	mini_map_color, collect_speed, rotatable
@@ -80,36 +80,36 @@ enum class DbResourceCol : int {
 
 // --- Base.db tables ---
 
-enum class HudSizeCol : int {
+enum class HudSizeCol : unsigned char {
 	id, name
 };
 
-enum class SettingsCol : int {
+enum class SettingsCol : unsigned char {
 	graph, resolution
 };
 
-enum class ResolutionCol : int {
+enum class ResolutionCol : unsigned char {
 	id, x, y
 };
 
-enum class GraphSettingsCol : int {
+enum class GraphSettingsCol : unsigned char {
 	id, hud_size, styles, fullscreen, max_fps, min_fps,
 	name, v_sync, shadow, texture_quality
 };
 
-enum class HudVarsCol : int {
+enum class HudVarsCol : unsigned char {
 	id, hud_size, name, value
 };
 
 // --- Map table ---
 
-enum class MapCol : int {
+enum class MapCol : unsigned char {
 	id, xml_name, name
 };
 
 // --- Other data tables ---
 
-enum class PlayerColorsCol : int {
+enum class PlayerColorsCol : unsigned char {
 	id, unit, building, name
 };
 
