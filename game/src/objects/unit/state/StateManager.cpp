@@ -42,9 +42,7 @@ StateManager::StateManager() {
 	initOrders();
 }
 
-StateManager::~StateManager() {
-	clear_array(states, magic_enum::enum_count<UnitState>());
-}
+StateManager::~StateManager() { clear_array(states, magic_enum::enum_count<UnitState>()); }
 
 bool StateManager::changeState(Unit* unit, UnitState stateTo) {
 	return changeState(unit, stateTo, Consts::EMPTY_ACTION_PARAMETER);
@@ -73,21 +71,15 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParame
 bool StateManager::canStartState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter,
                                  State* stateFrom, State* toState) {
 	return stateFrom->validateTransition(stateTo)
-		&& unit->getDb()->possibleStates[castC(stateTo)]
-		&& toState->canStart(unit, actionParameter);
+			&& unit->getDb()->possibleStates[castC(stateTo)]
+			&& toState->canStart(unit, actionParameter);
 }
 
-bool StateManager::canChangeState(Unit* unit, UnitState stateTo) {
-	return getState(unit)->validateTransition(stateTo);
-}
+bool StateManager::canChangeState(Unit* unit, UnitState stateTo) { return getState(unit)->validateTransition(stateTo); }
 
-State* StateManager::getState(Unit* unit) {
-	return instance->states[castC(unit->getState())];
-}
+State* StateManager::getState(Unit* unit) { return instance->states[castC(unit->getState())]; }
 
-void StateManager::execute(Unit* unit, float timeStamp) {
-	getState(unit)->execute(unit, timeStamp);
-}
+void StateManager::execute(Unit* unit, float timeStamp) { getState(unit)->execute(unit, timeStamp); }
 
 void StateManager::executeChange(const std::vector<Unit*>* units) {
 	if (instance->unitStateChangePending) {
@@ -101,16 +93,13 @@ void StateManager::executeChange(const std::vector<Unit*>* units) {
 				if (canStartState(unit, nextState, unit->getNextActionParameter(), stateFrom, toState)) {
 					stateFrom->onEnd(unit);
 					unit->setState(nextState);
-					if (nextState == UnitState::DEAD) {
-						instance->deadUnits.push_back(unit);
-					} else if (nextState == UnitState::DISPOSE) {
-						instance->unitIsInDisposeState = true;
-					}
+					if (nextState == UnitState::DEAD) { instance->deadUnits.push_back(unit); } else if (nextState ==
+						UnitState::DISPOSE) { instance->unitIsInDisposeState = true; }
 					toState->onStart(unit, unit->getNextActionParameter());
 					unit->getNextActionParameter().resetUsed();
 				} else {
 					const bool mayHaveAim = nextState == UnitState::GO || nextState == UnitState::CHARGE || nextState ==
-						UnitState::FOLLOW;
+							UnitState::FOLLOW;
 					unit->getNextActionParameter().reset(mayHaveAim);
 				}
 				unit->resetStateChangePending();
@@ -132,8 +121,8 @@ void StateManager::reset() {
 bool StateManager::changeState(Static* obj, StaticState stateTo) {
 	if (obj->getState() != StaticState::DISPOSE && obj->getState() != stateTo) {
 		obj->setNextState(stateTo);
-		if (obj->getType() == ObjectType::BUILDING) {
-			instance->buildingStateChangePending = true;
+		if (obj->getType() == ObjectType::BUILDING) { 
+			instance->buildingStateChangePending = true; 
 		} else {
 			instance->resourceStateChangePending = true;
 		}
@@ -162,63 +151,68 @@ void StateManager::executeChange(std::vector<ResourceEntity*>* resources) {
 	}
 }
 
-void StateManager::startState(Static* obj) {
-	obj->setState(obj->getNextState());
-	switch (obj->getNextState()) {
-	case StaticState::ALIVE:
-		if (obj->getType() == ObjectType::BUILDING) {//TODO to mozre dac to building->updateAi
-			auto building = (Building*)obj;
-			auto [data, level] = building->getData();
-
-			auto res = data->toResource;
-			if (res >= 0 && level->spawnResourceRange<=0) {
-				changeState(obj, StaticState::DEAD);
-			}
-		}
-		break;
+void StateManager::startState(ResourceEntity* resource) {
+	resource->setState(resource->getNextState());
+	switch (resource->getNextState()) {
 	case StaticState::DEAD:
-		changeState(obj, StaticState::DISPOSE);
-		setStaticDead(obj);
+		changeState(resource, StaticState::DISPOSE);
+		instance->deadResources.push_back(resource);
 		break;
 	case StaticState::DISPOSE:
-		if (obj->getType() == ObjectType::BUILDING) {
-			auto building = (Building*)obj;
-			if (obj->getHp() <= 0.f) {
-				if (building->getDb()->ruinable) {
-					auto costs = building->getDb();
-					if (costs->maxFromWoodOrStone > 0) {
-						short id = costs->moreWoodThanStone ? 6 : 5; //TODO hardcoded
+		instance->resourceIsInDisposeState = true;
+		break;
+	default:;
+	}
+}
 
-						Game::getActionCenter()->addResource(id, building->getMainGridIndex(),
-						                                     costs->maxFromWoodOrStone * 0.2f);
-					}
-				}
-			} else {
-				auto res = building->getDb()->toResource;
-				if (res >= 0) {
-					Game::getActionCenter()->addResource(res, building->getMainGridIndex());
+void StateManager::startState(Building* building) {
+	building->setState(building->getNextState());
+	switch (building->getNextState()) {
+	case StaticState::ALIVE: {
+		auto [data, level] = building->getData();
+
+		auto res = data->toResource;
+		if (res >= 0 && level->spawnResourceRange <= 0) { changeState(building, StaticState::DEAD); }
+	}
+		break;
+	case StaticState::DEAD:
+		changeState(building, StaticState::DISPOSE);
+		instance->deadBuildings.push_back(building);
+		break;
+	case StaticState::DISPOSE:
+		if (building->getHp() <= 0.f) {
+			if (building->getDb()->ruinable) {
+				auto costs = building->getDb();
+				if (costs->maxFromWoodOrStone > 0) {
+					short id = costs->moreWoodThanStone ? 6 : 5; //TODO hardcoded
+
+					Game::getActionCenter()->addResource(id, building->getMainGridIndex(),
+					                                     costs->maxFromWoodOrStone * 0.2f);
 				}
 			}
+		} else {
+			auto res = building->getDb()->toResource;
+			if (res >= 0) { Game::getActionCenter()->addResource(res, building->getMainGridIndex()); }
 		}
-		setStaticToDispose(obj->getType());
+		instance->buildingIsInDisposeState = true;
 		break;
 	default: ;
 	}
 }
 
-void StateManager::executeChange(Static* obj) {
-	if (obj->getState() != obj->getNextState()) {
-		//endState(obj->getState(), obj);
-
-		startState(obj);
+void StateManager::executeChange(Building* building) {
+	if (building->getState() != building->getNextState()) {
+		startState(building);
 	}
 }
 
-void StateManager::init() {
-	if (instance == nullptr) {
-		instance = new StateManager();
+void StateManager::executeChange(ResourceEntity* resource) {
+	if (resource->getState() != resource->getNextState()) {
+		startState(resource);
 	}
 }
+
+void StateManager::init() { if (instance == nullptr) { instance = new StateManager(); } }
 
 void StateManager::dispose() {
 	delete instance;
@@ -241,9 +235,7 @@ void StateManager::initOrders() const {
 			} else {
 				unit->ordersIds.push_back(castC(UnitAction::DEFEND));
 			}
-			if (unit->typeCavalry) {
-				unit->ordersIds.push_back(castC(UnitAction::CHARGE));
-			}
+			if (unit->typeCavalry) { unit->ordersIds.push_back(castC(UnitAction::CHARGE)); }
 			if (unit->typeMelee || unit->typeRange || unit->typeCavalry) {
 				unit->ordersIds.push_back(castC(UnitAction::ATTACK));
 			}
@@ -273,12 +265,8 @@ void StateManager::initStates() const {
 			} else {
 				unit->possibleStates[castC(UnitState::DEFEND)] = true;
 			}
-			if (unit->typeCavalry) {
-				unit->possibleStates[castC(UnitState::CHARGE)] = true;
-			}
-			if (unit->typeRange) {
-				unit->possibleStates[castC(UnitState::SHOT)] = true;
-			}
+			if (unit->typeCavalry) { unit->possibleStates[castC(UnitState::CHARGE)] = true; }
+			if (unit->typeRange) { unit->possibleStates[castC(UnitState::SHOT)] = true; }
 			if (unit->typeMelee || unit->typeRange || unit->typeCavalry) {
 				unit->possibleStates[castC(UnitState::ATTACK)] = true;
 			}
@@ -286,45 +274,17 @@ void StateManager::initStates() const {
 	}
 }
 
-void StateManager::setStaticDead(Static* object) {
-	if (object->getType() == ObjectType::BUILDING) {
-		instance->deadBuildings.push_back(static_cast<Building*>(object));
-	} else {
-		instance->deadResources.push_back(static_cast<ResourceEntity*>(object));
-	}
-}
+bool StateManager::isUnitDead() { return !instance->deadUnits.empty(); }
 
-void StateManager::setStaticToDispose(ObjectType object) {
-	if (object == ObjectType::BUILDING) {
-		instance->buildingIsInDisposeState = true;
-	} else {
-		instance->resourceIsInDisposeState = true;
-	}
-}
+bool StateManager::isBuildingDead() { return !instance->deadBuildings.empty(); }
 
-bool StateManager::isUnitDead() {
-	return !instance->deadUnits.empty();
-}
+bool StateManager::isResourceDead() { return !instance->deadResources.empty(); }
 
-bool StateManager::isBuildingDead() {
-	return !instance->deadBuildings.empty();
-}
+bool StateManager::isUnitToDispose() { return instance->unitIsInDisposeState; }
 
-bool StateManager::isResourceDead() {
-	return !instance->deadResources.empty();
-}
+bool StateManager::isBuildingToDispose() { return instance->buildingIsInDisposeState; }
 
-bool StateManager::isUnitToDispose() {
-	return instance->unitIsInDisposeState;
-}
-
-bool StateManager::isBuildingToDispose() {
-	return instance->buildingIsInDisposeState;
-}
-
-bool StateManager::isResourceToDispose() {
-	return instance->resourceIsInDisposeState;
-}
+bool StateManager::isResourceToDispose() { return instance->resourceIsInDisposeState; }
 
 bool StateManager::isSthToDispose() {
 	return instance->unitIsInDisposeState || instance->buildingIsInDisposeState || instance->resourceIsInDisposeState;

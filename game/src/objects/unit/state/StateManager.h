@@ -35,10 +35,12 @@ public:
 
 	static bool changeState(Static* obj, StaticState stateTo);
 
-	static void executeChange(Static* obj);
+	static void executeChange(Building* building);
+	static void executeChange(ResourceEntity* resource);
 	static void executeChange(std::vector<Building*>* buildings);
 	static void executeChange(std::vector<ResourceEntity*>* resources);
-	static void startState(Static* obj);
+	static void startState(Building* building);
+	static void startState(ResourceEntity* resource);
 
 	static bool isUnitToDispose();
 	static bool isBuildingToDispose();
@@ -56,10 +58,6 @@ public:
 private:
 	void initOrders() const; //TODO move to level
 	void initStates() const; //TODO move to level
-
-
-	static void setStaticDead(Static* object);
-	static void setStaticToDispose(ObjectType object);
 
 	StateManager();
 	~StateManager();
