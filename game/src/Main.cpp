@@ -693,7 +693,7 @@ void Main::readParameters() {
 			} else if (argument == "savename") {
 				saveToLoad = value;
 			} else if (argument == "outputname" && !value.Empty()) {
-				SimGlobals::OUTPUT_NAMES = value.Split('|');
+				SimGlobals::OUTPUT_NAMES = value.Split('#');
 				SimGlobals::MAX_RUNS = SimGlobals::OUTPUT_NAMES.Size();
 				outputName = SimGlobals::OUTPUT_NAMES[0];
 				++i;

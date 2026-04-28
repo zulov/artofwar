@@ -2,7 +2,7 @@
 #include <Urho3D/Container/Str.h>
 
 constexpr char SPLIT_SIGN = ';';
-constexpr char SPLIT_SIGN_2 = '|';
+constexpr char SPLIT_SIGN_AI = '#';
 
 struct db_entity {
 	const short id;

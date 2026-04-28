@@ -473,7 +473,7 @@ struct db_nation : db_with_name {
 		  orderPrefix(split(asText(stmt, DbNationCol::order_prefix), SPLIT_SIGN)) {}
 
 	std::vector<std::string> splitAi(std::string* param) const {
-		return split(split(param[id], SPLIT_SIGN_2)[SimGlobals::CURRENT_RUN], SPLIT_SIGN);
+		return split(split(param[id], SPLIT_SIGN_AI)[SimGlobals::CURRENT_RUN], SPLIT_SIGN);
 	}
 
 	void refresh() {
