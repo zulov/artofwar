@@ -80,6 +80,7 @@ void ResourceEntity::action(ResourceActionType type, char player) {
 	}
 	break;
 	case ResourceActionType::CANCEL:
+		//TODO remove collectors or remove this function
 		StateManager::changeState(this, StaticState::ALIVE);
 		break;
 	}
