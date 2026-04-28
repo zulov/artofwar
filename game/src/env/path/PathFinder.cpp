@@ -13,21 +13,21 @@
 #include "env/CloseIndexes.h"
 #include "env/CloseIndexesProvider.h"
 
+#include "env/bucket/ArrayProviderUtils.h"
+
 constexpr char MAX_CACHE_SIZE = 100;
 
 PathFinder::PathFinder(short resolution, float size) :
 	closeIndexes(CloseIndexesProvider::get(resolution)), calculator(GridCalculatorProvider::get(resolution, size)),
 	resolution(resolution), sqResolution(resolution * resolution), max_cost_to_ref(sqResolution - 1) {
-	came_from = new int[sqResolution];
-	cost_so_far = new int[sqResolution];
-	std::fill_n(came_from, sqResolution, -1);
-	std::fill_n(cost_so_far, sqResolution, -1);
+	came_from = PrimitiveArrayProvider<int>::get(sqResolution, -1);
+	cost_so_far = PrimitiveArrayProvider<int>::get(sqResolution, -1);
 	cache = new PathCache[MAX_CACHE_SIZE];
 }
 
 PathFinder::~PathFinder() {
-	delete[]came_from;
-	delete[]cost_so_far;
+	PrimitiveArrayProvider<int>::release(came_from, sqResolution);
+	PrimitiveArrayProvider<int>::release(cost_so_far, sqResolution);
 
 	delete tempPath;
 	delete closePath;

@@ -5,7 +5,7 @@
 #include <Urho3D/Resource/Image.h>
 #include <Urho3D/IO/Log.h>
 #include "Bucket.h"
-#include "BucketProvider.h"
+#include "ArrayProviderUtils.h"
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"
 #include "database/db_struct.h"
@@ -21,7 +21,7 @@
 MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
 	Grid(resolution, size, maxQueryRadius),
 	complexData(ArrayProvider<ComplexBucketData>::get(sqResolution)),
-	pathFinder(resolution, size), countArray(new bool[sqResolution]) {
+	pathFinder(resolution, size), countArray(PrimitiveArrayProvider<bool>::get(sqResolution, false)) {
 	const auto quarter = calculator->getFieldSize() / 4;
 	pathFinder.setComplexBucketData(complexData);
 	posInBucket = {
@@ -39,7 +39,7 @@ MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
 
 MainGrid::~MainGrid() {
 	ArrayProvider<ComplexBucketData>::release(complexData, sqResolution);
-	delete[] countArray;
+	PrimitiveArrayProvider<bool>::release(countArray, sqResolution);
 }
 
 void MainGrid::fillCache() {
@@ -427,7 +427,7 @@ int MainGrid::closestPassableCell(int posIndex) const {
 			return idx;
 		}
 	}
-	return posIndex; //TODO to zwrócic optional empty
+	return posIndex; //TODO to zwrï¿½cic optional empty
 }
 
 void MainGrid::addStatic(Static* object, bool bulkAdd) {

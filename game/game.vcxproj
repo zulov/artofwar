@@ -400,7 +400,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utils\CountUtils.h" />
-    <ClInclude Include="src\env\bucket\BucketProvider.h" />
+    <ClInclude Include="src\env\bucket\ArrayProviderUtils.h" />
     <ClInclude Include="src\database\db_insert_defs.h" />
     <ClInclude Include="src\database\db_insert_utils.h" />
     <ClInclude Include="src\env\path\PathCache.h" />
