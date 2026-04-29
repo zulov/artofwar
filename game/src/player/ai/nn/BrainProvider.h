@@ -14,4 +14,5 @@ private:
 	BrainProvider() = default;
 	static std::vector<Brain*> brains;
 	static std::vector<LayerData> tempLayers;
+	static std::string fileBuffer;
 };

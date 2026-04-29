@@ -85,3 +85,22 @@ TEST_F(FileUtilsFixture, IgnoresBlankLinesBetweenLayers) {
 	EXPECT_EQ(layers[1].weights, std::vector<float>({ 4.f }));
 	EXPECT_EQ(layers[1].biases, std::vector<float>({ 5.f }));
 }
+
+TEST_F(FileUtilsFixture, AcceptsCallerProvidedBufferAcrossLoads) {
+	auto firstPath = createBrainFile("1;2;;3\n");
+	auto secondPath = createBrainFile("4;;5\n6;7;;8\n");
+	std::vector<LayerData> layers;
+	std::string buffer;
+
+	ASSERT_TRUE(loadBrainFile(firstPath.string(), layers, buffer));
+	ASSERT_EQ(layers.size(), 1u);
+	EXPECT_EQ(layers[0].weights, std::vector<float>({ 1.f, 2.f }));
+	EXPECT_EQ(layers[0].biases, std::vector<float>({ 3.f }));
+
+	ASSERT_TRUE(loadBrainFile(secondPath.string(), layers, buffer));
+	ASSERT_EQ(layers.size(), 2u);
+	EXPECT_EQ(layers[0].weights, std::vector<float>({ 4.f }));
+	EXPECT_EQ(layers[0].biases, std::vector<float>({ 5.f }));
+	EXPECT_EQ(layers[1].weights, std::vector<float>({ 6.f, 7.f }));
+	EXPECT_EQ(layers[1].biases, std::vector<float>({ 8.f }));
+}

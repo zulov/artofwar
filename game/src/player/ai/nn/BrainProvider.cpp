@@ -9,6 +9,7 @@
 
 std::vector<Brain*> BrainProvider::brains;
 std::vector<LayerData> BrainProvider::tempLayers;
+std::string BrainProvider::fileBuffer;
 
 BrainProvider::~BrainProvider() {
 	clear_vector(brains);
@@ -20,7 +21,7 @@ Brain* BrainProvider::get(const std::string name) {
 			return brain;
 		}
 	}
-	if (!loadBrainFile(name, tempLayers) || tempLayers.empty()) {
+	if (!loadBrainFile(name, tempLayers, fileBuffer) || tempLayers.empty()) {
 		assert(false);
 		Game::getLog()->WriteRaw("No brain Found " + Urho3D::String(name.c_str()) + "\n", true);
 		return nullptr;

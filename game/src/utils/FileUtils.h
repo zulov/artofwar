@@ -9,17 +9,22 @@ struct LayerData {
 	std::vector<float> biases;
 };
 
-inline bool loadBrainFile(const std::string& path, std::vector<LayerData>& layers) {
+inline bool loadBrainFile(const std::string& path, std::vector<LayerData>& layers, std::string& buffer) {
 	std::ifstream infile(path, std::ios::in | std::ios::ate | std::ios::binary);
 	if (!infile.is_open()) {
 		return false;
 	}
 
 	const auto fileSize = infile.tellg();
+	if (fileSize < 0) {
+		return false;
+	}
 	infile.seekg(0, std::ios::beg);
 
-	std::string buffer(fileSize, '\0');
-	infile.read(&buffer[0], fileSize);
+	buffer.resize(static_cast<size_t>(fileSize));
+	if (!buffer.empty() && !infile.read(buffer.data(), static_cast<std::streamsize>(buffer.size()))) {
+		return false;
+	}
 
 	layers.clear();
 
@@ -72,4 +77,9 @@ inline bool loadBrainFile(const std::string& path, std::vector<LayerData>& layer
 		}
 	}
 	return true;
+}
+
+inline bool loadBrainFile(const std::string& path, std::vector<LayerData>& layers) {
+	std::string buffer;
+	return loadBrainFile(path, layers, buffer);
 }
