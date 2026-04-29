@@ -72,8 +72,7 @@ void ComplexBucketData::decStateSize() {
 void ComplexBucketData::setResBonuses(char player, unsigned char resId, float bonus) {
 	if (resourceBonuses == nullptr) {//TODO mem perf doda� jakis pool obiektow
 		resourceBonuses = new float[MAX_PLAYERS * RESOURCES_SIZE];
-		resourceBonuses[player * RESOURCES_SIZE + resId] = bonus;
-		return;
+		std::fill_n(resourceBonuses, MAX_PLAYERS * RESOURCES_SIZE, 1.f);
 	}
 	auto& val = resourceBonuses[player * RESOURCES_SIZE + resId];
 

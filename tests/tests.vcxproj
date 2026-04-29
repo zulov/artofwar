@@ -166,4 +166,14 @@
     </PropertyGroup>
     <Error Condition="!Exists('$(GoogleTestTargetsPath)')" Text="$([System.String]::Format('$(ErrorText)', '$(GoogleTestTargetsPath)'))" />
   </Target>
+  <Target Name="CopyRuntimeDlls" AfterTargets="Build">
+    <Copy Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"
+          SourceFiles="..\game\Urho3D_d.dll;..\game\sqlite3.dll"
+          DestinationFolder="$(TargetDir)"
+          SkipUnchangedFiles="true" />
+    <Copy Condition="'$(Configuration)|$(Platform)'=='Release|x64'"
+          SourceFiles="..\game\Urho3D.dll;..\game\sqlite3.dll"
+          DestinationFolder="$(TargetDir)"
+          SkipUnchangedFiles="true" />
+  </Target>
 </Project>

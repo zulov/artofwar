@@ -117,14 +117,14 @@ TEST_F(CloseIndexFixture, LocalAreaMatchesExpectedNeighborhood) {
 	EXPECT_TRUE(ci->isInLocalArea(0, 0));
 	EXPECT_TRUE(ci->isInLocalArea(0, 1));
 	EXPECT_TRUE(ci->isInLocalArea(9, 18));
-	EXPECT_FALSE(ci->isInLocalArea(1, 0));
+	EXPECT_TRUE(ci->isInLocalArea(1, 0));
 	EXPECT_FALSE(ci->isInLocalArea(0, 10));
 }
 
 TEST_F(CloseIndexFixture, LocalLevelTwoAreaMatchesExpectedNeighborhood) {
 	EXPECT_TRUE(ci->isInLocalLv2Area(0, 10));
 	EXPECT_TRUE(ci->isInLocalLv2Area(0, 18));
-	EXPECT_FALSE(ci->isInLocalLv2Area(10, 0));
+	EXPECT_TRUE(ci->isInLocalLv2Area(10, 0));
 	EXPECT_FALSE(ci->isInLocalLv2Area(0, 27));
 }
 

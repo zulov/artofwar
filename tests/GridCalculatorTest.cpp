@@ -58,7 +58,7 @@ TEST_F(GridCalculatorFixture, CombineTest) {
 
 TEST_F(GridCalculatorFixture, ProviderCachesByResolution) {
 	auto* first = GridCalculatorProvider::get(16, 64.f);
-	auto* second = GridCalculatorProvider::get(16, 128.f);
+	auto* second = GridCalculatorProvider::get(16, 64.f);
 
 	EXPECT_EQ(first, second);
 	EXPECT_EQ(first->getResolution(), 16);
@@ -134,6 +134,7 @@ TEST_F(GridCalculatorFixture, ProviderShouldRespectSizeForSameResolution) {
 	auto* sizeEight = GridCalculatorProvider::get(8, 8.f);
 	auto* sizeSixteen = GridCalculatorProvider::get(8, 16.f);
 
+	EXPECT_NE(sizeEight, sizeSixteen);
 	EXPECT_FLOAT_EQ(sizeEight->getSize(), 8.f);
 	EXPECT_FLOAT_EQ(sizeSixteen->getSize(), 16.f);
 	EXPECT_FLOAT_EQ(sizeEight->getFieldSize(), 1.f);

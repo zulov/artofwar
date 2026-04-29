@@ -5,14 +5,16 @@
 #include <numeric>
 #include <iostream>
 #include <functional>
+#include <type_traits>
 
 inline float minSpan(std::span<float> vec) {
 	return *std::ranges::min_element(vec);
 }
 
 template <typename T>
-T sumSpan(std::span<T> vec) {
-	return std::accumulate(vec.begin(), vec.end(), 0.f);
+std::remove_cv_t<T> sumSpan(std::span<T> vec) {
+	using ValueType = std::remove_cv_t<T>;
+	return std::accumulate(vec.begin(), vec.end(), ValueType{});
 }
 
 inline float minAndSumSpan(std::span<float> vec) {

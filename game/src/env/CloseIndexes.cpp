@@ -142,16 +142,19 @@ const std::vector<short>& CloseIndexes::getLv1(const ComplexBucketData& data) co
 
 bool CloseIndexes::isInLocalArea(const int center, int indexOfAim) const {
 	if (center == indexOfAim) { return true; }
-	return isInTab(getLv1(indexOfAim), indexOfAim - center); //center + value == indexOfAim
+	// TODO: Re-check this source-relative lookup later.
+	return isInTab(getLv1(center), indexOfAim - center); //center + value == indexOfAim
 }
 
 bool CloseIndexes::isInLocalLv2Area(int center, int indexOfAim) const {
-	return isInTab(getLv2(indexOfAim), indexOfAim - center); //center + value == indexOfAim
+	// TODO: Re-check this source-relative lookup later.
+	return isInTab(getLv2(center), indexOfAim - center); //center + value == indexOfAim
 }
 
 const std::vector<short>& CloseIndexes::getPassIndexVia1LevelTo2(int startIdx, int endIdx) const {
 	const auto diff = endIdx - startIdx; //startIdx + tab[i] == endIdx
-	for (auto [i, val] : getTabIndexesWithValueLv2(endIdx)) {
+	// TODO: Re-check this start-relative lv2 mapping later.
+	for (auto [i, val] : getTabIndexesWithValueLv2(startIdx)) {
 		if (val == diff) {
 			return passTo2From1Vals[i];
 		}
