@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "../game/src/env/GridCalculator.h"
+#include "../game/src/env/GridCalculatorProvider.h"
+#include "../game/src/env/GridCalculatorProvider.cpp"
 #include "../game/include/Urho3D/Math/Vector3.h"
 
 class GridCalculatorFixture : public ::testing::Test {
@@ -52,5 +54,89 @@ TEST_F(GridCalculatorFixture, CombineTest) {
 			EXPECT_FLOAT_EQ(center.y_, j);
 		}
 	}
+}
+
+TEST_F(GridCalculatorFixture, ProviderCachesByResolution) {
+	auto* first = GridCalculatorProvider::get(16, 64.f);
+	auto* second = GridCalculatorProvider::get(16, 128.f);
+
+	EXPECT_EQ(first, second);
+	EXPECT_EQ(first->getResolution(), 16);
+	EXPECT_FLOAT_EQ(first->getFieldSize(), 4.f);
+}
+
+TEST_F(GridCalculatorFixture, ProviderSeparatesDifferentResolutions) {
+	auto* first = GridCalculatorProvider::get(32, 64.f);
+	auto* second = GridCalculatorProvider::get(64, 64.f);
+
+	EXPECT_NE(first, second);
+	EXPECT_EQ(first->getResolution(), 32);
+	EXPECT_EQ(second->getResolution(), 64);
+}
+
+TEST_F(GridCalculatorFixture, ValidHelpersClampValuesToGridBounds) {
+	EXPECT_EQ(gc->getValidLow(-2), 0);
+	EXPECT_EQ(gc->getValidLow(2), 2);
+	EXPECT_EQ(gc->getValidHigh(2), 2);
+	EXPECT_EQ(gc->getValidHigh(5), 3);
+	EXPECT_EQ(gc->getValid(-2), 0);
+	EXPECT_EQ(gc->getValid(9), 3);
+}
+
+TEST_F(GridCalculatorFixture, IsValidIndexChecksCoordinatesAndFlatIndexes) {
+	EXPECT_TRUE(gc->isValidIndex(0, 0));
+	EXPECT_TRUE(gc->isValidIndex(Urho3D::IntVector2(3, 3)));
+	EXPECT_FALSE(gc->isValidIndex(-1, 0));
+	EXPECT_FALSE(gc->isValidIndex(0, 4));
+	EXPECT_FALSE(gc->isValidIndex(Urho3D::IntVector2(4, 0)));
+	EXPECT_TRUE(gc->isValidIndex(15));
+	EXPECT_FALSE(gc->isValidIndex(16));
+}
+
+TEST_F(GridCalculatorFixture, GetIndexRangeAndDistancesUseFieldSize) {
+	const auto indexRange = gc->getIndex(std::pair(-3.f, 0.1f));
+	EXPECT_EQ(indexRange.first, 0);
+	EXPECT_EQ(indexRange.second, 2);
+	EXPECT_FLOAT_EQ(gc->getSqDistance(Urho3D::IntVector2(0, 0), Urho3D::IntVector2(1, 2)), 20.f);
+	EXPECT_FLOAT_EQ(gc->getSqDistance(Urho3D::IntVector2(0, 0), 15), 72.f);
+	EXPECT_FLOAT_EQ(gc->getFieldSize(), 2.f);
+	EXPECT_FLOAT_EQ(gc->getSize(), 8.f);
+}
+
+TEST_F(GridCalculatorFixture, BiggestManhattanReturnsFarthestTargetDistance) {
+	std::vector<Urho3D::IntVector2> endCords = {
+		Urho3D::IntVector2(1, 1),
+		Urho3D::IntVector2(3, 2),
+		Urho3D::IntVector2(0, 2)
+	};
+
+	EXPECT_EQ(gc->getBiggestManhattan(0, endCords), 5);
+}
+
+TEST_F(GridCalculatorFixture, IndexFromVectorOverloadsMatchScalarVersion) {
+	Urho3D::Vector2 pos2(-3.f, 3.f);
+	Urho3D::Vector3 pos3(-3.f, 0.f, 3.f);
+
+	EXPECT_EQ(gc->indexFromPosition(pos2), gc->indexFromPosition(-3.f, 3.f));
+	EXPECT_EQ(gc->indexFromPosition(pos3), gc->indexFromPosition(-3.f, 3.f));
+}
+
+TEST_F(GridCalculatorFixture, GetCenterOverloadMatchesIndexCenter) {
+	EXPECT_EQ(gc->getCenter(2, 1), gc->getCenter(9));
+}
+
+TEST_F(GridCalculatorFixture, GetNotSafeIndexCloseSupportsSignedOffsets) {
+	EXPECT_EQ(gc->getNotSafeIndexClose(1, 1), 5);
+	EXPECT_EQ(gc->getNotSafeIndexClose(-1, 1), -3);
+}
+
+TEST_F(GridCalculatorFixture, ProviderShouldRespectSizeForSameResolution) {
+	auto* sizeEight = GridCalculatorProvider::get(8, 8.f);
+	auto* sizeSixteen = GridCalculatorProvider::get(8, 16.f);
+
+	EXPECT_FLOAT_EQ(sizeEight->getSize(), 8.f);
+	EXPECT_FLOAT_EQ(sizeSixteen->getSize(), 16.f);
+	EXPECT_FLOAT_EQ(sizeEight->getFieldSize(), 1.f);
+	EXPECT_FLOAT_EQ(sizeSixteen->getFieldSize(), 2.f);
 }
 

@@ -2,6 +2,8 @@
 
 #include "../game/src/env/CloseIndexes.h"
 #include "../game/src/env/CloseIndexes.cpp"
+#include "../game/src/env/CloseIndexesProvider.h"
+#include "../game/src/env/CloseIndexesProvider.cpp"
 
 class CloseIndexFixture : public ::testing::Test {
 public:
@@ -92,4 +94,60 @@ TEST_F(CloseIndexFixture, CheckBothIndex) {
 
 	EXPECT_EQ(ci->getBothIndexes(62), std::pair(7,23));
 	EXPECT_EQ(ci->getBothIndexes(63), std::pair(8,24));
+}
+
+TEST_F(CloseIndexFixture, ProviderCachesByResolution) {
+	auto* first = CloseIndexesProvider::get(16);
+	auto* second = CloseIndexesProvider::get(16);
+
+	EXPECT_EQ(first, second);
+	EXPECT_EQ(first->getResolution(), 16);
+}
+
+TEST_F(CloseIndexFixture, ProviderSeparatesDifferentResolutions) {
+	auto* first = CloseIndexesProvider::get(24);
+	auto* second = CloseIndexesProvider::get(32);
+
+	EXPECT_NE(first, second);
+	EXPECT_EQ(first->getResolution(), 24);
+	EXPECT_EQ(second->getResolution(), 32);
+}
+
+TEST_F(CloseIndexFixture, LocalAreaMatchesExpectedNeighborhood) {
+	EXPECT_TRUE(ci->isInLocalArea(0, 0));
+	EXPECT_TRUE(ci->isInLocalArea(0, 1));
+	EXPECT_TRUE(ci->isInLocalArea(9, 18));
+	EXPECT_FALSE(ci->isInLocalArea(1, 0));
+	EXPECT_FALSE(ci->isInLocalArea(0, 10));
+}
+
+TEST_F(CloseIndexFixture, LocalLevelTwoAreaMatchesExpectedNeighborhood) {
+	EXPECT_TRUE(ci->isInLocalLv2Area(0, 10));
+	EXPECT_TRUE(ci->isInLocalLv2Area(0, 18));
+	EXPECT_FALSE(ci->isInLocalLv2Area(10, 0));
+	EXPECT_FALSE(ci->isInLocalLv2Area(0, 27));
+}
+
+TEST_F(CloseIndexFixture, PassViaFirstLevelToSecondReturnsExpectedOffsets) {
+	EXPECT_EQ(ci->getPassIndexVia1LevelTo2(0, 16), param({ 8,7,9 }));
+	EXPECT_EQ(ci->getPassIndexVia1LevelTo2(0, 18), param({ 9 }));
+	EXPECT_TRUE(ci->getPassIndexVia1LevelTo2(0, 27).empty());
+}
+
+TEST_F(CloseIndexFixture, NonLocalTargetsReturnEmptyPassVector) {
+	EXPECT_TRUE(ci->getPassIndexVia1LevelTo2(0, 63).empty());
+}
+
+TEST_F(CloseIndexFixture, LocalAreaShouldBeSymmetricForAdjacentCells) {
+	EXPECT_TRUE(ci->isInLocalArea(0, 1));
+	EXPECT_TRUE(ci->isInLocalArea(1, 0));
+	EXPECT_TRUE(ci->isInLocalArea(7, 15));
+	EXPECT_TRUE(ci->isInLocalArea(15, 7));
+}
+
+TEST_F(CloseIndexFixture, LocalLevelTwoAreaShouldBeSymmetricForReachableCells) {
+	EXPECT_TRUE(ci->isInLocalLv2Area(0, 10));
+	EXPECT_TRUE(ci->isInLocalLv2Area(10, 0));
+	EXPECT_TRUE(ci->isInLocalLv2Area(15, 31));
+	EXPECT_TRUE(ci->isInLocalLv2Area(31, 15));
 }

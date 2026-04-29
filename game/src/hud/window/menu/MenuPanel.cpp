@@ -265,6 +265,7 @@ void MenuPanel::setOrderIcons(const std::vector<char>& ids) {
 	int k = 0;
 	maxPage = ids.size() / BUTTONS_NUMBER + 1;
 	for (int i = page * BUTTONS_NUMBER; i < ids.size() && i < (page + 1) * BUTTONS_NUMBER; ++i) {
+		// BUG: ids[i] is the actual order id; using i here desynchronizes the icon and dispatched action for sparse order sets.
 		setNext(k, Urho3D::String("orders/") + magic_enum::enum_name(static_cast<UnitOrderType>(i)).data() + ".png", i, ActionType::ORDER);
 	}
 	resetRestButtons(k);

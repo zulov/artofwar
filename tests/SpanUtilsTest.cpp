@@ -122,3 +122,8 @@ TEST_F(SpanUtilsFixture, AsSpan) {
 	EXPECT_EQ(s[0], 1);
 	EXPECT_EQ(s[2], 3);
 }
+
+TEST_F(SpanUtilsFixture, SumSpanShouldPreserveIntegerPrecision) {
+	std::vector<unsigned int> v = {16777217u, 1u};
+	EXPECT_EQ(sumSpan(std::span<unsigned int>(v)), 16777218u);
+}

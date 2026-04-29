@@ -1,4 +1,6 @@
 /packages
+/tests/packages
+/tests/tests
 /x64
 /.vs
 /tests/Urho3D.dll

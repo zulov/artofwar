@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include "utils/OtherUtils.h"
+#include "utils/Flags.h"
 
 class OtherUtilsFixture : public ::testing::Test {};
 
@@ -48,4 +49,19 @@ TEST_F(OtherUtilsFixture, CastCBasic) {
 	EXPECT_EQ(castC(TestEnum::A), 0);
 	EXPECT_EQ(castC(TestEnum::B), 1);
 	EXPECT_EQ(castC(TestEnum::C), 5);
+}
+
+TEST_F(OtherUtilsFixture, FlagsAreSingleBitsInOrder) {
+	for (int i = 0; i < 8; ++i) {
+		EXPECT_EQ(Flags::bitFlags[i], static_cast<unsigned char>(1u << i));
+	}
+}
+
+TEST_F(OtherUtilsFixture, FlagsCoverEveryBitOnce) {
+	unsigned char mask = 0;
+	for (const auto bit : Flags::bitFlags) {
+		mask |= bit;
+	}
+
+	EXPECT_EQ(mask, static_cast<unsigned char>(0xFF));
 }

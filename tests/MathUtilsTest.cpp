@@ -245,3 +245,133 @@ TEST_F(MathUtilsFixture, SqDistVector3Ptr) {
 	Urho3D::Vector3 b(1.f, 1.f, 1.f);
 	EXPECT_FLOAT_EQ(sqDist(&a, &b), 3.f);
 }
+
+TEST_F(MathUtilsFixture, DirToVector3PointerAndVector2) {
+	Urho3D::Vector3 from(1.f, 10.f, 2.f);
+	Urho3D::Vector2 to(4.f, 6.f);
+	auto result = dirTo(&from, to);
+
+	EXPECT_FLOAT_EQ(result.x_, 3.f);
+	EXPECT_FLOAT_EQ(result.y_, 4.f);
+}
+
+TEST_F(MathUtilsFixture, DirToVector3AndVector2) {
+	Urho3D::Vector3 from(1.f, 10.f, 2.f);
+	Urho3D::Vector2 to(4.f, 6.f);
+	auto result = dirTo(from, to);
+
+	EXPECT_FLOAT_EQ(result.x_, 3.f);
+	EXPECT_FLOAT_EQ(result.y_, 4.f);
+}
+
+TEST_F(MathUtilsFixture, DirToVector3AndVector3) {
+	Urho3D::Vector3 from(1.f, 10.f, 2.f);
+	Urho3D::Vector3 to(4.f, 20.f, 6.f);
+	auto result = dirTo(from, to);
+
+	EXPECT_FLOAT_EQ(result.x_, 3.f);
+	EXPECT_FLOAT_EQ(result.y_, 4.f);
+}
+
+TEST_F(MathUtilsFixture, DiffReturnsSignedDirectionOrOneForEqual) {
+	EXPECT_EQ(diff(5, 3), -1);
+	EXPECT_EQ(diff(3, 5), 1);
+	EXPECT_EQ(diff(4, 4), 1);
+}
+
+TEST_F(MathUtilsFixture, To2DUsesXZComponents) {
+	Urho3D::Vector3 vec(3.f, 99.f, 4.f);
+	auto result = to2D(vec);
+
+	EXPECT_FLOAT_EQ(result.x_, 3.f);
+	EXPECT_FLOAT_EQ(result.y_, 4.f);
+}
+
+TEST_F(MathUtilsFixture, To3DPlacesVector2IntoXZPlane) {
+	Urho3D::Vector2 vec(3.f, 4.f);
+	auto result = to3D(vec, 7.f);
+
+	EXPECT_FLOAT_EQ(result.x_, 3.f);
+	EXPECT_FLOAT_EQ(result.y_, 7.f);
+	EXPECT_FLOAT_EQ(result.z_, 4.f);
+}
+
+TEST_F(MathUtilsFixture, ScaleToRescalesVectorToRequestedLength) {
+	Urho3D::Vector2 vec(3.f, 4.f);
+	scaleTo(vec, 10.f);
+
+	EXPECT_FLOAT_EQ(vec.x_, 6.f);
+	EXPECT_FLOAT_EQ(vec.y_, 8.f);
+	EXPECT_FLOAT_EQ(vec.Length(), 10.f);
+}
+
+TEST_F(MathUtilsFixture, ScaleToLeavesZeroVectorUnchanged) {
+	Urho3D::Vector2 vec(0.f, 0.f);
+	scaleTo(vec, 10.f);
+
+	EXPECT_FLOAT_EQ(vec.x_, 0.f);
+	EXPECT_FLOAT_EQ(vec.y_, 0.f);
+}
+
+TEST_F(MathUtilsFixture, LimitToLeavesShortVectorUnchanged) {
+	Urho3D::Vector2 vec(3.f, 4.f);
+	limitTo(vec, 10.f);
+
+	EXPECT_FLOAT_EQ(vec.x_, 3.f);
+	EXPECT_FLOAT_EQ(vec.y_, 4.f);
+}
+
+TEST_F(MathUtilsFixture, LimitToScalesDownLongVector) {
+	Urho3D::Vector2 vec(6.f, 8.f);
+	limitTo(vec, 5.f);
+
+	EXPECT_FLOAT_EQ(vec.x_, 3.f);
+	EXPECT_FLOAT_EQ(vec.y_, 4.f);
+	EXPECT_FLOAT_EQ(vec.Length(), 5.f);
+}
+
+TEST_F(MathUtilsFixture, SetClosestUpdatesWhenCandidateIsNearer) {
+	float minDistance = 100.f;
+	Urho3D::Vector2 closest(-1.f, -1.f);
+	int closestIndex = -1;
+	Urho3D::Vector2 candidate(3.f, 4.f);
+	Urho3D::Vector3 origin(0.f, 0.f, 0.f);
+
+	setClosest(minDistance, closest, closestIndex, 7, candidate, origin);
+
+	EXPECT_FLOAT_EQ(minDistance, 25.f);
+	EXPECT_FLOAT_EQ(closest.x_, 3.f);
+	EXPECT_FLOAT_EQ(closest.y_, 4.f);
+	EXPECT_EQ(closestIndex, 7);
+}
+
+TEST_F(MathUtilsFixture, SetClosestKeepsExistingWhenCandidateIsFarther) {
+	float minDistance = 4.f;
+	Urho3D::Vector2 closest(1.f, 1.f);
+	int closestIndex = 2;
+	Urho3D::Vector2 candidate(3.f, 4.f);
+	Urho3D::Vector3 origin(0.f, 0.f, 0.f);
+
+	setClosest(minDistance, closest, closestIndex, 7, candidate, origin);
+
+	EXPECT_FLOAT_EQ(minDistance, 4.f);
+	EXPECT_FLOAT_EQ(closest.x_, 1.f);
+	EXPECT_FLOAT_EQ(closest.y_, 1.f);
+	EXPECT_EQ(closestIndex, 2);
+}
+
+TEST_F(MathUtilsFixture, NotSafeScaleToUsesProvidedSquaredLength) {
+	Urho3D::Vector2 vec(3.f, 4.f);
+	notSafeScaleTo(vec, 5.f, 25.f);
+
+	EXPECT_FLOAT_EQ(vec.x_, 3.f);
+	EXPECT_FLOAT_EQ(vec.y_, 4.f);
+}
+
+TEST_F(MathUtilsFixture, LimitToWithExplicitLengthSqLeavesShortVector) {
+	Urho3D::Vector2 vec(3.f, 4.f);
+	limitTo(vec, 10.f, 25.f);
+
+	EXPECT_FLOAT_EQ(vec.x_, 3.f);
+	EXPECT_FLOAT_EQ(vec.y_, 4.f);
+}

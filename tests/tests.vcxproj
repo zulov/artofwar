@@ -33,17 +33,43 @@
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <RestorePackagesConfig>true</RestorePackagesConfig>
+    <GoogleTestPackageVersion>1.8.1.7</GoogleTestPackageVersion>
+    <GoogleTestPackageName>Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.$(GoogleTestPackageVersion)</GoogleTestPackageName>
+    <GoogleTestTargetsFileName>Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets</GoogleTestTargetsFileName>
+    <GoogleTestPackageRoot Condition="Exists('$(MSBuildProjectDirectory)\..\packages\$(GoogleTestPackageName)\build\native\$(GoogleTestTargetsFileName)')">$(MSBuildProjectDirectory)\..\packages\$(GoogleTestPackageName)</GoogleTestPackageRoot>
+    <GoogleTestPackageRoot Condition="'$(GoogleTestPackageRoot)' == '' and Exists('$(MSBuildProjectDirectory)\packages\$(GoogleTestPackageName)\build\native\$(GoogleTestTargetsFileName)')">$(MSBuildProjectDirectory)\packages\$(GoogleTestPackageName)</GoogleTestPackageRoot>
+    <GoogleTestTargetsPath Condition="'$(GoogleTestPackageRoot)' != ''">$(GoogleTestPackageRoot)\build\native\$(GoogleTestTargetsFileName)</GoogleTestTargetsPath>
+    <Force-Enable-Microsoft-googletest-v140-windesktop-msvcstl-static-rt-dyn>true</Force-Enable-Microsoft-googletest-v140-windesktop-msvcstl-static-rt-dyn>
+    <Microsoft-GoogleTest-Disable-gtest_main>true</Microsoft-GoogleTest-Disable-gtest_main>
+  </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ArrayProviderUtilsTest.cpp" />
     <ClCompile Include="CloseIndexTest.cpp" />
+    <ClCompile Include="ComplexBucketDataTest.cpp" />
+    <ClCompile Include="DeleteUtilsTest.cpp" />
+    <ClCompile Include="FileUtilsTest.cpp" />
     <ClCompile Include="GridCalculatorTest.cpp" />
     <ClCompile Include="LayerTest.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="MathUtilsTest.cpp" />
+    <ClCompile Include="MiscHelpersTest.cpp" />
     <ClCompile Include="OtherUtilsTest.cpp" />
+    <ClCompile Include="PriorityHeapTest.cpp" />
+    <ClCompile Include="RandGenTest.cpp" />
+    <ClCompile Include="SimulationHelpersTest.cpp" />
     <ClCompile Include="SpanUtilsTest.cpp" />
+    <ClCompile Include="StringAndRegexUtilsTest.cpp" />
+    <ClCompile Include="VectorUtilsTest.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -63,7 +89,7 @@
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.7\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets" Condition="Exists('..\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.7\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets')" />
+    <Import Project="$(GoogleTestTargetsPath)" Condition="Exists('$(GoogleTestTargetsPath)')" />
   </ImportGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -89,7 +115,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\game\src;..\game\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\game\src;..\game\include;..\game\include\Urho3D\ThirdParty;..\game\include\Eigen;..\game\include\enum;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -123,7 +149,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\game\include;..\game\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\game\src;..\game\include;..\game\include\Urho3D\ThirdParty;..\game\include\Eigen;..\game\include\enum;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp23</LanguageStandard>
     </ClCompile>
     <Link>
@@ -138,6 +164,6 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.7\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.7\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets'))" />
+    <Error Condition="!Exists('$(GoogleTestTargetsPath)')" Text="$([System.String]::Format('$(ErrorText)', '$(GoogleTestTargetsPath)'))" />
   </Target>
 </Project>

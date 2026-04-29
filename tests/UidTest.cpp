@@ -68,3 +68,14 @@ TEST_F(UidFixture, IncrementPreservesTypeAndPlayer) {
 		EXPECT_EQ(1, incremented.getPlayer());
 	}
 }
+
+TEST_F(UidFixture, ResourceIdsShouldIgnoreExplicitPlayerBits) {
+	auto resourceDefault = UId(UId::create(ObjectType::RESOURCE));
+	auto resourceWithPlayer = UId(UId::create(ObjectType::RESOURCE, 5));
+
+	EXPECT_EQ(resourceDefault.getType(), ObjectType::RESOURCE);
+	EXPECT_EQ(resourceWithPlayer.getType(), ObjectType::RESOURCE);
+	EXPECT_EQ(resourceDefault.getPlayer(), -1);
+	EXPECT_EQ(resourceWithPlayer.getPlayer(), -1);
+	EXPECT_EQ(resourceWithPlayer.getId(), resourceDefault.getId());
+}
