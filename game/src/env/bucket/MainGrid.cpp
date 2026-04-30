@@ -439,10 +439,6 @@ void MainGrid::addStatic(Static* object, bool bulkAdd) {
 	}
 }
 
-void MainGrid::refreshAllStatic(const std::span<int> allChanged) {
-
-}
-
 void MainGrid::refreshStatic(const std::span<int> changed) {
 	std::vector<int> toRefresh;
 	toRefresh.reserve(9);

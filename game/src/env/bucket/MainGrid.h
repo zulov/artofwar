@@ -84,7 +84,6 @@ public:
 	const std::vector<short>& getCloseIndexes(int center) const;
 	short getGradient(int index) const;
 private:
-	void refreshAllStatic(const std::span<int> allChanged);
 	void refreshGradient(const std::vector<int>& notPassables) const;
 	void refreshAllGradient(std::vector<int>& toRefresh) const;
 	void refreshGradientRemoveStatic(std::span<int> toRefresh) const;
