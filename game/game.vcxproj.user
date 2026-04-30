@@ -5,8 +5,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-benchmark -random</LocalDebuggerCommandArguments>
-    <LocalDebuggerCommandArgumentsHistory>-benchmark -random -allplayerai|-benchmark -random|</LocalDebuggerCommandArgumentsHistory>
+    <LocalDebuggerCommandArguments>-benchmark -random -allplayerai</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArgumentsHistory>-benchmark -random|-benchmark -random -allplayerai|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
