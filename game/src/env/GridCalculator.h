@@ -125,6 +125,11 @@ struct GridCalculator {
 		return fieldSize * resolution;
 	}
 
+	bool isEdge(int i) const {
+		return i < resolution || i >= sqResolution - resolution || i % resolution == 0 ||
+				i % resolution == resolution - 1;
+	}
+
 private:
 	unsigned short resolution;
 	unsigned int sqResolution;

@@ -440,21 +440,7 @@ void MainGrid::addStatic(Static* object, bool bulkAdd) {
 }
 
 void MainGrid::refreshAllStatic(const std::span<int> allChanged) {
-	std::vector<int> toRefresh;
-	toRefresh.reserve(9);
 
-	for (const auto index : allChanged) {
-		auto& data = complexData[index];
-		updateNeighbors(data, index);
-		if (data.isPassable()) {
-			data.setGradient(data.allNeightFree() ? -1 : 0);
-		} else {
-			data.setGradient(1024);
-			toRefresh.push_back(index);
-		}
-	}
-
-	refreshAllGradient(toRefresh);
 }
 
 void MainGrid::refreshStatic(const std::span<int> changed) {
@@ -486,28 +472,29 @@ short MainGrid::getGradient(int index) const {
 }
 
 void MainGrid::refreshAllStatic(std::vector<ResourceEntity*>* resources, std::vector<Building*>* buildings) {
-	std::vector<int> allCells;
-	allCells.reserve(sqResolution);
 	std::fill_n(countArray, sqResolution, false);
 	for (const auto resource : *resources) {
-		for (const int allCell : resource->getAllCells()) {
-			countArray[allCell] = true;
-		}
+		for (const int cell : resource->getAllCells()) { countArray[cell] = true; }
 	}
 	for (const auto building : *buildings) {
-		for (const int allCell : building->getAllCells()) {
-			countArray[allCell] = true;
+		for (const int cell : building->getAllCells()) { countArray[cell] = true; }
+	}
+	std::vector<int> toRefresh;
+	toRefresh.reserve(resources->size()+buildings->size());
+	for (int i = 0; i < sqResolution; ++i) {
+		if (countArray[i] || calculator->isEdge(i)) {
+			auto& data = complexData[i];
+			updateNeighbors(data, i);
+			if (data.isPassable()) {
+				data.setGradient(data.allNeightFree() ? -1 : 0);
+			} else {
+				data.setGradient(1024);
+				toRefresh.push_back(i);
+			}
 		}
 	}
 
-	for (int i = 0; i < sqResolution; ++i) {
-		if (countArray[i] || i < resolution || i >= sqResolution - resolution
-			|| i % resolution == 0
-			|| i % resolution == resolution - 1) {
-			allCells.push_back(i);
-		}
-	}
-	refreshAllStatic(std::span(allCells.data(), allCells.size()));
+	refreshAllGradient(toRefresh);
 	assert(validateGradient());
 }
 
@@ -698,9 +685,9 @@ Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const
 
 void MainGrid::updateNeighbors(ComplexBucketData& data, const int dataIndex) const {
 	data.setAllOccupied();
-	for (const auto& p : closeIndexes->getTabIndexesWithValue(data)) {
-		if (complexData[dataIndex + p.second].isPassable()) {
-			data.setNeightFree(p.first);
+	for (const auto& [bit, delta] : closeIndexes->getTabIndexesWithValue(data)) {
+		if (complexData[dataIndex + delta].isPassable()) {
+			data.setNeightFree(bit);
 		}
 	}
 }
