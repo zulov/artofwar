@@ -179,10 +179,10 @@ struct db_building_metric : db_basic_metric {
 };
 
 struct db_level {
-	const char level;
+	const unsigned char level;
 
-	explicit db_level(char level)
-		: level(level) {}
+	explicit db_level(unsigned char level) :
+		level(level) {}
 };
 
 struct db_with_hp {
@@ -246,9 +246,9 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 
 	using C = DbUnitLevelCol;
 	db_unit_level(sqlite3_stmt* s)
-		: db_with_name(asShort(s, C::id), asText(s, C::name)),
+		: db_with_name(asUShort(s, C::id), asText(s, C::name)),
 		  db_level(asShort(s, C::level)),
-		  db_with_cost(asUS(s, C::food), asUS(s, C::wood), asUS(s, C::stone), asUS(s, C::gold)),
+		  db_with_cost(asUShort(s, C::food), asUShort(s, C::wood), asUShort(s, C::stone), asUShort(s, C::gold)),
 		  db_unit_attack(asFloat(s, C::collect), asFloat(s, C::attack),
 		                 asFloat(s, C::attack_reload), asShort(s, C::attack_range),
 		                 asFloat(s, C::bonus_infantry), asFloat(s, C::bonus_range),
@@ -299,8 +299,8 @@ struct db_unit : db_with_icon, db_with_cost {
 
 	using C = DbUnitCol;
 	db_unit(sqlite3_stmt* s)
-		: db_with_icon(asShort(s, C::id), asText(s, C::name), asText(s, C::icon)),
-		  db_with_cost(asUS(s, C::food), asUS(s, C::wood), asUS(s, C::stone), asUS(s, C::gold)),
+		: db_with_icon(asUShort(s, C::id), asText(s, C::name), asText(s, C::icon)),
+		  db_with_cost(asUShort(s, C::food), asUShort(s, C::wood), asUShort(s, C::stone), asUShort(s, C::gold)),
 		  desiredState(UnitState(asByte(s, C::action_state))),
 		  typeInfantry(asBool(s, C::type_infantry)),
 		  typeRange(asBool(s, C::type_range)),
@@ -370,8 +370,8 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 
 	using C = DbBuildingCol;
 	db_building(sqlite3_stmt* s)
-		: db_with_icon(asShort(s, C::id), asText(s, C::name), asText(s, C::icon)),
-		  db_with_cost(asUS(s, C::food), asUS(s, C::wood), asUS(s, C::stone), asUS(s, C::gold)),
+		: db_with_icon(asUShort(s, C::id), asText(s, C::name), asText(s, C::icon)),
+		  db_with_cost(asUShort(s, C::food), asUShort(s, C::wood), asUShort(s, C::stone), asUShort(s, C::gold)),
 		  db_static({asShort(s, C::size_x), asShort(s, C::size_z)}),
 		  typeCenter(asBool(s, C::type_center)),
 		  typeHome(asBool(s, C::type_home)),
@@ -429,8 +429,8 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 	db_building_metric* dbBuildingMetric;
 	using C = DbBuildingLevelCol;
 	db_building_level(sqlite3_stmt* s)
-		: db_with_name(asShort(s, C::id), asText(s, C::name)),
-		  db_with_cost(asUS(s, C::food), asUS(s, C::wood), asUS(s, C::stone), asUS(s, C::gold)),
+		: db_with_name(asUShort(s, C::id), asText(s, C::name)),
+		  db_with_cost(asUShort(s, C::food), asUShort(s, C::wood), asUShort(s, C::stone), asUShort(s, C::gold)),
 		  db_level(asShort(s, C::level)),
 		  db_base(asShort(s, C::max_hp), asFloat(s, C::armor), asFloat(s, C::sight_range)),
 		  db_building_attack(asFloat(s, C::collect), asFloat(s, C::attack),
@@ -467,8 +467,8 @@ struct db_nation : db_with_name {
 	std::vector<std::string> actionPrefix;
 	std::vector<std::string> orderPrefix;
 
-	db_nation(sqlite3_stmt* stmt)
-		: db_with_name(asShort(stmt, DbNationCol::id), asText(stmt, DbNationCol::name)),
+	db_nation(sqlite3_stmt* stmt) :
+		db_with_name(asUShort(stmt, DbNationCol::id), asText(stmt, DbNationCol::name)),
 		  actionPrefix(split(asText(stmt, DbNationCol::action_prefix), SPLIT_SIGN)),
 		  orderPrefix(split(asText(stmt, DbNationCol::order_prefix), SPLIT_SIGN)) {}
 
@@ -488,8 +488,8 @@ struct db_nation : db_with_name {
 };
 
 struct db_resource : db_with_icon, db_static, db_with_hp, db_with_model {
-	const char resourceId;
-	const short maxUsers;
+	const unsigned char resourceId;
+	const unsigned char maxUsers;
 	const unsigned mini_map_color;
 
 	Urho3D::Vector<Urho3D::String> nodeName;
@@ -498,11 +498,11 @@ struct db_resource : db_with_icon, db_static, db_with_hp, db_with_model {
 
 	using C = DbResourceCol;
 	db_resource(sqlite3_stmt* s)
-		: db_with_icon(asShort(s, C::id), asText(s, C::name), asText(s, C::icon)),
+		: db_with_icon(asUShort(s, C::id), asText(s, C::name), asText(s, C::icon)),
 		  db_static({asShort(s, C::size_x), asShort(s, C::size_z)}),
-		  db_with_hp(asUS(s, C::max_hp), 0.f),
-		  resourceId(asByte(s, C::resource_id)),
-		  maxUsers(asShort(s, C::max_users)),
+		  db_with_hp(asUShort(s, C::max_hp), 0.f),
+		  resourceId(asUByte(s, C::resource_id)),
+		  maxUsers(asUShort(s, C::max_users)),
 		  mini_map_color(asHex(s, C::mini_map_color)),
 		  nodeName(Urho3D::String(asText(s, C::node_name)).Split(SPLIT_SIGN)),
 		  collectSpeed(asFloat(s, C::collect_speed)),

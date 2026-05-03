@@ -476,7 +476,7 @@ void MainGrid::refreshAllStatic(std::vector<ResourceEntity*>* resources, std::ve
 		for (const int cell : building->getAllCells()) { countArray[cell] = true; }
 	}
 	std::vector<int> toRefresh;
-	toRefresh.reserve(resources->size()+buildings->size());
+	toRefresh.reserve(resources->size() + buildings->size());
 	for (int i = 0; i < sqResolution; ++i) {
 		if (countArray[i] || calculator->isEdge(i)) {
 			auto& data = complexData[i];

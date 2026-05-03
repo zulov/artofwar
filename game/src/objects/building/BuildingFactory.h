@@ -16,8 +16,9 @@ public:
 	BuildingFactory() = default;
 	~BuildingFactory() = default;
 
-	Building* create(int id, const Urho3D::IntVector2& bucketCords, char level, char player) const;
+	Building* create(unsigned short id, const Urho3D::IntVector2& bucketCords, unsigned char level, unsigned char player) const;
 	Building* load(dbload_building* building) const;
 private:
-	Building* create(int id, const Urho3D::IntVector2& bucketCords, char level, Player* player,  unsigned uid) const;
+	Building* create(unsigned short id, const Urho3D::IntVector2& bucketCords, unsigned char level, Player* player,
+					 unsigned uid) const;
 };

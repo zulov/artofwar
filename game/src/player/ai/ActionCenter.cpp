@@ -84,8 +84,7 @@ bool ActionCenter::addBuilding(short id, Urho3D::Vector2& position, char player,
 
 bool ActionCenter::addResource(short id, int index, float hp) {
 	auto cords = Game::getEnvironment()->getCords(index);
-	const auto command = creation.addResource(id, cords);
-	if (command) {
+	if (const auto command = creation.addResource(id, cords)) {
 		command->setHp(hp);
 		creation.add(command);
 		return true;

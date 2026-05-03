@@ -33,16 +33,16 @@ public:
 
 	std::vector<db_map*>& getMaps() const { return container->maps; }
 
-	db_unit* getUnit(int i) const { return container->units[i]; }
+	db_unit* getUnit(unsigned short i) const { return container->units[i]; }
 	std::vector<db_unit*>& getUnits() const { return container->units; }
 
-	db_building* getBuilding(int i) const { return container->buildings[i]; }
+	db_building* getBuilding(unsigned short i) const { return container->buildings[i]; }
 	std::vector<db_building*>& getBuildings() const { return container->buildings; }
 
 	std::vector<db_nation*>& getNations() const { return container->nations; }
-	db_nation* getNation(int i) const { return container->nations[i]; }
+	db_nation* getNation(unsigned short i) const { return container->nations[i]; }
 
-	db_resource* getResource(int i) const { return container->resources[i]; }
+	db_resource* getResource(unsigned short i) const { return container->resources[i]; }
 
 	std::vector<db_player_colors*>& getPlayerColors() const { return container->playerColors; }
 	db_player_colors* getPlayerColor(int i) const { return container->playerColors[i]; }

@@ -20,6 +20,10 @@ void ResourceFactory::setResUid(unsigned resUid) { currentUId = resUid; }
 ResourceEntity* ResourceFactory::create(int id, Urho3D::IntVector2 bucketCords, UId uid) const {
 	db_resource* db_resource = Game::getDatabase()->getResource(id);
 	const auto env = Game::getEnvironment();
+
+	//TODO perf calculate size dwa razy
+	//const auto sizeX = calculateSize(size.x_, bucketCords.x_);
+	//const auto sizeZ = calculateSize(size.y_, bucketCords.y_);
 	if (env->validateStatic(db_resource->size, bucketCords, false)) {
 		return new ResourceEntity(env->getValidPosition(db_resource->size, bucketCords), db_resource,
 		                          env->getIndex(bucketCords.x_, bucketCords.y_), uid);

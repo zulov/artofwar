@@ -8,7 +8,7 @@
 #include "env/Environment.h"
 
 
-Player::Player(int nationId, char team, char id, int color, Urho3D::String name, bool active,
+Player::Player(unsigned short nationId, unsigned char team, unsigned char id, unsigned char color, Urho3D::String name, bool active,
                unsigned currentBuildingUId, unsigned currentUnitUId) :
 	team(team), id(id), active(active), color(color),
 	currentBuildingUId(currentBuildingUId), currentUnitUId(currentUnitUId),

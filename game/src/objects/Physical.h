@@ -128,7 +128,7 @@ protected:
 	int indexInMainGrid = -1;
 	UId uId;
 
-	short dbId = -1; // optm
+	unsigned short dbId; // optm
 
 	char team, player = -1;
 

@@ -11,7 +11,7 @@
 #include "objects/resource/ResourceEntity.h"
 #include "ai/MetricDefinitions.h"
 
-Possession::Possession(char nation) {
+Possession::Possession(unsigned short nation) {
 	for (const auto building : Game::getDatabase()->getNation(nation)->buildings) {
 		auto id = building->id;
 		if (buildingsPerId.size() <= id) {
