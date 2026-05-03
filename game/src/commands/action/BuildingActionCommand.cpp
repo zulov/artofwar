@@ -2,7 +2,7 @@
 #include "math/VectorUtils.h"
 #include "objects/building/Building.h"
 
-BuildingActionCommand::BuildingActionCommand(Building* building, BuildingActionType action, short id)
+BuildingActionCommand::BuildingActionCommand(Building* building, BuildingActionType action, unsigned short id)
 	: id(id), action(action) {
 	if (building->isReady()) {
 		this->buildings.emplace_back(building);
@@ -10,7 +10,7 @@ BuildingActionCommand::BuildingActionCommand(Building* building, BuildingActionT
 }
 
 BuildingActionCommand::BuildingActionCommand(const std::vector<Physical*>& buildings, BuildingActionType action,
-                                             short id) : id(id), action(action) {
+                                             unsigned short id) : id(id), action(action) {
 	this->buildings.reserve(buildings.size());
 	for (const auto building : buildings) {
 		auto build = static_cast<Building*>(building);
