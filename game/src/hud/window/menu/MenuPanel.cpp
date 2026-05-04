@@ -226,7 +226,8 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 		auto level = levels[i];
 
 		db_unit* unit = Game::getDatabase()->getUnit(level->unit);
-		setNext(k, "unit/levels/" + Urho3D::String(level->level) + "/" + unit->icon, unit->id, ActionType::UNIT_LEVEL);
+		setNext(k, "unit/levels/" + Urho3D::String(static_cast<int>(level->level)) + "/" + unit->icon,
+		        unit->id, ActionType::UNIT_LEVEL);
 	}
 
 	resetRestButtons(k);
