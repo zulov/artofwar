@@ -90,6 +90,22 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, const Urho3D::IntVect
                            bool isBuilding) const {
 	const auto sizeX = calculateSize(size.x_, bucketCords.x_);
 	const auto sizeZ = calculateSize(size.y_, bucketCords.y_);
+	return validateAddBounds(sizeX, sizeZ, isBuilding);
+}
+
+std::optional<Urho3D::Vector2> MainGrid::tryGetValidPosition(const Urho3D::IntVector2& size,
+	                                                         const Urho3D::IntVector2& cords,
+	                                                         bool isBuilding) const {
+	const auto sizeX = calculateSize(size.x_, cords.x_);
+	const auto sizeZ = calculateSize(size.y_, cords.y_);
+	if (!validateAddBounds(sizeX, sizeZ, isBuilding)) {
+		return {};
+	}
+	return getPositionFromBounds(sizeX, sizeZ);
+}
+
+bool MainGrid::validateAddBounds(const Urho3D::IntVector2& sizeX, const Urho3D::IntVector2& sizeZ,
+	                             bool isBuilding) const {
 	//WARN to troche zle uzycie tego ale dziala
 	if (!calculator->isValidIndex(sizeX.x_, sizeX.y_)
 		|| !calculator->isValidIndex(sizeZ.x_, sizeZ.y_)) {
@@ -670,7 +686,11 @@ std::vector<int> MainGrid::getPassableIndexes(const std::vector<int>& endIdxs, b
 Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& cords) const {
 	const auto sizeX = calculateSize(size.x_, cords.x_);
 	const auto sizeZ = calculateSize(size.y_, cords.y_);
+	return getPositionFromBounds(sizeX, sizeZ);
+}
 
+Urho3D::Vector2 MainGrid::getPositionFromBounds(const Urho3D::IntVector2& sizeX,
+	                                            const Urho3D::IntVector2& sizeZ) const {
 	const int index1 = calculator->getIndex(sizeX.x_, sizeZ.x_);
 	const int index2 = calculator->getIndex(sizeX.y_ - 1, sizeZ.y_ - 1);
 	const auto center1 = calculator->getCenter(index1);

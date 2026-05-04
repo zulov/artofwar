@@ -29,6 +29,9 @@ public:
 
 	void prepareGridToFind() const;
 	bool validateAdd(const Urho3D::IntVector2& size, Urho3D::IntVector2 bucketCords, bool isBuilding) const;
+	std::optional<Urho3D::Vector2> tryGetValidPosition(const Urho3D::IntVector2& size,
+	                                                const Urho3D::IntVector2& cords,
+	                                                bool isBuilding) const;
 	void addStatic(Static* object, bool bulkAdd);
 	void removeStatic(Static* object) const;
 	std::optional<Urho3D::Vector2> getDirectionFrom(int index, const Urho3D::Vector3& position) const;
@@ -96,6 +99,8 @@ private:
 
 	bool validateAllPassable(const std::vector<int>& vector) const;
 	bool validateGradient() const;
+	bool validateAddBounds(const Urho3D::IntVector2& sizeX, const Urho3D::IntVector2& sizeZ, bool isBuilding) const;
+	Urho3D::Vector2 getPositionFromBounds(const Urho3D::IntVector2& sizeX, const Urho3D::IntVector2& sizeZ) const;
 
 	ComplexBucketData* complexData;
 	PathFinder pathFinder;

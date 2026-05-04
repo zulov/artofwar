@@ -10,8 +10,8 @@ Building* BuildingFactory::create(int id, const Urho3D::IntVector2& bucketCords,
 	const auto db_building = Game::getDatabase()->getBuilding(id);
 	const auto env = Game::getEnvironment();
 
-	if (env->validateStatic(db_building->size, bucketCords, true)) {
-		return new Building(env->getValidPosition(db_building->size, bucketCords), db_building, player->getId(), player->getTeam(), level,
+	if (const auto position = env->tryGetValidPosition(db_building->size, bucketCords, true)) {
+		return new Building(*position, db_building, player->getId(), player->getTeam(), level,
 		                    env->getIndex(bucketCords.x_, bucketCords.y_), UId(uid));
 	}
 

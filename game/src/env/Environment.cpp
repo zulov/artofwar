@@ -87,6 +87,7 @@ void Environment::reAddBonuses(std::vector<Building*>& resBuildings, std::vector
 
 void Environment::refreshAllStatic(std::vector<ResourceEntity*>* resources, std::vector<Building*>* buildings) {
 	mainGrid.refreshAllStatic(resources, buildings);
+	mainGrid.invalidatePathCache();
 }
 
 short Environment::getOccupationLevel(int index) const {
@@ -278,14 +279,18 @@ void Environment::addNew(Building* building, bool bulkAdd) {
 	assert(building->getDeploy().has_value());
 
 	mainGrid.addDeploy(building);
-	mainGrid.invalidatePathCache();
+	if (!bulkAdd) {
+		mainGrid.invalidatePathCache();
+	}
 }
 
 void Environment::addNew(ResourceEntity* resource, bool bulkAdd) {
 	mainGrid.addStatic(resource, bulkAdd);
 	resource->setIndexInInfluence(influenceManager.getIndex(resource->getPosition()));
 	resourceStaticGrid.updateStatic(resource, bulkAdd);
-	mainGrid.invalidatePathCache();
+	if (!bulkAdd) {
+		mainGrid.invalidatePathCache();
+	}
 }
 
 Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) {
@@ -345,6 +350,16 @@ bool Environment::validateStatic(const Urho3D::IntVector2& size, const Urho3D::I
 
 bool Environment::validateStatic(const Urho3D::IntVector2& size, int index, bool isBuilding) const {
 	return mainGrid.validateAdd(size, calculator->getCords(index), isBuilding);
+}
+
+std::optional<Urho3D::Vector3> Environment::tryGetValidPosition(const Urho3D::IntVector2& size,
+	                                                            const Urho3D::IntVector2& bucketCords,
+	                                                            bool isBuilding) const {
+	const auto pos2d = mainGrid.tryGetValidPosition(size, bucketCords, isBuilding);
+	if (!pos2d.has_value()) {
+		return {};
+	}
+	return getPosWithHeightAt(pos2d->x_, pos2d->y_);
 }
 
 Urho3D::Vector2 Environment::getCenter(int index) const {

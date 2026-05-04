@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <optional>
 #include <Urho3D/Math/Vector2.h>
 #include <Urho3D/Math/Vector3.h>
 
@@ -77,6 +78,9 @@ public:
 	bool validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos, bool isBuilding) const;
 	bool validateStatic(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords, bool isBuilding) const;
 	bool validateStatic(const Urho3D::IntVector2& size, int index, bool isBuilding) const;
+	std::optional<Urho3D::Vector3> tryGetValidPosition(const Urho3D::IntVector2& size,
+	                                                  const Urho3D::IntVector2& bucketCords,
+	                                                  bool isBuilding) const;
 
 	Urho3D::Vector3 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
 	Urho3D::Vector3 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) const;
