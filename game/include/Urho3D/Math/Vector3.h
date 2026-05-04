@@ -211,6 +211,9 @@ public:
     {
     }
 
+    /// Construct from an XZ vector and Y coordinate.
+    static Vector3 FromXZ(const Vector2& vector, float y = 0.0f) { return { vector.x_, y, vector.y_ }; }
+
     /// Construct from an IntVector3.
     explicit Vector3(const IntVector3& vector) noexcept :
         x_((float)vector.x_),
@@ -352,6 +355,9 @@ public:
     /// Calculate dot product.
     float DotProduct(const Vector3& rhs) const { return x_ * rhs.x_ + y_ * rhs.y_ + z_ * rhs.z_; }
 
+    /// Return the XZ projection as Vector2.
+    Vector2 ToXZ() const { return { x_, z_ }; }
+
     /// Calculate absolute dot product.
     float AbsDotProduct(const Vector3& rhs) const
     {
@@ -382,7 +388,42 @@ public:
     }
 
     /// Calculate distance to another position vector.
-    float DistanceToPoint(const Vector3& point) const { return (*this - point).Length(); }
+    float DistanceToPoint(const Vector3& point) const { return sqrtf(SqDist(point)); }
+
+    /// Calculate squared distance to another position vector.
+    float SqDist(const Vector3& point) const
+    {
+        const float dx = x_ - point.x_;
+        const float dy = y_ - point.y_;
+        const float dz = z_ - point.z_;
+        return dx * dx + dy * dy + dz * dz;
+    }
+
+    /// Calculate squared XZ-plane distance to another position vector.
+    float SqDistXZ(const Vector3& point) const
+    {
+        const float dx = x_ - point.x_;
+        const float dz = z_ - point.z_;
+        return dx * dx + dz * dz;
+    }
+
+    /// Calculate squared XZ-plane distance to a 2D point.
+    float SqDistXZ(const Vector2& point) const
+    {
+        const float dx = x_ - point.x_;
+        const float dz = z_ - point.y_;
+        return dx * dx + dz * dz;
+    }
+
+    Vector2 DirToXZ(const Urho3D::Vector2& b) const
+    { 
+        return {b.x_ - x_, b.y_ - z_};
+    }
+
+    Vector2 DirToXZ(const Urho3D::Vector3& b) const
+    {
+        return {b.x_ - x_, b.z_ - z_};
+    }
 
     /// Calculate distance to the plane with given origin and normal.
     float DistanceToPlane(const Vector3& origin, const Vector3& normal) const { return (*this - origin).ProjectOntoAxis(normal); }

@@ -41,7 +41,7 @@ class Vector3;
 #endif
 
 /// Primitive type.
-enum PrimitiveType
+enum PrimitiveType : unsigned char
 {
     TRIANGLE_LIST = 0,
     LINE_LIST,
@@ -52,7 +52,7 @@ enum PrimitiveType
 };
 
 /// %Geometry type for vertex shader geometry variations.
-enum GeometryType
+enum GeometryType : unsigned char
 {
     GEOM_STATIC = 0,
     GEOM_SKINNED = 1,
@@ -67,7 +67,7 @@ enum GeometryType
 };
 
 /// Blending mode.
-enum BlendMode
+enum BlendMode : unsigned char
 {
     BLEND_REPLACE = 0,
     BLEND_ADD,
@@ -82,7 +82,7 @@ enum BlendMode
 };
 
 /// Depth or stencil compare mode.
-enum CompareMode
+enum CompareMode : unsigned char
 {
     CMP_ALWAYS = 0,
     CMP_EQUAL,
@@ -95,7 +95,7 @@ enum CompareMode
 };
 
 /// Culling mode.
-enum CullMode
+enum CullMode : unsigned char
 {
     CULL_NONE = 0,
     CULL_CCW,
@@ -104,7 +104,7 @@ enum CullMode
 };
 
 /// Fill mode.
-enum FillMode
+enum FillMode : unsigned char
 {
     FILL_SOLID = 0,
     FILL_WIREFRAME,
@@ -112,7 +112,7 @@ enum FillMode
 };
 
 /// Stencil operation.
-enum StencilOp
+enum StencilOp : unsigned char
 {
     OP_KEEP = 0,
     OP_ZERO,
@@ -122,7 +122,7 @@ enum StencilOp
 };
 
 /// Vertex/index buffer lock state.
-enum LockState
+enum LockState : unsigned char
 {
     LOCK_NONE = 0,
     LOCK_HARDWARE,
@@ -131,7 +131,7 @@ enum LockState
 };
 
 /// Hardcoded legacy vertex elements.
-enum LegacyVertexElement
+enum LegacyVertexElement : unsigned char
 {
     ELEMENT_POSITION = 0,
     ELEMENT_NORMAL,
@@ -152,7 +152,7 @@ enum LegacyVertexElement
 };
 
 /// Arbitrary vertex declaration element datatypes.
-enum VertexElementType
+enum VertexElementType : unsigned char
 {
     TYPE_INT = 0,
     TYPE_FLOAT,
@@ -165,7 +165,7 @@ enum VertexElementType
 };
 
 /// Arbitrary vertex declaration element semantics.
-enum VertexElementSemantic
+enum VertexElementSemantic : unsigned char
 {
     SEM_POSITION = 0,
     SEM_NORMAL,
@@ -227,7 +227,7 @@ extern URHO3D_API const unsigned ELEMENT_TYPESIZES[];
 extern URHO3D_API const VertexElement LEGACY_VERTEXELEMENTS[];
 
 /// Texture filtering mode.
-enum TextureFilterMode
+enum TextureFilterMode : unsigned char
 {
     FILTER_NEAREST = 0,
     FILTER_BILINEAR,
@@ -239,7 +239,7 @@ enum TextureFilterMode
 };
 
 /// Texture addressing mode.
-enum TextureAddressMode
+enum TextureAddressMode : unsigned char
 {
     ADDRESS_WRAP = 0,
     ADDRESS_MIRROR,
@@ -249,7 +249,7 @@ enum TextureAddressMode
 };
 
 /// Texture coordinates.
-enum TextureCoordinate
+enum TextureCoordinate : unsigned char
 {
     COORD_U = 0,
     COORD_V,
@@ -258,7 +258,7 @@ enum TextureCoordinate
 };
 
 /// Texture usage types.
-enum TextureUsage
+enum TextureUsage : unsigned char
 {
     TEXTURE_STATIC = 0,
     TEXTURE_DYNAMIC,
@@ -267,7 +267,7 @@ enum TextureUsage
 };
 
 /// Cube map faces.
-enum CubeMapFace
+enum CubeMapFace : unsigned char
 {
     FACE_POSITIVE_X = 0,
     FACE_NEGATIVE_X,
@@ -279,7 +279,7 @@ enum CubeMapFace
 };
 
 /// Cubemap single image layout modes.
-enum CubeMapLayout
+enum CubeMapLayout : unsigned char
 {
     CML_HORIZONTAL = 0,
     CML_HORIZONTALNVIDIA,
@@ -289,7 +289,7 @@ enum CubeMapLayout
 };
 
 /// Update mode for render surface viewports.
-enum RenderSurfaceUpdateMode
+enum RenderSurfaceUpdateMode : unsigned char
 {
     SURFACE_MANUALUPDATE = 0,
     SURFACE_UPDATEVISIBLE,
@@ -297,14 +297,14 @@ enum RenderSurfaceUpdateMode
 };
 
 /// Shader types.
-enum ShaderType
+enum ShaderType : unsigned char
 {
     VS = 0,
     PS,
 };
 
 /// Shader parameter groups for determining need to update. On APIs that support constant buffers, these correspond to different constant buffers.
-enum ShaderParameterGroup
+enum ShaderParameterGroup : unsigned char
 {
     SP_FRAME = 0,
     SP_CAMERA,
@@ -318,7 +318,7 @@ enum ShaderParameterGroup
 
 /// Texture units.
 /// @manualbind
-enum TextureUnit
+enum TextureUnit : unsigned char
 {
     TU_DIFFUSE = 0,
     TU_ALBEDOBUFFER = 0,
@@ -351,7 +351,7 @@ enum TextureUnit
 };
 
 /// Billboard camera facing modes.
-enum FaceCameraMode
+enum FaceCameraMode : unsigned char
 {
     FC_NONE = 0,
     FC_ROTATE_XYZ,
@@ -363,7 +363,7 @@ enum FaceCameraMode
 };
 
 /// Shadow type.
-enum ShadowQuality
+enum ShadowQuality : unsigned char
 {
     SHADOWQUALITY_SIMPLE_16BIT = 0,
     SHADOWQUALITY_SIMPLE_24BIT,

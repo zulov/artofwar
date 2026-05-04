@@ -516,7 +516,7 @@
 /* #undef SDL_FILESYSTEM_N3DS */
 
 /* Enable misc subsystem */
-/* #undef SDL_MISC_DUMMY */
+#define SDL_MISC_DUMMY 1
 
 /* Enable locale subsystem */
 /* #undef SDL_LOCALE_DUMMY */

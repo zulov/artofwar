@@ -27,6 +27,454 @@
 
 namespace Urho3D
 {
+class IntVector2;
+class Vector2;
+
+/// Two-dimensional vector with short integer values.
+class URHO3D_API ShortVector2
+{
+public:
+    /// Construct a zero vector.
+    ShortVector2() noexcept :
+        x_(0),
+        y_(0)
+    {
+    }
+
+    /// Construct from coordinates.
+    ShortVector2(short x, short y) noexcept :
+        x_(x),
+        y_(y)
+    {
+    }
+
+    /// Construct from a short array.
+    explicit ShortVector2(const short* data) noexcept :
+        x_(data[0]),
+        y_(data[1])
+    {
+    }
+
+    /// Construct from a float array.
+    explicit ShortVector2(const float* data) :
+        x_((short)data[0]),
+        y_((short)data[1])
+    {
+    }
+
+    /// Construct from an IntVector2.
+    explicit ShortVector2(const IntVector2& vector) noexcept;
+
+    /// Construct from a Vector2.
+    explicit ShortVector2(const Vector2& vector);
+
+    /// Copy-construct from another vector.
+    ShortVector2(const ShortVector2& rhs) noexcept = default;
+
+    /// Assign from another vector.
+    ShortVector2& operator =(const ShortVector2& rhs) noexcept = default;
+
+    /// Test for equality with another vector.
+    bool operator ==(const ShortVector2& rhs) const { return x_ == rhs.x_ && y_ == rhs.y_; }
+
+    /// Test for inequality with another vector.
+    bool operator !=(const ShortVector2& rhs) const { return x_ != rhs.x_ || y_ != rhs.y_; }
+
+    /// Add a vector.
+    ShortVector2 operator +(const ShortVector2& rhs) const { return ShortVector2(x_ + rhs.x_, y_ + rhs.y_); }
+
+    /// Return negation.
+    ShortVector2 operator -() const { return ShortVector2(-x_, -y_); }
+
+    /// Subtract a vector.
+    ShortVector2 operator -(const ShortVector2& rhs) const { return ShortVector2(x_ - rhs.x_, y_ - rhs.y_); }
+
+    /// Multiply with a scalar.
+    ShortVector2 operator *(short rhs) const { return ShortVector2(x_ * rhs, y_ * rhs); }
+
+    /// Multiply with a vector.
+    ShortVector2 operator *(const ShortVector2& rhs) const { return ShortVector2(x_ * rhs.x_, y_ * rhs.y_); }
+
+    /// Divide by a scalar.
+    ShortVector2 operator /(short rhs) const { return ShortVector2(x_ / rhs, y_ / rhs); }
+
+    /// Divide by a vector.
+    ShortVector2 operator /(const ShortVector2& rhs) const { return ShortVector2(x_ / rhs.x_, y_ / rhs.y_); }
+
+    /// Add-assign a vector.
+    ShortVector2& operator +=(const ShortVector2& rhs)
+    {
+        x_ += rhs.x_;
+        y_ += rhs.y_;
+        return *this;
+    }
+
+    /// Subtract-assign a vector.
+    ShortVector2& operator -=(const ShortVector2& rhs)
+    {
+        x_ -= rhs.x_;
+        y_ -= rhs.y_;
+        return *this;
+    }
+
+    /// Multiply-assign a scalar.
+    ShortVector2& operator *=(short rhs)
+    {
+        x_ *= rhs;
+        y_ *= rhs;
+        return *this;
+    }
+
+    /// Multiply-assign a vector.
+    ShortVector2& operator *=(const ShortVector2& rhs)
+    {
+        x_ *= rhs.x_;
+        y_ *= rhs.y_;
+        return *this;
+    }
+
+    /// Divide-assign a scalar.
+    ShortVector2& operator /=(short rhs)
+    {
+        x_ /= rhs;
+        y_ /= rhs;
+        return *this;
+    }
+
+    /// Divide-assign a vector.
+    ShortVector2& operator /=(const ShortVector2& rhs)
+    {
+        x_ /= rhs.x_;
+        y_ /= rhs.y_;
+        return *this;
+    }
+
+    /// Return short data.
+    const short* Data() const { return &x_; }
+
+    /// Return as string.
+    String ToString() const;
+
+    /// Return hash value for HashSet & HashMap.
+    unsigned ToHash() const { return (unsigned)x_ * 31u + (unsigned)y_; }
+
+    /// Return length.
+    float Length() const { return sqrtf((float)(x_ * x_ + y_ * y_)); }
+
+    /// X coordinate.
+    short x_;
+    /// Y coordinate.
+    short y_;
+
+    /// Zero vector.
+    static const ShortVector2 ZERO;
+    /// (-1,0) vector.
+    static const ShortVector2 LEFT;
+    /// (1,0) vector.
+    static const ShortVector2 RIGHT;
+    /// (0,1) vector.
+    static const ShortVector2 UP;
+    /// (0,-1) vector.
+    static const ShortVector2 DOWN;
+    /// (1,1) vector.
+    static const ShortVector2 ONE;
+};
+
+/// Two-dimensional vector with signed byte values.
+class URHO3D_API CharVector2
+{
+public:
+    /// Construct a zero vector.
+    CharVector2() noexcept :
+        x_(0),
+        y_(0)
+    {
+    }
+
+    /// Construct from coordinates.
+    CharVector2(signed char x, signed char y) noexcept :
+        x_(x),
+        y_(y)
+    {
+    }
+
+    /// Construct from a signed char array.
+    explicit CharVector2(const signed char* data) noexcept :
+        x_(data[0]),
+        y_(data[1])
+    {
+    }
+
+    /// Construct from a float array.
+    explicit CharVector2(const float* data) :
+        x_((signed char)data[0]),
+        y_((signed char)data[1])
+    {
+    }
+
+    /// Construct from an IntVector2.
+    explicit CharVector2(const IntVector2& vector) noexcept;
+
+    /// Construct from a Vector2.
+    explicit CharVector2(const Vector2& vector);
+
+    /// Copy-construct from another vector.
+    CharVector2(const CharVector2& rhs) noexcept = default;
+
+    /// Assign from another vector.
+    CharVector2& operator =(const CharVector2& rhs) noexcept = default;
+
+    /// Test for equality with another vector.
+    bool operator ==(const CharVector2& rhs) const { return x_ == rhs.x_ && y_ == rhs.y_; }
+
+    /// Test for inequality with another vector.
+    bool operator !=(const CharVector2& rhs) const { return x_ != rhs.x_ || y_ != rhs.y_; }
+
+    /// Add a vector.
+    CharVector2 operator +(const CharVector2& rhs) const { return CharVector2(x_ + rhs.x_, y_ + rhs.y_); }
+
+    /// Return negation.
+    CharVector2 operator -() const { return CharVector2(-x_, -y_); }
+
+    /// Subtract a vector.
+    CharVector2 operator -(const CharVector2& rhs) const { return CharVector2(x_ - rhs.x_, y_ - rhs.y_); }
+
+    /// Multiply with a scalar.
+    CharVector2 operator *(signed char rhs) const { return CharVector2(x_ * rhs, y_ * rhs); }
+
+    /// Multiply with a vector.
+    CharVector2 operator *(const CharVector2& rhs) const { return CharVector2(x_ * rhs.x_, y_ * rhs.y_); }
+
+    /// Divide by a scalar.
+    CharVector2 operator /(signed char rhs) const { return CharVector2(x_ / rhs, y_ / rhs); }
+
+    /// Divide by a vector.
+    CharVector2 operator /(const CharVector2& rhs) const { return CharVector2(x_ / rhs.x_, y_ / rhs.y_); }
+
+    /// Add-assign a vector.
+    CharVector2& operator +=(const CharVector2& rhs)
+    {
+        x_ += rhs.x_;
+        y_ += rhs.y_;
+        return *this;
+    }
+
+    /// Subtract-assign a vector.
+    CharVector2& operator -=(const CharVector2& rhs)
+    {
+        x_ -= rhs.x_;
+        y_ -= rhs.y_;
+        return *this;
+    }
+
+    /// Multiply-assign a scalar.
+    CharVector2& operator *=(signed char rhs)
+    {
+        x_ *= rhs;
+        y_ *= rhs;
+        return *this;
+    }
+
+    /// Multiply-assign a vector.
+    CharVector2& operator *=(const CharVector2& rhs)
+    {
+        x_ *= rhs.x_;
+        y_ *= rhs.y_;
+        return *this;
+    }
+
+    /// Divide-assign a scalar.
+    CharVector2& operator /=(signed char rhs)
+    {
+        x_ /= rhs;
+        y_ /= rhs;
+        return *this;
+    }
+
+    /// Divide-assign a vector.
+    CharVector2& operator /=(const CharVector2& rhs)
+    {
+        x_ /= rhs.x_;
+        y_ /= rhs.y_;
+        return *this;
+    }
+
+    /// Return signed char data.
+    const signed char* Data() const { return &x_; }
+
+    /// Return as string.
+    String ToString() const;
+
+    /// Return hash value for HashSet & HashMap.
+    unsigned ToHash() const { return (unsigned)x_ * 31u + (unsigned)y_; }
+
+    /// Return length.
+    float Length() const { return sqrtf((float)(x_ * x_ + y_ * y_)); }
+
+    /// X coordinate.
+    signed char x_;
+    /// Y coordinate.
+    signed char y_;
+
+    /// Zero vector.
+    static const CharVector2 ZERO;
+    /// (-1,0) vector.
+    static const CharVector2 LEFT;
+    /// (1,0) vector.
+    static const CharVector2 RIGHT;
+    /// (0,1) vector.
+    static const CharVector2 UP;
+    /// (0,-1) vector.
+    static const CharVector2 DOWN;
+    /// (1,1) vector.
+    static const CharVector2 ONE;
+};
+
+/// Two-dimensional vector with unsigned byte values.
+class URHO3D_API UCharVector2
+{
+public:
+    /// Construct a zero vector.
+    UCharVector2() noexcept :
+        x_(0),
+        y_(0)
+    {
+    }
+
+    /// Construct from coordinates.
+    UCharVector2(unsigned char x, unsigned char y) noexcept :
+        x_(x),
+        y_(y)
+    {
+    }
+
+    /// Construct from an unsigned char array.
+    explicit UCharVector2(const unsigned char* data) noexcept :
+        x_(data[0]),
+        y_(data[1])
+    {
+    }
+
+    /// Construct from a float array.
+    explicit UCharVector2(const float* data) :
+        x_((unsigned char)data[0]),
+        y_((unsigned char)data[1])
+    {
+    }
+
+    /// Construct from an IntVector2.
+    explicit UCharVector2(const IntVector2& vector) noexcept;
+
+    /// Construct from a Vector2.
+    explicit UCharVector2(const Vector2& vector);
+
+    /// Copy-construct from another vector.
+    UCharVector2(const UCharVector2& rhs) noexcept = default;
+
+    /// Assign from another vector.
+    UCharVector2& operator =(const UCharVector2& rhs) noexcept = default;
+
+    /// Test for equality with another vector.
+    bool operator ==(const UCharVector2& rhs) const { return x_ == rhs.x_ && y_ == rhs.y_; }
+
+    /// Test for inequality with another vector.
+    bool operator !=(const UCharVector2& rhs) const { return x_ != rhs.x_ || y_ != rhs.y_; }
+
+    /// Add a vector.
+    UCharVector2 operator +(const UCharVector2& rhs) const { return UCharVector2(x_ + rhs.x_, y_ + rhs.y_); }
+
+    /// Return negation.
+    UCharVector2 operator -() const { return UCharVector2(-x_, -y_); }
+
+    /// Subtract a vector.
+    UCharVector2 operator -(const UCharVector2& rhs) const { return UCharVector2(x_ - rhs.x_, y_ - rhs.y_); }
+
+    /// Multiply with a scalar.
+    UCharVector2 operator *(unsigned char rhs) const { return UCharVector2(x_ * rhs, y_ * rhs); }
+
+    /// Multiply with a vector.
+    UCharVector2 operator *(const UCharVector2& rhs) const { return UCharVector2(x_ * rhs.x_, y_ * rhs.y_); }
+
+    /// Divide by a scalar.
+    UCharVector2 operator /(unsigned char rhs) const { return UCharVector2(x_ / rhs, y_ / rhs); }
+
+    /// Divide by a vector.
+    UCharVector2 operator /(const UCharVector2& rhs) const { return UCharVector2(x_ / rhs.x_, y_ / rhs.y_); }
+
+    /// Add-assign a vector.
+    UCharVector2& operator +=(const UCharVector2& rhs)
+    {
+        x_ += rhs.x_;
+        y_ += rhs.y_;
+        return *this;
+    }
+
+    /// Subtract-assign a vector.
+    UCharVector2& operator -=(const UCharVector2& rhs)
+    {
+        x_ -= rhs.x_;
+        y_ -= rhs.y_;
+        return *this;
+    }
+
+    /// Multiply-assign a scalar.
+    UCharVector2& operator *=(unsigned char rhs)
+    {
+        x_ *= rhs;
+        y_ *= rhs;
+        return *this;
+    }
+
+    /// Multiply-assign a vector.
+    UCharVector2& operator *=(const UCharVector2& rhs)
+    {
+        x_ *= rhs.x_;
+        y_ *= rhs.y_;
+        return *this;
+    }
+
+    /// Divide-assign a scalar.
+    UCharVector2& operator /=(unsigned char rhs)
+    {
+        x_ /= rhs;
+        y_ /= rhs;
+        return *this;
+    }
+
+    /// Divide-assign a vector.
+    UCharVector2& operator /=(const UCharVector2& rhs)
+    {
+        x_ /= rhs.x_;
+        y_ /= rhs.y_;
+        return *this;
+    }
+
+    /// Return unsigned char data.
+    const unsigned char* Data() const { return &x_; }
+
+    /// Return as string.
+    String ToString() const;
+
+    /// Return hash value for HashSet & HashMap.
+    unsigned ToHash() const { return (unsigned)x_ * 31u + (unsigned)y_; }
+
+    /// Return length.
+    float Length() const { return sqrtf((float)(x_ * x_ + y_ * y_)); }
+
+    /// X coordinate.
+    unsigned char x_;
+    /// Y coordinate.
+    unsigned char y_;
+
+    /// Zero vector.
+    static const UCharVector2 ZERO;
+    /// (1,0) vector.
+    static const UCharVector2 RIGHT;
+    /// (0,1) vector.
+    static const UCharVector2 UP;
+    /// (1,1) vector.
+    static const UCharVector2 ONE;
+};
 
 /// Two-dimensional vector with integer values.
 class URHO3D_API IntVector2
@@ -59,6 +507,28 @@ public:
         y_((int)data[1])
     {
     }
+
+    /// Construct from a ShortVector2.
+    explicit IntVector2(const ShortVector2& vector) noexcept :
+        x_(vector.x_),
+        y_(vector.y_)
+    {
+    }
+
+    /// Construct from a CharVector2.
+    explicit IntVector2(const CharVector2& vector) noexcept :
+        x_(vector.x_),
+        y_(vector.y_)
+    {
+    }
+
+    /// Construct from a UCharVector2.
+    explicit IntVector2(const UCharVector2& vector) noexcept :
+        x_(vector.x_),
+        y_(vector.y_)
+    {
+    }
+
     /// Copy-construct from another vector.
     IntVector2(const IntVector2& rhs) noexcept = default;
 
@@ -152,6 +622,23 @@ public:
     /// Return length.
     float Length() const { return sqrtf((float)(x_ * x_ + y_ * y_)); }
 
+    /// Return squared length.
+    int LengthSquared() const { return x_ * x_ + y_ * y_; }
+
+    /// Calculate squared distance to another point.
+    int DistanceSquaredToPoint(const IntVector2& point) const
+    {
+        const int dx = x_ - point.x_;
+        const int dy = y_ - point.y_;
+        return dx * dx + dy * dy;
+    }
+
+    /// Return Manhattan length.
+    int ManhattanLength() const { return Abs(x_) + Abs(y_); }
+
+    /// Calculate Manhattan distance to another point.
+    int ManhattanDistanceToPoint(const IntVector2& point) const { return Abs(x_ - point.x_) + Abs(y_ - point.y_); }
+
     /// X coordinate.
     int x_;
     /// Y coordinate.
@@ -187,6 +674,27 @@ public:
 
     /// Construct from an IntVector2.
     explicit Vector2(const IntVector2& vector) noexcept :
+        x_((float)vector.x_),
+        y_((float)vector.y_)
+    {
+    }
+
+    /// Construct from a ShortVector2.
+    explicit Vector2(const ShortVector2& vector) noexcept :
+        x_((float)vector.x_),
+        y_((float)vector.y_)
+    {
+    }
+
+    /// Construct from a CharVector2.
+    explicit Vector2(const CharVector2& vector) noexcept :
+        x_((float)vector.x_),
+        y_((float)vector.y_)
+    {
+    }
+
+    /// Construct from a UCharVector2.
+    explicit Vector2(const UCharVector2& vector) noexcept :
         x_((float)vector.x_),
         y_((float)vector.y_)
     {
@@ -305,6 +813,22 @@ public:
     /// @property
     float LengthSquared() const { return x_ * x_ + y_ * y_; }
 
+    /// Calculate squared distance to another point.
+    float DistanceSquaredToPoint(const Vector2& point) const
+    {
+        const float dx = x_ - point.x_;
+        const float dy = y_ - point.y_;
+        return dx * dx + dy * dy;
+    }
+
+    /// Calculate squared XZ-plane distance to a 2D point.
+    float SqDistXZ(const Vector2& point) const
+    {
+        const float dx = x_ - point.x_;
+        const float dz = y_ - point.y_;
+        return dx * dx + dz * dz;
+    }
+
     /// Calculate dot product.
     float DotProduct(const Vector2& rhs) const { return x_ * rhs.x_ + y_ * rhs.y_; }
 
@@ -366,6 +890,54 @@ public:
         return *this * (newLen / len);
     }
 
+    /// Return vector scaled to the specified length. Zero vector stays unchanged.
+    Vector2 ScaledTo(float length) const
+    {
+        const float lenSquared = LengthSquared();
+        if (lenSquared > 0.0f)
+        {
+            const float scale = length / sqrtf(lenSquared);
+            return Vector2(x_ * scale, y_ * scale);
+        }
+        return *this;
+    }
+
+    /// Scale this vector to the specified length. Zero vector stays unchanged.
+    void ScaleTo(float length)
+    {
+        const float lenSquared = LengthSquared();
+        if (lenSquared > 0.0f)
+        {
+            const float scale = length / sqrtf(lenSquared);
+            x_ *= scale;
+            y_ *= scale;
+        }
+    }
+
+    /// Return vector limited to the specified maximum length.
+    Vector2 LimitedTo(float maxLength) const
+    {
+        const float lenSquared = LengthSquared();
+        if (lenSquared > maxLength * maxLength)
+        {
+            const float scale = maxLength / sqrtf(lenSquared);
+            return {x_ * scale, y_ * scale};
+        }
+        return *this;
+    }
+
+    /// Limit this vector to the specified maximum length.
+    void LimitTo(float maxLength)
+    {
+        const float lenSquared = LengthSquared();
+        if (lenSquared > maxLength * maxLength)
+        {
+            const float scale = maxLength / sqrtf(lenSquared);
+            x_ *= scale;
+            y_ *= scale;
+        }
+    }
+
     /// Return float data.
     const float* Data() const { return &x_; }
 
@@ -390,6 +962,51 @@ public:
     /// (1,1) vector.
     static const Vector2 ONE;
 };
+
+inline ShortVector2::ShortVector2(const IntVector2& vector) noexcept :
+    x_((short)vector.x_),
+    y_((short)vector.y_)
+{
+}
+
+inline ShortVector2::ShortVector2(const Vector2& vector) :
+    x_((short)vector.x_),
+    y_((short)vector.y_)
+{
+}
+
+inline CharVector2::CharVector2(const IntVector2& vector) noexcept :
+    x_((signed char)vector.x_),
+    y_((signed char)vector.y_)
+{
+}
+
+inline CharVector2::CharVector2(const Vector2& vector) :
+    x_((signed char)vector.x_),
+    y_((signed char)vector.y_)
+{
+}
+
+inline UCharVector2::UCharVector2(const IntVector2& vector) noexcept :
+    x_((unsigned char)vector.x_),
+    y_((unsigned char)vector.y_)
+{
+}
+
+inline UCharVector2::UCharVector2(const Vector2& vector) :
+    x_((unsigned char)vector.x_),
+    y_((unsigned char)vector.y_)
+{
+}
+
+/// Multiply ShortVector2 with a scalar.
+inline ShortVector2 operator *(short lhs, const ShortVector2& rhs) { return rhs * lhs; }
+
+/// Multiply CharVector2 with a scalar.
+inline CharVector2 operator *(signed char lhs, const CharVector2& rhs) { return rhs * lhs; }
+
+/// Multiply UCharVector2 with a scalar.
+inline UCharVector2 operator *(unsigned char lhs, const UCharVector2& rhs) { return rhs * lhs; }
 
 /// Multiply Vector2 with a scalar.
 inline Vector2 operator *(float lhs, const Vector2& rhs) { return rhs * lhs; }

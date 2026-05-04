@@ -4,10 +4,6 @@
 #include <array>
 #include <valarray>
 
-inline float sqDistAs2D(float a, float b) {
-	return a * a + b * b;
-}
-
 inline Urho3D::IntVector2 calculateSize(int size, int central) {
 	const int first = -((size - 1) / 2);
 	const int second = size + first;
@@ -16,7 +12,7 @@ inline Urho3D::IntVector2 calculateSize(int size, int central) {
 
 inline void setClosest(float& minDistance, Urho3D::Vector2& closest, int& closestindex, int i,
                        Urho3D::Vector2 posToFollow, const Urho3D::Vector3& pos1) {
-	auto dist = sqDist(pos1, posToFollow);
+	auto dist = pos1.SqDistXZ(posToFollow);
 
 	if (dist < minDistance) {
 		minDistance = dist;
@@ -56,10 +52,6 @@ inline int getCordsInLower(int currentRes, int parentRes, int index) {
 	x /= 2;
 	z /= 2;
 	return x * currentRes + z;
-}
-
-inline void notSafeScaleTo(Urho3D::Vector2& vector, float max, float lengthSq) {
-	vector *= max / sqrtf(lengthSq);
 }
 
 inline float sqRootSumError(const std::valarray<float>& val1, const std::valarray<float>& val2) {

@@ -4,19 +4,6 @@
 
 class MathUtilsFixture : public ::testing::Test {};
 
-// --- sqDistAs2D(float, float) ---
-
-TEST_F(MathUtilsFixture, SqDistAs2DZero) {
-	EXPECT_FLOAT_EQ(sqDistAs2D(0.f, 0.f), 0.f);
-}
-
-TEST_F(MathUtilsFixture, SqDistAs2DBasic) {
-	EXPECT_FLOAT_EQ(sqDistAs2D(3.f, 4.f), 25.f);
-}
-
-TEST_F(MathUtilsFixture, SqDistAs2DNegative) {
-	EXPECT_FLOAT_EQ(sqDistAs2D(-3.f, -4.f), 25.f);
-}
 
 // --- fixValue ---
 
@@ -143,31 +130,23 @@ TEST_F(MathUtilsFixture, CalculateSizeOne) {
 TEST_F(MathUtilsFixture, SqDistVector2) {
 	Urho3D::Vector2 a(0.f, 0.f);
 	Urho3D::Vector2 b(3.f, 4.f);
-	EXPECT_FLOAT_EQ(sqDist(a, b), 25.f);
+	EXPECT_FLOAT_EQ(a.SqDistXZ(b), 25.f);
 }
 
 TEST_F(MathUtilsFixture, SqDistVector3) {
 	Urho3D::Vector3 a(0.f, 0.f, 0.f);
 	Urho3D::Vector3 b(1.f, 2.f, 2.f);
-	EXPECT_FLOAT_EQ(sqDist(a, b), 9.f);
+	EXPECT_FLOAT_EQ(a.SqDistXZ(b), 9.f);
 }
 
 TEST_F(MathUtilsFixture, SqDistVector3As2D) {
 	Urho3D::Vector3 a(0.f, 100.f, 0.f);
 	Urho3D::Vector3 b(3.f, 200.f, 4.f);
 	// sqDistAs2D ignores y: (3-0)^2 + (4-0)^2 = 25
-	EXPECT_FLOAT_EQ(sqDistAs2D(a, b), 25.f);
+	EXPECT_FLOAT_EQ(a.SqDistXZ(b), 25.f);
 }
 
 // --- Edge cases ---
-
-TEST_F(MathUtilsFixture, SqDistAs2DLargeValues) {
-	EXPECT_FLOAT_EQ(sqDistAs2D(1000.f, 1000.f), 2000000.f);
-}
-
-TEST_F(MathUtilsFixture, SqDistAs2DMixed) {
-	EXPECT_FLOAT_EQ(sqDistAs2D(-3.f, 4.f), 25.f);
-}
 
 TEST_F(MathUtilsFixture, FixValueExactlyZero) {
 	EXPECT_FLOAT_EQ(fixValue(0.f, 0.f), 0.f);
@@ -218,38 +197,38 @@ TEST_F(MathUtilsFixture, GetCordsInLowerLargerGrid) {
 
 TEST_F(MathUtilsFixture, SqDistVector2SamePoint) {
 	Urho3D::Vector2 a(5.f, 5.f);
-	EXPECT_FLOAT_EQ(sqDist(a, a), 0.f);
+	EXPECT_FLOAT_EQ(a.SqDistXZ(a), 0.f);
 }
 
 TEST_F(MathUtilsFixture, SqDistVector3SamePoint) {
 	Urho3D::Vector3 a(1.f, 2.f, 3.f);
-	EXPECT_FLOAT_EQ(sqDist(a, a), 0.f);
+	EXPECT_FLOAT_EQ(a.SqDistXZ(a), 0.f);
 }
 
 TEST_F(MathUtilsFixture, SqDistVector2ToVector3) {
 	Urho3D::Vector2 a(1.f, 2.f);
 	Urho3D::Vector3 b(4.f, 99.f, 6.f); // uses x and z from b, y from a
 	// sqDistAs2D(1-4, 2-6) = 9+16 = 25
-	EXPECT_FLOAT_EQ(sqDist(a, b), 25.f);
+	EXPECT_FLOAT_EQ(a.SqDistXZ(b), 25.f);
 }
 
 TEST_F(MathUtilsFixture, SqDistVector3ToVector2) {
 	Urho3D::Vector3 a(4.f, 99.f, 6.f);
 	Urho3D::Vector2 b(1.f, 2.f);
 	// sqDistAs2D(4-1, 6-2) = 9+16 = 25
-	EXPECT_FLOAT_EQ(sqDist(a, b), 25.f);
+	EXPECT_FLOAT_EQ(a.SqDistXZ(b), 25.f);
 }
 
 TEST_F(MathUtilsFixture, SqDistVector3Ptr) {
 	Urho3D::Vector3 a(0.f, 0.f, 0.f);
 	Urho3D::Vector3 b(1.f, 1.f, 1.f);
-	EXPECT_FLOAT_EQ(sqDist(&a, &b), 3.f);
+	EXPECT_FLOAT_EQ(a.SqDistXZ(b), 3.f);
 }
 
 TEST_F(MathUtilsFixture, DirToVector3PointerAndVector2) {
 	Urho3D::Vector3 from(1.f, 10.f, 2.f);
 	Urho3D::Vector2 to(4.f, 6.f);
-	auto result = dirTo(&from, to);
+	auto result = from.DirToXZ(to);
 
 	EXPECT_FLOAT_EQ(result.x_, 3.f);
 	EXPECT_FLOAT_EQ(result.y_, 4.f);
@@ -258,7 +237,7 @@ TEST_F(MathUtilsFixture, DirToVector3PointerAndVector2) {
 TEST_F(MathUtilsFixture, DirToVector3AndVector2) {
 	Urho3D::Vector3 from(1.f, 10.f, 2.f);
 	Urho3D::Vector2 to(4.f, 6.f);
-	auto result = dirTo(from, to);
+	auto result = from.DirToXZ(to);
 
 	EXPECT_FLOAT_EQ(result.x_, 3.f);
 	EXPECT_FLOAT_EQ(result.y_, 4.f);
@@ -267,7 +246,7 @@ TEST_F(MathUtilsFixture, DirToVector3AndVector2) {
 TEST_F(MathUtilsFixture, DirToVector3AndVector3) {
 	Urho3D::Vector3 from(1.f, 10.f, 2.f);
 	Urho3D::Vector3 to(4.f, 20.f, 6.f);
-	auto result = dirTo(from, to);
+	auto result = from.DirToXZ(to);
 
 	EXPECT_FLOAT_EQ(result.x_, 3.f);
 	EXPECT_FLOAT_EQ(result.y_, 4.f);
@@ -281,7 +260,7 @@ TEST_F(MathUtilsFixture, DiffReturnsSignedDirectionOrOneForEqual) {
 
 TEST_F(MathUtilsFixture, To2DUsesXZComponents) {
 	Urho3D::Vector3 vec(3.f, 99.f, 4.f);
-	auto result = to2D(vec);
+	auto result = vec.ToXZ();
 
 	EXPECT_FLOAT_EQ(result.x_, 3.f);
 	EXPECT_FLOAT_EQ(result.y_, 4.f);
@@ -289,7 +268,7 @@ TEST_F(MathUtilsFixture, To2DUsesXZComponents) {
 
 TEST_F(MathUtilsFixture, To3DPlacesVector2IntoXZPlane) {
 	Urho3D::Vector2 vec(3.f, 4.f);
-	auto result = to3D(vec, 7.f);
+	auto result = vec.FromXZ(7.f);
 
 	EXPECT_FLOAT_EQ(result.x_, 3.f);
 	EXPECT_FLOAT_EQ(result.y_, 7.f);
@@ -298,7 +277,7 @@ TEST_F(MathUtilsFixture, To3DPlacesVector2IntoXZPlane) {
 
 TEST_F(MathUtilsFixture, ScaleToRescalesVectorToRequestedLength) {
 	Urho3D::Vector2 vec(3.f, 4.f);
-	scaleTo(vec, 10.f);
+	vec.ScaleTo(10.f);
 
 	EXPECT_FLOAT_EQ(vec.x_, 6.f);
 	EXPECT_FLOAT_EQ(vec.y_, 8.f);
@@ -307,7 +286,7 @@ TEST_F(MathUtilsFixture, ScaleToRescalesVectorToRequestedLength) {
 
 TEST_F(MathUtilsFixture, ScaleToLeavesZeroVectorUnchanged) {
 	Urho3D::Vector2 vec(0.f, 0.f);
-	scaleTo(vec, 10.f);
+	vec.ScaleTo(10.f);
 
 	EXPECT_FLOAT_EQ(vec.x_, 0.f);
 	EXPECT_FLOAT_EQ(vec.y_, 0.f);
@@ -315,7 +294,7 @@ TEST_F(MathUtilsFixture, ScaleToLeavesZeroVectorUnchanged) {
 
 TEST_F(MathUtilsFixture, LimitToLeavesShortVectorUnchanged) {
 	Urho3D::Vector2 vec(3.f, 4.f);
-	limitTo(vec, 10.f);
+	vec.LimitTo(10.f);
 
 	EXPECT_FLOAT_EQ(vec.x_, 3.f);
 	EXPECT_FLOAT_EQ(vec.y_, 4.f);
@@ -323,7 +302,7 @@ TEST_F(MathUtilsFixture, LimitToLeavesShortVectorUnchanged) {
 
 TEST_F(MathUtilsFixture, LimitToScalesDownLongVector) {
 	Urho3D::Vector2 vec(6.f, 8.f);
-	limitTo(vec, 5.f);
+	vec.LimitTo(5.f);
 
 	EXPECT_FLOAT_EQ(vec.x_, 3.f);
 	EXPECT_FLOAT_EQ(vec.y_, 4.f);

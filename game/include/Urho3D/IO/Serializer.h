@@ -34,6 +34,9 @@ class Color;
 class IntRect;
 class IntVector2;
 class IntVector3;
+class ShortVector2;
+class CharVector2;
+class UCharVector2;
 class Quaternion;
 class Rect;
 class Vector2;
@@ -79,6 +82,12 @@ public:
     bool WriteIntVector2(const IntVector2& value);
     /// Write an IntVector3.
     bool WriteIntVector3(const IntVector3& value);
+    /// Write a ShortVector2.
+    bool WriteShortVector2(const ShortVector2& value);
+    /// Write a CharVector2.
+    bool WriteCharVector2(const CharVector2& value);
+    /// Write a UCharVector2.
+    bool WriteUCharVector2(const UCharVector2& value);
     /// Write a Rect.
     bool WriteRect(const Rect& value);
     /// Write a Vector2.
