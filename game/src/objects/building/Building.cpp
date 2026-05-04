@@ -20,8 +20,8 @@
 #include "env/Environment.h"
 
 
-Building::Building(Urho3D::Vector3 _position, db_building* db_building, char playerId, char teamId, char level,
-                   int indexInGrid, UId uId) :
+Building::Building(Urho3D::Vector3 _position, db_building* db_building, unsigned char playerId, unsigned char teamId,
+				   unsigned char level, int indexInGrid, UId uId) :
 	Static(_position, indexInGrid, uId), dbLevel(db_building->getLevel(level).value()) {
 	player = playerId;
 	team = teamId;

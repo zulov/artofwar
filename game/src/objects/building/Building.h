@@ -16,7 +16,8 @@ class Building : public Static {
 	friend void bindRow<Building>(sqlite3_stmt*, int, const Building*);
 
 public:
-	Building(Urho3D::Vector3 _position, db_building* db_building, char playerId, char teamId, char level, int indexInGrid, UId uId);
+	Building(Urho3D::Vector3 _position, db_building* db_building, unsigned char playerId, unsigned char teamId,
+			 unsigned char level, int indexInGrid, UId uId);
 	~Building() override;
 
 	void populate();

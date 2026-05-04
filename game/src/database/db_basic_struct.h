@@ -5,16 +5,16 @@ constexpr char SPLIT_SIGN = ';';
 constexpr char SPLIT_SIGN_AI = '#';
 
 struct db_entity {
-	const short id;
+	const unsigned short id;
 
-	explicit db_entity(short id) : id(id) {
+	explicit db_entity(unsigned short id) : id(id) {
 	}
 };
 
 struct db_with_name : db_entity {
 	const Urho3D::String name;
 
-	db_with_name(short id, const Urho3D::String& name)
+	db_with_name(unsigned short id, const Urho3D::String& name)
 		: db_entity(id), name(name) {
 	}
 };
@@ -22,13 +22,13 @@ struct db_with_name : db_entity {
 struct db_with_icon : db_with_name {
 	const Urho3D::String icon;
 
-	db_with_icon(short id, const Urho3D::String& name, const Urho3D::String& icon)
+	db_with_icon(unsigned short id, const Urho3D::String& name, const Urho3D::String& icon)
 		: db_with_name(id, name),  icon(icon) {
 	}
 };
 
 template <typename T>
-void ensureSize(int size, std::vector<T*>& array) {
+void ensureSize(unsigned short size, std::vector<T*>& array) {
 	if (array.size() <= size) {
 		array.resize(size + 1, nullptr);
 	}

@@ -13,7 +13,7 @@ class Resources;
 
 class Possession {
 public:
-	Possession(char nation);
+	Possession(unsigned short nation);
 	~Possession();
 	Possession(const Possession&) = delete;
 

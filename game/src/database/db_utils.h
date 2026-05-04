@@ -53,7 +53,7 @@ template <typename T> inline int asInt(sqlite3_stmt* stmt, T iCol) { return sqli
 template <typename T> inline float asItoF(sqlite3_stmt* stmt, T iCol, int precision) { return static_cast<float>(asInt(stmt, iCol)) / precision; }
 template <typename T> inline unsigned asUI(sqlite3_stmt* stmt, T iCol) { return static_cast<unsigned>(sqlite3_column_int64(stmt, col(iCol))); }
 template <typename T> inline short asShort(sqlite3_stmt* stmt, T iCol) { return static_cast<int16_t>(sqlite3_column_int(stmt, col(iCol))); }
-template <typename T> inline unsigned short asUS(sqlite3_stmt* stmt, T iCol) { return static_cast<uint16_t>(sqlite3_column_int(stmt, col(iCol))); }
+template <typename T> inline unsigned short asUShort(sqlite3_stmt* stmt, T iCol) { return static_cast<uint16_t>(sqlite3_column_int(stmt, col(iCol))); }
 template <typename T> inline char asByte(sqlite3_stmt* stmt, T iCol) { return static_cast<int8_t>(sqlite3_column_int(stmt, col(iCol))); }
 template <typename T> inline unsigned char asUByte(sqlite3_stmt* stmt, T iCol) { return static_cast<unsigned char>(sqlite3_column_int(stmt, col(iCol))); }
 template <typename T> inline const char* asText(sqlite3_stmt* stmt, T iCol) { return reinterpret_cast<const char*>(sqlite3_column_text(stmt, col(iCol))); }

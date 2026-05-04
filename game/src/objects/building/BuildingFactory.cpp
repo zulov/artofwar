@@ -6,7 +6,7 @@
 #include "env/Environment.h"
 #include "player/PlayersManager.h"
 
-Building* BuildingFactory::create(int id, const Urho3D::IntVector2& bucketCords, char level, Player* player, unsigned uid) const {
+Building* BuildingFactory::create(unsigned short id, const Urho3D::IntVector2& bucketCords, unsigned char level, Player* player, unsigned uid) const {
 	const auto db_building = Game::getDatabase()->getBuilding(id);
 	const auto env = Game::getEnvironment();
 
@@ -18,7 +18,8 @@ Building* BuildingFactory::create(int id, const Urho3D::IntVector2& bucketCords,
 	return nullptr;
 }
 
-Building* BuildingFactory::create(int id, const Urho3D::IntVector2& bucketCords, char level, char playerId) const {
+Building* BuildingFactory::create(unsigned short id, const Urho3D::IntVector2& bucketCords, unsigned char level,
+								  unsigned char playerId) const {
 	auto player = Game::getPlayersMan()->getPlayer(playerId);
 	return create(id, bucketCords, level, player, player->getNextBuildingId());
 }

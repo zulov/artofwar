@@ -70,7 +70,7 @@ private:
 	bool isEnoughResToTypeBuilding(ParentBuildingType type) const;
 
 	Player* player;
-	char playerId;
+	unsigned char playerId;
 	Possession* possession;
 	db_nation* nation;
 	AiInputProvider* aiInput;

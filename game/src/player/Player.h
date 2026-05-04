@@ -17,7 +17,8 @@ class Player {
 	friend void bindRow<Player>(sqlite3_stmt*, int, const Player*);
 
 public:
-	Player(int nationId, char team, char id, int color, Urho3D::String name, bool active, unsigned currentBuildingUId, unsigned currentUnitUId);
+	Player(unsigned short nationId, unsigned char team, unsigned char id, unsigned char color, Urho3D::String name,
+		   bool active, unsigned currentBuildingUId, unsigned currentUnitUId);
 	~Player();
 
 	void setResourceAmount(float food, float wood, float stone, float gold) const;

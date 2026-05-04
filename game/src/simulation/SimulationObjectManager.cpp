@@ -52,8 +52,7 @@ void SimulationObjectManager::addUnits(unsigned number, int id, Urho3D::Vector2&
 
 void SimulationObjectManager::addBuilding(int id, const Urho3D::IntVector2& _bucketCords, char level,
                                           char player) const {
-	auto* building = buildingFactory.create(id, _bucketCords, level, player);
-	if (building) {
+	if (auto* building = buildingFactory.create(id, _bucketCords, level, player)) {
 		building->postCreate();
 		addBuilding(building, false);
 	}

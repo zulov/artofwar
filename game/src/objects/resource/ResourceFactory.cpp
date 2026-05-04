@@ -5,7 +5,7 @@
 #include "scene/load/dbload_container.h"
 #include "env/Environment.h"
 
-ResourceEntity* ResourceFactory::create(int id, Urho3D::IntVector2 bucketCords) {
+ResourceEntity* ResourceFactory::create(unsigned short id, Urho3D::IntVector2 bucketCords) {
 	return create(id, bucketCords, UId(++currentUId));
 }
 
@@ -17,7 +17,7 @@ ResourceEntity* ResourceFactory::load(dbload_resource* resource) const {
 
 void ResourceFactory::setResUid(unsigned resUid) { currentUId = resUid; }
 
-ResourceEntity* ResourceFactory::create(int id, Urho3D::IntVector2 bucketCords, UId uid) const {
+ResourceEntity* ResourceFactory::create(unsigned short id, Urho3D::IntVector2 bucketCords, UId uid) const {
 	db_resource* db_resource = Game::getDatabase()->getResource(id);
 	const auto env = Game::getEnvironment();
 	if (const auto position = env->tryGetValidPosition(db_resource->size, bucketCords, false)) {
