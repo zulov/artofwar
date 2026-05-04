@@ -8,46 +8,10 @@ inline float sqDistAs2D(float a, float b) {
 	return a * a + b * b;
 }
 
-inline float sqDist(const Urho3D::Vector3* one, const Urho3D::Vector3* two) {
-	return (*one - *two).LengthSquared();
-}
-
-inline float sqDist(const Urho3D::Vector2& one, const Urho3D::Vector2& two) {
-	return (one - two).LengthSquared();
-}
-
-inline float sqDist(const Urho3D::Vector3& one, const Urho3D::Vector3& two) {
-	return (one - two).LengthSquared();
-}
-
-inline float sqDist(const Urho3D::Vector2& one, const Urho3D::Vector3& two) {
-	return sqDistAs2D(one.x_ - two.x_, one.y_ - two.z_);
-}
-
-inline float sqDist(const Urho3D::Vector3& one, const Urho3D::Vector2& two) {
-	return sqDistAs2D(one.x_ - two.x_, one.z_ - two.y_);
-}
-
-inline float sqDistAs2D(const Urho3D::Vector3& one, const Urho3D::Vector3& two) {
-	return sqDistAs2D(one.x_ - two.x_, one.z_ - two.z_);
-}
-
 inline Urho3D::IntVector2 calculateSize(int size, int central) {
 	const int first = -((size - 1) / 2);
 	const int second = size + first;
 	return {first + central, second + central};
-}
-
-inline Urho3D::Vector2 dirTo(Urho3D::Vector3* a, const Urho3D::Vector2& b) {
-	return {b.x_ - a->x_, b.y_ - a->z_};
-}
-
-inline Urho3D::Vector2 dirTo(const Urho3D::Vector3& a, const Urho3D::Vector2& b) {
-	return {b.x_ - a.x_, b.y_ - a.z_};
-}
-
-inline Urho3D::Vector2 dirTo(const Urho3D::Vector3& a, const Urho3D::Vector3& b) {
-	return {b.x_ - a.x_, b.z_ - a.z_};
 }
 
 inline void setClosest(float& minDistance, Urho3D::Vector2& closest, int& closestindex, int i,
@@ -94,35 +58,8 @@ inline int getCordsInLower(int currentRes, int parentRes, int index) {
 	return x * currentRes + z;
 }
 
-inline Urho3D::Vector2 to2D(Urho3D::Vector3 vec) {
-	return {vec.x_, vec.z_};
-}
-
-inline Urho3D::Vector3 to3D(Urho3D::Vector2 vec, float y) {
-	return {vec.x_, y, vec.y_};
-}
-
 inline void notSafeScaleTo(Urho3D::Vector2& vector, float max, float lengthSq) {
 	vector *= max / sqrtf(lengthSq);
-}
-
-inline void scaleTo(Urho3D::Vector2& vector, float max) {
-	const auto lengthSq = vector.LengthSquared();
-	if (lengthSq > 0.f) {
-		notSafeScaleTo(vector, max, lengthSq);
-	}
-}
-
-inline void limitTo(Urho3D::Vector2& vector, float max, float lengthSq) {
-	if (lengthSq > max * max) {
-		notSafeScaleTo(vector, max, lengthSq);
-	}
-}
-
-inline void limitTo(Urho3D::Vector2& vector, float max) {
-	const auto lengthSq = vector.LengthSquared();
-
-	limitTo(vector, max, lengthSq);
 }
 
 inline float sqRootSumError(const std::valarray<float>& val1, const std::valarray<float>& val2) {
