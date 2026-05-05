@@ -87,9 +87,8 @@ void OrderMaker::armyAction() {
 	auto target = posOpt.value();
 	for (auto& subArmy : divide(army)) { //TODO kazda sub armia moze miec inny cel
 		auto armyCenter = computeCenter(subArmy);
-		const auto dist = sqDist(armyCenter, target);
 
-		if (dist > SQ_SEMI_CLOSE) {
+		if (armyCenter.SqDistXZ(target) > SQ_SEMI_CLOSE) {
 			Game::getActionCenter()->addUnitAction(unitOrderGo(subArmy, target));
 		} else {
 			const auto unit = subArmy.at(0);

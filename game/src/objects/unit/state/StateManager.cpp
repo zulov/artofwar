@@ -62,14 +62,14 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParame
 	}
 
 	Game::getLog()->Write(0, "fail to change state from " +
-	                      Urho3D::String(magic_enum::enum_name(unit->getNextState()).data()) + " to " +
-	                      Urho3D::String(magic_enum::enum_name(stateTo).data()));
+						  Urho3D::String(magic_enum::enum_name(unit->getNextState()).data()) + " to " +
+						  Urho3D::String(magic_enum::enum_name(stateTo).data()));
 
 	return false;
 }
 
 bool StateManager::canStartState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter,
-                                 State* stateFrom, State* toState) {
+								 State* stateFrom, State* toState) {
 	return stateFrom->validateTransition(stateTo)
 			&& unit->getDb()->possibleStates[castC(stateTo)]
 			&& toState->canStart(unit, actionParameter);
@@ -187,7 +187,7 @@ void StateManager::startState(Building* building) {
 					short id = costs->moreWoodThanStone ? 6 : 5; //TODO hardcoded
 
 					Game::getActionCenter()->addResource(id, building->getMainGridIndex(),
-					                                     costs->maxFromWoodOrStone * 0.2f);
+														 costs->maxFromWoodOrStone * 0.2f);
 				}
 			}
 		} else {

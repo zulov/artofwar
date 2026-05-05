@@ -54,5 +54,5 @@ Urho3D::Vector2 RtsCameraBehave::getTargetPos() const {
 
 	auto plane  = camera->ScreenToWorldPoint(Urho3D::Vector3(0.5, 0.5, cameraRay.HitDistance(Urho3D::Plane::UP)));
 	
-	return to2D(plane);
+	return plane.ToXZ();
 }

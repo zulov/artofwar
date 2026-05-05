@@ -65,7 +65,7 @@ void Unit::checkAim() {
 void Unit::updatePositionAndRotation() const {
 	if (shouldUpdate) {
 		if (isInStates(state, {UnitState::ATTACK, UnitState::COLLECT, UnitState::SHOT}) && isFirstThingAlive()) {
-			setTransform(dirTo(position, thingToInteract->getPosition()));
+			setTransform(position.DirToXZ(thingToInteract->getPosition()));
 		} else if (velocity.LengthSquared() > 4 * dbLevel->sqMinSpeed) {
 			setTransform(velocity);
 		} else {
@@ -112,11 +112,11 @@ bool Unit::ifVisible(bool hasMoved, const CameraInfo* camInfo) const {
 void Unit::setAcceleration(Urho3D::Vector2& _acceleration) {
 	acceleration = _acceleration;
 	assert(!_acceleration.IsNaN());
-	limitTo(acceleration, dbLevel->maxForce);
+	acceleration.LimitTo(dbLevel->maxForce);
 }
 
 void Unit::forceGo(float boostCoef, float aimCoef, Urho3D::Vector2& force) const {
-	scaleTo(force, boostCoef);
+	force.ScaleTo(boostCoef);
 	force -= velocity;
 	force *= dbLevel->mass * aimCoef * 2.f;
 }
@@ -145,7 +145,7 @@ std::pair<float, bool> Unit::absorbAttack(float attackCoef) {
 }
 
 bool Unit::toActionIfInRange(Physical* closest, UnitAction order) {
-	if (closest && sqDistAs2D(getPosition(), closest->getPosition()) < dbLevel->sqSightRadius) {
+	if (closest && getPosition().SqDistXZ(closest->getPosition()) < dbLevel->sqSightRadius) {
 		return toAction(closest, order);
 	}
 	return false;
@@ -444,7 +444,7 @@ void Unit::applyForce(float timeStep) {
 			velocity = Urho3D::Vector2::ZERO;
 		}
 	} else {
-		limitTo(velocity, maxSpeed, lengthSq);
+		velocity.LimitTo(maxSpeed, lengthSq);
 
 		if (state == UnitState::STOP) {
 			StateManager::changeState(this, UnitState::MOVE);

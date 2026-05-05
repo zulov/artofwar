@@ -5,8 +5,6 @@
 
 #include "ProjectileBase.h"
 #include "math/RandGen.h"
-#include "player/Player.h"
-#include "env/Environment.h"
 
 struct ProjectileWithNode : public ProjectileBase {
 	Urho3D::Node* node;
@@ -30,7 +28,7 @@ struct ProjectileWithNode : public ProjectileBase {
 
 		const auto end = aim->getPosition();
 		const auto start = shooter->getPosition();
-		direction = dirTo(start, end);
+		direction = start.DirToXZ(end);
 		const auto model = node->GetComponent<Urho3D::StaticModel>();
 		if (aim->getType() == ObjectType::BUILDING) {
 			changeMaterial("Materials/projectiles/black.xml", model);
@@ -42,7 +40,7 @@ struct ProjectileWithNode : public ProjectileBase {
 
 		endHeight = end.y_ + aim->getModelHeight() / (RandGen::nextRand(RandFloatType::OTHER, 3) + 2.f);
 		peakHeight = direction.Length() / (RandGen::nextRand(RandFloatType::OTHER, 3) + 4.1f);
-		scaleTo(direction, speed);
+		direction.ScaleTo(speed);
 		node->SetEnabled(true);
 		node->SetPosition(start);
 	}

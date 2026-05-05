@@ -128,7 +128,7 @@ std::vector<Physical*>* Environment::getResources(const Urho3D::Vector3& center,
 	const float sqRadius = radius * radius;
 
 	while (Physical* neight = bucketIterator.next()) {
-		if (sqDistAs2D(center, neight->getPosition()) <= sqRadius) {
+		if (center.SqDistXZ(neight->getPosition()) <= sqRadius) {
 			neights->push_back(neight);
 		}
 	}
@@ -139,14 +139,14 @@ std::vector<Physical*>* Environment::getResources(const Urho3D::Vector3& center,
 void Environment::addIfInRange(const Physical* physical, Physical* neight, const float sqRadius,
                                const std::function<bool(Physical*)>& condition) const {
 	if (physical != neight && condition(neight)
-		&& sqDistAs2D(physical->getPosition(), neight->getPosition()) < sqRadius) {
+		&& physical->getPosition().SqDistXZ( neight->getPosition()) < sqRadius) {
 		neights->push_back(neight);
 	}
 }
 
 void Environment::addIfInRange(const Physical* physical, Physical* neight, const float sqRadius) const {
 	if (physical != neight
-		&& sqDistAs2D(physical->getPosition(), neight->getPosition()) < sqRadius) {
+		&& physical->getPosition().SqDistXZ( neight->getPosition()) < sqRadius) {
 		neights->push_back(neight);
 	}
 }
@@ -162,8 +162,8 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	const float sqRadius = radius * radius;
 
 	neights->clear();
-	auto pred = [sqRadius,unit](Physical* neight) {
-		return (unit != neight && sqDistAs2D(unit->getPosition(), neight->getPosition()) < sqRadius);
+	auto pred = [sqRadius,unit](const Physical* neight) {
+		return (unit != neight && unit->getPosition().SqDistXZ( neight->getPosition()) < sqRadius);
 	};
 	std::ranges::copy_if(*simpleNeight, std::back_inserter(*neights), pred);
 
@@ -185,7 +185,7 @@ Environment::getResources(const Urho3D::Vector3& center, int id, float radius, f
 	neights->clear();
 	for (auto neight : resourceStaticGrid.get(center, radius)) {
 		if (id == -1 || id == neight->getDbId()) {
-			auto dist = sqDistAs2D(center, neight->getPosition());
+			auto dist = center.SqDistXZ(neight->getPosition());
 			if (dist <= sqRadius && dist > sqPrevRadius) {
 				neights->push_back(neight);
 			}
@@ -601,7 +601,7 @@ Physical* Environment::closestPhysicalSimple(const Physical* physical, const std
 	Physical* closest = nullptr;
 	const auto center = physical->getPosition();
 	for (const auto entity : *things) {
-		const float dist = sqDistAs2D(center, entity->getPosition());
+		const float dist = center.SqDistXZ(entity->getPosition());
 		if (dist < closestDist && dist <= range) {
 			closestDist = dist;
 			closest = entity;

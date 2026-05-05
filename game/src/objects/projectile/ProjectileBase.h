@@ -29,7 +29,7 @@ struct ProjectileBase {
 		const auto start = shooter->getPosition();
 		const auto end = aim->getPosition();
 
-		this->speed = speed / sqrt(sqDistAs2D(start, end));
+		this->speed = speed / start.DistanceToPoint(end);
 
 		percentToGo = 1.f;
 

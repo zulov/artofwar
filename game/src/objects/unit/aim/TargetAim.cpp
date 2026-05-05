@@ -25,9 +25,7 @@ std::vector<Urho3D::Vector3> TargetAim::getDebugLines(Unit* unit) const {
 	return points;
 }
 
-Urho3D::Vector2 TargetAim::getDirection(Unit* unit) {
-	return dirTo(unit->getPosition(), currentTarget);
-}
+Urho3D::Vector2 TargetAim::getDirection(Unit* unit) { return unit->getPosition().DirToXZ(currentTarget); }
 
 bool TargetAim::ifReach(Unit* unit) {
 	if (path[current] == unit->getMainGridIndex()) {

@@ -34,7 +34,7 @@ public:
 private:
 	bool hasLeader() const;
 
-	void chooseLeader(Urho3D::Vector2& localCenter);
+	void chooseLeader(const Urho3D::Vector2& localCenter);
 	void updateUnits();
 	void setCenter();
 	void updateIds();

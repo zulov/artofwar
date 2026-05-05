@@ -34,7 +34,7 @@ Urho3D::Vector2 FollowAim::getDirection(Unit* follower) {
 	}
 	const auto opt = physical->getPosToUseBy(follower);
 	if (opt.has_value()) {
-		return dirTo(follower->getPosition(), opt.value());
+		return follower->getPosition().DirToXZ(opt.value());
 	}
 	return {};
 }
@@ -45,7 +45,7 @@ bool FollowAim::ifReach(Unit* follower) {
 	}
 	const auto opt = physical->getPosToUseBy(follower);
 	if (opt.has_value()) {
-		return sqDist(follower->getPosition(), opt.value()) < radiusSq;
+		return follower->getPosition().SqDistXZ(opt.value()) < radiusSq;
 	}
 	return true;
 }

@@ -37,11 +37,11 @@ Formation::~Formation() {
 	delete[] levelOfReach;
 }
 
-void Formation::chooseLeader(Urho3D::Vector2& localCenter) {
+void Formation::chooseLeader(const Urho3D::Vector2& localCenter) {
 	float maxDist = 99999.f;
 	leader = nullptr;
 	for (auto* unit : units) {
-		const auto dist = sqDist(localCenter, unit->getPosition());
+		const auto dist = unit->getPosition().SqDistXZ(localCenter);
 		if (dist < maxDist) {
 			leader = unit;
 			maxDist = dist;
@@ -133,7 +133,7 @@ void Formation::updateIds() {
 				for (int i = 0; i < it->second.size(); ++i) {
 					const auto id = it->second[i];
 					if (tempVec[id] != -1) {
-						const auto dist = sqDist(currentPos, getPositionFor(id));
+						const auto dist = currentPos.SqDistXZ(getPositionFor(id));
 						if (dist < bestSize) {
 							bestSize = dist;
 							bestId = i;
@@ -174,7 +174,7 @@ void Formation::calculateCohesion() {
 	notWellFormedExact = 0;
 	for (const auto unit : units) {
 		const auto desiredPos = getPositionFor(unit->getPositionInState());
-		const auto dist = sqDist(unit->getPosition(), desiredPos);
+		const auto dist = unit->getPosition().SqDistXZ(desiredPos);
 
 		if (dist < 0.5f) {
 			levelOfReach[unit->getPositionInState()] = 0;
