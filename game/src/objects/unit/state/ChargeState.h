@@ -71,7 +71,7 @@ public:
 		std::vector<Physical*> thingsToInteract;
 		const auto sqRange = unit->chargeData->attackRange * unit->chargeData->attackRange;
 		for (auto entity : *enemies) {
-			if (entity->isAlive() && sqDist(unit->getPosition(), entity->getPosition()) <= sqRange) {
+			if (entity->isAlive() && unit->getPosition().SqDistXZ(entity->getPosition()) <= sqRange) {
 				thingsToInteract.push_back(entity);
 			}
 		}

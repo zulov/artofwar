@@ -610,7 +610,7 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 			assert(false);
 			return {};
 		}
-		auto direction = dirTo(position, calculator->getCenter(escapeBucket));
+		auto direction = position.DirToXZ(calculator->getCenter(escapeBucket));
 
 		direction.Normalize();
 		return direction;

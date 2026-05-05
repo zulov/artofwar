@@ -29,7 +29,7 @@ void Force::separationObstacle(Urho3D::Vector2& newForce, Unit* unit) {
 void Force::randSepForce(Urho3D::Vector2& diff) const {
 	diff.x_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE, 1.f) - 0.5f;
 	diff.y_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE, 1.f) - 0.5f;
-	scaleTo(diff, CLOSEST_DIST);
+	diff.ScaleTo(CLOSEST_DIST);
 }
 
 void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Physical*>* neights) {
@@ -44,7 +44,7 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 
-		auto diff = dirTo(neight->getPosition(), unit->getPosition());
+		auto diff = neight->getPosition().DirToXZ(unit->getPosition());
 
 		float sqDistance = diff.LengthSquared();
 
@@ -126,17 +126,17 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 		int nextIndexFromCache = formation->getCachePath(startIndex, aimIndex);
 		if (nextIndexFromCache >= 0) {
 			//ten cache chyba jest lzejszy (moze zmienic na vector) niz ten w path finder ale zle resetowany
-			force = dirTo(unit->getPosition(), env->getCenter(nextIndexFromCache));
+			force = unit->getPosition().DirToXZ(env->getCenter(nextIndexFromCache));
 		} else if (nextIndexFromCache == -1) {
 			auto* const path = env->findPath(startIndex, aimIndex);
 			if (!path->empty()) {
 				int nextIndex = path->at(0);
 				if (nextIndex != aimIndex) {
 					formation->addCachePath(startIndex, aimIndex, nextIndex);
-					force = dirTo(unit->getPosition(), env->getCenter(nextIndex));
+					force = unit->getPosition().DirToXZ(env->getCenter(nextIndex));
 				} else {
 					//close
-					force = dirTo(unit->getPosition(), aimPos);
+					force = unit->getPosition().DirToXZ(aimPos);
 				}
 			} else {
 				formation->addCachePath(startIndex, aimIndex, -2);
@@ -171,7 +171,7 @@ bool Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, const Unit* uni
 }
 
 void Force::inCell(Urho3D::Vector2& newForce, Unit* unit) const {
-	auto force = dirTo(unit->getPosition(), unit->setInCellPos());
+	auto force = unit->getPosition().DirToXZ(unit->setInCellPos());
 	//TODO czy to normalizacja?
 	force *= inCellCoef * boostCoef;
 	newForce += force;

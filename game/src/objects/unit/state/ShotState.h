@@ -43,7 +43,7 @@ public:
 	}
 
 	bool closeEnough(Unit* unit) const {
-		return sqDist(unit->getPosition(), unit->thingToInteract->getPosition()) < unit->dbLevel->sqAttackRange;
+		return unit->getPosition().SqDistXZ(unit->thingToInteract->getPosition()) < unit->dbLevel->sqAttackRange;
 	}
 
 	void execute(Unit* unit, float timeStep) override {

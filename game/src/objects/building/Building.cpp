@@ -155,9 +155,9 @@ void Building::updateAi(bool ifBuildingAction) {
 	}
 }
 
-bool Building::isDeadOrTooFar() {
+bool Building::isDeadOrTooFar() const {
 	return !thingToInteract->isAlive() ||
-			sqDistAs2D(thingToInteract->getPosition(), position) > dbLevel->sqAttackRange;
+			thingToInteract->getPosition().SqDistXZ(position) > dbLevel->sqAttackRange;
 }
 
 std::optional<int> Building::getDeploy() {

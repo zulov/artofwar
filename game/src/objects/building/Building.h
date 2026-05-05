@@ -28,7 +28,7 @@ public:
 	QueueElement* updateQueue();
     void updateAi(bool ifBuildingAction);
 
-    bool isDeadOrTooFar();
+    bool isDeadOrTooFar() const;
 
     std::optional<int> getDeploy();
 
