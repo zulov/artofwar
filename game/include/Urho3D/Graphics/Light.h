@@ -36,7 +36,7 @@ class Camera;
 struct LightBatchQueue;
 
 /// %Light types.
-enum LightType
+enum LightType : unsigned char
 {
     LIGHT_DIRECTIONAL = 0,
     LIGHT_SPOT,

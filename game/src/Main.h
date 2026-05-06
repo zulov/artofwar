@@ -14,7 +14,7 @@ struct FrameInfo;
 
 namespace Urho3D {
 	class Context;
-	enum MouseMode;
+	enum MouseMode: unsigned char;
 }
 
 enum class CameraBehaviorType : char;

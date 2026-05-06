@@ -225,6 +225,8 @@ private:
     HashMap<String, SharedPtr<XMLFile> > tsxXMLFiles_;
     /// Tile map information.
     TileMapInfo2D info_{};
+    /// Texture edge offset.
+    float edgeOffset_;
     /// Gid to tile sprite mapping.
     HashMap<unsigned, SharedPtr<Sprite2D> > gidToSpriteMapping_;
     /// Gid to tile property set mapping.
@@ -235,8 +237,6 @@ private:
     HashMap<unsigned, Vector<SharedPtr<TileMapObject2D> > > gidToCollisionShapeMapping_;
     /// Layers.
     Vector<TmxLayer2D*> layers_;
-    /// Texture edge offset.
-    float edgeOffset_;
 };
 
 }

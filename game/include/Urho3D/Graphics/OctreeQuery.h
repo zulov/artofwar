@@ -177,7 +177,7 @@ struct URHO3D_API OctreeQueryResult
 };
 
 /// Graphics raycast detail level.
-enum RayQueryLevel
+enum RayQueryLevel : unsigned char
 {
     RAY_AABB = 0,
     RAY_OBB,

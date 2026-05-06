@@ -34,7 +34,7 @@ namespace Urho3D
 {
 
 /// %Cursor shapes recognized by the UI subsystem.
-enum CursorShape
+enum CursorShape : unsigned char
 {
     CS_NORMAL = 0,
     CS_IBEAM,

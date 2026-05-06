@@ -43,7 +43,7 @@ class dtQueryFilter;
 namespace Urho3D
 {
 
-enum NavmeshPartitionType
+enum NavmeshPartitionType : unsigned char
 {
     NAVMESH_PARTITION_WATERSHED = 0,
     NAVMESH_PARTITION_MONOTONE
@@ -70,7 +70,7 @@ struct NavigationGeometryInfo
 };
 
 /// A flag representing the type of path point- none, the start of a path segment, the end of one, or an off-mesh connection.
-enum NavigationPathPointFlag
+enum NavigationPathPointFlag : unsigned char
 {
     NAVPATHFLAG_NONE = 0,
     NAVPATHFLAG_START = 0x01,

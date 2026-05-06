@@ -30,7 +30,7 @@ namespace Urho3D
 {
 
 /// %Window movement and resizing modes.
-enum WindowDragMode
+enum WindowDragMode : unsigned char
 {
     DRAG_NONE,
     DRAG_MOVE,

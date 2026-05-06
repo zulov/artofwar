@@ -43,7 +43,7 @@ static const unsigned FIRST_LOCAL_ID = 0x01000000;
 static const unsigned LAST_LOCAL_ID = 0xffffffff;
 
 /// Asynchronous scene loading mode.
-enum LoadMode
+enum LoadMode : unsigned char
 {
     /// Preload resources used by a scene or object prefab file, but do not load any scene content.
     LOAD_RESOURCES_ONLY = 0,

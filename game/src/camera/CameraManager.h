@@ -9,7 +9,7 @@ namespace Urho3D {
 	class Input;
 	class Camera;
 	class String;
-	enum MouseMode;
+	enum MouseMode: unsigned char;
 }
 
 enum class CameraBehaviorType : char;

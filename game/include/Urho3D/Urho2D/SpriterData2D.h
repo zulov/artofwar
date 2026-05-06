@@ -190,7 +190,7 @@ struct Ref
 };
 
 /// Object type.
-enum ObjectType
+enum ObjectType : unsigned char
 {
     BONE = 0,
     SPRITE
@@ -206,8 +206,8 @@ struct Timeline
     bool Load(const pugi::xml_node& node);
 
     int id_{};
+    ObjectType objectType_{};
     String name_;
-    ObjectType objectType_;
     PODVector<SpatialTimelineKey*> keys_;
 };
 

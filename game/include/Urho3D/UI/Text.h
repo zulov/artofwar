@@ -36,7 +36,7 @@ class FontFace;
 struct FontGlyph;
 
 /// Text effect.
-enum TextEffect
+enum TextEffect : unsigned char
 {
     TE_NONE = 0,
     TE_SHADOW,

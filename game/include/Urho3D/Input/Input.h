@@ -36,7 +36,7 @@ namespace Urho3D
 {
 
 /// %Input Mouse Modes.
-enum MouseMode
+enum MouseMode : unsigned char
 {
     MM_ABSOLUTE = 0,
     MM_RELATIVE,
@@ -444,6 +444,10 @@ private:
     Vector2 inputScale_;
     /// SDL window ID.
     unsigned windowID_;
+    /// Determines the mode of mouse behaviour.
+    MouseMode mouseMode_;
+    /// The last mouse mode set by SetMouseMode.
+    MouseMode lastMouseMode_;
     /// Fullscreen toggle flag.
     bool toggleFullscreen_;
     /// Operating system mouse cursor visible flag.
@@ -454,10 +458,6 @@ private:
     bool mouseGrabbed_;
     /// The last mouse grabbed set by SetMouseGrabbed.
     bool lastMouseGrabbed_;
-    /// Determines the mode of mouse behaviour.
-    MouseMode mouseMode_;
-    /// The last mouse mode set by SetMouseMode.
-    MouseMode lastMouseMode_;
 #ifndef __EMSCRIPTEN__
     /// Flag to determine whether SDL mouse relative was used.
     bool sdlMouseRelative_;

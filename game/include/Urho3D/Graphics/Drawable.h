@@ -57,7 +57,7 @@ struct RayQueryResult;
 struct WorkItem;
 
 /// Geometry update type.
-enum UpdateGeometryType
+enum UpdateGeometryType : unsigned char
 {
     UPDATE_NONE = 0,
     UPDATE_MAIN_THREAD,
@@ -90,18 +90,18 @@ struct URHO3D_API SourceBatch
     /// Assignment operator.
     SourceBatch& operator =(const SourceBatch& rhs);
 
-    /// Distance from camera.
-    float distance_{};
     /// Geometry.
     Geometry* geometry_{};
     /// Material.
     SharedPtr<Material> material_;
     /// World transform(s). For a skinned model, these are the bone transforms.
     const Matrix3x4* worldTransform_{&Matrix3x4::IDENTITY};
-    /// Number of world transforms.
-    unsigned numWorldTransforms_{1};
     /// Per-instance data. If not null, must contain enough data to fill instancing buffer.
     void* instancingData_{};
+    /// Distance from camera.
+    float distance_{};
+    /// Number of world transforms.
+    unsigned numWorldTransforms_{1};
     /// %Geometry type.
     GeometryType geometryType_{GEOM_STATIC};
 };

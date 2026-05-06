@@ -157,10 +157,6 @@ protected:
     float panning_;
     /// Effective master gain.
     float masterGain_{};
-    /// Whether finished event should be sent on playback stop.
-    bool sendFinishedEvent_;
-    /// Automatic removal mode.
-    AutoRemoveMode autoRemove_;
 
 private:
     /// Play a sound without locking the audio mutex. Called internally.
@@ -206,6 +202,10 @@ private:
     SharedPtr<Sound> streamBuffer_;
     /// Unused stream bytes from previous frame.
     int unusedStreamSize_;
+    /// Whether finished event should be sent on playback stop.
+    bool sendFinishedEvent_;
+    /// Automatic removal mode.
+    AutoRemoveMode autoRemove_;
 };
 
 }

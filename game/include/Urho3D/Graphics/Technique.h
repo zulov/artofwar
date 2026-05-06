@@ -33,7 +33,7 @@ namespace Urho3D
 class ShaderVariation;
 
 /// Lighting mode of a pass.
-enum PassLightingMode
+enum PassLightingMode : unsigned char
 {
     LIGHTING_UNLIT = 0,
     LIGHTING_PERVERTEX,

@@ -54,15 +54,15 @@ struct Batch
 
     /// Construct from a drawable's source batch.
     explicit Batch(const SourceBatch& rhs) :
-        distance_(rhs.distance_),
-        renderOrder_(rhs.material_ ? rhs.material_->GetRenderOrder() : DEFAULT_RENDER_ORDER),
-        isBase_(false),
         geometry_(rhs.geometry_),
         material_(rhs.material_),
         worldTransform_(rhs.worldTransform_),
-        numWorldTransforms_(rhs.numWorldTransforms_),
         instancingData_(rhs.instancingData_),
         lightQueue_(nullptr),
+        distance_(rhs.distance_),
+        numWorldTransforms_(rhs.numWorldTransforms_),
+        renderOrder_(rhs.material_ ? rhs.material_->GetRenderOrder() : DEFAULT_RENDER_ORDER),
+        isBase_(false),
         geometryType_(rhs.geometryType_)
     {
     }
@@ -76,22 +76,12 @@ struct Batch
 
     /// State sorting key.
     unsigned long long sortKey_{};
-    /// Distance from camera.
-    float distance_{};
-    /// 8-bit render order modifier from material.
-    unsigned char renderOrder_{};
-    /// 8-bit light mask for stencil marking in deferred rendering.
-    unsigned char lightMask_{};
-    /// Base batch flag. This tells to draw the object fully without light optimizations.
-    bool isBase_{};
     /// Geometry.
     Geometry* geometry_{};
     /// Material.
     Material* material_{};
     /// World transform(s). For a skinned model, these are the bone transforms.
     const Matrix3x4* worldTransform_{};
-    /// Number of world transforms.
-    unsigned numWorldTransforms_{};
     /// Per-instance data. If not null, must contain enough data to fill instancing buffer.
     void* instancingData_{};
     /// Zone.
@@ -104,6 +94,16 @@ struct Batch
     ShaderVariation* vertexShader_{};
     /// Pixel shader.
     ShaderVariation* pixelShader_{};
+    /// Distance from camera.
+    float distance_{};
+    /// Number of world transforms.
+    unsigned numWorldTransforms_{};
+    /// 8-bit render order modifier from material.
+    unsigned char renderOrder_{};
+    /// 8-bit light mask for stencil marking in deferred rendering.
+    unsigned char lightMask_{};
+    /// Base batch flag. This tells to draw the object fully without light optimizations.
+    bool isBase_{};
     /// %Geometry type.
     GeometryType geometryType_{};
 };

@@ -34,7 +34,7 @@ class XMLElement;
 class JSONValue;
 
 /// Interpolation method.
-enum InterpMethod
+enum InterpMethod : unsigned char
 {
     /// No interpolation.
     IM_NONE = 0,

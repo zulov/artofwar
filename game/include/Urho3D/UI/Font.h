@@ -36,7 +36,7 @@ static const int FONT_TEXTURE_MIN_SIZE = 128;
 static const int FONT_DPI = 96;
 
 /// %Font file type.
-enum FontType
+enum FontType : unsigned char
 {
     FONT_NONE = 0,
     FONT_FREETYPE,
@@ -107,14 +107,14 @@ private:
     SharedArrayPtr<unsigned char> fontData_;
     /// Size of font data.
     unsigned fontDataSize_;
-    /// Absolute position adjustment for glyphs.
-    IntVector2 absoluteOffset_;
-    /// Point size scaled position adjustment for glyphs.
-    Vector2 scaledOffset_;
     /// Font type.
     FontType fontType_;
     /// Signed distance field font flag.
     bool sdfFont_;
+    /// Absolute position adjustment for glyphs.
+    IntVector2 absoluteOffset_;
+    /// Point size scaled position adjustment for glyphs.
+    Vector2 scaledOffset_;
 };
 
 }

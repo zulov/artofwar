@@ -35,7 +35,7 @@ namespace Urho3D
 static const int COLOR_LUT_SIZE = 16;
 
 /// Supported compressed image formats.
-enum CompressedFormat
+enum CompressedFormat : unsigned char
 {
     CF_NONE = 0,
     CF_RGBA,

@@ -31,7 +31,7 @@ namespace Urho3D
 {
 
 /// %ListView selection highlight mode.
-enum HighlightMode
+enum HighlightMode : unsigned char
 {
     /// Never highlight selections.
     HM_NEVER,

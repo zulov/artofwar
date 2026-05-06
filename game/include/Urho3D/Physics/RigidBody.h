@@ -41,7 +41,7 @@ class PhysicsWorld;
 class SmoothedTransform;
 
 /// Rigid body collision event signaling mode.
-enum CollisionEventMode
+enum CollisionEventMode : unsigned char
 {
     COLLISION_NEVER = 0,
     COLLISION_ACTIVE,
@@ -344,12 +344,12 @@ private:
     unsigned collisionLayer_;
     /// Collision mask.
     unsigned collisionMask_;
-    /// Collision event signaling mode.
-    CollisionEventMode collisionEventMode_;
     /// Last interpolated position from the simulation.
     mutable Vector3 lastPosition_;
     /// Last interpolated rotation from the simulation.
     mutable Quaternion lastRotation_;
+    /// Collision event signaling mode.
+    CollisionEventMode collisionEventMode_;
     /// Kinematic flag.
     bool kinematic_;
     /// Trigger flag.

@@ -33,7 +33,7 @@ namespace Urho3D
 class XMLElement;
 
 /// Orientation.
-enum Orientation2D
+enum Orientation2D : unsigned char
 {
     /// Orthogonal.
     O_ORTHOGONAL = 0,
@@ -262,8 +262,6 @@ public:
 private:
     friend class TmxObjectGroup2D;
 
-    /// Object type.
-    TileMapObjectType2D objectType_{};
     /// Name.
     String name_;
     /// Type.
@@ -276,6 +274,8 @@ private:
     Vector<Vector2> points_;
     /// Gid (for tile).
     unsigned gid_{};
+    /// Object type.
+    TileMapObjectType2D objectType_{};
     /// Sprite (for tile).
     SharedPtr<Sprite2D> sprite_;
     /// Property set.

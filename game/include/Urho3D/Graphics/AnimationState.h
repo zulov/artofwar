@@ -39,7 +39,7 @@ struct AnimationTrack;
 struct Bone;
 
 /// %Animation blending mode.
-enum AnimationBlendMode
+enum AnimationBlendMode : unsigned char
 {
     // Lerp blending (default)
     ABM_LERP = 0,

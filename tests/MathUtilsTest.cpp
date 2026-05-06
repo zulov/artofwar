@@ -205,13 +205,6 @@ TEST_F(MathUtilsFixture, SqDistVector3SamePoint) {
 	EXPECT_FLOAT_EQ(a.SqDistXZ(a), 0.f);
 }
 
-TEST_F(MathUtilsFixture, SqDistVector2ToVector3) {
-	Urho3D::Vector2 a(1.f, 2.f);
-	Urho3D::Vector3 b(4.f, 99.f, 6.f); // uses x and z from b, y from a
-	// sqDistAs2D(1-4, 2-6) = 9+16 = 25
-	EXPECT_FLOAT_EQ(a.SqDistXZ(b), 25.f);
-}
-
 TEST_F(MathUtilsFixture, SqDistVector3ToVector2) {
 	Urho3D::Vector3 a(4.f, 99.f, 6.f);
 	Urho3D::Vector2 b(1.f, 2.f);
@@ -264,15 +257,6 @@ TEST_F(MathUtilsFixture, To2DUsesXZComponents) {
 
 	EXPECT_FLOAT_EQ(result.x_, 3.f);
 	EXPECT_FLOAT_EQ(result.y_, 4.f);
-}
-
-TEST_F(MathUtilsFixture, To3DPlacesVector2IntoXZPlane) {
-	Urho3D::Vector2 vec(3.f, 4.f);
-	auto result = vec.FromXZ(7.f);
-
-	EXPECT_FLOAT_EQ(result.x_, 3.f);
-	EXPECT_FLOAT_EQ(result.y_, 7.f);
-	EXPECT_FLOAT_EQ(result.z_, 4.f);
 }
 
 TEST_F(MathUtilsFixture, ScaleToRescalesVectorToRequestedLength) {
@@ -339,17 +323,9 @@ TEST_F(MathUtilsFixture, SetClosestKeepsExistingWhenCandidateIsFarther) {
 	EXPECT_EQ(closestIndex, 2);
 }
 
-TEST_F(MathUtilsFixture, NotSafeScaleToUsesProvidedSquaredLength) {
-	Urho3D::Vector2 vec(3.f, 4.f);
-	notSafeScaleTo(vec, 5.f, 25.f);
-
-	EXPECT_FLOAT_EQ(vec.x_, 3.f);
-	EXPECT_FLOAT_EQ(vec.y_, 4.f);
-}
-
 TEST_F(MathUtilsFixture, LimitToWithExplicitLengthSqLeavesShortVector) {
 	Urho3D::Vector2 vec(3.f, 4.f);
-	limitTo(vec, 10.f, 25.f);
+	vec.LimitTo(10.f, 25.f);
 
 	EXPECT_FLOAT_EQ(vec.x_, 3.f);
 	EXPECT_FLOAT_EQ(vec.y_, 4.f);

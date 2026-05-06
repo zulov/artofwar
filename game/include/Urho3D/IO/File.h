@@ -49,7 +49,7 @@ extern const char* APK;
 #endif
 
 /// File open mode.
-enum FileMode
+enum FileMode : unsigned char
 {
     FILE_READ = 0,
     FILE_WRITE,
@@ -115,8 +115,6 @@ private:
     /// Seek in file internally using either C standard IO functions or SDL RWops for Android asset files.
     void SeekInternal(unsigned newPosition);
 
-    /// Open mode.
-    FileMode mode_;
     /// File handle.
     void* handle_;
 #ifdef __ANDROID__
@@ -135,6 +133,8 @@ private:
     unsigned offset_;
     /// Content checksum.
     unsigned checksum_;
+    /// Open mode.
+    FileMode mode_;
     /// Compression flag.
     bool compressed_;
     /// Synchronization needed before read -flag.

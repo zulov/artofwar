@@ -6,7 +6,7 @@ namespace Urho3D {
 	class IntVector2;
 	class String;
 	class Vector3;
-	enum MouseMode;
+	enum MouseMode: unsigned char;
 }
 
 

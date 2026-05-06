@@ -34,7 +34,7 @@ namespace Urho3D
 {
 
 /// %UI element horizontal alignment.
-enum HorizontalAlignment
+enum HorizontalAlignment : unsigned char
 {
     HA_LEFT = 0,
     HA_CENTER,
@@ -43,7 +43,7 @@ enum HorizontalAlignment
 };
 
 /// %UI element vertical alignment.
-enum VerticalAlignment
+enum VerticalAlignment : unsigned char
 {
     VA_TOP = 0,
     VA_CENTER,
@@ -52,7 +52,7 @@ enum VerticalAlignment
 };
 
 /// %UI element corners.
-enum Corner
+enum Corner : unsigned char
 {
     C_TOPLEFT = 0,
     C_TOPRIGHT,
@@ -62,14 +62,14 @@ enum Corner
 };
 
 /// %UI element orientation.
-enum Orientation
+enum Orientation : unsigned char
 {
     O_HORIZONTAL = 0,
     O_VERTICAL
 };
 
 /// %UI element focus mode.
-enum FocusMode
+enum FocusMode : unsigned char
 {
     /// Is not focusable and does not affect existing focus.
     FM_NOTFOCUSABLE = 0,
@@ -82,7 +82,7 @@ enum FocusMode
 };
 
 /// Layout operation mode.
-enum LayoutMode
+enum LayoutMode : unsigned char
 {
     /// No layout operations will be performed.
     LM_FREE = 0,
@@ -93,7 +93,7 @@ enum LayoutMode
 };
 
 /// Traversal mode for rendering.
-enum TraversalMode
+enum TraversalMode : unsigned char
 {
     /// Traverse through children having same priority first and recurse into their children before traversing children having higher priority.
     TM_BREADTH_FIRST = 0,

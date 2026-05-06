@@ -29,7 +29,7 @@
 namespace Urho3D
 {
 
-enum TrailType
+enum TrailType : unsigned char
 {
     TT_FACE_CAMERA = 0,
     TT_BONE
