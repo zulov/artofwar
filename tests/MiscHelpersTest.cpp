@@ -1,7 +1,5 @@
 #include "pch.h"
 
-#include <array>
-
 #include "camera/CameraEnums.h"
 #include "control/MouseButton.h"
 #include "env/path/DrawGridUtils.h"

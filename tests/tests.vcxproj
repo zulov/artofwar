@@ -64,6 +64,7 @@
     <ClCompile Include="MathUtilsTest.cpp" />
     <ClCompile Include="MiscHelpersTest.cpp" />
     <ClCompile Include="OtherUtilsTest.cpp" />
+    <ClCompile Include="PathFinderTest.cpp" />
     <ClCompile Include="PriorityHeapTest.cpp" />
     <ClCompile Include="RandGenTest.cpp" />
     <ClCompile Include="SimulationHelpersTest.cpp" />

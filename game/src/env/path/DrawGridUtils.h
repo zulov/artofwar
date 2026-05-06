@@ -10,7 +10,7 @@ inline Urho3D::IntVector2 getCords(const int index, const short resolution) {
 	return Urho3D::IntVector2(index / resolution, index % resolution);
 }
 
-void draw_grid_path(const std::vector<int>* path, Urho3D::Image* image, short resolution) {
+inline void draw_grid_path(const std::vector<int>* path, Urho3D::Image* image, short resolution) {
 	auto data = (uint32_t*)image->GetData();
 	for (auto value : *path) {
 		Urho3D::IntVector2 a = getCords(value, resolution);
@@ -19,7 +19,7 @@ void draw_grid_path(const std::vector<int>* path, Urho3D::Image* image, short re
 	}
 }
 
-void draw_grid_from(int* cameFrom, Urho3D::Image* image, short resolution) {
+inline void draw_grid_from(int* cameFrom, Urho3D::Image* image, short resolution) {
 	auto data = (uint32_t*)image->GetData();
 	for (int y = 0; y != resolution; ++y) {
 		for (int x = 0; x != resolution; ++x) {
@@ -43,7 +43,7 @@ void draw_grid_from(int* cameFrom, Urho3D::Image* image, short resolution) {
 	}
 }
 
-void draw_grid_cost(const int* costSoFar, Urho3D::Image* image, short resolution) {
+inline void draw_grid_cost(const int* costSoFar, Urho3D::Image* image, short resolution) {
 	const auto data = (uint32_t*)image->GetData();
 
 	for (short y = 0; y != resolution; ++y) {
