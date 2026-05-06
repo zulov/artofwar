@@ -202,7 +202,6 @@
     <ClCompile Include="src\objects\projectile\ProjectileManager.cpp" />
     <ClCompile Include="src\objects\projectile\ProjectileBase.h" />
     <ClCompile Include="src\env\influence\VisibilityManager.cpp" />
-    <ClCompile Include="src\utils\CountUtils.h" />
     <ClCompile Include="src\utils\CountUtils.cpp" />
     <ClCompile Include="src\objects\UId.h" />
     <ClCompile Include="src\database\db_update_utils.h" />
@@ -538,6 +537,8 @@
     <ClInclude Include="src\utils\PrintUtils.h" />
     <ClInclude Include="src\database\db_insert_utils.h" />
     <ClInclude Include="src\database\db_insert_defs.h" />
+    <ClInclude Include="src\utils\CountUtils.h" />
+    <ClInclude Include="src\env\bucket\ArrayProviderUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

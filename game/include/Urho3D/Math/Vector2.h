@@ -813,14 +813,6 @@ public:
     /// @property
     float LengthSquared() const { return x_ * x_ + y_ * y_; }
 
-    /// Calculate squared distance to another point.
-    float DistanceSquaredToPoint(const Vector2& point) const
-    {
-        const float dx = x_ - point.x_;
-        const float dy = y_ - point.y_;
-        return dx * dx + dy * dy;
-    }
-
     /// Calculate squared XZ-plane distance to a 2D point.
     float SqDistXZ(const Vector2& point) const
     {
@@ -930,6 +922,17 @@ public:
     void LimitTo(float maxLength)
     {
         const float lenSquared = LengthSquared();
+        if (lenSquared > maxLength * maxLength)
+        {
+            const float scale = maxLength / sqrtf(lenSquared);
+            x_ *= scale;
+            y_ *= scale;
+        }
+    }
+
+        /// Limit this vector to the specified maximum length.
+    void LimitTo(float maxLength, float lenSquared)
+    {
         if (lenSquared > maxLength * maxLength)
         {
             const float scale = maxLength / sqrtf(lenSquared);
