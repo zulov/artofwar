@@ -75,15 +75,15 @@ public:
 	Urho3D::Vector3 getPosWithHeightAt(int index) const;
 	float getGroundHeightPercentScaled(float x, float z, float div) const;
 
-	bool validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos, bool isBuilding) const;
-	bool validateStatic(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords, bool isBuilding) const;
-	bool validateStatic(const Urho3D::IntVector2& size, int index, bool isBuilding) const;
-	std::optional<Urho3D::Vector3> tryGetValidPosition(const Urho3D::IntVector2& size,
-	                                                  const Urho3D::IntVector2& bucketCords,
+	bool validateStatic(const Urho3D::UCharVector2& size, Urho3D::Vector2& pos, bool isBuilding) const;
+	bool validateStatic(const Urho3D::UCharVector2& size, const Urho3D::UShortVector2& bucketCords, bool isBuilding) const;
+	bool validateStatic(const Urho3D::UCharVector2& size, int index, bool isBuilding) const;
+	std::optional<Urho3D::Vector3> tryGetValidPosition(const Urho3D::UCharVector2& size,
+	                                                  const Urho3D::UShortVector2& bucketCords,
 	                                                  bool isBuilding) const;
 
-	Urho3D::Vector3 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
-	Urho3D::Vector3 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) const;
+	Urho3D::Vector3 getValidPosition(const Urho3D::UCharVector2& size, const Urho3D::Vector2& pos) const;
+	Urho3D::Vector3 getValidPosition(const Urho3D::UCharVector2& size, const Urho3D::UShortVector2& bucketCords) const;
 
 	const std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim);
 	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs);
@@ -103,9 +103,9 @@ public:
 
 	int getIndex(Urho3D::Vector2& pos) const { return calculator->indexFromPosition(pos); }
 	int getIndex(short x, short z) const { return calculator->getIndex(x, z); }
-	Urho3D::IntVector2 getCords(int index) const { return calculator->getCords(index); }
+	Urho3D::UShortVector2 getCords(int index) const { return calculator->getCords(index); }
 
-	Urho3D::IntVector2 getCords(const Urho3D::Vector2& pos) const { return calculator->getCords(pos); }
+	Urho3D::UShortVector2 getCords(const Urho3D::Vector2& pos) const { return calculator->getCords(pos); }
 
 	bool cellInState(int index, CellState state) const;
 	void incCell(int index, CellState cellState) const;

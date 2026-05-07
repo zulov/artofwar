@@ -86,15 +86,15 @@ void MainGrid::prepareGridToFind() const {
 	}
 }
 
-bool MainGrid::validateAdd(const Urho3D::IntVector2& size, const Urho3D::IntVector2 bucketCords,
+bool MainGrid::validateAdd(const Urho3D::UCharVector2& size, const Urho3D::UShortVector2& bucketCords,
                            bool isBuilding) const {
 	const auto sizeX = calculateSize(size.x_, bucketCords.x_);
 	const auto sizeZ = calculateSize(size.y_, bucketCords.y_);
 	return validateAddBounds(sizeX, sizeZ, isBuilding);
 }
 
-std::optional<Urho3D::Vector2> MainGrid::tryGetValidPosition(const Urho3D::IntVector2& size,
-	                                                         const Urho3D::IntVector2& cords,
+std::optional<Urho3D::Vector2> MainGrid::tryGetValidPosition(const Urho3D::UCharVector2& size,
+	                                                         const Urho3D::UShortVector2& cords,
 	                                                         bool isBuilding) const {
 	const auto sizeX = calculateSize(size.x_, cords.x_);
 	const auto sizeZ = calculateSize(size.y_, cords.y_);
@@ -683,7 +683,7 @@ std::vector<int> MainGrid::getPassableIndexes(const std::vector<int>& endIdxs, b
 	return result;
 }
 
-Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& cords) const {
+Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::UCharVector2& size, const Urho3D::UShortVector2& cords) const {
 	const auto sizeX = calculateSize(size.x_, cords.x_);
 	const auto sizeZ = calculateSize(size.y_, cords.y_);
 	return getPositionFromBounds(sizeX, sizeZ);

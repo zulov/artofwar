@@ -86,7 +86,7 @@ const Urho3D::String& Building::getName() const { return dbBuilding->name; }
 
 float Building::getAttackVal(Physical* aim) { return dbLevel->attack; }
 
-void Building::action(BuildingActionType type, short id) {
+void Building::action(BuildingActionType type, unsigned short id) {
 	if (!isReady()) { return; }
 	auto player = Game::getPlayersMan()->getPlayer(getPlayer());
 	Resources* resources = player->getResources();
@@ -165,7 +165,7 @@ std::optional<int> Building::getDeploy() {
 	return {};
 }
 
-const Urho3D::IntVector2 Building::getGridSize() const { return dbBuilding->size; }
+const Urho3D::UCharVector2 Building::getGridSize() const { return dbBuilding->size; }
 
 void Building::createDeploy() {
 	deployIndex = -1;

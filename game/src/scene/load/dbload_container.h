@@ -7,7 +7,9 @@
 #include "utils/DeleteUtils.h"
 
 struct dbload_config {
-	dbload_config(sqlite3_stmt* stmt) : precision(asInt(stmt, ConfigCol::precision)), map(asInt(stmt, ConfigCol::map)), size(asInt(stmt, ConfigCol::size)) {}
+	dbload_config(sqlite3_stmt* stmt) :
+		precision(asInt(stmt, ConfigCol::precision)), map(asInt(stmt, ConfigCol::map)),
+		size(asInt(stmt, ConfigCol::size)) {}
 
 	int precision;
 	int map;
@@ -28,11 +30,11 @@ struct dbload_physical {
 };
 
 struct dbload_static : dbload_physical {
-	short buc_x;
-	short buc_y;
+	unsigned short buc_x;
+	unsigned short buc_y;
 
-	dbload_static(short idDb, float hp, unsigned uid, char player, int bucX, int bucY, char level, char state,
-	              char nextState) :
+	dbload_static(short idDb, float hp, unsigned uid, char player, unsigned short bucX, unsigned short bucY,
+	              char level, char state, char nextState) :
 		dbload_physical(idDb, hp, uid, player, level, state, nextState),
 		buc_x(bucX),
 		buc_y(bucY) {}
@@ -45,6 +47,7 @@ struct dbload_unit : dbload_physical {
 	float vel_z;
 
 	using C = UnitCol;
+
 	dbload_unit(sqlite3_stmt* stmt, int p) :
 		dbload_unit(asShort(stmt, C::id_db), asItoF(stmt, C::hp_coef, p), asUI(stmt, C::uid), asByte(stmt, C::player),
 		            asByte(stmt, C::level), asItoF(stmt, C::position_x, p), asItoF(stmt, C::position_z, p),
@@ -65,20 +68,22 @@ struct dbload_building : dbload_static {
 	unsigned short currentFrameState;
 	//TODO std::vector<dbload_queue*>;
 	using C = BuildingCol;
+
 	dbload_building(sqlite3_stmt* stmt, int p) :
 		dbload_building(
 				asShort(stmt, C::id_db), asItoF(stmt, C::hp_coef, p), asUI(stmt, C::uid), asByte(stmt, C::player),
-				asByte(stmt, C::level), asInt(stmt, C::bucket_x), asInt(stmt, C::bucket_y),
+				asByte(stmt, C::level), asUShort(stmt, C::bucket_x), asUShort(stmt, C::bucket_y),
 				asByte(stmt, C::state), asByte(stmt, C::next_state), asInt(stmt, C::deploy_Idx)) {}
 
-	dbload_building(short idDb, float hpCoef, unsigned uid, char player, char level, int bucX, int bucY, char state,
-	                char nextState, int deploy_idx) :
+	dbload_building(short idDb, float hpCoef, unsigned uid, char player, char level,
+	                unsigned short bucX, unsigned short bucY, char state, char nextState, int deploy_idx) :
 		dbload_static(idDb, hpCoef, uid, player, bucX, bucY, level, state, nextState),
 		deploy_idx(deploy_idx) {}
 };
 
 struct dbload_resource : dbload_static {
 	using C = ResourceCol;
+
 	dbload_resource(sqlite3_stmt* stmt, int p) :
 		dbload_resource(asShort(stmt, C::id_db), asItoF(stmt, C::hp_coef, p),
 		                asUI(stmt, C::uid), asInt(stmt, C::bucket_x), asInt(stmt, C::bucket_y),
@@ -103,9 +108,12 @@ struct dbload_player {
 	float gold;
 
 	using C = PlayerCol;
+
 	dbload_player(sqlite3_stmt* stmt, int p) :
-		dbload_player(asUByte(stmt, C::id), asBool(stmt, C::is_active), asUByte(stmt, C::team), asUByte(stmt, C::nation),
-		              asText(stmt, C::name), asUByte(stmt, C::color), asUI(stmt, C::buildingUid), asUI(stmt, C::unitUid),
+		dbload_player(asUByte(stmt, C::id), asBool(stmt, C::is_active), asUByte(stmt, C::team),
+		              asUByte(stmt, C::nation),
+		              asText(stmt, C::name), asUByte(stmt, C::color), asUI(stmt, C::buildingUid),
+		              asUI(stmt, C::unitUid),
 		              asItoF(stmt, C::food, p), asItoF(stmt, C::wood, p),
 		              asItoF(stmt, C::stone, p), asItoF(stmt, C::gold, p)) {}
 

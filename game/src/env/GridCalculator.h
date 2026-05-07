@@ -53,12 +53,12 @@ struct GridCalculator {
 		return getNotSafeIndex(getIndex(x), getIndex(z));
 	}
 
-	Urho3D::IntVector2 getCords(int i) const {
-		//return {i / resolution, i % resolution};
-		return {i >> shiftAmount, i & mask};
+	Urho3D::UShortVector2 getCords(int i) const {
+		// return {i / resolution, i % resolution};
+		return {static_cast<unsigned short>(i >> shiftAmount), static_cast<unsigned short>(i & mask)};
 	}
 
-	Urho3D::IntVector2 getCords(const Urho3D::Vector2& pos) const {
+	Urho3D::UShortVector2 getCords(const Urho3D::Vector2& pos) const {
 		return {getIndex(pos.x_), getIndex(pos.y_)};
 	}
 
@@ -97,13 +97,13 @@ struct GridCalculator {
 
 	unsigned short getResolution() const { return resolution; }
 
-	float getSqDistance(const Urho3D::IntVector2& a, int next) const {
+	float getSqDistance(const Urho3D::UShortVector2& a, int next) const {
 		const auto b = getCords(next);
 
 		return getSqDistance(a, b);
 	}
 
-	float getSqDistance(const Urho3D::IntVector2& a, const Urho3D::IntVector2& b) const {
+	float getSqDistance(const Urho3D::UShortVector2& a, const Urho3D::UShortVector2& b) const {
 		const auto dx = (a.x_ - b.x_);
 		const auto dy = (a.y_ - b.y_);
 		return (dx * dx + dy * dy) * sqFieldSize;

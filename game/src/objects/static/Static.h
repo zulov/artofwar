@@ -29,7 +29,7 @@ public:
 	bool isAlive() const override { return state == StaticState::ALIVE || state == StaticState::CREATING; }
 
 	bool isToDispose() const override { return state == StaticState::DISPOSE; }
-	virtual const Urho3D::IntVector2 getGridSize() const =0;
+	virtual const Urho3D::UCharVector2 getGridSize() const =0;
 
 	const std::span<int> getOccupiedCells() const { return std::span{data, occupiedCellsSize}; }
 	const std::span<int> getSurroundCells() const { return std::span{data + occupiedCellsSize, surroundCellsSize}; }

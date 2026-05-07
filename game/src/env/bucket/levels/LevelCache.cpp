@@ -9,12 +9,12 @@
 LevelCache::LevelCache(float maxDistance, GridCalculator* calculator)
 	: maxDistance(maxDistance), invDiff(RES_SEP_DIST / maxDistance), calculator(calculator) {
 	levels[0].indexes = new std::vector<short>(1);
-	levels[0].shifts = new std::vector<Urho3D::IntVector2>();
-	levels[0].shifts->push_back(Urho3D::IntVector2::ZERO);
-	std::vector<Urho3D::IntVector2> temp;
-	std::vector<Urho3D::IntVector2> tempA;
-	std::vector<Urho3D::IntVector2> tempB;
-	std::vector<Urho3D::IntVector2> tempC;
+	levels[0].shifts = new std::vector<Urho3D::ShortVector2>();
+	levels[0].shifts->push_back(Urho3D::ShortVector2::ZERO);
+	std::vector<Urho3D::ShortVector2> temp;
+	std::vector<Urho3D::ShortVector2> tempA;
+	std::vector<Urho3D::ShortVector2> tempB;
+	std::vector<Urho3D::ShortVector2> tempC;
 
 	tempReturn = new std::vector<short>();
 
@@ -34,7 +34,7 @@ LevelCache::~LevelCache() {
 	delete tempReturn;
 }
 
-const std::vector<short>* LevelCache::get(float radius, const Urho3D::IntVector2& centerCords) const {
+const std::vector<short>* LevelCache::get(float radius, const Urho3D::UShortVector2& centerCords) const {
 	int index = radius * invDiff;
 	if (index >= RES_SEP_DIST) {
 		index = RES_SEP_DIST - 1;
@@ -47,7 +47,7 @@ const std::vector<short>* LevelCache::get(float radius, const Urho3D::IntVector2
 	}
 	tempReturn->clear();
 	for (const auto& [idx, shift] : val.asZip()) {
-		if (calculator->isValidIndex(centerCords + shift)) {
+		if (calculator->isValidIndex(centerCords.x_ + shift.x_, centerCords.y_ + shift.y_)) {
 			tempReturn->push_back(idx);
 		}
 	}
@@ -60,10 +60,10 @@ const std::vector<short>* LevelCache::get(float radius, int center) const {
 }
 
 LevelCacheValue LevelCache::getEnvIndexs(float radius, LevelCacheValue& prev,
-                                         std::vector<Urho3D::IntVector2>& temp,
-                                         std::vector<Urho3D::IntVector2>& tempA,
-                                         std::vector<Urho3D::IntVector2>& tempB,
-                                         std::vector<Urho3D::IntVector2>& tempC) const {
+                                         std::vector<Urho3D::ShortVector2>& temp,
+										 std::vector<Urho3D::ShortVector2>& tempA,
+										 std::vector<Urho3D::ShortVector2>& tempB,
+										 std::vector<Urho3D::ShortVector2>& tempC) const {
 	radius /= calculator->getFieldSize();
 	radius *= radius;
 	temp.clear();

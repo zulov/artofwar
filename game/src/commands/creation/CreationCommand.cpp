@@ -4,10 +4,10 @@
 #include "simulation/SimulationObjectManager.h"
 
 
-CreationCommand::CreationCommand(ObjectType type, short id, const Urho3D::IntVector2& bucketCords)
+CreationCommand::CreationCommand(ObjectType type, short id, const Urho3D::UShortVector2& bucketCords)
 	: bucketCords(bucketCords), id(id), objectType(type), player(-1) {}
 
-CreationCommand::CreationCommand(ObjectType type, short id, const Urho3D::IntVector2& bucketCords, char level,
+CreationCommand::CreationCommand(ObjectType type, short id, const Urho3D::UShortVector2& bucketCords, char level,
                                  char player)
 	: bucketCords(bucketCords), id(id), objectType(type), level(level), player(player) {}
 

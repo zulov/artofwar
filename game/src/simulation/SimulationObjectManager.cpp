@@ -50,7 +50,7 @@ void SimulationObjectManager::addUnits(unsigned number, int id, Urho3D::Vector2&
 	addUnits(unitFactory.create(number, id, center, player, level));
 }
 
-void SimulationObjectManager::addBuilding(int id, const Urho3D::IntVector2& _bucketCords, char level,
+void SimulationObjectManager::addBuilding(int id, const Urho3D::UShortVector2& _bucketCords, char level,
                                           char player) const {
 	if (auto* building = buildingFactory.create(id, _bucketCords, level, player)) {
 		building->postCreate();
@@ -58,7 +58,7 @@ void SimulationObjectManager::addBuilding(int id, const Urho3D::IntVector2& _buc
 	}
 }
 
-ResourceEntity* SimulationObjectManager::addResource(int id, const Urho3D::IntVector2& _bucketCords) {
+ResourceEntity* SimulationObjectManager::addResource(int id, const Urho3D::UShortVector2& _bucketCords) {
 	if (const auto res = resourceFactory.create(id, _bucketCords)) {
 		addResource(res, false);
 		return res;

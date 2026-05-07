@@ -7,6 +7,10 @@
 #include "objects/unit/UnitFactory.h"
 
 
+namespace Urho3D {
+	class UShortVector2;
+}
+
 class Physical;
 
 class SimulationObjectManager {
@@ -20,8 +24,8 @@ public:
 	std::vector<ResourceEntity*>* getResources() const { return resources; }
 
 	void addUnits(unsigned number, int id, Urho3D::Vector2& center, char level, char player);
-	void addBuilding(int id, const Urho3D::IntVector2& _bucketCords, char level, char player) const;
-	ResourceEntity* addResource(int id, const Urho3D::IntVector2& _bucketCords);
+	void addBuilding(int id, const Urho3D::UShortVector2& _bucketCords, char level, char player) const;
+	ResourceEntity* addResource(int id, const Urho3D::UShortVector2& _bucketCords);
 
 	void dispose() const;
 

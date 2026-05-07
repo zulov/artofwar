@@ -28,7 +28,7 @@ ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, db_resource* db_resour
 	populate();
 }
 
-const Urho3D::IntVector2 ResourceEntity::getGridSize() const {
+const Urho3D::UCharVector2 ResourceEntity::getGridSize() const {
 	return dbResource->size;
 }
 

@@ -28,9 +28,9 @@ public:
 	void updateNeight(int idx) const;
 
 	void prepareGridToFind() const;
-	bool validateAdd(const Urho3D::IntVector2& size, Urho3D::IntVector2 bucketCords, bool isBuilding) const;
-	std::optional<Urho3D::Vector2> tryGetValidPosition(const Urho3D::IntVector2& size,
-	                                                const Urho3D::IntVector2& cords,
+	bool validateAdd(const Urho3D::UCharVector2& size, const Urho3D::UShortVector2& bucketCords, bool isBuilding) const;
+	std::optional<Urho3D::Vector2> tryGetValidPosition(const Urho3D::UCharVector2& size,
+	                                                const Urho3D::UShortVector2& cords,
 	                                                bool isBuilding) const;
 	void addStatic(Static* object, bool bulkAdd);
 	void removeStatic(Static* object) const;
@@ -39,7 +39,7 @@ public:
 	std::vector<int> getPassableEnd(int endIdx) const;
 	std::vector<int> getPassableIndexes(const std::vector<int>& endIdxs, bool closeEnough) const;
 
-	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& cords) const;
+	Urho3D::Vector2 getValidPosition(const Urho3D::UCharVector2& size, const Urho3D::UShortVector2& cords) const;
 
 	void updateNeighbors(ComplexBucketData& data, int dataIndex) const;
 

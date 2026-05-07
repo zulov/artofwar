@@ -339,21 +339,21 @@ float Environment::getGroundHeightPercentScaled(float x, float z, float div) con
 	return 0.f;
 }
 
-bool Environment::validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos, bool isBuilding) const {
+bool Environment::validateStatic(const Urho3D::UCharVector2& size, Urho3D::Vector2& pos, bool isBuilding) const {
 	return mainGrid.validateAdd(size, {calculator->getIndex(pos.x_), calculator->getIndex(pos.y_)}, isBuilding);
 }
 
-bool Environment::validateStatic(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords,
+bool Environment::validateStatic(const Urho3D::UCharVector2& size, const Urho3D::UShortVector2& bucketCords,
                                  bool isBuilding) const {
 	return mainGrid.validateAdd(size, bucketCords, isBuilding);
 }
 
-bool Environment::validateStatic(const Urho3D::IntVector2& size, int index, bool isBuilding) const {
+bool Environment::validateStatic(const Urho3D::UCharVector2& size, int index, bool isBuilding) const {
 	return mainGrid.validateAdd(size, calculator->getCords(index), isBuilding);
 }
 
-std::optional<Urho3D::Vector3> Environment::tryGetValidPosition(const Urho3D::IntVector2& size,
-	                                                            const Urho3D::IntVector2& bucketCords,
+std::optional<Urho3D::Vector3> Environment::tryGetValidPosition(const Urho3D::UCharVector2& size,
+	                                                            const Urho3D::UShortVector2& bucketCords,
 	                                                            bool isBuilding) const {
 	const auto pos2d = mainGrid.tryGetValidPosition(size, bucketCords, isBuilding);
 	if (!pos2d.has_value()) {
@@ -516,12 +516,12 @@ int Environment::closestPassableCell(int posIndex) const {
 	return mainGrid.closestPassableCell(posIndex);
 }
 
-Urho3D::Vector3 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
+Urho3D::Vector3 Environment::getValidPosition(const Urho3D::UCharVector2& size, const Urho3D::Vector2& pos) const {
 	return getValidPosition(size, calculator->getCords(pos));
 }
 
-Urho3D::Vector3 Environment::getValidPosition(const Urho3D::IntVector2& size,
-                                              const Urho3D::IntVector2& bucketCords) const {
+Urho3D::Vector3 Environment::getValidPosition(const Urho3D::UCharVector2& size,
+                                              const Urho3D::UShortVector2& bucketCords) const {
 	auto pos2d = mainGrid.getValidPosition(size, bucketCords);
 	return getPosWithHeightAt(pos2d.x_, pos2d.y_);
 }

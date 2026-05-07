@@ -3,7 +3,7 @@
 #include "objects/building/Building.h"
 
 BuildingActionCommand::BuildingActionCommand(Building* building, BuildingActionType action, unsigned short id)
-	: id(id), action(action) {
+	: action(action), id(id) {
 	if (building->isReady()) {
 		this->buildings.emplace_back(building);
 	}

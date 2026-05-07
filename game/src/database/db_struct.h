@@ -84,9 +84,9 @@ struct db_unit_attack : db_common_attack {
 };
 
 struct db_static {
-	const Urho3D::IntVector2 size;
+	const Urho3D::UCharVector2 size;
 
-	explicit db_static(const Urho3D::IntVector2& size)
+	explicit db_static(const Urho3D::UCharVector2& size)
 		: size(size) {}
 };
 
@@ -372,7 +372,7 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 	db_building(sqlite3_stmt* s)
 		: db_with_icon(asUShort(s, C::id), asText(s, C::name), asText(s, C::icon)),
 		  db_with_cost(asUShort(s, C::food), asUShort(s, C::wood), asUShort(s, C::stone), asUShort(s, C::gold)),
-		  db_static({asShort(s, C::size_x), asShort(s, C::size_z)}),
+		db_static({asUByte(s, C::size_x), asUByte(s, C::size_z)}),
 		  typeCenter(asBool(s, C::type_center)),
 		  typeHome(asBool(s, C::type_home)),
 		  typeDefence(asBool(s, C::type_defence)),
@@ -499,7 +499,7 @@ struct db_resource : db_with_icon, db_static, db_with_hp, db_with_model {
 	using C = DbResourceCol;
 	db_resource(sqlite3_stmt* s)
 		: db_with_icon(asUShort(s, C::id), asText(s, C::name), asText(s, C::icon)),
-		  db_static({asShort(s, C::size_x), asShort(s, C::size_z)}),
+		db_static({asUByte(s, C::size_x), asUByte(s, C::size_z)}),
 		  db_with_hp(asUShort(s, C::max_hp), 0.f),
 		  resourceId(asUByte(s, C::resource_id)),
 		  maxUsers(asUShort(s, C::max_users)),

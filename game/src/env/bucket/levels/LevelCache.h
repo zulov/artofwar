@@ -10,18 +10,18 @@ constexpr char RES_SEP_DIST = 120;
 struct LevelCacheValue {
 	LevelCacheValue() = default;
 
-	explicit LevelCacheValue(std::vector<short>* indexes)
-		: indexes(indexes) {}
+	explicit LevelCacheValue(std::vector<short>* indexes) :
+		indexes(indexes) {}
 
 	explicit LevelCacheValue(size_t size) {
 		indexes = new std::vector<short>();
-		shifts = new std::vector<Urho3D::IntVector2>;
+		shifts = new std::vector<Urho3D::ShortVector2>;
 		indexes->reserve(size);
 		shifts->reserve(size);
 	}
 
-	std::vector<short>* indexes{};
-	std::vector<Urho3D::IntVector2>* shifts{}; //if null then safe not to check
+	std::vector<short>* indexes{}; //unsigned short?
+	std::vector<Urho3D::ShortVector2>* shifts{}; //short //if null then safe not to check
 	short maxShift = 0;
 
 	void dispose() const {
@@ -30,14 +30,12 @@ struct LevelCacheValue {
 	}
 
 	std::ranges::zip_view<std::ranges::ref_view<std::vector<short>>, std::ranges::ref_view<std::vector<
-		                      Urho3D::IntVector2>>> asZip() const {
-		return std::views::zip(*indexes, *shifts);
-	}
+		                      Urho3D::ShortVector2>>> asZip() const { return std::views::zip(*indexes, *shifts); }
 
-	void push(Urho3D::IntVector2 first, short second) const {
+	void push(Urho3D::ShortVector2 first, short second) const {
 		assert(indexes->capacity() > indexes->size());
-		indexes->push_back(second);
 		shifts->push_back(first);
+		indexes->push_back(second);
 	}
 };
 
@@ -50,14 +48,14 @@ public:
 	float getMaxDistance() const { return maxDistance; }
 
 	const std::vector<short>* get(float radius, int center) const;
-	const std::vector<short>* get(float radius, const Urho3D::IntVector2& centerCords) const;
+	const std::vector<short>* get(float radius, const Urho3D::UShortVector2& centerCords) const;
 
 private:
 	LevelCacheValue getEnvIndexs(float radius, LevelCacheValue& prev,
-	                             std::vector<Urho3D::IntVector2>& temp,
-	                             std::vector<Urho3D::IntVector2>& tempA,
-	                             std::vector<Urho3D::IntVector2>& tempB,
-	                             std::vector<Urho3D::IntVector2>& tempC) const;
+	                             std::vector<Urho3D::ShortVector2>& temp,
+	                             std::vector<Urho3D::ShortVector2>& tempA,
+	                             std::vector<Urho3D::ShortVector2>& tempB,
+	                             std::vector<Urho3D::ShortVector2>& tempC) const;
 	float maxDistance;
 	float invDiff;
 

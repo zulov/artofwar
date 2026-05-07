@@ -51,7 +51,7 @@ CreationCommandList::addBuildingForce(short id, Urho3D::Vector2& position, char 
 	return nullptr;
 }
 
-CreationCommand* CreationCommandList::addResource(short id, const Urho3D::IntVector2& cords) const {
+CreationCommand* CreationCommandList::addResource(short id, const Urho3D::UShortVector2& cords) const {
 	const auto size = Game::getDatabase()->getResource(id)->size;
 
 	if (Game::getEnvironment()->validateStatic(size, cords, false)) {
