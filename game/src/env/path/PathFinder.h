@@ -39,13 +39,13 @@ private:
 	const std::vector<int>* getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const;
 
 	void prepareToStart(int startIdx);
-	int heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const;
+	int heuristic(int from, std::vector<Urho3D::UShortVector2>& endIdxs) const;
 
 	int findInCache(int start, int end) const;
 	void addToCache(int startIdx, int endIdx, const std::vector<int>* vector);
 
 	Urho3D::UShortVector2 getCords(int index) const { return calculator->getCords(index); }
-	std::vector<Urho3D::IntVector2> getCords(const std::vector<int>& endIdxs) const;
+	std::vector<Urho3D::UShortVector2> getCords(const std::vector<int>& endIdxs) const;
 	void resetPathArrays();
 	bool isInLocalArea(int center, int indexOfAim) const;
 	bool isInLocal2Area(int center, int indexOfAim) const;

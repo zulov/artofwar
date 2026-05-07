@@ -41,8 +41,8 @@ const std::vector<short>* LevelCache::get(float radius, const Urho3D::UShortVect
 	}
 	auto& val = levels[index];
 
-	if (centerCords.x_ - val.maxShift >= 0 && centerCords.x_ + val.maxShift < getResolution() &&
-		centerCords.y_ - val.maxShift >= 0 && centerCords.y_ + val.maxShift < getResolution()) {
+	if (static_cast<int>(centerCords.x_) - val.maxShift >= 0 && centerCords.x_ + val.maxShift < getResolution() &&
+		static_cast<int>(centerCords.y_) - val.maxShift >= 0 && centerCords.y_ + val.maxShift < getResolution()) {
 		return val.indexes;
 	}
 	tempReturn->clear();

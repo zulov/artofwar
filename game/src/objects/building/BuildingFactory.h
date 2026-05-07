@@ -5,7 +5,6 @@ struct UId;
 
 namespace Urho3D {
 	class UShortVector2;
-	class IntVector2;
 	class Vector2;
 }
 

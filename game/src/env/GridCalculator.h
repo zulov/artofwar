@@ -75,10 +75,6 @@ struct GridCalculator {
 		return !(x < 0 || x >= resolution || z < 0 || z >= resolution);
 	}
 
-	bool isValidIndex(const Urho3D::IntVector2& cord) const {
-		return !(cord.x_ < 0 || cord.x_ >= resolution || cord.y_ < 0 || cord.y_ >= resolution);
-	}
-
 	bool isValidIndex(int index) const { return index >= 0 && index < sqResolution; }
 
 	float getFieldSize() const { return fieldSize; }
@@ -109,7 +105,7 @@ struct GridCalculator {
 		return (dx * dx + dy * dy) * sqFieldSize;
 	}
 
-	int getBiggestManhattan(int first, const std::vector<Urho3D::IntVector2>& endCords) const {
+	int getBiggestManhattan(int first, const std::vector<Urho3D::UShortVector2>& endCords) const {
 		const auto a = getCords(first);
 		int max = 0;
 		for (const auto& b : endCords) {

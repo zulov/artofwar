@@ -175,7 +175,7 @@ bool PathFinder::validateIndex(const int current, int next) const {
 	return false;
 }
 
-int PathFinder::heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const {
+int PathFinder::heuristic(int from, std::vector<Urho3D::UShortVector2>& endIdxs) const {
 	//bug lepiej wybierac do kogo heurystyka
 	assert(!endIdxs.empty());
 	const auto a = getCords(from);
@@ -256,8 +256,8 @@ void PathFinder::update(int idx, int cost, int cameForm, int heuristicCost) {
 	}
 }
 
-std::vector<Urho3D::IntVector2> PathFinder::getCords(const std::vector<int>& endIdxs) const {
-	std::vector<Urho3D::IntVector2> cords;
+std::vector<Urho3D::UShortVector2> PathFinder::getCords(const std::vector<int>& endIdxs) const {
+	std::vector<Urho3D::UShortVector2> cords;
 	cords.reserve(endIdxs.size());
 	for (auto idx : endIdxs) {
 		cords.emplace_back(getCords(idx));
