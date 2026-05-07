@@ -162,7 +162,7 @@
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalDependencies>..\game\lib\sqlite3.lib;..\game\lib\Urho3D_rd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\game\lib\sqlite3.lib;..\game\lib\Urho3D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
