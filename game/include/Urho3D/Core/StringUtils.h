@@ -73,6 +73,10 @@ URHO3D_API IntVector2 ToIntVector2(const char* source);
 URHO3D_API ShortVector2 ToShortVector2(const String& source);
 /// Parse a ShortVector2 from a C string.
 URHO3D_API ShortVector2 ToShortVector2(const char* source);
+/// Parse a UShortVector2 from a string.
+URHO3D_API UShortVector2 ToUShortVector2(const String& source);
+/// Parse a UShortVector2 from a C string.
+URHO3D_API UShortVector2 ToUShortVector2(const char* source);
 /// Parse a CharVector2 from a string.
 URHO3D_API CharVector2 ToCharVector2(const String& source);
 /// Parse a CharVector2 from a C string.
@@ -165,6 +169,7 @@ template <> inline Color FromString<Color>(const char* source) { return ToColor(
 template <> inline IntRect FromString<IntRect>(const char* source) { return ToIntRect(source); }
 template <> inline IntVector2 FromString<IntVector2>(const char* source) { return ToIntVector2(source); }
 template <> inline ShortVector2 FromString<ShortVector2>(const char* source) { return ToShortVector2(source); }
+template <> inline UShortVector2 FromString<UShortVector2>(const char* source) { return ToUShortVector2(source); }
 template <> inline CharVector2 FromString<CharVector2>(const char* source) { return ToCharVector2(source); }
 template <> inline UCharVector2 FromString<UCharVector2>(const char* source) { return ToUCharVector2(source); }
 template <> inline IntVector3 FromString<IntVector3>(const char* source) { return ToIntVector3(source); }

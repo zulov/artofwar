@@ -35,6 +35,7 @@ class IntRect;
 class IntVector2;
 class IntVector3;
 class ShortVector2;
+class UShortVector2;
 class CharVector2;
 class UCharVector2;
 class Quaternion;
@@ -84,6 +85,8 @@ public:
     bool WriteIntVector3(const IntVector3& value);
     /// Write a ShortVector2.
     bool WriteShortVector2(const ShortVector2& value);
+    /// Write a UShortVector2.
+    bool WriteUShortVector2(const UShortVector2& value);
     /// Write a CharVector2.
     bool WriteCharVector2(const CharVector2& value);
     /// Write a UCharVector2.

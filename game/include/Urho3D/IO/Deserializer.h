@@ -97,6 +97,8 @@ public:
     IntVector3 ReadIntVector3();
     /// Read a ShortVector2.
     ShortVector2 ReadShortVector2();
+    /// Read a UShortVector2.
+    UShortVector2 ReadUShortVector2();
     /// Read a CharVector2.
     CharVector2 ReadCharVector2();
     /// Read a UCharVector2.

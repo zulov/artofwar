@@ -159,7 +159,7 @@ public:
     unsigned ToHash() const { return (unsigned)x_ * 31u + (unsigned)y_; }
 
     /// Return length.
-    float Length() const { return sqrtf((float)(x_ * x_ + y_ * y_)); }
+    float Length() const { return sqrtf((float)x_ * (float)x_ + (float)y_ * (float)y_); }
 
     /// X coordinate.
     short x_;
@@ -178,6 +178,152 @@ public:
     static const ShortVector2 DOWN;
     /// (1,1) vector.
     static const ShortVector2 ONE;
+};
+
+/// Two-dimensional vector with unsigned short integer values.
+class URHO3D_API UShortVector2
+{
+public:
+    /// Construct a zero vector.
+    UShortVector2() noexcept :
+        x_(0),
+        y_(0)
+    {
+    }
+
+    /// Construct from coordinates.
+    UShortVector2(unsigned short x, unsigned short y) noexcept :
+        x_(x),
+        y_(y)
+    {
+    }
+
+    /// Construct from an unsigned short array.
+    explicit UShortVector2(const unsigned short* data) noexcept :
+        x_(data[0]),
+        y_(data[1])
+    {
+    }
+
+    /// Construct from a float array.
+    explicit UShortVector2(const float* data) :
+        x_((unsigned short)data[0]),
+        y_((unsigned short)data[1])
+    {
+    }
+
+    /// Construct from an IntVector2.
+    explicit UShortVector2(const IntVector2& vector) noexcept;
+
+    /// Construct from a Vector2.
+    explicit UShortVector2(const Vector2& vector);
+
+    /// Copy-construct from another vector.
+    UShortVector2(const UShortVector2& rhs) noexcept = default;
+
+    /// Assign from another vector.
+    UShortVector2& operator =(const UShortVector2& rhs) noexcept = default;
+
+    /// Test for equality with another vector.
+    bool operator ==(const UShortVector2& rhs) const { return x_ == rhs.x_ && y_ == rhs.y_; }
+
+    /// Test for inequality with another vector.
+    bool operator !=(const UShortVector2& rhs) const { return x_ != rhs.x_ || y_ != rhs.y_; }
+
+    /// Add a vector.
+    UShortVector2 operator +(const UShortVector2& rhs) const { return UShortVector2(x_ + rhs.x_, y_ + rhs.y_); }
+
+    /// Return negation.
+    UShortVector2 operator -() const { return UShortVector2(-x_, -y_); }
+
+    /// Subtract a vector.
+    UShortVector2 operator -(const UShortVector2& rhs) const { return UShortVector2(x_ - rhs.x_, y_ - rhs.y_); }
+
+    /// Multiply with a scalar.
+    UShortVector2 operator *(unsigned short rhs) const { return UShortVector2(x_ * rhs, y_ * rhs); }
+
+    /// Multiply with a vector.
+    UShortVector2 operator *(const UShortVector2& rhs) const { return UShortVector2(x_ * rhs.x_, y_ * rhs.y_); }
+
+    /// Divide by a scalar.
+    UShortVector2 operator /(unsigned short rhs) const { return UShortVector2(x_ / rhs, y_ / rhs); }
+
+    /// Divide by a vector.
+    UShortVector2 operator /(const UShortVector2& rhs) const { return UShortVector2(x_ / rhs.x_, y_ / rhs.y_); }
+
+    /// Add-assign a vector.
+    UShortVector2& operator +=(const UShortVector2& rhs)
+    {
+        x_ += rhs.x_;
+        y_ += rhs.y_;
+        return *this;
+    }
+
+    /// Subtract-assign a vector.
+    UShortVector2& operator -=(const UShortVector2& rhs)
+    {
+        x_ -= rhs.x_;
+        y_ -= rhs.y_;
+        return *this;
+    }
+
+    /// Multiply-assign a scalar.
+    UShortVector2& operator *=(unsigned short rhs)
+    {
+        x_ *= rhs;
+        y_ *= rhs;
+        return *this;
+    }
+
+    /// Multiply-assign a vector.
+    UShortVector2& operator *=(const UShortVector2& rhs)
+    {
+        x_ *= rhs.x_;
+        y_ *= rhs.y_;
+        return *this;
+    }
+
+    /// Divide-assign a scalar.
+    UShortVector2& operator /=(unsigned short rhs)
+    {
+        x_ /= rhs;
+        y_ /= rhs;
+        return *this;
+    }
+
+    /// Divide-assign a vector.
+    UShortVector2& operator /=(const UShortVector2& rhs)
+    {
+        x_ /= rhs.x_;
+        y_ /= rhs.y_;
+        return *this;
+    }
+
+    /// Return unsigned short data.
+    const unsigned short* Data() const { return &x_; }
+
+    /// Return as string.
+    String ToString() const;
+
+    /// Return hash value for HashSet & HashMap.
+    unsigned ToHash() const { return (unsigned)x_ * 31u + (unsigned)y_; }
+
+    /// Return length.
+    float Length() const { return sqrtf((float)x_ * (float)x_ + (float)y_ * (float)y_); }
+
+    /// X coordinate.
+    unsigned short x_;
+    /// Y coordinate.
+    unsigned short y_;
+
+    /// Zero vector.
+    static const UShortVector2 ZERO;
+    /// (1,0) vector.
+    static const UShortVector2 RIGHT;
+    /// (0,1) vector.
+    static const UShortVector2 UP;
+    /// (1,1) vector.
+    static const UShortVector2 ONE;
 };
 
 /// Two-dimensional vector with signed byte values.
@@ -515,6 +661,13 @@ public:
     {
     }
 
+    /// Construct from a UShortVector2.
+    explicit IntVector2(const UShortVector2& vector) noexcept :
+        x_(vector.x_),
+        y_(vector.y_)
+    {
+    }
+
     /// Construct from a CharVector2.
     explicit IntVector2(const CharVector2& vector) noexcept :
         x_(vector.x_),
@@ -681,6 +834,13 @@ public:
 
     /// Construct from a ShortVector2.
     explicit Vector2(const ShortVector2& vector) noexcept :
+        x_((float)vector.x_),
+        y_((float)vector.y_)
+    {
+    }
+
+    /// Construct from a UShortVector2.
+    explicit Vector2(const UShortVector2& vector) noexcept :
         x_((float)vector.x_),
         y_((float)vector.y_)
     {
@@ -978,6 +1138,18 @@ inline ShortVector2::ShortVector2(const Vector2& vector) :
 {
 }
 
+inline UShortVector2::UShortVector2(const IntVector2& vector) noexcept :
+    x_((unsigned short)vector.x_),
+    y_((unsigned short)vector.y_)
+{
+}
+
+inline UShortVector2::UShortVector2(const Vector2& vector) :
+    x_((unsigned short)vector.x_),
+    y_((unsigned short)vector.y_)
+{
+}
+
 inline CharVector2::CharVector2(const IntVector2& vector) noexcept :
     x_((signed char)vector.x_),
     y_((signed char)vector.y_)
@@ -1004,6 +1176,9 @@ inline UCharVector2::UCharVector2(const Vector2& vector) :
 
 /// Multiply ShortVector2 with a scalar.
 inline ShortVector2 operator *(short lhs, const ShortVector2& rhs) { return rhs * lhs; }
+
+/// Multiply UShortVector2 with a scalar.
+inline UShortVector2 operator *(unsigned short lhs, const UShortVector2& rhs) { return rhs * lhs; }
 
 /// Multiply CharVector2 with a scalar.
 inline CharVector2 operator *(signed char lhs, const CharVector2& rhs) { return rhs * lhs; }
