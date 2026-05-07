@@ -104,8 +104,8 @@ struct GridCalculator {
 	}
 
 	float getSqDistance(const Urho3D::UShortVector2& a, const Urho3D::UShortVector2& b) const {
-		const auto dx = (a.x_ - b.x_);
-		const auto dy = (a.y_ - b.y_);
+		const int dx = static_cast<int>(a.x_) - static_cast<int>(b.x_);
+		const int dy = static_cast<int>(a.y_) - static_cast<int>(b.y_);
 		return (dx * dx + dy * dy) * sqFieldSize;
 	}
 

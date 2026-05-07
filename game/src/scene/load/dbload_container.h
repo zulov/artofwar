@@ -86,10 +86,10 @@ struct dbload_resource : dbload_static {
 
 	dbload_resource(sqlite3_stmt* stmt, int p) :
 		dbload_resource(asShort(stmt, C::id_db), asItoF(stmt, C::hp_coef, p),
-		                asUI(stmt, C::uid), asInt(stmt, C::bucket_x), asInt(stmt, C::bucket_y),
+		                asUI(stmt, C::uid), asUShort(stmt, C::bucket_x), asUShort(stmt, C::bucket_y),
 		                asByte(stmt, C::state), asByte(stmt, C::next_state)) {}
 
-	dbload_resource(short idDb, float hpCoef, unsigned uid, int bucX, int bucY, char state, char nextState) :
+	dbload_resource(short idDb, float hpCoef, unsigned uid, unsigned short bucX, unsigned short bucY, char state, char nextState) :
 		dbload_static(idDb, hpCoef, uid, -1, bucX, bucY, -1, state, nextState) {}
 };
 
