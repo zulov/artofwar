@@ -36,11 +36,11 @@ TEST_F(GridCalculatorFixture, GetIndex) {
 	EXPECT_EQ(gc->getIndex(-5.f), 0);
 	EXPECT_EQ(gc->getIndex(5.f), 3);
 
-	EXPECT_EQ(gc->getCords(0), Urho3D::IntVector2(0, 0));
-	EXPECT_EQ(gc->getCords(3), Urho3D::IntVector2(0, 3));
-	EXPECT_EQ(gc->getCords(6), Urho3D::IntVector2(1, 2));
-	EXPECT_EQ(gc->getCords(9), Urho3D::IntVector2(2, 1));
-	EXPECT_EQ(gc->getCords(15), Urho3D::IntVector2(3, 3));
+	EXPECT_EQ(gc->getCords(0), Urho3D::UShortVector2(0, 0));
+	EXPECT_EQ(gc->getCords(3), Urho3D::UShortVector2(0, 3));
+	EXPECT_EQ(gc->getCords(6), Urho3D::UShortVector2(1, 2));
+	EXPECT_EQ(gc->getCords(9), Urho3D::UShortVector2(2, 1));
+	EXPECT_EQ(gc->getCords(15), Urho3D::UShortVector2(3, 3));
 }
 
 
@@ -85,10 +85,10 @@ TEST_F(GridCalculatorFixture, ValidHelpersClampValuesToGridBounds) {
 
 TEST_F(GridCalculatorFixture, IsValidIndexChecksCoordinatesAndFlatIndexes) {
 	EXPECT_TRUE(gc->isValidIndex(0, 0));
-	EXPECT_TRUE(gc->isValidIndex(Urho3D::IntVector2(3, 3)));
+	EXPECT_TRUE(gc->isValidIndex(3, 3));
 	EXPECT_FALSE(gc->isValidIndex(-1, 0));
 	EXPECT_FALSE(gc->isValidIndex(0, 4));
-	EXPECT_FALSE(gc->isValidIndex(Urho3D::IntVector2(4, 0)));
+	EXPECT_FALSE(gc->isValidIndex(4, 0));
 	EXPECT_TRUE(gc->isValidIndex(15));
 	EXPECT_FALSE(gc->isValidIndex(16));
 }
@@ -97,17 +97,17 @@ TEST_F(GridCalculatorFixture, GetIndexRangeAndDistancesUseFieldSize) {
 	const auto indexRange = gc->getIndex(std::pair(-3.f, 0.1f));
 	EXPECT_EQ(indexRange.first, 0);
 	EXPECT_EQ(indexRange.second, 2);
-	EXPECT_FLOAT_EQ(gc->getSqDistance(Urho3D::IntVector2(0, 0), Urho3D::IntVector2(1, 2)), 20.f);
-	EXPECT_FLOAT_EQ(gc->getSqDistance(Urho3D::IntVector2(0, 0), 15), 72.f);
+	EXPECT_FLOAT_EQ(gc->getSqDistance(Urho3D::UShortVector2(0, 0), Urho3D::UShortVector2(1, 2)), 20.f);
+	EXPECT_FLOAT_EQ(gc->getSqDistance(Urho3D::UShortVector2(0, 0), 15), 72.f);
 	EXPECT_FLOAT_EQ(gc->getFieldSize(), 2.f);
 	EXPECT_FLOAT_EQ(gc->getSize(), 8.f);
 }
 
 TEST_F(GridCalculatorFixture, BiggestManhattanReturnsFarthestTargetDistance) {
-	std::vector<Urho3D::IntVector2> endCords = {
-		Urho3D::IntVector2(1, 1),
-		Urho3D::IntVector2(3, 2),
-		Urho3D::IntVector2(0, 2)
+	std::vector<Urho3D::UShortVector2> endCords = {
+		Urho3D::UShortVector2(1, 1),
+		Urho3D::UShortVector2(3, 2),
+		Urho3D::UShortVector2(0, 2)
 	};
 
 	EXPECT_EQ(gc->getBiggestManhattan(0, endCords), 5);

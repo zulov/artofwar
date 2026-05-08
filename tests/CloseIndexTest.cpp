@@ -77,23 +77,23 @@ TEST_F(CloseIndexFixture, CheckGetLv2) {
 
 
 TEST_F(CloseIndexFixture, CheckBothIndex) {
-	EXPECT_EQ(ci->getBothIndexes(0), std::pair(0,0));
-	EXPECT_EQ(ci->getBothIndexes(1), std::pair(1,1));
-	EXPECT_EQ(ci->getBothIndexes(2), std::pair(1,2));
-	EXPECT_EQ(ci->getBothIndexes(6), std::pair(1,3));
-	EXPECT_EQ(ci->getBothIndexes(7), std::pair(2,4));
+	EXPECT_EQ(ci->getBothIndexes(0), std::pair((unsigned char)0,(unsigned char)0));
+	EXPECT_EQ(ci->getBothIndexes(1), std::pair((unsigned char)1,(unsigned char)1));
+	EXPECT_EQ(ci->getBothIndexes(2), std::pair((unsigned char)1,(unsigned char)2));
+	EXPECT_EQ(ci->getBothIndexes(6), std::pair((unsigned char)1,(unsigned char)3));
+	EXPECT_EQ(ci->getBothIndexes(7), std::pair((unsigned char)2,(unsigned char)4));
 
-	EXPECT_EQ(ci->getBothIndexes(27), std::pair(4,12));
+	EXPECT_EQ(ci->getBothIndexes(27), std::pair((unsigned char)4,(unsigned char)12));
 
-	EXPECT_EQ(ci->getBothIndexes(54), std::pair(4,18));
-	EXPECT_EQ(ci->getBothIndexes(55), std::pair(5,19));
+	EXPECT_EQ(ci->getBothIndexes(54), std::pair((unsigned char)4,(unsigned char)18));
+	EXPECT_EQ(ci->getBothIndexes(55), std::pair((unsigned char)5,(unsigned char)19));
 
-	EXPECT_EQ(ci->getBothIndexes(56), std::pair(6, 20));
-	EXPECT_EQ(ci->getBothIndexes(57), std::pair(7, 21));
-	EXPECT_EQ(ci->getBothIndexes(58), std::pair(7, 22));
+	EXPECT_EQ(ci->getBothIndexes(56), std::pair((unsigned char)6, (unsigned char)20));
+	EXPECT_EQ(ci->getBothIndexes(57), std::pair((unsigned char)7, (unsigned char)21));
+	EXPECT_EQ(ci->getBothIndexes(58), std::pair((unsigned char)7, (unsigned char)22));
 
-	EXPECT_EQ(ci->getBothIndexes(62), std::pair(7,23));
-	EXPECT_EQ(ci->getBothIndexes(63), std::pair(8,24));
+	EXPECT_EQ(ci->getBothIndexes(62), std::pair((unsigned char)7,(unsigned char)23));
+	EXPECT_EQ(ci->getBothIndexes(63), std::pair((unsigned char)8,(unsigned char)24));
 }
 
 TEST_F(CloseIndexFixture, ProviderCachesByResolution) {
