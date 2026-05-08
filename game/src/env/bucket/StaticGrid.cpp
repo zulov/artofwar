@@ -9,7 +9,7 @@
 #include "levels/LevelCache.h"
 #include "objects/Physical.h"
 
-StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRadius): Grid(resolution, size,
+StaticGrid::StaticGrid(unsigned short resolution, float size, std::vector<float> queryRadius): Grid(resolution, size,
 			 queryRadius.back()), queryRadius(queryRadius) {
 	assert(queryRadius.size()>1);
 	bucketsPerRadius.reserve(queryRadius.size());

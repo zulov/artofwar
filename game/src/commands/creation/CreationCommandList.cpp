@@ -14,12 +14,12 @@ CreationCommandList::CreationCommandList(SimulationObjectManager* simulationObje
 }
 
 
-CreationCommand* CreationCommandList::addUnits(unsigned number, short id, Urho3D::Vector2& position, char player,
+CreationCommand* CreationCommandList::addUnits(unsigned number, unsigned short id, Urho3D::Vector2& position, char player,
                                                int level) const {
 	return new CreationCommand(ObjectType::UNIT, id, position, level, player, number);
 }
 
-CreationCommand* CreationCommandList::addBuilding(short id, Urho3D::Vector2& position, char player, int level) const {
+CreationCommand* CreationCommandList::addBuilding(unsigned short id, Urho3D::Vector2& position, char player, int level) const {
 	Resources* resources = Game::getPlayersMan()->getPlayer(player)->getResources();
 	db_building* building = Game::getDatabase()->getBuilding(id);
 	if (resources->hasEnough(building)) {
@@ -39,7 +39,7 @@ CreationCommand* CreationCommandList::addBuilding(short id, Urho3D::Vector2& pos
 }
 
 CreationCommand*
-CreationCommandList::addBuildingForce(short id, Urho3D::Vector2& position, char player, int level) const {
+CreationCommandList::addBuildingForce(unsigned short id, Urho3D::Vector2& position, char player, int level) const {
 	const db_building* building = Game::getDatabase()->getBuilding(id);
 	const auto env = Game::getEnvironment();
 
@@ -51,7 +51,7 @@ CreationCommandList::addBuildingForce(short id, Urho3D::Vector2& position, char 
 	return nullptr;
 }
 
-CreationCommand* CreationCommandList::addResource(short id, const Urho3D::UShortVector2& cords) const {
+CreationCommand* CreationCommandList::addResource(unsigned short id, const Urho3D::UShortVector2& cords) const {
 	const auto size = Game::getDatabase()->getResource(id)->size;
 
 	if (Game::getEnvironment()->validateStatic(size, cords, false)) {

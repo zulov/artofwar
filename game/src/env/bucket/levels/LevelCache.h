@@ -5,7 +5,7 @@
 #include "env/GridCalculator.h"
 
 struct GridCalculator;
-constexpr char RES_SEP_DIST = 120;
+constexpr unsigned char RES_SEP_DIST = 120;
 
 struct LevelCacheValue {
 	LevelCacheValue() = default;
@@ -20,9 +20,9 @@ struct LevelCacheValue {
 		shifts->reserve(size);
 	}
 
-	std::vector<short>* indexes{}; //unsigned short?
-	std::vector<Urho3D::ShortVector2>* shifts{}; //short //if null then safe not to check
-	short maxShift = 0;
+	std::vector<short>* indexes{};
+	std::vector<Urho3D::ShortVector2>* shifts{}; //if null then safe not to check
+	unsigned short maxShift = 0;
 
 	void dispose() const {
 		delete indexes;

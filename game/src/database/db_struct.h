@@ -247,25 +247,25 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 	using C = DbUnitLevelCol;
 	db_unit_level(sqlite3_stmt* s)
 		: db_with_name(asUShort(s, C::id), asText(s, C::name)),
-		  db_level(asShort(s, C::level)),
+		  db_level(asUByte(s, C::level)),
 		  db_with_cost(asUShort(s, C::food), asUShort(s, C::wood), asUShort(s, C::stone), asUShort(s, C::gold)),
 		  db_unit_attack(asFloat(s, C::collect), asFloat(s, C::attack),
-		                 asFloat(s, C::attack_reload), asShort(s, C::attack_range),
+		                 asShort(s, C::attack_reload), asShort(s, C::attack_range),
 		                 asFloat(s, C::bonus_infantry), asFloat(s, C::bonus_range),
 		                 asFloat(s, C::bonus_cavalry), asFloat(s, C::bonus_worker),
 		                 asFloat(s, C::bonus_special), asFloat(s, C::bonus_melee),
 		                 asFloat(s, C::bonus_heavy), asFloat(s, C::bonus_light),
 		                 asFloat(s, C::bonus_building)),
-		  db_base(asShort(s, C::max_hp), asFloat(s, C::armor), asFloat(s, C::sight_range)),
+		  db_base(asUShort(s, C::max_hp), asFloat(s, C::armor), asFloat(s, C::sight_range)),
 		  db_build_upgrade(asShort(s, C::build_time), asShort(s, C::upgrade_time)),
-		  unit(asShort(s, C::unit)),
+		  unit(asUShort(s, C::unit)),
 		  minDist(asFloat(s, C::min_dist)),
 		  maxSep(1.f),
 		  mass(asFloat(s, C::mass)),
 		  invMass(1.f / mass),
 		  maxSpeed(asFloat(s, C::max_speed)),
 		  minSpeed(asFloat(s, C::min_speed)),
-		  maxForce(asShort(s, C::max_force)),
+		  maxForce(asUShort(s, C::max_force)),
 		  sqMinSpeed(minSpeed * minSpeed),
 		  node(asText(s, C::node)) {}
 
@@ -376,6 +376,7 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 		  typeCenter(asBool(s, C::type_center)),
 		  typeHome(asBool(s, C::type_home)),
 		  typeDefence(asBool(s, C::type_defence)),
+		  resourceType(asByte(s, C::type_resource)),
 		  typeResourceFood(resourceType == cast(ResourceType::FOOD)),
 		  typeResourceWood(resourceType == cast(ResourceType::WOOD)),
 		  typeResourceStone(resourceType == cast(ResourceType::STONE)),
@@ -385,7 +386,6 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 		  typeUnitBarracks(asBool(s, C::type_unit_barracks)),
 		  typeUnitRange(asBool(s, C::type_unit_range)),
 		  typeUnitCavalry(asBool(s, C::type_unit_cavalry)),
-		  resourceType(asShort(s, C::type_resource)),
 		  ruinable(asBool(s, C::ruinable)),
 		  toResource(asShort(s, C::to_resource)),
 		  maxUsers(size.x_ * 2 + size.y_ * 2 + 4),
@@ -415,8 +415,8 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 	const short goldStorage;
 	const float stoneRefineCapacity;
 	const float goldRefineCapacity;
-	const int spawnResourceTime;
-	const int spawnResourceRange;
+	const short spawnResourceTime;
+	const short spawnResourceRange;
 
 	const Urho3D::String nodeName;
 
@@ -431,10 +431,10 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 	db_building_level(sqlite3_stmt* s)
 		: db_with_name(asUShort(s, C::id), asText(s, C::name)),
 		  db_with_cost(asUShort(s, C::food), asUShort(s, C::wood), asUShort(s, C::stone), asUShort(s, C::gold)),
-		  db_level(asShort(s, C::level)),
-		  db_base(asShort(s, C::max_hp), asFloat(s, C::armor), asFloat(s, C::sight_range)),
+		  db_level(asUByte(s, C::level)),
+		  db_base(asUShort(s, C::max_hp), asFloat(s, C::armor), asFloat(s, C::sight_range)),
 		  db_building_attack(asFloat(s, C::collect), asFloat(s, C::attack),
-		                     asShort(s, C::attack_reload), asFloat(s, C::attack_range)),
+		                     asShort(s, C::attack_reload), asShort(s, C::attack_range)),
 		  db_build_upgrade(asShort(s, C::build_speed), asShort(s, C::upgrade_speed)),
 		  building(asShort(s, C::building)),
 		  queueMaxCapacity(asShort(s, C::queue_max_capacity)),
@@ -443,8 +443,8 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 		  goldStorage(asShort(s, C::gold_storage)),
 		  stoneRefineCapacity(asFloat(s, C::stone_refine_capacity)),
 		  goldRefineCapacity(asFloat(s, C::gold_refine_capacity)),
-		  spawnResourceTime(asInt(s, C::spawn_resource_time)),
-		  spawnResourceRange(asInt(s, C::spawn_resource_range)),
+		  spawnResourceTime(asShort(s, C::spawn_resource_time)),
+		  spawnResourceRange(asShort(s, C::spawn_resource_range)),
 		  nodeName(asText(s, C::node_name)) {}
 
 	~db_building_level() {
@@ -502,7 +502,7 @@ struct db_resource : db_with_icon, db_static, db_with_hp, db_with_model {
 		db_static({asUByte(s, C::size_x), asUByte(s, C::size_z)}),
 		  db_with_hp(asUShort(s, C::max_hp), 0.f),
 		  resourceId(asUByte(s, C::resource_id)),
-		  maxUsers(asUShort(s, C::max_users)),
+		  maxUsers(asUByte(s, C::max_users)),
 		  mini_map_color(asHex(s, C::mini_map_color)),
 		  nodeName(Urho3D::String(asText(s, C::node_name)).Split(SPLIT_SIGN)),
 		  collectSpeed(asFloat(s, C::collect_speed)),

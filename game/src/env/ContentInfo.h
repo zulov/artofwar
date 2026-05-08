@@ -46,9 +46,9 @@ struct content_info {
 			resourceNumber;
 	}
 
-	unsigned short unitsNumberPerPlayer[MAX_PLAYERS];
-	unsigned short allyNumber;
-	unsigned short enemiesNumber;
+	unsigned char unitsNumberPerPlayer[MAX_PLAYERS];
+	unsigned char allyNumber;
+	unsigned char enemiesNumber;
 
 	unsigned char allyBuilding;
 	unsigned char enemyBuilding;

@@ -11,7 +11,7 @@
 #include "env/GridCalculator.h"
 #include "env/GridCalculatorProvider.h"
 
-Grid::Grid(short resolution, float size, float maxQueryRadius)
+Grid::Grid(unsigned short resolution, float size, float maxQueryRadius)
 	: calculator(GridCalculatorProvider::get(resolution, size)),
 	  closeIndexes(CloseIndexesProvider::get(resolution)),
 	  levelCache(LevelCacheProvider::get(resolution, maxQueryRadius, calculator)),

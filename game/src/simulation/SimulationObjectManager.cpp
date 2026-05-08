@@ -46,11 +46,11 @@ void SimulationObjectManager::clearNodesWithoutDelete() {
 	}
 }
 
-void SimulationObjectManager::addUnits(unsigned number, int id, Urho3D::Vector2& center, char level, char player) {
+void SimulationObjectManager::addUnits(unsigned number, unsigned short id, Urho3D::Vector2& center, char level, char player) {
 	addUnits(unitFactory.create(number, id, center, player, level));
 }
 
-void SimulationObjectManager::addBuilding(int id, const Urho3D::UShortVector2& _bucketCords, char level,
+void SimulationObjectManager::addBuilding(unsigned short id, const Urho3D::UShortVector2& _bucketCords, char level,
                                           char player) const {
 	if (auto* building = buildingFactory.create(id, _bucketCords, level, player)) {
 		building->postCreate();
@@ -58,7 +58,7 @@ void SimulationObjectManager::addBuilding(int id, const Urho3D::UShortVector2& _
 	}
 }
 
-ResourceEntity* SimulationObjectManager::addResource(int id, const Urho3D::UShortVector2& _bucketCords) {
+ResourceEntity* SimulationObjectManager::addResource(unsigned short id, const Urho3D::UShortVector2& _bucketCords) {
 	if (const auto res = resourceFactory.create(id, _bucketCords)) {
 		addResource(res, false);
 		return res;

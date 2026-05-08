@@ -5,7 +5,7 @@
 
 class StaticGrid : public Grid {
 public:
-	StaticGrid(short resolution, float size, std::vector<float> queryRadius);
+	StaticGrid(unsigned short resolution, float size, std::vector<float> queryRadius);
 	StaticGrid(const StaticGrid& rhs) = delete;
 	~StaticGrid() override;
 

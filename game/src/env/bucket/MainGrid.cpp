@@ -18,7 +18,7 @@
 #include "env/Environment.h"
 
 
-MainGrid::MainGrid(short resolution, float size, float maxQueryRadius):
+MainGrid::MainGrid(unsigned short resolution, float size, float maxQueryRadius):
 	Grid(resolution, size, maxQueryRadius),
 	complexData(ArrayProvider<ComplexBucketData>::get(sqResolution)),
 	pathFinder(resolution, size), countArray(PrimitiveArrayProvider<bool>::get(sqResolution, false)) {

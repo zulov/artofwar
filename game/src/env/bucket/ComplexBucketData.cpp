@@ -46,7 +46,7 @@ void ComplexBucketData::setNeightFree(const unsigned char index) {
 	isNeightOccupied &= ~Flags::bitFlags[index];
 }
 
-int ComplexBucketData::getCost() const { return cost; }
+unsigned char ComplexBucketData::getCost() const { return cost; }
 
 bool ComplexBucketData::isBuildable() const {
 	return state == CellState::NONE
@@ -84,7 +84,7 @@ void ComplexBucketData::resetResBonuses() {
 	resourceBonuses = nullptr;
 }
 
-float ComplexBucketData::getResBonus(char player, short resId) const {
+float ComplexBucketData::getResBonus(char player, unsigned char resId) const {
 	return resourceBonuses == nullptr ? 1.f : resourceBonuses[player * RESOURCES_SIZE + resId];
 }
 

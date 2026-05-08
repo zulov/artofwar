@@ -37,9 +37,9 @@ public:
 	void setAllOccupied() { isNeightOccupied = 255; }
 	unsigned char getNeightOccupation() const { return isNeightOccupied; }
 
-	int getCost() const;
+	unsigned char getCost() const;
 
-	char getAdditionalInfo() const { return additionalInfo; }
+	short getAdditionalInfo() const { return additionalInfo; }
 
 	CellState getType() const { return state; }
 
@@ -48,7 +48,7 @@ public:
 
 	void setResBonuses(char player, unsigned char resId, float bonus);
 	void resetResBonuses();
-	float getResBonus(char player, short resId) const;
+	float getResBonus(char player, unsigned char resId) const;
 
 	void setDeploy();
 	bool cellIsCollectable() const;
@@ -68,15 +68,16 @@ public:
 
 private:
 	bool ifNeightIsOccupied(unsigned char index) const { return isNeightOccupied & Flags::bitFlags[index]; }
-	CellState state = CellState::NONE;
-	char size = 0, additionalInfo = -1;
+	bool belowCellLimit() const;
 
+	Static* staticObj{};
+	float* resourceBonuses{};
+	short additionalInfo = -1;
+	short gradient = -1;
 	unsigned char isNeightOccupied = 0; //na poczatku wszystko wolne
 	unsigned char indexOfCloseIndexes;
 	unsigned char indexOfSecondCloseIndexes;
-	short gradient = -1;
-	Static* staticObj{};
-	float* resourceBonuses{};
-	int cost = 0;
-	bool belowCellLimit() const;
+	unsigned char cost = 0;
+	CellState state = CellState::NONE;
+	char size = 0;
 };

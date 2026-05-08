@@ -47,7 +47,7 @@ const std::vector<short>* LevelCache::get(float radius, const Urho3D::UShortVect
 	}
 	tempReturn->clear();
 	for (const auto& [idx, shift] : val.asZip()) {
-		if (calculator->isValidIndex(centerCords.x_ + shift.x_, centerCords.y_ + shift.y_)) {
+		if (calculator->isValidIndex(static_cast<short>(centerCords.x_ + shift.x_), static_cast<short>(centerCords.y_ + shift.y_))) {
 			tempReturn->push_back(idx);
 		}
 	}
@@ -69,7 +69,7 @@ LevelCacheValue LevelCache::getEnvIndexs(float radius, LevelCacheValue& prev,
 	temp.clear();
 	tempA.clear();
 
-	short maxShift = 0;
+	unsigned short maxShift = 0;
 	for (short i = 0; i < RES_SEP_DIST; ++i) {
 		const short x = i + 1;
 		const float sqI = i * i;

@@ -22,7 +22,7 @@ enum class GridDebugType : char {
 class MainGrid : public Grid {
 public:
 
-	MainGrid(short resolution, float size, float maxQueryRadius);
+	MainGrid(unsigned short resolution, float size, float maxQueryRadius);
 	MainGrid(const MainGrid& rhs) = delete;
 	~MainGrid() override;
 	void updateNeight(int idx) const;
