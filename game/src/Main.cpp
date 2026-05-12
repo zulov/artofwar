@@ -459,8 +459,7 @@ void Main::HandleKeyUp(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eve
 			const auto possession = Game::getPlayersMan()->getActivePlayer()->getPossession();
 			for (const auto building : possession->getBuildings()) {
 				if (building->getDb()->typeCenter) {
-					auto pos = building->getPosition();
-					Game::getCameraManager()->changePosition(pos.x_, pos.z_);
+				Game::getCameraManager()->changePosition(building->getPosition().x_, building->getPosition().y_);
 				}
 			}
 		}
@@ -648,7 +647,7 @@ SelectedInfo* Main::control(const float timeStep, FrameInfo* frameInfo) {
 		auto progressBar = healthBarProvider.getNext(selected->getType());
 
 		if (progressBar) {
-			auto pos = selected->getPosition();
+			auto pos = selected->getNode()->GetPosition();
 			pos.y_ += selected->getModelHeight() * 1.3f;
 			Urho3D::IntVector2 pixel{
 				VectorRoundToInt(Urho3D::Vector2(Game::getGraphics()->GetSize()) * camera->WorldToScreenPoint(pos))

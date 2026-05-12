@@ -21,7 +21,8 @@ ResourceEntity* ResourceFactory::create(unsigned short id, Urho3D::UShortVector2
 	db_resource* db_resource = Game::getDatabase()->getResource(id);
 	const auto env = Game::getEnvironment();
 	if (const auto position = env->tryGetValidPosition(db_resource->size, bucketCords, false)) {
-		return new ResourceEntity(*position, db_resource, env->getIndex(bucketCords.x_, bucketCords.y_), uid);
+		const auto pos3 = env->getPosWithHeightAt(position->x_, position->y_);
+		return new ResourceEntity(pos3, db_resource, env->getIndex(bucketCords.x_, bucketCords.y_), uid);
 	}
 	return nullptr;
 }

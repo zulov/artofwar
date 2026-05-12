@@ -298,7 +298,7 @@ TEST_F(MathUtilsFixture, SetClosestUpdatesWhenCandidateIsNearer) {
 	Urho3D::Vector2 closest(-1.f, -1.f);
 	int closestIndex = -1;
 	Urho3D::Vector2 candidate(3.f, 4.f);
-	Urho3D::Vector3 origin(0.f, 0.f, 0.f);
+	Urho3D::Vector2 origin(0.f, 0.f);
 
 	setClosest(minDistance, closest, closestIndex, 7, candidate, origin);
 
@@ -313,7 +313,7 @@ TEST_F(MathUtilsFixture, SetClosestKeepsExistingWhenCandidateIsFarther) {
 	Urho3D::Vector2 closest(1.f, 1.f);
 	int closestIndex = 2;
 	Urho3D::Vector2 candidate(3.f, 4.f);
-	Urho3D::Vector3 origin(0.f, 0.f, 0.f);
+	Urho3D::Vector2 origin(0.f, 0.f);
 
 	setClosest(minDistance, closest, closestIndex, 7, candidate, origin);
 

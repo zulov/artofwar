@@ -50,7 +50,7 @@ public:
 
 	// --- Events (called during simulation) ---
 	void addCollect(Unit* unit, short resId, float value) const;
-	void addAttack(unsigned char player, const Urho3D::Vector3& position, float value) const;
+	void addAttack(unsigned char player, const Urho3D::Vector2& position, float value) const;
 
 	// --- AI queries ---
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, unsigned char player) const;
@@ -63,7 +63,7 @@ public:
 	bool isVisible(unsigned char player, const Urho3D::Vector2& pos) const;
 	float getVisibilityScore(unsigned char player) const;
 	Urho3D::Vector2 getCenter(int index) const;
-	int getIndex(const Urho3D::Vector3& position) const;
+	int getIndex(const Urho3D::Vector2& position) const;
 	float getFieldSize() const;
 
 	// --- Debug / UI ---

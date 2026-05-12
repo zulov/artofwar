@@ -11,7 +11,7 @@ inline Urho3D::IntVector2 calculateSize(int size, int central) {
 }
 
 inline void setClosest(float& minDistance, Urho3D::Vector2& closest, int& closestindex, int i,
-                       Urho3D::Vector2 posToFollow, const Urho3D::Vector3& pos1) {
+                       Urho3D::Vector2 posToFollow, const Urho3D::Vector2& pos1) {
 	auto dist = pos1.SqDistXZ(posToFollow);
 
 	if (dist < minDistance) {

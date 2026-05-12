@@ -14,7 +14,7 @@ public:
 	void update(Physical* thing, float value = 1.f) override;
 	void updateInt(Physical* thing, int value = 1) override;
 
-	void tempUpdate(const Urho3D::Vector3& pos, float value = 1.f);
+	void tempUpdate(const Urho3D::Vector2& pos, float value = 1.f);
 	void tempUpdate(int index, float value = 1.f);
 	void update(int index) const;
 	void reset() override;

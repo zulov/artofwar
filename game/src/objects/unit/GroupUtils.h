@@ -18,7 +18,7 @@ inline bool addToGroup(std::vector<std::vector<int>>& groupedIndexes, int curren
 	return false;
 }
 
-//TODO uproœciæ dla ma³ych grup
+//TODO uproï¿½ciï¿½ dla maï¿½ych grup
 inline std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units, bool sort = false) {
 	std::vector<int> allIndexes;
 	allIndexes.reserve(units.size());
@@ -85,9 +85,7 @@ inline std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units, b
 inline Urho3D::Vector2 computeCenter(const std::vector<Unit*>& units) {
 	auto localCenter = Urho3D::Vector2::ZERO;
 	for (const auto* unit : units) {
-		const auto pos = unit->getPosition();
-		localCenter.x_ += pos.x_;
-		localCenter.y_ += pos.z_;
+		localCenter += unit->getPosition();
 	}
 	localCenter /= units.size();
 	return localCenter;

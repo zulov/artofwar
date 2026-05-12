@@ -11,7 +11,8 @@ Building* BuildingFactory::create(unsigned short id, const Urho3D::UShortVector2
 	const auto env = Game::getEnvironment();
 
 	if (const auto position = env->tryGetValidPosition(db_building->size, bucketCords, true)) {
-		return new Building(*position, db_building, player->getId(), player->getTeam(), level,
+		const auto pos3 = env->getPosWithHeightAt(position->x_, position->y_);
+		return new Building(pos3, db_building, player->getId(), player->getTeam(), level,
 		                    env->getIndex(bucketCords.x_, bucketCords.y_), UId(uid));
 	}
 

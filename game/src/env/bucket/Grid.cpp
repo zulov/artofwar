@@ -48,7 +48,7 @@ int Grid::updateNew(Physical* physical) const {
 	return index;
 }
 
-BucketIterator& Grid::getArrayNeight(const Urho3D::Vector3& position, float radius) {
+BucketIterator& Grid::getArrayNeight(const Urho3D::Vector2& position, float radius) {
 	auto center = calculator->indexFromPosition(position);
 	return *iterator.init(levelCache->get(radius, center), center, this);
 }
@@ -139,9 +139,9 @@ void Grid::invalidateCache(int currentIdx, float radius) {
 std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, float radius) {
 	//TODO clean prawie to samo co wy�ej
 	const auto posBeginX = calculator->getIndex(clicked->getPosition().x_ - radius);
-	const auto posBeginZ = calculator->getIndex(clicked->getPosition().z_ - radius);
+	const auto posBeginZ = calculator->getIndex(clicked->getPosition().y_ - radius);
 	const auto posEndX = calculator->getIndex(clicked->getPosition().x_ + radius);
-	const auto posEndZ = calculator->getIndex(clicked->getPosition().z_ + radius);
+	const auto posEndZ = calculator->getIndex(clicked->getPosition().y_ + radius);
 
 	tempSelected->clear();
 	for (short i = posBeginX; i <= posEndX; ++i) {

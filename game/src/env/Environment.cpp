@@ -59,7 +59,7 @@ std::vector<int> Environment::getIndexesInRange(int index, float range) const {
 	return mainGrid.getIndexesInRange(index, range);
 }
 
-std::vector<int> Environment::getIndexesInRange(const Urho3D::Vector3& center, float range) const {
+std::vector<int> Environment::getIndexesInRange(const Urho3D::Vector2& center, float range) const {
 	return mainGrid.getIndexesInRange(center, range);
 }
 
@@ -108,20 +108,7 @@ std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& buc
 	return neights;
 }
 
-std::vector<Physical*>* Environment::getNeighbours(Unit* unit, float radius) {
-	neights->clear();
-	BucketIterator& bucketIterator = mainGrid.getArrayNeight(unit->getMainGridIndex(), radius);
-	const float sqRadius = radius * radius;
-
-	while (Physical* neight = bucketIterator.next()) {
-		//if bucket wystarczajaco blisk ododaj bez sprawdzania odleglosci
-		addIfInRange(unit, neight, sqRadius);
-	}
-
-	return neights;
-}
-
-std::vector<Physical*>* Environment::getResources(const Urho3D::Vector3& center, float radius) {
+std::vector<Physical*>* Environment::getResources(const Urho3D::Vector2& center, float radius) {
 	neights->clear();
 
 	BucketIterator& bucketIterator = resourceStaticGrid.getArrayNeight(center, radius);
@@ -149,6 +136,10 @@ void Environment::addIfInRange(const Physical* physical, Physical* neight, const
 		&& physical->getPosition().SqDistXZ( neight->getPosition()) < sqRadius) {
 		neights->push_back(neight);
 	}
+}
+
+std::vector<Physical*>* Environment::getNeighbours(Unit* unit, float radius) {
+	return getNeighbours(unit, mainGrid, radius, [](const Physical*) { return true; });
 }
 
 std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float radius) {
@@ -179,7 +170,7 @@ const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clic
 }
 
 std::vector<Physical*>*
-Environment::getResources(const Urho3D::Vector3& center, int id, float radius, float prevRadius) {
+Environment::getResources(const Urho3D::Vector2& center, int id, float radius, float prevRadius) {
 	const float sqRadius = radius * radius;
 	const float sqPrevRadius = prevRadius < 0.f ? prevRadius : prevRadius * prevRadius;
 	neights->clear();
@@ -294,7 +285,7 @@ Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) {
 	return mainGrid.repulseObstacle(unit);
 }
 
-std::optional<Urho3D::Vector2> Environment::validatePosition(int index, const Urho3D::Vector3& position) const {
+std::optional<Urho3D::Vector2> Environment::validatePosition(int index, const Urho3D::Vector2& position) const {
 	return mainGrid.getDirectionFrom(index, position);
 }
 
@@ -309,15 +300,14 @@ const std::vector<Physical*>* Environment::getNeighbours(MouseHeld& held, char p
 }
 
 float Environment::getGroundHeightAt(float x, float z) const {
-	const auto vec = Urho3D::Vector3(x, 0.f, z);
-	return getGroundHeightAt(vec);
-}
-
-float Environment::getGroundHeightAt(const Urho3D::Vector3& pos) const {
 	if (terrain != nullptr) {
-		return terrain->GetHeight(pos);
+		return terrain->GetHeight(Urho3D::Vector3(x, 0.f, z));
 	}
 	return 0.f;
+}
+
+float Environment::getGroundHeightAt(const Urho3D::Vector2& pos) const {
+	return getGroundHeightAt(pos.x_, pos.y_);
 }
 
 Urho3D::Vector3 Environment::getPosWithHeightAt(float x, float z) const {
@@ -349,14 +339,10 @@ bool Environment::validateStatic(const Urho3D::UCharVector2& size, int index, bo
 	return mainGrid.validateAdd(size, calculator->getCords(index), isBuilding);
 }
 
-std::optional<Urho3D::Vector3> Environment::tryGetValidPosition(const Urho3D::UCharVector2& size,
+std::optional<Urho3D::Vector2> Environment::tryGetValidPosition(const Urho3D::UCharVector2& size,
 	                                                            const Urho3D::UShortVector2& bucketCords,
 	                                                            bool isBuilding) const {
-	const auto pos2d = mainGrid.tryGetValidPosition(size, bucketCords, isBuilding);
-	if (!pos2d.has_value()) {
-		return {};
-	}
-	return getPosWithHeightAt(pos2d->x_, pos2d->y_);
+	return mainGrid.tryGetValidPosition(size, bucketCords, isBuilding);
 }
 
 Urho3D::Vector2 Environment::getCenter(int index) const {
@@ -462,7 +448,7 @@ void Environment::addCollect(Unit* unit, short resId, float value) {
 	influenceManager.addCollect(unit, resId, value);
 }
 
-void Environment::addAttack(char player, const Urho3D::Vector3& position, float value) {
+void Environment::addAttack(char player, const Urho3D::Vector2& position, float value) {
 	influenceManager.addAttack(player, position, value);
 }
 

@@ -44,7 +44,7 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 
-		auto diff = neight->getPosition().DirToXZ(unit->getPosition());
+		auto diff = unit->getPosition() - neight->getPosition();
 
 		float sqDistance = diff.LengthSquared();
 
@@ -126,17 +126,17 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 		int nextIndexFromCache = formation->getCachePath(startIndex, aimIndex);
 		if (nextIndexFromCache >= 0) {
 			//ten cache chyba jest lzejszy (moze zmienic na vector) niz ten w path finder ale zle resetowany
-			force = unit->getPosition().DirToXZ(env->getCenter(nextIndexFromCache));
+			force = env->getCenter(nextIndexFromCache) - unit->getPosition();
 		} else if (nextIndexFromCache == -1) {
 			auto* const path = env->findPath(startIndex, aimIndex);
 			if (!path->empty()) {
 				int nextIndex = path->at(0);
 				if (nextIndex != aimIndex) {
 					formation->addCachePath(startIndex, aimIndex, nextIndex);
-					force = unit->getPosition().DirToXZ(env->getCenter(nextIndex));
+					force = env->getCenter(nextIndex) - unit->getPosition();
 				} else {
 					//close
-					force = unit->getPosition().DirToXZ(aimPos);
+					force = aimPos - unit->getPosition();
 				}
 			} else {
 				formation->addCachePath(startIndex, aimIndex, -2);
@@ -171,7 +171,7 @@ bool Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, const Unit* uni
 }
 
 void Force::inCell(Urho3D::Vector2& newForce, Unit* unit) const {
-	auto force = unit->getPosition().DirToXZ(unit->setInCellPos());
+	auto force = unit->setInCellPos() - unit->getPosition();
 	//TODO czy to normalizacja?
 	force *= inCellCoef * boostCoef;
 	newForce += force;

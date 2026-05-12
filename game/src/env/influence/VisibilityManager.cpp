@@ -78,11 +78,11 @@ void VisibilityManager::hideOrShow(VisibilityMap* current, Physical* physical) {
 	} else if (visibilityMode == VisibilityMode::ALL_PLAYERS) {
 		char val = castC(type);
 		for (auto vis : visibilityPerPlayer) {
-			val |= castC(vis->getValueAt(pos.x_, pos.z_));
+			val |= castC(vis->getValueAt(pos.x_, pos.y_));
 		}
 		type = static_cast<VisibilityType>(val);
 	} else {
-		type = current->getValueAt(pos.x_,pos.z_);
+		type = current->getValueAt(pos.x_,pos.y_);
 	}
 	physical->setVisibility(type);
 }

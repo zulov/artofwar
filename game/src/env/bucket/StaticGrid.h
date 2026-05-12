@@ -14,7 +14,7 @@ public:
 	void updateStatic(Static* staticObj, bool bulkAdd) const;
 
 	void ensureInited(int index, int centerIndex);
-	const std::vector<Physical*>& get(const Urho3D::Vector3& center, float radius);
+	const std::vector<Physical*>& get(const Urho3D::Vector2& center, float radius);
 
 private:
 	int getIndexForRadius(float radius) const;

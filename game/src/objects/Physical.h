@@ -8,6 +8,7 @@
 #include "UId.h"
 #include "database/db_other_struct.h"
 #include "objects/ObjectEnums.h"
+#include "Urho3D/Math/Vector2.h"
 #include "Urho3D/Math/Vector3.h"
 
 
@@ -25,7 +26,7 @@ class Physical {
 	friend class CreationCommand;
 
 public:
-	explicit Physical(Urho3D::Vector3& _position, UId uId);
+	explicit Physical(const Urho3D::Vector3& _position, UId uId);
 	virtual ~Physical();
 	void clearNodeWithOutDelete();
 
@@ -65,7 +66,7 @@ public:
 	virtual float getAttackVal(Physical* aim) { return 0.f; }
 
 	float getHealthPercent() const { return hp * invMaxHp; }
-	const Urho3D::Vector3& getPosition() const { return position; }
+	const Urho3D::Vector2& getPosition() const { return position; }
 
 	virtual bool isToDispose() const { return false; }
 
@@ -119,7 +120,7 @@ protected:
 	void setPlayerAndTeam(char playerId, char teamId);
 
 	Urho3D::Node* node{};
-	Urho3D::Vector3 position;
+	Urho3D::Vector2 position;
 
 	float hp = -1.f;
 	float invMaxHp; // optm

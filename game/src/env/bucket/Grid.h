@@ -37,7 +37,7 @@ public:
 	std::vector<int> getCloseCenters(Urho3D::Vector2& center, float radius) const;
 	void invalidateCache();
 	void invalidateCache(int currentIdx, float radius);
-	BucketIterator& getArrayNeight(const Urho3D::Vector3& position, float radius);
+	BucketIterator& getArrayNeight(const Urho3D::Vector2& position, float radius);
 	BucketIterator& getArrayNeight(int center, float radius);
 
 	bool onlyOneInside(int index) const;

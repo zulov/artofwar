@@ -26,10 +26,8 @@ struct ProjectileBase {
 		this->player = player;
 		this->attackVal = shooter->getAttackVal(aim);
 
-		const auto start = shooter->getPosition();
-		const auto end = aim->getPosition();
-
-		this->speed = speed / start.DistanceToPoint(end);
+		const auto dist = (aim->getPosition() - shooter->getPosition()).Length();
+		this->speed = speed / dist;
 
 		percentToGo = 1.f;
 

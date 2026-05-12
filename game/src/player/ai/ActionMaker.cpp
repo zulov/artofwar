@@ -344,7 +344,7 @@ Building* ActionMaker::getBuildingClosestArea(std::vector<Building*>& allPossibl
 	Building* closest = allPossible[0];
 	for (const auto possible : allPossible) {
 		//TODO performance O(^2)
-		Urho3D::Vector2 pos = {possible->getPosition().x_, possible->getPosition().z_};
+		const Urho3D::Vector2 &pos = possible->getPosition();
 		for (auto& center : centers) {
 			auto diff = pos - center;
 

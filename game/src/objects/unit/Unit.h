@@ -53,7 +53,7 @@ class Unit : public Physical {
 	friend void bindRow<Unit>(sqlite3_stmt*, int, const Unit*);
 
 public:
-	Unit(Urho3D::Vector3& _position, short dbId, char playerId, char teamId, char level, UId uId);
+	Unit(const Urho3D::Vector3& _position, short dbId, char playerId, char teamId, char level, UId uId);
 	~Unit() override;
 
 	void populate();

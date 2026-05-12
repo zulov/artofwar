@@ -115,10 +115,8 @@ TEST_F(GridCalculatorFixture, BiggestManhattanReturnsFarthestTargetDistance) {
 
 TEST_F(GridCalculatorFixture, IndexFromVectorOverloadsMatchScalarVersion) {
 	Urho3D::Vector2 pos2(-3.f, 3.f);
-	Urho3D::Vector3 pos3(-3.f, 0.f, 3.f);
 
 	EXPECT_EQ(gc->indexFromPosition(pos2), gc->indexFromPosition(-3.f, 3.f));
-	EXPECT_EQ(gc->indexFromPosition(pos3), gc->indexFromPosition(-3.f, 3.f));
 }
 
 TEST_F(GridCalculatorFixture, GetCenterOverloadMatchesIndexCenter) {

@@ -26,9 +26,9 @@ struct ProjectileWithNode : public ProjectileBase {
 	void init(Physical* shooter, Physical* aim, float speed, char player) override {
 		ProjectileBase::init(shooter, aim, speed, player);
 
-		const auto end = aim->getPosition();
-		const auto start = shooter->getPosition();
-		direction = start.DirToXZ(end);
+		const auto end = aim->getNode()->GetPosition();
+		const auto start = shooter->getNode()->GetPosition();
+		direction = Urho3D::Vector2(end.x_ - start.x_, end.z_ - start.z_);
 		const auto model = node->GetComponent<Urho3D::StaticModel>();
 		if (aim->getType() == ObjectType::BUILDING) {
 			changeMaterial("Materials/projectiles/black.xml", model);

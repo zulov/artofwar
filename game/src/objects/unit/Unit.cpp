@@ -1,5 +1,6 @@
 #include "Unit.h"
 
+#include <Urho3D/Math/Vector3.h>
 #include "utils/StringUtils.h"
 
 #include "Game.h"
@@ -25,7 +26,7 @@
 #include "utils/Flags.h"
 #include "objects/NodeUtils.h"
 
-Unit::Unit(Urho3D::Vector3& _position, short dbId, char playerId, char teamId, char level, UId uId) : Physical(_position, uId),
+Unit::Unit(const Urho3D::Vector3& _position, short dbId, char playerId, char teamId, char level, UId uId) : Physical(_position, uId),
                                                                         state(UnitState::STOP),
                                                                         nextState(UnitState::STOP) {
 	dbUnit = Game::getDatabase()->getUnit(dbId);
@@ -65,11 +66,11 @@ void Unit::checkAim() {
 void Unit::updatePositionAndRotation() const {
 	if (shouldUpdate) {
 		if (isInStates(state, {UnitState::ATTACK, UnitState::COLLECT, UnitState::SHOT}) && isFirstThingAlive()) {
-			setTransform(position.DirToXZ(thingToInteract->getPosition()));
+			setTransform(thingToInteract->getPosition() - position);
 		} else if (velocity.LengthSquared() > 4 * dbLevel->sqMinSpeed) {
 			setTransform(velocity);
 		} else {
-			node->SetPosition(position);
+			node->SetPosition(Urho3D::Vector3(position.x_, node->GetPosition().y_, position.y_));
 		}
 	}
 }
@@ -81,14 +82,15 @@ bool Unit::move(float timeStep, const CameraInfo* camInfo) {
 	if (state != UnitState::STOP && velocity != Urho3D::Vector2::ZERO) {
 		hasMoved = true;
 		position.x_ += velocity.x_ * timeStep;
-		position.z_ += velocity.y_ * timeStep;
+		position.y_ += velocity.y_ * timeStep;
 		shouldUpdate = ifVisible(true, camInfo);
 		updatePositionAndRotation();
 	} else {
 		shouldUpdate = ifVisible(false, camInfo);
 	}
 	if (prevVisible == false && shouldUpdate == true) {
-		node->SetPosition(position);
+		const float y = Game::getEnvironment()->getGroundHeightAt(position);
+		node->SetPosition(Urho3D::Vector3(position.x_, y, position.y_));
 	}
 
 	return hasMoved;
@@ -105,8 +107,8 @@ bool Unit::ifVisible(bool hasMoved, const CameraInfo* camInfo) const {
 
 	return (boundary.x_ < position.x_ || boundary.x_ < node->GetPosition().x_)
 		&& (position.x_ < boundary.y_ || node->GetPosition().x_ < boundary.y_)
-		&& (boundary.z_ < position.z_ || boundary.z_ < node->GetPosition().z_)
-		&& (position.z_ < boundary.w_ || node->GetPosition().z_ < boundary.w_);
+		&& (boundary.z_ < position.y_ || boundary.z_ < node->GetPosition().z_)
+		&& (position.y_ < boundary.w_ || node->GetPosition().z_ < boundary.w_);
 }
 
 void Unit::setAcceleration(Urho3D::Vector2& _acceleration) {
@@ -160,8 +162,9 @@ bool Unit::toAction(Physical* closest, UnitAction order) {
 }
 
 void Unit::updateHeight(float y, float timeStep) {
-	velocity *= 1.f + (position.y_ - y) * 0.1f * dbLevel->mass * timeStep;
-	position.y_ = y;
+	if (!node) { return; }
+	velocity *= 1.f + (node->GetPosition().y_ - y) * 0.1f * dbLevel->mass * timeStep;
+	node->SetPosition(Urho3D::Vector3(position.x_, y, position.y_));
 }
 
 void Unit::addOrder(IndividualOrder* aim) {
@@ -184,15 +187,17 @@ void Unit::setAim(Aim* aim) {
 }
 
 void Unit::setTransform(const Urho3D::Vector2& rotation) const {
-	node->SetTransform(position,
+	node->SetTransform(Urho3D::Vector3(position.x_, node->GetPosition().y_, position.y_),
 	                   Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(rotation.x_, 0.f, rotation.y_)));
 }
 
 void Unit::drawLineTo(const Urho3D::Vector2& second,
                       const Urho3D::Color& color = Urho3D::Color::WHITE) const {
 	if (!second.Equals(Urho3D::Vector2::ZERO)) {
-		Urho3D::Vector3 to = Urho3D::Vector3(position.x_ + second.x_, position.y_, position.z_ + second.y_);
-		DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, position, to, color);
+		const auto nodePos = node->GetPosition();
+		Urho3D::Vector3 from = Urho3D::Vector3(position.x_, nodePos.y_, position.y_);
+		Urho3D::Vector3 to = Urho3D::Vector3(position.x_ + second.x_, nodePos.y_, position.y_ + second.y_);
+		DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, from, to, color);
 	}
 }
 
@@ -242,7 +247,7 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 				}
 				break;
 			case DebugUnitType::INTERACT: //TODO charge
-				DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, position, thingToInteract->getPosition());
+				DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, node->GetPosition(), thingToInteract->getNode()->GetPosition());
 				break;
 			default: ;
 			}
@@ -487,7 +492,7 @@ float Unit::getSightRadius() const {
 Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
 	//TODO bug co to za dziwna funkcja
 	const auto vector = Consts::circleCords[i] * (dbLevel->minDist + toFollow->getMinimalDistance()) * 2;
-	return {toFollow->getPosition().x_ + vector.x_, toFollow->getPosition().z_ + vector.y_};
+	return {toFollow->getPosition().x_ + vector.x_, toFollow->getPosition().y_ + vector.y_};
 }
 
 short Unit::getCostSum() const {

@@ -412,7 +412,7 @@ void InfluenceManager::addCollect(Unit* unit, short resId, float value) const {
 	econQuad[playerId]->update(index, value);
 }
 
-void InfluenceManager::addAttack(unsigned char player, const Urho3D::Vector3& position, float value) const {
+void InfluenceManager::addAttack(unsigned char player, const Urho3D::Vector2& position, float value) const {
 	attackSpeed[player]->tempUpdate(position, value);
 }
 
@@ -432,7 +432,7 @@ float InfluenceManager::getVisibilityScore(unsigned char player) const {
 	return visibilityManager->getVisibilityScore(player);
 }
 
-int InfluenceManager::getIndex(const Urho3D::Vector3& position) const {
+int InfluenceManager::getIndex(const Urho3D::Vector2& position) const {
 	return calculator->indexFromPosition(position);
 }
 

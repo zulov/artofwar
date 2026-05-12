@@ -14,7 +14,7 @@ TargetAim::TargetAim(std::vector<int> _path) :
 
 std::vector<Urho3D::Vector3> TargetAim::getDebugLines(Unit* unit) const {
 	std::vector<Urho3D::Vector3> points;
-	points.emplace_back(unit->getPosition());
+	points.emplace_back(unit->getNode()->GetPosition());
 	const auto env = Game::getEnvironment();
 
 	for (short i = current; i < path.size(); ++i) {
@@ -25,7 +25,7 @@ std::vector<Urho3D::Vector3> TargetAim::getDebugLines(Unit* unit) const {
 	return points;
 }
 
-Urho3D::Vector2 TargetAim::getDirection(Unit* unit) { return unit->getPosition().DirToXZ(currentTarget); }
+Urho3D::Vector2 TargetAim::getDirection(Unit* unit) { return currentTarget - unit->getPosition(); }
 
 bool TargetAim::ifReach(Unit* unit) {
 	if (path[current] == unit->getMainGridIndex()) {

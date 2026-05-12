@@ -151,7 +151,7 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) {
 		&& data.anyNeightOccupied()) {
 		const auto center = repulseCache[data.getNeightOccupation()] + calculator->getCenter(index);
 
-		return Urho3D::Vector2(unit->getPosition().x_, unit->getPosition().z_) - center;
+		return unit->getPosition() - center;
 	}
 	return {};
 }
@@ -308,7 +308,7 @@ std::vector<int> MainGrid::getIndexesInRange(int centerIndex, float range) const
 
 	return allIndexes;
 }
-std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector3& center, float range) const {
+std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector2& center, float range) const {
 	return getIndexesInRange(calculator->indexFromPosition(center), range);
 }
 
@@ -585,7 +585,7 @@ void MainGrid::createGradient(std::vector<int>& toRefresh, short level) const {
 	toRefresh = toRefresh2;
 }
 
-std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3D::Vector3& position) const {
+std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3D::Vector2& position) const {
 	auto& data = complexData[index];
 
 	if (!data.isPassable()) {
@@ -610,7 +610,7 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3
 			assert(false);
 			return {};
 		}
-		auto direction = position.DirToXZ(calculator->getCenter(escapeBucket));
+		auto direction = calculator->getCenter(escapeBucket) - position;
 
 		direction.Normalize();
 		return direction;

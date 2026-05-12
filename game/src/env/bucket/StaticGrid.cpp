@@ -81,7 +81,7 @@ void StaticGrid::ensureInited(int index, int centerIndex) {
 	}
 }
 
-const std::vector<Physical*>& StaticGrid::get(const Urho3D::Vector3& center, float radius) {
+const std::vector<Physical*>& StaticGrid::get(const Urho3D::Vector2& center, float radius) {
 	const int index = getIndexForRadius(radius);
 	const int centerIndex = calculator->indexFromPosition(center);
 

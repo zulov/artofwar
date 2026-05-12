@@ -1,5 +1,6 @@
 #include "objects/Physical.h"
 
+#include <Urho3D/Math/Vector3.h>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
@@ -14,12 +15,12 @@
 #include "player/PlayersManager.h"
 #include "scene/load/dbload_container.h"
 
-Physical::Physical(Urho3D::Vector3& _position, UId uId):
-	position(_position), uId(uId) {
+Physical::Physical(const Urho3D::Vector3& _position, UId uId):
+	position(_position.x_, _position.z_), uId(uId) {
 	if (!SIM_GLOBALS.HEADLESS) {
 		node = Game::getScene()->CreateChild();
 		node->SetVar("link", this);
-		node->SetPosition(position);
+		node->SetPosition(_position);
 	}
 }
 
@@ -97,7 +98,7 @@ void Physical::setDefaultShader(Urho3D::Material* mat) const {
 	mat->SetShaderParameter("ColorPercent", 2.0);
 	mat->SetShaderParameter("Progress", 2.0);
 	mat->SetShaderParameter("VerticalPos",
-	                        Urho3D::Vector2(getPosition().y_, getPosition().y_ + getModelHeight()));
+	                        Urho3D::Vector2(node->GetPosition().y_, node->GetPosition().y_ + getModelHeight()));
 }
 
 void Physical::loadXml(const Urho3D::String& xmlName) {

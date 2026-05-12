@@ -1,5 +1,6 @@
 #include "FollowAim.h"
 #include "../Unit.h"
+#include <Urho3D/Scene/Node.h>
 #include "math/MathUtils.h"
 #include "TargetAim.h"
 
@@ -16,13 +17,13 @@ std::vector<Urho3D::Vector3> FollowAim::getDebugLines(Unit* follower) const {
 	if (subTarget) {
 		return subTarget->getDebugLines(follower);
 	}
-	auto position = follower->getPosition();
+	auto nodePos = follower->getNode()->GetPosition();
 	std::vector<Urho3D::Vector3> points;
 	const auto optPos = physical->getPosToUseBy(follower);
 	if (optPos.has_value()) {
 		auto pos = optPos.value();
-		points.emplace_back(position);
-		points.emplace_back(pos.x_, position.y_, pos.y_);
+		points.emplace_back(nodePos);
+		points.emplace_back(pos.x_, nodePos.y_, pos.y_);
 	}
 
 	return points;
@@ -34,7 +35,7 @@ Urho3D::Vector2 FollowAim::getDirection(Unit* follower) {
 	}
 	const auto opt = physical->getPosToUseBy(follower);
 	if (opt.has_value()) {
-		return follower->getPosition().DirToXZ(opt.value());
+		return opt.value() - follower->getPosition();
 	}
 	return {};
 }

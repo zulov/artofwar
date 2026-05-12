@@ -80,9 +80,9 @@ void Controls::setCircle(int i, Urho3D::Vector4 val) const {
 
 void Controls::resetCircles() const { for (int i = 0; i < CIRCLE_NUMBER; ++i) { setCircle(i, Urho3D::Vector4()); } }
 
-void Controls::setCircleSight(int i, const Urho3D::Vector3& position, float radius, Urho3D::Color color) const {
+void Controls::setCircleSight(int i, const Urho3D::Vector2& position, float radius, Urho3D::Color color) const {
 	color.a_ = 0;
-	setCircle(i, Urho3D::Vector4(position.x_, position.z_, radius, float(color.ToUInt())));
+	setCircle(i, Urho3D::Vector4(position.x_, position.y_, radius, float(color.ToUInt())));
 }
 
 void Controls::unSelectAll() {
@@ -185,7 +185,7 @@ void Controls::rightHold(MouseHeld& held) const {
 		                        held.secondAs2D(), true);
 	} else {
 		second = new GroupOrder(selected, UnitActionType::ORDER, castC(UnitAction::CHARGE),
-		                        held.first2Second(), true); //TODO buf append nie dzia³a
+		                        held.first2Second(), true); //TODO buf append nie dziaï¿½a
 	}
 
 	Game::getActionCenter()->addUnitAction(first, second);
@@ -507,7 +507,8 @@ void Controls::buildControl() {
 				tempBuildingNode->SetEnabled(true);
 			}
 
-			setCircleSight(0, tempBuildingNode->GetPosition(), getCircleSize(building, level),
+			const auto tbPos = tempBuildingNode->GetPosition();
+			setCircleSight(0, Urho3D::Vector2(tbPos.x_, tbPos.z_), getCircleSize(building, level),
 			               Game::getColorPaletteRepo()->getCircleColor(building));
 
 			setShaderParam(tempBuildingNode, "MatDiffColor",

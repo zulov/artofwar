@@ -34,7 +34,7 @@ public:
 	                                                bool isBuilding) const;
 	void addStatic(Static* object, bool bulkAdd);
 	void removeStatic(Static* object) const;
-	std::optional<Urho3D::Vector2> getDirectionFrom(int index, const Urho3D::Vector3& position) const;
+	std::optional<Urho3D::Vector2> getDirectionFrom(int index, const Urho3D::Vector2& position) const;
 
 	std::vector<int> getPassableEnd(int endIdx) const;
 	std::vector<int> getPassableIndexes(const std::vector<int>& endIdxs, bool closeEnough) const;
@@ -77,7 +77,7 @@ public:
 	bool cellIsCollectable(int index) const;
 	bool cellIsAttackable(int index) const;
 	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
-	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
+	std::vector<int> getIndexesInRange(const Urho3D::Vector2& center, float range) const;
 	std::vector<int> getIndexesInRange(int centerIndex, float range) const;
 	void addResBonuses(std::vector<Building*>& resBuildings) const;
 	void reAddBonuses(std::vector<Building*>& resBuildings, std::vector<ResourceEntity*>* resources) const;

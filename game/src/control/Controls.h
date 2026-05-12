@@ -72,7 +72,7 @@ private:
 
 	void refreshSelected();
 	bool conditionToClean(const FrameInfo* frameInfo) const;
-	void setCircleSight(int i, const Urho3D::Vector3& position, float radius, Urho3D::Color color) const;
+	void setCircleSight(int i, const Urho3D::Vector2& position, float radius, Urho3D::Color color) const;
 
 	bool clickDown(MouseButton& var) const;
 	void createBuilding(Urho3D::Vector2 pos) const;

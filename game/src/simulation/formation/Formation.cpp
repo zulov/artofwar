@@ -123,8 +123,7 @@ void Formation::updateIds() {
 				continue;
 			}
 			int bucketId = unit->getMainGridIndex();
-			const auto pos = unit->getPosition();
-			const auto currentPos = Urho3D::Vector2(pos.x_, pos.z_);
+		const auto currentPos = unit->getPosition();
 
 			auto it = bucketToIds.find(bucketId);
 			if (it != bucketToIds.end()) {
@@ -376,6 +375,5 @@ void Formation::updateUnits() {
 }
 
 void Formation::setCenter() {
-	const auto leaderPos = leader->getPosition();
-	center = {leaderPos.x_, leaderPos.z_};
+	center = leader->getPosition();
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "InfluenceMapI.h"
 #include "env/GridCalculator.h"
+#include <Urho3D/Math/Vector3.h>
 
 struct GridCalculator;
 class Physical;

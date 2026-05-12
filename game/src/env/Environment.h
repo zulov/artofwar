@@ -37,8 +37,8 @@ public:
 	std::vector<Physical*>* getNeighboursWithCache(Unit* unit, float radius);
 	const std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
 
-	std::vector<Physical*>* getResources(const Urho3D::Vector3& center, int id, float radius, float prevRadius);
-	std::vector<Physical*>* getResources(const Urho3D::Vector3& center, float radius);
+	std::vector<Physical*>* getResources(const Urho3D::Vector2& center, int id, float radius, float prevRadius);
+	std::vector<Physical*>* getResources(const Urho3D::Vector2& center, float radius);
 
 	std::vector<Physical*>* getBuildingsFromTeamNotEq(Physical* physical, int id, float radius);
 
@@ -62,12 +62,12 @@ public:
 	                     const std::vector<ResourceEntity*>& resourceToDispose);
 
 	Urho3D::Vector2 repulseObstacle(Unit* unit);
-	std::optional<Urho3D::Vector2> validatePosition(int index, const Urho3D::Vector3& position) const;
+	std::optional<Urho3D::Vector2> validatePosition(int index, const Urho3D::Vector2& position) const;
 
 	const std::vector<Physical*>* getNeighbours(MouseHeld& pair, char player);
 
 	float getGroundHeightAt(float x, float z) const;
-	float getGroundHeightAt(const Urho3D::Vector3& pos) const;
+	float getGroundHeightAt(const Urho3D::Vector2& pos) const;
 	Urho3D::Vector3 getPosWithHeightAt(float x, float z) const;
 
 	Urho3D::Vector3 getPosWithHeightAt(int index) const;
@@ -76,7 +76,7 @@ public:
 	bool validateStatic(const Urho3D::UCharVector2& size, Urho3D::Vector2& pos, bool isBuilding) const;
 	bool validateStatic(const Urho3D::UCharVector2& size, const Urho3D::UShortVector2& bucketCords, bool isBuilding) const;
 	bool validateStatic(const Urho3D::UCharVector2& size, int index, bool isBuilding) const;
-	std::optional<Urho3D::Vector3> tryGetValidPosition(const Urho3D::UCharVector2& size,
+	std::optional<Urho3D::Vector2> tryGetValidPosition(const Urho3D::UCharVector2& size,
 	                                                  const Urho3D::UShortVector2& bucketCords,
 	                                                  bool isBuilding) const;
 
@@ -126,7 +126,7 @@ public:
 	std::optional<Urho3D::Vector2> getPosToCreateResBonus(db_building* building, char player);
 	std::vector<Urho3D::Vector2> getAreas(char player, std::span<const float>, int min);
 	void addCollect(Unit* unit, short resId, float value);
-	void addAttack(char player, const Urho3D::Vector3& position, float value);
+	void addAttack(char player, const Urho3D::Vector2& position, float value);
 	void drawInfluence();
 	bool cellIsPassable(int index) const;
 	bool cellIsCollectable(int index) const;
@@ -138,7 +138,7 @@ public:
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;
 	float getVisibilityScore(char player) const;
 
-	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
+	std::vector<int> getIndexesInRange(const Urho3D::Vector2& center, float range) const;
 	std::vector<int> getIndexesInRange(int index, float range) const;
 	Urho3D::Terrain* getTerrain() const { return terrain; }
 	void setTerrainShaderParam(const Urho3D::String& name, const Urho3D::Variant& value) const;

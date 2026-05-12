@@ -20,7 +20,7 @@ void bindRow<Unit>(sqlite3_stmt* stmt, int precision, const Unit* x) {
 	bindC(stmt, UnitCol::player, x->getPlayer());
 	bindC(stmt, UnitCol::level, x->getLevelNum());
 	bindI(stmt, UnitCol::position_x, x->position.x_ * precision);
-	bindI(stmt, UnitCol::position_z, x->position.z_ * precision);
+	bindI(stmt, UnitCol::position_z, x->position.y_ * precision);
 	bindC(stmt, UnitCol::state, castC(x->getState()));
 	bindI(stmt, UnitCol::velocity_x, x->velocity.x_ * precision);
 	bindI(stmt, UnitCol::velocity_z, x->velocity.y_ * precision);

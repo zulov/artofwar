@@ -1,5 +1,5 @@
 #pragma once
-#include <Urho3D/Math/Vector3.h>
+#include <Urho3D/Math/Vector2.h>
 #include <vector>
 
 struct GridCalculator {
@@ -39,10 +39,6 @@ struct GridCalculator {
 			getValid((range.first + halfSize) * invFieldSize),
 			getValid((range.second + halfSize) * invFieldSize)
 		};
-	}
-
-	int indexFromPosition(const Urho3D::Vector3& pos) const {
-		return getNotSafeIndex(getIndex(pos.x_), getIndex(pos.z_));
 	}
 
 	int indexFromPosition(const Urho3D::Vector2& pos) const {

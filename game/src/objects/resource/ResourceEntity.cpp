@@ -14,7 +14,7 @@
 #include "player/PlayersManager.h"
 
 
-ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, db_resource* db_resource, int indexInGrid, UId uid)
+ResourceEntity::ResourceEntity(const Urho3D::Vector3& _position, db_resource* db_resource, int indexInGrid, UId uid)
 	: Static(_position, indexInGrid, uid) {
 	dbResource = db_resource;
 	state = StaticState::ALIVE;
