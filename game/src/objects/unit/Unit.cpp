@@ -25,10 +25,11 @@
 #include "utils/consts.h"
 #include "utils/Flags.h"
 #include "objects/NodeUtils.h"
+#include "utils/PrintUtils.h"
 
 Unit::Unit(const Urho3D::Vector3& _position, short dbId, char playerId, char teamId, char level, UId uId) : Physical(_position, uId),
-                                                                        state(UnitState::STOP),
-                                                                        nextState(UnitState::STOP) {
+                                                                                                            state(UnitState::STOP),
+                                                                                                            nextState(UnitState::STOP) {
 	dbUnit = Game::getDatabase()->getUnit(dbId);
 	dbLevel = dbUnit->getLevel(level).value(); //TODO bug value
 	setPlayerAndTeam(playerId, teamId);
@@ -63,18 +64,6 @@ void Unit::checkAim() {
 	}
 }
 
-void Unit::updatePositionAndRotation() const {
-	if (shouldUpdate) {
-		if (isInStates(state, {UnitState::ATTACK, UnitState::COLLECT, UnitState::SHOT}) && isFirstThingAlive()) {
-			setTransform(thingToInteract->getPosition() - position);
-		} else if (velocity.LengthSquared() > 4 * dbLevel->sqMinSpeed) {
-			setTransform(velocity);
-		} else {
-			node->SetPosition(Urho3D::Vector3(position.x_, node->GetPosition().y_, position.y_));
-		}
-	}
-}
-
 bool Unit::move(float timeStep, const CameraInfo* camInfo) {
 	bool hasMoved = false;
 	const bool prevVisible = shouldUpdate;
@@ -94,6 +83,19 @@ bool Unit::move(float timeStep, const CameraInfo* camInfo) {
 	}
 
 	return hasMoved;
+}
+
+void Unit::updatePositionAndRotation() const {
+	if (shouldUpdate) {
+		auto y = Game::getEnvironment()->getGroundHeightAt(position);
+		if (isInStates(state, {UnitState::ATTACK, UnitState::COLLECT, UnitState::SHOT}) && isFirstThingAlive()) {
+			setTransform(thingToInteract->getPosition() - position, y);
+		} else if (velocity.LengthSquared() > 4 * dbLevel->sqMinSpeed) {
+			setTransform(velocity, y);
+		} else {
+			node->SetPosition(Urho3D::Vector3(position.x_, y, position.y_));
+		}
+	}
 }
 
 bool Unit::ifVisible(bool hasMoved, const CameraInfo* camInfo) const {
@@ -161,12 +163,6 @@ bool Unit::toAction(Physical* closest, UnitAction order) {
 	return false;
 }
 
-void Unit::updateHeight(float y, float timeStep) {
-	if (!node) { return; }
-	velocity *= 1.f + (node->GetPosition().y_ - y) * 0.1f * dbLevel->mass * timeStep;
-	node->SetPosition(Urho3D::Vector3(position.x_, y, position.y_));
-}
-
 void Unit::addOrder(IndividualOrder* aim) {
 	resetFormation();
 	aims.add(aim);
@@ -186,8 +182,8 @@ void Unit::setAim(Aim* aim) {
 	aims.set(aim);
 }
 
-void Unit::setTransform(const Urho3D::Vector2& rotation) const {
-	node->SetTransform(Urho3D::Vector3(position.x_, node->GetPosition().y_, position.y_),
+void Unit::setTransform(const Urho3D::Vector2& rotation, float y) const {
+	node->SetTransform(Urho3D::Vector3(position.x_, y, position.y_),
 	                   Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(rotation.x_, 0.f, rotation.y_)));
 }
 
@@ -439,7 +435,7 @@ bool Unit::hasStateChangePending() const {
 void Unit::applyForce(float timeStep) {
 	velocity *= 0.5f; //TODO to dac jaki wspolczynnik tarcia terenu
 	velocity += acceleration * (timeStep * dbLevel->invMass);
-
+	//TODO velocity += hillCoef
 	const float lengthSq = velocity.LengthSquared();
 	if (lengthSq < dbLevel->sqMinSpeed) {
 		if (state == UnitState::MOVE) {

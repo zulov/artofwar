@@ -48,7 +48,7 @@ void CameraBehave::changeTarget(float x, float z) const {
 
 	const auto newPos = Urho3D::Vector2(currentPos.x_ + diff.x_, currentPos.z_ + diff.y_);
 	
-	float h = Game::getEnvironment()->getGroundHeightAt(newPos.x_, newPos.y_);
+	float h = Game::getEnvironment()->getGroundHeightAt(newPos);
 	auto y = Urho3D::Max(h + minY, cameraNode->GetPosition().y_);
 
 	setPos(Urho3D::Vector3(newPos.x_, y, newPos.y_));

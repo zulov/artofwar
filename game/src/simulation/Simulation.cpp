@@ -215,22 +215,11 @@ void Simulation::countFrame() {
 void Simulation::applyForce() const {
 	for (auto unit : *units) {
 		unit->applyForce(TIME_PER_UPDATE);
-		if(!headless){
-			const auto& pos = unit->getPosition();
-			//TODO to przeniesc do mova? to moze byc problem gdy jest przesuwanie poza klatka
-			const float y = env->getGroundHeightAt(pos.x_, pos.y_);
-			unit->updateHeight(y, TIME_PER_UPDATE);
-		}
-
 	}
 }
 
 void Simulation::levelUp(QueueElement* done, char player) const {
-	Game::getActionCenter()->add(new UpgradeCommand(
-	                                                player,
-	                                                done->getId(),
-	                                                done->getType()
-	                                               ));
+	Game::getActionCenter()->add(new UpgradeCommand(player, done->getId(), done->getType()));
 }
 
 void Simulation::updateBuildingQueues() const {
