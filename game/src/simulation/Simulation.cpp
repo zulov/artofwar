@@ -56,9 +56,6 @@ void Simulation::updateInfluenceMaps(bool force) const {
 	if (canUpdate(PerFrameAction::INFLUENCE_UNITS_2, force)) {
 		env->updateInfluenceUnits2(units);
 	}
-	if (canUpdate(PerFrameAction::INFLUENCE_RESOURCES, force)) {
-		env->updateInfluenceResources(resources);
-	}
 	if (canUpdate(PerFrameAction::INFLUENCE_OTHER, force)) {
 		env->updateInfluenceOther(buildings, units);
 	}

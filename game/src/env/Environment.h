@@ -45,8 +45,6 @@ public:
 	void updateInfluenceUnits1(std::vector<Unit*>* units) const;
 	void updateInfluenceUnits2(std::vector<Unit*>* units) const;
 
-	void updateInfluenceResources(std::vector<ResourceEntity*>* resources) const;
-
 	void updateInfluenceOther(std::vector<Building*>* buildings, std::vector<Unit*>* units) const;
 	void updateQuadOther() const;
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,

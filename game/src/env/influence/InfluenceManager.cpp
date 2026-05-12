@@ -63,7 +63,6 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 		econQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
 	}
 
-	resourceInfluence = new InfluenceMapFloat(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV);
 	for (int player = 0; player < numberOfPlayers; ++player) {
 		std::array<InfluenceMapFloat*, RESOURCES_SIZE> gatherSpeedView;
 		std::array<InfluenceMapInt*, RESOURCES_SIZE> resNotInBonusView;
@@ -75,7 +74,6 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, AI_MAP_COUNT>{
 			                                buildingsInfluencePerPlayer[player],
 			                                unitsInfluencePerPlayer[player],
-			                                resourceInfluence, //TODO czy to jest ważne?
 			                                attackSpeed[player],
 			                                gatherSpeedView[cast(ResourceType::FOOD)],
 			                                gatherSpeedView[cast(ResourceType::WOOD)],
@@ -123,7 +121,6 @@ InfluenceManager::~InfluenceManager() {
 	}
 
 	clear_vector(attackSpeed);
-	delete resourceInfluence;
 
 	clear_vector(armyQuad);
 	clear_vector(buildingsQuad);
@@ -155,16 +152,6 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 	}
 
 	MapsUtils::finalize(unitsInfluencePerPlayer);
-}
-
-void InfluenceManager::updateResources(const std::vector<ResourceEntity*>* resources) const {
-	resourceInfluence->reset();
-	for (const auto resource : (*resources)) {
-		resourceInfluence->tempUpdate(resource->getIndexInInfluence(), resource->getHealthPercent());
-	}
-	//BUG? resourceInfluence->updateFromTemp() is commented out -- values[] stays zeroed after reset(), 
-	// so getValueAt/cumulateErros reads zeros. Assert fires in debug. Is this intentional?
-	//resourceInfluence->updateFromTemp();
 }
 
 void InfluenceManager::updateQuadUnits(const std::vector<Unit*>* units) const {
@@ -244,9 +231,6 @@ void InfluenceManager::draw(InfluenceDataType type, unsigned char index) {
 	case InfluenceDataType::BUILDING_INFLUENCE_PER_PLAYER:
 		MapsUtils::drawMap(currentDebugBatch, index, buildingsInfluencePerPlayer);
 		break;
-	case InfluenceDataType::RESOURCE_INFLUENCE:
-		resourceInfluence->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
-		break;
 	case InfluenceDataType::FOOD_SPEED:
 		MapsUtils::drawMap(currentDebugBatch, index, gatherSpeed[cast(ResourceType::FOOD)]);
 		break;
@@ -288,7 +272,6 @@ void InfluenceManager::drawAll() const {
 	MapsUtils::drawAll(unitsNumberPerPlayer, "unitsInt");
 	MapsUtils::drawAll(buildingsInfluencePerPlayer, "buildingsInt");
 	MapsUtils::drawAll(unitsInfluencePerPlayer, "units");
-	resourceInfluence->print("resource_");
 
 	constexpr const char* gatherNames[] = {"gatherFood", "gatherWood", "gatherStone", "gatherGold"};
 	for (int r = 0; r < RESOURCES_SIZE; ++r) {
@@ -480,5 +463,5 @@ std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(const std::vec
 }
 
 float InfluenceManager::getFieldSize() const {
-	return resourceInfluence->getFieldSize();
+	return unitsInfluencePerPlayer[0]->getFieldSize();
 }

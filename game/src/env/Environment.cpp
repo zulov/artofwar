@@ -212,9 +212,6 @@ void Environment::updateInfluenceUnits2(std::vector<Unit*>* units) const {
 	influenceManager.updateQuadUnits(units);
 }
 
-void Environment::updateInfluenceResources(std::vector<ResourceEntity*>* resources) const {
-	influenceManager.updateResources(resources);
-}
 
 void Environment::updateInfluenceOther(std::vector<Building*>* buildings, std::vector<Unit*>* units) const {
 	influenceManager.updateBuildings(buildings);

@@ -27,7 +27,7 @@ namespace Urho3D {
 	class Terrain;
 }
 
-inline constexpr int AI_MAP_COUNT = 8;
+inline constexpr int AI_MAP_COUNT = 7;
 inline constexpr int AI_ARMY_MAP_COUNT = 3;
 inline constexpr int CENTER_TYPE_COUNT = 3;
 
@@ -39,7 +39,7 @@ public:
 	// --- Update (called from game loop) ---
 	void updateUnits(std::vector<Unit*>* units) const;
 	void updateBuildings(const std::vector<Building*>* buildings) const;
-	void updateResources(const std::vector<ResourceEntity*>* resources) const;
+
 	void updateQuadUnits(const std::vector<Unit*>* units) const;
 	void updateQuadOther() const;
 	void updateWithHistory() const;
@@ -90,9 +90,6 @@ private:
 	std::vector<InfluenceMapHistory*> attackSpeed;
 	std::vector<InfluenceMapHistory*> gatherSpeed[RESOURCES_SIZE];
 	std::vector<InfluenceMapInt*> resNotInBonus[RESOURCES_SIZE];
-
-	// --- Shared maps ---
-	InfluenceMapFloat* resourceInfluence;
 
 	// --- Quadtree center maps (per player) ---
 	std::vector<InfluenceMapQuad*> econQuad;
