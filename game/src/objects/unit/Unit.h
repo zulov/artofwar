@@ -72,8 +72,6 @@ public:
 	bool toActionIfInRange(Physical* closest, UnitAction order);
 	bool toAction(Physical* closest, UnitAction order);
 
-	void updateHeight(float y, float timeStep);
-
 	void setState(UnitState _state);
 
 	void load(dbload_unit* unit);
@@ -192,6 +190,8 @@ private:
 	char lastActionThingId = -1; //TODO reset po jakim� czasie
 
 	bool indexHasChanged = false;
+	float lastGroundHeight = 0.f;
+
 	bool shouldUpdate = false;
 	ActionParameter nextActionParameter;
 	Urho3D::Vector2 inCellPos;

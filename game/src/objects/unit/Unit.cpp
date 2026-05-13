@@ -35,6 +35,7 @@ Unit::Unit(const Urho3D::Vector3& _position, short dbId, char playerId, char tea
 	setPlayerAndTeam(playerId, teamId);
 	loadXml("Objects/units/" + dbLevel->node);
 	populate();
+	lastGroundHeight = _position.y_;
 
 	if (dbUnit->typeCavalry) {
 		chargeData = new ChargeData(150, 2);
@@ -435,7 +436,11 @@ bool Unit::hasStateChangePending() const {
 void Unit::applyForce(float timeStep) {
 	velocity *= 0.5f; //TODO to dac jaki wspolczynnik tarcia terenu
 	velocity += acceleration * (timeStep * dbLevel->invMass);
-	//TODO velocity += hillCoef
+
+	float y = Game::getEnvironment()->getGroundHeightAt(position);
+	velocity *= 1.f + (lastGroundHeight - y) * 0.1f * dbLevel->mass * timeStep;
+	lastGroundHeight = y;
+
 	const float lengthSq = velocity.LengthSquared();
 	if (lengthSq < dbLevel->sqMinSpeed) {
 		if (state == UnitState::MOVE) {
