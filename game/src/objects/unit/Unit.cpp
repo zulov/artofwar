@@ -52,6 +52,9 @@ bool Unit::isAlive() const {
 	return state != UnitState::DEAD && state != UnitState::DISPOSE;
 }
 
+db_unit* Unit::getDbUnit() const { return static_cast<db_unit*>(dbEntity); }
+db_unit* Unit::getDb() const { return getDbUnit(); }
+
 void Unit::populate() {
 	maxSpeed = dbLevel->maxSpeed;
 	invMaxHp = dbLevel->invMaxHp;
