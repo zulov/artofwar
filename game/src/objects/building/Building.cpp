@@ -25,7 +25,7 @@ Building::Building(const Urho3D::Vector3& _position, db_building* db_building, u
 	Static(_position, indexInGrid, uId), dbLevel(db_building->getLevel(level).value()) {
 	player = playerId;
 	team = teamId;
-	dbBuilding = db_building;
+	dbEntity = db_building;
 	levelUp(level);
 }
 
@@ -52,7 +52,6 @@ char Building::getLevelNum() const { return dbLevel->level; }
 void Building::populate() {
 	Static::populate();
 	hp = dbLevel->maxHp;
-	dbId = dbBuilding->id;
 	invMaxHp = dbLevel->invMaxHp;
 	queue.changeMaxUnitsGroupSize(dbLevel->queueMaxCapacity);
 }
@@ -71,7 +70,7 @@ std::pair<float, bool> Building::absorbAttack(float attackCoef) {
 
 Urho3D::String Building::getInfo() const {
 	return l10nFormat("info_build",
-	                  dbBuilding->name.CString(), dbLevel->name.CString(),
+	                  getDbBuilding()->name.CString(), dbLevel->name.CString(),
 	                  asStringF(dbLevel->attack, 1).c_str(),
 	                  asStringF(dbLevel->armor).c_str(),
 	                  (int)hp, dbLevel->maxHp,
@@ -80,9 +79,9 @@ Urho3D::String Building::getInfo() const {
 	                  magic_enum::enum_name(state).data());
 }
 
-unsigned char Building::getMaxCloseUsers() const { return dbBuilding->maxUsers; }
+unsigned char Building::getMaxCloseUsers() const { return getDbBuilding()->maxUsers; }
 
-const Urho3D::String& Building::getName() const { return dbBuilding->name; }
+const Urho3D::String& Building::getName() const { return getDbBuilding()->name; }
 
 float Building::getAttackVal(Physical* aim) { return dbLevel->attack; }
 
@@ -110,7 +109,7 @@ void Building::action(BuildingActionType type, unsigned short id) {
 }
 
 void Building::levelUp(char level) {
-	dbLevel = dbBuilding->getLevel(level).value(); //TODO BUG value()
+	dbLevel = getDbBuilding()->getLevel(level).value(); //TODO BUG value()
 	const int hpTemp = hp;
 	loadXml("Objects/buildings/" + dbLevel->nodeName);
 	populate();
@@ -150,8 +149,8 @@ void Building::updateAi(bool ifBuildingAction) {
 		}
 	}
 
-	if (dbBuilding->toResource > 0 && dbLevel->spawnResourceRange > 0 && queue.isEmpty()) {
-		queue.add(QueueActionType::RESOURCE_CREATE, dbBuilding->id, dbLevel->id);
+	if (getDbBuilding()->toResource > 0 && dbLevel->spawnResourceRange > 0 && queue.isEmpty()) {
+		queue.add(QueueActionType::RESOURCE_CREATE, getDbBuilding()->id, dbLevel->id);
 	}
 }
 
@@ -165,7 +164,7 @@ std::optional<int> Building::getDeploy() {
 	return {};
 }
 
-const Urho3D::UCharVector2 Building::getGridSize() const { return dbBuilding->size; }
+const Urho3D::UCharVector2 Building::getGridSize() const { return getDbBuilding()->size; }
 
 void Building::createDeploy() {
 	deployIndex = -1;
@@ -184,7 +183,7 @@ void Building::complete() {
 
 float Building::getSightRadius() const { return dbLevel->sightRadius * (1 - 0.7f * !isReady()); }
 
-short Building::getCostSum() const { return dbBuilding->getSumCost(); }
+short Building::getCostSum() const { return getDbBuilding()->getSumCost(); }
 
 bool Building::canUse(int index) const { return Game::getEnvironment()->cellIsAttackable(index); }
 

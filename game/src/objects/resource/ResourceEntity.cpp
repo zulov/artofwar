@@ -16,12 +16,12 @@
 
 ResourceEntity::ResourceEntity(const Urho3D::Vector3& _position, db_resource* db_resource, int indexInGrid, UId uid)
 	: Static(_position, indexInGrid, uid) {
-	dbResource = db_resource;
+	dbEntity = db_resource;
 	state = StaticState::ALIVE;
 	if (node) {
-		loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(RandIntType::RESOURCE_NODE,
-		                                                                      dbResource->nodeName.Size())]);
-		if (dbResource->rotatable) {
+		loadXml("Objects/resources/" + db_resource->nodeName[RandGen::nextRand(RandIntType::RESOURCE_NODE,
+		                                                                      db_resource->nodeName.Size())]);
+		if (db_resource->rotatable) {
 			node->SetRotation(Urho3D::Quaternion(0, RandGen::nextRand(RandFloatType::RESOURCE_ROTATION, 360.f), 0.0f));
 		}
 	}
@@ -29,32 +29,31 @@ ResourceEntity::ResourceEntity(const Urho3D::Vector3& _position, db_resource* db
 }
 
 const Urho3D::UCharVector2 ResourceEntity::getGridSize() const {
-	return dbResource->size;
+	return getDbResource()->size;
 }
 
 void ResourceEntity::populate() {
 	Static::populate();
-	invMaxHp = dbResource->invMaxHp;
-	hp = dbResource->maxHp;
-	dbId = dbResource->id;
+	invMaxHp = getDbResource()->invMaxHp;
+	hp = getDbResource()->maxHp;
 }
 
 Urho3D::String ResourceEntity::getInfo() const {
 	const auto l10n = Game::getLocalization();
-	const auto bonus = bonuses[Game::getPlayersMan()->getActivePlayerID()] * dbResource->collectSpeed;
-	return l10nFormat("info_resource", dbResource->name.CString(), (int)hp, dbResource->maxHp,
+	const auto bonus = bonuses[Game::getPlayersMan()->getActivePlayerID()] * getDbResource()->collectSpeed;
+	return l10nFormat("info_resource", getDbResource()->name.CString(), (int)hp, getDbResource()->maxHp,
 	                  asStringF(bonus, 1).c_str(), closeUsers, getMaxCloseUsers());
 }
 
 const Urho3D::String& ResourceEntity::getName() const {
-	return dbResource->name;
+	return getDbResource()->name;
 }
 
 unsigned char ResourceEntity::getMaxCloseUsers() const {
-	return dbResource->maxUsers;
+	return getDbResource()->maxUsers;
 }
 
-char ResourceEntity::getResourceId() const { return dbResource->resourceId; }
+char ResourceEntity::getResourceId() const { return getDbResource()->resourceId; }
 
 void ResourceEntity::action(ResourceActionType type, char player) {
 	switch (type) {
@@ -91,15 +90,15 @@ bool ResourceEntity::canUse(int index) const {
 }
 
 float ResourceEntity::getModelHeight() const {
-	return dbResource->modelHeight;
+	return getDbResource()->modelHeight;
 }
 
 void ResourceEntity::setModelData(float modelHeight) const {
-	dbResource->modelHeight = modelHeight;
+	getDbResource()->modelHeight = modelHeight;
 }
 
 std::pair<float, bool> ResourceEntity::absorbAttack(float collectSpeed) {
-	collectSpeed *= dbResource->collectSpeed;
+	collectSpeed *= getDbResource()->collectSpeed;
 	if (hp - collectSpeed > 0) {
 		hp -= collectSpeed;
 		return {collectSpeed, false};

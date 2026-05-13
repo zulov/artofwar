@@ -2,6 +2,7 @@
 #include "objects/static/Static.h"
 #include "utils/defines.h"
 #include "database/db_insert_utils.h"
+#include "database/db_struct.h"
 
 namespace Urho3D {
 	class Vector3;
@@ -45,6 +46,6 @@ public:
 	char getSecondaryId() const override { return getResourceId(); }
 
 private:
-	db_resource* dbResource;
+	db_resource* getDbResource() const { return static_cast<db_resource*>(dbEntity); }
 	float bonuses[MAX_PLAYERS] = {1.f, 1.f};
 };
