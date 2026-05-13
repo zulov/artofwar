@@ -183,16 +183,16 @@ ForceStats& Force::stats() {
 
 void Force::changeCoef(int i, int wheel) {
 	switch (i) {
-	case 0: sepCoef += wheel * 0.2;
+	case 0: sepCoef += wheel * 0.2f;
 		std::cout << "Sep" << sepCoef << std::endl;
 		break;
-	case 1: aimCoef += wheel * 0.2;
+	case 1: aimCoef += wheel * 0.2f;
 		std::cout << "Aim " << aimCoef << std::endl;
 		break;
-	case 2: formationCoef += wheel * 0.2;
+	case 2: formationCoef += wheel * 0.2f;
 		std::cout << "Form " << formationCoef << std::endl;
 		break;
-	case 3: escapeCoef += wheel * 0.2;
+	case 3: escapeCoef += wheel * 0.2f;
 		std::cout << "Esc " << escapeCoef << std::endl;
 		break;
 	default:

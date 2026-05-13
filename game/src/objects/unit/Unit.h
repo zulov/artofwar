@@ -190,9 +190,9 @@ private:
 	char lastActionThingId = -1; //TODO reset po jakim� czasie
 
 	bool indexHasChanged = false;
+	bool shouldUpdate = false;
 	float lastGroundHeight = 0.f;
 
-	bool shouldUpdate = false;
 	ActionParameter nextActionParameter;
 	Urho3D::Vector2 inCellPos;
 };

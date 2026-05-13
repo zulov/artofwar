@@ -14,7 +14,7 @@ namespace Urho3D {
 }
 
 struct GridCalculator;
-struct CloseIndexes;
+class CloseIndexes;
 class ComplexBucketData;
 
 constexpr int PATH_PRECISION = 20;

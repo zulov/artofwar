@@ -122,6 +122,7 @@ protected:
 
 	Urho3D::Node* node{};
 	Urho3D::Vector2 position;
+	db_entity* dbEntity{};
 
 	float hp = -1.f;
 	float invMaxHp; // optm
@@ -129,9 +130,6 @@ protected:
 	UId uId;
 	int indexInMainGrid = -1;
 	short indexInInfluence = -1;
-	
-
-	db_entity* dbEntity{};
 
 	char team, player = -1;
 

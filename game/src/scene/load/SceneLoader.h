@@ -8,7 +8,7 @@
 
 struct dbload_config;
 
-class sqlite3;
+struct sqlite3;
 struct dbload_building;
 struct dbload_container;
 struct dbload_player;
