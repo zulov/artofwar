@@ -30,13 +30,15 @@
 Unit::Unit(const Urho3D::Vector3& _position, short dbId, char playerId, char teamId, char level, UId uId) : Physical(_position, uId),
                                                                                                             state(UnitState::STOP),
                                                                                                             nextState(UnitState::STOP) {
-	dbUnit = Game::getDatabase()->getUnit(dbId);
+	auto dbUnit = Game::getDatabase()->getUnit(dbId);
+	dbEntity = dbUnit;
 	dbLevel = dbUnit->getLevel(level).value(); //TODO bug value
 	setPlayerAndTeam(playerId, teamId);
 	loadXml("Objects/units/" + dbLevel->node);
 	populate();
+	lastGroundHeight = _position.y_;
 
-	if (dbUnit->typeCavalry) {
+	if (getDbUnit()->typeCavalry) {
 		chargeData = new ChargeData(150, 2);
 	}
 	shouldUpdate = true;
@@ -54,7 +56,6 @@ void Unit::populate() {
 	maxSpeed = dbLevel->maxSpeed;
 	invMaxHp = dbLevel->invMaxHp;
 	hp = dbLevel->maxHp;
-	dbId = dbUnit->id;
 }
 
 //TODO sprobowac przeniesc do MoveState
@@ -262,7 +263,7 @@ void Unit::setIndexToInteract(int index) {
 
 Urho3D::String Unit::getInfo() const {
 	return l10nFormat("info_unit",
-	                  dbUnit->name.CString(), dbLevel->name.CString(),
+	                  getDbUnit()->name.CString(), dbLevel->name.CString(),
 	                  asStringF(dbLevel->attack, 1).c_str(),
 	                  asStringF(dbLevel->attackRange, 1).c_str(),
 	                  asStringF(dbLevel->attackReload, 1).c_str(),
@@ -274,7 +275,7 @@ Urho3D::String Unit::getInfo() const {
 }
 
 const Urho3D::String& Unit::getName() const {
-	return dbUnit->name;
+	return getDbUnit()->name;
 }
 
 bool Unit::action(UnitAction unitAction) {
@@ -291,7 +292,7 @@ bool Unit::action(UnitAction unitAction, const ActionParameter& parameter) {
 	case UnitAction::CHARGE:
 		return StateManager::changeState(this, UnitState::CHARGE, parameter);
 	case UnitAction::ATTACK:
-		if (dbUnit->typeRange) {
+		if (getDbUnit()->typeRange) {
 			//TODO perf chyba trzeba dodacparamter do actionParameter
 			//TODO zawsze strzelac? nawet z bliska
 			if (!parameter.thingToInteract->isInCloseRange(getMainGridIndex())) {
@@ -435,7 +436,11 @@ bool Unit::hasStateChangePending() const {
 void Unit::applyForce(float timeStep) {
 	velocity *= 0.5f; //TODO to dac jaki wspolczynnik tarcia terenu
 	velocity += acceleration * (timeStep * dbLevel->invMass);
-	//TODO velocity += hillCoef
+
+	float y = Game::getEnvironment()->getGroundHeightAt(position);
+	velocity *= 1.f + (lastGroundHeight - y) * 0.1f * dbLevel->mass * timeStep;
+	lastGroundHeight = y;
+
 	const float lengthSq = velocity.LengthSquared();
 	if (lengthSq < dbLevel->sqMinSpeed) {
 		if (state == UnitState::MOVE) {
@@ -466,7 +471,7 @@ float Unit::getMaxSeparationDistance() const {
 }
 
 UnitState Unit::getDesiredState() const {
-	return dbUnit->desiredState;
+	return getDbUnit()->desiredState;
 }
 
 bool Unit::isFirstThingAlive() const {
@@ -492,7 +497,7 @@ Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
 }
 
 short Unit::getCostSum() const {
-	return dbUnit->getSumCost();
+	return getDbUnit()->getSumCost();
 }
 
 bool Unit::isInCloseRange(int index) const {

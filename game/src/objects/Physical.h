@@ -6,6 +6,7 @@
 #include <Urho3D/Graphics/Material.h>
 
 #include "UId.h"
+#include "database/db_basic_struct.h"
 #include "database/db_other_struct.h"
 #include "objects/ObjectEnums.h"
 #include "Urho3D/Math/Vector2.h"
@@ -31,7 +32,7 @@ public:
 	void clearNodeWithOutDelete();
 
 	virtual bool isAlive() const;
-	unsigned short getDbId() const { return dbId; }
+	unsigned short getDbId() const { return dbEntity->id; }
 	virtual char getSecondaryId() const { return -1; }
 
 	virtual float getHealthBarSize() const;
@@ -130,7 +131,7 @@ protected:
 	short indexInInfluence = -1;
 	
 
-	unsigned short dbId; // optm
+	db_entity* dbEntity{};
 
 	char team, player = -1;
 
