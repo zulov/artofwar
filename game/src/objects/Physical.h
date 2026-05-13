@@ -46,7 +46,7 @@ public:
 	virtual ObjectType getType() const = 0;
 
 	signed char getTeam() const { return team; }
-	virtual char getPlayer() const { return player; }
+	char getPlayer() const { return player; }
 
 	void load(dbload_physical* dbloadPhysical);
 	virtual bool indexChanged() const { return false; }
