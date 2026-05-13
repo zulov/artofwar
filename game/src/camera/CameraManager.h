@@ -26,7 +26,7 @@ public:
 	Urho3D::MouseMode getMouseMode() const;
 
 	void changePositionInPercent(float x, float y);
-	void changePosition(float x, float y);
+	void changePosition(const Urho3D::Vector2& pos);
 	const Urho3D::Vector2 getTargetPos() const;
 	const CameraInfo* getCamInfo(float radius);
 private:

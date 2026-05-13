@@ -180,7 +180,7 @@ void Main::setCameraPos() const {
 		auto camPos = Game::getEnvironment()
 		              ->getCenterOf(CenterType::BUILDING, Game::getPlayersMan()->getActivePlayerID())
 		              .value_or(Urho3D::Vector2::ZERO);
-		Game::getCameraManager()->changePosition(camPos.x_, camPos.y_);
+		Game::getCameraManager()->changePosition(camPos);
 	}
 }
 
@@ -459,7 +459,7 @@ void Main::HandleKeyUp(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eve
 			const auto possession = Game::getPlayersMan()->getActivePlayer()->getPossession();
 			for (const auto building : possession->getBuildings()) {
 				if (building->getDb()->typeCenter) {
-				Game::getCameraManager()->changePosition(building->getPosition().x_, building->getPosition().y_);
+					Game::getCameraManager()->changePosition(building->getPosition());
 				}
 			}
 		}

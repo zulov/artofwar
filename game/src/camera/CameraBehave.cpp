@@ -36,13 +36,12 @@ const Urho3D::Vector3& CameraBehave::getPosition() const {
 }
 
 void CameraBehave::changeTargetInPercent(float percentX, float percentY) const {
-	const auto pos = Game::getEnvironment()->getPosFromPercent(percentX, percentY);
-	changeTarget(pos.x_, pos.y_);
+	changeTarget(Game::getEnvironment()->getPosFromPercent(percentX, percentY));
 }
 
-void CameraBehave::changeTarget(float x, float z) const {
+void CameraBehave::changeTarget(const Urho3D::Vector2& pos) const {
 	const auto currentTarget = getTargetPos();
-	const auto diff = Urho3D::Vector2(x, z) - currentTarget;
+	const auto diff = pos - currentTarget;
 
 	const auto currentPos = cameraNode->GetPosition();
 

@@ -177,12 +177,10 @@ private:
 
 	Physical* thingToInteract{}; //TODO wczytac z uId
 
-	int sparseIndexInGrid;
-
 	float maxSpeed;
 
 	int indexToInteract = -1; //TODO moze sie tego pozbyc
-
+	short sparseIndexInGrid;
 	unsigned short currentFrameState = 0;
 	short posInState = -1, formation = -1;//TODO formation id to pointer
 
@@ -192,10 +190,9 @@ private:
 	char slotToInteract = -1;
 	unsigned char useSockets = 0;
 	char lastActionThingId = -1; //TODO reset po jakim� czasie
-	ActionParameter nextActionParameter;
-	Urho3D::Vector2 inCellPos;
 
 	bool indexHasChanged = false;
-
 	bool shouldUpdate = false;
+	ActionParameter nextActionParameter;
+	Urho3D::Vector2 inCellPos;
 };

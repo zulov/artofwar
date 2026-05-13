@@ -24,7 +24,7 @@ public:
 	virtual Urho3D::MouseMode getMouseMode() = 0;
 	const Urho3D::Vector3& getPosition() const;
 	void changeTargetInPercent(float percentX, float percentY) const;
-	void changeTarget(float x, float z) const;
+	void changeTarget(const Urho3D::Vector2& pos) const;
 	void setPos(const Urho3D::Vector3& newPos) const;
 	virtual Urho3D::Vector2 getTargetPos() const;
 protected:

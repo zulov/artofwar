@@ -31,7 +31,7 @@ public:
 	void clearNodeWithOutDelete();
 
 	virtual bool isAlive() const;
-	short getDbId() const { return dbId; }
+	unsigned short getDbId() const { return dbId; }
 	virtual char getSecondaryId() const { return -1; }
 
 	virtual float getHealthBarSize() const;
@@ -124,10 +124,11 @@ protected:
 
 	float hp = -1.f;
 	float invMaxHp; // optm
-
-	int indexInInfluence = -1;
-	int indexInMainGrid = -1;
+	
 	UId uId;
+	int indexInMainGrid = -1;
+	short indexInInfluence = -1;
+	
 
 	unsigned short dbId; // optm
 

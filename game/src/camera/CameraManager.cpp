@@ -100,8 +100,8 @@ void CameraManager::changePositionInPercent(float x, float y) {
 }
 
 
-void CameraManager::changePosition(float x, float y) {
-	activeBehave->changeTarget(x, y);
+void CameraManager::changePosition(const Urho3D::Vector2 &pos) {
+	activeBehave->changeTarget(pos);
 	hasMoved = true;
 	camInfo->info = activeBehave->getInfo();
 }

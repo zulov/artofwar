@@ -22,7 +22,6 @@ public:
 	std::pair<float, bool> absorbAttack(float collectSpeed) override;
 	ResourceEntity* load(dbload_resource* resource);
 
-	char getPlayer() const override { return -1; }
 	const Urho3D::UCharVector2 getGridSize() const override;
 
 	float getMaxHpBarSize() const override { return 1; }
