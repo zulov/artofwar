@@ -7,7 +7,6 @@
 #include "ActionParameter.h"
 #include "aim/Aims.h"
 #include "database/db_insert_utils.h"
-#include "database/db_struct.h"
 #include "objects/ObjectEnums.h"
 #include "objects/Physical.h"
 #include "state/UnitState.h"
@@ -27,6 +26,8 @@ enum class UnitAction : char;
 enum class DebugUnitType : char;
 enum class SimColorMode : char;
 struct ForceStats;
+struct db_unit_level;
+struct db_unit;
 struct dbload_unit;
 struct ProjectileWithNode;
 struct ChargeData;
@@ -107,7 +108,7 @@ public:
 	bool isToDispose() const override { return state == UnitState::DISPOSE; }
 	bool hasAim() const { return aims.hasAim(); }
 	db_unit_level* getLevel() const { return dbLevel; }
-	db_unit* getDb() const { return getDbUnit(); }
+	db_unit* getDb() const;
 	short getLastActionThingId() const { return lastActionThingId; }
 	float getAttackRange() const;
 
@@ -164,7 +165,7 @@ public:
 private:
 	void setAim(Aim* aim);
 	void setTransform(const Urho3D::Vector2 &rotation, float y) const;
-	db_unit* getDbUnit() const { return static_cast<db_unit*>(dbEntity); }
+	db_unit* getDbUnit() const;
 	Urho3D::Vector2 velocity, acceleration;
 	Aims aims;
 

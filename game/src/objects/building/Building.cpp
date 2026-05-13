@@ -32,6 +32,10 @@ Building::Building(const Urho3D::Vector3& _position, db_building* db_building, u
 
 Building::~Building() { if (node) { node->RemoveAllChildren(); } }
 
+db_building* Building::getDbBuilding() const { return static_cast<db_building*>(dbEntity); }
+db_building* Building::getDb() const { return getDbBuilding(); }
+std::pair<db_building*, db_building_level*> Building::getData() const { return {getDbBuilding(), dbLevel}; }
+
 void Building::postCreate() {
 	queue.add(QueueActionType::BUILDING_CREATE, getDbId(), dbLevel->id);
 	setShaderParam(this, "Progress", 0.0);

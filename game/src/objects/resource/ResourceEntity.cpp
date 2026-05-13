@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "commands/action/ResourceActionType.h"
 #include "database/DatabaseCache.h"
+#include "database/db_struct.h"
 #include "math/RandGen.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/unit/Unit.h"
@@ -13,6 +14,8 @@
 #include "env/Environment.h"
 #include "player/PlayersManager.h"
 
+
+db_resource* ResourceEntity::getDbResource() const { return static_cast<db_resource*>(dbEntity); }
 
 ResourceEntity::ResourceEntity(const Urho3D::Vector3& _position, db_resource* db_resource, int indexInGrid, UId uid)
 	: Static(_position, indexInGrid, uid) {

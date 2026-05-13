@@ -2,12 +2,13 @@
 #include "objects/queue/QueueManager.h"
 #include "objects/static/Static.h"
 #include "database/db_insert_utils.h"
-#include "database/db_struct.h"
 
 struct ProjectileWithNode;
 class AbstractQueueManager;
 struct dbload_building;
 enum class BuildingActionType : char;
+struct db_building;
+struct db_building_level;
 class QueueElement;
 
 class Building : public Static {
@@ -58,12 +59,12 @@ public:
 
 	float getModelHeight() const override;
 	void setModelData(float modelHeight) const override;
-	db_building* getDb() const { return getDbBuilding(); }
-	std::pair<db_building*, db_building_level*> getData() const { return {getDbBuilding(), dbLevel}; }
+	db_building* getDb() const;
+	std::pair<db_building*, db_building_level*> getData() const;
 	unsigned char getMaxCloseUsers() const override;
 	//TODO getUniT DATA i resource
 private:
-	db_building* getDbBuilding() const { return static_cast<db_building*>(dbEntity); }
+	db_building* getDbBuilding() const;
 	int deployIndex = -1;
 	unsigned short currentFrameState = 0;
 
