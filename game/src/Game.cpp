@@ -11,6 +11,7 @@ void Game::init() {
 
 void Game::dispose() {
 	delete instance;
+	instance = nullptr;
 }
 
 Game* Game::setCache(Urho3D::ResourceCache* _cache) {

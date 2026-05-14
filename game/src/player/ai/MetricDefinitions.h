@@ -194,56 +194,10 @@ inline struct MetricDefinitions {
 	using WA = WhereAttackMetricIdx;
 	using WD = WhereDefendMetricIdx;
 
-	static inline auto aiUnitMetric = buildMetricArray<U, AiUnitMetric>({
-		{U::COST,            {[](auto u, auto l) -> float { return u->getSumCost(); }, 400}},
-		{U::MAX_HP,          {[](auto u, auto l) -> float { return l->maxHp; }, 300}},
-		{U::ARMOR,			{[](auto u, auto l) -> float { return l->armor; }}},
-		{U::SIGHT_RADIUS,		{[](auto u, auto l) -> float { return l->sightRadius; }, 20}},
-		{U::COLLECT,			{[](auto u, auto l) -> float { return l->collect; }}},
-		{U::ATTACK,			{[](auto u, auto l) -> float { return l->attack; }, 10}},
-		{U::ATTACK_RELOAD,   {[](auto u, auto l) -> float { return l->attackReload; }, 200}},
-		{U::ATTACK_RANGE,    {[](auto u, auto l) -> float { return l->attackRange; }, 20}},
-		{U::TYPE_INFANTRY,   {[](auto u, auto l) -> float { return u->typeInfantry; }}},
-		{U::TYPE_RANGE,      {[](auto u, auto l) -> float { return u->typeRange; }}},
-		{U::TYPE_CAVALRY,    {[](auto u, auto l) -> float { return u->typeCavalry; }}},
-		{U::TYPE_WORKER,     {[](auto u, auto l) -> float { return u->typeWorker; }}},
-		{U::TYPE_SPECIAL,    {[](auto u, auto l) -> float { return u->typeSpecial; }}},
-		{U::TYPE_MELEE,      {[](auto u, auto l) -> float { return u->typeMelee; }}},
-		{U::TYPE_HEAVY,      {[](auto u, auto l) -> float { return u->typeHeavy; }}},
-		{U::TYPE_LIGHT,      {[](auto u, auto l) -> float { return u->typeLight; }}},
-		{U::BONUS_INFANTRY,  {[](auto u, auto l) -> float { return l->bonusInfantry; }}},
-		{U::BONUS_RANGE,     {[](auto u, auto l) -> float { return l->bonusRange; }}},
-		{U::BONUS_CAVALRY,   {[](auto u, auto l) -> float { return l->bonusCavalry; }}},
-		{U::BONUS_WORKER,    {[](auto u, auto l) -> float { return l->bonusWorker; }}},
-		{U::BONUS_SPECIAL,   {[](auto u, auto l) -> float { return l->bonusSpecial; }}},
-		{U::BONUS_MELEE,     {[](auto u, auto l) -> float { return l->bonusMelee; }}},
-		{U::BONUS_HEAVY,     {[](auto u, auto l) -> float { return l->bonusHeavy; }}},
-		{U::BONUS_LIGHT,     {[](auto u, auto l) -> float { return l->bonusLight; }}},
-	});
-
-	static inline auto aiBuildingMetric = buildMetricArray<B, AiBuildingMetric>({
-		{B::COST,               {[](auto b, auto l) -> float { return b->getSumCost(); }, 400}},
-		{B::MAX_HP,             {[](auto b, auto l) -> float { return l->maxHp; }, 500}},
-		{B::ARMOR,              {[](auto b, auto l) -> float { return l->armor; }, 1}},
-		{B::SIGHT_RADIUS,       {[](auto b, auto l) -> float { return l->sightRadius; }, 50}},
-		{B::COLLECT,            {[](auto b, auto l) -> float { return l->collect; }, 2}},
-		{B::ATTACK,             {[](auto b, auto l) -> float { return l->attack; }, 20}},
-		{B::ATTACK_RELOAD,      {[](auto b, auto l) -> float { return l->attackReload; }, 200}},
-		{B::ATTACK_RANGE,       {[](auto b, auto l) -> float { return l->attackRange; }, 20}},
-		{B::RESOURCE_RANGE,		{[](auto b, auto l) -> float { return l->resourceRange; }, 20}},
-		{B::TYPE_CENTER,        {[](auto b, auto l) -> float { return b->typeCenter; }}},
-		{B::TYPE_HOME,          {[](auto b, auto l) -> float { return b->typeHome; }}},
-		{B::TYPE_DEFENCE,       {[](auto b, auto l) -> float { return b->typeDefence; }}},
-		{B::TYPE_RES_FOOD,      {[](auto b, auto l) -> float { return b->typeResourceFood; }}},
-		{B::TYPE_RES_WOOD,      {[](auto b, auto l) -> float { return b->typeResourceWood; }}},
-		{B::TYPE_RES_STONE,     {[](auto b, auto l) -> float { return b->typeResourceStone; }}},
-		{B::TYPE_RES_GOLD,      {[](auto b, auto l) -> float { return b->typeResourceGold; }}},
-		{B::TYPE_TECH_BLACKSMITH, {[](auto b, auto l) -> float { return b->typeTechBlacksmith; }}},
-		{B::TYPE_TECH_UNIVERSITY, {[](auto b, auto l) -> float { return b->typeTechUniversity; }}},
-		{B::TYPE_UNIT_BARRACKS, {[](auto b, auto l) -> float { return b->typeUnitBarracks; }}},
-		{B::TYPE_UNIT_RANGE,    {[](auto b, auto l) -> float { return b->typeUnitRange; }}},
-		{B::TYPE_UNIT_CAVALRY,  {[](auto b, auto l) -> float { return b->typeUnitCavalry; }}},
-	});
+	static constexpr size_t UNIT_METRIC_COUNT = magic_enum::enum_count<U>();
+	static constexpr size_t BUILDING_METRIC_COUNT = magic_enum::enum_count<B>();
+	static std::array<AiUnitMetric, UNIT_METRIC_COUNT> aiUnitMetric;
+	static std::array<AiBuildingMetric, BUILDING_METRIC_COUNT> aiBuildingMetric;
 
 	static inline auto aiResourceMetric = buildMetricArray<R, AiResourceMetric>({
 		{R::GATHER_SPEED_FOOD,  {[](auto r, auto p) { return r->getGatherSpeeds()[cast(ResourceType::FOOD)]; }, 10}},

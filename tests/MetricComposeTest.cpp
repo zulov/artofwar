@@ -2,12 +2,25 @@
 
 #include <array>
 #include <span>
-
-#include "player/ai/MetricDefinitions.h"
+#include <functional>
+#include <cassert>
 
 class MetricComposeFixture : public ::testing::Test {};
 
 namespace {
+
+constexpr unsigned char TEST_OUTPUT_MAX_SIZE = 64;
+
+struct TestComposer {
+	mutable std::array<float, TEST_OUTPUT_MAX_SIZE> output{};
+
+	template <typename... Sections>
+	std::span<float> compose(Sections&&... sections) const {
+		int i = 0;
+		((i += sections.write(output.data() + i)), ...);
+		return std::span(output.begin(), output.begin() + i);
+	}
+} TEST_COMPOSER;
 
 struct TestMetric {
 	std::function<float(int*, int*)> fn;
@@ -27,6 +40,31 @@ auto section(const std::array<TestMetric, N>& metrics, int* one, int* two) {
 	return S{metrics, one, two};
 }
 
+auto section(std::span<const float> data) {
+	struct S {
+		std::span<const float> data;
+		int write(float* out) const {
+			int i = 0;
+			for (auto v : data) { out[i++] = v; }
+			return i;
+		}
+	};
+	return S{data};
+}
+
+auto section(std::span<const float> data, std::span<const unsigned char> indices) {
+	struct S {
+		std::span<const float> data;
+		std::span<const unsigned char> indices;
+		int write(float* out) const {
+			int i = 0;
+			for (auto idx : indices) { out[i++] = data[idx]; }
+			return i;
+		}
+	};
+	return S{data, indices};
+}
+
 } // namespace
 
 TEST_F(MetricComposeFixture, SingleSectionFromMetricArray) {
@@ -37,7 +75,7 @@ TEST_F(MetricComposeFixture, SingleSectionFromMetricArray) {
 	}};
 
 	int a = 10, b = 4;
-	auto result = METRIC_DEFINITIONS.compose(section(metrics, &a, &b));
+	auto result = TEST_COMPOSER.compose(section(metrics, &a, &b));
 
 	ASSERT_EQ(result.size(), 3u);
 	EXPECT_FLOAT_EQ(result[0], 10.f * 0.5f);   // 5.0
@@ -47,7 +85,7 @@ TEST_F(MetricComposeFixture, SingleSectionFromMetricArray) {
 
 TEST_F(MetricComposeFixture, SingleSectionFromSpan) {
 	const std::array<float, 4> data = {1.f, 2.f, 3.f, 4.f};
-	auto result = METRIC_DEFINITIONS.compose(
+	auto result = TEST_COMPOSER.compose(
 		section(std::span<const float>(data))
 	);
 
@@ -61,7 +99,7 @@ TEST_F(MetricComposeFixture, SingleSectionFromSpan) {
 TEST_F(MetricComposeFixture, SingleSectionFromSpanSelective) {
 	const std::array<float, 5> data = {10.f, 20.f, 30.f, 40.f, 50.f};
 	const std::array<unsigned char, 3> indices = {1, 3, 4};
-	auto result = METRIC_DEFINITIONS.compose(
+	auto result = TEST_COMPOSER.compose(
 		section(std::span<const float>(data), std::span<const unsigned char>(indices))
 	);
 
@@ -79,7 +117,7 @@ TEST_F(MetricComposeFixture, ComposeTwoSections) {
 	const std::array<float, 3> spanData = {7.f, 8.f, 9.f};
 
 	int a = 1, b = 2;
-	auto result = METRIC_DEFINITIONS.compose(
+	auto result = TEST_COMPOSER.compose(
 		section(metricsA, &a, &b),
 		section(std::span<const float>(spanData))
 	);
@@ -97,7 +135,7 @@ TEST_F(MetricComposeFixture, ComposeThreeSections) {
 	const std::array<float, 2> span2 = {3.f, 4.f};
 	const std::array<float, 2> span3 = {5.f, 6.f};
 
-	auto result = METRIC_DEFINITIONS.compose(
+	auto result = TEST_COMPOSER.compose(
 		section(std::span<const float>(span1)),
 		section(std::span<const float>(span2)),
 		section(std::span<const float>(span3))
@@ -111,7 +149,7 @@ TEST_F(MetricComposeFixture, ComposeThreeSections) {
 
 TEST_F(MetricComposeFixture, ComposeEmptySectionsProducesEmpty) {
 	const std::array<float, 0> empty = {};
-	auto result = METRIC_DEFINITIONS.compose(
+	auto result = TEST_COMPOSER.compose(
 		section(std::span<const float>(empty))
 	);
 
@@ -126,7 +164,7 @@ TEST_F(MetricComposeFixture, ComposeMetricThenSpanThenSelective) {
 	const std::array<unsigned char, 2> indices = {0, 2};
 
 	int a = 100;
-	auto result = METRIC_DEFINITIONS.compose(
+	auto result = TEST_COMPOSER.compose(
 		section(metrics, &a, &a),
 		section(std::span<const float>(spanData)),
 		section(std::span<const float>(spanData), std::span<const unsigned char>(indices))
@@ -143,11 +181,11 @@ TEST_F(MetricComposeFixture, ComposeMetricThenSpanThenSelective) {
 
 TEST_F(MetricComposeFixture, ComposeOutputOverwritesPrevious) {
 	const std::array<float, 3> first = {1.f, 2.f, 3.f};
-	auto result1 = METRIC_DEFINITIONS.compose(section(std::span<const float>(first)));
+	auto result1 = TEST_COMPOSER.compose(section(std::span<const float>(first)));
 	ASSERT_EQ(result1.size(), 3u);
 
 	const std::array<float, 2> second = {99.f, 88.f};
-	auto result2 = METRIC_DEFINITIONS.compose(section(std::span<const float>(second)));
+	auto result2 = TEST_COMPOSER.compose(section(std::span<const float>(second)));
 	ASSERT_EQ(result2.size(), 2u);
 	EXPECT_FLOAT_EQ(result2[0], 99.f);
 	EXPECT_FLOAT_EQ(result2[1], 88.f);

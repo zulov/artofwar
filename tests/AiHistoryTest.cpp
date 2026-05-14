@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "Game.cpp"
+#include "Game.h"
 #include "player/ai/AiHistory.cpp"
 
 class AiHistoryFixture : public ::testing::Test {
