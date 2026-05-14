@@ -9,7 +9,6 @@
 #include "db_basic_struct.h"
 #include "db_columns.h"
 #include "utils/SpanUtils.h"
-#include "player/ai/MetricDefinitions.h"
 #include "simulation/SimGlobals.h"
 #include "utils/DeleteUtils.h"
 #include "utils/OtherUtils.h"
@@ -150,15 +149,7 @@ struct db_building_metric : db_basic_metric {
 	std::valarray<float> techNormAsVal;
 	std::valarray<float> unitsNormAsVal;
 
-	db_building_metric(db_building* dbBuilding, db_building_level* dbLevel) :
-		db_basic_metric(METRIC_DEFINITIONS.writeBuilding(dbBuilding, dbLevel), BUILDINGS_SUM_X) {
-		setValarray(otherNormAsVal, METRIC_DEFINITIONS.getBuildingOtherIdxs()); //TODO bug czy to jest zainicjowane
-		setValarray(defenceNormAsVal, METRIC_DEFINITIONS.getBuildingDefenceIdxs());
-		setValarray(resourceNormAsVal, METRIC_DEFINITIONS.getBuildingResourceIdxs());
-		setValarray(techNormAsVal, METRIC_DEFINITIONS.getBuildingTechIdxs());
-		setValarray(unitsNormAsVal, METRIC_DEFINITIONS.getBuildingUnitsIdxs());
-		setValarray(typesNormAsVal, METRIC_DEFINITIONS.getBuildingTypesIdxs());
-	}
+	db_building_metric(db_building* dbBuilding, db_building_level* dbLevel);
 
 	const std::valarray<float>& getValuesNormAsValForType(ParentBuildingType type) const {
 		switch (type) {
@@ -219,10 +210,7 @@ struct db_build_upgrade {
 };
 
 struct db_unit_metric : db_basic_metric {
-	db_unit_metric(db_unit* dbUnit, db_unit_level* dbLevel) :
-		db_basic_metric(METRIC_DEFINITIONS.writeUnit(dbUnit, dbLevel), UNITS_SUM_X) {
-		setValarray(typesNormAsVal, METRIC_DEFINITIONS.getUnitTypesIdxs());
-	}
+	db_unit_metric(db_unit* dbUnit, db_unit_level* dbLevel);
 };
 
 struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_base, db_with_model,
