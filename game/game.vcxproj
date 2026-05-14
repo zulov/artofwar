@@ -350,6 +350,7 @@
     <ClCompile Include="src\camera\CameraBehave.cpp" />
     <ClCompile Include="src\camera\CameraManager.cpp" />
     <ClCompile Include="src\database\DatabaseCache.cpp" />
+    <ClCompile Include="src\database\db_struct_metric.cpp" />
     <ClCompile Include="src\hud\window\debug\DebugPanel.cpp" />
     <ClCompile Include="src\hud\HudData.cpp" />
     <ClCompile Include="src\hud\window\menu\MenuPanel.cpp" />
