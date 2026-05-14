@@ -7,7 +7,7 @@ namespace Urho3D {
 	class String;
 }
 
-class sqlite3;
+struct sqlite3;
 class Unit;
 class ResourceEntity;
 class Building;

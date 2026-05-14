@@ -47,7 +47,7 @@ struct db_graph_settings : db_entity {
 		  v_sync(asBool(s, C::v_sync)),
 		  shadow(asBool(s, C::shadow)) {}
 
-	db_graph_settings(short id, short hudSize, const char* styles, int fullscreen, float maxFps, float minFps,
+	db_graph_settings(short id, short hudSize, const char* styles, int fullscreen, int maxFps, int minFps,
 	                  const char* name, bool v_sync, bool shadow, short texture_quality)
 		: db_entity(id),
 		  hud_size(hudSize),

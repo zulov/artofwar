@@ -108,7 +108,6 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 		const auto model = node->GetComponent<Urho3D::StaticModel>();
 		if (getModelHeight() < 0.f) {
 			const auto boundingBox = model->GetModel()->GetBoundingBox().Size() * node->GetScale();
-
 			setModelData(Urho3D::Max(1.f, boundingBox.y_));
 		}
 
