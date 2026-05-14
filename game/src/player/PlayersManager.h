@@ -23,8 +23,8 @@ public:
 	void changeActive(short i);
 	void update(FrameInfo* frameInfo);
 	char getActivePlayerID() const;
-	static char getEnemyIdFor(char player);
-	Player* getEnemyFor(char player) const;
+	static char getEnemyIdFor(unsigned char player);
+	Player* getEnemyFor(unsigned char player) const;
 
 	std::vector<Player*>& getAllPlayers();
 private:

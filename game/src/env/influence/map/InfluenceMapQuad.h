@@ -14,7 +14,7 @@ public:
 
 	std::optional<Urho3D::Vector2> getCenter();
 	void update(int index, float value = 1.f);
-	void updateInt(int index, int value = 1);
+	void updateInt(int index, unsigned char value = 1);
 	void reset();
 	void print(const Urho3D::String& name, std::span<float> map);
 	void print(Urho3D::String name);

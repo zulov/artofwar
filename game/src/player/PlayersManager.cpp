@@ -83,7 +83,7 @@ char PlayersManager::getActivePlayerID() const {
 	return activePlayer->getId();
 }
 
-char PlayersManager::getEnemyIdFor(char player) {
+char PlayersManager::getEnemyIdFor(unsigned char player) {
 	if (player == 0) {
 		//TODO bug do it better
 		return 1;
@@ -91,7 +91,7 @@ char PlayersManager::getEnemyIdFor(char player) {
 	return 0;
 }
 
-Player* PlayersManager::getEnemyFor(char player) const {
+Player* PlayersManager::getEnemyFor(unsigned char player) const {
 	return allPlayers[getEnemyIdFor(player)];
 }
 

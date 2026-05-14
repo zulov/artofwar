@@ -85,14 +85,13 @@ void InfluenceMapQuad::update(int index, float value) {
 	last[index] += value;
 }
 
-void InfluenceMapQuad::updateInt(int index, int value) {
+void InfluenceMapQuad::updateInt(int index, unsigned char value) {
 	dataReady = false;
 	last[index] += value;
 }
 
 void InfluenceMapQuad::reset() {
-	//BUG? dataReady not set to false here -- ensureReady() will skip propagation if no update()/updateInt() called after reset
-	//dataReady = false;
+	dataReady = false;
 	std::fill_n(maps.back().begin(), maps.back().size(), 0.f);
 }
 

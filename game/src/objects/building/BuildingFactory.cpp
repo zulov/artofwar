@@ -4,6 +4,7 @@
 #include "objects/building/Building.h"
 #include "scene/load/dbload_container.h"
 #include "env/Environment.h"
+#include "player/Player.h"
 #include "player/PlayersManager.h"
 
 Building* BuildingFactory::create(unsigned short id, const Urho3D::UShortVector2& bucketCords, unsigned char level, Player* player, unsigned uid) const {
