@@ -2,6 +2,7 @@
 
 #include <format>
 #include <limits>
+#include "AiHistory.h"
 #include "AiUtils.h"
 #include "Game.h"
 #include "commands/action/BuildingActionCommand.h"
@@ -22,7 +23,7 @@
 #include "stats/AiInputProvider.h"
 
 
-ActionMaker::ActionMaker(Player* player, db_nation* nation) :
+ActionMaker::ActionMaker(Player* player, db_nation* nation, AiHistory* history) :
 	player(player), playerId(player->getId()), possession(player->getPossession()), nation(nation),
 	ifWorker(BrainProvider::get(nation->actionPrefix[0] + "ifWorker.csv")),
 	whereWorker(BrainProvider::get(nation->actionPrefix[1] + "whereWorker.csv")),
@@ -40,7 +41,8 @@ ActionMaker::ActionMaker(Player* player, db_nation* nation) :
 	ifUnit(BrainProvider::get(nation->actionPrefix[11] + "ifUnit.csv")),
 	whichUnit(BrainProvider::get(nation->actionPrefix[12] + "whichUnit.csv")),
 	whereUnit(BrainProvider::get(nation->actionPrefix[13] + "whereUnit.csv")),
-	aiInput(Game::getAiInputProvider()) {
+	aiInput(Game::getAiInputProvider()),
+	history(history) {
 }
 
 
@@ -72,20 +74,43 @@ void ActionMaker::action() {
 	//return levelUpBuilding();
 }
 
-bool ActionMaker::createBuilding(const std::span<const float> buildingsInput) {
+namespace {
+	AiActionType toBuildingActionType(ParentBuildingType type) {
+		switch (type) {
+		case ParentBuildingType::OTHER: return AiActionType::CREATE_BUILDING_OTHER;
+		case ParentBuildingType::DEFENCE: return AiActionType::CREATE_BUILDING_DEFENCE;
+		case ParentBuildingType::RESOURCE: return AiActionType::CREATE_BUILDING_RESOURCE;
+		case ParentBuildingType::TECH: return AiActionType::CREATE_BUILDING_TECH;
+		case ParentBuildingType::UNITS: return AiActionType::CREATE_BUILDING_UNITS;
+		}
+		return AiActionType::NONE;
+	}
+}
+
+void ActionMaker::createBuilding(const std::span<const float> buildingsInput) {
 	const auto whichTypeOutput = whichBuildingType->decide(buildingsInput);
 
 	ParentBuildingType type = static_cast<ParentBuildingType>(biggestWithRand(whichTypeOutput));
-	if (!isEnoughResToTypeBuilding(type)) { return false; }
+	AiActionType actionType = toBuildingActionType(type);
+	if (!isEnoughResToTypeBuilding(type)) {
+		history->addAction(actionType, AiActionResult::NO_RESOURCES_SPECIFIC);
+		return;
+	}
 	if (type == ParentBuildingType::RESOURCE) {
 		if (sumSpan(possession->getResWithOutBonus()) < 0.5f) {
-			return false;
+			history->addAction(actionType, AiActionResult::NO_RESOURCE_BONUS);
+			return;
 		}
 	}
 
 	const auto output = getWhichBuilding(type, aiInput->getBuildingsTypeInput(player, type));
 
-	return createBuilding(chooseBuilding(output, type), type);
+	auto* building = chooseBuilding(output, type);
+	if (!building) {
+		history->addAction(actionType, AiActionResult::NO_BUILDINGS_OF_TYPE);
+		return;
+	}
+	createBuilding(actionType, building, type);
 }
 
 std::span<const float>
@@ -104,58 +129,64 @@ ActionMaker::getWhichBuilding(ParentBuildingType type, const std::span<const flo
 	}
 }
 
-bool ActionMaker::createWorker() const {
+void ActionMaker::createWorker() {
 	assert(!nation->workers.empty());
 
-	return createWorker(nation->workers.at(0)); //TODO get better
+	createWorker(AiActionType::CREATE_WORKER, nation->workers.at(0)); //TODO get better
 }
 
-bool ActionMaker::createUnit(std::span<const float> unitsInput) {
+void ActionMaker::createUnit(std::span<const float> unitsInput) {
 	const auto whichOutput = whichUnit->decide(unitsInput);
 	const auto unit = chooseUnit(whichOutput);
 
-	return createUnit(unit);
+	createUnit(AiActionType::CREATE_UNIT, unit);
 }
 
-bool ActionMaker::createUnit(db_unit* unit, Building* building) const {
+void ActionMaker::createUnit(AiActionType actionType, db_unit* unit, Building* building) {
 	if (building) {
 		Game::getActionCenter()->add(
 			new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id));
-		return true;
+		history->addAction(actionType, AiActionResult::SUCCESS);
+		return;
 	}
 	//TODO try to build
-	return false;
+	history->addAction(actionType, AiActionResult::NO_BUILDING_TO_DEPLOY);
 }
 
-bool ActionMaker::createWorker(db_unit* unit) const {
+void ActionMaker::createWorker(AiActionType actionType, db_unit* unit) {
 	if (enoughResources(unit, player)) {
 		Building* building = getBuildingToDeployWorker(unit);
-		return createUnit(unit, building);
+		createUnit(actionType, unit, building);
+		return;
 	}
-	return false;
+	history->addAction(actionType, AiActionResult::NO_RESOURCES_SPECIFIC);
 }
 
-bool ActionMaker::createUnit(db_unit* unit) const {
+void ActionMaker::createUnit(AiActionType actionType, db_unit* unit) {
 	if (enoughResources(unit, player)) {
 		Building* building = getBuildingToDeploy(unit);
-		return createUnit(unit, building);
+		createUnit(actionType, unit, building);
+		return;
 	}
-	return false;
+	history->addAction(actionType, AiActionResult::NO_RESOURCES_SPECIFIC);
 }
 
 bool ActionMaker::enoughResources(const db_with_cost* withCosts, Player* player) const {
 	return withCosts && player->getResources()->hasEnough(withCosts);
 }
 
-bool ActionMaker::createBuilding(db_building* building, ParentBuildingType type) const {
+void ActionMaker::createBuilding(AiActionType actionType, db_building* building, ParentBuildingType type) {
 	if (enoughResources(building, player)) {
 		auto pos = findPosToBuild(building, type);
 		if (pos.has_value()) {
-			return Game::getActionCenter()->addBuilding(building->id, pos.value(), playerId, false);
+			Game::getActionCenter()->addBuilding(building->id, pos.value(), playerId, false);
+			history->addAction(actionType, AiActionResult::SUCCESS);
+			return;
 		}
+		history->addAction(actionType, AiActionResult::NO_POSITION_TO_BUILD);
+		return;
 	}
-
-	return false;
+	history->addAction(actionType, AiActionResult::NO_RESOURCES_SPECIFIC);
 }
 
 std::vector<db_building*> ActionMaker::getBuildingsInType(ParentBuildingType type) {

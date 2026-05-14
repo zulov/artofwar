@@ -3,6 +3,7 @@
 #include "objects/queue/QueueManager.h"
 #include "ai/ActionMaker.h"
 #include "ai/OrderMaker.h"
+#include "ai/AiHistory.h"
 #include "database/db_insert_utils.h"
 
 
@@ -72,6 +73,7 @@ private:
 	Possession* possession;
 	Resources* resources;
 	QueueManager queue;
+	AiHistory aiHistory;
 	ActionMaker actionMaker;
 	OrderMaker orderMaker;
 	Urho3D::String name;

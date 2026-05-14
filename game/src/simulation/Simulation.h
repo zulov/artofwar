@@ -4,7 +4,6 @@
 #include <vector>
 #include <functional>
 
-#include "PerFrameAction.h"
 #include "database/db_struct.h"
 
 struct dbload_container;
@@ -37,7 +36,6 @@ public:
 	void clearNodesWithoutDelete() const;
 
 	void updateInfluenceMaps(bool force) const;
-	bool canUpdate(PerFrameAction type, bool force) const;
 
 	FrameInfo* update(float timeStep);
 	void initScene(SceneLoader& loader) const;
@@ -56,11 +54,9 @@ private:
     void colorUnits();
     void performStateAction() const;
 	void executeStateTransition() const;
-	float updateTime(float timeStep) const;
 
 	void loadEntities(NewGameForm* form) const;
 	void loadEntities(dbload_container* data) const;
-	void countFrame();
 	void applyForce() const;
 	void levelUp(QueueElement* done, char player) const;
 	void updateBuildingQueues() const;
@@ -69,9 +65,6 @@ private:
 	void objectAI() const;
 	void addTestEntities() const;
 
-	float accumulateTime = 0;
-	unsigned int secondsElapsed = 0;
-	unsigned char currentFrame = 0;
 	SimColorMode colorScheme;
 	bool colorSchemeChanged = true;
 	Force force;
@@ -80,7 +73,6 @@ private:
 	std::vector<Building*>* buildings;
 	std::vector<ResourceEntity*>* resources;
 
-	FrameInfo* frameInfo;
 	Environment* env;
 	SimulationObjectManager* simObjectManager;
 };

@@ -1,8 +1,0 @@
-nie zwraca listy tylko iterowac na itratorze
-leniwe obliczanie max and min
-InfluencaMapQuad grupowac 
-Nie brac całej armi ani wszystkich workerów na raz
-
-sortowac per index
-	lub iterowac bo bucketach
-	lub calculate force przetwarzac w danym buckecie od razu falga ze juz przetwrzono

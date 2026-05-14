@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Art of War — OrderMaker Decision Tree</title>
+<style>
+  body { margin: 0; background: #1a1a2e; font-family: 'Segoe UI', sans-serif; color: #e0e0e0; }
+  h1 { text-align: center; margin: 20px 0 5px; font-size: 28px; color: #fff; }
+  h2 { text-align: center; margin: 0 0 10px; font-size: 14px; color: #888; font-weight: normal; }
+  svg text { font-family: 'Segoe UI', sans-serif; pointer-events: none; }
+  svg g { cursor: pointer; }
+  svg g:hover rect, svg g:hover polygon { filter: brightness(1.3); }
+  .legend { display: flex; justify-content: center; gap: 30px; margin: 10px 0 0; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .legend-color { width: 18px; height: 18px; border-radius: 4px; }
+  .hint { text-align: center; font-size: 12px; color: #666; margin-top: 4px; }
+  .tooltip {
+    position: fixed; display: none; max-width: 420px; padding: 12px 16px;
+    background: #222; border: 1px solid #555; border-radius: 8px;
+    font-size: 13px; color: #ddd; line-height: 1.5; z-index: 999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6); pointer-events: none;
+  }
+  .tooltip .tt-title { font-weight: bold; color: #fff; margin-bottom: 4px; font-size: 14px; }
+  .tooltip .tt-input { color: #4FC3F7; }
+  .tooltip .tt-output { color: #FFB74D; }
+  .tooltip .tt-logic { color: #A5D6A7; }
+</style>
+</head>
+<body>
+<h1>OrderMaker — Military &amp; Tactics</h1>
+<h2>Two independent decision chains run sequentially every AI tick. Worker collection and army action operate independently.</h2>
+<div class="legend">
+  <div class="legend-item"><div class="legend-color" style="background:#2196F3"></div> Gate (state check)</div>
+  <div class="legend-item"><div class="legend-color" style="background:#FF9800"></div> Brain (neural network)</div>
+  <div class="legend-item"><div class="legend-color" style="background:#4CAF50"></div> Decision function</div>
+  <div class="legend-item"><div class="legend-color" style="background:#E91E63"></div> Action (game command)</div>
+  <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div> Matching / Selection</div>
+</div>
+<div class="hint">Hover over any node for input/output details</div>
+<div id="tooltip" class="tooltip"></div>
+
+<svg viewBox="0 0 1200 980" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1200px;">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#888"/></marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#4CAF50"/></marker>
+    <marker id="ar" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#f44336"/></marker>
+  </defs>
+
+  <!-- ==================== ENTRY POINT ==================== -->
+  <g data-tt-title="OrderMaker::action()" data-tt-body="Called every AI tick. Runs 2 INDEPENDENT chains:<br>1. Worker resource collection — assign idle workers to gather<br>2. Army action — attack or defend decisions<br><br>These are fully independent. Having no free workers does NOT prevent army orders, and vice versa.">
+    <rect x="440" y="15" width="320" height="40" rx="20" fill="#263238" stroke="#607D8B" stroke-width="2"/>
+    <text x="600" y="41" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">OrderMaker::action()</text>
+  </g>
+
+  <!-- Fork -->
+  <line x1="600" y1="55" x2="600" y2="80" stroke="#888" stroke-width="2"/>
+  <line x1="300" y1="80" x2="900" y2="80" stroke="#607D8B" stroke-width="2" stroke-dasharray="8,4"/>
+  <line x1="300" y1="80" x2="300" y2="110" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="900" y1="80" x2="900" y2="110" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <text x="300" y="100" text-anchor="middle" fill="#607D8B" font-size="11">INDEPENDENT</text>
+  <text x="900" y="100" text-anchor="middle" fill="#607D8B" font-size="11">INDEPENDENT</text>
+
+  <!-- Vertical separator -->
+  <line x1="600" y1="90" x2="600" y2="930" stroke="#37474F" stroke-width="1" stroke-dasharray="4,6"/>
+
+  <!-- ==================== COLUMN 1: WORKER COLLECTION ==================== -->
+  <rect x="150" y="110" width="300" height="30" rx="6" fill="#3b1360" stroke="#ce93d8" stroke-width="2"/>
+  <text x="300" y="130" text-anchor="middle" fill="#ce93d8" font-size="14" font-weight="bold">Worker Collection</text>
+
+  <line x1="300" y1="140" x2="300" y2="170" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="any free workers?" data-tt-body="<span class='tt-logic'>Gate:</span> Find all workers in IDLE state (not gathering, not building, not moving).<br><span class='tt-output'>If none: skip entire Worker Collection chain</span>">
+    <rect x="170" y="170" width="260" height="34" rx="6" fill="#1565C0" stroke="#2196F3" stroke-width="2"/>
+    <text x="300" y="192" text-anchor="middle" fill="#fff" font-size="13">any free workers?</text>
+  </g>
+
+  <line x1="300" y1="204" x2="300" y2="234" stroke="#4CAF50" stroke-width="2" marker-end="url(#ag)"/>
+  <text x="320" y="224" fill="#4CAF50" font-size="11">yes</text>
+  <line x1="430" y1="187" x2="470" y2="187" stroke="#f44336" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="480" y="191" fill="#f44336" font-size="11">skip</text>
+
+  <g data-tt-title="Brain: whichResource" data-tt-body="<span class='tt-input'>Input (14 floats) = basic(4) + resource(10):</span><br>basic: score/1000, unitsCount/200, buildingsCount/50, enemyScore/1000<br>resource: gatherSpeed food|wood|stone|gold (/10), value food|wood|stone|gold (/1000), freeWorkers/100, totalWorkers/100<br><br><span class='tt-output'>Output: 4 floats — weight per resource type:</span><br>[0] FOOD, [1] WOOD, [2] STONE, [3] GOLD">
+    <rect x="120" y="234" width="360" height="34" rx="6" fill="#E65100" stroke="#FF9800" stroke-width="2"/>
+    <text x="300" y="256" text-anchor="middle" fill="#fff" font-size="13">Brain: whichResource(resourceInput)</text>
+  </g>
+
+  <line x1="300" y1="268" x2="300" y2="298" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="biggestWithRand (per worker)" data-tt-body="<span class='tt-logic'>Rolled ONCE PER WORKER:</span><br>For each free worker, biggestWithRand(output) picks a resource type weighted by NN output.<br>Builds a histogram: e.g. 3→food, 2→wood, 1→gold<br><br><span class='tt-output'>Output: resHistogram[4] — count of workers per resource</span><br><br>Same NN output reused — only the random roll differs.">
+    <polygon points="300,298 370,328 300,358 230,328" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="300" y="325" text-anchor="middle" fill="#fff" font-size="11">biggestWithRand</text>
+    <text x="300" y="342" text-anchor="middle" fill="#aaa" font-size="9">per worker roll</text>
+  </g>
+
+  <line x1="300" y1="358" x2="300" y2="388" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="Worker assignment" data-tt-body="<span class='tt-logic'>Assignment algorithm:</span><br>1. Workers spatially divided into sub-groups (nearby workers together)<br>2. For each resource (highest histogram first):<br>&nbsp;&nbsp;- Take biggest sub-group matching histogram count<br>&nbsp;&nbsp;- Find closest resource node (expanding search: 64→128→256 radius)<br>&nbsp;&nbsp;- If found: assign COLLECT order<br>&nbsp;&nbsp;- If not: workers go to 'rest' pool">
+    <rect x="120" y="388" width="360" height="60" rx="6" fill="#6A1B9A" stroke="#9C27B0" stroke-width="2"/>
+    <text x="300" y="410" text-anchor="middle" fill="#fff" font-size="12">build histogram → divide sub-groups</text>
+    <text x="300" y="428" text-anchor="middle" fill="#CE93D8" font-size="11">find closest resource (64/128/256 radius)</text>
+    <text x="300" y="444" text-anchor="middle" fill="#aaa" font-size="10">assign sub-groups to resources by histogram</text>
+  </g>
+
+  <line x1="300" y1="448" x2="300" y2="478" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="Order: COLLECT" data-tt-body="<span class='tt-logic'>Command:</span><br>1 worker: IndividualOrder(worker, COLLECT, resource)<br>Multiple: GroupOrder(workers, ORDER, COLLECT, resource)<br><br>Workers walk to resource and begin gathering.">
+    <rect x="170" y="478" width="260" height="34" rx="6" fill="#880E4F" stroke="#E91E63" stroke-width="2"/>
+    <text x="300" y="500" text-anchor="middle" fill="#fff" font-size="13">Order: COLLECT resource</text>
+  </g>
+
+  <!-- ==================== COLUMN 2: ARMY ACTION ==================== -->
+  <rect x="750" y="110" width="300" height="30" rx="6" fill="#3b1360" stroke="#ce93d8" stroke-width="2"/>
+  <text x="900" y="130" text-anchor="middle" fill="#ce93d8" font-size="14" font-weight="bold">Army Action</text>
+
+  <line x1="900" y1="140" x2="900" y2="170" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="hasAnyFreeArmy()" data-tt-body="<span class='tt-logic'>Gate:</span> Any non-worker military units in IDLE state?<br><span class='tt-output'>If none: skip entire Army Action chain</span>">
+    <rect x="770" y="170" width="260" height="34" rx="6" fill="#1565C0" stroke="#2196F3" stroke-width="2"/>
+    <text x="900" y="192" text-anchor="middle" fill="#fff" font-size="13">hasAnyFreeArmy()?</text>
+  </g>
+
+  <line x1="900" y1="204" x2="900" y2="234" stroke="#4CAF50" stroke-width="2" marker-end="url(#ag)"/>
+  <text x="920" y="224" fill="#4CAF50" font-size="11">yes</text>
+  <line x1="1030" y1="187" x2="1070" y2="187" stroke="#f44336" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="1080" y="191" fill="#f44336" font-size="11">skip</text>
+
+  <g data-tt-title="Brain: attackOrDefence" data-tt-body="<span class='tt-input'>Input (6 floats) — NO basic prefix:</span><br>attackSum/1000 — own army total attack power<br>defenceSum/100 — own defence structures attack power<br>armyToOwnBuilding — dist own army → own buildings center<br>armyToEnemyBuilding — dist own army → enemy buildings center<br>enemyArmyToOwnBuilding — dist enemy army → own buildings<br>enemyArmyToEnemyBuilding — dist enemy army → enemy buildings<br><br><span class='tt-output'>Output: 1 float (tanh)</span>">
+    <rect x="700" y="234" width="400" height="34" rx="6" fill="#E65100" stroke="#FF9800" stroke-width="2"/>
+    <text x="900" y="256" text-anchor="middle" fill="#fff" font-size="13">Brain: attackOrDefence(attackDefenceInput)</text>
+  </g>
+
+  <line x1="900" y1="268" x2="900" y2="298" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="randFromTwo" data-tt-body="<span class='tt-logic'>(val+1) > rand(0,2)</span><br>true → ATTACK (target enemy territory)<br>false → DEFEND (protect own territory)<br><br>val=+1: always attack, val=-1: always defend, val=0: 50/50">
+    <polygon points="900,298 970,328 900,358 830,328" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="900" y="332" text-anchor="middle" fill="#fff" font-size="12">randFromTwo</text>
+  </g>
+
+  <!-- ATTACK branch (right) -->
+  <line x1="970" y1="328" x2="1060" y2="328" stroke="#4CAF50" stroke-width="2"/>
+  <line x1="1060" y1="328" x2="1060" y2="388" stroke="#4CAF50" stroke-width="2" marker-end="url(#ag)"/>
+  <text x="1010" y="322" fill="#4CAF50" font-size="12" font-weight="bold">ATTACK</text>
+
+  <g data-tt-title="Brain: whereAttack" data-tt-body="<span class='tt-input'>Input (4+4 = 8 floats) = basic(4) + attack metrics:</span><br>basic: score/1000, unitsCount/200, buildingsCount/50, enemyScore/1000<br>attackSum/1000, armyToEnemyEcon, armyToEnemyBuilding, armyToEnemyArmy<br><br><span class='tt-output'>Output: 3 floats — target type weights:</span><br>[0] ECON, [1] BUILDING, [2] UNITS">
+    <rect x="950" y="388" width="220" height="34" rx="6" fill="#E65100" stroke="#FF9800" stroke-width="2"/>
+    <text x="1060" y="410" text-anchor="middle" fill="#fff" font-size="12">Brain: whereAttack</text>
+  </g>
+
+  <line x1="1060" y1="422" x2="1060" y2="448" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="biggestWithRand — attack target" data-tt-body="<span class='tt-logic'>Weighted random from 3 options:</span><br>[0] ECON — target enemy workers<br>[1] BUILDING — target enemy buildings<br>[2] UNITS — target enemy army<br><br><span class='tt-output'>CenterType → get ENEMY center of mass for that type</span>">
+    <polygon points="1060,448 1130,474 1060,500 990,474" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="1060" y="478" text-anchor="middle" fill="#fff" font-size="11">biggestWithRand</text>
+  </g>
+
+  <!-- 3 attack targets -->
+  <line x1="990" y1="474" x2="960" y2="520" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+  <g data-tt-title="Attack: ECON" data-tt-body="Target: ENEMY workers center of mass.<br>When close (<30): attacks enemy workers specifically (isWorker filter).">
+    <rect x="920" y="520" width="80" height="26" rx="4" fill="#4A148C" stroke="#7B1FA2" stroke-width="1.5"/>
+    <text x="960" y="538" text-anchor="middle" fill="#fff" font-size="11">Econ</text>
+  </g>
+
+  <line x1="1060" y1="500" x2="1060" y2="520" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+  <g data-tt-title="Attack: BUILDING" data-tt-body="Target: ENEMY buildings center of mass.<br>When close (<30): attacks nearby enemy buildings.">
+    <rect x="1020" y="520" width="80" height="26" rx="4" fill="#4A148C" stroke="#7B1FA2" stroke-width="1.5"/>
+    <text x="1060" y="538" text-anchor="middle" fill="#fff" font-size="11">Building</text>
+  </g>
+
+  <line x1="1130" y1="474" x2="1160" y2="520" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+  <g data-tt-title="Attack: UNITS" data-tt-body="Target: ENEMY army center of mass.<br>When close (<30): attacks nearest enemy units (no filter).">
+    <rect x="1120" y="520" width="80" height="26" rx="4" fill="#4A148C" stroke="#7B1FA2" stroke-width="1.5"/>
+    <text x="1160" y="538" text-anchor="middle" fill="#fff" font-size="11">Units</text>
+  </g>
+
+  <text x="1060" y="566" text-anchor="middle" fill="#aaa" font-size="10">target = ENEMY center of mass</text>
+
+  <!-- DEFEND branch (left) -->
+  <line x1="830" y1="328" x2="740" y2="328" stroke="#f44336" stroke-width="2"/>
+  <line x1="740" y1="328" x2="740" y2="388" stroke="#f44336" stroke-width="2" marker-end="url(#a)"/>
+  <text x="780" y="322" fill="#f44336" font-size="12" font-weight="bold">DEFEND</text>
+
+  <g data-tt-title="Brain: whereDefence" data-tt-body="<span class='tt-input'>Input (4+5 = 9 floats) = basic(4) + defence metrics:</span><br>basic: score/1000, unitsCount/200, buildingsCount/50, enemyScore/1000<br>attackSum/1000, defenceSum/100, armyToOwnEcon, armyToOwnBuilding, armyToEnemyArmy<br><br><span class='tt-output'>Output: 3 floats — defend target weights:</span><br>[0] ECON, [1] BUILDING, [2] UNITS">
+    <rect x="630" y="388" width="220" height="34" rx="6" fill="#E65100" stroke="#FF9800" stroke-width="2"/>
+    <text x="740" y="410" text-anchor="middle" fill="#fff" font-size="12">Brain: whereDefence</text>
+  </g>
+
+  <line x1="740" y1="422" x2="740" y2="448" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="biggestWithRand — defend target" data-tt-body="<span class='tt-logic'>Weighted random from 3 options:</span><br>[0] ECON — defend own workers<br>[1] BUILDING — defend own buildings<br>[2] UNITS — intercept enemy army<br><br><span class='tt-output'>CenterType → get OWN center of mass (except UNITS → enemy army)</span>">
+    <polygon points="740,448 810,474 740,500 670,474" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="740" y="478" text-anchor="middle" fill="#fff" font-size="11">biggestWithRand</text>
+  </g>
+
+  <!-- 3 defend targets -->
+  <line x1="670" y1="474" x2="640" y2="520" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+  <g data-tt-title="Defend: ECON" data-tt-body="Target: OWN workers center of mass.<br>Army moves to protect own workers from raids.">
+    <rect x="610" y="520" width="65" height="26" rx="4" fill="#4A148C" stroke="#7B1FA2" stroke-width="1.5"/>
+    <text x="643" y="538" text-anchor="middle" fill="#fff" font-size="11">Econ</text>
+  </g>
+
+  <line x1="740" y1="500" x2="740" y2="520" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+  <g data-tt-title="Defend: BUILDING" data-tt-body="Target: OWN buildings center of mass.<br>Army moves to protect the base.">
+    <rect x="700" y="520" width="80" height="26" rx="4" fill="#4A148C" stroke="#7B1FA2" stroke-width="1.5"/>
+    <text x="740" y="538" text-anchor="middle" fill="#fff" font-size="11">Building</text>
+  </g>
+
+  <line x1="810" y1="474" x2="840" y2="520" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+  <g data-tt-title="Defend: UNITS (intercept)" data-tt-body="Target: ENEMY army center of mass.<br>Aggressive defense — intercept enemy before they reach your base.<br>Note: uses enemy army center, not own.">
+    <rect x="810" y="520" width="65" height="26" rx="4" fill="#4A148C" stroke="#7B1FA2" stroke-width="1.5"/>
+    <text x="843" y="538" text-anchor="middle" fill="#fff" font-size="11">Units</text>
+  </g>
+
+  <text x="740" y="566" text-anchor="middle" fill="#aaa" font-size="10">target = OWN center of mass</text>
+
+  <!-- ==================== CONVERGE: ARMY EXECUTION ==================== -->
+  <line x1="740" y1="576" x2="740" y2="600" stroke="#888" stroke-width="1"/>
+  <line x1="1060" y1="576" x2="1060" y2="600" stroke="#888" stroke-width="1"/>
+  <line x1="740" y1="600" x2="1060" y2="600" stroke="#888" stroke-width="1"/>
+  <line x1="900" y1="600" x2="900" y2="630" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="Divide army into sub-groups" data-tt-body="<span class='tt-logic'>Spatial grouping:</span> divide() splits the free army into sub-groups of nearby units.<br>Each sub-group acts independently based on its distance to the target.">
+    <rect x="740" y="630" width="320" height="34" rx="6" fill="#6A1B9A" stroke="#9C27B0" stroke-width="2"/>
+    <text x="900" y="652" text-anchor="middle" fill="#fff" font-size="12">divide army into sub-groups</text>
+  </g>
+
+  <line x1="900" y1="664" x2="900" y2="694" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="Distance check" data-tt-body="<span class='tt-logic'>Per sub-group:</span><br>sqDist(subGroupCenter, target) > 900 (30^2)?<br>FAR → move toward target<br>CLOSE → find and attack nearest enemies of the selected type">
+    <polygon points="900,694 970,720 900,746 830,720" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="900" y="718" text-anchor="middle" fill="#fff" font-size="11">dist > 30?</text>
+    <text x="900" y="732" text-anchor="middle" fill="#aaa" font-size="9">to target</text>
+  </g>
+
+  <!-- FAR -->
+  <line x1="830" y1="720" x2="740" y2="720" stroke="#888" stroke-width="1.5"/>
+  <line x1="740" y1="720" x2="740" y2="770" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="780" y="714" fill="#4CAF50" font-size="11">far</text>
+
+  <g data-tt-title="Order: GO" data-tt-body="<span class='tt-logic'>Move command:</span><br>1 unit: IndividualOrder(GO, targetPos)<br>Multiple: GroupOrder(GO, targetPos)<br><br>Army walks toward the target. No attack until within 30 units.">
+    <rect x="660" y="770" width="160" height="30" rx="6" fill="#880E4F" stroke="#E91E63" stroke-width="2"/>
+    <text x="740" y="790" text-anchor="middle" fill="#fff" font-size="12">Order: GO target</text>
+  </g>
+
+  <!-- CLOSE -->
+  <line x1="970" y1="720" x2="1060" y2="720" stroke="#888" stroke-width="1.5"/>
+  <line x1="1060" y1="720" x2="1060" y2="770" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="1010" y="714" fill="#FF9800" font-size="11">close</text>
+
+  <g data-tt-title="Order: ATTACK nearest" data-tt-body="<span class='tt-logic'>Attack command:</span><br>1. Based on CenterType, get relevant enemies:<br>&nbsp;&nbsp;ECON → enemy workers (isWorker filter)<br>&nbsp;&nbsp;BUILDING → enemy buildings<br>&nbsp;&nbsp;UNITS → all enemy units<br>2. Find closest enemy to sub-group leader<br>3. GroupOrder(ATTACK, closest)">
+    <rect x="960" y="770" width="200" height="30" rx="6" fill="#880E4F" stroke="#E91E63" stroke-width="2"/>
+    <text x="1060" y="790" text-anchor="middle" fill="#fff" font-size="12">Order: ATTACK nearest</text>
+  </g>
+
+  <!-- ==================== BOTTOM NOTE ==================== -->
+  <rect x="100" y="840" width="1000" height="90" rx="10" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="600" y="865" text-anchor="middle" fill="#78909C" font-size="13" font-weight="bold">Independence</text>
+  <text x="600" y="885" text-anchor="middle" fill="#607D8B" font-size="12">Worker Collection and Army Action are fully independent chains. Having no free workers does NOT skip army orders.</text>
+  <text x="600" y="905" text-anchor="middle" fill="#607D8B" font-size="12">Having no free army does NOT prevent worker collection. Both chains run every tick with their own gates.</text>
+  <text x="600" y="925" text-anchor="middle" fill="#607D8B" font-size="12">Within Army Action, the ATTACK/DEFEND decision and the WHERE decision are sequential (dependent), not independent.</text>
+</svg>
+
+<script>
+const tooltip = document.getElementById('tooltip');
+document.querySelectorAll('g[data-tt-title]').forEach(g => {
+  g.addEventListener('mouseenter', e => {
+    tooltip.innerHTML = `<div class="tt-title">${g.getAttribute('data-tt-title')}</div>${g.getAttribute('data-tt-body')}`;
+    tooltip.style.display = 'block';
+  });
+  g.addEventListener('mousemove', e => {
+    let x = e.clientX + 16, y = e.clientY + 16;
+    const r = tooltip.getBoundingClientRect();
+    if (x + r.width > window.innerWidth - 16) x = e.clientX - r.width - 16;
+    if (y + r.height > window.innerHeight - 16) y = e.clientY - r.height - 16;
+    tooltip.style.left = x + 'px'; tooltip.style.top = y + 'px';
+  });
+  g.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+});
+</script>
+</body>
+</html>

@@ -92,7 +92,3 @@ Game* Game::setActionCenter(ActionCenter* _actionCenter) {
 	instance->actionCenter = _actionCenter;
 	return instance;
 }
-
-void Game::addTime(float time) {
-	instance->accumTime += time;
-}

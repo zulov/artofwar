@@ -33,14 +33,14 @@ struct MouseButton {
 		held.first = hitPos;
 		isHeld = true;
 		prevDown = lastDown;
-		lastDown = Game::getTime();
+		lastDown = Game::getFrameInfo()->getWallTime();
 	}
 
 	void setSecond(Urho3D::Vector3& hitPos) {
 		held.second = hitPos;
 		isHeld = false;
 		prevUp = lastUp;
-		lastUp = Game::getTime();
+		lastUp = Game::getFrameInfo()->getWallTime();
 	}
 
 	void markHeld() {

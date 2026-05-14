@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Art of War — ActionMaker Decision Tree</title>
+<style>
+  body { margin: 0; background: #1a1a2e; font-family: 'Segoe UI', sans-serif; color: #e0e0e0; }
+  h1 { text-align: center; margin: 20px 0 5px; font-size: 28px; color: #fff; }
+  h2 { text-align: center; margin: 0 0 10px; font-size: 14px; color: #888; font-weight: normal; }
+  svg text { font-family: 'Segoe UI', sans-serif; pointer-events: none; }
+  svg g { cursor: pointer; }
+  svg g:hover rect, svg g:hover polygon { filter: brightness(1.3); }
+  .legend { display: flex; justify-content: center; gap: 30px; margin: 10px 0 0; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .legend-color { width: 18px; height: 18px; border-radius: 4px; }
+  .hint { text-align: center; font-size: 12px; color: #666; margin-top: 4px; }
+  .tooltip {
+    position: fixed; display: none; max-width: 420px; padding: 12px 16px;
+    background: #222; border: 1px solid #555; border-radius: 8px;
+    font-size: 13px; color: #ddd; line-height: 1.5; z-index: 999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6); pointer-events: none;
+  }
+  .tooltip .tt-title { font-weight: bold; color: #fff; margin-bottom: 4px; font-size: 14px; }
+  .tooltip .tt-input { color: #4FC3F7; }
+  .tooltip .tt-output { color: #FFB74D; }
+  .tooltip .tt-logic { color: #A5D6A7; }
+</style>
+</head>
+<body>
+<h1>ActionMaker — Economy &amp; Production</h1>
+<h2>Three independent decision chains run sequentially every AI tick. Each chain can succeed or fail without affecting the others.</h2>
+<div class="legend">
+  <div class="legend-item"><div class="legend-color" style="background:#2196F3"></div> Gate (resource check)</div>
+  <div class="legend-item"><div class="legend-color" style="background:#FF9800"></div> Brain (neural network)</div>
+  <div class="legend-item"><div class="legend-color" style="background:#4CAF50"></div> Decision function</div>
+  <div class="legend-item"><div class="legend-color" style="background:#E91E63"></div> Action (game command)</div>
+  <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div> Matching / Selection</div>
+</div>
+<div class="hint">Hover over any node for input/output details</div>
+<div id="tooltip" class="tooltip"></div>
+
+<svg viewBox="0 0 1500 1320" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1500px;">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#888"/></marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#4CAF50"/></marker>
+    <marker id="ar" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#f44336"/></marker>
+  </defs>
+
+  <!-- ==================== ENTRY POINT ==================== -->
+  <g data-tt-title="ActionMaker::action()" data-tt-body="Called every AI tick. Runs 3 INDEPENDENT chains sequentially:<br>1. Worker creation<br>2. Unit creation<br>3. Building creation<br><br>Each chain has its own gate, brain, and action. Success or failure in one chain does NOT affect the others — all 3 always run.">
+    <rect x="590" y="15" width="320" height="40" rx="20" fill="#263238" stroke="#607D8B" stroke-width="2"/>
+    <text x="750" y="41" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">ActionMaker::action()</text>
+  </g>
+
+  <!-- Fork lines -->
+  <line x1="750" y1="55" x2="750" y2="80" stroke="#888" stroke-width="2"/>
+  <line x1="250" y1="80" x2="1250" y2="80" stroke="#607D8B" stroke-width="2" stroke-dasharray="8,4"/>
+  <line x1="250" y1="80" x2="250" y2="110" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="750" y1="80" x2="750" y2="110" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="1250" y1="80" x2="1250" y2="110" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- Labels -->
+  <text x="250" y="100" text-anchor="middle" fill="#607D8B" font-size="11">INDEPENDENT</text>
+  <text x="750" y="100" text-anchor="middle" fill="#607D8B" font-size="11">INDEPENDENT</text>
+  <text x="1250" y="100" text-anchor="middle" fill="#607D8B" font-size="11">INDEPENDENT</text>
+
+  <!-- ==================== COLUMN 1: WORKER ==================== -->
+  <rect x="100" y="110" width="300" height="30" rx="6" fill="#0f3460" stroke="#4fc3f7" stroke-width="2"/>
+  <text x="250" y="130" text-anchor="middle" fill="#4fc3f7" font-size="14" font-weight="bold">Worker Creation</text>
+
+  <line x1="250" y1="140" x2="250" y2="170" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- Gate -->
+  <g data-tt-title="isEnoughResToWorker()" data-tt-body="<span class='tt-logic'>Gate:</span> Can the player afford at least one worker type?<br><span class='tt-input'>Checks: player resources vs nation->workers costs</span><br><span class='tt-output'>If false: skip entire Worker chain (no brain called)</span>">
+    <rect x="120" y="170" width="260" height="34" rx="6" fill="#1565C0" stroke="#2196F3" stroke-width="2"/>
+    <text x="250" y="192" text-anchor="middle" fill="#fff" font-size="13">isEnoughResToWorker()?</text>
+  </g>
+
+  <line x1="250" y1="204" x2="250" y2="234" stroke="#4CAF50" stroke-width="2" marker-end="url(#ag)"/>
+  <text x="270" y="224" fill="#4CAF50" font-size="11">yes</text>
+  <line x1="380" y1="187" x2="420" y2="187" stroke="#f44336" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="430" y="191" fill="#f44336" font-size="11">skip</text>
+
+  <!-- Brain ifWorker -->
+  <g data-tt-title="Brain: ifWorker" data-tt-body="<span class='tt-input'>Input (14 floats):</span><br>basic(4): score/1000, unitsCount/200, buildingsCount/50, enemyScore/1000<br>resource(10): gatherSpeed food|wood|stone|gold (/10), value food|wood|stone|gold (/1000), freeWorkers/100, totalWorkers/100<br><br><span class='tt-output'>Output: 1 float (tanh [-1,1])</span>">
+    <rect x="105" y="234" width="290" height="34" rx="6" fill="#E65100" stroke="#FF9800" stroke-width="2"/>
+    <text x="250" y="256" text-anchor="middle" fill="#fff" font-size="13">Brain: ifWorker(resourceInput)</text>
+  </g>
+
+  <line x1="250" y1="268" x2="250" y2="298" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- Decision -->
+  <g data-tt-title="randFromTwo" data-tt-body="<span class='tt-logic'>(val+1) > rand(0,2)</span><br>val=-1: 0% chance, val=0: 50%, val=+1: 100%<br><span class='tt-output'>Output: yes/no — should I create a worker?</span>">
+    <polygon points="250,298 310,324 250,350 190,324" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="250" y="328" text-anchor="middle" fill="#fff" font-size="12">randFromTwo</text>
+  </g>
+
+  <line x1="250" y1="350" x2="250" y2="380" stroke="#4CAF50" stroke-width="2" marker-end="url(#ag)"/>
+  <text x="265" y="370" fill="#4CAF50" font-size="11">yes</text>
+
+  <!-- Brain whereWorker -->
+  <g data-tt-title="Brain: whereWorker" data-tt-body="<span class='tt-input'>Input (14 floats): same resourceInput</span><br><br><span class='tt-output'>Output: 8 floats — area preference weights</span><br>Passed to getAreas() to find map positions. Closest building to those areas is selected for deployment.">
+    <rect x="105" y="380" width="290" height="34" rx="6" fill="#E65100" stroke="#FF9800" stroke-width="2"/>
+    <text x="250" y="402" text-anchor="middle" fill="#fff" font-size="13">Brain: whereWorker(resourceInput)</text>
+  </g>
+
+  <line x1="250" y1="414" x2="250" y2="444" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="Closest building to output area" data-tt-body="<span class='tt-logic'>Selection:</span> NN output → getAreas(top 10 positions) → find building closest to any area center<br><span class='tt-output'>Output: Building* to deploy worker from</span>">
+    <rect x="110" y="444" width="280" height="34" rx="6" fill="#6A1B9A" stroke="#9C27B0" stroke-width="2"/>
+    <text x="250" y="466" text-anchor="middle" fill="#fff" font-size="12">closest building to output area</text>
+  </g>
+
+  <line x1="250" y1="478" x2="250" y2="508" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="Create Worker" data-tt-body="<span class='tt-logic'>Command:</span> BuildingActionCommand(building, UNIT_CREATE, workerId)<br>Always uses nation->workers[0]">
+    <rect x="140" y="508" width="220" height="34" rx="6" fill="#880E4F" stroke="#E91E63" stroke-width="2"/>
+    <text x="250" y="530" text-anchor="middle" fill="#fff" font-size="13">Create Worker</text>
+  </g>
+
+  <!-- ==================== COLUMN 2: UNIT ==================== -->
+  <rect x="600" y="110" width="300" height="30" rx="6" fill="#0f3460" stroke="#4fc3f7" stroke-width="2"/>
+  <text x="750" y="130" text-anchor="middle" fill="#4fc3f7" font-size="14" font-weight="bold">Unit Creation</text>
+
+  <line x1="750" y1="140" x2="750" y2="170" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="isEnoughResToAnyUnit()" data-tt-body="<span class='tt-logic'>Gate:</span> Can the player afford at least one non-worker unit?<br><span class='tt-output'>If false: skip entire Unit chain</span>">
+    <rect x="620" y="170" width="260" height="34" rx="6" fill="#1565C0" stroke="#2196F3" stroke-width="2"/>
+    <text x="750" y="192" text-anchor="middle" fill="#fff" font-size="13">isEnoughResToAnyUnit()?</text>
+  </g>
+
+  <line x1="750" y1="204" x2="750" y2="234" stroke="#4CAF50" stroke-width="2" marker-end="url(#ag)"/>
+  <text x="770" y="224" fill="#4CAF50" font-size="11">yes</text>
+  <line x1="880" y1="187" x2="920" y2="187" stroke="#f44336" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="930" y="191" fill="#f44336" font-size="11">skip</text>
+
+  <g data-tt-title="Brain: ifUnit" data-tt-body="<span class='tt-input'>Input (4+24 floats) = basic(4) + unitsSum(24):</span><br>basic: score, unitCount, buildingCount, enemyScore<br>unitsSum: aggregated stats of all owned units (cost, hp, armor, sight, collect, attack, reload, range, 8 type flags, 8 bonus flags)<br><br><span class='tt-output'>Output: 1 float (tanh)</span>">
+    <rect x="610" y="234" width="280" height="34" rx="6" fill="#E65100" stroke="#FF9800" stroke-width="2"/>
+    <text x="750" y="256" text-anchor="middle" fill="#fff" font-size="13">Brain: ifUnit(unitsInput)</text>
+  </g>
+
+  <line x1="750" y1="268" x2="750" y2="298" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="randFromTwo" data-tt-body="<span class='tt-logic'>(val+1) > rand(0,2)</span><br><span class='tt-output'>yes/no — should I train a military unit?</span>">
+    <polygon points="750,298 810,324 750,350 690,324" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="750" y="328" text-anchor="middle" fill="#fff" font-size="12">randFromTwo</text>
+  </g>
+
+  <line x1="750" y1="350" x2="750" y2="380" stroke="#4CAF50" stroke-width="2" marker-end="url(#ag)"/>
+  <text x="765" y="370" fill="#4CAF50" font-size="11">yes</text>
+
+  <g data-tt-title="Brain: whichUnit" data-tt-body="<span class='tt-input'>Input (4+24 floats): same unitsInput</span><br><br><span class='tt-output'>Output: N floats — 'ideal unit profile'</span><br>NOT a direct unit index. Describes the ideal unit characteristics.">
+    <rect x="610" y="380" width="280" height="34" rx="6" fill="#E65100" stroke="#FF9800" stroke-width="2"/>
+    <text x="750" y="402" text-anchor="middle" fill="#fff" font-size="13">Brain: whichUnit(unitsInput)</text>
+  </g>
+
+  <line x1="750" y1="414" x2="750" y2="444" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="Unit matching" data-tt-body="<span class='tt-logic'>For each non-worker unit:</span><br>1. Get normalized metric vector (24 floats)<br>2. sqRootSumError(brainOutput, unitMetric)<br>3. lowestWithRand(distances) — closer match = higher probability<br><br><span class='tt-output'>Output: selected db_unit*</span>">
+    <rect x="595" y="444" width="310" height="48" rx="6" fill="#6A1B9A" stroke="#9C27B0" stroke-width="2"/>
+    <text x="750" y="462" text-anchor="middle" fill="#fff" font-size="12">sqRootSumError to unit metrics</text>
+    <text x="750" y="480" text-anchor="middle" fill="#CE93D8" font-size="11">lowestWithRand(distances)</text>
+  </g>
+
+  <line x1="750" y1="492" x2="750" y2="522" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="Brain: whereUnit" data-tt-body="<span class='tt-input'>Input (4+8 floats) = basic(4) + selected unit type flags(8)</span><br><br><span class='tt-output'>Output: N floats — area preference</span><br>Used to pick deployment building closest to preferred area.">
+    <rect x="610" y="522" width="280" height="34" rx="6" fill="#E65100" stroke="#FF9800" stroke-width="2"/>
+    <text x="750" y="544" text-anchor="middle" fill="#fff" font-size="13">Brain: whereUnit(units+metric)</text>
+  </g>
+
+  <line x1="750" y1="556" x2="750" y2="586" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="Closest building to area" data-tt-body="<span class='tt-logic'>Same as whereWorker:</span> NN output → getAreas → closest building<br><span class='tt-output'>Output: Building* to deploy unit from</span>">
+    <rect x="620" y="586" width="260" height="34" rx="6" fill="#6A1B9A" stroke="#9C27B0" stroke-width="2"/>
+    <text x="750" y="608" text-anchor="middle" fill="#fff" font-size="12">closest building to area</text>
+  </g>
+
+  <line x1="750" y1="620" x2="750" y2="650" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="Create Unit at Building" data-tt-body="<span class='tt-logic'>Command:</span> BuildingActionCommand(building, UNIT_CREATE, unitId)<br>Final resource check here — if can't afford, nothing happens.">
+    <rect x="620" y="650" width="260" height="34" rx="6" fill="#880E4F" stroke="#E91E63" stroke-width="2"/>
+    <text x="750" y="672" text-anchor="middle" fill="#fff" font-size="13">Create Unit at Building</text>
+  </g>
+
+  <!-- ==================== COLUMN 3: BUILDING ==================== -->
+  <rect x="1100" y="110" width="300" height="30" rx="6" fill="#0f3460" stroke="#4fc3f7" stroke-width="2"/>
+  <text x="1250" y="130" text-anchor="middle" fill="#4fc3f7" font-size="14" font-weight="bold">Building Construction</text>
+
+  <line x1="1250" y1="140" x2="1250" y2="170" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="isEnoughResToAnyBuilding()" data-tt-body="<span class='tt-logic'>Gate:</span> Can the player afford at least one building?<br><span class='tt-output'>If false: skip entire Building chain</span>">
+    <rect x="1100" y="170" width="300" height="34" rx="6" fill="#1565C0" stroke="#2196F3" stroke-width="2"/>
+    <text x="1250" y="192" text-anchor="middle" fill="#fff" font-size="13">isEnoughResToAnyBuilding()?</text>
+  </g>
+
+  <line x1="1250" y1="204" x2="1250" y2="234" stroke="#4CAF50" stroke-width="2" marker-end="url(#ag)"/>
+  <text x="1270" y="224" fill="#4CAF50" font-size="11">yes</text>
+  <line x1="1400" y1="187" x2="1440" y2="187" stroke="#f44336" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="1450" y="191" fill="#f44336" font-size="11">skip</text>
+
+  <g data-tt-title="Brain: ifBuilding" data-tt-body="<span class='tt-input'>Input (4+21 = 25 floats) = basic(4) + buildingsSum(21):</span><br>basic: score, unitCount, buildingCount, enemyScore<br>buildingsSum: aggregated building stats (cost, hp, armor, sight, collect, attack, reload, range, resRange, 12 type flags)<br><br><span class='tt-output'>Output: 1 float (tanh)</span>">
+    <rect x="1100" y="234" width="300" height="34" rx="6" fill="#E65100" stroke="#FF9800" stroke-width="2"/>
+    <text x="1250" y="256" text-anchor="middle" fill="#fff" font-size="13">Brain: ifBuilding(buildingsInput)</text>
+  </g>
+
+  <line x1="1250" y1="268" x2="1250" y2="298" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="randFromTwo" data-tt-body="<span class='tt-logic'>(val+1) > rand(0,2)</span><br><span class='tt-output'>yes/no — should I construct a building?</span>">
+    <polygon points="1250,298 1310,324 1250,350 1190,324" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="1250" y="328" text-anchor="middle" fill="#fff" font-size="12">randFromTwo</text>
+  </g>
+
+  <line x1="1250" y1="350" x2="1250" y2="380" stroke="#4CAF50" stroke-width="2" marker-end="url(#ag)"/>
+  <text x="1265" y="370" fill="#4CAF50" font-size="11">yes</text>
+
+  <!-- whichBuildingType -->
+  <g data-tt-title="Brain: whichBuildingType" data-tt-body="<span class='tt-input'>Input (25 floats): same buildingsInput</span><br><br><span class='tt-output'>Output: 5 floats — one weight per category:</span><br>[0] OTHER, [1] DEFENCE, [2] RESOURCE, [3] TECH, [4] UNITS">
+    <rect x="1080" y="380" width="340" height="34" rx="6" fill="#E65100" stroke="#FF9800" stroke-width="2"/>
+    <text x="1250" y="402" text-anchor="middle" fill="#fff" font-size="13">Brain: whichBuildingType(buildingsInput)</text>
+  </g>
+
+  <line x1="1250" y1="414" x2="1250" y2="440" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="biggestWithRand" data-tt-body="<span class='tt-logic'>Weighted random:</span> clamp negatives to 0, sum all, rand in [0,sum), accumulate → winner index<br><span class='tt-output'>Output: ParentBuildingType (0-4)</span>">
+    <polygon points="1250,440 1320,466 1250,492 1180,466" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="1250" y="470" text-anchor="middle" fill="#fff" font-size="11">biggestWithRand</text>
+  </g>
+
+  <!-- 5 sub-branches -->
+  <line x1="1180" y1="466" x2="1050" y2="466" stroke="#888" stroke-width="1.5"/>
+  <line x1="1050" y1="466" x2="1050" y2="520" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+  <g data-tt-title="Brain: whichBuildTypeOther" data-tt-body="<span class='tt-input'>Input (4+2 = 6 floats): basic + TYPE_CENTER, TYPE_HOME</span><br><span class='tt-output'>Output: N floats — ideal Other building profile</span>">
+    <rect x="1000" y="520" width="100" height="28" rx="5" fill="#E65100" stroke="#FF9800" stroke-width="1.5"/>
+    <text x="1050" y="539" text-anchor="middle" fill="#fff" font-size="10">Other</text>
+  </g>
+
+  <line x1="1195" y1="480" x2="1120" y2="520" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+  <g data-tt-title="Brain: whichBuildTypeDefence" data-tt-body="<span class='tt-input'>Input (4+7 = 11 floats): basic + COST, HP, ARMOR, SIGHT, ATTACK, RELOAD, RANGE</span><br><span class='tt-output'>Output: N floats — ideal Defence building profile</span>">
+    <rect x="1110" y="520" width="100" height="28" rx="5" fill="#E65100" stroke="#FF9800" stroke-width="1.5"/>
+    <text x="1160" y="539" text-anchor="middle" fill="#fff" font-size="10">Defence</text>
+  </g>
+
+  <line x1="1250" y1="492" x2="1250" y2="520" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+  <g data-tt-title="Brain: whichBuildTypeResource" data-tt-body="<span class='tt-input'>Input (4+4 = 8 floats): basic + resWithOutBonus (food, wood, stone, gold /20)</span><br><span class='tt-output'>Output: 4 floats — weight per resource type</span><br>biggestWithRand picks resource, then matches to building with that resourceType.">
+    <rect x="1210" y="520" width="100" height="28" rx="5" fill="#E65100" stroke="#FF9800" stroke-width="1.5"/>
+    <text x="1260" y="539" text-anchor="middle" fill="#fff" font-size="10">Resource</text>
+  </g>
+
+  <line x1="1305" y1="480" x2="1370" y2="520" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+  <g data-tt-title="Brain: whichBuildTypeTech" data-tt-body="<span class='tt-input'>Input (4+2 = 6 floats): basic + TYPE_TECH_BLACKSMITH, TYPE_TECH_UNIVERSITY</span><br><span class='tt-output'>Output: N floats — ideal Tech building profile</span>">
+    <rect x="1330" y="520" width="100" height="28" rx="5" fill="#E65100" stroke="#FF9800" stroke-width="1.5"/>
+    <text x="1380" y="539" text-anchor="middle" fill="#fff" font-size="10">Tech</text>
+  </g>
+
+  <line x1="1320" y1="466" x2="1460" y2="466" stroke="#888" stroke-width="1.5"/>
+  <line x1="1460" y1="466" x2="1460" y2="520" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+  <g data-tt-title="Brain: whichBuildTypeUnits" data-tt-body="<span class='tt-input'>Input (4+3 = 7 floats): basic + TYPE_UNIT_BARRACKS, TYPE_UNIT_RANGE, TYPE_UNIT_CAVALRY</span><br><span class='tt-output'>Output: N floats — ideal Units building profile</span>">
+    <rect x="1420" y="520" width="100" height="28" rx="5" fill="#E65100" stroke="#FF9800" stroke-width="1.5"/>
+    <text x="1470" y="539" text-anchor="middle" fill="#fff" font-size="10">Units</text>
+  </g>
+
+  <!-- Converge from 5 branches -->
+  <line x1="1050" y1="548" x2="1050" y2="570" stroke="#888" stroke-width="1"/>
+  <line x1="1160" y1="548" x2="1160" y2="570" stroke="#888" stroke-width="1"/>
+  <line x1="1260" y1="548" x2="1260" y2="570" stroke="#888" stroke-width="1"/>
+  <line x1="1380" y1="548" x2="1380" y2="570" stroke="#888" stroke-width="1"/>
+  <line x1="1470" y1="548" x2="1470" y2="570" stroke="#888" stroke-width="1"/>
+  <line x1="1050" y1="570" x2="1470" y2="570" stroke="#888" stroke-width="1"/>
+  <line x1="1250" y1="570" x2="1250" y2="600" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+  <text x="1250" y="588" text-anchor="middle" fill="#aaa" font-size="10">each runs its whichBuildType* brain</text>
+
+  <!-- Building matching -->
+  <g data-tt-title="Building matching" data-tt-body="<span class='tt-logic'>Non-RESOURCE:</span> sqRootSumError(output, buildingMetric) for each building of type → lowestWithRand<br><span class='tt-logic'>RESOURCE:</span> biggestWithRand picks resource type → find building with matching resourceType<br><br><span class='tt-output'>Output: db_building*</span>">
+    <rect x="1085" y="600" width="330" height="48" rx="6" fill="#6A1B9A" stroke="#9C27B0" stroke-width="2"/>
+    <text x="1250" y="618" text-anchor="middle" fill="#fff" font-size="12">sqRootSumError to building metrics</text>
+    <text x="1250" y="636" text-anchor="middle" fill="#CE93D8" font-size="11">lowestWithRand (biggestWithRand for RESOURCE)</text>
+  </g>
+
+  <line x1="1250" y1="648" x2="1250" y2="678" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- whereBuilding -->
+  <g data-tt-title="Brain: whereBuilding" data-tt-body="<span class='tt-input'>Input: basic(4) + building metric/type flags</span><br>For RESOURCE: skipped (uses getPosToCreateResBonus instead)<br><br><span class='tt-output'>Output: 7 floats (AI_MAP_COUNT) — influence map weights:</span><br>[0] buildingsInfluence, [1] unitsInfluence, [2] attackSpeed, [3-6] gatherSpeed food/wood/stone/gold">
+    <rect x="1085" y="678" width="330" height="34" rx="6" fill="#E65100" stroke="#FF9800" stroke-width="2"/>
+    <text x="1250" y="700" text-anchor="middle" fill="#fff" font-size="13">Brain: whereBuilding(input+metric)</text>
+  </g>
+
+  <line x1="1250" y1="712" x2="1250" y2="742" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="Find position on map" data-tt-body="<span class='tt-logic'>Environment::getPosToCreate():</span><br>Uses NN output as weights over 7 influence maps. Combines them, finds highest-scoring visible cells, picks a valid building placement position.<br><br><span class='tt-output'>Output: optional Vector2 — if no valid position, building is cancelled</span>">
+    <rect x="1105" y="742" width="290" height="34" rx="6" fill="#6A1B9A" stroke="#9C27B0" stroke-width="2"/>
+    <text x="1250" y="764" text-anchor="middle" fill="#fff" font-size="12">Environment::getPosToCreate()</text>
+  </g>
+
+  <line x1="1250" y1="776" x2="1250" y2="806" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="Place Building" data-tt-body="<span class='tt-logic'>Command:</span> ActionCenter::addBuilding(id, pos, playerId)<br>Final resource check. Places building on map.">
+    <rect x="1130" y="806" width="240" height="34" rx="6" fill="#880E4F" stroke="#E91E63" stroke-width="2"/>
+    <text x="1250" y="828" text-anchor="middle" fill="#fff" font-size="13">Place Building</text>
+  </g>
+
+  <!-- ==================== SEPARATION LINES ==================== -->
+  <line x1="490" y1="90" x2="490" y2="860" stroke="#37474F" stroke-width="1" stroke-dasharray="4,6"/>
+  <line x1="990" y1="90" x2="990" y2="860" stroke="#37474F" stroke-width="1" stroke-dasharray="4,6"/>
+
+  <!-- ==================== BOTTOM NOTE ==================== -->
+  <rect x="100" y="880" width="1300" height="70" rx="10" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="750" y="905" text-anchor="middle" fill="#78909C" font-size="13" font-weight="bold">Independence</text>
+  <text x="750" y="925" text-anchor="middle" fill="#607D8B" font-size="12">All 3 chains run every tick regardless of each other's outcome. Creating a worker does NOT prevent creating a unit or building in the same tick.</text>
+  <text x="750" y="942" text-anchor="middle" fill="#607D8B" font-size="12">Each chain can independently: pass the gate, be approved by its brain, and execute its action — or fail at any step without affecting the others.</text>
+</svg>
+
+<script>
+const tooltip = document.getElementById('tooltip');
+document.querySelectorAll('g[data-tt-title]').forEach(g => {
+  g.addEventListener('mouseenter', e => {
+    tooltip.innerHTML = `<div class="tt-title">${g.getAttribute('data-tt-title')}</div>${g.getAttribute('data-tt-body')}`;
+    tooltip.style.display = 'block';
+  });
+  g.addEventListener('mousemove', e => {
+    let x = e.clientX + 16, y = e.clientY + 16;
+    const r = tooltip.getBoundingClientRect();
+    if (x + r.width > window.innerWidth - 16) x = e.clientX - r.width - 16;
+    if (y + r.height > window.innerHeight - 16) y = e.clientY - r.height - 16;
+    tooltip.style.left = x + 'px'; tooltip.style.top = y + 'px';
+  });
+  g.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+});
+</script>
+</body>
+</html>

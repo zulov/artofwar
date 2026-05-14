@@ -5,6 +5,8 @@
 #include <vector>
 
 
+#include "AiHistoryEnums.h"
+
 class AiInputProvider;
 class Possession;
 
@@ -24,27 +26,28 @@ struct db_building;
 struct db_unit_level;
 struct db_unit;
 struct db_building_level;
+class AiHistory;
 class Brain;
 
 class ActionMaker {
 public:
-	explicit ActionMaker(Player* player, db_nation* nation);
+	explicit ActionMaker(Player* player, db_nation* nation, AiHistory* history);
 	ActionMaker(const ActionMaker& rhs) = delete;
 	void action();
 private:
-	bool createUnit(db_unit* unit, Building* building) const;
-	bool createUnit(db_unit* unit) const;
-	bool createWorker(db_unit* unit) const;
+	void createUnit(AiActionType actionType, db_unit* unit, Building* building);
+	void createUnit(AiActionType actionType, db_unit* unit);
+	void createWorker(AiActionType actionType, db_unit* unit);
 
 	bool enoughResources(const db_with_cost* withCosts, Player * player) const;
 
 	bool levelUpUnit();
 	bool levelUpBuilding();
-	bool createBuilding(db_building* building, ParentBuildingType type) const;
+	void createBuilding(AiActionType actionType, db_building* building, ParentBuildingType type);
 	std::vector<db_building*> getBuildingsInType(ParentBuildingType type);
-	bool createBuilding(std::span<const float> buildingsInput);
-	bool createUnit(std::span<const float> unitsInput);
-	bool createWorker() const;
+	void createBuilding(std::span<const float> buildingsInput);
+	void createUnit(std::span<const float> unitsInput);
+	void createWorker();
 
 	std::span<const float> getWhichBuilding(ParentBuildingType type, const std::span<const float> aiTypeInput) const;
 
@@ -74,6 +77,7 @@ private:
 	Possession* possession;
 	db_nation* nation;
 	AiInputProvider* aiInput;
+	AiHistory* history;
 
 	Brain* ifWorker;
 	Brain* whereWorker;

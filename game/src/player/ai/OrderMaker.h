@@ -20,9 +20,11 @@ class Unit;
 class Physical;
 class Brain;
 
+class AiHistory;
+
 class OrderMaker {
 public:
-	explicit OrderMaker(Player* player, db_nation* nation);
+	explicit OrderMaker(Player* player, db_nation* nation, AiHistory* history);
 	~OrderMaker();
 	OrderMaker(const OrderMaker& rhs) = delete;
 
@@ -44,6 +46,7 @@ private:
 	char playerId;
 	Possession* possession;
 	AiInputProvider* aiInput;
+	AiHistory* history;
 
 	Brain* whichResource;
 

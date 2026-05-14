@@ -18,7 +18,7 @@
 #include "objects/ObjectEnums.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "simulation/PerFrameAction.h"
+#include "simulation/FrameInfo.h"
 #include "utils/replace_utils.h"
 #include "window/debug/DebugPanel.h"
 #include "window/loading/LoadingPanel.h"
@@ -170,7 +170,7 @@ void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInf
 	debugPanel->setText(frameInfo->getSeconds(),
 	                    benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
 	                    cameraManager->getPosInfo());
-	if (PER_FRAME_ACTION.get(PerFrameAction::HUD_UPDATE, frameInfo)) {
+	if (frameInfo->shouldRun(PerFrameAction::HUD_UPDATE)) {
 		topPanel->update(Game::getPlayersMan()->getActivePlayer(), frameInfo);
 
 		scorePanel->update(Game::getPlayersMan()->getAllPlayers());
@@ -209,7 +209,7 @@ void Hud::updateStateVisibilty(GameState state) {
 void Hud::updateSelected(SelectedInfo* selectedInfo, FrameInfo* frameInfo) const {
 	if (selectedInfo->isSthSelected() || selectedInfo->hasChanged()) {
 		if (selectedInfo->hasChanged()
-			|| PER_FRAME_ACTION.get(PerFrameAction::QUEUE_HUD, frameInfo)) {
+			|| frameInfo->shouldRun(PerFrameAction::QUEUE_HUD)) {
 			selectedHudPanel->update(selectedInfo);
 			menuPanel->updateSelected(selectedInfo);
 			switch (selectedInfo->getSelectedType()) {
@@ -235,7 +235,7 @@ void Hud::updateSelected(SelectedInfo* selectedInfo, FrameInfo* frameInfo) const
 			queuePanel->update(selectedInfo);
 		}
 	} else {
-		if (PER_FRAME_ACTION.get(PerFrameAction::QUEUE_HUD, frameInfo)) {
+		if (frameInfo->shouldRun(PerFrameAction::QUEUE_HUD)) {
 			queuePanel->show(Game::getPlayersMan()->getActivePlayer()->getQueue());
 		}
 

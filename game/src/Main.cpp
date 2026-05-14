@@ -232,7 +232,7 @@ void Main::running(const float timeStep) {
 		frameInfo = simulation->update(timeStep);
 
 		if (!SIM_GLOBALS.HEADLESS) {
-			Game::addTime(timeStep);
+			Game::getFrameInfo()->addWallTime(timeStep);
 			benchmark.add(1.0f / timeStep);
 			debugManager.draw();
 			SelectedInfo* selectedInfo = control(timeStep, frameInfo);

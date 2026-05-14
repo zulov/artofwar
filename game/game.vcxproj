@@ -295,6 +295,7 @@
     <ClCompile Include="src\player\ai\OrderMaker.cpp" />
     <ClCompile Include="src\commands\action\GeneralActionCommand.cpp" />
     <ClCompile Include="src\math\RandGen.cpp" />
+    <ClCompile Include="src\player\ai\AiHistory.cpp" />
     <ClCompile Include="src\player\ai\ActionMaker.cpp" />
     <ClCompile Include="src\env\CloseIndexes.cpp" />
     <ClCompile Include="src\commands\action\ResourceActionCommand.cpp" />
@@ -429,7 +430,6 @@
     <ClInclude Include="src\env\bucket\levels\LevelCache.h" />
     <ClInclude Include="src\hud\window\EventPanel.h" />
     <ClInclude Include="src\env\influence\CenterType.h" />
-    <ClInclude Include="src\simulation\PerFrameAction.h" />
     <ClInclude Include="src\simulation\SimGlobals.h" />
     <ClInclude Include="src\stats\AiInputProvider.h" />
     <ClInclude Include="src\objects\Metrics.h" />
@@ -446,6 +446,8 @@
     <ClInclude Include="src\math\RandType.h" />
     <ClInclude Include="src\objects\unit\order\OrderUtils.h" />
     <ClInclude Include="src\player\ai\ActionMaker.h" />
+    <ClInclude Include="src\player\ai\AiHistory.h" />
+    <ClInclude Include="src\player\ai\AiHistoryEnums.h" />
     <ClInclude Include="src\player\ai\ActionMakerLogger.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
     <ClInclude Include="src\env\CloseIndexes.h" />

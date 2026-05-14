@@ -1,3 +1,12 @@
-Generate debugging information	
-	You should always set this option to Yes (/DEBUG) to create debugging symbols and files needed for debugging. When the application goes into production, you can set it to off.
-whole program optimization
+2. Replace the multi-network architecture with a hierarchical policy network
+Instead of 18 separate NNs with manually-designed decision trees connecting them:
+- Train a single hierarchical model with shared feature extraction and multiple output heads.
+- Use attention mechanisms to let the model focus on relevant parts of the game state.
+- This reduces the brittleness of manually routing between networks and allows cross-decision learning.
+
+
+
+Your custom Brain/Layer implementation is functional but fragile. Consider:
+- ONNX Runtime (C++) — export trained models from PyTorch/TensorFlow and run inference with a battle-tested runtime. Handles validation, thread safety, GPU acceleration.
+- LibTorch (PyTorch C++ API) — if you want tighter integration and GPU support.
+- This eliminates the CSV parsing bugs, dimension mismatches, and the fragile caching logic.

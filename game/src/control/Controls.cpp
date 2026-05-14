@@ -411,7 +411,7 @@ void Controls::updateSelection() const {
 		const float xScale = left.held.first.x_ - hitData.position.x_;
 		const float zScale = left.held.first.z_ - hitData.position.z_;
 		if ((xScale * xScale > clickDistance || zScale * zScale > clickDistance)
-			&& Game::getTime() - left.lastDown > 0.3f) {
+			&& Game::getFrameInfo()->getWallTime() - left.lastDown > 0.3f) {
 			Game::getEnvironment()->setTerrainShaderParam("SelectionEnable", true);
 
 			auto [minX, maxX] = std::minmax(left.held.first.x_, hitData.position.x_);
@@ -431,7 +431,7 @@ void Controls::updateArrow() const {
 
 		const float length = dir.Length();
 
-		if (length * length > clickDistance && Game::getTime() - right.lastDown > 0.3f) {
+		if (length * length > clickDistance && Game::getFrameInfo()->getWallTime() - right.lastDown > 0.3f) {
 			if (!arrowNode->IsEnabled()) { arrowNode->SetEnabled(true); }
 			arrowNode->SetScale({length, 1, length / 3});
 			arrowNode->SetDirection({-dir.z_, 0, dir.x_});

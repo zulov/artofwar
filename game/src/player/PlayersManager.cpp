@@ -3,7 +3,7 @@
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "scene/load/dbload_container.h"
 #include "scene/save/SceneSaver.h"
-#include "simulation/PerFrameAction.h"
+#include "simulation/FrameInfo.h"
 
 
 PlayersManager::~PlayersManager() {
@@ -63,15 +63,15 @@ void PlayersManager::changeActive(short i) {
 void PlayersManager::update(FrameInfo* frameInfo) {
 	for (const auto player : allPlayers) {
 		player->updatePossession();
-		if (PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_GATHER_SPEED, frameInfo)) {
+		if (frameInfo->shouldRun(PerFrameAction::RESOURCE_GATHER_SPEED)) {
 			player->updateResource1s();
 		}
 
-		if (PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_MONTH_UPDATE, frameInfo)) {
+		if (frameInfo->shouldRun(PerFrameAction::RESOURCE_MONTH_UPDATE)) {
 			player->updateResourceMonth();
 		}
 
-		if (PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_YEAR_UPDATE, frameInfo)) {
+		if (frameInfo->shouldRun(PerFrameAction::RESOURCE_YEAR_UPDATE)) {
 			player->updateResourceYear();
 		}
 
@@ -96,5 +96,5 @@ Player* PlayersManager::getEnemyFor(char player) const {
 }
 
 std::vector<Player*>& PlayersManager::getAllPlayers() {
-	return allPlayers; //TODO bug id playera a jego index to czêsto nie to samo
+	return allPlayers; //TODO bug id playera a jego index to czï¿½sto nie to samo
 }

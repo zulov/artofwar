@@ -22,7 +22,7 @@
 #include "scene/load/dbload_container.h"
 #include "scene/load/SceneLoader.h"
 #include "simulation/formation/FormationManager.h"
-#include "PerFrameAction.h"
+#include "FrameInfo.h"
 #include "database/DatabaseCache.h"
 #include "objects/projectile/ProjectileManager.h"
 #include "objects/unit/order/OrderUtils.h"
@@ -34,13 +34,11 @@ Simulation::Simulation(Environment* environment): env(environment),colorScheme(S
 	units = simObjectManager->getUnits();
 	buildings = simObjectManager->getBuildings();
 	resources = simObjectManager->getResources();
-	frameInfo = new FrameInfo();
 	DebugLineRepo::init(DebugLineType::UNIT_LINES);
 }
 
 Simulation::~Simulation() {
 	delete simObjectManager;
-	delete frameInfo;
 	delete Game::getActionCenter();
 	Game::setActionCenter(nullptr);
 }
@@ -50,37 +48,34 @@ void Simulation::clearNodesWithoutDelete() const {
 }
 
 void Simulation::updateInfluenceMaps(bool force) const {
-	if (canUpdate(PerFrameAction::INFLUENCE_UNITS_1, force)) {
+	const auto* frameInfo = Game::getFrameInfo();
+	if (frameInfo->canUpdate(PerFrameAction::INFLUENCE_UNITS_1, force)) {
 		env->updateInfluenceUnits1(units);
 	}
-	if (canUpdate(PerFrameAction::INFLUENCE_UNITS_2, force)) {
+	if (frameInfo->canUpdate(PerFrameAction::INFLUENCE_UNITS_2, force)) {
 		env->updateInfluenceUnits2(units);
 	}
-	if (canUpdate(PerFrameAction::INFLUENCE_OTHER, force)) {
+	if (frameInfo->canUpdate(PerFrameAction::INFLUENCE_OTHER, force)) {
 		env->updateInfluenceOther(buildings, units);
 	}
-	if (canUpdate(PerFrameAction::INFLUENCE_HISTORY_RESET, force)) {
+	if (frameInfo->canUpdate(PerFrameAction::INFLUENCE_HISTORY_RESET, force)) {
 		env->updateInfluenceHistoryReset();
 	}
-	if (canUpdate(PerFrameAction::INFLUENCE_QUAD_OTHER, force)) {
+	if (frameInfo->canUpdate(PerFrameAction::INFLUENCE_QUAD_OTHER, force)) {
 		env->updateQuadOther();
 	}
-	if (canUpdate(PerFrameAction::VISIBILITY, force)) {
+	if (frameInfo->canUpdate(PerFrameAction::VISIBILITY, force)) {
 		env->updateVisibility(buildings, units, resources);
 	}
 }
 
-bool Simulation::canUpdate(PerFrameAction type, bool force) const {
-	return force || PER_FRAME_ACTION.get(type, currentFrame, secondsElapsed);
-}
-
 FrameInfo* Simulation::update(float timeStep) {
-	accumulateTime += updateTime(timeStep);
+	auto* frameInfo = Game::getFrameInfo();
+	frameInfo->accumulate(timeStep);
 	frameInfo->resetRealFrame();
 
-	while (accumulateTime >= TIME_PER_UPDATE) {
+	while (frameInfo->getAccumulateTime() >= TIME_PER_UPDATE) {
 		//TODO bug a co jesli kilka razy sie wykona, moga byc bledy np w control
-		frameInfo->set(currentFrame, secondsElapsed);
 
 		Game::getActionCenter()->createAndUpgrade();
 
@@ -105,16 +100,14 @@ FrameInfo* Simulation::update(float timeStep) {
 		Game::getPlayersMan()->update(frameInfo);
 		Game::getFormationManager()->update();
 
-		accumulateTime -= TIME_PER_UPDATE;
-
-		countFrame();
+		frameInfo->countFrame();
 	}
 
 	return frameInfo;
 }
 
 void Simulation::objectAI() const {
-	const bool ifSelfAction = PER_FRAME_ACTION.get(PerFrameAction::SELF_AI, currentFrame);
+	const bool ifSelfAction = Game::getFrameInfo()->shouldRun(PerFrameAction::SELF_AI);
 	if (ifSelfAction) {
 		for (const auto unit : *units) {
 			if (isFree(unit)) {
@@ -194,21 +187,6 @@ void Simulation::loadEntities(NewGameForm* form) const {
 	for (const auto& player : form->players) {
 		auto fejkPost = Urho3D::Vector2(); //TODO trzeba inne
 		simObjectManager->addUnits(10, 1, fejkPost, player.id, 0);
-	}
-}
-
-float Simulation::updateTime(float timeStep) const {
-	if (SIM_GLOBALS.BENCHMARK_MODE) {
-		return TIME_PER_UPDATE;
-	}
-	return timeStep;
-}
-
-void Simulation::countFrame() {
-	++currentFrame;
-	if (currentFrame >= FRAMES_IN_PERIOD) {
-		currentFrame = 0;
-		++secondsElapsed;
 	}
 }
 
@@ -311,12 +289,13 @@ void Simulation::initScene(NewGameForm* form) const {
 
 void Simulation::aiPlayers() const {
 	if (SIM_GLOBALS.NO_PLAYER_AI) { return; }
+	const auto* frameInfo = Game::getFrameInfo();
 	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
 		if (SIM_GLOBALS.ALL_PLAYER_AI || Game::getPlayersMan()->getActivePlayer() != player) {
-			if(PER_FRAME_ACTION.get(PerFrameAction::AI_ACTION, currentFrame)){
+			if(frameInfo->shouldRun(PerFrameAction::AI_ACTION)){
 				player->aiAction();
 			}
-			if(PER_FRAME_ACTION.get(PerFrameAction::AI_ORDER, currentFrame)){
+			if(frameInfo->shouldRun(PerFrameAction::AI_ORDER)){
 				player->aiOrder();
 			}
 		}

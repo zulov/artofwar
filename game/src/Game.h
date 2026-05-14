@@ -1,5 +1,6 @@
 #pragma once
 #include <Urho3D/Scene/Scene.h>
+#include "simulation/FrameInfo.h"
 
 namespace Urho3D {
 	class Console;
@@ -43,7 +44,6 @@ public:
 	static Game* setLog(Urho3D::Log* _log);
 	static Game* setAiInputProvider(AiInputProvider* _aiInputProvider);
 	static Game* setActionCenter(ActionCenter* _actionCenter);
-	static void addTime(float time);
 
 	static Urho3D::Localization* getLocalization() { return instance->localization; }
 	static Urho3D::Scene* getScene() { return instance->scene; }
@@ -62,8 +62,7 @@ public:
 	static Environment* getEnvironment() { return instance->environment; }
 	static AiInputProvider* getAiInputProvider() { return instance->aiInputProvider; }
 	static ActionCenter* getActionCenter() { return instance->actionCenter; }
-
-	static float getTime() { return instance->accumTime; }
+	static FrameInfo* getFrameInfo() { return &instance->frameInfo; }
 
 private:
 	Game();
@@ -88,5 +87,5 @@ private:
 	AiInputProvider* aiInputProvider;
 	ActionCenter* actionCenter;
 
-	float accumTime = 0;
+	FrameInfo frameInfo;
 };

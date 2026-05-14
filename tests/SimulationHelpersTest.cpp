@@ -9,7 +9,6 @@
 #include "Progress.h"
 #include "env/path/PathCache.h"
 #include "simulation/FrameInfo.h"
-#include "simulation/PerFrameAction.h"
 
 class SimulationHelpersFixture : public ::testing::Test {};
 
@@ -52,19 +51,19 @@ TEST_F(SimulationHelpersFixture, FrameInfoTimeSplitsIntoHoursMinutesAndSeconds) 
 }
 
 TEST_F(SimulationHelpersFixture, PerFrameActionQueueHudTriggersEveryTwoSecondsOnFirstFrame) {
-	EXPECT_FALSE(PER_FRAME_ACTION.get(PerFrameAction::QUEUE_HUD, 0, 0));
-	EXPECT_TRUE(PER_FRAME_ACTION.get(PerFrameAction::QUEUE_HUD, 0, 1));
-	EXPECT_FALSE(PER_FRAME_ACTION.get(PerFrameAction::QUEUE_HUD, 1, 1));
+	EXPECT_FALSE(FrameInfo::get(PerFrameAction::QUEUE_HUD, 0, 0));
+	EXPECT_TRUE(FrameInfo::get(PerFrameAction::QUEUE_HUD, 0, 1));
+	EXPECT_FALSE(FrameInfo::get(PerFrameAction::QUEUE_HUD, 1, 1));
 }
 
 TEST_F(SimulationHelpersFixture, PerFrameActionMonthlyAndYearlyUpdatesUseLastFrame) {
-	EXPECT_FALSE(PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_MONTH_UPDATE, 29, 3));
-	EXPECT_TRUE(PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_MONTH_UPDATE, 29, 4));
-	EXPECT_FALSE(PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_MONTH_UPDATE, 28, 4));
+	EXPECT_FALSE(FrameInfo::get(PerFrameAction::RESOURCE_MONTH_UPDATE, 29, 3));
+	EXPECT_TRUE(FrameInfo::get(PerFrameAction::RESOURCE_MONTH_UPDATE, 29, 4));
+	EXPECT_FALSE(FrameInfo::get(PerFrameAction::RESOURCE_MONTH_UPDATE, 28, 4));
 
-	EXPECT_FALSE(PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_YEAR_UPDATE, 29, 58));
-	EXPECT_TRUE(PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_YEAR_UPDATE, 29, 59));
-	EXPECT_FALSE(PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_YEAR_UPDATE, 28, 59));
+	EXPECT_FALSE(FrameInfo::get(PerFrameAction::RESOURCE_YEAR_UPDATE, 29, 58));
+	EXPECT_TRUE(FrameInfo::get(PerFrameAction::RESOURCE_YEAR_UPDATE, 29, 59));
+	EXPECT_FALSE(FrameInfo::get(PerFrameAction::RESOURCE_YEAR_UPDATE, 28, 59));
 }
 
 TEST_F(SimulationHelpersFixture, PerFrameActionFrameInfoOverloadMatchesDirectLookup) {
@@ -72,20 +71,20 @@ TEST_F(SimulationHelpersFixture, PerFrameActionFrameInfoOverloadMatchesDirectLoo
 	info.set(29, 59);
 
 	EXPECT_EQ(
-		PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_YEAR_UPDATE, &info),
-		PER_FRAME_ACTION.get(PerFrameAction::RESOURCE_YEAR_UPDATE, 29, 59)
+		info.shouldRun(PerFrameAction::RESOURCE_YEAR_UPDATE),
+		FrameInfo::get(PerFrameAction::RESOURCE_YEAR_UPDATE, 29, 59)
 	);
 }
 
 TEST_F(SimulationHelpersFixture, PerFrameActionSpecificFramesMatchConfiguredSchedules) {
-	EXPECT_TRUE(PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_UNITS_1, 0, 1));
-	EXPECT_FALSE(PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_UNITS_1, 1, 1));
-	EXPECT_TRUE(PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_UNITS_2, 1, 1));
-	EXPECT_TRUE(PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_HISTORY_RESET, 3, 29));
-	EXPECT_TRUE(PER_FRAME_ACTION.get(PerFrameAction::VISIBILITY, 6, 0));
-	EXPECT_TRUE(PER_FRAME_ACTION.get(PerFrameAction::AI_ORDER, 14, 0));
-	EXPECT_TRUE(PER_FRAME_ACTION.get(PerFrameAction::SELF_AI, 11, 0));
-	EXPECT_TRUE(PER_FRAME_ACTION.get(PerFrameAction::SELF_AI, 29, 0));
+	EXPECT_TRUE(FrameInfo::get(PerFrameAction::INFLUENCE_UNITS_1, 0, 1));
+	EXPECT_FALSE(FrameInfo::get(PerFrameAction::INFLUENCE_UNITS_1, 1, 1));
+	EXPECT_TRUE(FrameInfo::get(PerFrameAction::INFLUENCE_UNITS_2, 1, 1));
+	EXPECT_TRUE(FrameInfo::get(PerFrameAction::INFLUENCE_HISTORY_RESET, 3, 29));
+	EXPECT_TRUE(FrameInfo::get(PerFrameAction::VISIBILITY, 6, 0));
+	EXPECT_TRUE(FrameInfo::get(PerFrameAction::AI_ORDER, 14, 0));
+	EXPECT_TRUE(FrameInfo::get(PerFrameAction::SELF_AI, 11, 0));
+	EXPECT_TRUE(FrameInfo::get(PerFrameAction::SELF_AI, 29, 0));
 }
 
 TEST_F(SimulationHelpersFixture, PathCacheSetCopiesPathAndMatchesEndpoints) {
