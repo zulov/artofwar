@@ -6,6 +6,7 @@
 #include "database/DatabaseCache.h"
 #include "utils/SpanUtils.h"
 #include "math/VectorUtils.h"
+#include "objects/building/Building.h"
 
 
 Resources::Resources() {

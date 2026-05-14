@@ -4,6 +4,8 @@
 #include <vector>
 #include <valarray>
 #include <Urho3D/Math/Vector2.h>
+#include <objects/resource/ResourceType.h>
+
 #include "objects/building/ParentBuildingType.h"
 #include "objects/unit/state/UnitState.h"
 #include "db_basic_struct.h"
@@ -15,6 +17,7 @@
 #include "utils/StringUtils.h"
 #include "db_utils.h"
 
+struct db_building;
 constexpr char UNITS_SUM_X = 100;
 constexpr char BUILDINGS_SUM_X = 10;
 

@@ -3,6 +3,7 @@
 #include "database/db_struct.h"
 #include "unit/Unit.h"
 #include "unit/state/StateManager.h"
+#include "env/Environment.h"
 
 inline bool alwaysFalse(Physical* physical) {
 	return false;

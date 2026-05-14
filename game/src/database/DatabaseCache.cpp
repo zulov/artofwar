@@ -1,6 +1,7 @@
 #include "DatabaseCache.h"
 
 #include "db_grah_structs.h"
+#include "db_other_struct.h"
 #include "db_update_utils.h"
 #include "db_utils.h"
 
