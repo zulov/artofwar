@@ -36,6 +36,9 @@ public:
 	std::vector<const OrderHistoryEntry*> getOrdersInLastTicks(unsigned int ticks,
 		std::optional<AiOrderType> typeFilter = std::nullopt) const;
 
+	float recencyScore(AiActionType type, unsigned int lookbackTicks) const;
+	float recencyScore(AiOrderType type, unsigned int lookbackTicks) const;
+
 private:
 	std::array<ActionHistoryEntry, MAX_ENTRIES> actions{};
 	std::array<OrderHistoryEntry, MAX_ENTRIES> orders{};

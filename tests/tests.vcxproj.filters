@@ -8,6 +8,8 @@
     <ClCompile Include="UidTest.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PathFinderTest.cpp" />
+    <ClCompile Include="AiHistoryTest.cpp" />
+    <ClCompile Include="MetricComposeTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

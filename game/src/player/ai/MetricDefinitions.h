@@ -88,102 +88,94 @@ auto buildMetricArray(std::pair<Enum, Metric>(&&entries)[N]) {
 	return result;
 }
 
+template <typename MetricArray, typename T, typename L>
+auto section(const MetricArray& metrics, T* one, L* two) {
+	struct S {
+		const MetricArray& metrics; T* one; L* two;
+		int write(float* out) const {
+			int i = 0;
+			for (auto const& v : metrics) { out[i++] = v.fn(one, two) * v.weight; }
+			return i;
+		}
+	};
+	return S{metrics, one, two};
+}
+
+inline auto section(std::span<const float> span) {
+	struct S {
+		std::span<const float> span;
+		int write(float* out) const {
+			int i = 0;
+			for (auto const& v : span) { out[i++] = v; }
+			return i;
+		}
+	};
+	return S{span};
+}
+
+inline auto section(std::span<const float> span, std::span<const unsigned char> indices) {
+	struct S {
+		std::span<const float> span; std::span<const unsigned char> indices;
+		int write(float* out) const {
+			int i = 0;
+			for (auto j : indices) { out[i++] = span[j]; }
+			return i;
+		}
+	};
+	return S{span, indices};
+}
+
 inline struct MetricDefinitions {
-	template <typename T, typename L, typename MetricArray>
-	std::span<float> writeMetrics(T* one, L* two, const MetricArray& metrics) const {
-		char size = std::size(metrics);
-		assert(METRIC_OUTPUT_MAX_SIZE > size);
-		int i = 0;
-		for (auto const& v : metrics) {
-			output[i++] = v.fn(one, two) * v.weight;
-		}
-		auto result = std::span(output.begin(), output.begin() + size);
-		assert(i == size);
-		assert(validateSpan(__LINE__, __FILE__, result));
-		return result;
-	}
 
-	template <typename T, typename L, typename P, typename K, typename MetricArray>
-	std::span<float> basicWithMetrics(T* one, L* two, P* three, K* four, const MetricArray& metrics) const {
-		char size1 = std::size(metrics);
-		char size = size1 + std::size(aiBasicMetric);
-		assert(METRIC_OUTPUT_MAX_SIZE > size);
+	template <typename... Sections>
+	std::span<float> compose(Sections&&... sections) const {
 		int i = 0;
-		for (auto const& v : aiBasicMetric) {
-			output[i++] = v.fn(one, two) * v.weight;
-		}
-		for (auto const& v : metrics) {
-			output[i++] = v.fn(three, four) * v.weight;
-		}
-		auto result = std::span(output.begin(), output.begin() + size);
-		assert(i == size);
-		assert(validateSpan(__LINE__, __FILE__, result));
-		return result;
-	}
-
-	template <typename T, typename L>
-	std::span<float> basicWithSpan(T* one, L* two, const std::span<const float> second) const {
-		char size1 = std::size(second);
-		char size = size1 + std::size(aiBasicMetric);
-		assert(METRIC_OUTPUT_MAX_SIZE > size);
-		int i = 0;
-		for (auto const& v : aiBasicMetric) {
-			output[i++] = v.fn(one, two) * v.weight;
-		}
-		for (auto const& v : second) {
-			output[i++] = v;
-		}
-		auto result = std::span(output.begin(), output.begin() + size);
-		assert(i == size);
-		assert(validateSpan(__LINE__, __FILE__, result));
-		return result;
-	}
-
-	template <typename T, typename L>
-	std::span<float> basicWithSpanSelective(T* one, L* two, const std::span<const float> second, const std::span<const unsigned char> indxes) const {
-		char size1 = std::size(indxes);
-		char size = size1 + std::size(aiBasicMetric);
-		assert(METRIC_OUTPUT_MAX_SIZE > size);
-		int i = 0;
-		for (auto const& v : aiBasicMetric) {
-			output[i++] = v.fn(one, two) * v.weight;
-		}
-		for (auto j : indxes) {
-			output[i++] = second[j];
-		}
-		auto result = std::span(output.begin(), output.begin() + size);
-		assert(i == size);
+		((i += sections.write(output.data() + i)), ...);
+		assert(METRIC_OUTPUT_MAX_SIZE > i);
+		auto result = std::span(output.begin(), output.begin() + i);
 		assert(validateSpan(__LINE__, __FILE__, result));
 		return result;
 	}
 
 	const std::span<const float> writeUnit(db_unit* unit, db_unit_level* level) const {
-		return writeMetrics(unit, level, aiUnitMetric);
+		return compose(section(aiUnitMetric, unit, level));
 	}
 
 	const std::span<const float> writeBuilding(db_building* building, db_building_level* level) const {
-		return writeMetrics(building, level, aiBuildingMetric);
+		return compose(section(aiBuildingMetric, building, level));
 	}
 
 	const std::span<float> writeResource(Player* one, Player* two) const {
-		return basicWithMetrics(one, two, one->getResources(), one->getPossession(), aiResourceMetric);
+		return compose(
+			section(aiBasicMetric, one, two),
+			section(aiResourceMetric, one->getResources(), one->getPossession())
+		);
 	}
 
 	const std::span<float> writeResourceWithOutBonus(Player* player, Player* enemy) const {
-		return basicWithMetrics(player, enemy, player->getResources(), player->getPossession(), aiResourceWithoutBonusMetric);
+		return compose(
+			section(aiBasicMetric, player, enemy),
+			section(aiResourceWithoutBonusMetric, player->getResources(), player->getPossession())
+		);
 	}
 
 	//TODO te 3 sie troszke dubluj¹ ogran¹æ indeksami? ale z drugiej srony chce sie ich pozbyc
 	const std::span<float> writeAttackOrDefence(Player* one, Player* two) const {
-		return writeMetrics(one, two, aiAttackOrDefence);
+		return compose(section(aiAttackOrDefence, one, two));
 	}
 
 	const std::span<float> writeWhereAttack(Player* one, Player* two) const {
-		return basicWithMetrics(one, two, one, two, aiWhereAttack);
+		return compose(
+			section(aiBasicMetric, one, two),
+			section(aiWhereAttack, one, two)
+		);
 	}
 
 	const std::span<float> writeWhereDefend(Player* one, Player* two) const {
-		return basicWithMetrics(one, two, one, two, aiWhereDefend);
+		return compose(
+			section(aiBasicMetric, one, two),
+			section(aiWhereDefend, one, two)
+		);
 	}
 
 	static float diffOfCenters(CenterType type1, Player* p1, CenterType type2, Player* p2, float defaultVal) {

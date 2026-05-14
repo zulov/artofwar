@@ -48,7 +48,9 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AiHistoryTest.cpp" />
     <ClCompile Include="ArrayProviderUtilsTest.cpp" />
+    <ClCompile Include="MetricComposeTest.cpp" />
     <ClCompile Include="CloseIndexTest.cpp" />
     <ClCompile Include="ComplexBucketDataTest.cpp" />
     <ClCompile Include="DeleteUtilsTest.cpp" />

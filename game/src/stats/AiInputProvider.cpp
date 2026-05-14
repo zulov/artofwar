@@ -62,10 +62,15 @@ std::span<const float> AiInputProvider::getBuildingsTypeInput(Player* player, Pa
 }
 
 std::span<const float> AiInputProvider::basicWithSpan(Player* player, std::span<const float> span) {
-	return METRIC_DEFINITIONS.basicWithSpan(player, Game::getPlayersMan()->getEnemyFor(player->getId()), span);
+	return METRIC_DEFINITIONS.compose(
+		section(METRIC_DEFINITIONS.aiBasicMetric, player, Game::getPlayersMan()->getEnemyFor(player->getId())),
+		section(span)
+	);
 }
 
 std::span<const float> AiInputProvider::basicWithSpanSelective(Player* player, Player* enemy, std::span<const unsigned char> idxs) {
-	return METRIC_DEFINITIONS.basicWithSpanSelective(player, enemy, player->getPossession()->getMetrics()->buildingsSum,
-	                                                 idxs);
+	return METRIC_DEFINITIONS.compose(
+		section(METRIC_DEFINITIONS.aiBasicMetric, player, enemy),
+		section(player->getPossession()->getMetrics()->buildingsSum, idxs)
+	);
 }
