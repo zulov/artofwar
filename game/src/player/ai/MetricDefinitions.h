@@ -137,13 +137,8 @@ inline struct MetricDefinitions {
 		return result;
 	}
 
-	std::span<const float> writeUnit(db_unit* unit, db_unit_level* level) const {
-		return compose(section(aiUnitMetric, unit, level));
-	}
-
-	std::span<const float> writeBuilding(db_building* building, db_building_level* level) const {
-		return compose(section(aiBuildingMetric, building, level));
-	}
+	std::span<const float> writeUnit(db_unit* unit, db_unit_level* level) const;
+	std::span<const float> writeBuilding(db_building* building, db_building_level* level) const;
 
 	const std::span<float> writeResource(Player* one, Player* two) const {
 		return compose(
