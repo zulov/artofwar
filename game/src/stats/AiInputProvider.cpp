@@ -3,49 +3,48 @@
 #include "Game.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "player/ai/AiUtils.h"
 #include "objects/building/ParentBuildingType.h"
 #include "player/Possession.h"
 #include "player/ai/MetricDefinitions.h"
 #include "player/ai/PossessionMetric.h"
 
 
-std::span<const float> AiInputProvider::getResourceInput(Player* player, Player* enemy) {
+std::span<const float> AiInputProvider::forResource(Player* player, Player* enemy) {
 	return METRIC_DEFINITIONS.writeResource(player, enemy);
 }
 
-std::span<const float> AiInputProvider::getUnitsInput(Player* player) {
+std::span<const float> AiInputProvider::forUnits(Player* player) {
 	return basicWithSpan(player, player->getPossession()->getMetrics()->unitsSum);
 }
 
-std::span<const float> AiInputProvider::getBuildingsInput(Player* player) {
+std::span<const float> AiInputProvider::forBuildings(Player* player) {
 	return basicWithSpan(player, player->getPossession()->getMetrics()->buildingsSum);
 }
 
-std::span<const float> AiInputProvider::getUnitsInputWithMetric(Player* player, const db_unit_metric* prop) {
+std::span<const float> AiInputProvider::forUnitPlacement(Player* player, const db_unit_metric* prop) {
 	return basicWithSpan(player, prop->getTypesVal());
 }
 
-std::span<const float> AiInputProvider::getBuildingsInputWithMetric(Player* player, const db_building_metric* prop,
+std::span<const float> AiInputProvider::forBuildingPlacement(Player* player, const db_building_metric* prop,
                                                                     ParentBuildingType type) {
 	return basicWithSpan(player, type == ParentBuildingType::RESOURCE
 		                             ? prop->getValuesNormAsValForType(type)
 		                             : prop->getTypesVal());
 }
 
-std::span<const float> AiInputProvider::getAttackOrDefenceInput(Player* player, Player* enemy) {
+std::span<const float> AiInputProvider::forAttackOrDefence(Player* player, Player* enemy) {
 	return METRIC_DEFINITIONS.writeAttackOrDefence(player, enemy);
 }
 
-std::span<const float> AiInputProvider::getWhereAttack(Player* player, Player* enemy) {
+std::span<const float> AiInputProvider::forWhereAttack(Player* player, Player* enemy) {
 	return METRIC_DEFINITIONS.writeWhereAttack(player, enemy);
 }
 
-std::span<const float> AiInputProvider::getWhereDefend(Player* player, Player* enemy) {
+std::span<const float> AiInputProvider::forWhereDefend(Player* player, Player* enemy) {
 	return METRIC_DEFINITIONS.writeWhereDefend(player, enemy);
 }
 
-std::span<const float> AiInputProvider::getBuildingsTypeInput(Player* player, ParentBuildingType type) {
+std::span<const float> AiInputProvider::forBuildingType(Player* player, ParentBuildingType type) {
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(player->getId());
 	switch (type) {
 	case ParentBuildingType::RESOURCE:

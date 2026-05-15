@@ -2,10 +2,10 @@
 
 #include "ActionCenter.h"
 #include "AiHistory.h"
-#include "AiUtils.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
 #include "math/MathUtils.h"
+#include "math/VectorUtils.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/IndividualOrder.h"
@@ -72,17 +72,17 @@ std::vector<Physical*>* OrderMaker::getThingsToAttack(const CenterType centerTyp
 
 void OrderMaker::armyAction() {
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
-	auto const resultAoD = attackOrDefence->decide(aiInput->getAttackOrDefenceInput(player, enemy));
-	std::span<const float> whereGo;
+	auto const resultAoD = attackOrDefence->decide(aiInput->forAttackOrDefence(player, enemy));
+	DecideResult whereGo{std::span<const float>{}};
 	char playerToGo = playerId;
-	bool isAttack = randFromTwo(resultAoD[0]);
+	bool isAttack = resultAoD.doIf();
 	if (isAttack) {
 		playerToGo = enemy->getId();
-		whereGo = whereAttack->decide(aiInput->getWhereAttack(player, enemy));
+		whereGo = whereAttack->decide(aiInput->forWhereAttack(player, enemy));
 	} else {
-		whereGo = whereDefence->decide(aiInput->getWhereDefend(player, enemy));
+		whereGo = whereDefence->decide(aiInput->forWhereDefend(player, enemy));
 	}
-	const CenterType centerType = static_cast<CenterType>(biggestWithRand(whereGo));
+	const CenterType centerType = static_cast<CenterType>(whereGo.best());
 
 	auto orderType = AiOrderType::NONE;
 	if (isAttack) {
@@ -187,9 +187,9 @@ std::vector<Unit*> OrderMaker::getSubGroup(std::vector<std::vector<Unit*>>& grou
 void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
 
-	const auto result = whichResource->decide(aiInput->getResourceInput(player, enemy));
+	const auto result = whichResource->decide(aiInput->forResource(player, enemy));
 	if (freeWorkers.size() == 1) {
-		const auto resourceId = biggestWithRand(result);
+		const auto resourceId = result.best();
 		const auto worker = freeWorkers.at(0);
 		const auto closest = closestInRange(worker, resourceId);
 		const auto orderType = static_cast<AiOrderType>(static_cast<uint8_t>(AiOrderType::COLLECT_RESOURCE_0) + resourceId);
@@ -205,7 +205,7 @@ void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 	std::fill_n(resHistogram, RESOURCES_SIZE, 0);
 
 	for (int i = 0; i < freeWorkers.size(); ++i) {
-		const auto resourceId = biggestWithRand(result); //TODO perf tutaj tylko losowac
+		const auto resourceId = result.best(); //TODO perf tutaj tylko losowac
 		++resHistogram[resourceId];
 	}
 	int all = freeWorkers.size();

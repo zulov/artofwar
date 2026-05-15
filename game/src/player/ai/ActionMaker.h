@@ -7,6 +7,8 @@
 
 #include "AiHistoryEnums.h"
 
+struct DecideResult;
+
 class AiInputProvider;
 class Possession;
 
@@ -49,23 +51,22 @@ private:
 	void createUnit(std::span<const float> unitsInput);
 	void createWorker();
 
-	std::span<const float> getWhichBuilding(ParentBuildingType type, const std::span<const float> aiTypeInput) const;
-
 	std::optional<Urho3D::Vector2> findPosToBuild(db_building* building, ParentBuildingType type) const;
 	std::vector<Building*> getBuildingsCanDeploy(short unitId) const;
 
 	float dist(std::valarray<float>& center, const db_basic_metric* metric);
 	float dist(std::valarray<float>& center, const db_building_metric* metric, ParentBuildingType type);
 
-	db_building* chooseBuilding(std::span<const float> result, ParentBuildingType type);
+	db_building* chooseBuilding(ParentBuildingType type);
+	Brain* getBrainForBuildingType(ParentBuildingType type) const;
 	db_building_level* chooseBuildingLevelUp();
-	db_unit* chooseUnit(std::span<const float> result);
+	db_unit* chooseUnit(const DecideResult& result);
 	db_unit_level* chooseUnitLevelUp();
 
 	Building* getBuildingToDeploy(db_unit* unit) const;
 	Building* getBuildingToDeployWorker(db_unit* unit) const;
 	Building* getBuildingToLevelUpUnit(db_unit_level* level);
-	Building* getBuildingClosestArea(std::vector<Building*>& allPossible, std::span<const float> result) const;
+	Building* getBuildingClosestArea(std::vector<Building*>& allPossible, const DecideResult& result) const;
 
 	bool isEnoughResToWorker() const;
 	bool isEnoughResToAnyUnit() const;
