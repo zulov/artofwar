@@ -47,6 +47,23 @@ enum class ResourceNoBonusMetricIdx : unsigned char {
 	VALUE_FOOD, VALUE_WOOD, VALUE_STONE, VALUE_GOLD,
 };
 
+enum class ResourceEconomyMetricIdx : unsigned char {
+	// Per-resource gather speeds & values (8)
+	GATHER_SPEED_FOOD, GATHER_SPEED_WOOD, GATHER_SPEED_STONE, GATHER_SPEED_GOLD,
+	VALUE_FOOD, VALUE_WOOD, VALUE_STONE, VALUE_GOLD,
+	// Workers (2)
+	FREE_WORKERS, TOTAL_WORKERS,
+	// Storage signals (4)
+	FOOD_STORAGE, FOOD_EXCESS, FOOD_STORAGE_RATIO, GOLD_STORAGE_RATIO,
+	// Refine signals (4)
+	STONE_REFINE_GAP, GOLD_REFINE_GAP, STONE_REFINE_UTIL, GOLD_REFINE_UTIL,
+	// Building counts (7)
+	BONUS_BUILDING_COUNT, SPAWNER_COUNT, CONVERT_BUILDING_COUNT,
+	STORAGE_BUILDING_COUNT, REFINE_BUILDING_COUNT,
+	// Per-resource building counts (4) - for bonus need balance
+	RES_BUILDING_FOOD, RES_BUILDING_WOOD, RES_BUILDING_STONE, RES_BUILDING_GOLD,
+};
+
 enum class BasicMetricIdx : unsigned char {
 	SCORE, UNITS_COUNT, BUILDINGS_COUNT, ENEMY_SCORE,
 };
@@ -154,6 +171,12 @@ inline struct MetricDefinitions {
 		);
 	}
 
+	const std::span<float> writeResourceEconomy(Player* player, Player* enemy) const {
+		return compose(
+			section(aiResourceEconomyMetric, player->getResources(), player->getPossession())
+		);
+	}
+
 	//TODO te 3 sie troszke dubluj¹ ogran¹æ indeksami? ale z drugiej srony chce sie ich pozbyc
 	const std::span<float> writeAttackOrDefence(Player* one, Player* two) const {
 		return compose(section(aiAttackOrDefence, one, two));
@@ -189,6 +212,7 @@ inline struct MetricDefinitions {
 	using B = BuildingMetricIdx;
 	using R = ResourceMetricIdx;
 	using RNB = ResourceNoBonusMetricIdx;
+	using RE = ResourceEconomyMetricIdx;
 	using BM = BasicMetricIdx;
 	using AD = AttackOrDefenceMetricIdx;
 	using WA = WhereAttackMetricIdx;
@@ -217,6 +241,36 @@ inline struct MetricDefinitions {
 		{RNB::VALUE_WOOD,  {[](auto r, auto p) { return p->getResWithOutBonus()[cast(ResourceType::WOOD)]; }, 20}},
 		{RNB::VALUE_STONE, {[](auto r, auto p) { return p->getResWithOutBonus()[cast(ResourceType::STONE)]; }, 20}},
 		{RNB::VALUE_GOLD,  {[](auto r, auto p) { return p->getResWithOutBonus()[cast(ResourceType::GOLD)]; }, 20}},
+	});
+
+	static inline auto aiResourceEconomyMetric = buildMetricArray<RE, AiResourceMetric>({
+		{RE::GATHER_SPEED_FOOD,      {[](auto r, auto p) { return r->getGatherSpeeds()[cast(ResourceType::FOOD)]; }, 10}},
+		{RE::GATHER_SPEED_WOOD,      {[](auto r, auto p) { return r->getGatherSpeeds()[cast(ResourceType::WOOD)]; }, 10}},
+		{RE::GATHER_SPEED_STONE,     {[](auto r, auto p) { return r->getGatherSpeeds()[cast(ResourceType::STONE)]; }, 10}},
+		{RE::GATHER_SPEED_GOLD,      {[](auto r, auto p) { return r->getGatherSpeeds()[cast(ResourceType::GOLD)]; }, 10}},
+		{RE::VALUE_FOOD,             {[](auto r, auto p) { return r->getValues()[cast(ResourceType::FOOD)]; }, 1000}},
+		{RE::VALUE_WOOD,             {[](auto r, auto p) { return r->getValues()[cast(ResourceType::WOOD)]; }, 1000}},
+		{RE::VALUE_STONE,            {[](auto r, auto p) { return r->getValues()[cast(ResourceType::STONE)]; }, 1000}},
+		{RE::VALUE_GOLD,             {[](auto r, auto p) { return r->getValues()[cast(ResourceType::GOLD)]; }, 1000}},
+		{RE::FREE_WORKERS,           {[](auto r, auto p) -> float { return p->getFreeWorkersNumber(); }, 100}},
+		{RE::TOTAL_WORKERS,          {[](auto r, auto p) -> float { return p->getWorkersNumber(); }, 100}},
+		{RE::FOOD_STORAGE,           {[](auto r, auto p) { return r->getFoodStorage(); }, 1000}},
+		{RE::FOOD_EXCESS,            {[](auto r, auto p) { return r->getFoodExcess(); }, 500}},
+		{RE::FOOD_STORAGE_RATIO,     {[](auto r, auto p) { return r->getFoodStorageRatio(); }, 1}},
+		{RE::GOLD_STORAGE_RATIO,     {[](auto r, auto p) { return r->getGoldStorageRatio(); }, 1}},
+		{RE::STONE_REFINE_GAP,       {[](auto r, auto p) { return r->getStoneRefineGap(); }, 10}},
+		{RE::GOLD_REFINE_GAP,        {[](auto r, auto p) { return r->getGoldRefineGap(); }, 10}},
+		{RE::STONE_REFINE_UTIL,      {[](auto r, auto p) { return r->getStoneRefineUtilization(); }, 1}},
+		{RE::GOLD_REFINE_UTIL,       {[](auto r, auto p) { return r->getGoldRefineUtilization(); }, 1}},
+		{RE::BONUS_BUILDING_COUNT,   {[](auto r, auto p) -> float { return p->getBonusBuildingCount(); }, 20}},
+		{RE::SPAWNER_COUNT,          {[](auto r, auto p) -> float { return p->getSpawnerCount(); }, 10}},
+		{RE::CONVERT_BUILDING_COUNT, {[](auto r, auto p) -> float { return p->getConvertBuildingCount(); }, 10}},
+		{RE::STORAGE_BUILDING_COUNT, {[](auto r, auto p) -> float { return p->getStorageBuildingCount(); }, 10}},
+		{RE::REFINE_BUILDING_COUNT,  {[](auto r, auto p) -> float { return p->getRefineBuildingCount(); }, 10}},
+		{RE::RES_BUILDING_FOOD,      {[](auto r, auto p) -> float { return p->getResourceBuildingCounts()[cast(ResourceType::FOOD)]; }, 10}},
+		{RE::RES_BUILDING_WOOD,      {[](auto r, auto p) -> float { return p->getResourceBuildingCounts()[cast(ResourceType::WOOD)]; }, 10}},
+		{RE::RES_BUILDING_STONE,     {[](auto r, auto p) -> float { return p->getResourceBuildingCounts()[cast(ResourceType::STONE)]; }, 10}},
+		{RE::RES_BUILDING_GOLD,      {[](auto r, auto p) -> float { return p->getResourceBuildingCounts()[cast(ResourceType::GOLD)]; }, 10}},
 	});
 
 	static inline auto aiBasicMetric = buildMetricArray<BM, AiPlayerMetric>({
