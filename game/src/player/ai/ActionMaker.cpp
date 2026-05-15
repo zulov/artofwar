@@ -85,7 +85,7 @@ namespace {
 }
 
 void ActionMaker::createBuilding(const std::span<const float> buildingsInput) {
-	ParentBuildingType type = static_cast<ParentBuildingType>(whichBuildingType->decide(buildingsInput).best());
+	ParentBuildingType type = whichBuildingType->decide(buildingsInput).bestAs<ParentBuildingType>();
 	AiActionType actionType = toBuildingActionType(type);
 	if (!isEnoughResToTypeBuilding(type)) {
 		history->addAction(actionType, AiActionResult::NO_RESOURCES_SPECIFIC);
@@ -200,7 +200,7 @@ db_building* ActionMaker::chooseBuilding(ParentBuildingType type) {
 	const auto result = getBrainForBuildingType(type)->decide(aiInput->forBuildingType(player, type));
 
 	if (type == ParentBuildingType::RESOURCE) {
-		const int res = result.best();
+		const auto res = cast(result.bestAs<ResourceType>());
 		for (const auto building : buildings) {
 			if (building->resourceType == res) { return building; }
 		}

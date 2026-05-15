@@ -82,7 +82,7 @@ void OrderMaker::armyAction() {
 	} else {
 		whereGo = whereDefence->decide(aiInput->forWhereDefend(player, enemy));
 	}
-	const CenterType centerType = static_cast<CenterType>(whereGo.best());
+	const CenterType centerType = whereGo.bestAs<CenterType>();
 
 	auto orderType = AiOrderType::NONE;
 	if (isAttack) {
@@ -189,7 +189,7 @@ void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 
 	const auto result = whichResource->decide(aiInput->forResource(player, enemy));
 	if (freeWorkers.size() == 1) {
-		const auto resourceId = result.best();
+		const auto resourceId = cast(result.bestAs<ResourceType>());
 		const auto worker = freeWorkers.at(0);
 		const auto closest = closestInRange(worker, resourceId);
 		const auto orderType = static_cast<AiOrderType>(static_cast<uint8_t>(AiOrderType::COLLECT_RESOURCE_0) + resourceId);
@@ -205,7 +205,7 @@ void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 	std::fill_n(resHistogram, RESOURCES_SIZE, 0);
 
 	for (int i = 0; i < freeWorkers.size(); ++i) {
-		const auto resourceId = result.best(); //TODO perf tutaj tylko losowac
+		const auto resourceId = cast(result.bestAs<ResourceType>()); //TODO perf tutaj tylko losowac
 		++resHistogram[resourceId];
 	}
 	int all = freeWorkers.size();

@@ -31,6 +31,9 @@ struct DecideResult {
 		return data[0] + 1.f > RandGen::nextRand(RandFloatType::AI, 2.f);
 	}
 
+	template <typename E>
+	E bestAs() const { return static_cast<E>(best()); }
+
 	int best() const {
 		assert(!data.empty());
 		assert(validateSpan(__LINE__, __FILE__, data));
