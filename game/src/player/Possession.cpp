@@ -125,6 +125,11 @@ std::span<float> Possession::getResWithOutBonus() {
 	return metric->resWithoutBonus;
 }
 
+float Possession::getResWithOutBonus(ResourceType rt) {
+	ensureReady();
+	return metric->resWithoutBonus[cast(rt)];
+}
+
 std::vector<Building*>* Possession::getBuildings(short id) {
 	return buildingsPerId[id];
 }

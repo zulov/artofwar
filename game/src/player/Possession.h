@@ -1,6 +1,7 @@
 #pragma once
 #include <span>
 #include <vector>
+#include <objects/resource/ResourceType.h>
 
 
 struct PossessionMetric;
@@ -38,6 +39,7 @@ public:
 	unsigned getHeavyNumber();
 
 	std::span<float> getResWithOutBonus();
+	float getResWithOutBonus(ResourceType rt);
 	std::vector<Building*>* getBuildings(short id);
 	const std::vector<Building*>& getBuildings();
 

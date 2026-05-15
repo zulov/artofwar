@@ -28,6 +28,9 @@ public:
 	std::span<float> getGatherSpeeds() { return gatherSpeeds1s; }
 	std::span<float> getSumValues() { return sumValues; }
 
+	float getValue(ResourceType rt) const { return values[cast(rt)]; }
+	float getGatherSpeed(ResourceType rt) const { return gatherSpeeds1s[cast(rt)]; }
+
 	void setValue(float food, float wood, float stone, float gold);
 
 	void update1s(Possession* possession);
@@ -38,19 +41,19 @@ public:
 	float getGoldStorage() const { return goldStorage; }
 
 	float getLastFoodLost() const { return lastFoodLost; }
-	float potentialFoodLost() const { return std::max(0.f, values[cast(ResourceType::FOOD)] - foodStorage) * foodLostRate; }
+	float potentialFoodLost() const { return std::max(0.f, getValue(ResourceType::FOOD) - foodStorage) * foodLostRate; }
 
 	float getLastGoldGains() const { return lastGoldGain; }
-	float potentialGoldGain() const { return std::min(goldStorage, values[cast(ResourceType::GOLD)]) * goldGainRate; }
+	float potentialGoldGain() const { return std::min(goldStorage, getValue(ResourceType::GOLD)) * goldGainRate; }
 
 	float getStoneRefineCapacity() const { return stoneRefineCapacity; }
 	float getPotentialStoneRefinement() const {
-		return std::min(gatherSpeeds1s[cast(ResourceType::STONE)], stoneRefineCapacity) * stoneRefineBonus;
+		return std::min(getGatherSpeed(ResourceType::STONE), stoneRefineCapacity) * stoneRefineBonus;
 	}
 
 	float getPotentialGoldGains() const { return potentialGoldGain(); }
 	float getGoldRefineCapacity() const { return goldRefineCapacity; }
-	float getPotentialGoldRefinement() const { return std::min(gatherSpeeds1s[cast(ResourceType::GOLD)], goldRefineCapacity) * goldRefineBonus; }
+	float getPotentialGoldRefinement() const { return std::min(getGatherSpeed(ResourceType::GOLD), goldRefineCapacity) * goldRefineBonus; }
 
 private:
 	std::array<float, RESOURCES_SIZE> values; //TODO wszystie te wartosci trzeba zapisac w savie
