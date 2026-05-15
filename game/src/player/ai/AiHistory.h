@@ -25,9 +25,6 @@ public:
 	void addAction(AiActionType type, AiActionResult result, uint8_t chosenId = 0);
 	void addOrder(AiOrderType type, AiOrderResult result, uint8_t unitCount = 0);
 
-	const ActionHistoryEntry& getAction(int index) const;
-	const OrderHistoryEntry& getOrder(int index) const;
-
 	int getActionCount() const { return actionCount; }
 	int getOrderCount() const { return orderCount; }
 
@@ -40,6 +37,9 @@ public:
 	float recencyScore(AiOrderType type, unsigned int lookbackTicks) const;
 
 private:
+	const ActionHistoryEntry& getAction(int index) const;
+	const OrderHistoryEntry& getOrder(int index) const;
+
 	std::array<ActionHistoryEntry, MAX_ENTRIES> actions{};
 	std::array<OrderHistoryEntry, MAX_ENTRIES> orders{};
 	int actionHead = 0, actionCount = 0;
