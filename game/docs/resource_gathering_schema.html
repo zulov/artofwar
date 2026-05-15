@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art of War - Resource Gathering Mechanisms</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 40px; }
+  h1 { text-align: center; color: #e6c44d; font-size: 2em; margin-bottom: 10px; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 40px; font-size: 0.95em; }
+  .resources-bar { display: flex; justify-content: center; gap: 30px; margin-bottom: 50px; }
+  .res-icon { display: flex; align-items: center; gap: 8px; background: #16213e; padding: 10px 20px; border-radius: 8px; border: 1px solid #333; }
+  .res-icon .dot { width: 14px; height: 14px; border-radius: 50%; }
+  .res-icon .dot.food { background: #4caf50; }
+  .res-icon .dot.wood { background: #8d6e4e; }
+  .res-icon .dot.stone { background: #9e9e9e; }
+  .res-icon .dot.gold { background: #ffd700; }
+
+  .mechanism { background: #16213e; border: 1px solid #2a2a4a; border-radius: 12px; padding: 30px; margin-bottom: 30px; position: relative; }
+  .mechanism h2 { color: #e6c44d; margin-bottom: 5px; font-size: 1.3em; }
+  .mechanism .tag { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 0.75em; margin-bottom: 15px; }
+  .tag.passive { background: #1b5e20; color: #a5d6a7; }
+  .tag.active { background: #0d47a1; color: #90caf9; }
+  .tag.periodic { background: #4a148c; color: #ce93d8; }
+  .tag.loss { background: #b71c1c; color: #ef9a9a; }
+
+  .mechanism p { line-height: 1.7; color: #bbb; margin-bottom: 12px; }
+  .formula-box { background: #0f3460; border: 1px solid #1a5276; border-radius: 8px; padding: 16px 20px; margin: 15px 0; font-family: 'Consolas', monospace; font-size: 0.95em; color: #7fdbff; }
+  .formula-box .label { color: #888; font-size: 0.8em; margin-bottom: 6px; font-family: 'Segoe UI', sans-serif; }
+
+  .diagram { display: flex; align-items: center; justify-content: center; gap: 0; margin: 20px 0; flex-wrap: wrap; }
+  .diagram .box { background: #1a3a5c; border: 1px solid #2980b9; border-radius: 8px; padding: 12px 18px; text-align: center; min-width: 120px; }
+  .diagram .box.highlight { border-color: #e6c44d; background: #2c2c1a; }
+  .diagram .box.result { border-color: #4caf50; background: #1a2c1a; }
+  .diagram .box.loss-box { border-color: #e74c3c; background: #2c1a1a; }
+  .diagram .arrow { font-size: 1.5em; color: #555; padding: 0 10px; }
+  .diagram .box .title { font-size: 0.7em; color: #888; display: block; margin-bottom: 4px; }
+  .diagram .box .val { font-size: 1.1em; color: #fff; font-weight: bold; }
+
+  .example { background: #1a2a3e; border-left: 3px solid #e6c44d; border-radius: 0 8px 8px 0; padding: 18px 22px; margin: 15px 0; }
+  .example .ex-title { color: #e6c44d; font-weight: bold; margin-bottom: 8px; font-size: 0.9em; }
+  .example p { color: #ccc; font-size: 0.9em; line-height: 1.6; margin: 4px 0; }
+  .example .step { color: #7fdbff; }
+  .example .num { color: #ffd700; font-weight: bold; }
+
+  .file-ref { font-size: 0.8em; color: #666; margin-top: 10px; font-style: italic; }
+  .affects { display: inline-flex; gap: 6px; margin-left: 10px; }
+  .affects .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  .grid-visual { display: grid; grid-template-columns: repeat(7, 40px); gap: 2px; justify-content: center; margin: 15px 0; }
+  .grid-visual .cell { width: 40px; height: 40px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.65em; color: #fff; }
+  .cell.empty { background: #1a2a1a; border: 1px solid #2a3a2a; }
+  .cell.building { background: #2c1a1a; border: 2px solid #e6c44d; }
+  .cell.resource { background: #1a3a1a; border: 1px solid #4caf50; }
+  .cell.boosted { background: #1a2a3a; border: 1px solid #2980b9; }
+
+  table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+  th { background: #0f3460; color: #e6c44d; padding: 10px; text-align: left; font-size: 0.85em; }
+  td { padding: 10px; border-bottom: 1px solid #2a2a4a; font-size: 0.85em; color: #bbb; }
+  tr:hover td { background: #1a2a3e; }
+
+  .timeline { display: flex; justify-content: center; gap: 0; margin: 20px 0; align-items: flex-end; }
+  .timeline .tick { text-align: center; flex: 1; max-width: 80px; }
+  .timeline .tick .bar { background: #2980b9; margin: 0 auto; width: 30px; border-radius: 4px 4px 0 0; }
+  .timeline .tick .lbl { font-size: 0.7em; color: #888; margin-top: 4px; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<h1>Art of War - Resource Gathering Mechanisms</h1>
+<p class="subtitle">Detailed breakdown of all passive and active economic systems</p>
+
+<div class="resources-bar">
+  <div class="res-icon"><span class="dot food"></span> Food</div>
+  <div class="res-icon"><span class="dot wood"></span> Wood</div>
+  <div class="res-icon"><span class="dot stone"></span> Stone</div>
+  <div class="res-icon"><span class="dot gold"></span> Gold</div>
+</div>
+
+<!-- ============================================ -->
+<!-- MECHANISM 2: Building Resource Bonuses -->
+<!-- ============================================ -->
+<div class="mechanism">
+  <h2>2. Building Resource Bonuses</h2>
+  <span class="tag passive">Passive Multiplier</span>
+  <span class="affects"><span class="dot food"></span><span class="dot wood"></span><span class="dot stone"></span><span class="dot gold"></span></span>
+
+  <p>Resource buildings (mills, lumber camps, mines) project a <strong>collection speed bonus</strong> onto all resource nodes within their <code>resourceRange</code>. When a worker collects from a boosted node, the bonus multiplies the gathered amount.</p>
+
+  <div class="formula-box">
+    <div class="label">Effective Collection Formula</div>
+    collected = unit.collect * <strong>building.collect_bonus</strong>
+    <br>where bonus = max(all overlapping buildings' level.collect) for that resource type
+    <br>default bonus (no building nearby) = 1.0
+  </div>
+
+  <div style="text-align:center; margin: 10px 0; color: #888; font-size: 0.85em;">Grid visualization: Mill (range=2) boosting nearby food nodes</div>
+  <div class="grid-visual">
+    <div class="cell empty"></div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell empty"></div>
+
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell resource">Berry</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell resource">Berry</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+
+    <div class="cell boosted">1.5x</div>
+    <div class="cell resource">Berry</div>
+    <div class="cell building">MILL</div>
+    <div class="cell building">MILL</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell resource">Berry</div>
+    <div class="cell boosted">1.5x</div>
+
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell building">MILL</div>
+    <div class="cell building">MILL</div>
+    <div class="cell resource">Berry</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+
+    <div class="cell empty"></div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell boosted">1.5x</div>
+    <div class="cell empty"></div>
+  </div>
+
+  <div class="example">
+    <div class="ex-title">Example: Mill with collect bonus = 1.5</div>
+    <p><span class="step">Without Mill:</span> Worker (collect=<span class="num">2.0</span>) gathers <span class="num">2.0</span> food per cycle</p>
+    <p><span class="step">With Mill nearby:</span> Worker gathers <span class="num">2.0</span> * <span class="num">1.5</span> = <span class="num">3.0</span> food per cycle</p>
+    <p><span class="step">Two overlapping buildings (1.5 and 2.0):</span> max(1.5, 2.0) = <span class="num">2.0</span> bonus used</p>
+  </div>
+
+  <div class="file-ref">MainGrid.cpp:315-377 | ComplexBucketData.cpp:72 | CollectState.h:65</div>
+</div>
+
+<!-- ============================================ -->
+<!-- MECHANISM 3: Stone & Gold Refinement -->
+<!-- ============================================ -->
+<div class="mechanism">
+  <h2>3. Stone & Gold Refinement</h2>
+  <span class="tag passive">Passive / Every 1 second</span>
+  <span class="affects"><span class="dot stone"></span><span class="dot gold"></span></span>
+
+  <p>Buildings with refine capacity generate <strong>bonus resources per second</strong>, proportional to how much the player is actively gathering. The bonus is capped by the total refine capacity of all buildings, then multiplied by a <strong>10% rate</strong>.</p>
+
+  <div class="formula-box">
+    <div class="label">Refinement Formula (per second)</div>
+    stoneBonus = min(stoneGatheredThisSecond, totalStoneRefineCapacity) * <strong>0.10</strong>
+    <br>goldBonus  = min(goldGatheredThisSecond,  totalGoldRefineCapacity)  * <strong>0.10</strong>
+  </div>
+
+  <div class="diagram">
+    <div class="box">
+      <span class="title">Gathered/sec</span>
+      <span class="val">5.0 stone</span>
+    </div>
+    <div class="arrow">+</div>
+    <div class="box">
+      <span class="title">Refine Cap</span>
+      <span class="val">8.0</span>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="box highlight">
+      <span class="title">min(5, 8) * 0.1</span>
+      <span class="val">= 0.5</span>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="box result">
+      <span class="title">Total/sec</span>
+      <span class="val">5.5 stone</span>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="example">
+      <div class="ex-title">Example A: Capacity > Gathering</div>
+      <p>Gathering: <span class="num">3.0</span> stone/s</p>
+      <p>Refine capacity: <span class="num">10.0</span></p>
+      <p>Bonus: min(3, 10) * 0.1 = <span class="num">+0.3</span> stone/s</p>
+      <p>Capacity is not the bottleneck.</p>
+    </div>
+    <div class="example">
+      <div class="ex-title">Example B: Gathering > Capacity</div>
+      <p>Gathering: <span class="num">15.0</span> stone/s</p>
+      <p>Refine capacity: <span class="num">10.0</span></p>
+      <p>Bonus: min(15, 10) * 0.1 = <span class="num">+1.0</span> stone/s</p>
+      <p>Capacity is the bottleneck -- build more refineries!</p>
+    </div>
+  </div>
+
+  <table>
+    <tr><th>Parameter</th><th>Source</th><th>Value</th></tr>
+    <tr><td>stoneRefineBonus</td><td>Hardcoded</td><td>0.10 (10%)</td></tr>
+    <tr><td>goldRefineBonus</td><td>Hardcoded</td><td>0.10 (10%)</td></tr>
+    <tr><td>stoneRefineCapacity</td><td>Sum of all buildings' db_building_level.stone_refine_capacity</td><td>Per building (DB)</td></tr>
+    <tr><td>goldRefineCapacity</td><td>Sum of all buildings' db_building_level.gold_refine_capacity</td><td>Per building (DB)</td></tr>
+  </table>
+
+  <div class="file-ref">Resources.h:46-53 | Resources.cpp:66-76</div>
+</div>
+
+<!-- ============================================ -->
+<!-- MECHANISM 4: Gold Interest -->
+<!-- ============================================ -->
+<div class="mechanism">
+  <h2>4. Gold Interest (Yearly Income)</h2>
+  <span class="tag periodic">Periodic / Every Year</span>
+  <span class="affects"><span class="dot gold"></span></span>
+
+  <p>Once per in-game year, the player earns <strong>1% interest</strong> on their stored gold, up to their total gold storage capacity. This rewards accumulating gold and building storage structures.</p>
+
+  <div class="formula-box">
+    <div class="label">Gold Interest Formula (per year)</div>
+    goldInterest = min(goldStorage, currentGold) * <strong>0.01</strong>
+  </div>
+
+  <div class="diagram">
+    <div class="box">
+      <span class="title">Current Gold</span>
+      <span class="val">500</span>
+    </div>
+    <div class="arrow">vs</div>
+    <div class="box">
+      <span class="title">Gold Storage</span>
+      <span class="val">300</span>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="box highlight">
+      <span class="title">min(300, 500) * 0.01</span>
+      <span class="val">= 3.0</span>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="box result">
+      <span class="title">Year-end Gold</span>
+      <span class="val">503</span>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="example">
+      <div class="ex-title">Example: Gold below storage</div>
+      <p>Gold: <span class="num">200</span> | Storage: <span class="num">500</span></p>
+      <p>Interest: min(500, 200) * 0.01 = <span class="num">+2.0</span> gold</p>
+    </div>
+    <div class="example">
+      <div class="ex-title">Example: Gold exceeds storage</div>
+      <p>Gold: <span class="num">1000</span> | Storage: <span class="num">400</span></p>
+      <p>Interest: min(400, 1000) * 0.01 = <span class="num">+4.0</span> gold</p>
+      <p>Excess gold above 400 earns nothing. Build more storage!</p>
+    </div>
+  </div>
+
+  <div class="file-ref">Resources.h:43-44 | Resources.cpp:85-88</div>
+</div>
+
+<!-- ============================================ -->
+<!-- MECHANISM 5a: Ruinable (Salvage on Destruction) -->
+<!-- ============================================ -->
+<div class="mechanism">
+  <h2>5a. Ruinable -- Salvage Ruins on Destruction</h2>
+  <span class="tag loss">One-time / On Death (HP=0)</span>
+  <span class="affects"><span class="dot wood"></span><span class="dot stone"></span></span>
+
+  <p>When a building with <code>ruinable = true</code> is <strong>destroyed in combat</strong> (HP reaches 0), it leaves behind a <strong>salvage resource node</strong> at its position. The resource type is whichever of wood or stone the building cost more of, and the amount is <strong>20% of that cost</strong>.</p>
+
+  <div class="formula-box">
+    <div class="label">Ruinable Formula</div>
+    Trigger: building.HP reaches 0 (destroyed by damage)
+    <br>Resource type: moreWoodThanStone ? WOOD_NODE(6) : STONE_NODE(5)
+    <br>Amount (node HP): <strong>maxFromWoodOrStone * 0.20</strong>
+  </div>
+
+  <div class="diagram">
+    <div class="box loss-box">
+      <span class="title">Building Destroyed</span>
+      <span class="val">HP = 0</span>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="box highlight">
+      <span class="title">Check ruinable</span>
+      <span class="val">true?</span>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="box">
+      <span class="title">Dominant Material</span>
+      <span class="val">Wood or Stone</span>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="box result">
+      <span class="title">Salvage Node</span>
+      <span class="val">20% of cost</span>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="example">
+      <div class="ex-title">Example: Barracks (cost: 80 wood, 40 stone)</div>
+      <p>Dominant material: <span class="num">Wood</span> (80 > 40)</p>
+      <p>maxFromWoodOrStone = <span class="num">80</span></p>
+      <p>Salvage: 80 * 0.2 = <span class="num">16 HP wood node</span> left in ruins</p>
+      <p>Workers can gather wood from the rubble.</p>
+    </div>
+    <div class="example">
+      <div class="ex-title">Example: Tower (cost: 20 wood, 100 stone)</div>
+      <p>Dominant material: <span class="num">Stone</span> (100 > 20)</p>
+      <p>maxFromWoodOrStone = <span class="num">100</span></p>
+      <p>Salvage: 100 * 0.2 = <span class="num">20 HP stone node</span> left in ruins</p>
+      <p>Enemy or own workers can harvest the stone rubble.</p>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin: 10px 0; color: #888; font-size: 0.85em;">Building destroyed &rarr; ruins appear at same position</div>
+  <div class="grid-visual">
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell loss-box" style="border:2px solid #e74c3c; background:#2c1a1a;">WAS</div>
+    <div class="cell loss-box" style="border:2px solid #e74c3c; background:#2c1a1a;">HERE</div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell resource" style="border:2px solid #8d6e4e;">Ruins</div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+  </div>
+
+  <div class="file-ref">StateManager.cpp:182-192 | db_struct.h:350,380</div>
+</div>
+
+<!-- ============================================ -->
+<!-- MECHANISM 5b: Resource Spawning (Periodic) -->
+<!-- ============================================ -->
+<div class="mechanism">
+  <h2>5b. Resource Spawning -- Periodic Node Creation</h2>
+  <span class="tag active">Active / Queue-based loop</span>
+  <span class="affects"><span class="dot food"></span><span class="dot wood"></span><span class="dot stone"></span><span class="dot gold"></span></span>
+
+  <p>Buildings with <strong>both</strong> <code>toResource &gt; 0</code> and <code>spawnResourceRange &gt; 0</code> periodically create new resource nodes nearby. When the building's queue is empty, it auto-queues a <code>RESOURCE_CREATE</code> action. After <code>spawnResourceTime</code> seconds, one new resource node is placed on the first valid empty cell within <code>spawnResourceRange</code>. The cycle then repeats infinitely.</p>
+
+  <div class="formula-box">
+    <div class="label">Spawn Conditions (all must be true)</div>
+    1. building.toResource > 0 &nbsp;&nbsp;(resource type configured)
+    <br>2. level.spawnResourceRange > 0 &nbsp;&nbsp;(spawn ability enabled at this level)
+    <br>3. queue.isEmpty() &nbsp;&nbsp;(not busy)
+    <br><br>Duration: level.spawnResourceTime seconds
+    <br>Result: 1 resource node of type toResource placed within spawnResourceRange
+  </div>
+
+  <div class="diagram">
+    <div class="box">
+      <span class="title">Building Idle</span>
+      <span class="val">Queue empty</span>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="box highlight">
+      <span class="title">Queue Timer</span>
+      <span class="val">30s countdown</span>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="box">
+      <span class="title">Find Empty Cell</span>
+      <span class="val">in range</span>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="box result">
+      <span class="title">New Resource!</span>
+      <span class="val">1 node spawned</span>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="box">
+      <span class="title">Repeat</span>
+      <span class="val">&larr; loop</span>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin: 10px 0; color: #888; font-size: 0.85em;">Farm (range=3) spawning food nodes over time</div>
+  <div class="grid-visual">
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+
+    <div class="cell empty"></div>
+    <div class="cell resource">Food</div>
+    <div class="cell empty"></div>
+    <div class="cell resource">Food</div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell building">FARM</div>
+    <div class="cell building">FARM</div>
+    <div class="cell resource">Food</div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+
+    <div class="cell empty"></div>
+    <div class="cell resource">Food</div>
+    <div class="cell building">FARM</div>
+    <div class="cell building">FARM</div>
+    <div class="cell empty"></div>
+    <div class="cell resource">NEW!</div>
+    <div class="cell empty"></div>
+
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell resource">Food</div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+  </div>
+
+  <div class="example">
+    <div class="ex-title">Example: Farm with spawnResourceTime=30, range=3</div>
+    <p><span class="step">t=0s:</span> Farm finishes previous task, queue is empty &rarr; queues RESOURCE_CREATE</p>
+    <p><span class="step">t=30s:</span> Timer completes &rarr; scans cells within range 3 &rarr; places 1 food node at first empty cell</p>
+    <p><span class="step">t=30s:</span> Queue is empty again &rarr; auto-queues next spawn</p>
+    <p><span class="step">t=60s:</span> Another food node appears. Cycle repeats indefinitely.</p>
+    <p>Rate: <span class="num">1 resource node</span> per <span class="num">30 seconds</span> (if space available)</p>
+  </div>
+
+  <div class="file-ref">Building.cpp:156-158 | Simulation.cpp:220-233 | QueueUtils.h:16-17</div>
+</div>
+
+<!-- ============================================ -->
+<!-- MECHANISM 5c: toResource (Self-Conversion) -->
+<!-- ============================================ -->
+<div class="mechanism">
+  <h2>5c. toResource -- Building Self-Converts to Resource</h2>
+  <span class="tag periodic">One-time / On Peaceful Disposal</span>
+  <span class="affects"><span class="dot food"></span><span class="dot wood"></span><span class="dot stone"></span><span class="dot gold"></span></span>
+
+  <p>Buildings with <code>toResource &ge; 0</code> but <strong>no spawn range</strong> (<code>spawnResourceRange &le; 0</code>) are one-shot converters: upon becoming ALIVE, they <strong>immediately self-destruct</strong> and transform into a resource node of type <code>toResource</code> at their grid position. This also triggers when a building is <strong>peacefully demolished</strong> (HP > 0) if <code>toResource &ge; 0</code>.</p>
+
+  <div class="formula-box">
+    <div class="label">Two Code Paths</div>
+    <strong>Path A -- Auto-conversion (no spawn range):</strong>
+    <br>State ALIVE: if toResource &ge; 0 AND spawnResourceRange &le; 0
+    &nbsp;&nbsp;&rarr; immediately transition to DEAD &rarr; DISPOSE &rarr; place resource node
+    <br><br><strong>Path B -- Peaceful demolition:</strong>
+    <br>State DISPOSE with HP > 0: if toResource &ge; 0
+    &nbsp;&nbsp;&rarr; place resource node of type toResource at building position
+  </div>
+
+  <div class="diagram">
+    <div class="box">
+      <span class="title">Building Built</span>
+      <span class="val">Construction done</span>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="box highlight">
+      <span class="title">State: ALIVE</span>
+      <span class="val">toResource &ge; 0<br>spawnRange = 0</span>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="box">
+      <span class="title">Instant DEAD</span>
+      <span class="val">self-destruct</span>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="box result">
+      <span class="title">Resource Node</span>
+      <span class="val">replaces building</span>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="example">
+      <div class="ex-title">Path A: Auto-conversion (e.g., "Plant Field")</div>
+      <p>Player builds a "field" building (toResource=<span class="num">FOOD</span>, spawnRange=<span class="num">0</span>)</p>
+      <p><span class="step">Build completes &rarr;</span> State = ALIVE</p>
+      <p><span class="step">ALIVE check &rarr;</span> toResource &ge; 0 AND spawnRange &le; 0</p>
+      <p><span class="step">Immediate &rarr;</span> DEAD &rarr; DISPOSE &rarr; <span class="num">Food node</span> placed at building position</p>
+      <p>The building never actually functions -- it's a construction that converts into a resource.</p>
+    </div>
+    <div class="example">
+      <div class="ex-title">Path B: Peaceful demolition</div>
+      <p>Player manually demolishes a farm (toResource=<span class="num">FOOD</span>, HP > 0)</p>
+      <p><span class="step">DISPOSE state &rarr;</span> HP > 0 (not destroyed by enemy)</p>
+      <p><span class="step">toResource &ge; 0 &rarr;</span> place <span class="num">Food node</span> at building position</p>
+      <p>The building is peacefully removed and leaves behind a harvestable resource.</p>
+    </div>
+  </div>
+
+  <p style="margin-top:15px; color:#e6c44d; font-size:0.9em;"><strong>Key distinction from ruinable:</strong> <code>toResource</code> triggers on <em>peaceful</em> removal (HP > 0). <code>ruinable</code> triggers on <em>combat destruction</em> (HP = 0). They are mutually exclusive triggers in the DISPOSE state.</p>
+
+  <div class="file-ref">StateManager.cpp:171-176 (Path A) | StateManager.cpp:193-195 (Path B) | db_struct.h:351,381</div>
+</div>
+
+<!-- ============================================ -->
+<!-- MECHANISM 6: Food Decay -->
+<!-- ============================================ -->
+<div class="mechanism">
+  <h2>6. Food Decay (Resource Loss)</h2>
+  <span class="tag loss">Loss / Every Month</span>
+  <span class="affects"><span class="dot food"></span></span>
+
+  <p>Food stored beyond the player's total <code>foodStorage</code> capacity <strong>decays by 10% each month</strong>. Only the excess amount is affected. This creates pressure to build granaries/storage buildings to protect food reserves.</p>
+
+  <div class="formula-box">
+    <div class="label">Food Decay Formula (per month)</div>
+    foodLost = max(0, currentFood - foodStorage) * <strong>0.10</strong>
+  </div>
+
+  <div class="diagram">
+    <div class="box">
+      <span class="title">Current Food</span>
+      <span class="val">800</span>
+    </div>
+    <div class="arrow">-</div>
+    <div class="box">
+      <span class="title">Storage Cap</span>
+      <span class="val">500</span>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="box highlight">
+      <span class="title">Excess</span>
+      <span class="val">300</span>
+    </div>
+    <div class="arrow">* 0.10 &rarr;</div>
+    <div class="box loss-box">
+      <span class="title">Lost</span>
+      <span class="val">-30 food</span>
+    </div>
+    <div class="arrow">&rarr;</div>
+    <div class="box result">
+      <span class="title">Remaining</span>
+      <span class="val">770</span>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="example">
+      <div class="ex-title">Example: Food within storage</div>
+      <p>Food: <span class="num">300</span> | Storage: <span class="num">500</span></p>
+      <p>Excess: max(0, 300-500) = <span class="num">0</span></p>
+      <p>Decay: <span class="num">0</span> -- no food lost!</p>
+    </div>
+    <div class="example">
+      <div class="ex-title">Example: Food exceeds storage</div>
+      <p>Food: <span class="num">1200</span> | Storage: <span class="num">500</span></p>
+      <p>Excess: max(0, 1200-500) = <span class="num">700</span></p>
+      <p>Decay: 700 * 0.10 = <span class="num">-70 food</span></p>
+      <p>After: <span class="num">1130</span> food remains</p>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin: 20px 0; color: #888; font-size: 0.85em;">Food decay over 6 months (1200 food, 500 storage, no new gathering)</div>
+  <div class="timeline">
+    <div class="tick"><div class="bar" style="height:120px; background:#4caf50;"></div><div class="lbl">Month 0<br>1200</div></div>
+    <div class="tick"><div class="bar" style="height:113px; background:#4caf50;"></div><div class="lbl">Month 1<br>1130</div></div>
+    <div class="tick"><div class="bar" style="height:107px; background:#66bb6a;"></div><div class="lbl">Month 2<br>1067</div></div>
+    <div class="tick"><div class="bar" style="height:101px; background:#66bb6a;"></div><div class="lbl">Month 3<br>1010</div></div>
+    <div class="tick"><div class="bar" style="height:96px; background:#81c784;"></div><div class="lbl">Month 4<br>959</div></div>
+    <div class="tick"><div class="bar" style="height:91px; background:#81c784;"></div><div class="lbl">Month 5<br>913</div></div>
+    <div class="tick"><div class="bar" style="height:87px; background:#a5d6a7;"></div><div class="lbl">Month 6<br>872</div></div>
+  </div>
+  <p style="text-align:center; color:#888; font-size:0.8em; margin-top:5px;">Decay slows as food approaches storage cap (500). Food never drops below storage.</p>
+
+  <div class="file-ref">Resources.h:40-41 | Resources.cpp:79-83</div>
+</div>
+
+<!-- ============================================ -->
+<!-- Summary + AI Coverage + Ratings -->
+<!-- ============================================ -->
+<div class="mechanism">
+  <h2>Summary: All Mechanisms -- Ratings & AI Coverage</h2>
+
+  <style>
+    .ai-yes { color: #4caf50; font-weight: bold; }
+    .ai-no { color: #e74c3c; font-weight: bold; }
+    .ai-partial { color: #ff9800; font-weight: bold; }
+    .rating { display: inline-flex; gap: 2px; }
+    .rating .star { color: #ffd700; font-size: 1.1em; }
+    .rating .star.empty { color: #444; }
+  </style>
+
+  <table>
+    <tr>
+      <th>#</th>
+      <th>Mechanism</th>
+      <th>Frequency</th>
+      <th>Resources</th>
+      <th>Impact Rating</th>
+      <th>AI Considers?</th>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Building Bonus</td>
+      <td>Every collect cycle (30 frames)</td>
+      <td>All 4</td>
+      <td><span class="rating"><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span></span></td>
+      <td><span class="ai-yes">YES</span></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Stone/Gold Refinement</td>
+      <td>Every 1 second</td>
+      <td>Stone, Gold</td>
+      <td><span class="rating"><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star empty">&#9733;</span><span class="star empty">&#9733;</span></span></td>
+      <td><span class="ai-no">NO</span></td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Gold Interest</td>
+      <td>Every year</td>
+      <td>Gold</td>
+      <td><span class="rating"><span class="star">&#9733;</span><span class="star empty">&#9733;</span><span class="star empty">&#9733;</span><span class="star empty">&#9733;</span><span class="star empty">&#9733;</span></span></td>
+      <td><span class="ai-no">NO</span></td>
+    </tr>
+    <tr>
+      <td>5a</td>
+      <td>Ruinable (Salvage)</td>
+      <td>One-time on death</td>
+      <td>Wood or Stone</td>
+      <td><span class="rating"><span class="star">&#9733;</span><span class="star empty">&#9733;</span><span class="star empty">&#9733;</span><span class="star empty">&#9733;</span><span class="star empty">&#9733;</span></span></td>
+      <td><span class="ai-no">NO</span></td>
+    </tr>
+    <tr>
+      <td>5b</td>
+      <td>Resource Spawning</td>
+      <td>Every spawnResourceTime sec</td>
+      <td>Any</td>
+      <td><span class="rating"><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star empty">&#9733;</span></span></td>
+      <td><span class="ai-partial">PARTIAL</span></td>
+    </tr>
+    <tr>
+      <td>5c</td>
+      <td>toResource (Self-Convert)</td>
+      <td>One-time on build/demolish</td>
+      <td>Any</td>
+      <td><span class="rating"><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star empty">&#9733;</span><span class="star empty">&#9733;</span><span class="star empty">&#9733;</span></span></td>
+      <td><span class="ai-no">NO</span></td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Food Decay</td>
+      <td>Every month</td>
+      <td>Food (loss)</td>
+      <td><span class="rating"><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star empty">&#9733;</span><span class="star empty">&#9733;</span></span></td>
+      <td><span class="ai-no">NO</span></td>
+    </tr>
+  </table>
+</div>
+
+<!-- ============================================ -->
+<!-- AI Coverage Details -->
+<!-- ============================================ -->
+<div class="mechanism">
+  <h2>AI Decision Coverage -- Detailed Analysis</h2>
+
+  <p>The AI uses a <strong>neural network</strong> architecture (<code>Brain</code>) with pre-trained CSV weight matrices. Two core classes drive decisions: <code>ActionMaker</code> (what to build) and <code>OrderMaker</code> (what orders to give). Each feeds metric vectors into brain networks that output scored decisions.</p>
+
+  <div class="two-col">
+
+    <div class="example" style="border-left-color: #4caf50;">
+      <div class="ex-title" style="color: #4caf50;">2. Building Bonus -- FULLY CONSIDERED</div>
+      <p><span class="step">Brain:</span> <code>whichBuildingTypeResource</code></p>
+      <p><span class="step">Input metrics:</span> unbonused resource counts per type (weight 20), stockpiles (weight 1000)</p>
+      <p><span class="step">Guard:</span> Aborts if <code>getResWithOutBonus() &lt; 0.5</code> (no unbonused nodes exist)</p>
+      <p><span class="step">Placement:</span> <code>getPosToCreateResBonus()</code> uses influence maps to find positions near unbonused resource nodes</p>
+      <p><span class="step">Files:</span> ActionMaker.cpp:87-107, 191-208, 314-317</p>
+    </div>
+
+    <div class="example" style="border-left-color: #e74c3c;">
+      <div class="ex-title" style="color: #e74c3c;">3. Refinement -- NOT CONSIDERED</div>
+      <p>No AI metric exists for <code>stoneRefineCapacity</code> or <code>goldRefineCapacity</code>.</p>
+      <p>Not in <code>ResourceMetricIdx</code> or <code>BuildingMetricIdx</code>.</p>
+      <p>AI may incidentally build buildings that have refine capacity, but has <strong>zero awareness</strong> of the refinement mechanic.</p>
+      <p><span class="step">Impact:</span> AI misses up to +10% bonus on stone/gold gathering.</p>
+    </div>
+
+    <div class="example" style="border-left-color: #e74c3c;">
+      <div class="ex-title" style="color: #e74c3c;">4. Gold Interest -- NOT CONSIDERED</div>
+      <p>No AI metric for <code>goldStorage</code>, <code>potentialGoldGain</code>, or <code>goldGainRate</code>.</p>
+      <p>AI cannot strategically build storage for interest income.</p>
+      <p><span class="step">Impact:</span> Low -- only 1% per year. Rarely game-changing.</p>
+    </div>
+
+    <div class="example" style="border-left-color: #e74c3c;">
+      <div class="ex-title" style="color: #e74c3c;">5a. Ruinable -- NOT CONSIDERED</div>
+      <p><code>ruinable</code> field exists in <code>db_building</code> but is absent from all AI metrics.</p>
+      <p>AI cannot factor salvage value into attack/defense decisions.</p>
+      <p><span class="step">Impact:</span> Low -- passive effect, no decision needed.</p>
+    </div>
+
+    <div class="example" style="border-left-color: #ff9800;">
+      <div class="ex-title" style="color: #ff9800;">5b. Resource Spawning -- PARTIAL</div>
+      <p><span class="step">Dead code:</span> <code>ifFarmBuild</code> brain is loaded from CSV but <strong>never called</strong> anywhere in the codebase.</p>
+      <p>Spawn buildings may be built incidentally because they match <code>ParentBuildingType::RESOURCE</code> category.</p>
+      <p>No metrics for <code>spawnResourceTime</code>, <code>spawnResourceRange</code>.</p>
+      <p><span class="step">Impact:</span> High -- farms are a key food source. AI should explicitly decide when to build them.</p>
+      <p><span class="step">Files:</span> ActionMaker.h:94 (loaded), never invoked</p>
+    </div>
+
+    <div class="example" style="border-left-color: #e74c3c;">
+      <div class="ex-title" style="color: #e74c3c;">5c. toResource -- NOT CONSIDERED</div>
+      <p><code>toResource</code> is not in any AI metric enum or input vector.</p>
+      <p>AI cannot evaluate one-shot resource conversion buildings.</p>
+      <p><span class="step">Impact:</span> Medium -- depends on game design reliance on this mechanic.</p>
+    </div>
+
+    <div class="example" style="border-left-color: #e74c3c;">
+      <div class="ex-title" style="color: #e74c3c;">6. Food Decay -- NOT CONSIDERED</div>
+      <p>No AI metric for <code>foodStorage</code>, <code>potentialFoodLost</code>, or <code>foodLostRate</code>.</p>
+      <p>AI cannot build granaries to prevent food decay.</p>
+      <p><span class="step">Impact:</span> Medium-High -- AI can lose significant food reserves without knowing why.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- Recommendations -->
+<!-- ============================================ -->
+<div class="mechanism" style="border-color: #e6c44d;">
+  <h2 style="color: #e6c44d;">Recommendations: Priority Fixes for AI</h2>
+
+  <table>
+    <tr>
+      <th>Priority</th>
+      <th>Mechanism</th>
+      <th>Recommendation</th>
+      <th>Effort</th>
+    </tr>
+    <tr style="color: #e74c3c;">
+      <td>P1</td>
+      <td>5b. Resource Spawning</td>
+      <td>Wire up the existing <code>ifFarmBuild</code> brain -- it's loaded but never called. Add invocation in <code>ActionMaker</code> building decision flow.</td>
+      <td>Low</td>
+    </tr>
+    <tr style="color: #ff9800;">
+      <td>P2</td>
+      <td>6. Food Decay</td>
+      <td>Add <code>foodStorage</code> and <code>potentialFoodLost</code> to AI metrics. Let brain decide when storage buildings are needed.</td>
+      <td>Medium</td>
+    </tr>
+    <tr style="color: #ff9800;">
+      <td>P3</td>
+      <td>3. Refinement</td>
+      <td>Add <code>stoneRefineCapacity</code> / <code>goldRefineCapacity</code> to <code>BuildingMetricIdx</code>. Include current refine bonus in resource decision input.</td>
+      <td>Medium</td>
+    </tr>
+    <tr>
+      <td>P4</td>
+      <td>5c. toResource</td>
+      <td>Add <code>toResource</code> awareness if one-shot buildings are meant to be a core mechanic.</td>
+      <td>Medium</td>
+    </tr>
+    <tr>
+      <td>P5</td>
+      <td>4. Gold Interest</td>
+      <td>Low priority -- 1% yearly is marginal. Consider only if long games are common.</td>
+      <td>Low</td>
+    </tr>
+    <tr>
+      <td>P6</td>
+      <td>5a. Ruinable</td>
+      <td>No action needed -- passive mechanic with no decision point for the AI.</td>
+      <td>N/A</td>
+    </tr>
+  </table>
+
+  <div class="diagram" style="margin-top: 20px;">
+    <div class="box result" style="min-width: 200px;">
+      <span class="title">AI Coverage Score</span>
+      <span class="val">2 / 7 mechanisms</span>
+    </div>
+    <div class="arrow" style="font-size: 1em; color: #e74c3c;">Only 29% of resource economy is visible to AI</div>
+  </div>
+</div>
+
+</body>
+</html>
