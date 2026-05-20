@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Art of War — New AI Architecture: Master Brain + Sub-Brains + Want List</title>
+<style>
+  body { margin: 0; background: #1a1a2e; font-family: 'Segoe UI', sans-serif; color: #e0e0e0; }
+  h1 { text-align: center; margin: 20px 0 5px; font-size: 26px; color: #fff; }
+  h2.page-sub { text-align: center; margin: 0 0 10px; font-size: 14px; color: #888; font-weight: normal; max-width: 1100px; margin-left: auto; margin-right: auto; }
+  .section-title { text-align: center; font-size: 20px; color: #4fc3f7; margin: 30px 0 5px; font-weight: bold; }
+  .section-sub { text-align: center; font-size: 13px; color: #888; margin: 0 0 15px; max-width: 1050px; margin-left: auto; margin-right: auto; }
+  svg text { font-family: 'Segoe UI', sans-serif; pointer-events: none; }
+  svg g { cursor: pointer; }
+  svg g:hover rect, svg g:hover polygon, svg g:hover circle { filter: brightness(1.3); }
+  .legend { display: flex; justify-content: center; gap: 24px; margin: 10px 0 0; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .legend-color { width: 18px; height: 18px; border-radius: 4px; }
+  .hint { text-align: center; font-size: 12px; color: #666; margin-top: 4px; }
+  .tooltip {
+    position: fixed; display: none; max-width: 540px; padding: 12px 16px;
+    background: #222; border: 1px solid #555; border-radius: 8px;
+    font-size: 13px; color: #ddd; line-height: 1.5; z-index: 999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6); pointer-events: none;
+  }
+  .tooltip .tt-title { font-weight: bold; color: #fff; margin-bottom: 4px; font-size: 14px; }
+  .tooltip .tt-input { color: #4FC3F7; }
+  .tooltip .tt-output { color: #FFB74D; }
+  .tooltip .tt-logic { color: #A5D6A7; }
+  .tooltip .tt-warn { color: #EF5350; }
+  .tooltip .tt-ok { color: #66BB6A; }
+  .divider { border: none; border-top: 1px solid #37474F; max-width: 1350px; margin: 35px auto; }
+  table.spec { border-collapse: collapse; margin: 10px auto; font-size: 12px; background: #151530; }
+  table.spec th { background: #0f3460; color: #4fc3f7; padding: 6px 12px; border: 1px solid #37474F; text-align: left; }
+  table.spec td { padding: 5px 12px; border: 1px solid #37474F; color: #ccc; }
+  table.spec tr:hover td { background: #1a2744; }
+  table.spec td.cat { color: #FF9800; font-weight: bold; }
+  table.spec td.range { color: #A5D6A7; text-align: center; }
+  table.spec td.norm { color: #CE93D8; text-align: center; }
+  table.spec td.brain { color: #4FC3F7; font-weight: bold; }
+  .card { max-width: 1250px; margin: 15px auto; background: #151530; border-radius: 10px; padding: 16px 24px; border: 1px solid #37474F; }
+  .card h3 { margin: 0 0 8px; font-size: 16px; }
+  .card p { margin: 4px 0; font-size: 13px; color: #aaa; }
+  .card .topology { color: #FFB74D; font-family: 'Consolas', monospace; font-size: 13px; }
+  .scenario { max-width: 1250px; margin: 15px auto; background: #1a2744; border-radius: 10px; padding: 16px 24px; border: 1px solid #37474F; }
+  .scenario h3 { margin: 0 0 6px; font-size: 15px; color: #FFB74D; }
+  .scenario .sit { font-size: 13px; color: #888; margin: 0 0 8px; }
+  .scenario table { border-collapse: collapse; width: 100%; font-size: 12px; }
+  .scenario th { background: #0f3460; color: #4fc3f7; padding: 4px 8px; border: 1px solid #37474F; text-align: left; }
+  .scenario td { padding: 4px 8px; border: 1px solid #37474F; color: #ccc; }
+</style>
+</head>
+<body>
+<h1>New AI Architecture — Complete Plan</h1>
+<h2 class="page-sub">Master Brain + Sub-Brains + Want List. Each tick the want list can execute MULTIPLE items (several units, a worker, a building).
+Unit Brain outputs a 24-float ideal unit profile matched against every unit's metric vector — handles multiple infantry/cavalry/range subtypes naturally.
+Different brains run at different tick rates (Military=fast, Spatial=on demand, others=1-2/sec). Unit count scaling via military_production output.</h2>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-color" style="background:#FF9800"></div> Master Brain</div>
+  <div class="legend-item"><div class="legend-color" style="background:#4CAF50"></div> Economy Brain</div>
+  <div class="legend-item"><div class="legend-color" style="background:#f44336"></div> Military Brain (separate)</div>
+  <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div> Building Brain</div>
+  <div class="legend-item"><div class="legend-color" style="background:#00BCD4"></div> Spatial Brains (multiple)</div>
+  <div class="legend-item"><div class="legend-color" style="background:#FF5722"></div> Unit Brain</div>
+  <div class="legend-item"><div class="legend-color" style="background:#2196F3"></div> Want List</div>
+  <div class="legend-item"><div class="legend-color" style="background:#00897B"></div> Feedback</div>
+</div>
+<div class="hint">Hover over any node for details. Scroll for complete I/O specs, unit matching, and scenarios.</div>
+<div id="tooltip" class="tooltip"></div>
+
+
+<!-- ========================================== -->
+<!-- HIGH LEVEL ARCHITECTURE DIAGRAM            -->
+<!-- ========================================== -->
+<div class="section-title">System Overview — One Tick</div>
+<div class="section-sub">Master Brain evaluates game state → sub-brains generate wants → Want List executes multiple items per tick → lacking feedback.
+Military Brain is SEPARATE — issues army orders directly (free, no resources).</div>
+
+<svg viewBox="0 0 1500 1200" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1500px;">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#888"/></marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#4CAF50"/></marker>
+    <marker id="ar" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#f44336"/></marker>
+    <marker id="ao" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#FF9800"/></marker>
+    <marker id="at" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#00897B"/></marker>
+    <marker id="ab" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#2196F3"/></marker>
+    <marker id="ap" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#9C27B0"/></marker>
+  </defs>
+
+  <!-- ===== GAME STATE ===== -->
+  <g data-tt-title="Game State (World)" data-tt-body="All observable game data: resources, units, buildings, enemy intel, combat log, map influence, game time.<br>Processed into normalized metric vectors for each brain.">
+    <rect x="350" y="10" width="400" height="44" rx="22" fill="#263238" stroke="#607D8B" stroke-width="2"/>
+    <text x="550" y="38" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">Game State</text>
+  </g>
+
+  <line x1="550" y1="54" x2="550" y2="90" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- ===== MASTER BRAIN ===== -->
+  <g data-tt-title="Master Brain (28 → 9)" data-tt-body="<span class='tt-input'>28 inputs:</span> 10 state + 4 enemy + 5 deltas + 4 trends + 4 battle + 1 total_lacking<br><br><span class='tt-output'>9 outputs:</span><br>Budget (4): economy_urgency, military_production, building_priority, tech_priority<br>Behavioral (5): aggression, defend_urgency, expansion_drive, risk_tolerance, patience<br><br>Topology: 28→48→24→9 | ~2,625 params">
+    <rect x="320" y="90" width="460" height="65" rx="8" fill="#E65100" stroke="#FF9800" stroke-width="2.5"/>
+    <text x="550" y="116" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">Master Brain</text>
+    <text x="550" y="136" text-anchor="middle" fill="#FFB74D" font-size="11">28 inputs → 9 outputs (4 budget + 5 behavioral)</text>
+    <text x="550" y="149" text-anchor="middle" fill="#78909C" font-size="9">28→48→24→9 | ~2,625 params</text>
+  </g>
+
+  <!-- Feedback arrow into master brain -->
+  <line x1="100" y1="122" x2="315" y2="122" stroke="#00897B" stroke-width="2" marker-end="url(#at)"/>
+  <text x="200" y="115" text-anchor="middle" fill="#00897B" font-size="10">total_lacking (last tick)</text>
+
+  <!-- ===== SPLIT: left side = want list brains, right side = military ===== -->
+  <line x1="550" y1="155" x2="550" y2="185" stroke="#888" stroke-width="2"/>
+
+  <!-- Horizontal split line -->
+  <line x1="200" y1="185" x2="1350" y2="185" stroke="#FF9800" stroke-width="1.5" stroke-dasharray="8,4"/>
+
+  <!-- Labels -->
+  <text x="450" y="200" text-anchor="middle" fill="#FF9800" font-size="10">BUDGET + BEHAVIORAL OUTPUTS</text>
+
+  <!-- ===== SEPARATOR: Want List path (left) vs Military (right) ===== -->
+  <line x1="1000" y1="180" x2="1000" y2="700" stroke="#37474F" stroke-width="2" stroke-dasharray="6,8"/>
+  <text x="1010" y="205" fill="#37474F" font-size="11" font-weight="bold">RESOURCE BRAINS</text>
+  <text x="1010" y="220" fill="#37474F" font-size="11">← Want List</text>
+  <text x="1150" y="205" fill="#37474F" font-size="11" font-weight="bold">FREE BRAINS →</text>
+  <text x="1150" y="220" fill="#37474F" font-size="11">No resource cost</text>
+
+  <!-- ===== LEFT SIDE: Economy, Building, Unit brains → Want List ===== -->
+
+  <!-- Arrows from master to sub-brains -->
+  <line x1="380" y1="185" x2="240" y2="260" stroke="#FF9800" stroke-width="1.5" marker-end="url(#ao)"/>
+  <line x1="500" y1="185" x2="500" y2="260" stroke="#FF9800" stroke-width="1.5" marker-end="url(#ao)"/>
+  <line x1="650" y1="185" x2="760" y2="260" stroke="#FF9800" stroke-width="1.5" marker-end="url(#ao)"/>
+
+  <!-- Economy Brain -->
+  <g data-tt-title="Economy Brain (17 → 6)" data-tt-body="<span class='tt-input'>17 inputs:</span><br>3 master: economy_urgency, expansion_drive, risk_tolerance<br>10 domain: per-resource stockpile & income (4+4), free_workers, total_workers<br>4 feedback: lacking_food/wood/stone/gold<br><br><span class='tt-output'>6 outputs:</span><br>create_worker [-1,+1]: priority for worker want<br>food/wood/stone/gold_priority [0,+1]: resource weights for worker placement<br>redistribute [-1,+1]: reassign existing workers<br><br><span class='tt-ok'>ONLY sub-brain with per-resource lacking feedback.</span><br><br>Topology: 17→24→12→6 | ~714 params<br><br><span class='tt-logic'>Want List item:</span> 'Create Worker' with priority = create_worker output value.<br>How many workers? One 'Create Worker' want per tick. If it executes, worker is created. If the brain keeps requesting, priority boosts and more workers get created over consecutive ticks.">
+    <rect x="130" y="260" width="220" height="70" rx="8" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="240" y="284" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Economy Brain</text>
+    <text x="240" y="302" text-anchor="middle" fill="#A5D6A7" font-size="11">17 → 6 | ~714 params</text>
+    <text x="240" y="320" text-anchor="middle" fill="#78909C" font-size="9">+ lacking feedback (4 floats)</text>
+  </g>
+
+  <!-- Feedback arrow into economy -->
+  <line x1="100" y1="295" x2="125" y2="295" stroke="#00897B" stroke-width="2" marker-end="url(#at)"/>
+  <text x="55" y="290" fill="#00897B" font-size="9">lacking</text>
+  <text x="55" y="302" fill="#00897B" font-size="9">per res.</text>
+
+  <!-- Building Brain -->
+  <g data-tt-title="Building Brain (12 → 11)" data-tt-body="<span class='tt-input'>12 inputs:</span><br>4 master: building_priority, tech_priority, defend_urgency, expansion_drive<br>8 domain: building ratios (econ/military/defence/tech), total_resources, total_income, army_size, tech_level<br><br><span class='tt-output'>11 outputs (scores per building type):</span><br>house, res_food, res_wood, res_stone, res_gold, barracks, range, cavalry, defence, tech, skip<br><br><span class='tt-logic'>Highest score above 0 → Want List item</span> 'Build [Type]' with that score as priority.<br>Multiple outputs can be positive → multiple building wants added in one tick.<br><br>No lacking feedback. Decides by strategy.<br><br>Topology: 12→24→12→11 | ~587 params">
+    <rect x="390" y="260" width="220" height="70" rx="8" fill="#4A148C" stroke="#9C27B0" stroke-width="2"/>
+    <text x="500" y="284" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Building Brain</text>
+    <text x="500" y="302" text-anchor="middle" fill="#CE93D8" font-size="11">12 → 11 | ~587 params</text>
+    <text x="500" y="320" text-anchor="middle" fill="#78909C" font-size="9">no lacking feedback</text>
+  </g>
+
+  <!-- Unit Brain -->
+  <g data-tt-title="Unit Brain (10 → 24) — Ideal Unit Profile" data-tt-body="<span class='tt-input'>10 inputs:</span><br>3 master: military_production, defend_urgency, patience<br>7 domain: infantry/range/cavalry ratios (ours 3 + enemy 3), tech_level<br><br><span class='tt-output'>24 outputs — the IDEAL UNIT PROFILE:</span><br>A 24-float vector describing the 'perfect unit' the AI wants right now.<br>These 24 values correspond to the UnitMetricIdx:<br>COST, MAX_HP, ARMOR, SIGHT, COLLECT, ATTACK, RELOAD, RANGE,<br>TYPE_INFANTRY/RANGE/CAVALRY/WORKER/SPECIAL/MELEE/HEAVY/LIGHT,<br>BONUS_INF/RANGE/CAV/WORKER/SPECIAL/MELEE/HEAVY/LIGHT<br><br><span class='tt-logic'>Selection:</span> sqRootSumError between this profile and EVERY unit's precomputed 24-float metric vector. Closest match wins (stochastic via lowestWithRand).<br><br>This handles multiple infantry subtypes naturally — e.g., if the brain outputs high ARMOR + high MAX_HP + TYPE_INFANTRY=1 + TYPE_HEAVY=1, it will match a heavy infantry over light infantry.<br><br>No lacking feedback. Decides by army composition needs.<br><br><span class='tt-warn'>Want List: can add MULTIPLE unit wants per tick.</span> Each high-priority unit type becomes a separate want item.<br><br>Topology: 10→16→8→24 | ~472 params">
+    <rect x="650" y="260" width="220" height="70" rx="8" fill="#BF360C" stroke="#FF5722" stroke-width="2"/>
+    <text x="760" y="284" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Unit Brain</text>
+    <text x="760" y="302" text-anchor="middle" fill="#FFAB91" font-size="11">10 → 24 | ~472 params</text>
+    <text x="760" y="320" text-anchor="middle" fill="#78909C" font-size="9">outputs ideal unit profile (24 floats)</text>
+  </g>
+
+  <!-- ===== RIGHT SIDE: Military Brain (separated) ===== -->
+  <!-- Arrow from master to military -->
+  <line x1="750" y1="155" x2="1200" y2="260" stroke="#FF9800" stroke-width="1.5" marker-end="url(#ao)"/>
+
+  <g data-tt-title="Military Brain (12 → 4) — FREE, FAST tick" data-tt-body="<span class='tt-input'>12 inputs:</span><br>4 master: aggression, defend_urgency, risk_tolerance, patience<br>8 domain: army_size, army_avg_hp, free_army_ratio, strength_ratio, enemy_proximity, army_to_enemy_base, recent_kd_ratio, is_under_attack<br><br><span class='tt-output'>4 outputs:</span><br>attack [-1,+1], defend [-1,+1], retreat [-1,+1], raid [-1,+1]<br>Highest output wins. If none > 0, army holds position.<br><br><span class='tt-warn'>COMPLETELY SEPARATE from Want List.</span><br>Army orders cost NO resources.<br><br><span class='tt-ok'>FAST TICK RATE</span> — runs every few frames (not 1-2/sec like other brains).<br>Combat needs fast tactical response — 1-2/sec is too slow for attack/retreat decisions.<br><br>No lacking feedback. Pure strategy.<br><br>Topology: 12→24→12→4 | ~484 params">
+    <rect x="1080" y="260" width="260" height="80" rx="8" fill="#B71C1C" stroke="#f44336" stroke-width="2.5"/>
+    <text x="1210" y="286" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">Military Brain</text>
+    <text x="1210" y="306" text-anchor="middle" fill="#FFCDD2" font-size="12">12 → 4 | ~484 params</text>
+    <text x="1210" y="322" text-anchor="middle" fill="#EF5350" font-size="11">FREE — no resources, FAST tick</text>
+    <text x="1210" y="336" text-anchor="middle" fill="#78909C" font-size="9">SEPARATE from Want List</text>
+  </g>
+
+  <!-- Military → direct to game -->
+  <line x1="1210" y1="340" x2="1210" y2="400" stroke="#f44336" stroke-width="2.5" marker-end="url(#ar)"/>
+  <g data-tt-title="Army Orders → Game" data-tt-body="Military brain output goes DIRECTLY to the game engine:<br>- attack → army moves toward enemy, engages<br>- defend → army pulls back to base<br>- retreat → full disengage<br>- raid → small force harasses enemy economy<br><br>No want list, no resource cost, no queue.">
+    <rect x="1080" y="400" width="260" height="50" rx="8" fill="#263238" stroke="#f44336" stroke-width="2"/>
+    <text x="1210" y="422" text-anchor="middle" fill="#f44336" font-size="13" font-weight="bold">Army Orders → Game</text>
+    <text x="1210" y="440" text-anchor="middle" fill="#FFCDD2" font-size="11">attack / defend / retreat / raid</text>
+  </g>
+
+  <!-- Spatial Brains (multiple specialized, on-demand) -->
+  <line x1="700" y1="155" x2="1210" y2="480" stroke="#FF9800" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <g data-tt-title="Multiple Spatial Brains — On Demand" data-tt-body="<span class='tt-logic'>MULTIPLE specialized spatial brains</span> instead of one generic brain.<br>Each handles a different 'where?' query with tailored inputs:<br><br><span class='tt-input'>BuildSpatial:</span> where to place buildings<br>Inputs: resource proximity, terrain, existing buildings, expansion_drive<br>Called by: Building Brain<br><br><span class='tt-input'>AttackSpatial:</span> where to send army<br>Inputs: enemy positions, defenses, terrain, aggression<br>Called by: Military Brain<br><br><span class='tt-input'>ScoutSpatial:</span> where to send scouts<br>Inputs: fog of war, last seen timestamps, risk_tolerance<br>Called by: Military Brain<br><br><span class='tt-input'>ExpandSpatial:</span> where to expand economy<br>Inputs: resource locations, safety, expansion_drive<br>Called by: Economy Brain<br><br>Each outputs 9 floats (score per map sector). Highest = chosen location.<br>Called ON DEMAND, not ticked. Each ~800-1,300 params.">
+    <rect x="1080" y="480" width="260" height="100" rx="8" fill="#006064" stroke="#00BCD4" stroke-width="2"/>
+    <text x="1210" y="502" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">Spatial Brains (x4)</text>
+    <text x="1210" y="518" text-anchor="middle" fill="#80DEEA" font-size="10">BuildSpatial | AttackSpatial</text>
+    <text x="1210" y="534" text-anchor="middle" fill="#80DEEA" font-size="10">ScoutSpatial | ExpandSpatial</text>
+    <text x="1210" y="550" text-anchor="middle" fill="#78909C" font-size="9">on demand | ~3,400 params total</text>
+    <text x="1210" y="566" text-anchor="middle" fill="#78909C" font-size="9">each: inputs → 9 sector scores</text>
+  </g>
+
+  <!-- Dashed arrows from economy/building/military to spatial brains -->
+  <line x1="350" y1="320" x2="1075" y2="540" stroke="#00BCD4" stroke-width="1" stroke-dasharray="3,4"/>
+  <text x="680" y="440" fill="#00BCD4" font-size="8">ExpandSpatial</text>
+  <line x1="610" y1="320" x2="1075" y2="510" stroke="#00BCD4" stroke-width="1" stroke-dasharray="3,4"/>
+  <text x="830" y="420" fill="#00BCD4" font-size="8">BuildSpatial</text>
+  <line x1="1080" y1="440" x2="1080" y2="480" stroke="#00BCD4" stroke-width="1" stroke-dasharray="3,4"/>
+  <text x="1060" y="465" fill="#00BCD4" font-size="8" text-anchor="end">Attack/ScoutSpatial</text>
+
+  <!-- ===== ARROWS FROM RESOURCE BRAINS TO WANT LIST ===== -->
+  <line x1="240" y1="330" x2="240" y2="440" stroke="#4CAF50" stroke-width="2" marker-end="url(#ag)"/>
+  <line x1="500" y1="330" x2="500" y2="440" stroke="#9C27B0" stroke-width="2" marker-end="url(#ap)"/>
+  <line x1="760" y1="330" x2="760" y2="440" stroke="#FF5722" stroke-width="2" marker-end="url(#a)"/>
+
+  <text x="240" y="390" text-anchor="middle" fill="#4CAF50" font-size="10">worker wants</text>
+  <text x="500" y="390" text-anchor="middle" fill="#9C27B0" font-size="10">building wants</text>
+  <text x="760" y="390" text-anchor="middle" fill="#FF5722" font-size="10">unit wants</text>
+  <text x="240" y="402" text-anchor="middle" fill="#78909C" font-size="9">(1 per tick)</text>
+  <text x="500" y="402" text-anchor="middle" fill="#78909C" font-size="9">(1+ per tick)</text>
+  <text x="760" y="402" text-anchor="middle" fill="#78909C" font-size="9">(N per tick, N=urgency*MAX)</text>
+
+  <!-- ===== WANT LIST ===== -->
+  <g data-tt-title="Want List — Priority Queue" data-tt-body="<span class='tt-logic'>Central execution system for resource-spending actions.</span><br><br><b>Per tick:</b><br>1. Carry over unexecuted items from last tick<br>2. Merge new brain outputs: re-requested → BOOST, not re-requested → DECAY, below threshold → DROP<br>3. Sort by priority (highest first)<br>4. Walk top-down: affordable → EXECUTE, not affordable → RESERVE for this tick, continue<br>5. Compute lacking resources<br><br><span class='tt-ok'>CAN EXECUTE MULTIPLE ITEMS PER TICK:</span><br>- Multiple unit types (e.g., 2 soldiers + 1 archer)<br>- A worker + units + a building<br>- Anything affordable in the remaining pool after reservations<br><br>The only limit is available resources.<br><br><span class='tt-warn'>Military Brain does NOT use this list.</span> Army orders are free and go directly to game.">
+    <rect x="130" y="440" width="740" height="80" rx="10" fill="#0D47A1" stroke="#2196F3" stroke-width="2.5"/>
+    <text x="500" y="468" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">Want List — Priority Queue</text>
+    <text x="500" y="488" text-anchor="middle" fill="#90CAF9" font-size="12">Merge → Boost/Decay → Sort → Execute top-down (MULTIPLE items per tick)</text>
+    <text x="500" y="506" text-anchor="middle" fill="#64B5F6" font-size="11">Affordable → execute | Not affordable → reserve &amp; continue | Below threshold → drop</text>
+  </g>
+
+  <!-- ===== EXECUTION EXAMPLE ===== -->
+  <line x1="500" y1="520" x2="500" y2="550" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <rect x="130" y="550" width="740" height="230" rx="8" fill="#151530" stroke="#37474F" stroke-width="1.5"/>
+  <text x="500" y="572" text-anchor="middle" fill="#78909C" font-size="12" font-weight="bold">Execution Example — Resources: 300F, 120W, 80S, 100G</text>
+
+  <g data-tt-title="#1 Build Barracks — RESERVE" data-tt-body="Priority: 0.98 (boosted 3x from carry-over)<br>Cost: 200W 50S | Have: 120W 80S<br>Can't afford → RESERVE 120W + 50S<br>Remaining: 300F, 0W, 30S, 100G<br>Lacking: 80W">
+    <rect x="150" y="585" width="700" height="26" rx="5" fill="#880E4F" stroke="#E91E63" stroke-width="1.5"/>
+    <text x="170" y="603" fill="#fff" font-size="11" font-weight="bold">#1</text>
+    <text x="250" y="603" fill="#fff" font-size="11">Build Barracks (0.98)</text>
+    <text x="500" y="603" fill="#EF5350" font-size="10">200W 50S — can't afford</text>
+    <text x="720" y="603" fill="#FFB74D" font-size="10" font-weight="bold">RESERVE</text>
+    <text x="800" y="603" fill="#EF5350" font-size="9">-80W</text>
+  </g>
+
+  <g data-tt-title="#2 Train Heavy Infantry — EXECUTE" data-tt-body="Priority: 0.85 (unit brain matched to heavy infantry profile)<br>Cost: 80F 30G | Remaining: 300F, 0W, 30S, 100G<br>CAN afford → EXECUTE<br>Remaining: 220F, 0W, 30S, 70G">
+    <rect x="150" y="616" width="700" height="26" rx="5" fill="#1B5E20" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="170" y="634" fill="#fff" font-size="11" font-weight="bold">#2</text>
+    <text x="250" y="634" fill="#fff" font-size="11">Train Heavy Infantry (0.85)</text>
+    <text x="500" y="634" fill="#66BB6A" font-size="10">80F 30G — affordable</text>
+    <text x="720" y="634" fill="#4CAF50" font-size="10" font-weight="bold">EXECUTE</text>
+  </g>
+
+  <g data-tt-title="#3 Train Pikeman — EXECUTE" data-tt-body="Priority: 0.72 (another infantry type, different unit profile match)<br>Cost: 60F 20G | Remaining: 220F, 0W, 30S, 70G<br>CAN afford → EXECUTE<br>Remaining: 160F, 0W, 30S, 50G<br><br><span class='tt-ok'>Multiple units trained in same tick!</span>">
+    <rect x="150" y="647" width="700" height="26" rx="5" fill="#1B5E20" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="170" y="665" fill="#fff" font-size="11" font-weight="bold">#3</text>
+    <text x="250" y="665" fill="#fff" font-size="11">Train Pikeman (0.72)</text>
+    <text x="500" y="665" fill="#66BB6A" font-size="10">60F 20G — affordable</text>
+    <text x="720" y="665" fill="#4CAF50" font-size="10" font-weight="bold">EXECUTE</text>
+  </g>
+
+  <g data-tt-title="#4 Create Worker — EXECUTE" data-tt-body="Priority: 0.65<br>Cost: 50F | Remaining: 160F<br>CAN afford → EXECUTE<br>Remaining: 110F, 0W, 30S, 50G<br><br>Worker + 2 units + building reserved = all in one tick!">
+    <rect x="150" y="678" width="700" height="26" rx="5" fill="#1B5E20" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="170" y="696" fill="#fff" font-size="11" font-weight="bold">#4</text>
+    <text x="250" y="696" fill="#fff" font-size="11">Create Worker (0.65)</text>
+    <text x="500" y="696" fill="#66BB6A" font-size="10">50F — affordable</text>
+    <text x="720" y="696" fill="#4CAF50" font-size="10" font-weight="bold">EXECUTE</text>
+  </g>
+
+  <g data-tt-title="#5 Train Archer — RESERVE" data-tt-body="Priority: 0.55<br>Cost: 40F 30W | Remaining: 110F, 0W<br>Can't afford (0W) → RESERVE<br>Lacking: 30W">
+    <rect x="150" y="709" width="700" height="26" rx="5" fill="#880E4F" stroke="#E91E63" stroke-width="1.5"/>
+    <text x="170" y="727" fill="#fff" font-size="11" font-weight="bold">#5</text>
+    <text x="250" y="727" fill="#B0BEC5" font-size="11">Train Archer (0.55)</text>
+    <text x="500" y="727" fill="#EF5350" font-size="10">40F 30W — no wood left</text>
+    <text x="720" y="727" fill="#FFB74D" font-size="10" font-weight="bold">RESERVE</text>
+    <text x="800" y="727" fill="#EF5350" font-size="9">-30W</text>
+  </g>
+
+  <text x="500" y="760" text-anchor="middle" fill="#4CAF50" font-size="11" font-weight="bold">Result: 2 units + 1 worker executed. Barracks + Archer reserved (saving wood).</text>
+
+  <!-- ===== LACKING RESOURCE COMPUTATION ===== -->
+  <line x1="500" y1="780" x2="500" y2="810" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+
+  <g data-tt-title="Compute Lacking Resources" data-tt-body="Sum shortfalls from unaffordable items:<br>Barracks: lacking 80W<br>Archer: lacking 30W<br><br>Per-resource: lacking_wood = 110<br>Total sum: 110<br><br>Normalize: wood=110/500=0.22, total=110/1000=0.11<br>Feed to next tick: total → Master Brain, per-resource → Economy Brain only.">
+    <rect x="250" y="810" width="500" height="44" rx="6" fill="#00695C" stroke="#00897B" stroke-width="2"/>
+    <text x="500" y="832" text-anchor="middle" fill="#fff" font-size="13">Lacking: wood=110 (0.22 norm) | total=110 (0.11 norm)</text>
+    <text x="500" y="848" text-anchor="middle" fill="#80CBC4" font-size="10">total → Master Brain | per-resource → Economy Brain (next tick)</text>
+  </g>
+
+  <!-- Feedback arrows -->
+  <line x1="500" y1="854" x2="500" y2="880" stroke="#00897B" stroke-width="2"/>
+  <line x1="500" y1="880" x2="100" y2="880" stroke="#00897B" stroke-width="2"/>
+  <line x1="100" y1="880" x2="100" y2="122" stroke="#00897B" stroke-width="2"/>
+  <!-- to master: already drawn above -->
+  <!-- to economy: fork at 100,295 already drawn above -->
+
+  <!-- ===== GAME ACTIONS ===== -->
+  <line x1="500" y1="880" x2="500" y2="920" stroke="#888" stroke-width="2" marker-end="url(#a)"/>
+  <g data-tt-title="Executed This Tick" data-tt-body="Resource actions from want list:<br>- Train Heavy Infantry<br>- Train Pikeman<br>- Create Worker<br><br>Free actions from military brain:<br>- Defend order<br><br>All modify game state → feeds into next tick's brain inputs.">
+    <rect x="250" y="920" width="800" height="44" rx="22" fill="#263238" stroke="#607D8B" stroke-width="2"/>
+    <text x="650" y="948" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Executed: 2 units + 1 worker (want list) + defend order (military) → Next Tick</text>
+  </g>
+
+  <!-- Genome box -->
+  <rect x="250" y="990" width="800" height="50" rx="8" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="650" y="1012" text-anchor="middle" fill="#78909C" font-size="12" font-weight="bold">Total Genome: 9 brains | ~8,282 params | ~33KB | GA population: 200-400</text>
+  <text x="650" y="1030" text-anchor="middle" fill="#607D8B" font-size="11">Master: 2,625 | Economy: 714 | Building: 587 | Unit: 472 | Military: 484 | 4x Spatial: ~3,400</text>
+</svg>
+
+
+<!-- ========================================== -->
+<!-- TICK RATES                                 -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">Tick Rates — Different Brains, Different Speeds</div>
+<div class="section-sub">AI compute is expensive — only 1-2 evaluations per second for most brains. Military needs faster response for combat.
+Spatial brains are triggered on demand (not ticked). This avoids wasting compute on brains that don't need constant updates.</div>
+
+<svg viewBox="0 0 1200 420" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1200px;">
+  <!-- Timeline -->
+  <text x="600" y="25" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">Brain Tick Rates Over 1 Second</text>
+  <text x="600" y="42" text-anchor="middle" fill="#78909C" font-size="11">Each dot = one brain evaluation. Military ticks ~10x more often than strategy brains.</text>
+
+  <!-- Time axis -->
+  <line x1="200" y1="380" x2="1100" y2="380" stroke="#607D8B" stroke-width="2"/>
+  <text x="200" y="400" text-anchor="middle" fill="#607D8B" font-size="10">0ms</text>
+  <text x="425" y="400" text-anchor="middle" fill="#607D8B" font-size="10">250ms</text>
+  <text x="650" y="400" text-anchor="middle" fill="#607D8B" font-size="10">500ms</text>
+  <text x="875" y="400" text-anchor="middle" fill="#607D8B" font-size="10">750ms</text>
+  <text x="1100" y="400" text-anchor="middle" fill="#607D8B" font-size="10">1000ms</text>
+
+  <!-- SLOW TICK: Master, Economy, Building, Unit (1-2 per second) -->
+  <g data-tt-title="Slow Tick Brains (1-2/sec)" data-tt-body="<span class='tt-logic'>Master, Economy, Building, Unit brains</span> run 1-2 times per second.<br><br>Why slow?<br>- NN evaluation is expensive<br>- Strategic decisions don't change every frame<br>- Building/economy planning is inherently slow<br><br>Unit Brain runs slow but uses <span class='tt-output'>count scaling</span> to compensate:<br>count = round(unit_urgency * MAX_UNITS_PER_TICK)<br>One evaluation can request multiple units.">
+    <text x="120" y="80" fill="#FF9800" font-size="12" font-weight="bold" text-anchor="end">Master</text>
+    <circle cx="200" cy="76" r="8" fill="#FF9800" stroke="#FFB74D" stroke-width="2"/>
+    <circle cx="650" cy="76" r="8" fill="#FF9800" stroke="#FFB74D" stroke-width="2"/>
+    <line x1="208" y1="76" x2="642" y2="76" stroke="#FF9800" stroke-width="1" stroke-dasharray="4,6"/>
+    <line x1="658" y1="76" x2="1100" y2="76" stroke="#FF9800" stroke-width="1" stroke-dasharray="4,6"/>
+
+    <text x="120" y="115" fill="#4CAF50" font-size="12" font-weight="bold" text-anchor="end">Economy</text>
+    <circle cx="200" cy="111" r="8" fill="#4CAF50" stroke="#66BB6A" stroke-width="2"/>
+    <circle cx="650" cy="111" r="8" fill="#4CAF50" stroke="#66BB6A" stroke-width="2"/>
+    <line x1="208" y1="111" x2="642" y2="111" stroke="#4CAF50" stroke-width="1" stroke-dasharray="4,6"/>
+
+    <text x="120" y="150" fill="#9C27B0" font-size="12" font-weight="bold" text-anchor="end">Building</text>
+    <circle cx="200" cy="146" r="8" fill="#9C27B0" stroke="#BA68C8" stroke-width="2"/>
+    <circle cx="650" cy="146" r="8" fill="#9C27B0" stroke="#BA68C8" stroke-width="2"/>
+    <line x1="208" y1="146" x2="642" y2="146" stroke="#9C27B0" stroke-width="1" stroke-dasharray="4,6"/>
+
+    <text x="120" y="185" fill="#FF5722" font-size="12" font-weight="bold" text-anchor="end">Unit</text>
+    <circle cx="200" cy="181" r="8" fill="#FF5722" stroke="#FF8A65" stroke-width="2"/>
+    <circle cx="650" cy="181" r="8" fill="#FF5722" stroke="#FF8A65" stroke-width="2"/>
+    <line x1="208" y1="181" x2="642" y2="181" stroke="#FF5722" stroke-width="1" stroke-dasharray="4,6"/>
+  </g>
+
+  <text x="1150" y="130" fill="#78909C" font-size="11">SLOW</text>
+  <text x="1150" y="145" fill="#78909C" font-size="10">1-2/sec</text>
+
+  <!-- Separator -->
+  <line x1="130" y1="215" x2="1100" y2="215" stroke="#37474F" stroke-width="1" stroke-dasharray="6,4"/>
+
+  <!-- FAST TICK: Military (every few frames) -->
+  <g data-tt-title="Fast Tick: Military Brain" data-tt-body="<span class='tt-warn'>Military brain runs every few frames</span> (~10-15 times per second).<br><br>Why fast?<br>- Combat happens in real-time<br>- Attack/retreat/defend decisions need sub-second response<br>- An enemy rush could wipe you between slow ticks<br>- Army orders are FREE (no want list) so fast ticking is cheap<br><br>Military brain is small (484 params) so fast evaluation is affordable.">
+    <text x="120" y="255" fill="#f44336" font-size="12" font-weight="bold" text-anchor="end">Military</text>
+    <circle cx="200" cy="251" r="6" fill="#f44336" stroke="#EF5350" stroke-width="2"/>
+    <circle cx="290" cy="251" r="6" fill="#f44336" stroke="#EF5350" stroke-width="2"/>
+    <circle cx="380" cy="251" r="6" fill="#f44336" stroke="#EF5350" stroke-width="2"/>
+    <circle cx="470" cy="251" r="6" fill="#f44336" stroke="#EF5350" stroke-width="2"/>
+    <circle cx="560" cy="251" r="6" fill="#f44336" stroke="#EF5350" stroke-width="2"/>
+    <circle cx="650" cy="251" r="6" fill="#f44336" stroke="#EF5350" stroke-width="2"/>
+    <circle cx="740" cy="251" r="6" fill="#f44336" stroke="#EF5350" stroke-width="2"/>
+    <circle cx="830" cy="251" r="6" fill="#f44336" stroke="#EF5350" stroke-width="2"/>
+    <circle cx="920" cy="251" r="6" fill="#f44336" stroke="#EF5350" stroke-width="2"/>
+    <circle cx="1010" cy="251" r="6" fill="#f44336" stroke="#EF5350" stroke-width="2"/>
+  </g>
+
+  <text x="1150" y="253" fill="#EF5350" font-size="11" font-weight="bold">FAST</text>
+  <text x="1150" y="268" fill="#EF5350" font-size="10">~10/sec</text>
+
+  <!-- Separator -->
+  <line x1="130" y1="290" x2="1100" y2="290" stroke="#37474F" stroke-width="1" stroke-dasharray="6,4"/>
+
+  <!-- ON DEMAND: Spatial Brains -->
+  <g data-tt-title="On Demand: Spatial Brains" data-tt-body="<span class='tt-logic'>Spatial brains are NOT ticked.</span> They run only when another brain needs a location answer.<br><br>Triggers:<br>- Building Brain decides to build → calls BuildSpatial for placement<br>- Military Brain decides to attack → calls AttackSpatial for target sector<br>- Economy Brain wants to expand → calls ExpandSpatial<br>- Military Brain needs intel → calls ScoutSpatial<br><br>Could fire 0 times in a quiet tick, or 3-4 times in a busy tick.">
+    <text x="120" y="330" fill="#00BCD4" font-size="12" font-weight="bold" text-anchor="end">Spatial(x4)</text>
+    <circle cx="200" cy="326" r="6" fill="#00BCD4" stroke="#4DD0E1" stroke-width="2"/>
+    <text x="215" y="322" fill="#78909C" font-size="8">build?</text>
+    <circle cx="650" cy="326" r="6" fill="#00BCD4" stroke="#4DD0E1" stroke-width="2"/>
+    <text x="665" y="322" fill="#78909C" font-size="8">attack?</text>
+    <circle cx="870" cy="326" r="6" fill="#00BCD4" stroke="#4DD0E1" stroke-width="2"/>
+    <text x="885" y="322" fill="#78909C" font-size="8">expand?</text>
+    <text x="540" y="345" fill="#78909C" font-size="9">↑ triggered by other brains, not regular interval</text>
+  </g>
+
+  <text x="1150" y="328" fill="#00BCD4" font-size="11" font-weight="bold">ON DEMAND</text>
+  <text x="1150" y="343" fill="#00BCD4" font-size="10">event-driven</text>
+</svg>
+
+<table class="spec" style="max-width:900px;">
+  <tr><th>Brain</th><th>Tick Rate</th><th>Frequency</th><th>Why</th></tr>
+  <tr><td class="brain" style="color:#FF9800">Master</td><td>Slow</td><td class="range">1-2/sec</td><td>Strategic budget shifts are slow decisions</td></tr>
+  <tr><td class="brain" style="color:#4CAF50">Economy</td><td>Slow</td><td class="range">1-2/sec</td><td>Resource allocation changes gradually</td></tr>
+  <tr><td class="brain" style="color:#9C27B0">Building</td><td>Slow</td><td class="range">1-2/sec</td><td>Buildings take time to construct anyway</td></tr>
+  <tr><td class="brain" style="color:#FF5722">Unit</td><td>Slow</td><td class="range">1-2/sec</td><td>Count scaling compensates (N units per eval)</td></tr>
+  <tr><td class="brain" style="color:#f44336">Military</td><td style="color:#EF5350;font-weight:bold">Fast</td><td class="range" style="color:#EF5350">~10-15/sec</td><td>Combat requires sub-second tactical response</td></tr>
+  <tr><td class="brain" style="color:#00BCD4">Spatial (x4)</td><td style="color:#00BCD4;font-weight:bold">On demand</td><td class="range" style="color:#00BCD4">0-4/tick</td><td>Only when a brain needs a location answer</td></tr>
+</table>
+
+
+<!-- ========================================== -->
+<!-- UNIT COUNT SCALING                         -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">Unit Count Scaling — Multiple Units Per Tick</div>
+<div class="section-sub">At 1-2 ticks/second, adding 1 unit per tick takes 10-20 seconds to build an army of 20. That's too slow for an RTS.
+Solution: Master Brain's military_production output controls how many copies of the matched unit go to the want list.</div>
+
+<svg viewBox="0 0 1300 700" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1300px;">
+  <defs>
+    <marker id="cs" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#888"/></marker>
+    <marker id="csg" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#4CAF50"/></marker>
+  </defs>
+
+  <text x="650" y="25" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">Unit Count Scaling Formula</text>
+
+  <!-- Formula box -->
+  <g data-tt-title="Count Scaling Formula" data-tt-body="<span class='tt-logic'>count = round(unit_urgency * MAX_UNITS_PER_TICK)</span><br><br>unit_urgency = Master Brain output[1] (military_production), range [-1,+1]<br>MAX_UNITS_PER_TICK = magic constant (e.g. 5)<br><br>If unit_urgency ≤ 0 → count = 0 (don't produce units)<br>If unit_urgency = 0.6 → count = round(0.6 * 5) = 3<br>If unit_urgency = 1.0 → count = 5 (maximum)<br><br>Unit Brain runs ONCE, outputs ONE 24-float profile → matched to ONE unit type.<br>Then 'count' copies of that unit type are added to the want list.">
+    <rect x="300" y="45" width="700" height="70" rx="10" fill="#151530" stroke="#FF5722" stroke-width="2"/>
+    <text x="650" y="72" text-anchor="middle" fill="#FFB74D" font-size="18" font-family="Consolas, monospace">count = round( unit_urgency * MAX_UNITS_PER_TICK )</text>
+    <text x="650" y="100" text-anchor="middle" fill="#78909C" font-size="12">unit_urgency = Master OUT[1] [-1,+1] | MAX_UNITS_PER_TICK = 5 (magic constant)</text>
+  </g>
+
+  <!-- Examples -->
+  <rect x="150" y="140" width="1000" height="150" rx="8" fill="#151530" stroke="#37474F" stroke-width="1.5"/>
+  <text x="650" y="162" text-anchor="middle" fill="#78909C" font-size="12" font-weight="bold">Examples (MAX_UNITS_PER_TICK = 5)</text>
+
+  <g data-tt-title="urgency = -0.3 → 0 units" data-tt-body="Negative urgency = Master Brain doesn't want units right now.<br>Count clamps to 0. Unit Brain is not even evaluated.<br>Economy/building takes priority.">
+    <rect x="170" y="175" width="960" height="24" rx="4" fill="#37474F" stroke="#607D8B" stroke-width="1"/>
+    <text x="190" y="192" fill="#EF5350" font-size="11">urgency = -0.3</text>
+    <text x="400" y="192" fill="#78909C" font-size="11">round(-0.3 * 5) = -2 → clamped to 0</text>
+    <text x="800" y="192" fill="#EF5350" font-size="11" font-weight="bold">0 units — don't produce</text>
+  </g>
+
+  <g data-tt-title="urgency = 0.4 → 2 Pikemen" data-tt-body="Moderate urgency. Unit Brain outputs profile matching Pikeman.<br>2 copies of 'Train Pikeman' added to want list.<br>Each has the same priority but is a separate item.">
+    <rect x="170" y="205" width="960" height="24" rx="4" fill="#1B5E20" stroke="#4CAF50" stroke-width="1"/>
+    <text x="190" y="222" fill="#A5D6A7" font-size="11">urgency = 0.4</text>
+    <text x="400" y="222" fill="#A5D6A7" font-size="11">round(0.4 * 5) = 2</text>
+    <text x="800" y="222" fill="#4CAF50" font-size="11" font-weight="bold">2x Pikeman → Want List</text>
+  </g>
+
+  <g data-tt-title="urgency = 0.6 → 3 Archers" data-tt-body="High urgency. Unit Brain outputs profile matching Archer this tick.<br>3 copies of 'Train Archer' added to want list.">
+    <rect x="170" y="235" width="960" height="24" rx="4" fill="#1B5E20" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="190" y="252" fill="#A5D6A7" font-size="11">urgency = 0.6</text>
+    <text x="400" y="252" fill="#A5D6A7" font-size="11">round(0.6 * 5) = 3</text>
+    <text x="800" y="252" fill="#4CAF50" font-size="11" font-weight="bold">3x Archer → Want List</text>
+  </g>
+
+  <g data-tt-title="urgency = 1.0 → 5 Knights" data-tt-body="Maximum urgency. Full military production.<br>5 copies of matched unit added to want list.<br>Whether they all execute depends on resources.">
+    <rect x="170" y="265" width="960" height="24" rx="4" fill="#1B5E20" stroke="#66BB6A" stroke-width="2"/>
+    <text x="190" y="282" fill="#66BB6A" font-size="11" font-weight="bold">urgency = 1.0</text>
+    <text x="400" y="282" fill="#66BB6A" font-size="11">round(1.0 * 5) = 5</text>
+    <text x="800" y="282" fill="#66BB6A" font-size="11" font-weight="bold">5x Knight → Want List (max)</text>
+  </g>
+
+  <!-- Multi-tick accumulation -->
+  <text x="650" y="330" text-anchor="middle" fill="#4fc3f7" font-size="14" font-weight="bold">Multi-Tick Army Accumulation</text>
+  <text x="650" y="348" text-anchor="middle" fill="#888" font-size="11">Over multiple ticks, Unit Brain outputs different profiles → diverse army builds up via boost/decay</text>
+
+  <!-- Tick 1 -->
+  <rect x="100" y="365" width="240" height="130" rx="6" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="220" y="385" text-anchor="middle" fill="#4fc3f7" font-size="12" font-weight="bold">Tick 1 (urgency=0.6)</text>
+  <text x="220" y="403" text-anchor="middle" fill="#FF5722" font-size="11">Profile → Pikeman</text>
+  <text x="220" y="420" text-anchor="middle" fill="#A5D6A7" font-size="11">3x Pikeman added</text>
+  <rect x="120" y="430" width="200" height="20" rx="3" fill="#1B5E20" stroke="#4CAF50" stroke-width="1"/>
+  <text x="220" y="445" text-anchor="middle" fill="#fff" font-size="10">Want List: Pikeman x3</text>
+  <rect x="120" y="455" width="200" height="20" rx="3" fill="#37474F" stroke="#607D8B" stroke-width="1"/>
+  <text x="220" y="470" text-anchor="middle" fill="#78909C" font-size="10">(2 executed, 1 reserved)</text>
+
+  <line x1="340" y1="430" x2="380" y2="430" stroke="#888" stroke-width="1.5" marker-end="url(#cs)"/>
+
+  <!-- Tick 2 -->
+  <rect x="380" y="365" width="240" height="130" rx="6" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="500" y="385" text-anchor="middle" fill="#4fc3f7" font-size="12" font-weight="bold">Tick 2 (urgency=0.4)</text>
+  <text x="500" y="403" text-anchor="middle" fill="#FF5722" font-size="11">Profile → Archer</text>
+  <text x="500" y="420" text-anchor="middle" fill="#A5D6A7" font-size="11">2x Archer added</text>
+  <rect x="400" y="430" width="200" height="20" rx="3" fill="#1B5E20" stroke="#4CAF50" stroke-width="1"/>
+  <text x="500" y="445" text-anchor="middle" fill="#fff" font-size="10">Carry: Pikeman x1 (boosted)</text>
+  <rect x="400" y="455" width="200" height="20" rx="3" fill="#1B5E20" stroke="#4CAF50" stroke-width="1"/>
+  <text x="500" y="470" text-anchor="middle" fill="#fff" font-size="10">New: Archer x2</text>
+
+  <line x1="620" y1="430" x2="660" y2="430" stroke="#888" stroke-width="1.5" marker-end="url(#cs)"/>
+
+  <!-- Tick 3 -->
+  <rect x="660" y="365" width="240" height="130" rx="6" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="780" y="385" text-anchor="middle" fill="#4fc3f7" font-size="12" font-weight="bold">Tick 3 (urgency=0.6)</text>
+  <text x="780" y="403" text-anchor="middle" fill="#FF5722" font-size="11">Profile → Pikeman again</text>
+  <text x="780" y="420" text-anchor="middle" fill="#A5D6A7" font-size="11">3x Pikeman added (boost!)</text>
+  <rect x="680" y="430" width="200" height="20" rx="3" fill="#1B5E20" stroke="#4CAF50" stroke-width="1"/>
+  <text x="780" y="445" text-anchor="middle" fill="#fff" font-size="10">Pikeman x3 (high pri)</text>
+  <rect x="680" y="455" width="200" height="20" rx="3" fill="#37474F" stroke="#607D8B" stroke-width="1"/>
+  <text x="780" y="470" text-anchor="middle" fill="#fff" font-size="10">Archer x1 (decaying)</text>
+
+  <line x1="900" y1="430" x2="940" y2="430" stroke="#888" stroke-width="1.5" marker-end="url(#cs)"/>
+
+  <!-- Result -->
+  <rect x="940" y="365" width="240" height="130" rx="6" fill="#1a2744" stroke="#4CAF50" stroke-width="2"/>
+  <text x="1060" y="385" text-anchor="middle" fill="#4CAF50" font-size="12" font-weight="bold">Army After 3 Ticks</text>
+  <text x="1060" y="410" text-anchor="middle" fill="#A5D6A7" font-size="12">~5-6 Pikemen</text>
+  <text x="1060" y="430" text-anchor="middle" fill="#A5D6A7" font-size="12">~2 Archers</text>
+  <text x="1060" y="455" text-anchor="middle" fill="#78909C" font-size="10">Mixed army built in ~2 sec</text>
+  <text x="1060" y="470" text-anchor="middle" fill="#78909C" font-size="10">without needing multi-output</text>
+
+  <!-- Bottom note -->
+  <rect x="150" y="520" width="1000" height="80" rx="8" fill="#1a2744" stroke="#FF9800" stroke-width="1"/>
+  <text x="650" y="545" text-anchor="middle" fill="#FFB74D" font-size="13" font-weight="bold">How It Works Together</text>
+  <text x="650" y="565" text-anchor="middle" fill="#e0e0e0" font-size="12">1. Master Brain outputs unit_urgency [-1,+1] → scaled to count (0 to MAX_UNITS_PER_TICK)</text>
+  <text x="650" y="582" text-anchor="middle" fill="#e0e0e0" font-size="12">2. Unit Brain runs ONCE → outputs ONE 24-float profile → matched to ONE unit type</text>
+  <text x="650" y="599" text-anchor="middle" fill="#e0e0e0" font-size="12">3. 'count' copies of that unit added to Want List. Over ticks, different types accumulate via boost/decay.</text>
+
+  <rect x="150" y="620" width="1000" height="50" rx="8" fill="#151530" stroke="#37474F" stroke-width="1"/>
+  <text x="650" y="642" text-anchor="middle" fill="#78909C" font-size="12">With MAX=5 and 2 ticks/sec, the AI can request up to 10 units/second — sufficient for army building.</text>
+  <text x="650" y="658" text-anchor="middle" fill="#607D8B" font-size="11">MAX_UNITS_PER_TICK is a tunable magic constant. Could be context-dependent in future (e.g. number of barracks).</text>
+</svg>
+
+
+<!-- ========================================== -->
+<!-- MULTIPLE SPATIAL BRAINS                    -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">Multiple Spatial Brains — Specialized "Where?" Queries</div>
+<div class="section-sub">Instead of one spatial brain with a type input, we use 4 specialized spatial brains. Each has different inputs tailored to its specific query type.
+Called on demand when a brain needs a location. Not ticked.</div>
+
+<svg viewBox="0 0 1300 560" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1300px;">
+  <defs>
+    <marker id="sp" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#00BCD4"/></marker>
+  </defs>
+
+  <!-- Callers on the left -->
+  <g data-tt-title="Economy Brain" data-tt-body="Calls ExpandSpatial when it needs to know where to send new workers or expand resource gathering.">
+    <rect x="30" y="60" width="180" height="40" rx="6" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="120" y="85" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">Economy Brain</text>
+  </g>
+
+  <g data-tt-title="Building Brain" data-tt-body="Calls BuildSpatial when it decides to construct a building and needs optimal placement.">
+    <rect x="30" y="140" width="180" height="40" rx="6" fill="#4A148C" stroke="#9C27B0" stroke-width="2"/>
+    <text x="120" y="165" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">Building Brain</text>
+  </g>
+
+  <g data-tt-title="Military Brain" data-tt-body="Calls AttackSpatial (where to attack) and ScoutSpatial (where to scout) depending on its decisions.">
+    <rect x="30" y="220" width="180" height="40" rx="6" fill="#B71C1C" stroke="#f44336" stroke-width="2"/>
+    <text x="120" y="245" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">Military Brain</text>
+  </g>
+
+  <!-- Arrows from callers to spatial brains -->
+  <line x1="210" y1="80" x2="350" y2="380" stroke="#00BCD4" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#sp)"/>
+  <line x1="210" y1="160" x2="350" y2="100" stroke="#00BCD4" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#sp)"/>
+  <line x1="210" y1="240" x2="650" y2="100" stroke="#00BCD4" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#sp)"/>
+  <line x1="210" y1="240" x2="950" y2="100" stroke="#00BCD4" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#sp)"/>
+
+  <!-- 4 Spatial Brains -->
+  <g data-tt-title="BuildSpatial — Where to Place Buildings" data-tt-body="<span class='tt-input'>Inputs (~18):</span><br>2 master: expansion_drive, defend_urgency<br>9 own_influence per sector<br>4 resource_proximity per sector (food/wood/stone/gold nearest)<br>existing_building_density, terrain_buildability, distance_from_center<br><br><span class='tt-output'>9 outputs:</span> score per map sector<br>Highest score = build location<br><br>Topology: 18→24→12→9 | ~771 params<br><br>Called by: Building Brain (when it decides what to build)">
+    <rect x="280" y="70" width="260" height="110" rx="8" fill="#006064" stroke="#00BCD4" stroke-width="2"/>
+    <text x="410" y="95" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">BuildSpatial</text>
+    <text x="410" y="112" text-anchor="middle" fill="#80DEEA" font-size="10">Where to place buildings</text>
+    <text x="410" y="130" text-anchor="middle" fill="#78909C" font-size="10">18→24→12→9 | ~771 params</text>
+    <text x="410" y="148" text-anchor="middle" fill="#4DD0E1" font-size="9">resource proximity, terrain, density</text>
+    <text x="410" y="165" text-anchor="middle" fill="#607D8B" font-size="9">Called by: Building Brain</text>
+  </g>
+
+  <g data-tt-title="AttackSpatial — Where to Send Army" data-tt-body="<span class='tt-input'>Inputs (~22):</span><br>2 master: aggression, risk_tolerance<br>9 own_influence per sector<br>9 enemy_influence per sector<br>enemy_base_sector, enemy_army_sector<br><br><span class='tt-output'>9 outputs:</span> score per map sector<br>Highest score = attack target<br><br>Topology: 22→32→16→9 | ~1,225 params<br><br>Called by: Military Brain (when it decides to attack/raid)">
+    <rect x="580" y="70" width="260" height="110" rx="8" fill="#006064" stroke="#00BCD4" stroke-width="2"/>
+    <text x="710" y="95" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">AttackSpatial</text>
+    <text x="710" y="112" text-anchor="middle" fill="#80DEEA" font-size="10">Where to send army</text>
+    <text x="710" y="130" text-anchor="middle" fill="#78909C" font-size="10">22→32→16→9 | ~1,225 params</text>
+    <text x="710" y="148" text-anchor="middle" fill="#4DD0E1" font-size="9">enemy influence, positions, defenses</text>
+    <text x="710" y="165" text-anchor="middle" fill="#607D8B" font-size="9">Called by: Military Brain</text>
+  </g>
+
+  <g data-tt-title="ScoutSpatial — Where to Send Scouts" data-tt-body="<span class='tt-input'>Inputs (~14):</span><br>1 master: risk_tolerance<br>9 fog_of_war per sector (0=unseen, 1=fully visible)<br>last_seen_age per sector (normalized time since last scouted)<br>has_enemy_nearby<br><br><span class='tt-output'>9 outputs:</span> score per map sector<br>Highest score = scout destination<br><br>Topology: 14→16→8→9 | ~393 params<br><br>Called by: Military Brain (periodically for map awareness)">
+    <rect x="880" y="70" width="260" height="110" rx="8" fill="#006064" stroke="#00BCD4" stroke-width="2"/>
+    <text x="1010" y="95" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">ScoutSpatial</text>
+    <text x="1010" y="112" text-anchor="middle" fill="#80DEEA" font-size="10">Where to send scouts</text>
+    <text x="1010" y="130" text-anchor="middle" fill="#78909C" font-size="10">14→16→8→9 | ~393 params</text>
+    <text x="1010" y="148" text-anchor="middle" fill="#4DD0E1" font-size="9">fog of war, last seen timestamps</text>
+    <text x="1010" y="165" text-anchor="middle" fill="#607D8B" font-size="9">Called by: Military Brain</text>
+  </g>
+
+  <g data-tt-title="ExpandSpatial — Where to Expand Economy" data-tt-body="<span class='tt-input'>Inputs (~18):</span><br>2 master: expansion_drive, risk_tolerance<br>9 own_influence per sector<br>4 resource_richness per sector (food/wood/stone/gold availability)<br>safety_per_sector (distance from known enemies)<br><br><span class='tt-output'>9 outputs:</span> score per map sector<br>Highest score = expansion target<br><br>Topology: 18→24→12→9 | ~771 params<br><br>Called by: Economy Brain (when workers need new areas)">
+    <rect x="280" y="350" width="260" height="110" rx="8" fill="#006064" stroke="#00BCD4" stroke-width="2"/>
+    <text x="410" y="375" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">ExpandSpatial</text>
+    <text x="410" y="392" text-anchor="middle" fill="#80DEEA" font-size="10">Where to expand economy</text>
+    <text x="410" y="410" text-anchor="middle" fill="#78909C" font-size="10">18→24→12→9 | ~771 params</text>
+    <text x="410" y="428" text-anchor="middle" fill="#4DD0E1" font-size="9">resource richness, safety, influence</text>
+    <text x="410" y="445" text-anchor="middle" fill="#607D8B" font-size="9">Called by: Economy Brain</text>
+  </g>
+
+  <!-- All output 9 sectors -->
+  <rect x="580" y="250" width="560" height="60" rx="8" fill="#151530" stroke="#00BCD4" stroke-width="1.5"/>
+  <text x="860" y="272" text-anchor="middle" fill="#80DEEA" font-size="12" font-weight="bold">All output: 9 sector scores → highest = chosen location</text>
+  <text x="860" y="292" text-anchor="middle" fill="#78909C" font-size="11">Map divided into 3x3 grid. Each sector gets a desirability score [0,1].</text>
+
+  <!-- Why multiple -->
+  <rect x="200" y="490" width="900" height="50" rx="8" fill="#1a2744" stroke="#00BCD4" stroke-width="1"/>
+  <text x="650" y="512" text-anchor="middle" fill="#80DEEA" font-size="13" font-weight="bold">Why Multiple Instead of One?</text>
+  <text x="650" y="530" text-anchor="middle" fill="#607D8B" font-size="12">Different queries need different inputs. Build sites care about resources, attack targets care about enemies. One NN can't learn both well.</text>
+</svg>
+
+<table class="spec" style="max-width:1050px;">
+  <tr><th>Spatial Brain</th><th>Called By</th><th>Inputs</th><th>Key Domain Inputs</th><th>Topology</th><th>Params</th></tr>
+  <tr><td class="brain" style="color:#00BCD4">BuildSpatial</td><td>Building</td><td class="range">~18</td><td>Resource proximity, terrain, building density</td><td style="color:#FFB74D;font-family:Consolas">18→24→12→9</td><td>~771</td></tr>
+  <tr><td class="brain" style="color:#00BCD4">AttackSpatial</td><td>Military</td><td class="range">~22</td><td>Enemy influence, positions, defenses</td><td style="color:#FFB74D;font-family:Consolas">22→32→16→9</td><td>~1,225</td></tr>
+  <tr><td class="brain" style="color:#00BCD4">ScoutSpatial</td><td>Military</td><td class="range">~14</td><td>Fog of war, last seen timestamps</td><td style="color:#FFB74D;font-family:Consolas">14→16→8→9</td><td>~393</td></tr>
+  <tr><td class="brain" style="color:#00BCD4">ExpandSpatial</td><td>Economy</td><td class="range">~18</td><td>Resource richness, safety, influence</td><td style="color:#FFB74D;font-family:Consolas">18→24→12→9</td><td>~771</td></tr>
+  <tr style="background:#0f3460;"><td colspan="5" style="color:#fff;font-weight:bold;text-align:right;">Total Spatial</td><td style="color:#00BCD4;font-weight:bold;">~3,160</td></tr>
+</table>
+
+
+<!-- ========================================== -->
+<!-- UNIT SELECTION: IDEAL PROFILE MATCHING     -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">Unit Selection — Ideal Unit Profile Matching</div>
+<div class="section-sub">The Unit Brain outputs a 24-float "ideal unit profile". This is matched against every available unit's precomputed metric vector
+using sqRootSumError. Closest match wins (stochastic). This handles multiple subtypes of the same class naturally.</div>
+
+<svg viewBox="0 0 1400 750" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1400px;">
+  <defs>
+    <marker id="u" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#888"/></marker>
+    <marker id="ug" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#4CAF50"/></marker>
+  </defs>
+
+  <!-- Unit Brain -->
+  <g data-tt-title="Unit Brain Output: 24-float ideal profile" data-tt-body="The brain doesn't pick a unit by index. Instead it outputs a 24-dimensional vector describing the IDEAL unit it wants.<br><br>Each dimension corresponds to a unit property (UnitMetricIdx).<br>The GA evolves the brain to output profiles that win games.">
+    <rect x="450" y="10" width="500" height="44" rx="22" fill="#BF360C" stroke="#FF5722" stroke-width="2"/>
+    <text x="700" y="38" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">Unit Brain Output: 24-float Ideal Unit Profile</text>
+  </g>
+
+  <line x1="700" y1="54" x2="700" y2="90" stroke="#888" stroke-width="2" marker-end="url(#u)"/>
+
+  <!-- The 24 values -->
+  <rect x="100" y="90" width="1200" height="185" rx="8" fill="#151530" stroke="#FF5722" stroke-width="2"/>
+  <text x="700" y="112" text-anchor="middle" fill="#FFAB91" font-size="13" font-weight="bold">24 Output Dimensions (UnitMetricIdx)</text>
+
+  <!-- Stats row -->
+  <text x="120" y="138" fill="#FFB74D" font-size="11" font-weight="bold">Stats (8):</text>
+  <g data-tt-title="COST" data-tt-body="Desired total cost (food+wood+stone+gold) normalized by /400.<br>Low = cheap unit, High = expensive elite unit.">
+    <rect x="230" y="122" width="90" height="24" rx="4" fill="#37474F" stroke="#607D8B" stroke-width="1"/><text x="275" y="138" text-anchor="middle" fill="#fff" font-size="10">COST</text>
+  </g>
+  <g data-tt-title="MAX_HP" data-tt-body="Desired max HP /300.<br>High = tanky unit.">
+    <rect x="325" y="122" width="90" height="24" rx="4" fill="#37474F" stroke="#607D8B" stroke-width="1"/><text x="370" y="138" text-anchor="middle" fill="#fff" font-size="10">MAX_HP</text>
+  </g>
+  <g data-tt-title="ARMOR" data-tt-body="Desired armor /1.<br>High = heavily armored.">
+    <rect x="420" y="122" width="80" height="24" rx="4" fill="#37474F" stroke="#607D8B" stroke-width="1"/><text x="460" y="138" text-anchor="middle" fill="#fff" font-size="10">ARMOR</text>
+  </g>
+  <g data-tt-title="SIGHT_RADIUS" data-tt-body="Desired sight range /20.<br>High = scouts / long vision units.">
+    <rect x="505" y="122" width="80" height="24" rx="4" fill="#37474F" stroke="#607D8B" stroke-width="1"/><text x="545" y="138" text-anchor="middle" fill="#fff" font-size="10">SIGHT</text>
+  </g>
+  <g data-tt-title="COLLECT" data-tt-body="Desired resource gathering ability /1.<br>High = worker-like. Usually 0 for combat units.">
+    <rect x="590" y="122" width="85" height="24" rx="4" fill="#37474F" stroke="#607D8B" stroke-width="1"/><text x="632" y="138" text-anchor="middle" fill="#fff" font-size="10">COLLECT</text>
+  </g>
+  <g data-tt-title="ATTACK" data-tt-body="Desired attack damage /10.<br>High = high DPS unit.">
+    <rect x="680" y="122" width="85" height="24" rx="4" fill="#37474F" stroke="#607D8B" stroke-width="1"/><text x="722" y="138" text-anchor="middle" fill="#fff" font-size="10">ATTACK</text>
+  </g>
+  <g data-tt-title="ATTACK_RELOAD" data-tt-body="Desired attack reload time /200.<br>Low = fast attacker. High = slow heavy hitter.">
+    <rect x="770" y="122" width="90" height="24" rx="4" fill="#37474F" stroke="#607D8B" stroke-width="1"/><text x="815" y="138" text-anchor="middle" fill="#fff" font-size="10">RELOAD</text>
+  </g>
+  <g data-tt-title="ATTACK_RANGE" data-tt-body="Desired attack range /20.<br>High = ranged unit. Low = melee.">
+    <rect x="865" y="122" width="80" height="24" rx="4" fill="#37474F" stroke="#607D8B" stroke-width="1"/><text x="905" y="138" text-anchor="middle" fill="#fff" font-size="10">RANGE</text>
+  </g>
+
+  <!-- Type flags row -->
+  <text x="120" y="174" fill="#CE93D8" font-size="11" font-weight="bold">Type Flags (8):</text>
+  <g data-tt-title="TYPE_INFANTRY" data-tt-body="1.0 = want infantry, 0.0 = don't care / don't want."><rect x="230" y="158" width="85" height="24" rx="4" fill="#4A148C" stroke="#7B1FA2" stroke-width="1"/><text x="272" y="174" text-anchor="middle" fill="#CE93D8" font-size="10">INFANTRY</text></g>
+  <g data-tt-title="TYPE_RANGE" data-tt-body="1.0 = want ranged unit."><rect x="320" y="158" width="75" height="24" rx="4" fill="#4A148C" stroke="#7B1FA2" stroke-width="1"/><text x="357" y="174" text-anchor="middle" fill="#CE93D8" font-size="10">RANGE</text></g>
+  <g data-tt-title="TYPE_CAVALRY" data-tt-body="1.0 = want cavalry."><rect x="400" y="158" width="85" height="24" rx="4" fill="#4A148C" stroke="#7B1FA2" stroke-width="1"/><text x="442" y="174" text-anchor="middle" fill="#CE93D8" font-size="10">CAVALRY</text></g>
+  <g data-tt-title="TYPE_WORKER" data-tt-body="Usually 0 for combat. Workers are handled by Economy Brain."><rect x="490" y="158" width="80" height="24" rx="4" fill="#37474F" stroke="#607D8B" stroke-width="1"/><text x="530" y="174" text-anchor="middle" fill="#78909C" font-size="10">WORKER</text></g>
+  <g data-tt-title="TYPE_SPECIAL" data-tt-body="1.0 = want special unit (siege, hero, etc)."><rect x="575" y="158" width="80" height="24" rx="4" fill="#4A148C" stroke="#7B1FA2" stroke-width="1"/><text x="615" y="174" text-anchor="middle" fill="#CE93D8" font-size="10">SPECIAL</text></g>
+  <g data-tt-title="TYPE_MELEE" data-tt-body="1.0 = want melee fighter."><rect x="660" y="158" width="75" height="24" rx="4" fill="#4A148C" stroke="#7B1FA2" stroke-width="1"/><text x="697" y="174" text-anchor="middle" fill="#CE93D8" font-size="10">MELEE</text></g>
+  <g data-tt-title="TYPE_HEAVY" data-tt-body="1.0 = want heavy (armored, slow, high HP)."><rect x="740" y="158" width="75" height="24" rx="4" fill="#4A148C" stroke="#7B1FA2" stroke-width="1"/><text x="777" y="174" text-anchor="middle" fill="#CE93D8" font-size="10">HEAVY</text></g>
+  <g data-tt-title="TYPE_LIGHT" data-tt-body="1.0 = want light (fast, low HP)."><rect x="820" y="158" width="75" height="24" rx="4" fill="#4A148C" stroke="#7B1FA2" stroke-width="1"/><text x="857" y="174" text-anchor="middle" fill="#CE93D8" font-size="10">LIGHT</text></g>
+
+  <!-- Bonus flags row -->
+  <text x="120" y="210" fill="#A5D6A7" font-size="11" font-weight="bold">Bonus vs (8):</text>
+  <g data-tt-title="BONUS_INFANTRY" data-tt-body="Desired bonus damage multiplier vs infantry targets.<br>High = want a unit that counters infantry."><rect x="230" y="194" width="80" height="24" rx="4" fill="#1B5E20" stroke="#4CAF50" stroke-width="1"/><text x="270" y="210" text-anchor="middle" fill="#A5D6A7" font-size="9">vs INF</text></g>
+  <g data-tt-title="BONUS_RANGE" data-tt-body="Desired bonus vs ranged units."><rect x="315" y="194" width="75" height="24" rx="4" fill="#1B5E20" stroke="#4CAF50" stroke-width="1"/><text x="352" y="210" text-anchor="middle" fill="#A5D6A7" font-size="9">vs RNG</text></g>
+  <g data-tt-title="BONUS_CAVALRY" data-tt-body="Desired bonus vs cavalry."><rect x="395" y="194" width="75" height="24" rx="4" fill="#1B5E20" stroke="#4CAF50" stroke-width="1"/><text x="432" y="210" text-anchor="middle" fill="#A5D6A7" font-size="9">vs CAV</text></g>
+  <g data-tt-title="BONUS_WORKER" data-tt-body="Desired bonus vs workers (for raiding)."><rect x="475" y="194" width="75" height="24" rx="4" fill="#1B5E20" stroke="#4CAF50" stroke-width="1"/><text x="512" y="210" text-anchor="middle" fill="#A5D6A7" font-size="9">vs WRK</text></g>
+  <g data-tt-title="BONUS_SPECIAL" data-tt-body="Desired bonus vs special units."><rect x="555" y="194" width="75" height="24" rx="4" fill="#1B5E20" stroke="#4CAF50" stroke-width="1"/><text x="592" y="210" text-anchor="middle" fill="#A5D6A7" font-size="9">vs SPC</text></g>
+  <g data-tt-title="BONUS_MELEE" data-tt-body="Desired bonus vs melee units."><rect x="635" y="194" width="75" height="24" rx="4" fill="#1B5E20" stroke="#4CAF50" stroke-width="1"/><text x="672" y="210" text-anchor="middle" fill="#A5D6A7" font-size="9">vs MEL</text></g>
+  <g data-tt-title="BONUS_HEAVY" data-tt-body="Desired bonus vs heavy units."><rect x="715" y="194" width="75" height="24" rx="4" fill="#1B5E20" stroke="#4CAF50" stroke-width="1"/><text x="752" y="210" text-anchor="middle" fill="#A5D6A7" font-size="9">vs HVY</text></g>
+  <g data-tt-title="BONUS_LIGHT" data-tt-body="Desired bonus vs light units."><rect x="795" y="194" width="75" height="24" rx="4" fill="#1B5E20" stroke="#4CAF50" stroke-width="1"/><text x="832" y="210" text-anchor="middle" fill="#A5D6A7" font-size="9">vs LGT</text></g>
+
+  <!-- Example output values -->
+  <text x="1000" y="138" fill="#FFB74D" font-size="10">Example output:</text>
+  <text x="1000" y="155" fill="#fff" font-size="10">COST=0.4, HP=0.8, ARMOR=0.7</text>
+  <text x="1000" y="170" fill="#fff" font-size="10">ATTACK=0.6, RANGE=0.1</text>
+  <text x="1000" y="190" fill="#CE93D8" font-size="10">INF=1.0, MELEE=1.0, HEAVY=1.0</text>
+  <text x="1000" y="205" fill="#CE93D8" font-size="10">RANGE=0, CAV=0, LIGHT=0</text>
+  <text x="1000" y="225" fill="#A5D6A7" font-size="10">vs_CAV=0.8 (counter cavalry)</text>
+  <text x="1000" y="240" fill="#78909C" font-size="9">→ wants heavy armored infantry</text>
+  <text x="1000" y="252" fill="#78909C" font-size="9">  that counters cavalry</text>
+
+  <!-- Arrow down to matching -->
+  <line x1="700" y1="275" x2="700" y2="310" stroke="#888" stroke-width="2" marker-end="url(#u)"/>
+  <text x="700" y="300" text-anchor="middle" fill="#78909C" font-size="10">compare against all available units</text>
+
+  <!-- Unit database -->
+  <rect x="100" y="310" width="1200" height="210" rx="8" fill="#151530" stroke="#607D8B" stroke-width="1.5"/>
+  <text x="700" y="332" text-anchor="middle" fill="#78909C" font-size="12" font-weight="bold">All Available Units — Precomputed 24-float Metric Vectors</text>
+
+  <!-- Unit rows -->
+  <g data-tt-title="Swordsman (Infantry, Melee, Light)" data-tt-body="Precomputed metric: COST=0.25, HP=0.5, ARMOR=0.3, ATTACK=0.5, RANGE=0.05<br>Types: INF=1, MELEE=1, LIGHT=1<br>Bonuses: vs_CAV=0.0<br><br>Distance to ideal: high (light, not heavy, no cav bonus)">
+    <rect x="120" y="345" width="560" height="28" rx="4" fill="#37474F" stroke="#607D8B" stroke-width="1"/>
+    <text x="140" y="364" fill="#fff" font-size="11">Swordsman</text>
+    <text x="310" y="364" fill="#78909C" font-size="10">INF+MELEE+LIGHT | HP=0.5 ARM=0.3 ATK=0.5</text>
+    <text x="630" y="364" fill="#78909C" font-size="10">vs_CAV=0.0</text>
+  </g>
+  <text x="720" y="364" fill="#EF5350" font-size="11">dist = 2.85</text>
+
+  <g data-tt-title="Pikeman (Infantry, Melee, Heavy)" data-tt-body="Precomputed metric: COST=0.35, HP=0.7, ARMOR=0.6, ATTACK=0.4, RANGE=0.05<br>Types: INF=1, MELEE=1, HEAVY=1<br>Bonuses: vs_CAV=0.9<br><br>Distance to ideal: LOW! Heavy infantry with anti-cav bonus. Very close match.">
+    <rect x="120" y="378" width="560" height="28" rx="4" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="140" y="397" fill="#fff" font-size="11" font-weight="bold">Pikeman</text>
+    <text x="310" y="397" fill="#A5D6A7" font-size="10">INF+MELEE+HEAVY | HP=0.7 ARM=0.6 ATK=0.4</text>
+    <text x="630" y="397" fill="#A5D6A7" font-size="10">vs_CAV=0.9</text>
+  </g>
+  <text x="720" y="397" fill="#4CAF50" font-size="11" font-weight="bold">dist = 0.42 ★</text>
+
+  <g data-tt-title="Archer (Range, Light)" data-tt-body="Precomputed metric: COST=0.30, HP=0.3, ARMOR=0.1, ATTACK=0.7, RANGE=0.8<br>Types: RANGE=1, LIGHT=1<br>Bonuses: vs_INF=0.5<br><br>Distance to ideal: very high (ranged, not infantry, not heavy)">
+    <rect x="120" y="411" width="560" height="28" rx="4" fill="#37474F" stroke="#607D8B" stroke-width="1"/>
+    <text x="140" y="430" fill="#fff" font-size="11">Archer</text>
+    <text x="310" y="430" fill="#78909C" font-size="10">RANGE+LIGHT | HP=0.3 ARM=0.1 ATK=0.7</text>
+    <text x="630" y="430" fill="#78909C" font-size="10">RANGE=0.8</text>
+  </g>
+  <text x="720" y="430" fill="#EF5350" font-size="11">dist = 4.21</text>
+
+  <g data-tt-title="Knight (Cavalry, Heavy)" data-tt-body="Precomputed metric: COST=0.6, HP=0.9, ARMOR=0.8, ATTACK=0.8, RANGE=0.05<br>Types: CAV=1, MELEE=1, HEAVY=1<br>Bonuses: vs_INF=0.3<br><br>Distance to ideal: moderate (heavy and armored, but cavalry not infantry)">
+    <rect x="120" y="444" width="560" height="28" rx="4" fill="#37474F" stroke="#607D8B" stroke-width="1"/>
+    <text x="140" y="463" fill="#fff" font-size="11">Knight</text>
+    <text x="310" y="463" fill="#78909C" font-size="10">CAV+MELEE+HEAVY | HP=0.9 ARM=0.8 ATK=0.8</text>
+    <text x="630" y="463" fill="#78909C" font-size="10">vs_INF=0.3</text>
+  </g>
+  <text x="720" y="463" fill="#FFB74D" font-size="11">dist = 1.90</text>
+
+  <g data-tt-title="Man-at-Arms (Infantry, Melee, Heavy)" data-tt-body="Precomputed metric: COST=0.45, HP=0.85, ARMOR=0.75, ATTACK=0.7, RANGE=0.05<br>Types: INF=1, MELEE=1, HEAVY=1<br>Bonuses: vs_CAV=0.3, vs_INF=0.2<br><br>Distance to ideal: low (heavy infantry, but lower cav bonus than Pikeman)">
+    <rect x="120" y="477" width="560" height="28" rx="4" fill="#4A148C" stroke="#9C27B0" stroke-width="1.5"/>
+    <text x="140" y="496" fill="#fff" font-size="11">Man-at-Arms</text>
+    <text x="310" y="496" fill="#CE93D8" font-size="10">INF+MELEE+HEAVY | HP=0.85 ARM=0.75 ATK=0.7</text>
+    <text x="630" y="496" fill="#CE93D8" font-size="10">vs_CAV=0.3</text>
+  </g>
+  <text x="720" y="496" fill="#FFB74D" font-size="11">dist = 0.98</text>
+
+  <!-- Selection arrow -->
+  <line x1="700" y1="520" x2="700" y2="560" stroke="#888" stroke-width="2" marker-end="url(#u)"/>
+
+  <!-- lowestWithRand -->
+  <g data-tt-title="lowestWithRand — Stochastic Selection" data-tt-body="<span class='tt-logic'>Algorithm:</span><br>1. Sum all distances: total = 2.85 + 0.42 + 4.21 + 1.90 + 0.98 = 10.36<br>2. Invert: weight[i] = total - dist[i]<br>   Pikeman: 10.36-0.42 = 9.94 (highest!)<br>   Man-at-Arms: 10.36-0.98 = 9.38<br>   Knight: 10.36-1.90 = 8.46<br>   Swordsman: 10.36-2.85 = 7.51<br>   Archer: 10.36-4.21 = 6.15<br>3. Weighted random: Pikeman has highest probability but any unit CAN be selected.<br><br><span class='tt-ok'>Pikeman wins most often because it's closest to the ideal profile.</span><br>But the stochastic element prevents the AI from always picking the exact same unit — adds variety and exploration for GA.">
+    <rect x="400" y="560" width="600" height="50" rx="8" fill="#6A1B9A" stroke="#9C27B0" stroke-width="2"/>
+    <text x="700" y="582" text-anchor="middle" fill="#fff" font-size="14">lowestWithRand(distances) — stochastic nearest-neighbor</text>
+    <text x="700" y="600" text-anchor="middle" fill="#CE93D8" font-size="11">Pikeman: 96% | Man-at-Arms: 91% | Knight: 82% | Swordsman: 73% | Archer: 59%</text>
+  </g>
+
+  <line x1="700" y1="610" x2="700" y2="650" stroke="#4CAF50" stroke-width="2" marker-end="url(#ug)"/>
+
+  <!-- Result -->
+  <g data-tt-title="Selected: Pikeman → Want List" data-tt-body="Pikeman selected as closest match to ideal profile.<br>Added to want list as 'Train Pikeman' with priority from the Unit Brain's confidence.<br><br>If affordable → executed this tick.<br>If not → reserved, carried to next tick, boosted if brain re-requests.">
+    <rect x="450" y="650" width="500" height="44" rx="8" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="700" y="672" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Selected: Pikeman → Want List item</text>
+    <text x="700" y="688" text-anchor="middle" fill="#A5D6A7" font-size="11">priority = military_production score | cost checked at execution time</text>
+  </g>
+
+  <!-- Bottom note -->
+  <rect x="100" y="710" width="1200" height="34" rx="6" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="700" y="732" text-anchor="middle" fill="#607D8B" font-size="12">Multiple units can be selected per tick if Unit Brain outputs multiple high-confidence profiles. Each becomes a separate Want List item.</text>
+</svg>
+
+
+<!-- ========================================== -->
+<!-- MASTER BRAIN INPUTS TABLE                  -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">Master Brain — Complete I/O Specification</div>
+<div class="section-sub">28 inputs (27 game state + 1 lacking feedback), 9 outputs.</div>
+
+<table class="spec">
+  <tr><th>#</th><th>Input Name</th><th>Category</th><th>Range</th><th>Norm</th><th>Description</th></tr>
+  <tr><td>0</td><td>total_resources</td><td class="cat">State</td><td class="range">[0,1]</td><td class="norm">/4000</td><td>Sum of all resource stockpiles</td></tr>
+  <tr><td>1</td><td>total_income</td><td class="cat">State</td><td class="range">[0,1]</td><td class="norm">/40</td><td>Total gathering rate</td></tr>
+  <tr><td>2</td><td>worker_count</td><td class="cat">State</td><td class="range">[0,1]</td><td class="norm">/100</td><td>Number of workers</td></tr>
+  <tr><td>3</td><td>army_total_hp</td><td class="cat">State</td><td class="range">[0,1]</td><td class="norm">/10000</td><td>Sum of all military HP</td></tr>
+  <tr><td>4</td><td>building_count</td><td class="cat">State</td><td class="range">[0,1]</td><td class="norm">/50</td><td>Total buildings</td></tr>
+  <tr><td>5</td><td>tech_level</td><td class="cat">State</td><td class="range">[0,1]</td><td class="norm">/10</td><td>Research progress</td></tr>
+  <tr><td>6</td><td>map_control</td><td class="cat">State</td><td class="range">[-1,+1]</td><td class="norm">computed</td><td>Our influence minus enemy</td></tr>
+  <tr><td>7</td><td>score_ratio</td><td class="cat">State</td><td class="range">[-1,+1]</td><td class="norm">computed</td><td>Who's winning</td></tr>
+  <tr><td>8</td><td>game_time</td><td class="cat">State</td><td class="range">[0,1]</td><td class="norm">computed</td><td>Early/mid/late phase</td></tr>
+  <tr><td>9</td><td>is_under_attack</td><td class="cat">State</td><td class="range">[0,1]</td><td class="norm">computed</td><td>Taking damage now</td></tr>
+  <tr><td colspan="6" style="background:#0a1628;color:#4fc3f7;font-weight:bold;">Enemy Intelligence (4)</td></tr>
+  <tr><td>10</td><td>enemy_strength_ratio</td><td class="cat">Enemy</td><td class="range">[-1,+1]</td><td class="norm">computed</td><td>Our army vs theirs</td></tr>
+  <tr><td>11</td><td>enemy_proximity</td><td class="cat">Enemy</td><td class="range">[0,1]</td><td class="norm">computed</td><td>Nearest enemy to base</td></tr>
+  <tr><td>12</td><td>enemy_economy_estimate</td><td class="cat">Enemy</td><td class="range">[0,1]</td><td class="norm">computed</td><td>Scouted enemy development</td></tr>
+  <tr><td>13</td><td>enemy_tech_estimate</td><td class="cat">Enemy</td><td class="range">[0,1]</td><td class="norm">computed</td><td>Enemy tech from seen units</td></tr>
+  <tr><td colspan="6" style="background:#0a1628;color:#4fc3f7;font-weight:bold;">Short-term Deltas — ~3 sec (5)</td></tr>
+  <tr><td>14</td><td>delta_army</td><td class="cat">Delta</td><td class="range">[-1,+1]</td><td class="norm">/50</td><td>Army HP change</td></tr>
+  <tr><td>15</td><td>delta_workers</td><td class="cat">Delta</td><td class="range">[-1,+1]</td><td class="norm">/20</td><td>Worker count change</td></tr>
+  <tr><td>16</td><td>delta_income</td><td class="cat">Delta</td><td class="range">[-1,+1]</td><td class="norm">/10</td><td>Gather speed change</td></tr>
+  <tr><td>17</td><td>delta_enemy_army</td><td class="cat">Delta</td><td class="range">[-1,+1]</td><td class="norm">/50</td><td>Enemy army change</td></tr>
+  <tr><td>18</td><td>delta_map_control</td><td class="cat">Delta</td><td class="range">[-1,+1]</td><td class="norm">computed</td><td>Territory change</td></tr>
+  <tr><td colspan="6" style="background:#0a1628;color:#4fc3f7;font-weight:bold;">Long-term Trends — ~15 sec avg (4)</td></tr>
+  <tr><td>19</td><td>trend_army</td><td class="cat">Trend</td><td class="range">[-1,+1]</td><td class="norm">avg</td><td>Army trajectory</td></tr>
+  <tr><td>20</td><td>trend_economy</td><td class="cat">Trend</td><td class="range">[-1,+1]</td><td class="norm">avg</td><td>Income trajectory</td></tr>
+  <tr><td>21</td><td>trend_enemy_army</td><td class="cat">Trend</td><td class="range">[-1,+1]</td><td class="norm">avg</td><td>Enemy military trend</td></tr>
+  <tr><td>22</td><td>trend_enemy_proximity</td><td class="cat">Trend</td><td class="range">[-1,+1]</td><td class="norm">avg</td><td>Enemy approaching?</td></tr>
+  <tr><td colspan="6" style="background:#0a1628;color:#4fc3f7;font-weight:bold;">Battle History — ~10 sec (4)</td></tr>
+  <tr><td>23</td><td>recent_kd_ratio</td><td class="cat">Battle</td><td class="range">[-1,+1]</td><td class="norm">computed</td><td>Kill/death ratio</td></tr>
+  <tr><td>24</td><td>recent_combat_intensity</td><td class="cat">Battle</td><td class="range">[0,1]</td><td class="norm">computed</td><td>Amount of fighting</td></tr>
+  <tr><td>25</td><td>recent_buildings_lost</td><td class="cat">Battle</td><td class="range">[0,1]</td><td class="norm">computed</td><td>Our buildings destroyed</td></tr>
+  <tr><td>26</td><td>recent_buildings_destroyed</td><td class="cat">Battle</td><td class="range">[0,1]</td><td class="norm">computed</td><td>Enemy buildings razed</td></tr>
+  <tr><td colspan="6" style="background:#0a1628;color:#00897B;font-weight:bold;">Feedback (1)</td></tr>
+  <tr><td>27</td><td>total_lacking_sum</td><td class="cat" style="color:#00897B">Feedback</td><td class="range">[0,1]</td><td class="norm">/1000</td><td>Total resource shortfall</td></tr>
+</table>
+
+<table class="spec" style="margin-top:15px;">
+  <tr><th>#</th><th>Output</th><th>Group</th><th>Range</th><th>Routes To</th><th>Description</th></tr>
+  <tr><td>0</td><td>economy_urgency</td><td class="cat">Budget</td><td class="range">[-1,+1]</td><td class="brain">Economy</td><td>Workers & income priority</td></tr>
+  <tr><td>1</td><td>military_production</td><td class="cat">Budget</td><td class="range">[-1,+1]</td><td class="brain">Unit</td><td>Combat unit training</td></tr>
+  <tr><td>2</td><td>building_priority</td><td class="cat">Budget</td><td class="range">[-1,+1]</td><td class="brain">Building</td><td>Construction priority</td></tr>
+  <tr><td>3</td><td>tech_priority</td><td class="cat">Budget</td><td class="range">[-1,+1]</td><td class="brain">Building</td><td>Research priority</td></tr>
+  <tr><td>4</td><td>aggression</td><td class="cat" style="color:#CE93D8">Behavioral</td><td class="range">[-1,+1]</td><td class="brain">Military, Spatial</td><td>-1=turtle, +1=attack</td></tr>
+  <tr><td>5</td><td>defend_urgency</td><td class="cat" style="color:#CE93D8">Behavioral</td><td class="range">[-1,+1]</td><td class="brain">Military, Building, Spatial, Unit</td><td>Fortify & defend</td></tr>
+  <tr><td>6</td><td>expansion_drive</td><td class="cat" style="color:#CE93D8">Behavioral</td><td class="range">[-1,+1]</td><td class="brain">Economy, Building, Spatial</td><td>Spread vs consolidate</td></tr>
+  <tr><td>7</td><td>risk_tolerance</td><td class="cat" style="color:#CE93D8">Behavioral</td><td class="range">[-1,+1]</td><td class="brain">Economy, Military, Spatial</td><td>Act with weak position</td></tr>
+  <tr><td>8</td><td>patience</td><td class="cat" style="color:#CE93D8">Behavioral</td><td class="range">[-1,+1]</td><td class="brain">Military, Unit</td><td>-1=act now, +1=wait</td></tr>
+</table>
+
+
+<!-- ========================================== -->
+<!-- UNIT BRAIN DETAIL                          -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">Unit Brain — Full 24-Metric Profile Output</div>
+<div class="section-sub">The Unit Brain outputs 24 floats describing the ideal unit. Each matches a real unit property. The GA learns which profiles win games.</div>
+
+<div class="card">
+  <h3 style="color:#FF5722;">Unit Brain — 10→16→8→24 | ~472 params</h3>
+  <p>Outputs a 24-float ideal unit profile. Matched against every non-worker unit's precomputed metric vector via sqRootSumError + lowestWithRand.</p>
+  <p><strong>How many units per tick?</strong> The brain runs once, producing one ideal profile → one unit match → one want list item per run. But the want list can carry over previous unit wants, so multiple unit types can execute in a single tick from the accumulated queue.</p>
+  <p class="topology">Topology: 10 → 16 (tanh) → 8 (tanh) → 24 (tanh)</p>
+</div>
+
+<table class="spec">
+  <tr><th>#</th><th>Input</th><th>Source</th><th>Range</th><th>Description</th></tr>
+  <tr><td>0</td><td>military_production</td><td class="brain">Master OUT[1]</td><td class="range">[-1,+1]</td><td>Military budget</td></tr>
+  <tr><td>1</td><td>defend_urgency</td><td class="brain">Master OUT[5]</td><td class="range">[-1,+1]</td><td>Need defensive units?</td></tr>
+  <tr><td>2</td><td>patience</td><td class="brain">Master OUT[8]</td><td class="range">[-1,+1]</td><td>Wait for expensive units?</td></tr>
+  <tr><td colspan="5" style="background:#0a1628;color:#FF5722;font-weight:bold;">Domain (7)</td></tr>
+  <tr><td>3</td><td>infantry_ratio</td><td>Game</td><td class="range">[0,1]</td><td>Our infantry / army</td></tr>
+  <tr><td>4</td><td>range_ratio</td><td>Game</td><td class="range">[0,1]</td><td>Our ranged / army</td></tr>
+  <tr><td>5</td><td>cavalry_ratio</td><td>Game</td><td class="range">[0,1]</td><td>Our cavalry / army</td></tr>
+  <tr><td>6</td><td>enemy_infantry_ratio</td><td>Game</td><td class="range">[0,1]</td><td>Enemy infantry ratio</td></tr>
+  <tr><td>7</td><td>enemy_range_ratio</td><td>Game</td><td class="range">[0,1]</td><td>Enemy ranged ratio</td></tr>
+  <tr><td>8</td><td>enemy_cavalry_ratio</td><td>Game</td><td class="range">[0,1]</td><td>Enemy cavalry ratio</td></tr>
+  <tr><td>9</td><td>tech_level</td><td>Game</td><td class="range">[0,1]</td><td>Tech /10</td></tr>
+</table>
+
+<table class="spec" style="margin-top:10px;">
+  <tr><th>#</th><th>Output (24 floats)</th><th>Metric</th><th>Weight</th><th>What the Brain Learns</th></tr>
+  <tr><td>0</td><td>ideal_cost</td><td class="norm">COST</td><td class="norm">/400</td><td>Cheap rush unit vs expensive elite</td></tr>
+  <tr><td>1</td><td>ideal_max_hp</td><td class="norm">MAX_HP</td><td class="norm">/300</td><td>Glass cannon vs tank</td></tr>
+  <tr><td>2</td><td>ideal_armor</td><td class="norm">ARMOR</td><td class="norm">/1</td><td>Armored vs unarmored</td></tr>
+  <tr><td>3</td><td>ideal_sight</td><td class="norm">SIGHT</td><td class="norm">/20</td><td>Scout vs frontline</td></tr>
+  <tr><td>4</td><td>ideal_collect</td><td class="norm">COLLECT</td><td class="norm">/1</td><td>Usually 0 for combat</td></tr>
+  <tr><td>5</td><td>ideal_attack</td><td class="norm">ATTACK</td><td class="norm">/10</td><td>High DPS vs utility</td></tr>
+  <tr><td>6</td><td>ideal_reload</td><td class="norm">RELOAD</td><td class="norm">/200</td><td>Fast vs slow attacker</td></tr>
+  <tr><td>7</td><td>ideal_range</td><td class="norm">RANGE</td><td class="norm">/20</td><td>Melee vs ranged</td></tr>
+  <tr><td colspan="5" style="background:#0a1628;color:#CE93D8;font-weight:bold;">Type Flags (8) — 0.0 or 1.0</td></tr>
+  <tr><td>8</td><td>want_infantry</td><td class="norm">TYPE_INFANTRY</td><td class="norm">1</td><td>Prefer infantry class</td></tr>
+  <tr><td>9</td><td>want_range</td><td class="norm">TYPE_RANGE</td><td class="norm">1</td><td>Prefer ranged class</td></tr>
+  <tr><td>10</td><td>want_cavalry</td><td class="norm">TYPE_CAVALRY</td><td class="norm">1</td><td>Prefer cavalry class</td></tr>
+  <tr><td>11</td><td>want_worker</td><td class="norm">TYPE_WORKER</td><td class="norm">1</td><td>Usually 0</td></tr>
+  <tr><td>12</td><td>want_special</td><td class="norm">TYPE_SPECIAL</td><td class="norm">1</td><td>Siege/hero</td></tr>
+  <tr><td>13</td><td>want_melee</td><td class="norm">TYPE_MELEE</td><td class="norm">1</td><td>Close combat</td></tr>
+  <tr><td>14</td><td>want_heavy</td><td class="norm">TYPE_HEAVY</td><td class="norm">1</td><td>Armored slow</td></tr>
+  <tr><td>15</td><td>want_light</td><td class="norm">TYPE_LIGHT</td><td class="norm">1</td><td>Fast fragile</td></tr>
+  <tr><td colspan="5" style="background:#0a1628;color:#A5D6A7;font-weight:bold;">Bonus vs Target Type (8)</td></tr>
+  <tr><td>16</td><td>want_bonus_infantry</td><td class="norm">BONUS_INF</td><td class="norm">1</td><td>Counter infantry</td></tr>
+  <tr><td>17</td><td>want_bonus_range</td><td class="norm">BONUS_RANGE</td><td class="norm">1</td><td>Counter ranged</td></tr>
+  <tr><td>18</td><td>want_bonus_cavalry</td><td class="norm">BONUS_CAV</td><td class="norm">1</td><td>Counter cavalry</td></tr>
+  <tr><td>19</td><td>want_bonus_worker</td><td class="norm">BONUS_WORKER</td><td class="norm">1</td><td>Raid workers</td></tr>
+  <tr><td>20</td><td>want_bonus_special</td><td class="norm">BONUS_SPECIAL</td><td class="norm">1</td><td>Counter specials</td></tr>
+  <tr><td>21</td><td>want_bonus_melee</td><td class="norm">BONUS_MELEE</td><td class="norm">1</td><td>Counter melee</td></tr>
+  <tr><td>22</td><td>want_bonus_heavy</td><td class="norm">BONUS_HEAVY</td><td class="norm">1</td><td>Counter heavies</td></tr>
+  <tr><td>23</td><td>want_bonus_light</td><td class="norm">BONUS_LIGHT</td><td class="norm">1</td><td>Counter lights</td></tr>
+</table>
+
+
+<!-- ========================================== -->
+<!-- ROUTING TABLE                              -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">Master Output Routing — Who Gets What</div>
+
+<svg viewBox="0 0 1200 350" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1200px;">
+  <!-- Header -->
+  <rect x="0" y="0" width="200" height="30" fill="#0f3460"/><text x="100" y="20" text-anchor="middle" fill="#4fc3f7" font-size="12" font-weight="bold">Master Output</text>
+  <rect x="200" y="0" width="150" height="30" fill="#1B5E20"/><text x="275" y="20" text-anchor="middle" fill="#A5D6A7" font-size="12" font-weight="bold">Economy</text>
+  <rect x="350" y="0" width="150" height="30" fill="#4A148C"/><text x="425" y="20" text-anchor="middle" fill="#CE93D8" font-size="12" font-weight="bold">Building</text>
+  <rect x="500" y="0" width="150" height="30" fill="#BF360C"/><text x="575" y="20" text-anchor="middle" fill="#FFAB91" font-size="12" font-weight="bold">Unit</text>
+  <rect x="650" y="0" width="150" height="30" fill="#B71C1C"/><text x="725" y="20" text-anchor="middle" fill="#FFCDD2" font-size="12" font-weight="bold">Military</text>
+  <rect x="800" y="0" width="150" height="30" fill="#006064"/><text x="875" y="20" text-anchor="middle" fill="#80DEEA" font-size="12" font-weight="bold">Spatial</text>
+
+  <!-- economy_urgency -->
+  <rect x="0" y="32" width="200" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="100" y="50" text-anchor="middle" fill="#FFB74D" font-size="11">economy_urgency</text>
+  <rect x="200" y="32" width="150" height="28" fill="#1B5E20" stroke="#37474F" stroke-width="0.5"/><text x="275" y="50" text-anchor="middle" fill="#4CAF50" font-size="13" font-weight="bold">YES</text>
+  <rect x="350" y="32" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="425" y="50" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="500" y="32" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="575" y="50" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="650" y="32" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="725" y="50" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="800" y="32" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="875" y="50" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+
+  <!-- military_production -->
+  <rect x="0" y="60" width="200" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="100" y="78" text-anchor="middle" fill="#FFB74D" font-size="11">military_production</text>
+  <rect x="200" y="60" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="275" y="78" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="350" y="60" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="425" y="78" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="500" y="60" width="150" height="28" fill="#BF360C" stroke="#37474F" stroke-width="0.5"/><text x="575" y="78" text-anchor="middle" fill="#FF5722" font-size="13" font-weight="bold">YES</text>
+  <rect x="650" y="60" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="725" y="78" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="800" y="60" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="875" y="78" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+
+  <!-- building_priority -->
+  <rect x="0" y="88" width="200" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="100" y="106" text-anchor="middle" fill="#FFB74D" font-size="11">building_priority</text>
+  <rect x="200" y="88" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="275" y="106" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="350" y="88" width="150" height="28" fill="#4A148C" stroke="#37474F" stroke-width="0.5"/><text x="425" y="106" text-anchor="middle" fill="#9C27B0" font-size="13" font-weight="bold">YES</text>
+  <rect x="500" y="88" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="575" y="106" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="650" y="88" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="725" y="106" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="800" y="88" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="875" y="106" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+
+  <!-- tech_priority -->
+  <rect x="0" y="116" width="200" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="100" y="134" text-anchor="middle" fill="#FFB74D" font-size="11">tech_priority</text>
+  <rect x="200" y="116" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="275" y="134" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="350" y="116" width="150" height="28" fill="#4A148C" stroke="#37474F" stroke-width="0.5"/><text x="425" y="134" text-anchor="middle" fill="#9C27B0" font-size="13" font-weight="bold">YES</text>
+  <rect x="500" y="116" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="575" y="134" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="650" y="116" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="725" y="134" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="800" y="116" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="875" y="134" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+
+  <!-- aggression -->
+  <rect x="0" y="148" width="200" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="100" y="166" text-anchor="middle" fill="#CE93D8" font-size="11">aggression</text>
+  <rect x="200" y="148" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="275" y="166" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="350" y="148" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="425" y="166" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="500" y="148" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="575" y="166" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="650" y="148" width="150" height="28" fill="#B71C1C" stroke="#37474F" stroke-width="0.5"/><text x="725" y="166" text-anchor="middle" fill="#f44336" font-size="13" font-weight="bold">YES</text>
+  <rect x="800" y="148" width="150" height="28" fill="#006064" stroke="#37474F" stroke-width="0.5"/><text x="875" y="166" text-anchor="middle" fill="#00BCD4" font-size="13" font-weight="bold">YES</text>
+
+  <!-- defend_urgency -->
+  <rect x="0" y="176" width="200" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="100" y="194" text-anchor="middle" fill="#CE93D8" font-size="11">defend_urgency</text>
+  <rect x="200" y="176" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="275" y="194" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="350" y="176" width="150" height="28" fill="#4A148C" stroke="#37474F" stroke-width="0.5"/><text x="425" y="194" text-anchor="middle" fill="#9C27B0" font-size="13" font-weight="bold">YES</text>
+  <rect x="500" y="176" width="150" height="28" fill="#BF360C" stroke="#37474F" stroke-width="0.5"/><text x="575" y="194" text-anchor="middle" fill="#FF5722" font-size="13" font-weight="bold">YES</text>
+  <rect x="650" y="176" width="150" height="28" fill="#B71C1C" stroke="#37474F" stroke-width="0.5"/><text x="725" y="194" text-anchor="middle" fill="#f44336" font-size="13" font-weight="bold">YES</text>
+  <rect x="800" y="176" width="150" height="28" fill="#006064" stroke="#37474F" stroke-width="0.5"/><text x="875" y="194" text-anchor="middle" fill="#00BCD4" font-size="13" font-weight="bold">YES</text>
+
+  <!-- expansion_drive -->
+  <rect x="0" y="204" width="200" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="100" y="222" text-anchor="middle" fill="#CE93D8" font-size="11">expansion_drive</text>
+  <rect x="200" y="204" width="150" height="28" fill="#1B5E20" stroke="#37474F" stroke-width="0.5"/><text x="275" y="222" text-anchor="middle" fill="#4CAF50" font-size="13" font-weight="bold">YES</text>
+  <rect x="350" y="204" width="150" height="28" fill="#4A148C" stroke="#37474F" stroke-width="0.5"/><text x="425" y="222" text-anchor="middle" fill="#9C27B0" font-size="13" font-weight="bold">YES</text>
+  <rect x="500" y="204" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="575" y="222" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="650" y="204" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="725" y="222" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="800" y="204" width="150" height="28" fill="#006064" stroke="#37474F" stroke-width="0.5"/><text x="875" y="222" text-anchor="middle" fill="#00BCD4" font-size="13" font-weight="bold">YES</text>
+
+  <!-- risk_tolerance -->
+  <rect x="0" y="232" width="200" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="100" y="250" text-anchor="middle" fill="#CE93D8" font-size="11">risk_tolerance</text>
+  <rect x="200" y="232" width="150" height="28" fill="#1B5E20" stroke="#37474F" stroke-width="0.5"/><text x="275" y="250" text-anchor="middle" fill="#4CAF50" font-size="13" font-weight="bold">YES</text>
+  <rect x="350" y="232" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="425" y="250" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="500" y="232" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="575" y="250" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="650" y="232" width="150" height="28" fill="#B71C1C" stroke="#37474F" stroke-width="0.5"/><text x="725" y="250" text-anchor="middle" fill="#f44336" font-size="13" font-weight="bold">YES</text>
+  <rect x="800" y="232" width="150" height="28" fill="#006064" stroke="#37474F" stroke-width="0.5"/><text x="875" y="250" text-anchor="middle" fill="#00BCD4" font-size="13" font-weight="bold">YES</text>
+
+  <!-- patience -->
+  <rect x="0" y="260" width="200" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="100" y="278" text-anchor="middle" fill="#CE93D8" font-size="11">patience</text>
+  <rect x="200" y="260" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="275" y="278" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="350" y="260" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="425" y="278" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+  <rect x="500" y="260" width="150" height="28" fill="#BF360C" stroke="#37474F" stroke-width="0.5"/><text x="575" y="278" text-anchor="middle" fill="#FF5722" font-size="13" font-weight="bold">YES</text>
+  <rect x="650" y="260" width="150" height="28" fill="#B71C1C" stroke="#37474F" stroke-width="0.5"/><text x="725" y="278" text-anchor="middle" fill="#f44336" font-size="13" font-weight="bold">YES</text>
+  <rect x="800" y="260" width="150" height="28" fill="#1a1a3e" stroke="#37474F" stroke-width="0.5"/><text x="875" y="278" text-anchor="middle" fill="#37474F" font-size="11">-</text>
+
+  <!-- Total -->
+  <rect x="0" y="296" width="200" height="28" fill="#0f3460"/><text x="100" y="314" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">Total master inputs</text>
+  <rect x="200" y="296" width="150" height="28" fill="#0f3460"/><text x="275" y="314" text-anchor="middle" fill="#4CAF50" font-size="14" font-weight="bold">3</text>
+  <rect x="350" y="296" width="150" height="28" fill="#0f3460"/><text x="425" y="314" text-anchor="middle" fill="#9C27B0" font-size="14" font-weight="bold">4</text>
+  <rect x="500" y="296" width="150" height="28" fill="#0f3460"/><text x="575" y="314" text-anchor="middle" fill="#FF5722" font-size="14" font-weight="bold">3</text>
+  <rect x="650" y="296" width="150" height="28" fill="#0f3460"/><text x="725" y="314" text-anchor="middle" fill="#f44336" font-size="14" font-weight="bold">4</text>
+  <rect x="800" y="296" width="150" height="28" fill="#0f3460"/><text x="875" y="314" text-anchor="middle" fill="#00BCD4" font-size="14" font-weight="bold">4</text>
+</svg>
+
+
+<!-- ========================================== -->
+<!-- GENOME SUMMARY                             -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">Total Genome Summary</div>
+
+<table class="spec" style="max-width:1150px;">
+  <tr><th>Brain</th><th>In → Out</th><th>Topology</th><th>Params</th><th>Want List?</th><th>Lacking?</th><th>Tick Rate</th></tr>
+  <tr><td class="brain" style="color:#FF9800">Master</td><td>28 → 9</td><td style="color:#FFB74D;font-family:Consolas">28→48→24→9</td><td>~2,625</td><td>No</td><td style="color:#00897B">total sum</td><td>Slow (1-2/sec)</td></tr>
+  <tr><td class="brain" style="color:#4CAF50">Economy</td><td>17 → 6</td><td style="color:#FFB74D;font-family:Consolas">17→24→12→6</td><td>~714</td><td style="color:#4CAF50">Yes</td><td style="color:#00897B">per-resource</td><td>Slow (1-2/sec)</td></tr>
+  <tr><td class="brain" style="color:#9C27B0">Building</td><td>12 → 11</td><td style="color:#FFB74D;font-family:Consolas">12→24→12→11</td><td>~587</td><td style="color:#4CAF50">Yes</td><td>None</td><td>Slow (1-2/sec)</td></tr>
+  <tr><td class="brain" style="color:#FF5722">Unit</td><td>10 → 24</td><td style="color:#FFB74D;font-family:Consolas">10→16→8→24</td><td>~472</td><td style="color:#4CAF50">Yes (N copies)</td><td>None</td><td>Slow (1-2/sec)</td></tr>
+  <tr><td class="brain" style="color:#f44336">Military</td><td>12 → 4</td><td style="color:#FFB74D;font-family:Consolas">12→24→12→4</td><td>~484</td><td style="color:#EF5350">No (direct)</td><td>None</td><td style="color:#EF5350;font-weight:bold">Fast (~10/sec)</td></tr>
+  <tr><td class="brain" style="color:#00BCD4">BuildSpatial</td><td>~18 → 9</td><td style="color:#FFB74D;font-family:Consolas">18→24→12→9</td><td>~771</td><td>No (service)</td><td>None</td><td style="color:#00BCD4">On demand</td></tr>
+  <tr><td class="brain" style="color:#00BCD4">AttackSpatial</td><td>~22 → 9</td><td style="color:#FFB74D;font-family:Consolas">22→32→16→9</td><td>~1,225</td><td>No (service)</td><td>None</td><td style="color:#00BCD4">On demand</td></tr>
+  <tr><td class="brain" style="color:#00BCD4">ScoutSpatial</td><td>~14 → 9</td><td style="color:#FFB74D;font-family:Consolas">14→16→8→9</td><td>~393</td><td>No (service)</td><td>None</td><td style="color:#00BCD4">On demand</td></tr>
+  <tr><td class="brain" style="color:#00BCD4">ExpandSpatial</td><td>~18 → 9</td><td style="color:#FFB74D;font-family:Consolas">18→24→12→9</td><td>~771</td><td>No (service)</td><td>None</td><td style="color:#00BCD4">On demand</td></tr>
+  <tr style="background:#0f3460;"><td colspan="3" style="color:#fff;font-weight:bold;text-align:right;">TOTAL (9 brains)</td><td style="color:#FFB74D;font-weight:bold;">~8,042</td><td colspan="3" style="color:#78909C;">~32KB | GA pop: 200-400</td></tr>
+</table>
+
+<div style="max-width:1150px;margin:15px auto;background:#1a2744;border-radius:10px;padding:16px 24px;border:1px solid #37474F;">
+  <p style="color:#4fc3f7;font-size:14px;font-weight:bold;margin:0 0 8px;">Key Design Principles</p>
+  <p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#FF9800;font-weight:bold;">Selective routing</span> — each sub-brain gets only 3-4 relevant master outputs.</p>
+  <p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#f44336;font-weight:bold;">Military is separate</span> — army orders are free, go directly to game, NOT through want list. Runs at FAST tick rate for combat responsiveness.</p>
+  <p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#FF5722;font-weight:bold;">Unit profile matching</span> — brain outputs 24-float ideal vector, matched against ALL units via sqRootSumError. Handles multiple subtypes naturally.</p>
+  <p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#FF5722;font-weight:bold;">Unit count scaling</span> — count = round(unit_urgency * MAX_UNITS_PER_TICK). Compensates for slow tick rate. One eval can request multiple units.</p>
+  <p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#2196F3;font-weight:bold;">Multiple items per tick</span> — want list executes everything affordable top-down. Can train 3 units + 1 worker + 1 building in a single tick.</p>
+  <p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#00897B;font-weight:bold;">Targeted feedback</span> — only Master (total) and Economy (per-resource) get lacking info. Others stay pure strategy.</p>
+  <p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#4CAF50;font-weight:bold;">Implicit saving</span> — unaffordable high-priority items reserve resources per-tick. No explicit save logic needed.</p>
+  <p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#00BCD4;font-weight:bold;">Multiple spatial brains</span> — 4 specialized brains (Build/Attack/Scout/Expand) with tailored inputs instead of one generic brain. On demand, not ticked.</p>
+  <p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#CE93D8;font-weight:bold;">Tiered tick rates</span> — Military=fast (combat), Strategy brains=slow (1-2/sec), Spatial=on demand. Saves compute where speed doesn't matter.</p>
+</div>
+
+
+<!-- ========================================== -->
+<!-- WANT LIST MECHANICS                        -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">Want List — Priority Queue Mechanics</div>
+<div class="section-sub">Central execution system for resource-spending actions. Persists across ticks with boost/decay.
+Reservation is per-tick only — no persistent state beyond the list itself.</div>
+
+<div class="card">
+  <h3 style="color:#2196F3;">Single Tick Flow</h3>
+  <p><span style="color:#4fc3f7;font-weight:bold;">Step 1:</span> Carry over unexecuted items from last tick (with their current priority).</p>
+  <p><span style="color:#4fc3f7;font-weight:bold;">Step 2:</span> Sub-brains generate new wants with priority scores.</p>
+  <p><span style="color:#4fc3f7;font-weight:bold;">Step 3:</span> Merge — re-requested items get <span style="color:#4CAF50;">BOOSTED</span>, not re-requested items <span style="color:#EF5350;">DECAY</span>, below min_threshold → <span style="color:#607D8B;">DROPPED</span>.</p>
+  <p><span style="color:#4fc3f7;font-weight:bold;">Step 4:</span> Sort by priority (highest first).</p>
+  <p><span style="color:#4fc3f7;font-weight:bold;">Step 5:</span> Walk top-down — affordable → <span style="color:#4CAF50;">EXECUTE</span>, not affordable → <span style="color:#FFB74D;">RESERVE</span> resources for this tick, continue to next item.</p>
+  <p><span style="color:#4fc3f7;font-weight:bold;">Step 6:</span> Compute lacking resources → feed back to Master (total) and Economy (per-resource) next tick.</p>
+</div>
+
+<div class="card">
+  <h3 style="color:#FFB74D;">Boost / Decay Mechanics</h3>
+  <p><span style="color:#4CAF50;font-weight:bold;">Boost (brain re-requests):</span> new_pri = carry_pri + boost_amount. Item is still wanted → urgency rises. Cap at 1.0.</p>
+  <p><span style="color:#EF5350;font-weight:bold;">Decay (brain stops requesting):</span> new_pri = carry_pri - decay_amount. Brain lost interest → urgency falls. Below min_threshold → drop.</p>
+  <p><span style="color:#FFC107;font-weight:bold;">Oscillating:</span> Brain requests on some ticks, not others → priority oscillates. Item stays but never dominates. This is fine — genuine uncertainty.</p>
+  <p style="color:#888;margin-top:8px;">Boost/decay amounts may need to differ per category (buildings decay slower than units — long-term goals vs short-term).</p>
+</div>
+
+<div class="card">
+  <h3 style="color:#00897B;">Lacking Resource Feedback</h3>
+  <p><span style="color:#FF9800;font-weight:bold;">Master Brain:</span> gets <span style="color:#00897B;">total_lacking_sum</span> — single float. Answers "how resource-starved am I overall?" → shift budget toward economy.</p>
+  <p><span style="color:#4CAF50;font-weight:bold;">Economy Brain:</span> gets <span style="color:#00897B;">lacking_food, lacking_wood, lacking_stone, lacking_gold</span> — 4 floats. Answers "WHICH resource is the bottleneck?" → direct workers to fix it.</p>
+  <p><span style="color:#607D8B;font-weight:bold;">Military & Building:</span> get <span style="color:#EF5350;">NOTHING</span>. They focus on strategy. The want list resolves resource conflicts for them.</p>
+  <p style="color:#888;margin-top:8px;">Feedback is 1-tick delayed (computed after execution, fed to brains next tick).</p>
+</div>
+
+
+<!-- ========================================== -->
+<!-- PROS AND CONS                              -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">Pros and Cons</div>
+<div class="section-sub">Overall assessment of the architecture.</div>
+
+<svg viewBox="0 0 1300 530" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1300px;">
+  <!-- PROS column -->
+  <rect x="30" y="10" width="600" height="30" rx="6" fill="#0f3460" stroke="#4CAF50" stroke-width="2"/>
+  <text x="330" y="30" text-anchor="middle" fill="#4CAF50" font-size="14" font-weight="bold">PROS</text>
+
+  <g data-tt-title="Implicit saving" data-tt-body="No explicit 'save' command needed. High-priority unaffordable items automatically block lower items from spending contested resources THIS tick. Next tick, recalculated fresh.">
+    <rect x="40" y="50" width="580" height="36" rx="6" fill="#1B5E20" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="60" y="68" fill="#A5D6A7" font-size="12" font-weight="bold">1.</text>
+    <text x="80" y="68" fill="#fff" font-size="12">Implicit saving — no persistent reservation state needed</text>
+    <text x="80" y="80" fill="#A5D6A7" font-size="9">Per-tick reservation. High-priority items block spending automatically.</text>
+  </g>
+
+  <g data-tt-title="Natural goal persistence" data-tt-body="Boost/decay answers 'do I still want this?' organically. Brain keeps requesting → priority rises → item gets built. Brain stops → priority falls → dropped. No timers or state machines.">
+    <rect x="40" y="92" width="580" height="36" rx="6" fill="#1B5E20" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="60" y="110" fill="#A5D6A7" font-size="12" font-weight="bold">2.</text>
+    <text x="80" y="110" fill="#fff" font-size="12">Natural goal persistence via boost/decay</text>
+    <text x="80" y="122" fill="#A5D6A7" font-size="9">No explicit commit/abandon logic. Brain re-requests = boost, stops = decay.</text>
+  </g>
+
+  <g data-tt-title="Non-conflicting resources flow" data-tt-body="Saving wood for Barracks doesn't block food spending. Workers (food-only) still execute. AI stays productive while saving.">
+    <rect x="40" y="134" width="580" height="36" rx="6" fill="#1B5E20" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="60" y="152" fill="#A5D6A7" font-size="12" font-weight="bold">3.</text>
+    <text x="80" y="152" fill="#fff" font-size="12">Non-conflicting resources flow freely while saving</text>
+    <text x="80" y="164" fill="#A5D6A7" font-size="9">AI isn't fully idle while saving for expensive items.</text>
+  </g>
+
+  <g data-tt-title="Clean separation of concerns" data-tt-body="Military/Building = strategy. Economy = resources. Master = budget. Want List = conflict resolution. Each component has single responsibility.">
+    <rect x="40" y="176" width="580" height="36" rx="6" fill="#1B5E20" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="60" y="194" fill="#A5D6A7" font-size="12" font-weight="bold">4.</text>
+    <text x="80" y="194" fill="#fff" font-size="12">Clean separation of concerns (strategy vs resources vs conflicts)</text>
+    <text x="80" y="206" fill="#A5D6A7" font-size="9">Easier to train, debug, and evolve each component independently.</text>
+  </g>
+
+  <g data-tt-title="Self-correcting feedback" data-tt-body="Shortage → lacking feedback → economy adapts → shortage resolved. No hardcoded fix needed. The GA learns the feedback-response mapping.">
+    <rect x="40" y="218" width="580" height="36" rx="6" fill="#1B5E20" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="60" y="236" fill="#A5D6A7" font-size="12" font-weight="bold">5.</text>
+    <text x="80" y="236" fill="#fff" font-size="12">Self-correcting lacking feedback loop</text>
+    <text x="80" y="248" fill="#A5D6A7" font-size="9">Shortage → feedback → economy adapts → resolved. Emergent behavior via GA.</text>
+  </g>
+
+  <g data-tt-title="Simple implementation" data-tt-body="Core: sorted list + walk top-down + afford/reserve + boost/decay. No state machines, no commitment levels.">
+    <rect x="40" y="260" width="580" height="36" rx="6" fill="#1B5E20" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="60" y="278" fill="#A5D6A7" font-size="12" font-weight="bold">6.</text>
+    <text x="80" y="278" fill="#fff" font-size="12">Simple to implement — sorted list with boost/decay</text>
+    <text x="80" y="290" fill="#A5D6A7" font-size="9">Core logic is a single loop. No complex state management.</text>
+  </g>
+
+  <g data-tt-title="Debuggable" data-tt-body="At any tick: inspect full want list, see which items executed/reserved/dropped, lacking values, boost/decay history. Clear visibility.">
+    <rect x="40" y="302" width="580" height="36" rx="6" fill="#1B5E20" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="60" y="320" fill="#A5D6A7" font-size="12" font-weight="bold">7.</text>
+    <text x="80" y="320" fill="#fff" font-size="12">Highly debuggable — full want list visible at any tick</text>
+    <text x="80" y="332" fill="#A5D6A7" font-size="9">Inspect priorities, executed/reserved/dropped items, lacking values.</text>
+  </g>
+
+  <!-- CONS column -->
+  <rect x="670" y="10" width="600" height="30" rx="6" fill="#0f3460" stroke="#EF5350" stroke-width="2"/>
+  <text x="970" y="30" text-anchor="middle" fill="#EF5350" font-size="14" font-weight="bold">CONS</text>
+
+  <g data-tt-title="Total resource blocking" data-tt-body="If Barracks reserves all wood, even a 10W wall can't be built. Overly conservative. Mitigation: reserve only the SHORTFALL (cost - current) instead of full cost.">
+    <rect x="680" y="50" width="580" height="36" rx="6" fill="#B71C1C" stroke="#EF5350" stroke-width="1.5"/>
+    <text x="700" y="68" fill="#FFCDD2" font-size="12" font-weight="bold">1.</text>
+    <text x="720" y="68" fill="#fff" font-size="12">Top item reserves ALL of its resource type</text>
+    <text x="720" y="80" fill="#FFCDD2" font-size="9">Even tiny items that wouldn't delay the goal get blocked.</text>
+  </g>
+
+  <g data-tt-title="No scarcity adaptation" data-tt-body="Military/building brains don't know resources are scarce. May keep requesting expensive items, clogging queue. By design (separation of concerns), but potentially wasteful.">
+    <rect x="680" y="92" width="580" height="36" rx="6" fill="#B71C1C" stroke="#EF5350" stroke-width="1.5"/>
+    <text x="700" y="110" fill="#FFCDD2" font-size="12" font-weight="bold">2.</text>
+    <text x="720" y="110" fill="#fff" font-size="12">Military/building brains can't adapt to resource scarcity</text>
+    <text x="720" y="122" fill="#FFCDD2" font-size="9">By design, but may clog queue with unaffordable items.</text>
+  </g>
+
+  <g data-tt-title="Boost/decay tuning" data-tt-body="Too fast boost → items lock in. Too slow → never reach high priority. Too fast decay → goals abandoned. Too slow → stale queue. Needs careful tuning.">
+    <rect x="680" y="134" width="580" height="36" rx="6" fill="#B71C1C" stroke="#EF5350" stroke-width="1.5"/>
+    <text x="700" y="152" fill="#FFCDD2" font-size="12" font-weight="bold">3.</text>
+    <text x="720" y="152" fill="#fff" font-size="12">Boost/decay rates need careful tuning</text>
+    <text x="720" y="164" fill="#FFCDD2" font-size="9">May need per-category rates. Sensitive to values.</text>
+  </g>
+
+  <g data-tt-title="Cascade reservation" data-tt-body="Multiple unaffordable items can reserve everything → AI does nothing. Mitigation: limit reservations to top N items or priority threshold.">
+    <rect x="680" y="176" width="580" height="36" rx="6" fill="#B71C1C" stroke="#EF5350" stroke-width="1.5"/>
+    <text x="700" y="194" fill="#FFCDD2" font-size="12" font-weight="bold">4.</text>
+    <text x="720" y="194" fill="#fff" font-size="12">Cascade reservation can lock ALL resources</text>
+    <text x="720" y="206" fill="#FFCDD2" font-size="9">Need a cap to prevent AI doing nothing for multiple ticks.</text>
+  </g>
+
+  <g data-tt-title="No multi-tick planning" data-tt-body="Can't calculate 'I'll afford this in N ticks'. Purely reactive per-tick. Can't optimize 'spend 20W on wall and still afford Barracks in 4 ticks instead of 3'.">
+    <rect x="680" y="218" width="580" height="36" rx="6" fill="#B71C1C" stroke="#EF5350" stroke-width="1.5"/>
+    <text x="700" y="236" fill="#FFCDD2" font-size="12" font-weight="bold">5.</text>
+    <text x="720" y="236" fill="#fff" font-size="12">No multi-tick planning or income projection</text>
+    <text x="720" y="248" fill="#FFCDD2" font-size="9">Purely reactive per-tick decisions. No timeline awareness.</text>
+  </g>
+
+  <g data-tt-title="Rigid priority order" data-tt-body="Strict priority ordering. A cheap 5W item at #5 can't execute if #1-#4 reserved everything. More sophisticated: skip reserved items and try the rest.">
+    <rect x="680" y="260" width="580" height="36" rx="6" fill="#B71C1C" stroke="#EF5350" stroke-width="1.5"/>
+    <text x="700" y="278" fill="#FFCDD2" font-size="12" font-weight="bold">6.</text>
+    <text x="720" y="278" fill="#fff" font-size="12">Strict priority order — cheap useful items can get starved</text>
+    <text x="720" y="290" fill="#FFCDD2" font-size="9">Rigid ordering. Low-priority cheap items blocked by expensive reservations.</text>
+  </g>
+
+  <g data-tt-title="Delayed feedback" data-tt-body="Lacking resources computed AFTER execution, fed to brains NEXT tick. 1-tick delay in feedback loop. In fast-paced situations, economy brain reacts one tick too late.">
+    <rect x="680" y="302" width="580" height="36" rx="6" fill="#B71C1C" stroke="#EF5350" stroke-width="1.5"/>
+    <text x="700" y="320" fill="#FFCDD2" font-size="12" font-weight="bold">7.</text>
+    <text x="720" y="320" fill="#fff" font-size="12">Feedback is 1-tick delayed</text>
+    <text x="720" y="332" fill="#FFCDD2" font-size="9">Lacking info from tick N reaches brains at tick N+1.</text>
+  </g>
+
+  <!-- Overall verdict -->
+  <rect x="100" y="360" width="1100" height="60" rx="10" fill="#1a2744" stroke="#4CAF50" stroke-width="2"/>
+  <text x="650" y="385" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Overall Assessment</text>
+  <text x="650" y="405" text-anchor="middle" fill="#e0e0e0" font-size="12">Strong design. Core mechanism (sorted list + reserve-and-continue + boost/decay) is simple, debuggable, and handles saving without complex state.</text>
+  <text x="650" y="418" text-anchor="middle" fill="#e0e0e0" font-size="12">Main risks (cascade reservation, queue starvation) are manageable with caps and thresholds.</text>
+</svg>
+
+
+<!-- ========================================== -->
+<!-- FUTURE IMPROVEMENTS                        -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">Things That Can Be Improved — Future Considerations</div>
+<div class="section-sub">Design decisions that need tuning, and potential enhancements for later iterations.</div>
+
+<div style="max-width:1150px;margin:15px auto;background:#151530;border-radius:10px;padding:16px 24px;border:1px solid #37474F;">
+
+<p style="color:#FF9800;font-size:14px;font-weight:bold;margin:0 0 12px;">Tuning Parameters (Need Values)</p>
+<table class="spec" style="margin:0;width:100%;">
+  <tr><th>Parameter</th><th>Description</th><th>Suggested Range</th><th>Notes</th></tr>
+  <tr><td style="color:#FFB74D;font-weight:bold;">boost_amount</td><td>Priority increase when brain re-requests</td><td class="range">+0.02 to +0.05</td><td>Too high → items lock in after 1-2 ticks</td></tr>
+  <tr><td style="color:#FFB74D;font-weight:bold;">decay_amount</td><td>Priority decrease when NOT re-requested</td><td class="range">-0.05 to -0.15</td><td>Too high → legitimate goals abandoned too fast</td></tr>
+  <tr><td style="color:#FFB74D;font-weight:bold;">min_threshold</td><td>Priority below which items are dropped</td><td class="range">0.05 to 0.15</td><td>Floor for removal</td></tr>
+  <tr><td style="color:#FFB74D;font-weight:bold;">MAX_UNITS_PER_TICK</td><td>Unit count scaling constant</td><td class="range">3 to 7</td><td>Higher = faster army building but more resource pressure</td></tr>
+  <tr><td style="color:#FFB74D;font-weight:bold;">lacking_norm</td><td>Normalization divisor for lacking values</td><td class="range">/500 to /1000</td><td>Keeps NN inputs in [0,1] range</td></tr>
+  <tr><td style="color:#FFB74D;font-weight:bold;">priority_cap</td><td>Maximum priority value</td><td class="range">1.0</td><td>Prevents runaway boosting</td></tr>
+</table>
+
+<p style="color:#4fc3f7;font-size:14px;font-weight:bold;margin:20px 0 8px;">Potential Enhancements</p>
+<p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#EF5350;font-weight:bold;">1. Reservation caps</span> — limit reservations to top N items (e.g. 2-3) to prevent cascade lockout where ALL resources get reserved and nothing executes.</p>
+<p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#EF5350;font-weight:bold;">2. Reserve shortfall only</span> — reserve (cost - current_stockpile) instead of full cost. Allows partial spending on non-conflicting items.</p>
+<p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#EF5350;font-weight:bold;">3. Max queue size per category</span> — cap at e.g. 5 items per type (units/buildings/workers) to prevent unbounded growth from persistent brain requests.</p>
+<p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#FFB74D;font-weight:bold;">4. Per-category decay rates</span> — buildings might need slower decay (long-term goals) vs units (short-term tactical needs).</p>
+<p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#FFB74D;font-weight:bold;">5. Context-dependent MAX_UNITS_PER_TICK</span> — instead of magic constant, derive from game state (e.g. number of idle barracks, population headroom). NN output controls fraction of capacity.</p>
+<p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#FFB74D;font-weight:bold;">6. Income projection</span> — "I earn 30W/tick, need 80W more → ready in ~3 ticks." Could optimize: "safe to spend 20W on a wall and still afford Barracks in 4 ticks."</p>
+<p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#00BCD4;font-weight:bold;">7. Spatial brain topology sizing</span> — current sizes are estimates. Profile actual inference cost and adjust hidden layer sizes for performance budget.</p>
+<p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#00BCD4;font-weight:bold;">8. More spatial brains</span> — could add DefendSpatial (where to set up defenses), RallyPointSpatial (where to gather army before attack), etc.</p>
+<p style="color:#aaa;font-size:13px;margin:4px 0;"><span style="color:#CE93D8;font-weight:bold;">9. Dynamic tick rate</span> — speed up Military Brain during active combat, slow down during peacetime. Save compute when nothing is happening.</p>
+</div>
+
+
+<script>
+const tooltip = document.getElementById('tooltip');
+document.querySelectorAll('g[data-tt-title]').forEach(g => {
+  g.addEventListener('mouseenter', e => {
+    tooltip.innerHTML = `<div class="tt-title">${g.getAttribute('data-tt-title')}</div>${g.getAttribute('data-tt-body')}`;
+    tooltip.style.display = 'block';
+  });
+  g.addEventListener('mousemove', e => {
+    let x = e.clientX + 16, y = e.clientY + 16;
+    const r = tooltip.getBoundingClientRect();
+    if (x + r.width > window.innerWidth - 16) x = e.clientX - r.width - 16;
+    if (y + r.height > window.innerHeight - 16) y = e.clientY - r.height - 16;
+    tooltip.style.left = x + 'px'; tooltip.style.top = y + 'px';
+  });
+  g.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+});
+</script>
+</body>
+</html>
