@@ -8,6 +8,8 @@ class Player;
 struct db_nation;
 
 enum class EconomyInputIdx : unsigned char {
+	PLAYER_SCORE,
+	ENEMY_SCORE,
 	RES_FOOD,
 	RES_WOOD,
 	RES_STONE,
@@ -18,9 +20,11 @@ enum class EconomyInputIdx : unsigned char {
 	GATHER_GOLD,
 	FREE_WORKERS,
 	WORKERS_COUNT,
-	ARMY_COUNT,
-	ENEMY_THREAT_DIST,
-	ENEMY_SCORE,
+	FOOD_STORAGE_RATIO,
+	GOLD_STORAGE_RATIO,
+	STONE_REFINE_RATIO,
+	GOLD_REFINE_RATIO,
+	RES_WO_BONUS,
 	LACKING_FOOD,
 	LACKING_WOOD,
 	LACKING_STONE,

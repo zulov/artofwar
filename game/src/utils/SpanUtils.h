@@ -126,3 +126,7 @@ template <typename T>
 const std::span<const T> asSpan(const std::vector<T>& arr) {
 	return std::span(arr.data(), arr.size());
 }
+
+inline bool anyGreaterThanZero(std::span<float> values) {
+	return std::ranges::any_of(values, [](float v) { return v > 0.0f; });
+}

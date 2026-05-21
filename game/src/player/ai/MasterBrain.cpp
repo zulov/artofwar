@@ -85,10 +85,6 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, std::span<const 
 	inputData[e(I::DIST_ENEMY_ARMY_ENEMY_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, enemy, 0.f);
 
 	// Lacking feedback (4 + 1)
-	inputData[e(I::LACKING_FOOD)] = normLacking[0];
-	inputData[e(I::LACKING_WOOD)] = normLacking[1];
-	inputData[e(I::LACKING_STONE)] = normLacking[2];
-	inputData[e(I::LACKING_GOLD)] = normLacking[3];
 	inputData[e(I::LACKING_TOTAL)] = normTotalLacking;
 
 	// Deltas (3)
