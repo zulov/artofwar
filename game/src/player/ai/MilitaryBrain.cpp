@@ -17,39 +17,37 @@ MilitaryBrain::MilitaryBrain(db_nation* nation)
 
 MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
                                       float militaryUrgency, float attackUrgency) {
-	// 14 inputs — army orders are free, no resource info needed
-	int idx = 0;
+	using I = MilitaryInputIdx;
+	constexpr auto e = [](I v) { return static_cast<int>(v); };
 
 	auto* possession = player->getPossession();
 	auto* enemyPossession = enemy->getPossession();
 
 	// Military strength (2)
-	inputData[idx++] = possession->getAttackSum() / 1000.f;
-	inputData[idx++] = possession->getDefenceAttackSum() / 100.f;
+	inputData[e(I::ATTACK_SUM)] = possession->getAttackSum() / 1000.f;
+	inputData[e(I::DEFENCE_ATTACK_SUM)] = possession->getDefenceAttackSum() / 100.f;
 
 	// Spatial — army/building distances (4)
-	inputData[idx++] = MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, player, 0.f);
-	inputData[idx++] = MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, enemy, 1.f);
-	inputData[idx++] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, player, 1.f);
-	inputData[idx++] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, enemy, 0.f);
+	inputData[e(I::DIST_OUR_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, player, 0.f);
+	inputData[e(I::DIST_OUR_ARMY_ENEMY_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, enemy, 1.f);
+	inputData[e(I::DIST_ENEMY_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, player, 1.f);
+	inputData[e(I::DIST_ENEMY_ARMY_ENEMY_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, enemy, 0.f);
 
 	// Scores (2)
-	inputData[idx++] = enemy->getScore() / 1000.f;
-	inputData[idx++] = player->getScore() / 1000.f;
+	inputData[e(I::ENEMY_SCORE)] = enemy->getScore() / 1000.f;
+	inputData[e(I::PLAYER_SCORE)] = player->getScore() / 1000.f;
 
 	// Unit & army counts (4)
-	inputData[idx++] = static_cast<float>(possession->getUnitsNumber()) / 200.f;
-	inputData[idx++] = static_cast<float>(enemyPossession->getUnitsNumber()) / 200.f;
-	inputData[idx++] = static_cast<float>(possession->getArmyNumber()) / 200.f;
-	inputData[idx++] = static_cast<float>(possession->getFreeArmyNumber()) / 200.f;
+	inputData[e(I::UNITS_COUNT)] = static_cast<float>(possession->getUnitsNumber()) / 200.f;
+	inputData[e(I::ENEMY_UNITS_COUNT)] = static_cast<float>(enemyPossession->getUnitsNumber()) / 200.f;
+	inputData[e(I::ARMY_COUNT)] = static_cast<float>(possession->getArmyNumber()) / 200.f;
+	inputData[e(I::FREE_ARMY_COUNT)] = static_cast<float>(possession->getFreeArmyNumber()) / 200.f;
 
 	// Urgencies from Master (2)
-	inputData[idx++] = militaryUrgency;
-	inputData[idx++] = attackUrgency;
+	inputData[e(I::MILITARY_URGENCY)] = militaryUrgency;
+	inputData[e(I::ATTACK_URGENCY)] = attackUrgency;
 
-	assert(idx == 14);
-
-	auto result = brain->decide(std::span<const float>(inputData.data(), 14));
+	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
 
 	return MilitaryOutput{
 		result[0], result[1], result[2], result[3]

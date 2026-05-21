@@ -1,10 +1,43 @@
 #pragma once
 #include <array>
 #include <span>
+#include <magic_enum.hpp>
 
 class Brain;
 class Player;
 struct db_nation;
+
+enum class MasterInputIdx : unsigned char {
+	PLAYER_SCORE,
+	ENEMY_SCORE,
+	BUILDINGS_COUNT,
+	WORKERS_COUNT,
+	ARMY_COUNT,
+	ENEMY_ARMY_COUNT,
+	RES_FOOD,
+	RES_WOOD,
+	RES_STONE,
+	RES_GOLD,
+	GATHER_FOOD,
+	GATHER_WOOD,
+	GATHER_STONE,
+	GATHER_GOLD,
+	FREE_WORKERS,
+	ATTACK_SUM,
+	DEFENCE_ATTACK_SUM,
+	DIST_OUR_ARMY_OUR_BUILDING,
+	DIST_OUR_ARMY_ENEMY_BUILDING,
+	DIST_ENEMY_ARMY_OUR_BUILDING,
+	DIST_ENEMY_ARMY_ENEMY_BUILDING,
+	LACKING_FOOD,
+	LACKING_WOOD,
+	LACKING_STONE,
+	LACKING_GOLD,
+	LACKING_TOTAL,
+	DELTA_SCORE,
+	DELTA_UNITS,
+	DELTA_RES,
+};
 
 enum class MasterOutputIdx : unsigned char {
 	WORKER_URGENCY,
@@ -41,7 +74,7 @@ private:
 	void updateHistory(Player* player);
 
 	Brain* brain;
-	std::array<float, 29> inputData{};
+	std::array<float, magic_enum::enum_count<MasterInputIdx>()> inputData{};
 
 	// History for deltas
 	float prevScore = 0.f;

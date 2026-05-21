@@ -1,10 +1,28 @@
 #pragma once
 #include <array>
 #include <span>
+#include <magic_enum.hpp>
 
 class Brain;
 class Player;
 struct db_nation;
+
+enum class BuildingInputIdx : unsigned char {
+	BUILDINGS_COUNT,
+	WORKERS_COUNT,
+	FREE_WORKERS,
+	ARMY_COUNT,
+	ATTACK_SUM,
+	DEFENCE_ATTACK_SUM,
+	GATHER_FOOD,
+	GATHER_WOOD,
+	GATHER_STONE,
+	GATHER_GOLD,
+	ENEMY_THREAT_DIST,
+	BUILDING_URGENCY,
+	TECH_URGENCY,
+	DEFENCE_BUILDING_URGENCY,
+};
 
 enum class BuildingOutputIdx : unsigned char {
 	OTHER_URGENCY,
@@ -44,5 +62,5 @@ public:
 
 private:
 	Brain* brain;
-	std::array<float, 14> inputData{};
+	std::array<float, magic_enum::enum_count<BuildingInputIdx>()> inputData{};
 };
