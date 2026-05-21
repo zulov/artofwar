@@ -1,6 +1,5 @@
 #pragma once
 #include <array>
-#include <span>
 #include <magic_enum.hpp>
 
 class Brain;
@@ -70,7 +69,7 @@ public:
 	explicit MasterBrain(db_nation* nation);
 	MasterBrain(const MasterBrain&) = delete;
 
-	MasterOutput decide(Player* player, Player* enemy, std::span<const float> lackingPerResource, float totalLacking);
+	MasterOutput decide(Player* player, Player* enemy, const std::array<float, 4>& lackingPerResource, float totalLacking);
 
 private:
 	void updateHistory(Player* player);

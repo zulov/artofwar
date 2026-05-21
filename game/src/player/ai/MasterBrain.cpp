@@ -20,7 +20,7 @@ MasterBrain::MasterBrain(db_nation* nation)
 	assert(brain->getOutputSize() == magic_enum::enum_count<MasterOutputIdx>());
 }
 
-MasterOutput MasterBrain::decide(Player* player, Player* enemy, std::span<const float> lackingPerResource, float totalLacking) {
+MasterOutput MasterBrain::decide(Player* player, Player* enemy, const std::array<float, 4>& lackingPerResource, float totalLacking) {
 	float deltaScore = player->getScore() - prevScore;
 	float deltaUnits = static_cast<float>(player->getPossession()->getUnitsNumber()) - prevUnits;
 	float resSum = 0.f;
@@ -35,10 +35,6 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, std::span<const 
 	deltaRes /= 1000.f;
 
 	// Normalize lacking
-	std::array<float, 4> normLacking{};
-	for (int i = 0; i < 4; ++i) {
-		normLacking[i] = lackingPerResource.size() > static_cast<size_t>(i) ? lackingPerResource[i] / 500.f : 0.f;
-	}
 	float normTotalLacking = totalLacking / 2000.f;
 
 	// Build input array
@@ -71,12 +67,9 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, std::span<const 
 	inputData[e(I::GATHER_STONE)] = res->getGatherSpeed(ResourceType::STONE) / 10.f;
 	inputData[e(I::GATHER_GOLD)] = res->getGatherSpeed(ResourceType::GOLD) / 10.f;
 
-	// Workers (1)
-	inputData[e(I::FREE_WORKERS)] = static_cast<float>(possession->getFreeWorkersNumber()) / 100.f;
-
 	// Attack/Defence (2)
 	inputData[e(I::ATTACK_SUM)] = possession->getAttackSum() / 1000.f;
-	inputData[e(I::DEFENCE_ATTACK_SUM)] = possession->getDefenceAttackSum() / 100.f;
+	inputData[e(I::DEFENCE_SUM)] = possession->getDefenceAttackSum() / 100.f;
 
 	// Spatial distances (4)
 	inputData[e(I::DIST_OUR_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, player, 0.f);
@@ -84,13 +77,21 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, std::span<const 
 	inputData[e(I::DIST_ENEMY_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, player, 1.f);
 	inputData[e(I::DIST_ENEMY_ARMY_ENEMY_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, enemy, 0.f);
 
-	// Lacking feedback (4 + 1)
-	inputData[e(I::LACKING_TOTAL)] = normTotalLacking;
+	// Lacking feedback (1)
+	inputData[e(I::TOTAL_LACKING)] = normTotalLacking;
 
 	// Deltas (3)
 	inputData[e(I::DELTA_SCORE)] = deltaScore;
+	inputData[e(I::DELTA_ENEMY_SCORE)] = 0.f; //TODO implement
 	inputData[e(I::DELTA_UNITS)] = deltaUnits;
 	inputData[e(I::DELTA_RES)] = deltaRes;
+
+	// New inputs — TODO implement
+	inputData[e(I::GAME_TIME)] = 0.f; //TODO implement
+	inputData[e(I::KD_RATIO)] = 0.f; //TODO implement
+	inputData[e(I::IN_COMBAT_RATIO)] = 0.f; //TODO implement
+	inputData[e(I::TECH_LEVEL)] = 0.f; //TODO implement
+	inputData[e(I::DELTA_GATHER_SPEED)] = 0.f; //TODO implement
 
 	updateHistory(player);
 

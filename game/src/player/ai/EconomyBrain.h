@@ -1,6 +1,5 @@
 #pragma once
 #include <array>
-#include <span>
 #include <magic_enum.hpp>
 
 class Brain;
@@ -58,7 +57,7 @@ public:
 	EconomyBrain(const EconomyBrain&) = delete;
 
 	EconomyOutput decide(Player* player, Player* enemy,
-	                      std::span<const float> lackingPerResource,
+	                      const std::array<float, 4>& lackingPerResource,
 	                      float economyUrgency, float workerUrgency, float expandUrgency);
 
 private:

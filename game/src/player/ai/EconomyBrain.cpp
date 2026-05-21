@@ -18,13 +18,17 @@ EconomyBrain::EconomyBrain(db_nation* nation)
 }
 
 EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
-                                    std::span<const float> lackingPerResource,
+                                    const std::array<float, 4>& lackingPerResource,
                                     float economyUrgency, float workerUrgency, float expandUrgency) {
 	using I = EconomyInputIdx;
 	constexpr auto e = [](I v) { return static_cast<int>(v); };
 
 	auto* res = player->getResources();
 	auto* possession = player->getPossession();
+
+	// Scores (2)
+	inputData[e(I::PLAYER_SCORE)] = player->getScore() / 1000.f;
+	inputData[e(I::ENEMY_SCORE)] = enemy->getScore() / 1000.f;
 
 	// Resource values (4)
 	inputData[e(I::RES_FOOD)] = res->getValue(ResourceType::FOOD) / 1000.f;
@@ -42,20 +46,18 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	inputData[e(I::FREE_WORKERS)] = static_cast<float>(possession->getFreeWorkersNumber()) / 100.f;
 	inputData[e(I::WORKERS_COUNT)] = static_cast<float>(possession->getWorkersNumber()) / 100.f;
 
-	// Army count (1)
-	inputData[e(I::ARMY_COUNT)] = static_cast<float>(possession->getArmyNumber()) / 200.f;
-
-	// Enemy threat proximity (1)
-	inputData[e(I::ENEMY_THREAT_DIST)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, player, 1.f);
-
-	// Enemy score (1)
-	inputData[e(I::ENEMY_SCORE)] = enemy->getScore() / 1000.f;
+	// New inputs — TODO implement
+	inputData[e(I::FOOD_STORAGE_RATIO)] = 0.f; //TODO implement
+	inputData[e(I::GOLD_STORAGE_RATIO)] = 0.f; //TODO implement
+	inputData[e(I::STONE_REFINE_RATIO)] = 0.f; //TODO implement
+	inputData[e(I::GOLD_REFINE_RATIO)] = 0.f; //TODO implement
+	inputData[e(I::RES_WO_BONUS)] = 0.f; //TODO implement
 
 	// Lacking per resource (4)
-	inputData[e(I::LACKING_FOOD)] = lackingPerResource.size() > 0 ? lackingPerResource[0] / 500.f : 0.f;
-	inputData[e(I::LACKING_WOOD)] = lackingPerResource.size() > 1 ? lackingPerResource[1] / 500.f : 0.f;
-	inputData[e(I::LACKING_STONE)] = lackingPerResource.size() > 2 ? lackingPerResource[2] / 500.f : 0.f;
-	inputData[e(I::LACKING_GOLD)] = lackingPerResource.size() > 3 ? lackingPerResource[3] / 500.f : 0.f;
+	inputData[e(I::LACKING_FOOD)] = lackingPerResource[0] / 500.f;
+	inputData[e(I::LACKING_WOOD)] = lackingPerResource[1] / 500.f;
+	inputData[e(I::LACKING_STONE)] = lackingPerResource[2] / 500.f;
+	inputData[e(I::LACKING_GOLD)] = lackingPerResource[3] / 500.f;
 
 	// Urgencies from MasterBrain (3)
 	inputData[e(I::ECONOMY_URGENCY)] = economyUrgency;

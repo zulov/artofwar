@@ -1,5 +1,6 @@
 #include "MilitaryBrain.h"
 
+#include <algorithm>
 #include <magic_enum.hpp>
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
@@ -24,9 +25,13 @@ MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
 	auto* possession = player->getPossession();
 	auto* enemyPossession = enemy->getPossession();
 
+	// Scores (2)
+	inputData[e(I::PLAYER_SCORE)] = player->getScore() / 1000.f;
+	inputData[e(I::ENEMY_SCORE)] = enemy->getScore() / 1000.f;
+
 	// Military strength (2)
 	inputData[e(I::ATTACK_SUM)] = possession->getAttackSum() / 1000.f;
-	inputData[e(I::DEFENCE_ATTACK_SUM)] = possession->getDefenceAttackSum() / 100.f;
+	inputData[e(I::DEFENCE_SUM)] = possession->getDefenceAttackSum() / 100.f;
 
 	// Spatial — army/building distances (4)
 	inputData[e(I::DIST_OUR_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, player, 0.f);
@@ -34,19 +39,27 @@ MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
 	inputData[e(I::DIST_ENEMY_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, player, 1.f);
 	inputData[e(I::DIST_ENEMY_ARMY_ENEMY_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, enemy, 0.f);
 
-	// Scores (2)
-	inputData[e(I::ENEMY_SCORE)] = enemy->getScore() / 1000.f;
-	inputData[e(I::PLAYER_SCORE)] = player->getScore() / 1000.f;
-
-	// Unit & army counts (4)
-	inputData[e(I::UNITS_COUNT)] = static_cast<float>(possession->getUnitsNumber()) / 200.f;
-	inputData[e(I::ENEMY_UNITS_COUNT)] = static_cast<float>(enemyPossession->getUnitsNumber()) / 200.f;
+	// Army counts (3)
 	inputData[e(I::ARMY_COUNT)] = static_cast<float>(possession->getArmyNumber()) / 200.f;
+	inputData[e(I::ENEMY_ARMY_COUNT)] = static_cast<float>(enemyPossession->getArmyNumber()) / 200.f;
 	inputData[e(I::FREE_ARMY_COUNT)] = static_cast<float>(possession->getFreeArmyNumber()) / 200.f;
 
 	// Urgencies from Master (2)
 	inputData[e(I::MILITARY_URGENCY)] = militaryUrgency;
 	inputData[e(I::ATTACK_URGENCY)] = attackUrgency;
+
+	// Army composition ratios — TODO implement
+	float armyCount = static_cast<float>(possession->getArmyNumber());
+	float safeDiv = std::max(armyCount, 1.f);
+	inputData[e(I::OWN_INFANTRY_RATIO)] = static_cast<float>(possession->getInfantryNumber()) / safeDiv;
+	inputData[e(I::OWN_RANGE_RATIO)] = static_cast<float>(possession->getRangeNumber()) / safeDiv;
+	inputData[e(I::OWN_CAVALRY_RATIO)] = static_cast<float>(possession->getCavalryNumber()) / safeDiv;
+
+	float enemyArmyCount = static_cast<float>(enemyPossession->getArmyNumber());
+	float enemySafeDiv = std::max(enemyArmyCount, 1.f);
+	inputData[e(I::ENEMY_INFANTRY_RATIO)] = static_cast<float>(enemyPossession->getInfantryNumber()) / enemySafeDiv;
+	inputData[e(I::ENEMY_RANGE_RATIO)] = static_cast<float>(enemyPossession->getRangeNumber()) / enemySafeDiv;
+	inputData[e(I::ENEMY_CAVALRY_RATIO)] = static_cast<float>(enemyPossession->getCavalryNumber()) / enemySafeDiv;
 
 	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
 
