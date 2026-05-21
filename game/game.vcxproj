@@ -399,6 +399,13 @@
     <ClCompile Include="src\env\bucket\StaticGrid.cpp" />
     <ClCompile Include="src\env\influence\VisibilityManager.cpp" />
     <ClCompile Include="src\utils\CountUtils.cpp" />
+    <ClCompile Include="src\player\ai\AiOrchestrator.cpp" />
+    <ClCompile Include="src\player\ai\BuildingBrain.cpp" />
+    <ClCompile Include="src\player\ai\EconomyBrain.cpp" />
+    <ClCompile Include="src\player\ai\MasterBrain.cpp" />
+    <ClCompile Include="src\player\ai\MilitaryBrain.cpp" />
+    <ClCompile Include="src\player\ai\UnitBrain.cpp" />
+    <ClCompile Include="src\player\ai\WantList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utils\CountUtils.h" />
@@ -624,6 +631,13 @@
     <ClInclude Include="src\env\influence\map\VisibilityMap.h" />
     <ClInclude Include="src\env\bucket\StaticGrid.h" />
     <ClInclude Include="src\env\influence\VisibilityManager.h" />
+    <ClInclude Include="src\player\ai\AiOrchestrator.h" />
+    <ClInclude Include="src\player\ai\BuildingBrain.h" />
+    <ClInclude Include="src\player\ai\EconomyBrain.h" />
+    <ClInclude Include="src\player\ai\MasterBrain.h" />
+    <ClInclude Include="src\player\ai\MilitaryBrain.h" />
+    <ClInclude Include="src\player\ai\UnitBrain.h" />
+    <ClInclude Include="src\player\ai\WantList.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
