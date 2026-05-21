@@ -16,6 +16,7 @@
 MasterBrain::MasterBrain(db_nation* nation)
 	: brain(BrainProvider::get(nation->actionPrefix[0] + "master.csv")) {
 	assert(brain->getInputSize() == inputData.size());
+	assert(brain->getInputSize() == magic_enum::enum_count<MasterInputIdx>());
 	assert(brain->getOutputSize() == magic_enum::enum_count<MasterOutputIdx>());
 }
 

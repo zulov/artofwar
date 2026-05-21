@@ -12,6 +12,7 @@
 UnitBrain::UnitBrain(db_nation* nation)
 	: brain(BrainProvider::get(nation->actionPrefix[3] + "unit.csv")) {
 	assert(brain->getInputSize() == inputData.size());
+	assert(brain->getInputSize() == magic_enum::enum_count<UnitInputIdx>());
 	assert(brain->getOutputSize() == static_cast<int>(UnitOutputIdx::COUNT));
 }
 

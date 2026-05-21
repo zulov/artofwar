@@ -13,6 +13,7 @@
 EconomyBrain::EconomyBrain(db_nation* nation)
 	: brain(BrainProvider::get(nation->actionPrefix[1] + "economy.csv")) {
 	assert(brain->getInputSize() == inputData.size());
+	assert(brain->getInputSize() == magic_enum::enum_count<EconomyInputIdx>());
 	assert(brain->getOutputSize() == magic_enum::enum_count<EconomyOutputIdx>());
 }
 

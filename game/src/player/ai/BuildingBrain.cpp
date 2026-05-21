@@ -13,6 +13,7 @@
 BuildingBrain::BuildingBrain(db_nation* nation)
 	: brain(BrainProvider::get(nation->actionPrefix[2] + "building.csv")) {
 	assert(brain->getInputSize() == inputData.size());
+	assert(brain->getInputSize() == magic_enum::enum_count<BuildingInputIdx>());
 	assert(brain->getOutputSize() == magic_enum::enum_count<BuildingOutputIdx>());
 }
 
