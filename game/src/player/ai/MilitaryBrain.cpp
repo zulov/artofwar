@@ -1,6 +1,6 @@
 #include "MilitaryBrain.h"
 
-#include <array>
+#include <magic_enum.hpp>
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
 #include "MetricDefinitions.h"
@@ -11,12 +11,13 @@
 
 MilitaryBrain::MilitaryBrain(db_nation* nation)
 	: brain(BrainProvider::get(nation->orderPrefix[0] + "military.csv")) {
+	assert(brain->getInputSize() == inputData.size());
+	assert(brain->getOutputSize() == magic_enum::enum_count<MilitaryOutputIdx>());
 }
 
 MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
                                       float militaryUrgency, float attackUrgency) {
 	// 14 inputs — army orders are free, no resource info needed
-	std::array<float, 14> inputData{};
 	int idx = 0;
 
 	auto* possession = player->getPossession();

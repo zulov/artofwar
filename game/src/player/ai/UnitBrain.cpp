@@ -11,12 +11,13 @@
 
 UnitBrain::UnitBrain(db_nation* nation)
 	: brain(BrainProvider::get(nation->actionPrefix[3] + "unit.csv")) {
+	assert(brain->getInputSize() == inputData.size());
+	assert(brain->getOutputSize() == static_cast<int>(UnitOutputIdx::COUNT));
 }
 
 UnitOutput UnitBrain::decide(Player* player, Player* enemy,
                               float unitUrgency, float attackUrgency) {
 	// 14 inputs — no resource stockpiles (want list handles affordability)
-	std::array<float, 14> inputData{};
 	int idx = 0;
 
 	auto* possession = player->getPossession();

@@ -17,6 +17,8 @@ public:
 
 	DecideResult decide(std::span<const float> data);
 	std::string getName() const;
+	int getInputSize() const;
+	int getOutputSize() const;
 private:
 	std::vector<Layer*> allLayers;
 

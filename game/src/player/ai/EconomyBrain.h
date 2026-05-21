@@ -35,4 +35,5 @@ public:
 
 private:
 	Brain* brain;
+	std::array<float, 20> inputData{};
 };

@@ -1,4 +1,5 @@
 #pragma once
+#include <array>
 #include <span>
 
 class Brain;
@@ -43,4 +44,5 @@ public:
 
 private:
 	Brain* brain;
+	std::array<float, 14> inputData{};
 };

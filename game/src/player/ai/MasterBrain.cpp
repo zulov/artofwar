@@ -1,5 +1,6 @@
 #include "MasterBrain.h"
 
+#include <magic_enum.hpp>
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
 #include "MetricDefinitions.h"
@@ -14,6 +15,8 @@
 
 MasterBrain::MasterBrain(db_nation* nation)
 	: brain(BrainProvider::get(nation->actionPrefix[0] + "master.csv")) {
+	assert(brain->getInputSize() == inputData.size());
+	assert(brain->getOutputSize() == magic_enum::enum_count<MasterOutputIdx>());
 }
 
 MasterOutput MasterBrain::decide(Player* player, Player* enemy, std::span<const float> lackingPerResource, float totalLacking) {
@@ -38,7 +41,6 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, std::span<const 
 	float normTotalLacking = totalLacking / 2000.f;
 
 	// Build input array — 29 inputs
-	std::array<float, 29> inputData{};
 	int idx = 0;
 
 	auto* possession = player->getPossession();

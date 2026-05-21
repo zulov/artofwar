@@ -1,5 +1,6 @@
 #include "EconomyBrain.h"
 
+#include <magic_enum.hpp>
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
 #include "MetricDefinitions.h"
@@ -11,12 +12,13 @@
 
 EconomyBrain::EconomyBrain(db_nation* nation)
 	: brain(BrainProvider::get(nation->actionPrefix[1] + "economy.csv")) {
+	assert(brain->getInputSize() == inputData.size());
+	assert(brain->getOutputSize() == magic_enum::enum_count<EconomyOutputIdx>());
 }
 
 EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
                                     std::span<const float> lackingPerResource,
                                     float economyUrgency, float workerUrgency, float expandUrgency) {
-	std::array<float, 20> inputData{};
 	int idx = 0;
 
 	auto* res = player->getResources();

@@ -32,3 +32,7 @@ DecideResult Brain::decide(std::span<const float> data) {
 }
 
 std::string Brain::getName() const { return filename; }
+
+int Brain::getInputSize() const { return allLayers.front()->getInputSize(); }
+
+int Brain::getOutputSize() const { return allLayers.back()->getOutputSize(); }

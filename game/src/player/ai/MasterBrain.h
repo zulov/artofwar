@@ -41,6 +41,7 @@ private:
 	void updateHistory(Player* player);
 
 	Brain* brain;
+	std::array<float, 29> inputData{};
 
 	// History for deltas
 	float prevScore = 0.f;

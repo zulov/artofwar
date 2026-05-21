@@ -12,6 +12,8 @@ public:
 	void setValues(const Eigen::VectorXf& mult);
 
 	const Eigen::VectorXf& getValues() const { return values; }
+	int getInputSize() const { return weights.cols(); }
+	int getOutputSize() const { return weights.rows(); }
 
 private:
 	bool sameInput(std::span<const float> data);

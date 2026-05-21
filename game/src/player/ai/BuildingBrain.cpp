@@ -1,6 +1,6 @@
 #include "BuildingBrain.h"
 
-#include <array>
+#include <magic_enum.hpp>
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
 #include "MetricDefinitions.h"
@@ -12,12 +12,13 @@
 
 BuildingBrain::BuildingBrain(db_nation* nation)
 	: brain(BrainProvider::get(nation->actionPrefix[2] + "building.csv")) {
+	assert(brain->getInputSize() == inputData.size());
+	assert(brain->getOutputSize() == magic_enum::enum_count<BuildingOutputIdx>());
 }
 
 BuildingOutput BuildingBrain::decide(Player* player, Player* enemy,
                                       float buildingUrgency, float techUrgency, float defenceBuildingUrgency) {
 	// 14 inputs — no resource stockpiles (want list handles affordability)
-	std::array<float, 14> inputData{};
 	int idx = 0;
 
 	auto* res = player->getResources();
