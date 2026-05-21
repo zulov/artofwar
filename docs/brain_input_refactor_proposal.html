@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Art of War — Brain Input Refactor Proposal</title>
+<style>
+  body { margin: 20px; background: #1a1a2e; font-family: 'Segoe UI', sans-serif; color: #e0e0e0; max-width: 1300px; margin: 20px auto; }
+  h1 { text-align: center; font-size: 24px; color: #fff; margin-bottom: 5px; }
+  h2 { font-size: 18px; color: #4fc3f7; margin: 30px 0 10px; border-bottom: 1px solid #37474F; padding-bottom: 5px; }
+  h3 { font-size: 15px; color: #FFB74D; margin: 20px 0 8px; }
+  p, li { font-size: 13px; line-height: 1.6; color: #ccc; }
+  .summary { background: #151530; border: 1px solid #37474F; border-radius: 8px; padding: 12px 20px; margin: 15px 0; font-size: 13px; }
+  .summary .old { color: #EF5350; }
+  .summary .new { color: #66BB6A; }
+  code { background: #0d1117; padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 12px; color: #e0e0e0; }
+  table { border-collapse: collapse; margin: 10px 0; font-size: 12px; background: #151530; width: 100%; }
+  th { background: #0f3460; color: #4fc3f7; padding: 6px 12px; border: 1px solid #37474F; text-align: left; }
+  td { padding: 5px 12px; border: 1px solid #37474F; color: #ccc; }
+  tr:hover td { background: #1a2744; }
+  td.remove { color: #EF5350; text-decoration: line-through; }
+  td.add { color: #66BB6A; font-weight: bold; }
+  td.keep { color: #ccc; }
+  td.norm { color: #CE93D8; text-align: center; }
+  td.cat { color: #FF9800; font-weight: bold; }
+  .tag-remove { background: #B71C1C; color: #fff; padding: 1px 6px; border-radius: 3px; font-size: 10px; }
+  .tag-add { background: #1B5E20; color: #fff; padding: 1px 6px; border-radius: 3px; font-size: 10px; }
+  .tag-keep { background: #37474F; color: #aaa; padding: 1px 6px; border-radius: 3px; font-size: 10px; }
+  .note { background: #1a2744; border-left: 3px solid #FF9800; padding: 8px 14px; margin: 10px 0; font-size: 12px; color: #FFB74D; }
+  .enum-box { background: #0d1117; border: 1px solid #37474F; border-radius: 6px; padding: 12px 18px; margin: 10px 0; font-family: Consolas, monospace; font-size: 13px; color: #A5D6A7; white-space: pre; }
+</style>
+</head>
+<body>
+
+<h1>Brain Input Refactor Proposal</h1>
+<p style="text-align:center; color:#888; font-size:13px;">Changes to inputs for all 5 brains + new BrainIndex enum for prefix indexing</p>
+
+<!-- ============================================ -->
+<!-- BRAIN INDEX ENUM                             -->
+<!-- ============================================ -->
+<h2>0. BrainIndex Enum</h2>
+<p>Replace magic numbers in <code>nation->actionPrefix[0]</code>, <code>nation->actionPrefix[1]</code>, etc. with a typed enum.</p>
+
+<div class="enum-box">// BrainIndex.h
+enum class ActionBrainIndex : unsigned char {
+    MASTER   = 0,
+    ECONOMY  = 1,
+    BUILDING = 2,
+    UNIT     = 3,
+};
+
+enum class OrderBrainIndex : unsigned char {
+    MILITARY = 0,
+};</div>
+
+<p>Usage: <code>nation->actionPrefix[cast(ActionBrainIndex::MASTER)] + "master.csv"</code></p>
+
+<!-- ============================================ -->
+<!-- MASTER BRAIN                                 -->
+<!-- ============================================ -->
+<h2>1. MasterBrain</h2>
+
+<div class="summary">
+  <span class="old">Current: 29 inputs</span> &rarr; <span class="new">Proposed: 32 inputs</span><br>
+  Removed 4 per-resource lacking (keep only total). Added game time, tech level, KD ratio, in-combat ratio, more trend deltas including gather speed trend.
+</div>
+
+<table>
+<tr><th>#</th><th>Status</th><th>Name</th><th>Source</th><th class="norm">Norm</th><th>Rationale</th></tr>
+
+<tr><td>0</td><td><span class="tag-keep">KEEP</span></td><td>SCORE</td><td><code>player->getScore()</code></td><td class="norm">/1000</td><td>Overall progress</td></tr>
+<tr><td>1</td><td><span class="tag-keep">KEEP</span></td><td>ENEMY_SCORE</td><td><code>enemy->getScore()</code></td><td class="norm">/1000</td><td>Relative standing</td></tr>
+<tr><td>2</td><td><span class="tag-keep">KEEP</span></td><td>BUILDINGS_COUNT</td><td><code>possession->getBuildingsNumber()</code></td><td class="norm">/50</td><td>Infrastructure level</td></tr>
+<tr><td>3</td><td><span class="tag-keep">KEEP</span></td><td>WORKERS_COUNT</td><td><code>possession->getWorkersNumber()</code></td><td class="norm">/100</td><td>Economic capacity</td></tr>
+<tr><td>4</td><td><span class="tag-keep">KEEP</span></td><td>ARMY_COUNT</td><td><code>possession->getArmyNumber()</code></td><td class="norm">/200</td><td>Military strength</td></tr>
+<tr><td>5</td><td><span class="tag-keep">KEEP</span></td><td>ENEMY_ARMY_COUNT</td><td><code>enemyPossession->getArmyNumber()</code></td><td class="norm">/200</td><td>Threat assessment</td></tr>
+
+<tr><td>6</td><td><span class="tag-keep">KEEP</span></td><td>VALUE_FOOD</td><td><code>res->getValue(FOOD)</code></td><td class="norm">/1000</td><td>Resource stockpile</td></tr>
+<tr><td>7</td><td><span class="tag-keep">KEEP</span></td><td>VALUE_WOOD</td><td><code>res->getValue(WOOD)</code></td><td class="norm">/1000</td><td>Resource stockpile</td></tr>
+<tr><td>8</td><td><span class="tag-keep">KEEP</span></td><td>VALUE_STONE</td><td><code>res->getValue(STONE)</code></td><td class="norm">/1000</td><td>Resource stockpile</td></tr>
+<tr><td>9</td><td><span class="tag-keep">KEEP</span></td><td>VALUE_GOLD</td><td><code>res->getValue(GOLD)</code></td><td class="norm">/1000</td><td>Resource stockpile</td></tr>
+
+<tr><td>10</td><td><span class="tag-keep">KEEP</span></td><td>GATHER_SPEED_FOOD</td><td><code>res->getGatherSpeed(FOOD)</code></td><td class="norm">/10</td><td>Income rate</td></tr>
+<tr><td>11</td><td><span class="tag-keep">KEEP</span></td><td>GATHER_SPEED_WOOD</td><td><code>res->getGatherSpeed(WOOD)</code></td><td class="norm">/10</td><td>Income rate</td></tr>
+<tr><td>12</td><td><span class="tag-keep">KEEP</span></td><td>GATHER_SPEED_STONE</td><td><code>res->getGatherSpeed(STONE)</code></td><td class="norm">/10</td><td>Income rate</td></tr>
+<tr><td>13</td><td><span class="tag-keep">KEEP</span></td><td>GATHER_SPEED_GOLD</td><td><code>res->getGatherSpeed(GOLD)</code></td><td class="norm">/10</td><td>Income rate</td></tr>
+
+<tr><td>14</td><td><span class="tag-keep">KEEP</span></td><td>FREE_WORKERS</td><td><code>possession->getFreeWorkersNumber()</code></td><td class="norm">/100</td><td>Idle economic capacity</td></tr>
+<tr><td>15</td><td><span class="tag-keep">KEEP</span></td><td>ATTACK_SUM</td><td><code>possession->getAttackSum()</code></td><td class="norm">/1000</td><td>Army quality</td></tr>
+<tr><td>16</td><td><span class="tag-keep">KEEP</span></td><td>DEFENCE_SUM</td><td><code>possession->getDefenceAttackSum()</code></td><td class="norm">/100</td><td>Defensive capability</td></tr>
+
+<tr><td>17</td><td><span class="tag-keep">KEEP</span></td><td>ARMY_TO_OWN_BUILDING</td><td><code>diffOfCenters(ARMY, player, BUILDING, player, 0.f)</code></td><td class="norm">raw</td><td>Troops at home?</td></tr>
+<tr><td>18</td><td><span class="tag-keep">KEEP</span></td><td>ARMY_TO_ENEMY_BUILDING</td><td><code>diffOfCenters(ARMY, player, BUILDING, enemy, 1.f)</code></td><td class="norm">raw</td><td>Distance to attack</td></tr>
+<tr><td>19</td><td><span class="tag-keep">KEEP</span></td><td>ENEMY_ARMY_TO_OWN_BUILDING</td><td><code>diffOfCenters(ARMY, enemy, BUILDING, player, 1.f)</code></td><td class="norm">raw</td><td>Incoming threat</td></tr>
+<tr><td>20</td><td><span class="tag-keep">KEEP</span></td><td>ENEMY_ARMY_TO_ENEMY_BUILDING</td><td><code>diffOfCenters(ARMY, enemy, BUILDING, enemy, 0.f)</code></td><td class="norm">raw</td><td>Enemy defending?</td></tr>
+
+<tr><td colspan="6" style="background:#0f3460; color:#EF5350; font-weight:bold;">REMOVED</td></tr>
+<tr><td class="remove">-</td><td><span class="tag-remove">REMOVE</span></td><td class="remove">LACKING_FOOD</td><td class="remove"><code>lackingPerResource[0]</code></td><td class="norm remove">/500</td><td>Replaced by TOTAL_LACKING only. Per-resource detail belongs in EconomyBrain.</td></tr>
+<tr><td class="remove">-</td><td><span class="tag-remove">REMOVE</span></td><td class="remove">LACKING_WOOD</td><td class="remove"><code>lackingPerResource[1]</code></td><td class="norm remove">/500</td><td>Same</td></tr>
+<tr><td class="remove">-</td><td><span class="tag-remove">REMOVE</span></td><td class="remove">LACKING_STONE</td><td class="remove"><code>lackingPerResource[2]</code></td><td class="norm remove">/500</td><td>Same</td></tr>
+<tr><td class="remove">-</td><td><span class="tag-remove">REMOVE</span></td><td class="remove">LACKING_GOLD</td><td class="remove"><code>lackingPerResource[3]</code></td><td class="norm remove">/500</td><td>Same</td></tr>
+
+<tr><td colspan="6" style="background:#0f3460; color:#66BB6A; font-weight:bold;">KEPT (was already present)</td></tr>
+<tr><td>21</td><td><span class="tag-keep">KEEP</span></td><td>TOTAL_LACKING</td><td><code>totalLacking</code></td><td class="norm">/2000</td><td>Aggregate economic stress. Master only needs "how stressed" not "which resource".</td></tr>
+
+<tr><td colspan="6" style="background:#0f3460; color:#66BB6A; font-weight:bold;">KEPT TRENDS</td></tr>
+<tr><td>22</td><td><span class="tag-keep">KEEP</span></td><td>DELTA_SCORE</td><td><code>currentScore - prevScore</code></td><td class="norm">/1000</td><td>Score momentum</td></tr>
+<tr><td>23</td><td><span class="tag-keep">KEEP</span></td><td>DELTA_UNITS</td><td><code>currentUnits - prevUnits</code></td><td class="norm">/200</td><td>Army growth rate</td></tr>
+<tr><td>24</td><td><span class="tag-keep">KEEP</span></td><td>DELTA_RESOURCES</td><td><code>currentResSum - prevResSum</code></td><td class="norm">/1000</td><td>Econ momentum</td></tr>
+
+<tr><td colspan="6" style="background:#0f3460; color:#66BB6A; font-weight:bold;">NEW INPUTS</td></tr>
+<tr><td class="add">25</td><td><span class="tag-add">ADD</span></td><td class="add">GAME_TIME</td><td><code>Game::getFrameInfo()->getSeconds()</code></td><td class="norm">/600</td><td>Game phase awareness. Without this the brain cannot distinguish early rush from late-game boom. Normalized to ~10 min = 1.0.</td></tr>
+<tr><td class="add">26</td><td><span class="tag-add">ADD</span></td><td class="add">KD_RATIO</td><td><code>possession->getResourcesDestroyed() / max(1, costOfOwnLosses)</code></td><td class="norm">/3</td><td>Kill/death efficiency. >1 means winning trades. Drives aggression when ahead, caution when behind. Needs new getter on Possession.</td></tr>
+<tr><td class="add">27</td><td><span class="tag-add">ADD</span></td><td class="add">IN_COMBAT_RATIO</td><td><code>(armyNumber - freeArmyNumber) / max(1, armyNumber)</code></td><td class="norm">raw (0-1)</td><td>What fraction of army is currently fighting. High value = already engaged, affects whether to send reinforcements or shift to defense.</td></tr>
+<tr><td class="add">28</td><td><span class="tag-add">ADD</span></td><td class="add">DELTA_ENEMY_SCORE</td><td><code>enemy->getScore() - prevEnemyScore</code></td><td class="norm">/1000</td><td>Enemy momentum. Rising enemy score = they are booming, may need to attack before they get stronger.</td></tr>
+<tr><td class="add">29</td><td><span class="tag-add">ADD</span></td><td class="add">DELTA_ARMY_STRENGTH</td><td><code>currentAttackSum - prevAttackSum</code></td><td class="norm">/500</td><td>Army quality trend, not just count. Captures upgrades and unit type changes.</td></tr>
+<tr><td class="add">30</td><td><span class="tag-add">ADD</span></td><td class="add">TECH_LEVEL</td><td><code>avgUnitUpgradeLevel(player)</code></td><td class="norm">/3</td><td>Average upgrade level across unit types. Indicates tech progress. Affects tech vs military urgency balance. Needs new helper function.</td></tr>
+<tr><td class="add">31</td><td><span class="tag-add">ADD</span></td><td class="add">DELTA_GATHER_SPEED</td><td><code>currentGatherSpeedSum - prevGatherSpeedSum</code></td><td class="norm">/20</td><td>Income trend. Sum of all 4 gather speeds compared to previous tick. Rising = economy growing, falling = workers dying or reassigned. Key economic momentum signal.</td></tr>
+</table>
+
+<div class="note">
+  <strong>MasterBrain signature change:</strong> no longer receives <code>std::span&lt;const float&gt; lackingPerResource</code>, only <code>float totalLacking</code>. 
+  Also receives <code>float prevEnemyScore</code>, <code>float prevAttackSum</code>, and <code>float prevGatherSpeedSum</code> (tracked internally like existing prevScore/prevUnits/prevResSum).
+  New dependency: <code>FrameInfo</code> for game time.
+</div>
+
+<!-- ============================================ -->
+<!-- ECONOMY BRAIN                                -->
+<!-- ============================================ -->
+<h2>2. EconomyBrain</h2>
+
+<div class="summary">
+  <span class="old">Current: 20 inputs</span> &rarr; <span class="new">Proposed: 24 inputs</span><br>
+  Removed ARMY_COUNT (#10), ENEMY_ARMY_TO_OWN_BUILDING (#11), ENEMY_SCORE (#12) — not relevant for economic decisions.
+  Added resource gathering quality signals: food/gold storage ratios, stone/gold refine utilization, and per-resource count of workers gathering from nodes without bonus.
+</div>
+
+<table>
+<tr><th>#</th><th>Status</th><th>Name</th><th>Source</th><th class="norm">Norm</th><th>Rationale</th></tr>
+
+<tr><td>0-3</td><td><span class="tag-keep">KEEP</span></td><td>VALUE_FOOD/WOOD/STONE/GOLD</td><td><code>res->getValue(RT)</code></td><td class="norm">/1000</td><td>Current stockpiles</td></tr>
+<tr><td>4-7</td><td><span class="tag-keep">KEEP</span></td><td>GATHER_SPEED x4</td><td><code>res->getGatherSpeed(RT)</code></td><td class="norm">/10</td><td>Income rates</td></tr>
+<tr><td>8</td><td><span class="tag-keep">KEEP</span></td><td>FREE_WORKERS</td><td><code>possession->getFreeWorkersNumber()</code></td><td class="norm">/100</td><td>Available labor</td></tr>
+<tr><td>9</td><td><span class="tag-keep">KEEP</span></td><td>TOTAL_WORKERS</td><td><code>possession->getWorkersNumber()</code></td><td class="norm">/100</td><td>Econ scale</td></tr>
+
+<tr><td colspan="6" style="background:#0f3460; color:#EF5350; font-weight:bold;">REMOVED</td></tr>
+<tr><td class="remove">-</td><td><span class="tag-remove">REMOVE</span></td><td class="remove">ARMY_COUNT</td><td class="remove"><code>possession->getArmyNumber()</code></td><td class="norm remove">/200</td><td>Not relevant for economy decisions. Master urgencies already encode military pressure.</td></tr>
+<tr><td class="remove">-</td><td><span class="tag-remove">REMOVE</span></td><td class="remove">ENEMY_ARMY_TO_OWN_BUILDING</td><td class="remove"><code>diffOfCenters(...)</code></td><td class="norm remove">raw</td><td>Threat awareness is Master's job. Economy should focus on resource allocation.</td></tr>
+<tr><td class="remove">-</td><td><span class="tag-remove">REMOVE</span></td><td class="remove">ENEMY_SCORE</td><td class="remove"><code>enemy->getScore()</code></td><td class="norm remove">/1000</td><td>Not directly relevant to economic allocation.</td></tr>
+
+<tr><td colspan="6" style="background:#0f3460; color:#66BB6A; font-weight:bold;">KEPT</td></tr>
+<tr><td>10-13</td><td><span class="tag-keep">KEEP</span></td><td>LACKING_FOOD/WOOD/STONE/GOLD</td><td><code>lackingPerResource[i]</code></td><td class="norm">/500</td><td>Closed-loop feedback per resource</td></tr>
+<tr><td>14</td><td><span class="tag-keep">KEEP</span></td><td>ECONOMY_URGENCY</td><td>from MasterBrain</td><td class="norm">raw</td><td>Master directive</td></tr>
+<tr><td>15</td><td><span class="tag-keep">KEEP</span></td><td>WORKER_URGENCY</td><td>from MasterBrain</td><td class="norm">raw</td><td>Master directive</td></tr>
+<tr><td>16</td><td><span class="tag-keep">KEEP</span></td><td>EXPAND_URGENCY</td><td>from MasterBrain</td><td class="norm">raw</td><td>Master directive</td></tr>
+
+<tr><td colspan="6" style="background:#0f3460; color:#66BB6A; font-weight:bold;">NEW — Resource Gathering Quality Signals</td></tr>
+<tr><td class="add">17</td><td><span class="tag-add">ADD</span></td><td class="add">FOOD_STORAGE_RATIO</td><td><code>res->getFoodStorageRatio()</code></td><td class="norm">raw (0-2+)</td><td>If &gt;1, food exceeds storage and decays. Drives "build storage" or "reduce food workers" decisions.</td></tr>
+<tr><td class="add">18</td><td><span class="tag-add">ADD</span></td><td class="add">GOLD_STORAGE_RATIO</td><td><code>res->getGoldStorageRatio()</code></td><td class="norm">raw (0-2+)</td><td>Gold in storage generates interest. Low ratio = missing free gold income. High ratio = storage is full, no benefit from more.</td></tr>
+<tr><td class="add">19</td><td><span class="tag-add">ADD</span></td><td class="add">STONE_REFINE_UTIL</td><td><code>res->getStoneRefineUtilization()</code></td><td class="norm">raw (0-1)</td><td>How much of stone refine capacity is used. Low = stone gather speed is below refine capacity, wasting potential bonus. High = fully utilized.</td></tr>
+<tr><td class="add">20</td><td><span class="tag-add">ADD</span></td><td class="add">GOLD_REFINE_UTIL</td><td><code>res->getGoldRefineUtilization()</code></td><td class="norm">raw (0-1)</td><td>Same for gold refinement. Low utilization means either not enough gold gatherers or refine capacity is overbuilt.</td></tr>
+<tr><td class="add">21</td><td><span class="tag-add">ADD</span></td><td class="add">NO_BONUS_FOOD</td><td><code>possession->getResWithOutBonus(FOOD)</code></td><td class="norm">/10</td><td>Workers gathering food from nodes without bonus. These workers are less efficient — should be reassigned to bonus nodes or other resources.</td></tr>
+<tr><td class="add">22</td><td><span class="tag-add">ADD</span></td><td class="add">NO_BONUS_WOOD</td><td><code>possession->getResWithOutBonus(WOOD)</code></td><td class="norm">/10</td><td>Same for wood. High value = many workers on unimproved nodes, signal to build bonus buildings or expand.</td></tr>
+<tr><td class="add">23</td><td><span class="tag-add">ADD</span></td><td class="add">NO_BONUS_STONE</td><td><code>possession->getResWithOutBonus(STONE)</code></td><td class="norm">/10</td><td>Same for stone.</td></tr>
+<tr><td class="add">24</td><td><span class="tag-add">ADD</span></td><td class="add">NO_BONUS_GOLD</td><td><code>possession->getResWithOutBonus(GOLD)</code></td><td class="norm">/10</td><td>Same for gold.</td></tr>
+</table>
+
+<!-- ============================================ -->
+<!-- BUILDING BRAIN                               -->
+<!-- ============================================ -->
+<h2>3. BuildingBrain</h2>
+
+<div class="summary">
+  <span class="old">Current: 14 inputs</span> &rarr; <span class="new">Proposed: 14 inputs</span><br>
+  Removed FREE_WORKERS (#2), ARMY_COUNT (#3), ATTACK_SUM (#4), GATHER_SPEED x4 (#6-9) — these are too granular for building type decisions; Master urgencies already encode this information.
+  Added building counts per parent type, lacking values, and unit urgency to help determine what type of building is needed.
+</div>
+
+<table>
+<tr><th>#</th><th>Status</th><th>Name</th><th>Source</th><th class="norm">Norm</th><th>Rationale</th></tr>
+
+<tr><td>0</td><td><span class="tag-keep">KEEP</span></td><td>BUILDINGS_COUNT</td><td><code>possession->getBuildingsNumber()</code></td><td class="norm">/50</td><td>Total infrastructure</td></tr>
+<tr><td>1</td><td><span class="tag-keep">KEEP</span></td><td>WORKERS_COUNT</td><td><code>possession->getWorkersNumber()</code></td><td class="norm">/100</td><td>Farm/barracks decision</td></tr>
+<tr><td>2</td><td><span class="tag-keep">KEEP</span></td><td>DEFENCE_SUM</td><td><code>possession->getDefenceAttackSum()</code></td><td class="norm">/100</td><td>Defensive structures present?</td></tr>
+<tr><td>3</td><td><span class="tag-keep">KEEP</span></td><td>ENEMY_ARMY_TO_OWN_BUILDING</td><td><code>diffOfCenters(ARMY, enemy, BUILDING, player, 1.f)</code></td><td class="norm">raw</td><td>Threat proximity = walls/towers</td></tr>
+<tr><td>4</td><td><span class="tag-keep">KEEP</span></td><td>BUILDING_URGENCY</td><td>from MasterBrain</td><td class="norm">raw</td><td>Master directive</td></tr>
+<tr><td>5</td><td><span class="tag-keep">KEEP</span></td><td>TECH_URGENCY</td><td>from MasterBrain</td><td class="norm">raw</td><td>Master directive</td></tr>
+<tr><td>6</td><td><span class="tag-keep">KEEP</span></td><td>DEFENCE_BUILDING_URGENCY</td><td>from MasterBrain</td><td class="norm">raw</td><td>Master directive</td></tr>
+
+<tr><td colspan="6" style="background:#0f3460; color:#EF5350; font-weight:bold;">REMOVED</td></tr>
+<tr><td class="remove">-</td><td><span class="tag-remove">REMOVE</span></td><td class="remove">FREE_WORKERS</td><td class="remove"><code>possession->getFreeWorkersNumber()</code></td><td class="norm remove">/100</td><td>Master urgencies already encode worker pressure. Not needed for building type selection.</td></tr>
+<tr><td class="remove">-</td><td><span class="tag-remove">REMOVE</span></td><td class="remove">ARMY_COUNT</td><td class="remove"><code>possession->getArmyNumber()</code></td><td class="norm remove">/200</td><td>Unit urgency from Master already captures army needs.</td></tr>
+<tr><td class="remove">-</td><td><span class="tag-remove">REMOVE</span></td><td class="remove">ATTACK_SUM</td><td class="remove"><code>possession->getAttackSum()</code></td><td class="norm remove">/1000</td><td>Army quality detail not needed for building type decision.</td></tr>
+<tr><td class="remove">-</td><td><span class="tag-remove">REMOVE</span></td><td class="remove">GATHER_SPEED_FOOD</td><td class="remove"><code>res->getGatherSpeed(FOOD)</code></td><td class="norm remove">/10</td><td>Per-resource income detail belongs in EconomyBrain. Building brain only needs to know "which type", not "which resource".</td></tr>
+<tr><td class="remove">-</td><td><span class="tag-remove">REMOVE</span></td><td class="remove">GATHER_SPEED_WOOD</td><td class="remove"><code>res->getGatherSpeed(WOOD)</code></td><td class="norm remove">/10</td><td>Same</td></tr>
+<tr><td class="remove">-</td><td><span class="tag-remove">REMOVE</span></td><td class="remove">GATHER_SPEED_STONE</td><td class="remove"><code>res->getGatherSpeed(STONE)</code></td><td class="norm remove">/10</td><td>Same</td></tr>
+<tr><td class="remove">-</td><td><span class="tag-remove">REMOVE</span></td><td class="remove">GATHER_SPEED_GOLD</td><td class="remove"><code>res->getGatherSpeed(GOLD)</code></td><td class="norm remove">/10</td><td>Same</td></tr>
+
+<tr><td colspan="6" style="background:#0f3460; color:#66BB6A; font-weight:bold;">NEW — Building Type Determination</td></tr>
+<tr><td class="add">7</td><td><span class="tag-add">ADD</span></td><td class="add">COUNT_OTHER</td><td><code>possession->getBuildingCountByParentType()[OTHER]</code></td><td class="norm">/10</td><td>How many OTHER buildings exist. Prevents over-building one type.</td></tr>
+<tr><td class="add">8</td><td><span class="tag-add">ADD</span></td><td class="add">COUNT_DEFENCE</td><td><code>possession->getBuildingCountByParentType()[DEFENCE]</code></td><td class="norm">/10</td><td>Current defensive buildings count.</td></tr>
+<tr><td class="add">9</td><td><span class="tag-add">ADD</span></td><td class="add">COUNT_RESOURCE</td><td><code>possession->getBuildingCountByParentType()[RESOURCE]</code></td><td class="norm">/20</td><td>Resource buildings count. High = maybe enough farms, shift to other types.</td></tr>
+<tr><td class="add">10</td><td><span class="tag-add">ADD</span></td><td class="add">COUNT_TECH</td><td><code>possession->getBuildingCountByParentType()[TECH]</code></td><td class="norm">/5</td><td>Tech buildings count. If 0 and tech urgency is high, clearly need one.</td></tr>
+<tr><td class="add">11</td><td><span class="tag-add">ADD</span></td><td class="add">COUNT_UNITS</td><td><code>possession->getBuildingCountByParentType()[UNITS]</code></td><td class="norm">/10</td><td>Unit-producing buildings (barracks etc). Bottleneck for army production.</td></tr>
+<tr><td class="add">12</td><td><span class="tag-add">ADD</span></td><td class="add">TOTAL_LACKING</td><td><code>totalLacking</code></td><td class="norm">/2000</td><td>Resource stress. High lacking = maybe need more resource buildings.</td></tr>
+<tr><td class="add">13</td><td><span class="tag-add">ADD</span></td><td class="add">UNIT_URGENCY</td><td>from MasterBrain</td><td class="norm">raw</td><td>If unit urgency high, may need more barracks specifically.</td></tr>
+</table>
+
+<div class="note">
+  <strong>New dependency:</strong> <code>Possession::getBuildingCountByParentType()</code> — new method returning <code>std::array&lt;unsigned, 5&gt;</code> indexed by <code>ParentBuildingType</code>. Computed in <code>ensureReady()</code>.
+</div>
+
+<!-- ============================================ -->
+<!-- UNIT BRAIN                                   -->
+<!-- ============================================ -->
+<h2>4. UnitBrain</h2>
+
+<div class="summary">
+  <span class="old">Current: 14 inputs</span> &rarr; <span class="new">Proposed: 14 inputs (unchanged)</span><br>
+  No changes. The unit profile matching already picks the closest buildable unit, so affordability and building availability constraints are handled downstream by the WantList and resolveUnit logic.
+</div>
+
+<table>
+<tr><th>#</th><th>Status</th><th>Name</th><th>Source</th><th class="norm">Norm</th><th>Rationale</th></tr>
+
+<tr><td>0-2</td><td><span class="tag-keep">KEEP</span></td><td>OWN_INFANTRY/CAV/RANGE_RATIO</td><td><code>possession->getXxxNumber() / armyCount</code></td><td class="norm">ratio</td><td>Current composition for rebalancing</td></tr>
+<tr><td>3-5</td><td><span class="tag-keep">KEEP</span></td><td>ENEMY_INFANTRY/CAV/RANGE_RATIO</td><td><code>enemyPossession->getXxxNumber() / enemyArmyCount</code></td><td class="norm">ratio</td><td>Counter-picking</td></tr>
+<tr><td>6</td><td><span class="tag-keep">KEEP</span></td><td>ARMY_COUNT</td><td><code>armyCount</code></td><td class="norm">/200</td><td>Scale context</td></tr>
+<tr><td>7</td><td><span class="tag-keep">KEEP</span></td><td>ENEMY_ARMY_COUNT</td><td><code>enemyArmyCount</code></td><td class="norm">/200</td><td>Relative military size</td></tr>
+<tr><td>8</td><td><span class="tag-keep">KEEP</span></td><td>ATTACK_SUM</td><td><code>possession->getAttackSum()</code></td><td class="norm">/1000</td><td>Army quality</td></tr>
+<tr><td>9</td><td><span class="tag-keep">KEEP</span></td><td>DEFENCE_SUM</td><td><code>possession->getDefenceAttackSum()</code></td><td class="norm">/100</td><td>Survivability</td></tr>
+<tr><td>10</td><td><span class="tag-keep">KEEP</span></td><td>ENEMY_SCORE</td><td><code>enemy->getScore()</code></td><td class="norm">/1000</td><td>General threat level</td></tr>
+<tr><td>11</td><td><span class="tag-keep">KEEP</span></td><td>WORKERS_COUNT</td><td><code>possession->getWorkersNumber()</code></td><td class="norm">/100</td><td>Army-worker balance</td></tr>
+<tr><td>12</td><td><span class="tag-keep">KEEP</span></td><td>UNIT_URGENCY</td><td>from MasterBrain</td><td class="norm">raw</td><td>How many to produce</td></tr>
+<tr><td>13</td><td><span class="tag-keep">KEEP</span></td><td>ATTACK_URGENCY</td><td>from MasterBrain</td><td class="norm">raw</td><td>Offensive vs defensive units</td></tr>
+</table>
+
+
+<!-- ============================================ -->
+<!-- MILITARY BRAIN                               -->
+<!-- ============================================ -->
+<h2>5. MilitaryBrain</h2>
+
+<div class="summary">
+  <span class="old">Current: 14 inputs</span> &rarr; <span class="new">Proposed: 20 inputs</span><br>
+  Added the first 4 inputs from UnitBrain (own and enemy army composition ratios: infantry/cavalry/range). Army composition affects whether to attack or defend.
+</div>
+
+<table>
+<tr><th>#</th><th>Status</th><th>Name</th><th>Source</th><th class="norm">Norm</th><th>Rationale</th></tr>
+
+<tr><td>0</td><td><span class="tag-keep">KEEP</span></td><td>ATTACK_SUM</td><td><code>possession->getAttackSum()</code></td><td class="norm">/1000</td><td>Offensive capability</td></tr>
+<tr><td>1</td><td><span class="tag-keep">KEEP</span></td><td>DEFENCE_SUM</td><td><code>possession->getDefenceAttackSum()</code></td><td class="norm">/100</td><td>Defensive capability</td></tr>
+<tr><td>2-5</td><td><span class="tag-keep">KEEP</span></td><td>Spatial distances x4</td><td><code>diffOfCenters(...)</code></td><td class="norm">raw</td><td>Full battlefield awareness</td></tr>
+<tr><td>6</td><td><span class="tag-keep">KEEP</span></td><td>ENEMY_SCORE</td><td><code>enemy->getScore()</code></td><td class="norm">/1000</td><td>Target value</td></tr>
+<tr><td>7</td><td><span class="tag-keep">KEEP</span></td><td>PLAYER_SCORE</td><td><code>player->getScore()</code></td><td class="norm">/1000</td><td>What we stand to lose</td></tr>
+<tr><td>8</td><td><span class="tag-keep">KEEP</span></td><td>UNITS_COUNT</td><td><code>possession->getUnitsNumber()</code></td><td class="norm">/200</td><td>Total units</td></tr>
+<tr><td>9</td><td><span class="tag-keep">KEEP</span></td><td>ENEMY_UNITS_COUNT</td><td><code>enemyPossession->getUnitsNumber()</code></td><td class="norm">/200</td><td>Enemy total</td></tr>
+<tr><td>10</td><td><span class="tag-keep">KEEP</span></td><td>ARMY_COUNT</td><td><code>possession->getArmyNumber()</code></td><td class="norm">/200</td><td>Military count</td></tr>
+<tr><td>11</td><td><span class="tag-keep">KEEP</span></td><td>FREE_ARMY_COUNT</td><td><code>possession->getFreeArmyNumber()</code></td><td class="norm">/200</td><td>Uncommitted forces</td></tr>
+<tr><td>12</td><td><span class="tag-keep">KEEP</span></td><td>MILITARY_URGENCY</td><td>from MasterBrain</td><td class="norm">raw</td><td>Master directive</td></tr>
+<tr><td>13</td><td><span class="tag-keep">KEEP</span></td><td>ATTACK_URGENCY</td><td>from MasterBrain</td><td class="norm">raw</td><td>Master directive</td></tr>
+
+<tr><td colspan="6" style="background:#0f3460; color:#66BB6A; font-weight:bold;">NEW — Army Composition (same as UnitBrain first 6)</td></tr>
+<tr><td class="add">14</td><td><span class="tag-add">ADD</span></td><td class="add">OWN_INFANTRY_RATIO</td><td><code>possession->getInfantryNumber() / armyCount</code></td><td class="norm">ratio</td><td>Our army is infantry-heavy? Affects attack decisions — infantry is slow, better for defense.</td></tr>
+<tr><td class="add">15</td><td><span class="tag-add">ADD</span></td><td class="add">OWN_CAVALRY_RATIO</td><td><code>possession->getCavalryNumber() / armyCount</code></td><td class="norm">ratio</td><td>Cavalry-heavy = good for raids and flanking attacks. Favors aggressive play.</td></tr>
+<tr><td class="add">16</td><td><span class="tag-add">ADD</span></td><td class="add">OWN_RANGE_RATIO</td><td><code>possession->getRangeNumber() / armyCount</code></td><td class="norm">ratio</td><td>Range-heavy = better at defending positions, siege. Affects target choice.</td></tr>
+<tr><td class="add">17</td><td><span class="tag-add">ADD</span></td><td class="add">ENEMY_INFANTRY_RATIO</td><td><code>enemyPossession->getInfantryNumber() / enemyArmyCount</code></td><td class="norm">ratio</td><td>Enemy composition affects whether we can win a fight and which target to pick.</td></tr>
+<tr><td class="add">18</td><td><span class="tag-add">ADD</span></td><td class="add">ENEMY_CAVALRY_RATIO</td><td><code>enemyPossession->getCavalryNumber() / enemyArmyCount</code></td><td class="norm">ratio</td><td>Enemy has cavalry? Our base is vulnerable to raids — favor defense.</td></tr>
+<tr><td class="add">19</td><td><span class="tag-add">ADD</span></td><td class="add">ENEMY_RANGE_RATIO</td><td><code>enemyPossession->getRangeNumber() / enemyArmyCount</code></td><td class="norm">ratio</td><td>Enemy ranged = hard to siege their base without cavalry flanks.</td></tr>
+</table>
+
+<div class="note">
+  <strong>Why the same 6 inputs as UnitBrain?</strong> Knowing army composition is critical for military decisions: 
+  a cavalry-heavy force should attack (fast raids), a range-heavy force should defend (positional advantage), 
+  and enemy composition determines whether engaging is favorable.
+</div>
+
+<!-- ============================================ -->
+<!-- SUMMARY                                      -->
+<!-- ============================================ -->
+<h2>Summary of Changes</h2>
+
+<table>
+<tr><th>Brain</th><th>Old</th><th>New</th><th>Added</th><th>Removed</th><th>Key Changes</th></tr>
+<tr><td>MasterBrain</td><td>29</td><td>32</td><td>7</td><td>4</td><td>-per_resource_lacking, +game_time, +kd_ratio, +in_combat, +delta_enemy_score, +delta_army_strength, +tech_level, +delta_gather_speed</td></tr>
+<tr><td>EconomyBrain</td><td>20</td><td>25</td><td>8</td><td>3</td><td>-army_count, -enemy_spatial, -enemy_score, +food/gold_storage_ratio, +stone/gold_refine_util, +no_bonus_workers x4</td></tr>
+<tr><td>BuildingBrain</td><td>14</td><td>14</td><td>7</td><td>7</td><td>-free_workers, -army_count, -attack_sum, -gather_speed x4, +building_counts_per_type (5), +total_lacking, +unit_urgency</td></tr>
+<tr><td>UnitBrain</td><td>14</td><td>14</td><td>0</td><td>0</td><td>No changes</td></tr>
+<tr><td>MilitaryBrain</td><td>14</td><td>20</td><td>6</td><td>0</td><td>+army_composition_ratios (own 3 + enemy 3)</td></tr>
+</table>
+
+<h3>New Methods/Getters Required</h3>
+<table>
+<tr><th>Class</th><th>Method</th><th>Returns</th><th>Used By</th></tr>
+<tr><td>Possession</td><td><code>getResourcesDestroyed()</code></td><td><code>float</code></td><td>MasterBrain (KD ratio)</td></tr>
+<tr><td>Possession</td><td><code>getInCombatNumber()</code></td><td><code>unsigned</code> (armyNumber - idleArmyNumber)</td><td>MasterBrain (in-combat ratio)</td></tr>
+<tr><td>Possession</td><td><code>getBuildingCountByParentType()</code></td><td><code>std::span&lt;const unsigned&gt;</code> [5]</td><td>BuildingBrain</td></tr>
+<tr><td>MasterBrain</td><td>internal <code>prevEnemyScore</code>, <code>prevAttackSum</code>, <code>prevGatherSpeedSum</code></td><td>float (tracked in updateHistory)</td><td>MasterBrain deltas</td></tr>
+<tr><td>Player (or helper)</td><td><code>getAvgUnitUpgradeLevel()</code></td><td><code>float</code></td><td>MasterBrain (tech level)</td></tr>
+</table>
+
+<h3>New Enum File</h3>
+<table>
+<tr><th>File</th><th>Content</th></tr>
+<tr><td><code>BrainIndex.h</code></td><td>ActionBrainIndex (MASTER=0, ECONOMY=1, BUILDING=2, UNIT=3), OrderBrainIndex (MILITARY=0)</td></tr>
+</table>
+
+</body>
+</html>

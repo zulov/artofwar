@@ -1,0 +1,94 @@
+#pragma once
+
+#include <optional>
+#include <span>
+#include <valarray>
+#include <vector>
+
+#include "WantList.h"
+#include "MasterBrain.h"
+#include "EconomyBrain.h"
+#include "BuildingBrain.h"
+#include "UnitBrain.h"
+#include "MilitaryBrain.h"
+
+class Physical;
+class Player;
+class Possession;
+class Building;
+class Unit;
+class UnitOrder;
+class AiHistory;
+
+struct db_nation;
+struct db_unit;
+struct db_unit_level;
+struct db_building;
+struct db_building_level;
+struct db_building_metric;
+struct db_basic_metric;
+struct db_with_cost;
+
+namespace Urho3D {
+	class Vector2;
+}
+
+enum class ParentBuildingType : char;
+
+class AiOrchestrator {
+public:
+	explicit AiOrchestrator(Player* player, db_nation* nation, AiHistory* history);
+	AiOrchestrator(const AiOrchestrator&) = delete;
+
+	void action();
+	void order();
+
+private:
+	// WantList execution callbacks
+	bool executeWorker();
+	bool executeUnit(short unitId);
+	bool executeBuilding(short buildingId);
+
+	// Unit resolution
+	db_unit* resolveUnit(const UnitOutput& unitOutput);
+	Building* getBuildingToDeploy(db_unit* unit) const;
+	Building* getBuildingToDeployWorker(db_unit* unit) const;
+	std::vector<Building*> getBuildingsCanDeploy(short unitId) const;
+
+	// Building resolution
+	db_building* resolveBuilding(const BuildingOutput& output, ParentBuildingType type);
+	std::optional<Urho3D::Vector2> findPosToBuild(db_building* building, ParentBuildingType type) const;
+	std::vector<db_building*> getBuildingsInType(ParentBuildingType type);
+
+	// Distance matching
+	float dist(std::valarray<float>& center, const db_basic_metric* metric);
+	float dist(std::valarray<float>& center, const db_building_metric* metric, ParentBuildingType type);
+
+	bool enoughResources(const db_with_cost* withCosts) const;
+
+	// Worker collection
+	void collectWorkers();
+	std::vector<Unit*> findFreeWorkers() const;
+	Physical* closestInRange(Unit* worker, int resourceId);
+	UnitOrder* unitOrderCollect(std::vector<Unit*>& workers, Physical* closest) const;
+
+	Player* player;
+	unsigned char playerId;
+	Possession* possession;
+	db_nation* nation;
+	AiHistory* history;
+
+	MasterBrain masterBrain;
+	EconomyBrain economyBrain;
+	BuildingBrain buildingBrain;
+	UnitBrain unitBrain;
+	MilitaryBrain militaryBrain;
+
+	WantList wantList;
+
+	// Cached outputs
+	MasterOutput lastMasterOut{};
+	BuildingOutput lastBuildOut{};
+	EconomyOutput lastEconOut{};
+	WantList::LackingResult lastLacking{};
+};

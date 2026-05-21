@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Art of War — Brain Inputs Documentation</title>
+<style>
+  body { margin: 0; background: #1a1a2e; font-family: 'Segoe UI', sans-serif; color: #e0e0e0; }
+  h1 { text-align: center; margin: 20px 0 5px; font-size: 26px; color: #fff; }
+  h2.page-sub { text-align: center; margin: 0 0 10px; font-size: 14px; color: #888; font-weight: normal; max-width: 1100px; margin-left: auto; margin-right: auto; }
+  .section-title { text-align: center; font-size: 20px; color: #4fc3f7; margin: 30px 0 5px; font-weight: bold; }
+  .section-sub { text-align: center; font-size: 13px; color: #888; margin: 0 0 15px; max-width: 1050px; margin-left: auto; margin-right: auto; }
+  svg text { font-family: 'Segoe UI', sans-serif; pointer-events: none; }
+  svg g { cursor: pointer; }
+  svg g:hover rect, svg g:hover polygon, svg g:hover circle { filter: brightness(1.3); }
+  .legend { display: flex; justify-content: center; gap: 24px; margin: 10px 0 0; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .legend-color { width: 18px; height: 18px; border-radius: 4px; }
+  .hint { text-align: center; font-size: 12px; color: #666; margin-top: 4px; }
+  .tooltip {
+    position: fixed; display: none; max-width: 540px; padding: 12px 16px;
+    background: #222; border: 1px solid #555; border-radius: 8px;
+    font-size: 13px; color: #ddd; line-height: 1.5; z-index: 999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6); pointer-events: none;
+  }
+  .tooltip .tt-title { font-weight: bold; color: #fff; margin-bottom: 4px; font-size: 14px; }
+  .tooltip .tt-input { color: #4FC3F7; }
+  .tooltip .tt-output { color: #FFB74D; }
+  .tooltip .tt-logic { color: #A5D6A7; }
+  .tooltip .tt-warn { color: #EF5350; }
+  .tooltip .tt-ok { color: #66BB6A; }
+  .divider { border: none; border-top: 1px solid #37474F; max-width: 1350px; margin: 35px auto; }
+  table.spec { border-collapse: collapse; margin: 10px auto; font-size: 12px; background: #151530; }
+  table.spec th { background: #0f3460; color: #4fc3f7; padding: 6px 12px; border: 1px solid #37474F; text-align: left; }
+  table.spec td { padding: 5px 12px; border: 1px solid #37474F; color: #ccc; }
+  table.spec tr:hover td { background: #1a2744; }
+  table.spec td.cat { color: #FF9800; font-weight: bold; }
+  table.spec td.range { color: #A5D6A7; text-align: center; }
+  table.spec td.norm { color: #CE93D8; text-align: center; }
+  table.spec td.brain { color: #4FC3F7; font-weight: bold; }
+  table.spec td.add { color: #66BB6A; font-weight: bold; }
+  table.spec td.remove { color: #EF5350; text-decoration: line-through; }
+  .card { max-width: 1250px; margin: 15px auto; background: #151530; border-radius: 10px; padding: 16px 24px; border: 1px solid #37474F; }
+  .card h3 { margin: 0 0 8px; font-size: 16px; }
+  .card p { margin: 4px 0; font-size: 13px; color: #aaa; }
+  .card ul { margin: 6px 0; padding-left: 20px; }
+  .card li { font-size: 13px; color: #ccc; margin: 3px 0; line-height: 1.5; }
+  .card li b { color: #fff; }
+  .card li code { background: #0d1117; padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 12px; color: #e0e0e0; }
+  .tag-add { background: #1B5E20; color: #fff; padding: 1px 6px; border-radius: 3px; font-size: 10px; }
+  .tag-remove { background: #B71C1C; color: #fff; padding: 1px 6px; border-radius: 3px; font-size: 10px; }
+  .tag-keep { background: #37474F; color: #aaa; padding: 1px 6px; border-radius: 3px; font-size: 10px; }
+</style>
+</head>
+<body>
+
+<h1>Brain Inputs Documentation</h1>
+<h2 class="page-sub">Proposed input schema for all 5 brains. Shows what each brain sees, how inputs are normalized, and the data flow from game state into neural networks.
+Companion to <a href="brain_outputs.html" style="color:#4fc3f7">brain_outputs.html</a> and <a href="brain_input_refactor_proposal.html" style="color:#4fc3f7">brain_input_refactor_proposal.html</a>. Hover over any element for details.</h2>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-color" style="background:#FF9800"></div> Master Brain (32 inputs)</div>
+  <div class="legend-item"><div class="legend-color" style="background:#4CAF50"></div> Economy Brain (24 inputs)</div>
+  <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div> Building Brain (14 inputs)</div>
+  <div class="legend-item"><div class="legend-color" style="background:#FF5722"></div> Unit Brain (14 inputs)</div>
+  <div class="legend-item"><div class="legend-color" style="background:#f44336"></div> Military Brain (20 inputs)</div>
+</div>
+<div class="hint">Hover over any node for details.</div>
+<div id="tooltip" class="tooltip"></div>
+
+
+<!-- ========================================== -->
+<!-- INPUT SOURCE FLOW DIAGRAM                  -->
+<!-- ========================================== -->
+<div class="section-title">Input Source Flow — Where Inputs Come From</div>
+<div class="section-sub">All inputs are normalized floats. Game state objects (Player, Resources, Possession) are sampled each tick and divided by normalization constants. MasterBrain urgencies cascade as inputs to sub-brains.</div>
+
+<svg viewBox="0 0 1400 700" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1400px;">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#888"/></marker>
+    <marker id="ao" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#FF9800"/></marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#4CAF50"/></marker>
+    <marker id="ap" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#9C27B0"/></marker>
+    <marker id="af" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#FF5722"/></marker>
+    <marker id="ar" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#f44336"/></marker>
+    <marker id="ab" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#2196F3"/></marker>
+  </defs>
+
+  <!-- ===== GAME STATE SOURCES (top) ===== -->
+  <g data-tt-title="Player" data-tt-body="<span class='tt-input'>Player object</span><br>getScore() — overall player score<br>getId() — player index for spatial queries">
+    <rect x="50" y="20" width="120" height="40" rx="6" fill="#1a2744" stroke="#37474F" stroke-width="1.5"/>
+    <text x="110" y="45" text-anchor="middle" fill="#4FC3F7" font-size="12" font-weight="bold">Player</text>
+  </g>
+  <g data-tt-title="Enemy Player" data-tt-body="<span class='tt-input'>Enemy Player object</span><br>getScore() — enemy score<br>Used for relative standing and threat assessment">
+    <rect x="190" y="20" width="120" height="40" rx="6" fill="#1a2744" stroke="#37474F" stroke-width="1.5"/>
+    <text x="250" y="45" text-anchor="middle" fill="#4FC3F7" font-size="12" font-weight="bold">Enemy</text>
+  </g>
+  <g data-tt-title="Resources" data-tt-body="<span class='tt-input'>Resources object</span><br>getValue(RT) — stockpile per resource<br>getGatherSpeed(RT) — income rate<br>getFoodStorageRatio() / getGoldStorageRatio()<br>getStoneRefineUtilization() / getGoldRefineUtilization()">
+    <rect x="330" y="20" width="120" height="40" rx="6" fill="#1a2744" stroke="#37474F" stroke-width="1.5"/>
+    <text x="390" y="45" text-anchor="middle" fill="#4FC3F7" font-size="12" font-weight="bold">Resources</text>
+  </g>
+  <g data-tt-title="Possession" data-tt-body="<span class='tt-input'>Possession object</span><br>Unit/building counts, army stats, worker counts<br>getAttackSum(), getDefenceAttackSum()<br>getResourcesDestroyed() (new)<br>getInCombatNumber() (new)<br>getBuildingCountByParentType() (new)<br>getResWithOutBonus(RT)">
+    <rect x="470" y="20" width="120" height="40" rx="6" fill="#1a2744" stroke="#37474F" stroke-width="1.5"/>
+    <text x="530" y="45" text-anchor="middle" fill="#4FC3F7" font-size="12" font-weight="bold">Possession</text>
+  </g>
+  <g data-tt-title="Environment / Spatial" data-tt-body="<span class='tt-input'>Spatial queries</span><br>diffOfCenters(type1, p1, type2, p2, default)<br>Returns normalized distance between centers of mass<br>CenterTypes: ARMY, BUILDING, ECON">
+    <rect x="610" y="20" width="120" height="40" rx="6" fill="#1a2744" stroke="#37474F" stroke-width="1.5"/>
+    <text x="670" y="45" text-anchor="middle" fill="#4FC3F7" font-size="12" font-weight="bold">Spatial</text>
+  </g>
+  <g data-tt-title="FrameInfo" data-tt-body="<span class='tt-input'>Game clock</span><br>getSeconds() — game time in seconds<br>30 FPS fixed step, SECONDS_IN_MONTH = 5<br><span class='tt-ok'>NEW: needed for GAME_TIME input</span>">
+    <rect x="750" y="20" width="120" height="40" rx="6" fill="#1B5E20" stroke="#66BB6A" stroke-width="1.5"/>
+    <text x="810" y="45" text-anchor="middle" fill="#A5D6A7" font-size="12" font-weight="bold">FrameInfo</text>
+  </g>
+  <g data-tt-title="WantList Feedback" data-tt-body="<span class='tt-input'>Lacking feedback from previous tick</span><br>totalLacking — sum of all unfulfilled resource costs<br>lackingPerResource[4] — per-resource breakdown<br>Generated when WantList can't afford a request">
+    <rect x="890" y="20" width="130" height="40" rx="6" fill="#1a2744" stroke="#37474F" stroke-width="1.5"/>
+    <text x="955" y="45" text-anchor="middle" fill="#4FC3F7" font-size="12" font-weight="bold">WantList Lacking</text>
+  </g>
+  <g data-tt-title="MasterBrain Urgencies" data-tt-body="<span class='tt-output'>9 urgency outputs from MasterBrain</span><br>Fed as inputs to all sub-brains<br>Each sub-brain receives 2-3 relevant urgencies<br>See brain_outputs.html for full output details">
+    <rect x="1050" y="20" width="140" height="40" rx="6" fill="#E65100" stroke="#FF9800" stroke-width="1.5"/>
+    <text x="1120" y="45" text-anchor="middle" fill="#FFB74D" font-size="12" font-weight="bold">Master Urgencies</text>
+  </g>
+  <g data-tt-title="History Deltas (internal)" data-tt-body="<span class='tt-input'>Internally tracked previous-tick values:</span><br>prevScore, prevUnits, prevResSum (existing)<br>prevEnemyScore, prevAttackSum, prevGatherSpeedSum (new)<br><br>Current - prev = delta, then prev = current">
+    <rect x="1210" y="20" width="130" height="40" rx="6" fill="#1B5E20" stroke="#66BB6A" stroke-width="1.5"/>
+    <text x="1275" y="45" text-anchor="middle" fill="#A5D6A7" font-size="12" font-weight="bold">History Deltas</text>
+  </g>
+
+  <!-- ===== ARROWS: sources -> brains ===== -->
+  <!-- Many sources feed Master -->
+  <line x1="110" y1="60" x2="350" y2="120" stroke="#888" stroke-width="1" marker-end="url(#a)"/>
+  <line x1="250" y1="60" x2="400" y2="120" stroke="#888" stroke-width="1" marker-end="url(#a)"/>
+  <line x1="390" y1="60" x2="500" y2="120" stroke="#888" stroke-width="1" marker-end="url(#a)"/>
+  <line x1="530" y1="60" x2="580" y2="120" stroke="#888" stroke-width="1" marker-end="url(#a)"/>
+  <line x1="670" y1="60" x2="640" y2="120" stroke="#888" stroke-width="1" marker-end="url(#a)"/>
+  <line x1="810" y1="60" x2="700" y2="120" stroke="#888" stroke-width="1" marker-end="url(#a)"/>
+  <line x1="955" y1="60" x2="750" y2="120" stroke="#888" stroke-width="1" marker-end="url(#a)"/>
+  <line x1="1275" y1="60" x2="780" y2="120" stroke="#888" stroke-width="1" marker-end="url(#a)"/>
+
+  <!-- ===== MASTER BRAIN ===== -->
+  <g data-tt-title="MasterBrain — 32 Inputs" data-tt-body="<span class='tt-input'>Proposed 32 inputs</span> (was 29):<br><br><b>Kept (21):</b> score, enemy_score, buildings, workers, army, enemy_army, 4x resource values, 4x gather speeds, free_workers, attack_sum, defence_sum, 4x spatial distances<br><br><b>Removed (4):</b> lacking_food/wood/stone/gold — per-resource detail belongs in EconomyBrain<br><br><b>Kept (4):</b> total_lacking, delta_score, delta_units, delta_resources<br><br><b>Added (7):</b><br><span class='tt-ok'>GAME_TIME</span> — game phase awareness (/600)<br><span class='tt-ok'>KD_RATIO</span> — kill/death efficiency (/3)<br><span class='tt-ok'>IN_COMBAT_RATIO</span> — fraction of army fighting (0-1)<br><span class='tt-ok'>DELTA_ENEMY_SCORE</span> — enemy momentum (/1000)<br><span class='tt-ok'>DELTA_ARMY_STRENGTH</span> — army quality trend (/500)<br><span class='tt-ok'>TECH_LEVEL</span> — avg unit upgrade level (/3)<br><span class='tt-ok'>DELTA_GATHER_SPEED</span> — income trend (/20)">
+    <rect x="300" y="125" width="520" height="60" rx="10" fill="#E65100" stroke="#FF9800" stroke-width="2.5"/>
+    <text x="560" y="152" text-anchor="middle" fill="#fff" font-size="17" font-weight="bold">MasterBrain — 32 Inputs</text>
+    <text x="560" y="172" text-anchor="middle" fill="#FFB74D" font-size="11">21 kept | 4 removed | 4 kept trends | 7 new</text>
+  </g>
+
+  <!-- Master urgencies fan out -->
+  <line x1="400" y1="185" x2="180" y2="290" stroke="#FF9800" stroke-width="2" marker-end="url(#ao)"/>
+  <text x="260" y="240" fill="#FFB74D" font-size="10" transform="rotate(-25, 260, 240)">econUrg, workerUrg, expandUrg</text>
+
+  <line x1="520" y1="185" x2="560" y2="290" stroke="#FF9800" stroke-width="2" marker-end="url(#ao)"/>
+  <text x="555" y="245" fill="#FFB74D" font-size="10">buildUrg, techUrg, defBuildUrg</text>
+
+  <line x1="680" y1="185" x2="920" y2="290" stroke="#FF9800" stroke-width="2" marker-end="url(#ao)"/>
+  <text x="820" y="240" fill="#FFB74D" font-size="10" transform="rotate(15, 820, 240)">unitUrg, attackUrg</text>
+
+  <line x1="760" y1="185" x2="1200" y2="290" stroke="#FF9800" stroke-width="2" marker-end="url(#ao)"/>
+  <text x="1020" y="230" fill="#FFB74D" font-size="10" transform="rotate(18, 1020, 230)">milUrg, attackUrg</text>
+
+  <!-- Resource/Possession/Lacking feed sub-brains -->
+  <line x1="390" y1="60" x2="140" y2="290" stroke="#888" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a)"/>
+  <line x1="530" y1="60" x2="200" y2="290" stroke="#888" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a)"/>
+  <line x1="955" y1="60" x2="240" y2="290" stroke="#888" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a)"/>
+
+  <line x1="530" y1="60" x2="520" y2="290" stroke="#888" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a)"/>
+  <line x1="670" y1="60" x2="580" y2="290" stroke="#888" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a)"/>
+
+  <line x1="530" y1="60" x2="880" y2="290" stroke="#888" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a)"/>
+  <line x1="250" y1="60" x2="960" y2="290" stroke="#888" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a)"/>
+
+  <line x1="530" y1="60" x2="1180" y2="290" stroke="#888" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a)"/>
+  <line x1="670" y1="60" x2="1240" y2="290" stroke="#888" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a)"/>
+
+  <!-- ===== ECONOMY BRAIN ===== -->
+  <g data-tt-title="EconomyBrain — 24 Inputs" data-tt-body="<span class='tt-input'>Proposed 24 inputs</span> (was 20):<br><br><b>Kept (10):</b> 4x resource values, 4x gather speeds, free_workers, total_workers<br><b>Removed (3):</b> army_count, enemy_army_to_own_building, enemy_score<br><b>Kept (7):</b> 4x lacking per resource, economy_urgency, worker_urgency, expand_urgency<br><b>Added (8):</b><br><span class='tt-ok'>FOOD_STORAGE_RATIO</span> — food vs storage capacity<br><span class='tt-ok'>GOLD_STORAGE_RATIO</span> — gold in banks ratio<br><span class='tt-ok'>STONE_REFINE_UTIL</span> — stone refine capacity used<br><span class='tt-ok'>GOLD_REFINE_UTIL</span> — gold refine capacity used<br><span class='tt-ok'>NO_BONUS_FOOD/WOOD/STONE/GOLD</span> — workers on unimproved nodes">
+    <rect x="60" y="295" width="340" height="60" rx="8" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="230" y="318" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">EconomyBrain — 24 Inputs</text>
+    <text x="230" y="340" text-anchor="middle" fill="#A5D6A7" font-size="11">10 kept | 3 removed | 7 kept | 8 new</text>
+  </g>
+
+  <!-- ===== BUILDING BRAIN ===== -->
+  <g data-tt-title="BuildingBrain — 14 Inputs" data-tt-body="<span class='tt-input'>Proposed 14 inputs</span> (was 14, but different composition):<br><br><b>Kept (7):</b> buildings_count, workers_count, defence_sum, enemy_army_to_own_building, building_urgency, tech_urgency, defence_building_urgency<br><b>Removed (7):</b> free_workers, army_count, attack_sum, 4x gather_speed<br><b>Added (7):</b><br><span class='tt-ok'>COUNT_OTHER/DEFENCE/RESOURCE/TECH/UNITS</span> — buildings per parent type<br><span class='tt-ok'>TOTAL_LACKING</span> — resource stress signal<br><span class='tt-ok'>UNIT_URGENCY</span> — from MasterBrain">
+    <rect x="420" y="295" width="340" height="60" rx="8" fill="#4A148C" stroke="#9C27B0" stroke-width="2"/>
+    <text x="590" y="318" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">BuildingBrain — 14 Inputs</text>
+    <text x="590" y="340" text-anchor="middle" fill="#CE93D8" font-size="11">7 kept | 7 removed | 7 new (same total)</text>
+  </g>
+
+  <!-- ===== UNIT BRAIN ===== -->
+  <g data-tt-title="UnitBrain — 14 Inputs (unchanged)" data-tt-body="<span class='tt-input'>14 inputs</span> — no changes proposed:<br><br>0-2: own infantry/cavalry/range ratio<br>3-5: enemy infantry/cavalry/range ratio<br>6: army_count (/200)<br>7: enemy_army_count (/200)<br>8: attack_sum (/1000)<br>9: defence_sum (/100)<br>10: enemy_score (/1000)<br>11: workers_count (/100)<br>12: unit_urgency (from Master)<br>13: attack_urgency (from Master)">
+    <rect x="780" y="295" width="280" height="60" rx="8" fill="#BF360C" stroke="#FF5722" stroke-width="2"/>
+    <text x="920" y="318" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">UnitBrain — 14 Inputs</text>
+    <text x="920" y="340" text-anchor="middle" fill="#FFAB91" font-size="11">unchanged</text>
+  </g>
+
+  <!-- ===== MILITARY BRAIN ===== -->
+  <g data-tt-title="MilitaryBrain — 20 Inputs" data-tt-body="<span class='tt-input'>Proposed 20 inputs</span> (was 14):<br><br><b>Kept (14):</b> attack_sum, defence_sum, 4x spatial distances, enemy_score, player_score, units_count, enemy_units_count, army_count, free_army_count, military_urgency, attack_urgency<br><br><b>Added (6):</b><br><span class='tt-ok'>OWN_INFANTRY_RATIO</span> — own infantry fraction<br><span class='tt-ok'>OWN_CAVALRY_RATIO</span> — own cavalry fraction<br><span class='tt-ok'>OWN_RANGE_RATIO</span> — own ranged fraction<br><span class='tt-ok'>ENEMY_INFANTRY_RATIO</span> — enemy infantry fraction<br><span class='tt-ok'>ENEMY_CAVALRY_RATIO</span> — enemy cavalry fraction<br><span class='tt-ok'>ENEMY_RANGE_RATIO</span> — enemy ranged fraction">
+    <rect x="1080" y="295" width="280" height="60" rx="8" fill="#B71C1C" stroke="#f44336" stroke-width="2"/>
+    <text x="1220" y="318" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">MilitaryBrain — 20 Inputs</text>
+    <text x="1220" y="340" text-anchor="middle" fill="#FFCDD2" font-size="11">14 kept | 6 new (army composition)</text>
+  </g>
+
+  <!-- ===== INPUT CATEGORY BOXES BELOW EACH BRAIN ===== -->
+
+  <!-- Master input categories -->
+  <rect x="300" y="400" width="105" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="352" y="420" text-anchor="middle" fill="#4FC3F7" font-size="9">Scores (2)</text>
+  <rect x="415" y="400" width="105" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="467" y="420" text-anchor="middle" fill="#4FC3F7" font-size="9">Counts (4)</text>
+  <rect x="530" y="400" width="105" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="582" y="420" text-anchor="middle" fill="#4FC3F7" font-size="9">Resources (8)</text>
+  <rect x="645" y="400" width="105" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="697" y="420" text-anchor="middle" fill="#4FC3F7" font-size="9">Spatial (4)</text>
+  <rect x="300" y="440" width="105" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="352" y="460" text-anchor="middle" fill="#4FC3F7" font-size="9">Stats (3)</text>
+  <rect x="415" y="440" width="105" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="467" y="460" text-anchor="middle" fill="#4FC3F7" font-size="9">Trends (4)</text>
+  <rect x="530" y="440" width="170" height="30" rx="4" fill="#1B5E20" stroke="#66BB6A" stroke-width="1.5"/>
+  <text x="615" y="460" text-anchor="middle" fill="#A5D6A7" font-size="9" font-weight="bold">NEW: 7 signals</text>
+  <line x1="560" y1="185" x2="560" y2="395" stroke="#FF9800" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+  <!-- Economy input categories -->
+  <rect x="60" y="400" width="105" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="112" y="420" text-anchor="middle" fill="#4FC3F7" font-size="9">Values (4)</text>
+  <rect x="175" y="400" width="105" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="227" y="420" text-anchor="middle" fill="#4FC3F7" font-size="9">Speeds (4)</text>
+  <rect x="290" y="400" width="105" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="342" y="420" text-anchor="middle" fill="#4FC3F7" font-size="9">Workers (2)</text>
+  <rect x="60" y="440" width="105" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="112" y="460" text-anchor="middle" fill="#4FC3F7" font-size="9">Lacking (4)</text>
+  <rect x="175" y="440" width="105" height="30" rx="4" fill="#E65100" stroke="#FF9800" stroke-width="1"/>
+  <text x="227" y="460" text-anchor="middle" fill="#FFB74D" font-size="9">Urgencies (3)</text>
+  <rect x="290" y="440" width="105" height="30" rx="4" fill="#1B5E20" stroke="#66BB6A" stroke-width="1.5"/>
+  <text x="342" y="460" text-anchor="middle" fill="#A5D6A7" font-size="9" font-weight="bold">NEW: 8 signals</text>
+
+  <!-- Building input categories -->
+  <rect x="420" y="480" width="105" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="472" y="500" text-anchor="middle" fill="#4FC3F7" font-size="9">Kept (4)</text>
+  <rect x="535" y="480" width="105" height="30" rx="4" fill="#E65100" stroke="#FF9800" stroke-width="1"/>
+  <text x="587" y="500" text-anchor="middle" fill="#FFB74D" font-size="9">Urgencies (3)</text>
+  <rect x="650" y="480" width="105" height="30" rx="4" fill="#1B5E20" stroke="#66BB6A" stroke-width="1.5"/>
+  <text x="702" y="500" text-anchor="middle" fill="#A5D6A7" font-size="9" font-weight="bold">NEW: 7 signals</text>
+  <line x1="590" y1="355" x2="590" y2="475" stroke="#9C27B0" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+  <!-- Military input categories -->
+  <rect x="1080" y="400" width="120" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="1140" y="420" text-anchor="middle" fill="#4FC3F7" font-size="9">Combat (2)</text>
+  <rect x="1210" y="400" width="120" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="1270" y="420" text-anchor="middle" fill="#4FC3F7" font-size="9">Spatial (4)</text>
+  <rect x="1080" y="440" width="120" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="1140" y="460" text-anchor="middle" fill="#4FC3F7" font-size="9">Counts (4)</text>
+  <rect x="1210" y="440" width="120" height="30" rx="4" fill="#E65100" stroke="#FF9800" stroke-width="1"/>
+  <text x="1270" y="460" text-anchor="middle" fill="#FFB74D" font-size="9">Urgencies (2)</text>
+  <rect x="1080" y="480" width="250" height="30" rx="4" fill="#1B5E20" stroke="#66BB6A" stroke-width="1.5"/>
+  <text x="1205" y="500" text-anchor="middle" fill="#A5D6A7" font-size="9" font-weight="bold">NEW: 6 army composition ratios</text>
+  <line x1="1220" y1="355" x2="1220" y2="395" stroke="#f44336" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+</svg>
+
+
+<!-- ========================================== -->
+<!-- MASTER BRAIN INPUTS                        -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">1. MasterBrain — 32 Inputs (was 29)</div>
+<div class="section-sub">Strategic overview of the game state. Removed per-resource lacking (Master only needs total stress).
+Added game phase, combat efficiency, momentum trends, and tech progress signals.</div>
+
+<svg viewBox="0 0 1300 520" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1300px;">
+  <defs>
+    <marker id="m1" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#FF9800"/></marker>
+  </defs>
+
+  <!-- Input slot grid -->
+  <!-- Row 1: Scores & Counts (6) -->
+  <text x="20" y="30" fill="#888" font-size="12" font-weight="bold">Scores & Counts</text>
+  <g data-tt-title="[0] SCORE" data-tt-body="player->getScore() / 1000<br>Overall progress metric. Composite of units, buildings, resources.">
+    <rect x="20" y="40" width="130" height="35" rx="5" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="85" y="62" text-anchor="middle" fill="#ccc" font-size="10">0: SCORE /1000</text>
+  </g>
+  <g data-tt-title="[1] ENEMY_SCORE" data-tt-body="enemy->getScore() / 1000<br>Relative standing — are we ahead or behind?">
+    <rect x="160" y="40" width="150" height="35" rx="5" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="235" y="62" text-anchor="middle" fill="#ccc" font-size="10">1: ENEMY_SCORE /1000</text>
+  </g>
+  <g data-tt-title="[2] BUILDINGS_COUNT" data-tt-body="possession->getBuildingsNumber() / 50<br>Infrastructure level.">
+    <rect x="320" y="40" width="160" height="35" rx="5" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="400" y="62" text-anchor="middle" fill="#ccc" font-size="10">2: BUILDINGS /50</text>
+  </g>
+  <g data-tt-title="[3] WORKERS_COUNT" data-tt-body="possession->getWorkersNumber() / 100<br>Economic capacity.">
+    <rect x="490" y="40" width="140" height="35" rx="5" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="560" y="62" text-anchor="middle" fill="#ccc" font-size="10">3: WORKERS /100</text>
+  </g>
+  <g data-tt-title="[4] ARMY_COUNT" data-tt-body="possession->getArmyNumber() / 200<br>Military size.">
+    <rect x="640" y="40" width="130" height="35" rx="5" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="705" y="62" text-anchor="middle" fill="#ccc" font-size="10">4: ARMY /200</text>
+  </g>
+  <g data-tt-title="[5] ENEMY_ARMY_COUNT" data-tt-body="enemyPossession->getArmyNumber() / 200<br>Threat assessment.">
+    <rect x="780" y="40" width="160" height="35" rx="5" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="860" y="62" text-anchor="middle" fill="#ccc" font-size="10">5: ENEMY_ARMY /200</text>
+  </g>
+
+  <!-- Row 2: Resources (8) -->
+  <text x="20" y="100" fill="#888" font-size="12" font-weight="bold">Resources</text>
+  <g data-tt-title="[6-9] VALUE_FOOD/WOOD/STONE/GOLD" data-tt-body="res->getValue(RT) / 1000 for each of 4 resource types<br>Current stockpile levels.">
+    <rect x="20" y="110" width="440" height="35" rx="5" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="240" y="132" text-anchor="middle" fill="#ccc" font-size="10">6-9: VALUE_FOOD / WOOD / STONE / GOLD — each /1000</text>
+  </g>
+  <g data-tt-title="[10-13] GATHER_SPEED_FOOD/WOOD/STONE/GOLD" data-tt-body="res->getGatherSpeed(RT) / 10 for each of 4 resource types<br>Income rates — how fast resources are coming in.">
+    <rect x="470" y="110" width="470" height="35" rx="5" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="705" y="132" text-anchor="middle" fill="#ccc" font-size="10">10-13: GATHER_SPEED_FOOD / WOOD / STONE / GOLD — each /10</text>
+  </g>
+
+  <!-- Row 3: Stats (3) -->
+  <text x="20" y="170" fill="#888" font-size="12" font-weight="bold">Stats & Spatial</text>
+  <g data-tt-title="[14] FREE_WORKERS" data-tt-body="possession->getFreeWorkersNumber() / 100<br>Idle economic capacity — workers not assigned to gathering.">
+    <rect x="20" y="180" width="160" height="35" rx="5" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="100" y="202" text-anchor="middle" fill="#ccc" font-size="10">14: FREE_WORKERS /100</text>
+  </g>
+  <g data-tt-title="[15] ATTACK_SUM" data-tt-body="possession->getAttackSum() / 1000<br>Total army damage output — quality not just quantity.">
+    <rect x="190" y="180" width="150" height="35" rx="5" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="265" y="202" text-anchor="middle" fill="#ccc" font-size="10">15: ATTACK_SUM /1000</text>
+  </g>
+  <g data-tt-title="[16] DEFENCE_SUM" data-tt-body="possession->getDefenceAttackSum() / 100<br>Defensive capability (walls, towers, garrison).">
+    <rect x="350" y="180" width="160" height="35" rx="5" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="430" y="202" text-anchor="middle" fill="#ccc" font-size="10">16: DEFENCE_SUM /100</text>
+  </g>
+
+  <!-- Row 3b: Spatial (4) -->
+  <g data-tt-title="[17-20] Spatial Distances" data-tt-body="diffOfCenters() queries — distance between army and building centers-of-mass:<br><br>17: ARMY→OWN_BUILDING (0 default) — are troops at home?<br>18: ARMY→ENEMY_BUILDING (1 default) — distance to attack<br>19: ENEMY_ARMY→OWN_BUILDING (1 default) — incoming threat<br>20: ENEMY_ARMY→ENEMY_BUILDING (0 default) — enemy defending?<br><br>Raw values (no normalization divisor).">
+    <rect x="520" y="180" width="420" height="35" rx="5" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="730" y="202" text-anchor="middle" fill="#ccc" font-size="10">17-20: 4x Spatial Distances (army/enemy vs buildings) — raw</text>
+  </g>
+
+  <!-- Row 4: Lacking & Trends (5) -->
+  <text x="20" y="240" fill="#888" font-size="12" font-weight="bold">Feedback & Trends</text>
+  <g data-tt-title="[21] TOTAL_LACKING" data-tt-body="totalLacking / 2000<br>Sum of all unfulfilled resource costs from WantList. Aggregate economic stress — Master only needs 'how stressed', not 'which resource'.">
+    <rect x="20" y="250" width="180" height="35" rx="5" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="110" y="272" text-anchor="middle" fill="#ccc" font-size="10">21: TOTAL_LACKING /2000</text>
+  </g>
+  <g data-tt-title="[22] DELTA_SCORE" data-tt-body="(currentScore - prevScore) / 1000<br>Score momentum — are we improving or declining?">
+    <rect x="210" y="250" width="160" height="35" rx="5" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="290" y="272" text-anchor="middle" fill="#ccc" font-size="10">22: DELTA_SCORE /1000</text>
+  </g>
+  <g data-tt-title="[23] DELTA_UNITS" data-tt-body="(currentUnits - prevUnits) / 200<br>Army growth rate. Positive = growing, negative = taking losses.">
+    <rect x="380" y="250" width="150" height="35" rx="5" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="455" y="272" text-anchor="middle" fill="#ccc" font-size="10">23: DELTA_UNITS /200</text>
+  </g>
+  <g data-tt-title="[24] DELTA_RESOURCES" data-tt-body="(currentResSum - prevResSum) / 1000<br>Economy momentum. Sum of all 4 resource values compared to last tick.">
+    <rect x="540" y="250" width="180" height="35" rx="5" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="630" y="272" text-anchor="middle" fill="#ccc" font-size="10">24: DELTA_RESOURCES /1000</text>
+  </g>
+
+  <!-- Row 5: NEW inputs (7) — highlighted -->
+  <text x="20" y="320" fill="#66BB6A" font-size="13" font-weight="bold">NEW INPUTS</text>
+  <g data-tt-title="[25] GAME_TIME" data-tt-body="<span class='tt-ok'>NEW</span><br>Game::getFrameInfo()->getSeconds() / 600<br><br>Game phase awareness. 600s (~10 min) = 1.0. Without this, the brain cannot distinguish early-game rush from late-game boom. Critical for phased strategy.">
+    <rect x="20" y="330" width="150" height="40" rx="5" fill="#1B5E20" stroke="#66BB6A" stroke-width="2"/><text x="95" y="348" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="bold">25: GAME_TIME</text><text x="95" y="362" text-anchor="middle" fill="#78909C" font-size="9">/600</text>
+  </g>
+  <g data-tt-title="[26] KD_RATIO" data-tt-body="<span class='tt-ok'>NEW</span><br>possession->getResourcesDestroyed() / max(1, costOfOwnLosses) / 3<br><br>Kill/death efficiency. >1 = winning trades. Drives aggression when ahead, caution when behind.<br><span class='tt-warn'>Needs new getter: Possession::getResourcesDestroyed()</span>">
+    <rect x="180" y="330" width="150" height="40" rx="5" fill="#1B5E20" stroke="#66BB6A" stroke-width="2"/><text x="255" y="348" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="bold">26: KD_RATIO</text><text x="255" y="362" text-anchor="middle" fill="#78909C" font-size="9">/3</text>
+  </g>
+  <g data-tt-title="[27] IN_COMBAT_RATIO" data-tt-body="<span class='tt-ok'>NEW</span><br>(armyNumber - freeArmyNumber) / max(1, armyNumber)<br><br>Fraction of army currently fighting (0-1). High = already engaged — affects reinforcement vs retreat decisions.<br><span class='tt-warn'>Needs new getter: Possession::getInCombatNumber()</span>">
+    <rect x="340" y="330" width="170" height="40" rx="5" fill="#1B5E20" stroke="#66BB6A" stroke-width="2"/><text x="425" y="348" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="bold">27: IN_COMBAT_RATIO</text><text x="425" y="362" text-anchor="middle" fill="#78909C" font-size="9">raw 0-1</text>
+  </g>
+  <g data-tt-title="[28] DELTA_ENEMY_SCORE" data-tt-body="<span class='tt-ok'>NEW</span><br>(enemy->getScore() - prevEnemyScore) / 1000<br><br>Enemy momentum. Rising = they are booming, may need to attack before they grow stronger.<br>Requires tracking prevEnemyScore internally.">
+    <rect x="520" y="330" width="190" height="40" rx="5" fill="#1B5E20" stroke="#66BB6A" stroke-width="2"/><text x="615" y="348" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="bold">28: DELTA_ENEMY_SCORE</text><text x="615" y="362" text-anchor="middle" fill="#78909C" font-size="9">/1000</text>
+  </g>
+  <g data-tt-title="[29] DELTA_ARMY_STRENGTH" data-tt-body="<span class='tt-ok'>NEW</span><br>(currentAttackSum - prevAttackSum) / 500<br><br>Army quality trend, not just count. Captures upgrades and unit type changes. Rising = getting stronger.<br>Requires tracking prevAttackSum internally.">
+    <rect x="720" y="330" width="200" height="40" rx="5" fill="#1B5E20" stroke="#66BB6A" stroke-width="2"/><text x="820" y="348" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="bold">29: DELTA_ARMY_STR</text><text x="820" y="362" text-anchor="middle" fill="#78909C" font-size="9">/500</text>
+  </g>
+  <g data-tt-title="[30] TECH_LEVEL" data-tt-body="<span class='tt-ok'>NEW</span><br>avgUnitUpgradeLevel(player) / 3<br><br>Average upgrade level across unit types. Indicates tech progress. If low and resources available, may drive tech urgency up.<br><span class='tt-warn'>Needs new helper: Player::getAvgUnitUpgradeLevel()</span>">
+    <rect x="930" y="330" width="150" height="40" rx="5" fill="#1B5E20" stroke="#66BB6A" stroke-width="2"/><text x="1005" y="348" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="bold">30: TECH_LEVEL</text><text x="1005" y="362" text-anchor="middle" fill="#78909C" font-size="9">/3</text>
+  </g>
+  <g data-tt-title="[31] DELTA_GATHER_SPEED" data-tt-body="<span class='tt-ok'>NEW</span><br>(currentGatherSpeedSum - prevGatherSpeedSum) / 20<br><br>Income trend. Sum of all 4 gather speeds vs previous tick. Rising = economy growing. Falling = workers dying or reassigned. Key economic momentum signal.<br>Requires tracking prevGatherSpeedSum internally.">
+    <rect x="1090" y="330" width="190" height="40" rx="5" fill="#1B5E20" stroke="#66BB6A" stroke-width="2"/><text x="1185" y="348" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="bold">31: DELTA_GATHER_SPD</text><text x="1185" y="362" text-anchor="middle" fill="#78909C" font-size="9">/20</text>
+  </g>
+
+  <!-- Removed inputs -->
+  <text x="20" y="410" fill="#EF5350" font-size="12" font-weight="bold">REMOVED</text>
+  <rect x="20" y="420" width="480" height="35" rx="5" fill="#37474F" stroke="#EF5350" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="260" y="442" text-anchor="middle" fill="#EF5350" font-size="10" text-decoration="line-through">LACKING_FOOD / LACKING_WOOD / LACKING_STONE / LACKING_GOLD — moved to EconomyBrain only</text>
+
+  <!-- Rationale -->
+  <rect x="20" y="470" width="1260" height="35" rx="6" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="650" y="492" text-anchor="middle" fill="#888" font-size="11">Design: Master needs aggregate stress (TOTAL_LACKING) not per-resource detail. Per-resource lacking is EconomyBrain's domain.</text>
+</svg>
+
+
+<!-- ========================================== -->
+<!-- ECONOMY BRAIN INPUTS                       -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">2. EconomyBrain — 24 Inputs (was 20)</div>
+<div class="section-sub">Focused on resource management. Removed military/threat inputs (that's Master's job).
+Added resource gathering quality signals: storage utilization, refine capacity, and workers on unimproved nodes.</div>
+
+<div class="card">
+  <h3 style="color:#4CAF50;">Kept Inputs (17)</h3>
+  <ul>
+    <li><b>[0-3] VALUE_FOOD/WOOD/STONE/GOLD</b> — <code>res->getValue(RT) / 1000</code> — Current stockpile per resource</li>
+    <li><b>[4-7] GATHER_SPEED_FOOD/WOOD/STONE/GOLD</b> — <code>res->getGatherSpeed(RT) / 10</code> — Income rate per resource</li>
+    <li><b>[8] FREE_WORKERS</b> — <code>possession->getFreeWorkersNumber() / 100</code> — Available labor</li>
+    <li><b>[9] TOTAL_WORKERS</b> — <code>possession->getWorkersNumber() / 100</code> — Economic scale</li>
+    <li><b>[10-13] LACKING_FOOD/WOOD/STONE/GOLD</b> — <code>lackingPerResource[i] / 500</code> — Closed-loop feedback per resource from WantList</li>
+    <li><b>[14] ECONOMY_URGENCY</b> — from MasterBrain — Master directive for economic focus</li>
+    <li><b>[15] WORKER_URGENCY</b> — from MasterBrain — Master directive for worker production</li>
+    <li><b>[16] EXPAND_URGENCY</b> — from MasterBrain — Master directive for territorial expansion</li>
+  </ul>
+
+  <h3 style="color:#EF5350;">Removed Inputs (3)</h3>
+  <ul>
+    <li style="text-decoration: line-through; color:#EF5350;"><b>ARMY_COUNT</b> — <code>possession->getArmyNumber() / 200</code> — Not relevant for economy decisions; Master urgencies encode military pressure</li>
+    <li style="text-decoration: line-through; color:#EF5350;"><b>ENEMY_ARMY_TO_OWN_BUILDING</b> — <code>diffOfCenters(...)</code> — Threat awareness is Master's job</li>
+    <li style="text-decoration: line-through; color:#EF5350;"><b>ENEMY_SCORE</b> — <code>enemy->getScore() / 1000</code> — Not directly relevant to economic allocation</li>
+  </ul>
+
+  <h3 style="color:#66BB6A;">New Inputs (8) — Resource Gathering Quality</h3>
+  <ul>
+    <li><b>[17] FOOD_STORAGE_RATIO</b> — <code>res->getFoodStorageRatio()</code> — raw (0-2+). If &gt;1, food exceeds storage capacity and decays. Drives "build storage" or "reduce food workers" decisions.</li>
+    <li><b>[18] GOLD_STORAGE_RATIO</b> — <code>res->getGoldStorageRatio()</code> — raw (0-2+). Gold in storage generates interest. Low ratio = missing free gold income. High ratio = storage is full, no benefit from more.</li>
+    <li><b>[19] STONE_REFINE_UTIL</b> — <code>res->getStoneRefineUtilization()</code> — raw (0-1). How much of stone refine capacity is used. Low = stone gather speed below refine capacity, wasting potential bonus.</li>
+    <li><b>[20] GOLD_REFINE_UTIL</b> — <code>res->getGoldRefineUtilization()</code> — raw (0-1). Same for gold refinement. Low utilization = not enough gatherers or refine capacity overbuilt.</li>
+    <li><b>[21] NO_BONUS_FOOD</b> — <code>possession->getResWithOutBonus(FOOD) / 10</code> — Workers gathering food without bonus. Less efficient — should be reassigned or bonus buildings built.</li>
+    <li><b>[22] NO_BONUS_WOOD</b> — <code>possession->getResWithOutBonus(WOOD) / 10</code> — Same for wood.</li>
+    <li><b>[23] NO_BONUS_STONE</b> — <code>possession->getResWithOutBonus(STONE) / 10</code> — Same for stone.</li>
+    <li><b>[24] NO_BONUS_GOLD</b> — <code>possession->getResWithOutBonus(GOLD) / 10</code> — Same for gold.</li>
+  </ul>
+</div>
+
+
+<!-- ========================================== -->
+<!-- BUILDING BRAIN INPUTS                      -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">3. BuildingBrain — 14 Inputs (was 14, different composition)</div>
+<div class="section-sub">Same total count but completely reworked. Removed granular army/resource inputs that duplicate Master urgency information.
+Added building counts per parent type so the brain can see what's already built, plus lacking feedback and unit urgency.</div>
+
+<div class="card">
+  <h3 style="color:#9C27B0;">Kept Inputs (7)</h3>
+  <ul>
+    <li><b>[0] BUILDINGS_COUNT</b> — <code>possession->getBuildingsNumber() / 50</code> — Total infrastructure</li>
+    <li><b>[1] WORKERS_COUNT</b> — <code>possession->getWorkersNumber() / 100</code> — Farm/barracks balance</li>
+    <li><b>[2] DEFENCE_SUM</b> — <code>possession->getDefenceAttackSum() / 100</code> — Current defensive structures</li>
+    <li><b>[3] ENEMY_ARMY_TO_OWN_BUILDING</b> — <code>diffOfCenters(ARMY, enemy, BUILDING, player, 1.f)</code> — Threat proximity drives walls/towers</li>
+    <li><b>[4] BUILDING_URGENCY</b> — from MasterBrain — General construction priority</li>
+    <li><b>[5] TECH_URGENCY</b> — from MasterBrain — Technology building priority</li>
+    <li><b>[6] DEFENCE_BUILDING_URGENCY</b> — from MasterBrain — Defensive structure priority</li>
+  </ul>
+
+  <h3 style="color:#EF5350;">Removed Inputs (7)</h3>
+  <ul>
+    <li style="text-decoration: line-through; color:#EF5350;"><b>FREE_WORKERS</b> — Master urgencies encode worker pressure</li>
+    <li style="text-decoration: line-through; color:#EF5350;"><b>ARMY_COUNT</b> — Unit urgency from Master captures army needs</li>
+    <li style="text-decoration: line-through; color:#EF5350;"><b>ATTACK_SUM</b> — Army quality detail not needed for building type selection</li>
+    <li style="text-decoration: line-through; color:#EF5350;"><b>GATHER_SPEED_FOOD/WOOD/STONE/GOLD</b> — Per-resource income detail belongs in EconomyBrain</li>
+  </ul>
+
+  <h3 style="color:#66BB6A;">New Inputs (7) — Building Type Determination</h3>
+  <ul>
+    <li><b>[7] COUNT_OTHER</b> — <code>possession->getBuildingCountByParentType()[OTHER] / 10</code> — Town centers, houses. Prevents over-building one type.</li>
+    <li><b>[8] COUNT_DEFENCE</b> — <code>possession->getBuildingCountByParentType()[DEFENCE] / 10</code> — Walls, towers count.</li>
+    <li><b>[9] COUNT_RESOURCE</b> — <code>possession->getBuildingCountByParentType()[RESOURCE] / 20</code> — Farms, mines. High = maybe enough, shift to other types.</li>
+    <li><b>[10] COUNT_TECH</b> — <code>possession->getBuildingCountByParentType()[TECH] / 5</code> — Tech buildings. If 0 and tech urgency high, clearly need one.</li>
+    <li><b>[11] COUNT_UNITS</b> — <code>possession->getBuildingCountByParentType()[UNITS] / 10</code> — Barracks, stables. Bottleneck for army production.</li>
+    <li><b>[12] TOTAL_LACKING</b> — <code>totalLacking / 2000</code> — Resource stress. High = maybe need more resource buildings.</li>
+    <li><b>[13] UNIT_URGENCY</b> — from MasterBrain — If high, may need more barracks specifically.</li>
+  </ul>
+  <p style="color:#FF9800; font-size:12px;">New dependency: <code>Possession::getBuildingCountByParentType()</code> returning <code>std::array&lt;unsigned, 5&gt;</code> indexed by <code>ParentBuildingType</code>.</p>
+</div>
+
+
+<!-- ========================================== -->
+<!-- UNIT BRAIN INPUTS                          -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">4. UnitBrain — 14 Inputs (unchanged)</div>
+<div class="section-sub">No changes proposed. Unit profile matching picks the closest buildable unit; affordability and building availability are handled downstream by WantList and resolveUnit.</div>
+
+<div class="card">
+  <h3 style="color:#FF5722;">All Inputs (14)</h3>
+  <ul>
+    <li><b>[0] OWN_INFANTRY_RATIO</b> — <code>possession->getInfantryNumber() / armyCount</code> — Current infantry fraction for rebalancing</li>
+    <li><b>[1] OWN_CAVALRY_RATIO</b> — <code>possession->getCavalryNumber() / armyCount</code> — Current cavalry fraction</li>
+    <li><b>[2] OWN_RANGE_RATIO</b> — <code>possession->getRangeNumber() / armyCount</code> — Current ranged fraction</li>
+    <li><b>[3] ENEMY_INFANTRY_RATIO</b> — <code>enemyPossession->getInfantryNumber() / enemyArmyCount</code> — Counter-picking</li>
+    <li><b>[4] ENEMY_CAVALRY_RATIO</b> — <code>enemyPossession->getCavalryNumber() / enemyArmyCount</code> — Counter-picking</li>
+    <li><b>[5] ENEMY_RANGE_RATIO</b> — <code>enemyPossession->getRangeNumber() / enemyArmyCount</code> — Counter-picking</li>
+    <li><b>[6] ARMY_COUNT</b> — <code>armyCount / 200</code> — Scale context</li>
+    <li><b>[7] ENEMY_ARMY_COUNT</b> — <code>enemyArmyCount / 200</code> — Relative military size</li>
+    <li><b>[8] ATTACK_SUM</b> — <code>possession->getAttackSum() / 1000</code> — Army quality</li>
+    <li><b>[9] DEFENCE_SUM</b> — <code>possession->getDefenceAttackSum() / 100</code> — Survivability</li>
+    <li><b>[10] ENEMY_SCORE</b> — <code>enemy->getScore() / 1000</code> — General threat level</li>
+    <li><b>[11] WORKERS_COUNT</b> — <code>possession->getWorkersNumber() / 100</code> — Army-worker balance</li>
+    <li><b>[12] UNIT_URGENCY</b> — from MasterBrain — Production volume signal</li>
+    <li><b>[13] ATTACK_URGENCY</b> — from MasterBrain — Offensive vs defensive unit selection</li>
+  </ul>
+</div>
+
+
+<!-- ========================================== -->
+<!-- MILITARY BRAIN INPUTS                      -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">5. MilitaryBrain — 20 Inputs (was 14)</div>
+<div class="section-sub">Added the same 6 army composition ratios from UnitBrain. Army composition critically affects whether to attack or defend — cavalry-heavy forces favor raids, range-heavy forces favor positional defense.</div>
+
+<svg viewBox="0 0 1300 380" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1300px;">
+  <!-- Existing 14 -->
+  <text x="20" y="25" fill="#888" font-size="12" font-weight="bold">Kept Inputs (14)</text>
+
+  <g data-tt-title="[0] ATTACK_SUM" data-tt-body="possession->getAttackSum() / 1000<br>Total army damage — offensive capability.">
+    <rect x="20" y="35" width="140" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="90" y="55" text-anchor="middle" fill="#ccc" font-size="9">0: ATTACK_SUM /1000</text>
+  </g>
+  <g data-tt-title="[1] DEFENCE_SUM" data-tt-body="possession->getDefenceAttackSum() / 100<br>Defensive capability.">
+    <rect x="170" y="35" width="140" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="240" y="55" text-anchor="middle" fill="#ccc" font-size="9">1: DEFENCE_SUM /100</text>
+  </g>
+  <g data-tt-title="[2-5] Spatial Distances x4" data-tt-body="4 diffOfCenters() queries:<br>2: ARMY→OWN_BUILDING<br>3: ARMY→ENEMY_BUILDING<br>4: ENEMY_ARMY→OWN_BUILDING<br>5: ENEMY_ARMY→ENEMY_BUILDING<br>Full battlefield spatial awareness.">
+    <rect x="320" y="35" width="310" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="475" y="55" text-anchor="middle" fill="#ccc" font-size="9">2-5: 4x Spatial Distances — raw</text>
+  </g>
+  <g data-tt-title="[6-7] Scores" data-tt-body="6: enemy->getScore() / 1000 — target value<br>7: player->getScore() / 1000 — what we stand to lose">
+    <rect x="640" y="35" width="200" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="740" y="55" text-anchor="middle" fill="#ccc" font-size="9">6-7: ENEMY_SCORE / SCORE /1000</text>
+  </g>
+  <g data-tt-title="[8-11] Counts" data-tt-body="8: units_count / 200<br>9: enemy_units_count / 200<br>10: army_count / 200<br>11: free_army_count / 200 — uncommitted forces">
+    <rect x="850" y="35" width="290" height="30" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/><text x="995" y="55" text-anchor="middle" fill="#ccc" font-size="9">8-11: UNITS / ENEMY_UNITS / ARMY / FREE_ARMY /200</text>
+  </g>
+
+  <g data-tt-title="[12] MILITARY_URGENCY" data-tt-body="From MasterBrain.<br>How actively the AI should issue military orders.">
+    <rect x="20" y="75" width="170" height="30" rx="4" fill="#E65100" stroke="#FF9800" stroke-width="1"/><text x="105" y="95" text-anchor="middle" fill="#FFB74D" font-size="9">12: MILITARY_URGENCY</text>
+  </g>
+  <g data-tt-title="[13] ATTACK_URGENCY" data-tt-body="From MasterBrain.<br>Offensive intent — shared with UnitBrain.">
+    <rect x="200" y="75" width="160" height="30" rx="4" fill="#E65100" stroke="#FF9800" stroke-width="1"/><text x="280" y="95" text-anchor="middle" fill="#FFB74D" font-size="9">13: ATTACK_URGENCY</text>
+  </g>
+
+  <!-- NEW 6 -->
+  <text x="20" y="140" fill="#66BB6A" font-size="13" font-weight="bold">NEW INPUTS — Army Composition Ratios (same as UnitBrain [0-5])</text>
+
+  <g data-tt-title="[14] OWN_INFANTRY_RATIO" data-tt-body="<span class='tt-ok'>NEW</span><br>possession->getInfantryNumber() / armyCount<br><br>Infantry-heavy army = slow, better for defense. Affects attack/defend decision.">
+    <rect x="20" y="155" width="190" height="45" rx="5" fill="#1B5E20" stroke="#66BB6A" stroke-width="2"/><text x="115" y="175" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="bold">14: OWN_INFANTRY_RATIO</text><text x="115" y="190" text-anchor="middle" fill="#78909C" font-size="9">infantry / armyCount</text>
+  </g>
+  <g data-tt-title="[15] OWN_CAVALRY_RATIO" data-tt-body="<span class='tt-ok'>NEW</span><br>possession->getCavalryNumber() / armyCount<br><br>Cavalry-heavy = good for raids and flanking. Favors aggressive play.">
+    <rect x="220" y="155" width="190" height="45" rx="5" fill="#1B5E20" stroke="#66BB6A" stroke-width="2"/><text x="315" y="175" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="bold">15: OWN_CAVALRY_RATIO</text><text x="315" y="190" text-anchor="middle" fill="#78909C" font-size="9">cavalry / armyCount</text>
+  </g>
+  <g data-tt-title="[16] OWN_RANGE_RATIO" data-tt-body="<span class='tt-ok'>NEW</span><br>possession->getRangeNumber() / armyCount<br><br>Range-heavy = better at defending positions, siege. Affects target choice.">
+    <rect x="420" y="155" width="190" height="45" rx="5" fill="#1B5E20" stroke="#66BB6A" stroke-width="2"/><text x="515" y="175" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="bold">16: OWN_RANGE_RATIO</text><text x="515" y="190" text-anchor="middle" fill="#78909C" font-size="9">range / armyCount</text>
+  </g>
+  <g data-tt-title="[17] ENEMY_INFANTRY_RATIO" data-tt-body="<span class='tt-ok'>NEW</span><br>enemyPossession->getInfantryNumber() / enemyArmyCount<br><br>Enemy composition affects whether we can win a fight.">
+    <rect x="620" y="155" width="210" height="45" rx="5" fill="#1B5E20" stroke="#66BB6A" stroke-width="2"/><text x="725" y="175" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="bold">17: ENEMY_INFANTRY_RATIO</text><text x="725" y="190" text-anchor="middle" fill="#78909C" font-size="9">enemy infantry / enemyArmy</text>
+  </g>
+  <g data-tt-title="[18] ENEMY_CAVALRY_RATIO" data-tt-body="<span class='tt-ok'>NEW</span><br>enemyPossession->getCavalryNumber() / enemyArmyCount<br><br>Enemy has cavalry? Base is vulnerable to raids — favor defense.">
+    <rect x="840" y="155" width="210" height="45" rx="5" fill="#1B5E20" stroke="#66BB6A" stroke-width="2"/><text x="945" y="175" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="bold">18: ENEMY_CAVALRY_RATIO</text><text x="945" y="190" text-anchor="middle" fill="#78909C" font-size="9">enemy cavalry / enemyArmy</text>
+  </g>
+  <g data-tt-title="[19] ENEMY_RANGE_RATIO" data-tt-body="<span class='tt-ok'>NEW</span><br>enemyPossession->getRangeNumber() / enemyArmyCount<br><br>Enemy ranged = hard to siege without cavalry flanks.">
+    <rect x="1060" y="155" width="210" height="45" rx="5" fill="#1B5E20" stroke="#66BB6A" stroke-width="2"/><text x="1165" y="175" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="bold">19: ENEMY_RANGE_RATIO</text><text x="1165" y="190" text-anchor="middle" fill="#78909C" font-size="9">enemy range / enemyArmy</text>
+  </g>
+
+  <!-- Rationale box -->
+  <rect x="20" y="220" width="1250" height="40" rx="6" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+  <text x="645" y="237" text-anchor="middle" fill="#888" font-size="11">Why same 6 as UnitBrain? Army composition determines whether engaging is favorable:</text>
+  <text x="645" y="252" text-anchor="middle" fill="#888" font-size="11">cavalry-heavy → attack (fast raids) | range-heavy → defend (positional) | enemy composition → fight or avoid</text>
+</svg>
+
+
+<!-- ========================================== -->
+<!-- SUMMARY TABLE                              -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">Summary — All Brain Inputs</div>
+<div class="section-sub">Complete input specification with change counts and new dependencies.</div>
+
+<table class="spec" style="max-width:1250px;">
+<tr>
+  <th>Brain</th><th>Old</th><th>New</th><th>Kept</th><th>Removed</th><th>Added</th><th>Key New Inputs</th>
+</tr>
+<tr>
+  <td class="brain">MasterBrain</td><td class="range">29</td><td class="range">32</td><td class="range">25</td><td class="range">4</td><td class="add">7</td>
+  <td>GAME_TIME, KD_RATIO, IN_COMBAT_RATIO, DELTA_ENEMY_SCORE, DELTA_ARMY_STRENGTH, TECH_LEVEL, DELTA_GATHER_SPEED</td>
+</tr>
+<tr>
+  <td class="brain">EconomyBrain</td><td class="range">20</td><td class="range">24</td><td class="range">17</td><td class="range">3</td><td class="add">8</td>
+  <td>FOOD/GOLD_STORAGE_RATIO, STONE/GOLD_REFINE_UTIL, NO_BONUS_FOOD/WOOD/STONE/GOLD</td>
+</tr>
+<tr>
+  <td class="brain">BuildingBrain</td><td class="range">14</td><td class="range">14</td><td class="range">7</td><td class="range">7</td><td class="add">7</td>
+  <td>COUNT_OTHER/DEFENCE/RESOURCE/TECH/UNITS, TOTAL_LACKING, UNIT_URGENCY</td>
+</tr>
+<tr>
+  <td class="brain">UnitBrain</td><td class="range">14</td><td class="range">14</td><td class="range">14</td><td class="range">0</td><td class="range">0</td>
+  <td>No changes</td>
+</tr>
+<tr>
+  <td class="brain">MilitaryBrain</td><td class="range">14</td><td class="range">20</td><td class="range">14</td><td class="range">0</td><td class="add">6</td>
+  <td>OWN/ENEMY INFANTRY/CAVALRY/RANGE_RATIO</td>
+</tr>
+</table>
+
+<div class="card">
+  <h3 style="color:#FF9800;">New Dependencies Required</h3>
+  <ul>
+    <li><b>Possession::getResourcesDestroyed()</b> — <code>float</code> — Exposes private <code>resourcesDestroyed</code> field. Used by MasterBrain for KD_RATIO.</li>
+    <li><b>Possession::getInCombatNumber()</b> — <code>unsigned</code> (armyNumber - freeArmyNumber) — Used by MasterBrain for IN_COMBAT_RATIO.</li>
+    <li><b>Possession::getBuildingCountByParentType()</b> — <code>std::array&lt;unsigned, 5&gt;</code> indexed by ParentBuildingType — Computed in ensureReady(). Used by BuildingBrain.</li>
+    <li><b>MasterBrain internal</b> — <code>prevEnemyScore</code>, <code>prevAttackSum</code>, <code>prevGatherSpeedSum</code> — Tracked in updateHistory() for delta computations.</li>
+    <li><b>Player::getAvgUnitUpgradeLevel()</b> — <code>float</code> — Average upgrade level across unit types. Used by MasterBrain for TECH_LEVEL.</li>
+  </ul>
+
+  <h3 style="color:#4fc3f7;">New Enum File</h3>
+  <p><code>BrainIndex.h</code> — Replaces magic numbers in <code>nation->actionPrefix[0]</code> etc.</p>
+  <ul>
+    <li><code>enum class ActionBrainIndex : unsigned char { MASTER=0, ECONOMY=1, BUILDING=2, UNIT=3 };</code></li>
+    <li><code>enum class OrderBrainIndex : unsigned char { MILITARY=0 };</code></li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3 style="color:#4fc3f7;">Normalization Convention</h3>
+  <p>All inputs are <code>rawValue / divisor</code> to keep values roughly in [0, 1] range for the neural network.</p>
+  <ul>
+    <li><b>Counts</b>: /50 (buildings), /100 (workers), /200 (army)</li>
+    <li><b>Resources</b>: /1000 (values, scores), /10 (gather speeds)</li>
+    <li><b>Sums</b>: /1000 (attack), /100 (defence)</li>
+    <li><b>Deltas</b>: same divisor as their base value — keeps scale consistent</li>
+    <li><b>Ratios</b>: raw (already 0-1), or /3 for ratios that can exceed 1</li>
+    <li><b>Spatial</b>: raw (diffOfCenters already normalized internally)</li>
+  </ul>
+</div>
+
+
+<script>
+const tooltip = document.getElementById('tooltip');
+document.querySelectorAll('g[data-tt-title]').forEach(g => {
+  g.addEventListener('mouseenter', e => {
+    tooltip.innerHTML = `<div class="tt-title">${g.getAttribute('data-tt-title')}</div>${g.getAttribute('data-tt-body')}`;
+    tooltip.style.display = 'block';
+  });
+  g.addEventListener('mousemove', e => {
+    let x = e.clientX + 16, y = e.clientY + 16;
+    const r = tooltip.getBoundingClientRect();
+    if (x + r.width > window.innerWidth - 16) x = e.clientX - r.width - 16;
+    if (y + r.height > window.innerHeight - 16) y = e.clientY - r.height - 16;
+    tooltip.style.left = x + 'px'; tooltip.style.top = y + 'px';
+  });
+  g.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+});
+</script>
+</body>
+</html>

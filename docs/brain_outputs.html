@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Art of War — Brain Outputs Documentation</title>
+<style>
+  body { margin: 0; background: #1a1a2e; font-family: 'Segoe UI', sans-serif; color: #e0e0e0; }
+  h1 { text-align: center; margin: 20px 0 5px; font-size: 26px; color: #fff; }
+  h2.page-sub { text-align: center; margin: 0 0 10px; font-size: 14px; color: #888; font-weight: normal; max-width: 1100px; margin-left: auto; margin-right: auto; }
+  .section-title { text-align: center; font-size: 20px; color: #4fc3f7; margin: 30px 0 5px; font-weight: bold; }
+  .section-sub { text-align: center; font-size: 13px; color: #888; margin: 0 0 15px; max-width: 1050px; margin-left: auto; margin-right: auto; }
+  svg text { font-family: 'Segoe UI', sans-serif; pointer-events: none; }
+  svg g { cursor: pointer; }
+  svg g:hover rect, svg g:hover polygon, svg g:hover circle { filter: brightness(1.3); }
+  .legend { display: flex; justify-content: center; gap: 24px; margin: 10px 0 0; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .legend-color { width: 18px; height: 18px; border-radius: 4px; }
+  .hint { text-align: center; font-size: 12px; color: #666; margin-top: 4px; }
+  .tooltip {
+    position: fixed; display: none; max-width: 540px; padding: 12px 16px;
+    background: #222; border: 1px solid #555; border-radius: 8px;
+    font-size: 13px; color: #ddd; line-height: 1.5; z-index: 999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6); pointer-events: none;
+  }
+  .tooltip .tt-title { font-weight: bold; color: #fff; margin-bottom: 4px; font-size: 14px; }
+  .tooltip .tt-input { color: #4FC3F7; }
+  .tooltip .tt-output { color: #FFB74D; }
+  .tooltip .tt-logic { color: #A5D6A7; }
+  .tooltip .tt-warn { color: #EF5350; }
+  .tooltip .tt-ok { color: #66BB6A; }
+  .divider { border: none; border-top: 1px solid #37474F; max-width: 1350px; margin: 35px auto; }
+  table.spec { border-collapse: collapse; margin: 10px auto; font-size: 12px; background: #151530; }
+  table.spec th { background: #0f3460; color: #4fc3f7; padding: 6px 12px; border: 1px solid #37474F; text-align: left; }
+  table.spec td { padding: 5px 12px; border: 1px solid #37474F; color: #ccc; }
+  table.spec tr:hover td { background: #1a2744; }
+  table.spec td.cat { color: #FF9800; font-weight: bold; }
+  table.spec td.range { color: #A5D6A7; text-align: center; }
+  table.spec td.norm { color: #CE93D8; text-align: center; }
+  table.spec td.brain { color: #4FC3F7; font-weight: bold; }
+  .card { max-width: 1250px; margin: 15px auto; background: #151530; border-radius: 10px; padding: 16px 24px; border: 1px solid #37474F; }
+  .card h3 { margin: 0 0 8px; font-size: 16px; }
+  .card p { margin: 4px 0; font-size: 13px; color: #aaa; }
+</style>
+</head>
+<body>
+
+<h1>Brain Outputs Documentation</h1>
+<h2 class="page-sub">What each brain produces, how outputs are consumed downstream, and the complete data flow between brains.
+All outputs use tanh activation [-1, +1]. Hover over any element for details.</h2>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-color" style="background:#FF9800"></div> Master Brain</div>
+  <div class="legend-item"><div class="legend-color" style="background:#4CAF50"></div> Economy Brain</div>
+  <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div> Building Brain</div>
+  <div class="legend-item"><div class="legend-color" style="background:#FF5722"></div> Unit Brain</div>
+  <div class="legend-item"><div class="legend-color" style="background:#f44336"></div> Military Brain</div>
+  <div class="legend-item"><div class="legend-color" style="background:#2196F3"></div> Want List</div>
+  <div class="legend-item"><div class="legend-color" style="background:#607D8B"></div> Game Action</div>
+</div>
+<div class="hint">Hover over any node for details.</div>
+<div id="tooltip" class="tooltip"></div>
+
+
+<!-- ========================================== -->
+<!-- OUTPUT FLOW DIAGRAM                        -->
+<!-- ========================================== -->
+<div class="section-title">Output Flow — How Outputs Cascade</div>
+<div class="section-sub">MasterBrain outputs 9 urgencies that feed into sub-brains. Sub-brains produce requests for the WantList or direct game orders. All outputs are tanh [-1, +1].</div>
+
+<svg viewBox="0 0 1400 920" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1400px;">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#888"/></marker>
+    <marker id="ao" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#FF9800"/></marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#4CAF50"/></marker>
+    <marker id="ap" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#9C27B0"/></marker>
+    <marker id="af" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#FF5722"/></marker>
+    <marker id="ar" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#f44336"/></marker>
+    <marker id="ab" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#2196F3"/></marker>
+    <marker id="agy" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#607D8B"/></marker>
+  </defs>
+
+  <!-- ===== MASTER BRAIN ===== -->
+  <g data-tt-title="MasterBrain — 9 Outputs" data-tt-body="<span class='tt-output'>9 urgency signals</span> in [-1, +1] (tanh):<br><br>0: workerUrgency → EconomyBrain<br>1: economyUrgency → EconomyBrain<br>2: buildingUrgency → BuildingBrain<br>3: unitUrgency → UnitBrain + count scaling<br>4: militaryUrgency → MilitaryBrain<br>5: expandUrgency → EconomyBrain<br>6: techUrgency → BuildingBrain<br>7: defenceBuildingUrgency → BuildingBrain<br>8: attackUrgency → UnitBrain + MilitaryBrain<br><br><span class='tt-logic'>Design: pure urgency signals, not commands. Sub-brains interpret them in their own context.</span>">
+    <rect x="400" y="20" width="600" height="70" rx="10" fill="#E65100" stroke="#FF9800" stroke-width="2.5"/>
+    <text x="700" y="48" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">MasterBrain — 9 Outputs</text>
+    <text x="700" y="70" text-anchor="middle" fill="#FFB74D" font-size="12">workerUrg | econUrg | buildUrg | unitUrg | milUrg | expandUrg | techUrg | defBuildUrg | attackUrg</text>
+  </g>
+
+  <!-- Urgency labels on arrows from master -->
+  <!-- Left: Economy -->
+  <line x1="500" y1="90" x2="250" y2="170" stroke="#FF9800" stroke-width="2" marker-end="url(#ao)"/>
+  <text x="340" y="125" fill="#FFB74D" font-size="10" transform="rotate(-20, 340, 125)">econUrg, workerUrg, expandUrg</text>
+
+  <!-- Center: Building -->
+  <line x1="650" y1="90" x2="650" y2="170" stroke="#FF9800" stroke-width="2" marker-end="url(#ao)"/>
+  <text x="665" y="140" fill="#FFB74D" font-size="10">buildUrg, techUrg, defBuildUrg</text>
+
+  <!-- Right-center: Unit -->
+  <line x1="850" y1="90" x2="1020" y2="170" stroke="#FF9800" stroke-width="2" marker-end="url(#ao)"/>
+  <text x="950" y="125" fill="#FFB74D" font-size="10" transform="rotate(15, 950, 125)">unitUrg, attackUrg</text>
+
+  <!-- Far right: Military -->
+  <line x1="950" y1="90" x2="1250" y2="170" stroke="#FF9800" stroke-width="2" marker-end="url(#ao)"/>
+  <text x="1130" y="120" fill="#FFB74D" font-size="10" transform="rotate(18, 1130, 120)">milUrg, attackUrg</text>
+
+
+  <!-- ===== ECONOMY BRAIN ===== -->
+  <g data-tt-title="EconomyBrain — 6 Outputs" data-tt-body="<span class='tt-output'>6 outputs:</span><br><br>0: <b>workerAllocation</b> — if >0.1, submits WORKER request to WantList with this value as priority. Higher = higher queue position.<br><br>1-4: <b>food/wood/stone/goldPriority</b> — relative priorities for idle worker assignment. collectWorkers() sorts resources by these values descending. Each idle worker goes to the highest-priority resource with a nearby node (radii: 64→128→256).<br><br>5: <b>expandPriority</b> — <span class='tt-warn'>UNUSED</span>. Intended for future ExpandSpatialBrain.">
+    <rect x="80" y="175" width="340" height="70" rx="8" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="250" y="200" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">EconomyBrain — 6 Outputs</text>
+    <text x="250" y="220" text-anchor="middle" fill="#A5D6A7" font-size="11">workerAlloc | food/wood/stone/goldPri | expandPri</text>
+    <text x="250" y="235" text-anchor="middle" fill="#78909C" font-size="9">1 decision + 4 priorities + 1 unused</text>
+  </g>
+
+  <!-- Economy outputs -->
+  <!-- workerAllocation -> WantList -->
+  <line x1="160" y1="245" x2="160" y2="370" stroke="#4CAF50" stroke-width="1.5" marker-end="url(#ag)"/>
+  <g data-tt-title="workerAllocation" data-tt-body="<span class='tt-output'>If > 0.1</span>, submits WORKER request to WantList.<br>Value becomes the request priority.<br>WantList attempts to train a worker from any building that can produce one.<br>Higher value = higher position in priority queue.">
+    <rect x="100" y="310" width="120" height="30" rx="5" fill="#1B5E20" stroke="#4CAF50" stroke-width="1"/>
+    <text x="160" y="330" text-anchor="middle" fill="#A5D6A7" font-size="10">workerAllocation</text>
+  </g>
+
+  <!-- resource priorities -> collectWorkers -->
+  <line x1="340" y1="245" x2="340" y2="370" stroke="#4CAF50" stroke-width="1.5" marker-end="url(#ag)"/>
+  <g data-tt-title="Resource Priorities (food/wood/stone/gold)" data-tt-body="<span class='tt-output'>4 priority floats</span> sorted descending.<br>Each idle worker tries resources in this order.<br>For each resource type, searches expanding radii (64→128→256 units) for closest node.<br>First match wins — high-priority resources get workers even if further away.<br><br>Example: goldPri=0.8, foodPri=0.3 → workers go to gold first, then food only if no gold nearby.">
+    <rect x="260" y="310" width="160" height="30" rx="5" fill="#1B5E20" stroke="#4CAF50" stroke-width="1"/>
+    <text x="340" y="330" text-anchor="middle" fill="#A5D6A7" font-size="10">food/wood/stone/goldPri</text>
+  </g>
+
+  <!-- expandPriority (unused) -->
+  <g data-tt-title="expandPriority — UNUSED" data-tt-body="<span class='tt-warn'>Currently not consumed by any system.</span><br>Intended to control whether workers should be sent to distant resource nodes or stay close to base.<br>Could drive a future ExpandSpatialBrain.">
+    <rect x="115" y="270" width="90" height="22" rx="4" fill="#37474F" stroke="#607D8B" stroke-width="1"/>
+    <text x="160" y="285" text-anchor="middle" fill="#888" font-size="9">expandPri (unused)</text>
+  </g>
+
+
+  <!-- ===== BUILDING BRAIN ===== -->
+  <g data-tt-title="BuildingBrain — 11 Outputs" data-tt-body="<span class='tt-output'>11 outputs in two groups:</span><br><br><b>Type Urgencies (5):</b> each >0.1 submits a BUILDING request to WantList<br>0: otherUrgency → ParentBuildingType::OTHER (town center, houses)<br>1: defenceUrgency → DEFENCE (walls, towers)<br>2: resourceUrgency → RESOURCE (farms, mines)<br>3: techUrgency → TECH (blacksmith, university)<br>4: unitsUrgency → UNITS (barracks, stables)<br><br><b>Variant Preferences (4+2):</b><br>5-8: food/wood/stone/goldResPref → argmax picks which RESOURCE building<br>9-10: blacksmithPref/universityPref → <span class='tt-warn'>UNUSED (TODO)</span>">
+    <rect x="480" y="175" width="340" height="70" rx="8" fill="#4A148C" stroke="#9C27B0" stroke-width="2"/>
+    <text x="650" y="200" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">BuildingBrain — 11 Outputs</text>
+    <text x="650" y="220" text-anchor="middle" fill="#CE93D8" font-size="11">other/def/res/tech/unitsUrg | resPref x4 | techPref x2</text>
+    <text x="650" y="235" text-anchor="middle" fill="#78909C" font-size="9">5 urgencies + 4 preferences + 2 unused</text>
+  </g>
+
+  <!-- Building type urgencies -> WantList -->
+  <line x1="560" y1="245" x2="560" y2="370" stroke="#9C27B0" stroke-width="1.5" marker-end="url(#ap)"/>
+  <g data-tt-title="Building Type Urgencies (5)" data-tt-body="Each urgency > 0.1 creates a BUILDING request in the WantList with count=1.<br><br><b>otherUrgency</b> → town center, houses (resolves to first available)<br><b>defenceUrgency</b> → walls, towers (resolves to first defence building)<br><b>resourceUrgency</b> → farm/mine (which type from resPref argmax)<br><b>techUrgency</b> → blacksmith/university (first available, TODO: use techPref)<br><b>unitsUrgency</b> → barracks/range/stables (first available)<br><br>Multiple types can be requested in the same tick. WantList sorts all requests by priority.">
+    <rect x="480" y="310" width="160" height="30" rx="5" fill="#4A148C" stroke="#9C27B0" stroke-width="1"/>
+    <text x="560" y="330" text-anchor="middle" fill="#CE93D8" font-size="10">5 type urgencies</text>
+  </g>
+
+  <!-- Resource preferences -> resolveBuilding -->
+  <line x1="740" y1="245" x2="740" y2="370" stroke="#9C27B0" stroke-width="1.5" marker-end="url(#ap)"/>
+  <g data-tt-title="Resource Preferences (food/wood/stone/gold)" data-tt-body="<span class='tt-output'>4 floats compared via argmax.</span><br>Only used when resourceUrgency > 0.1.<br>The highest preference picks which resource building type to construct.<br><br>Example: foodResPref=0.7 (highest) → build a farm.<br>Placement: getPosToCreateResBonus() places near matching resource nodes.">
+    <rect x="665" y="310" width="150" height="30" rx="5" fill="#4A148C" stroke="#9C27B0" stroke-width="1"/>
+    <text x="740" y="330" text-anchor="middle" fill="#CE93D8" font-size="10">resPref argmax</text>
+  </g>
+
+  <!-- Unused tech prefs -->
+  <g data-tt-title="blacksmithPref / universityPref — UNUSED" data-tt-body="<span class='tt-warn'>Not yet wired in resolveBuilding(TECH).</span><br>Currently picks the first tech building available.<br>Should compare via argmax to select blacksmith vs university, similar to resource preferences.">
+    <rect x="680" y="270" width="130" height="22" rx="4" fill="#37474F" stroke="#607D8B" stroke-width="1"/>
+    <text x="745" y="285" text-anchor="middle" fill="#888" font-size="9">techPref x2 (unused)</text>
+  </g>
+
+
+  <!-- ===== UNIT BRAIN ===== -->
+  <g data-tt-title="UnitBrain — 24 + count" data-tt-body="<span class='tt-output'>24-dim abstract unit profile</span> + derived count.<br><br>Profile indices match UnitMetricIdx enum:<br>0-3: COST, MAX_HP, ARMOR, SIGHT_RADIUS<br>4: COLLECT (should be low for army)<br>5-7: ATTACK, ATTACK_RELOAD, ATTACK_RANGE<br>8-15: TYPE flags (infantry/range/cavalry/worker/special/melee/heavy/light)<br>16-23: BONUS multipliers (vs infantry/range/cavalry/worker/special/melee/heavy/light)<br><br><span class='tt-logic'>Matching:</span> resolveUnit() computes sqRootSumError(profile, unitMetric) for each non-worker unit. Lowest distance wins (with random tie-breaking).<br><br><b>count</b> = round(unitUrgency × MAX_UNITS_PER_TICK). Not a NN output — derived from MasterBrain.">
+    <rect x="870" y="175" width="320" height="70" rx="8" fill="#BF360C" stroke="#FF5722" stroke-width="2"/>
+    <text x="1030" y="200" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">UnitBrain — 24 + count</text>
+    <text x="1030" y="220" text-anchor="middle" fill="#FFAB91" font-size="11">unitProfile[24] → distance matching</text>
+    <text x="1030" y="235" text-anchor="middle" fill="#78909C" font-size="9">count = round(unitUrgency × 5)</text>
+  </g>
+
+  <!-- Unit profile -> resolveUnit -->
+  <line x1="960" y1="245" x2="960" y2="370" stroke="#FF5722" stroke-width="1.5" marker-end="url(#af)"/>
+  <g data-tt-title="Unit Profile Matching" data-tt-body="<span class='tt-logic'>resolveUnit()</span> iterates all non-worker units in the nation.<br>Each unit has a pre-computed 24-float metric vector (db_unit_level.dbUnitMetric).<br><br>Distance = sum((profile[i] - metric[i])²)<br>Lowest distance selected via lowestWithRand().<br><br>This abstracts away unit IDs. The NN learns 'I want something tanky with anti-cavalry bonus' rather than 'I want unit #7'.">
+    <rect x="895" y="310" width="130" height="30" rx="5" fill="#BF360C" stroke="#FF5722" stroke-width="1"/>
+    <text x="960" y="330" text-anchor="middle" fill="#FFAB91" font-size="10">resolveUnit()</text>
+  </g>
+
+  <!-- count -> WantList -->
+  <line x1="1100" y1="245" x2="1100" y2="370" stroke="#FF5722" stroke-width="1.5" marker-end="url(#af)"/>
+  <g data-tt-title="Unit Count" data-tt-body="<b>count</b> = round(unitUrgency × MAX_UNITS_PER_TICK)<br>MAX_UNITS_PER_TICK = 5<br><br>unitUrgency ≤ 0 → count = 0 (no production)<br>unitUrgency = 0.4 → count = 2<br>unitUrgency = 1.0 → count = 5 (max)<br><br>'count' copies of the resolved unit are submitted to the WantList as UNIT requests.">
+    <rect x="1050" y="310" width="100" height="30" rx="5" fill="#BF360C" stroke="#FF5722" stroke-width="1"/>
+    <text x="1100" y="330" text-anchor="middle" fill="#FFAB91" font-size="10">count (0-5)</text>
+  </g>
+
+
+  <!-- ===== WANT LIST ===== -->
+  <g data-tt-title="WantList — Priority Execution" data-tt-body="Collects all requests (WORKER, UNIT, BUILDING) from sub-brains.<br><br><b>Boost/Decay:</b> re-requested items get boosted (×1.15 per age tick), abandoned items decay (×0.85). Items below 0.05 are pruned.<br><br><b>Execution:</b> sorted by priority descending, executed top-down. If can't afford → deficit recorded as lacking feedback → fed back to MasterBrain + EconomyBrain next tick.">
+    <rect x="300" y="380" width="560" height="55" rx="8" fill="#0D47A1" stroke="#2196F3" stroke-width="2.5"/>
+    <text x="580" y="405" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">WantList — Priority Queue</text>
+    <text x="580" y="422" text-anchor="middle" fill="#90CAF9" font-size="11">Sort by priority ↓ | Execute top-down | Boost/Decay | Lacking feedback</text>
+  </g>
+
+  <!-- Arrows into WantList -->
+  <line x1="160" y1="340" x2="370" y2="380" stroke="#2196F3" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ab)"/>
+  <text x="240" y="365" fill="#90CAF9" font-size="9">WORKER req</text>
+
+  <line x1="560" y1="340" x2="530" y2="375" stroke="#2196F3" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ab)"/>
+  <text x="520" y="360" fill="#90CAF9" font-size="9">BUILDING req</text>
+
+  <line x1="960" y1="340" x2="790" y2="380" stroke="#2196F3" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ab)"/>
+  <line x1="1100" y1="340" x2="820" y2="380" stroke="#2196F3" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ab)"/>
+  <text x="880" y="360" fill="#90CAF9" font-size="9">UNIT req ×count</text>
+
+  <!-- WantList -> Game Actions -->
+  <line x1="440" y1="435" x2="440" y2="490" stroke="#607D8B" stroke-width="2" marker-end="url(#agy)"/>
+  <line x1="580" y1="435" x2="580" y2="490" stroke="#607D8B" stroke-width="2" marker-end="url(#agy)"/>
+  <line x1="720" y1="435" x2="720" y2="490" stroke="#607D8B" stroke-width="2" marker-end="url(#agy)"/>
+
+  <g data-tt-title="Train Worker" data-tt-body="Finds a building that can produce the worker unit type.<br>Submits BuildingActionCommand(UNIT_CREATE) to ActionCenter.">
+    <rect x="370" y="495" width="140" height="35" rx="6" fill="#263238" stroke="#607D8B" stroke-width="1.5"/>
+    <text x="440" y="517" text-anchor="middle" fill="#B0BEC5" font-size="12">Train Worker</text>
+  </g>
+  <g data-tt-title="Build Building" data-tt-body="resolveBuilding() picks the specific building within the ParentBuildingType.<br>For RESOURCE type: argmax of resPref picks food/wood/stone/gold building.<br>findPosToBuild() finds placement position.<br>Submits addBuilding() to ActionCenter.">
+    <rect x="510" y="495" width="140" height="35" rx="6" fill="#263238" stroke="#607D8B" stroke-width="1.5"/>
+    <text x="580" y="517" text-anchor="middle" fill="#B0BEC5" font-size="12">Build Building</text>
+  </g>
+  <g data-tt-title="Train Unit" data-tt-body="Finds a building that can produce the resolved unit type.<br>Submits BuildingActionCommand(UNIT_CREATE) to ActionCenter.<br>Executed 'count' times (up to 5 copies per tick).">
+    <rect x="650" y="495" width="140" height="35" rx="6" fill="#263238" stroke="#607D8B" stroke-width="1.5"/>
+    <text x="720" y="517" text-anchor="middle" fill="#B0BEC5" font-size="12">Train Unit ×N</text>
+  </g>
+
+  <!-- Resource priorities -> collectWorkers (separate from WantList) -->
+  <line x1="340" y1="340" x2="340" y2="490" stroke="#4CAF50" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#ag)"/>
+  <g data-tt-title="collectWorkers()" data-tt-body="Separate from WantList. Runs every tick during order() phase.<br><br>Iterates idle workers. For each worker, tries resources sorted by food/wood/stone/goldPriority descending.<br>Searches expanding radii (64→128→256) for closest resource node.<br>First match wins → IndividualOrder(COLLECT).">
+    <rect x="260" y="495" width="160" height="35" rx="6" fill="#1B5E20" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="340" y="517" text-anchor="middle" fill="#A5D6A7" font-size="12">Assign Workers</text>
+  </g>
+
+
+  <!-- ===== MILITARY BRAIN (separate path) ===== -->
+  <g data-tt-title="MilitaryBrain — 4 Outputs" data-tt-body="<span class='tt-output'>4 outputs:</span><br><br>0: <b>attackWeight</b> — compared against defendWeight. If higher → attack mode.<br>1: <b>defendWeight</b> — if higher → defend mode. Simple > comparison, no threshold.<br><br>2: <b>attackTarget</b> — mapped to CenterType:<br>&nbsp;&nbsp;< 0.33 → ECON (harass workers)<br>&nbsp;&nbsp;< 0.67 → BUILDING (destroy structures)<br>&nbsp;&nbsp;≥ 0.67 → ARMY (head-on engagement)<br><br>3: <b>defendTarget</b> — same mapping but own player positions:<br>&nbsp;&nbsp;ECON = defend workers, BUILDING = defend base, ARMY = consolidate forces<br><br><span class='tt-logic'>Only runs when hasAnyFreeArmy() = true.</span><br>Runs in order() phase (separate from action() production).">
+    <rect x="1100" y="375" width="280" height="85" rx="8" fill="#B71C1C" stroke="#f44336" stroke-width="2"/>
+    <text x="1240" y="400" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">MilitaryBrain — 4 Outputs</text>
+    <text x="1240" y="420" text-anchor="middle" fill="#FFCDD2" font-size="11">attackWeight vs defendWeight</text>
+    <text x="1240" y="438" text-anchor="middle" fill="#FFCDD2" font-size="11">attackTarget | defendTarget</text>
+    <text x="1240" y="452" text-anchor="middle" fill="#78909C" font-size="9">order() phase only | requires free army</text>
+  </g>
+
+  <!-- Military -> decision -->
+  <line x1="1240" y1="460" x2="1240" y2="510" stroke="#f44336" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- Attack vs Defend decision -->
+  <g data-tt-title="Attack / Defend Decision" data-tt-body="<b>isAttack = attackWeight > defendWeight</b><br><br>If attack: target = enemy's center-of-mass for chosen CenterType<br>If defend: target = own center-of-mass for chosen CenterType<br><br>CenterType mapping (from attackTarget or defendTarget):<br>< 0.33 → ECON (workers/economy center)<br>< 0.67 → BUILDING (base center)<br>≥ 0.67 → ARMY (army center)">
+    <polygon points="1240,515 1310,550 1240,585 1170,550" fill="#B71C1C" stroke="#f44336" stroke-width="1.5"/>
+    <text x="1240" y="547" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">atk > def?</text>
+    <text x="1240" y="563" text-anchor="middle" fill="#FFCDD2" font-size="9">CenterType</text>
+  </g>
+
+  <!-- Attack path -->
+  <line x1="1310" y1="550" x2="1360" y2="550" stroke="#f44336" stroke-width="1.5"/>
+  <line x1="1360" y1="550" x2="1360" y2="630" stroke="#f44336" stroke-width="1.5" marker-end="url(#ar)"/>
+  <text x="1340" y="600" fill="#EF5350" font-size="10" transform="rotate(90,1340,600)">attack</text>
+
+  <!-- Defend path -->
+  <line x1="1170" y1="550" x2="1120" y2="550" stroke="#f44336" stroke-width="1.5"/>
+  <line x1="1120" y1="550" x2="1120" y2="630" stroke="#f44336" stroke-width="1.5" marker-end="url(#ar)"/>
+  <text x="1100" y="600" fill="#EF5350" font-size="10" transform="rotate(90,1100,600)">defend</text>
+
+  <!-- Army orders -->
+  <g data-tt-title="Army Orders" data-tt-body="Army split into sub-groups via divide().<br><br>For each sub-group:<br>• If far from target (>30 units) → GO order (march toward target)<br>• If close (≤30 units) → find closest enemy entity matching target type → ATTACK order<br><br>Sub-groups act independently — some can be attacking while others are still marching.">
+    <rect x="1070" y="640" width="340" height="50" rx="6" fill="#263238" stroke="#607D8B" stroke-width="1.5"/>
+    <text x="1240" y="660" text-anchor="middle" fill="#B0BEC5" font-size="13" font-weight="bold">Army Sub-Group Orders</text>
+    <text x="1240" y="678" text-anchor="middle" fill="#78909C" font-size="10">far → GO (march) | close → ATTACK (engage)</text>
+  </g>
+
+  <!-- Target type boxes -->
+  <g data-tt-title="ECON target" data-tt-body="Target the center-of-mass of ECONOMY entities (workers, resource areas).<br>Attack mode: harass enemy workers for economic damage.<br>Defend mode: protect own workers and gathering sites.">
+    <rect x="1070" y="710" width="100" height="28" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+    <text x="1120" y="729" text-anchor="middle" fill="#4FC3F7" font-size="10">ECON <0.33</text>
+  </g>
+  <g data-tt-title="BUILDING target" data-tt-body="Target the center-of-mass of BUILDING entities.<br>Attack mode: destroy enemy structures for permanent damage.<br>Defend mode: protect own buildings/base.">
+    <rect x="1180" y="710" width="120" height="28" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+    <text x="1240" y="729" text-anchor="middle" fill="#4FC3F7" font-size="10">BUILDING <0.67</text>
+  </g>
+  <g data-tt-title="ARMY target" data-tt-body="Target the center-of-mass of ARMY entities.<br>Attack mode: head-on engagement with enemy forces.<br>Defend mode: consolidate own forces at army center.">
+    <rect x="1310" y="710" width="100" height="28" rx="4" fill="#1a2744" stroke="#37474F" stroke-width="1"/>
+    <text x="1360" y="729" text-anchor="middle" fill="#4FC3F7" font-size="10">ARMY ≥0.67</text>
+  </g>
+
+
+  <!-- ===== PHASE SEPARATOR ===== -->
+  <rect x="50" y="560" width="900" height="30" rx="4" fill="#0D47A1" fill-opacity="0.15" stroke="#2196F3" stroke-width="1" stroke-dasharray="6,4"/>
+  <text x="500" y="580" text-anchor="middle" fill="#2196F3" font-size="11" font-weight="bold">action() phase — production decisions via WantList</text>
+
+  <rect x="1050" y="560" width="380" height="30" rx="4" fill="#B71C1C" fill-opacity="0.15" stroke="#f44336" stroke-width="1" stroke-dasharray="6,4"/>
+  <text x="1240" y="580" text-anchor="middle" fill="#f44336" font-size="11" font-weight="bold">order() phase — army commands (free)</text>
+
+</svg>
+
+
+<!-- ========================================== -->
+<!-- MASTER BRAIN OUTPUTS                       -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">1. MasterBrain — 9 Urgency Outputs</div>
+<div class="section-sub">Pure strategic signals, not commands. Each urgency tells a sub-brain "how much to care" about its domain.
+The same attackUrgency drives UnitBrain to pick offensive units AND MilitaryBrain to attack rather than defend.</div>
+
+<svg viewBox="0 0 1300 420" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1300px;">
+  <defs>
+    <marker id="m1" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#FF9800"/></marker>
+  </defs>
+
+  <!-- Master Brain box -->
+  <rect x="400" y="10" width="500" height="50" rx="8" fill="#E65100" stroke="#FF9800" stroke-width="2"/>
+  <text x="650" y="42" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">MasterBrain → 9 Urgencies [-1, +1]</text>
+
+  <!-- Output slots -->
+  <g data-tt-title="[0] workerUrgency" data-tt-body="Tells EconomyBrain how much to prioritize worker production.<br>Positive = train more workers. Negative = enough workers already.<br><br>Consumed by: EconomyBrain input #15">
+    <rect x="30" y="110" width="130" height="40" rx="6" fill="#1B5E20" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="95" y="127" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="bold">workerUrgency</text>
+    <text x="95" y="141" text-anchor="middle" fill="#78909C" font-size="9">→ EconomyBrain</text>
+  </g>
+  <line x1="95" y1="60" x2="95" y2="105" stroke="#FF9800" stroke-width="1.5" marker-end="url(#m1)"/>
+
+  <g data-tt-title="[1] economyUrgency" data-tt-body="Overall economic investment priority.<br>High value tells EconomyBrain to focus on resource optimization and worker allocation.<br><br>Consumed by: EconomyBrain input #14">
+    <rect x="170" y="110" width="130" height="40" rx="6" fill="#1B5E20" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="235" y="127" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="bold">economyUrgency</text>
+    <text x="235" y="141" text-anchor="middle" fill="#78909C" font-size="9">→ EconomyBrain</text>
+  </g>
+  <line x1="235" y1="60" x2="235" y2="105" stroke="#FF9800" stroke-width="1.5" marker-end="url(#m1)"/>
+
+  <g data-tt-title="[2] buildingUrgency" data-tt-body="General construction priority.<br>Controls how aggressively BuildingBrain submits building requests to the WantList.<br><br>Consumed by: BuildingBrain input #4">
+    <rect x="310" y="110" width="130" height="40" rx="6" fill="#4A148C" stroke="#9C27B0" stroke-width="1.5"/>
+    <text x="375" y="127" text-anchor="middle" fill="#CE93D8" font-size="10" font-weight="bold">buildingUrgency</text>
+    <text x="375" y="141" text-anchor="middle" fill="#78909C" font-size="9">→ BuildingBrain</text>
+  </g>
+  <line x1="375" y1="60" x2="375" y2="105" stroke="#FF9800" stroke-width="1.5" marker-end="url(#m1)"/>
+
+  <g data-tt-title="[3] unitUrgency" data-tt-body="Military production priority.<br>Directly controls unit count: count = round(unitUrgency × MAX_UNITS_PER_TICK).<br>If ≤ 0, no units produced at all.<br><br>Also proposed as BuildingBrain input #13 (drives barracks construction).<br><br>Consumed by: UnitBrain input #12, WantList priority">
+    <rect x="450" y="110" width="130" height="40" rx="6" fill="#BF360C" stroke="#FF5722" stroke-width="1.5"/>
+    <text x="515" y="127" text-anchor="middle" fill="#FFAB91" font-size="10" font-weight="bold">unitUrgency</text>
+    <text x="515" y="141" text-anchor="middle" fill="#78909C" font-size="9">→ UnitBrain + count</text>
+  </g>
+  <line x1="515" y1="60" x2="515" y2="105" stroke="#FF9800" stroke-width="1.5" marker-end="url(#m1)"/>
+
+  <g data-tt-title="[4] militaryUrgency" data-tt-body="How actively the AI should issue military orders.<br>Low = army stays idle. High = actively command troops to attack or defend.<br><br>Consumed by: MilitaryBrain input #12">
+    <rect x="590" y="110" width="130" height="40" rx="6" fill="#B71C1C" stroke="#f44336" stroke-width="1.5"/>
+    <text x="655" y="127" text-anchor="middle" fill="#FFCDD2" font-size="10" font-weight="bold">militaryUrgency</text>
+    <text x="655" y="141" text-anchor="middle" fill="#78909C" font-size="9">→ MilitaryBrain</text>
+  </g>
+  <line x1="655" y1="60" x2="655" y2="105" stroke="#FF9800" stroke-width="1.5" marker-end="url(#m1)"/>
+
+  <g data-tt-title="[5] expandUrgency" data-tt-body="Territorial expansion priority.<br>Tells EconomyBrain whether to expand resource gathering to new areas or optimize current ones.<br><br>Consumed by: EconomyBrain input #16">
+    <rect x="730" y="110" width="130" height="40" rx="6" fill="#1B5E20" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="795" y="127" text-anchor="middle" fill="#A5D6A7" font-size="10" font-weight="bold">expandUrgency</text>
+    <text x="795" y="141" text-anchor="middle" fill="#78909C" font-size="9">→ EconomyBrain</text>
+  </g>
+  <line x1="795" y1="60" x2="795" y2="105" stroke="#FF9800" stroke-width="1.5" marker-end="url(#m1)"/>
+
+  <g data-tt-title="[6] techUrgency" data-tt-body="Technology/upgrade building priority.<br>High value drives BuildingBrain to construct blacksmiths, universities, etc.<br><br>Consumed by: BuildingBrain input #5">
+    <rect x="870" y="110" width="130" height="40" rx="6" fill="#4A148C" stroke="#9C27B0" stroke-width="1.5"/>
+    <text x="935" y="127" text-anchor="middle" fill="#CE93D8" font-size="10" font-weight="bold">techUrgency</text>
+    <text x="935" y="141" text-anchor="middle" fill="#78909C" font-size="9">→ BuildingBrain</text>
+  </g>
+  <line x1="935" y1="60" x2="935" y2="105" stroke="#FF9800" stroke-width="1.5" marker-end="url(#m1)"/>
+
+  <g data-tt-title="[7] defenceBuildingUrgency" data-tt-body="Defensive structure priority.<br>High = build walls, towers, palisades.<br>Responds to incoming threats detected via spatial inputs (ENEMY_ARMY_TO_OWN_BUILDING).<br><br>Consumed by: BuildingBrain input #6">
+    <rect x="1010" y="110" width="140" height="40" rx="6" fill="#4A148C" stroke="#9C27B0" stroke-width="1.5"/>
+    <text x="1080" y="127" text-anchor="middle" fill="#CE93D8" font-size="9" font-weight="bold">defBuildUrgency</text>
+    <text x="1080" y="141" text-anchor="middle" fill="#78909C" font-size="9">→ BuildingBrain</text>
+  </g>
+  <line x1="1080" y1="60" x2="1080" y2="105" stroke="#FF9800" stroke-width="1.5" marker-end="url(#m1)"/>
+
+  <g data-tt-title="[8] attackUrgency — SHARED" data-tt-body="Offensive intent signal. <b>Shared by two brains:</b><br><br>→ UnitBrain input #13: favors offensive unit profiles (high ATTACK, BONUS values)<br>→ MilitaryBrain input #13: favors attack over defend decision<br><br>High value = aggressive posture across both production and ordering.">
+    <rect x="1160" y="110" width="130" height="40" rx="6" fill="#E65100" stroke="#FF9800" stroke-width="2"/>
+    <text x="1225" y="127" text-anchor="middle" fill="#FFB74D" font-size="10" font-weight="bold">attackUrgency</text>
+    <text x="1225" y="141" text-anchor="middle" fill="#78909C" font-size="9">→ Unit + Military</text>
+  </g>
+  <line x1="1225" y1="60" x2="1225" y2="105" stroke="#FF9800" stroke-width="1.5" marker-end="url(#m1)"/>
+
+  <!-- Consumer grouping labels -->
+  <rect x="30" y="170" width="270" height="25" rx="4" fill="#1B5E20" fill-opacity="0.2" stroke="#4CAF50" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="165" y="187" text-anchor="middle" fill="#4CAF50" font-size="10">EconomyBrain consumers (3 outputs)</text>
+
+  <rect x="310" y="170" width="130" height="25" rx="4" fill="#4A148C" fill-opacity="0.2" stroke="#9C27B0" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="870" y="170" width="280" height="25" rx="4" fill="#4A148C" fill-opacity="0.2" stroke="#9C27B0" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="375" y="187" text-anchor="middle" fill="#9C27B0" font-size="10">BuildingBrain (1)</text>
+  <text x="1010" y="187" text-anchor="middle" fill="#9C27B0" font-size="10">BuildingBrain (2 more)</text>
+
+  <rect x="450" y="170" width="130" height="25" rx="4" fill="#BF360C" fill-opacity="0.2" stroke="#FF5722" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="515" y="187" text-anchor="middle" fill="#FF5722" font-size="10">UnitBrain</text>
+
+  <rect x="590" y="170" width="130" height="25" rx="4" fill="#B71C1C" fill-opacity="0.2" stroke="#f44336" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="655" y="187" text-anchor="middle" fill="#f44336" font-size="10">MilitaryBrain</text>
+</svg>
+
+
+<!-- ========================================== -->
+<!-- UNIT PROFILE DETAIL                        -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">2. UnitBrain — 24-Dimensional Profile Matching</div>
+<div class="section-sub">The NN outputs an abstract "ideal unit" description. This is distance-matched against every real unit in the nation's roster.
+The NN learns unit characteristics, not unit IDs — enabling transfer across nations with different rosters.</div>
+
+<svg viewBox="0 0 1300 480" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1300px;">
+  <defs>
+    <marker id="u1" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#FF5722"/></marker>
+    <marker id="u2" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#607D8B"/></marker>
+  </defs>
+
+  <!-- Profile categories -->
+  <text x="650" y="25" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">24-Float Unit Profile — UnitMetricIdx</text>
+
+  <!-- Stats group -->
+  <g data-tt-title="Stats [0-7]" data-tt-body="Core unit stats that define capabilities:<br><br>[0] COST — desired price tier (high = elite, low = expendable)<br>[1] MAX_HP — desired health pool (high = tanky)<br>[2] ARMOR — damage reduction (good vs many weak attacks)<br>[3] SIGHT_RADIUS — vision range (scouts)<br>[4] COLLECT — resource gathering ability (should be LOW for army)<br>[5] ATTACK — base damage (DPS)<br>[6] ATTACK_RELOAD — attack speed (low = fast)<br>[7] ATTACK_RANGE — weapon range (high = archers)">
+    <rect x="50" y="45" width="300" height="90" rx="6" fill="#BF360C" stroke="#FF5722" stroke-width="1.5"/>
+    <text x="200" y="68" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">Stats [0-7]</text>
+    <text x="200" y="85" text-anchor="middle" fill="#FFAB91" font-size="10">COST | HP | ARMOR | SIGHT</text>
+    <text x="200" y="100" text-anchor="middle" fill="#FFAB91" font-size="10">COLLECT | ATTACK | RELOAD | RANGE</text>
+    <text x="200" y="118" text-anchor="middle" fill="#78909C" font-size="9">"I want a high-ATK, long-RANGE unit"</text>
+  </g>
+
+  <!-- Types group -->
+  <g data-tt-title="Types [8-15]" data-tt-body="Unit type flags — binary in the metric (0 or 1) but NN outputs continuous. Distance matching handles this naturally.<br><br>[8] TYPE_INFANTRY — foot soldier<br>[9] TYPE_RANGE — ranged attacker<br>[10] TYPE_CAVALRY — mounted unit<br>[11] TYPE_WORKER — worker (should be LOW; workers excluded from candidates)<br>[12] TYPE_SPECIAL — unique/special unit<br>[13] TYPE_MELEE — close combat<br>[14] TYPE_HEAVY — slow but strong<br>[15] TYPE_LIGHT — fast but fragile">
+    <rect x="370" y="45" width="280" height="90" rx="6" fill="#BF360C" stroke="#FF5722" stroke-width="1.5"/>
+    <text x="510" y="68" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">Types [8-15]</text>
+    <text x="510" y="85" text-anchor="middle" fill="#FFAB91" font-size="10">INFANTRY | RANGE | CAVALRY | WORKER</text>
+    <text x="510" y="100" text-anchor="middle" fill="#FFAB91" font-size="10">SPECIAL | MELEE | HEAVY | LIGHT</text>
+    <text x="510" y="118" text-anchor="middle" fill="#78909C" font-size="9">"I want CAVALRY + LIGHT"</text>
+  </g>
+
+  <!-- Bonuses group -->
+  <g data-tt-title="Bonuses [16-23]" data-tt-body="Desired bonus damage multipliers vs each unit type. This is the counter-picking mechanism.<br><br>[16] BONUS_INFANTRY — anti-infantry specialist<br>[17] BONUS_RANGE — counters ranged units<br>[18] BONUS_CAVALRY — pikeman-type counter (anti-cavalry)<br>[19] BONUS_WORKER — raider for economic harassment<br>[20] BONUS_SPECIAL — counters special units<br>[21] BONUS_MELEE — anti-melee<br>[22] BONUS_HEAVY — anti-heavy (siege)<br>[23] BONUS_LIGHT — anti-light (skirmisher counter)">
+    <rect x="670" y="45" width="280" height="90" rx="6" fill="#BF360C" stroke="#FF5722" stroke-width="1.5"/>
+    <text x="810" y="68" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">Bonuses [16-23]</text>
+    <text x="810" y="85" text-anchor="middle" fill="#FFAB91" font-size="10">vs INFANTRY | RANGE | CAVALRY | WORKER</text>
+    <text x="810" y="100" text-anchor="middle" fill="#FFAB91" font-size="10">vs SPECIAL | MELEE | HEAVY | LIGHT</text>
+    <text x="810" y="118" text-anchor="middle" fill="#78909C" font-size="9">"I want high BONUS_CAVALRY" = pikeman</text>
+  </g>
+
+  <!-- Count -->
+  <g data-tt-title="count (derived)" data-tt-body="Not a direct NN output.<br><br>count = round(unitUrgency × MAX_UNITS_PER_TICK)<br>MAX_UNITS_PER_TICK = 5<br><br>unitUrgency ≤ 0 → 0 units<br>unitUrgency = 0.4 → 2 units<br>unitUrgency = 0.6 → 3 units<br>unitUrgency = 1.0 → 5 units (max)<br><br>'count' copies of the matched unit go to the WantList.">
+    <rect x="970" y="45" width="160" height="90" rx="6" fill="#E65100" stroke="#FF9800" stroke-width="1.5"/>
+    <text x="1050" y="68" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">count</text>
+    <text x="1050" y="88" text-anchor="middle" fill="#FFB74D" font-size="10">= unitUrgency × 5</text>
+    <text x="1050" y="105" text-anchor="middle" fill="#78909C" font-size="9">from MasterBrain</text>
+    <text x="1050" y="118" text-anchor="middle" fill="#78909C" font-size="9">not a NN output</text>
+  </g>
+
+  <!-- Arrow down to matching -->
+  <line x1="500" y1="135" x2="500" y2="180" stroke="#FF5722" stroke-width="2" marker-end="url(#u1)"/>
+  <text x="650" y="175" text-anchor="middle" fill="#888" font-size="11">24-float profile vector</text>
+
+  <!-- Matching box -->
+  <g data-tt-title="resolveUnit() — Distance Matching" data-tt-body="<span class='tt-logic'>For each non-worker unit in the nation's roster:</span><br><br>1. Get unit's pre-computed 24-float metric vector (db_unit_level.dbUnitMetric)<br>2. Compute distance = Σ(profile[i] - metric[i])²<br>3. lowestWithRand() picks the unit with lowest distance<br>&nbsp;&nbsp;&nbsp;(slight randomness to prevent perfect predictability)<br><br><span class='tt-ok'>Abstraction:</span> NN learns 'I want something tanky with anti-cavalry bonus' rather than 'I want unit #7'. Works across nations with different rosters.">
+    <rect x="200" y="185" width="700" height="55" rx="8" fill="#37474F" stroke="#607D8B" stroke-width="2"/>
+    <text x="550" y="210" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">resolveUnit() — sqRootSumError Distance Matching</text>
+    <text x="550" y="228" text-anchor="middle" fill="#B0BEC5" font-size="11">distance = Σ(profile[i] - unitMetric[i])² → pick lowest (with random tie-break)</text>
+  </g>
+
+  <!-- Example matching -->
+  <text x="550" y="270" text-anchor="middle" fill="#4fc3f7" font-size="13" font-weight="bold">Example: Profile vs Nation's Units</text>
+
+  <g data-tt-title="NN Profile Output" data-tt-body="Example: the NN wants a fast, anti-cavalry melee unit.<br>High values for ATTACK, TYPE_CAVALRY, TYPE_LIGHT, BONUS_CAVALRY.">
+    <rect x="100" y="290" width="200" height="75" rx="6" fill="#BF360C" stroke="#FF5722" stroke-width="1.5"/>
+    <text x="200" y="310" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">NN Profile</text>
+    <text x="200" y="328" text-anchor="middle" fill="#FFAB91" font-size="10">ATK=0.7 | TYPE_MELEE=0.9</text>
+    <text x="200" y="343" text-anchor="middle" fill="#FFAB91" font-size="10">TYPE_INFANTRY=0.8</text>
+    <text x="200" y="358" text-anchor="middle" fill="#FFAB91" font-size="10">BONUS_CAVALRY=0.9</text>
+  </g>
+
+  <line x1="300" y1="330" x2="380" y2="330" stroke="#607D8B" stroke-width="1.5" marker-end="url(#u2)"/>
+  <text x="340" y="320" fill="#888" font-size="9">compare</text>
+
+  <g data-tt-title="Pikeman — distance = 0.12" data-tt-body="Infantry, melee, anti-cavalry specialist.<br>Close match to the profile.<br><span class='tt-ok'>BEST MATCH — selected!</span>">
+    <rect x="390" y="290" width="170" height="75" rx="6" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="475" y="310" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">Pikeman</text>
+    <text x="475" y="328" text-anchor="middle" fill="#A5D6A7" font-size="10">ATK=0.6 | MELEE=1.0</text>
+    <text x="475" y="343" text-anchor="middle" fill="#A5D6A7" font-size="10">INFANTRY=1.0</text>
+    <text x="475" y="358" text-anchor="middle" fill="#66BB6A" font-size="10" font-weight="bold">BONUS_CAV=1.0 → dist=0.12</text>
+  </g>
+
+  <g data-tt-title="Archer — distance = 2.8" data-tt-body="Ranged unit. Very different profile.<br>TYPE_RANGE=1.0 vs profile MELEE=0.9 → big distance.">
+    <rect x="580" y="290" width="170" height="75" rx="6" fill="#37474F" stroke="#607D8B" stroke-width="1"/>
+    <text x="665" y="310" text-anchor="middle" fill="#ccc" font-size="11" font-weight="bold">Archer</text>
+    <text x="665" y="328" text-anchor="middle" fill="#888" font-size="10">ATK=0.5 | RANGE=1.0</text>
+    <text x="665" y="343" text-anchor="middle" fill="#888" font-size="10">INFANTRY=0.0</text>
+    <text x="665" y="358" text-anchor="middle" fill="#EF5350" font-size="10">BONUS_CAV=0.0 → dist=2.8</text>
+  </g>
+
+  <g data-tt-title="Knight — distance = 1.5" data-tt-body="Cavalry, heavy unit. Some overlap (high ATK) but wrong type flags.<br>TYPE_CAVALRY=1.0 vs profile TYPE_INFANTRY=0.8 → moderate distance.">
+    <rect x="770" y="290" width="170" height="75" rx="6" fill="#37474F" stroke="#607D8B" stroke-width="1"/>
+    <text x="855" y="310" text-anchor="middle" fill="#ccc" font-size="11" font-weight="bold">Knight</text>
+    <text x="855" y="328" text-anchor="middle" fill="#888" font-size="10">ATK=0.9 | CAVALRY=1.0</text>
+    <text x="855" y="343" text-anchor="middle" fill="#888" font-size="10">HEAVY=1.0</text>
+    <text x="855" y="358" text-anchor="middle" fill="#EF5350" font-size="10">BONUS_CAV=0.0 → dist=1.5</text>
+  </g>
+
+  <!-- Result arrow -->
+  <line x1="475" y1="365" x2="475" y2="410" stroke="#4CAF50" stroke-width="2" marker-end="url(#ag)"/>
+  <rect x="380" y="415" width="190" height="30" rx="5" fill="#1B5E20" stroke="#4CAF50" stroke-width="1.5"/>
+  <text x="475" y="435" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">→ Train Pikeman ×count</text>
+</svg>
+
+
+<!-- ========================================== -->
+<!-- SUMMARY TABLE                              -->
+<!-- ========================================== -->
+<hr class="divider"/>
+<div class="section-title">Summary — All Brain Outputs</div>
+<div class="section-sub">Complete output specification for each brain. All activations are tanh [-1, +1].</div>
+
+<table class="spec" style="max-width:1250px;">
+<tr>
+  <th>Brain</th><th>Outputs</th><th>Output Names</th><th>Type</th><th>Phase</th><th>Consumption</th>
+</tr>
+<tr>
+  <td class="brain">MasterBrain</td>
+  <td class="range">9</td>
+  <td>workerUrg, econUrg, buildUrg, unitUrg, milUrg, expandUrg, techUrg, defBuildUrg, attackUrg</td>
+  <td class="cat">All URGENCY</td>
+  <td>action()</td>
+  <td>Fed as inputs to sub-brains. unitUrgency also controls unit count scaling.</td>
+</tr>
+<tr>
+  <td class="brain">EconomyBrain</td>
+  <td class="range">6</td>
+  <td>workerAllocation, foodPri, woodPri, stonePri, goldPri, expandPri</td>
+  <td class="cat">1 DECISION + 4 PRIORITY + 1 UNUSED</td>
+  <td>action()</td>
+  <td>workerAlloc > 0.1 → WantList WORKER. Priorities sorted for collectWorkers(). expandPri unused.</td>
+</tr>
+<tr>
+  <td class="brain">BuildingBrain</td>
+  <td class="range">11</td>
+  <td>otherUrg, defUrg, resUrg, techUrg, unitsUrg, foodRes, woodRes, stoneRes, goldRes, bsmithPref, uniPref</td>
+  <td class="cat">5 URGENCY + 4 PRIORITY + 2 UNUSED</td>
+  <td>action()</td>
+  <td>Each urg > 0.1 → WantList BUILDING. resPref argmax picks resource building type. techPref unused (TODO).</td>
+</tr>
+<tr>
+  <td class="brain">UnitBrain</td>
+  <td class="range">24 + count</td>
+  <td>unitProfile[0..23] (UnitMetricIdx), count (derived)</td>
+  <td class="cat">24 PROFILE + 1 DERIVED</td>
+  <td>action()</td>
+  <td>Profile distance-matched via sqRootSumError. count = round(unitUrgency × 5). Matched unit × count → WantList.</td>
+</tr>
+<tr>
+  <td class="brain">MilitaryBrain</td>
+  <td class="range">4</td>
+  <td>attackWeight, defendWeight, attackTarget, defendTarget</td>
+  <td class="cat">4 DECISION</td>
+  <td>order()</td>
+  <td>atk > def → attack mode. Target mapped to CenterType (ECON/BUILDING/ARMY). Army sub-groups GO or ATTACK.</td>
+</tr>
+</table>
+
+<div class="card">
+  <h3 style="color:#4fc3f7;">Output Type Legend</h3>
+  <p><span style="background:#E65100;color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;">URGENCY</span> — Strategic priority signal. Fed as input to sub-brains and/or used as WantList request priority.</p>
+  <p><span style="background:#1565C0;color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;">PRIORITY</span> — Relative preference among alternatives. Sorted or argmax'd to pick between options.</p>
+  <p><span style="background:#6A1B9A;color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;">PROFILE</span> — Abstract feature vector. Distance-matched against real entity metrics.</p>
+  <p><span style="background:#2E7D32;color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;">DECISION</span> — Direct action trigger. Thresholded or compared to trigger specific game actions.</p>
+  <p><span style="background:#616161;color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;">UNUSED</span> — Defined but not yet consumed. Planned for future implementation.</p>
+</div>
+
+
+<script>
+const tooltip = document.getElementById('tooltip');
+document.querySelectorAll('g[data-tt-title]').forEach(g => {
+  g.addEventListener('mouseenter', e => {
+    tooltip.innerHTML = `<div class="tt-title">${g.getAttribute('data-tt-title')}</div>${g.getAttribute('data-tt-body')}`;
+    tooltip.style.display = 'block';
+  });
+  g.addEventListener('mousemove', e => {
+    let x = e.clientX + 16, y = e.clientY + 16;
+    const r = tooltip.getBoundingClientRect();
+    if (x + r.width > window.innerWidth - 16) x = e.clientX - r.width - 16;
+    if (y + r.height > window.innerHeight - 16) y = e.clientY - r.height - 16;
+    tooltip.style.left = x + 'px'; tooltip.style.top = y + 'px';
+  });
+  g.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+});
+</script>
+</body>
+</html>
