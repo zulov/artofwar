@@ -45,6 +45,9 @@ struct FrameInfo {
 	}
 
 	unsigned char getCurrentFrame() const { return currentFrame; }
+	unsigned char getLastProcessedFrame() const {
+		return (currentFrame - 1 + FRAMES_IN_PERIOD) % FRAMES_IN_PERIOD;
+	}
 	bool isRealFrame() const { return realFrame; }
 	unsigned int getSeconds() const { return seconds; }
 	unsigned int getTotalTicks() const { return totalTicks; }

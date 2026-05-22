@@ -34,6 +34,7 @@ public:
 	struct LackingResult {
 		std::array<float, 4> perResource;
 		float totalSum;
+		short lackingBuildingForUnit = -1;
 	};
 
 	void beginTick();

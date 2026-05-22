@@ -8,7 +8,6 @@
 #include "WantList.h"
 #include "MasterBrain.h"
 #include "EconomyBrain.h"
-#include "BuildingBrain.h"
 #include "UnitBrain.h"
 #include "MilitaryBrain.h"
 
@@ -54,9 +53,10 @@ private:
 	Building* getBuildingToDeploy(db_unit* unit) const;
 	Building* getBuildingToDeployWorker(db_unit* unit) const;
 	std::vector<Building*> getBuildingsCanDeploy(short unitId) const;
+	short findBuildingTypeToDeploy(short unitId) const;
 
 	// Building resolution
-	db_building* resolveBuilding(const BuildingOutput& output, ParentBuildingType type);
+	db_building* resolveBuilding(ParentBuildingType type);
 	std::optional<Urho3D::Vector2> findPosToBuild(db_building* building, ParentBuildingType type) const;
 	std::vector<db_building*> getBuildingsInType(ParentBuildingType type);
 
@@ -80,15 +80,14 @@ private:
 
 	MasterBrain masterBrain;
 	EconomyBrain economyBrain;
-	BuildingBrain buildingBrain;
 	UnitBrain unitBrain;
 	MilitaryBrain militaryBrain;
 
 	WantList wantList;
+	short pendingLackingBuilding = -1;
 
 	// Cached outputs
 	MasterOutput lastMasterOut{};
-	BuildingOutput lastBuildOut{};
 	EconomyOutput lastEconOut{};
 	WantList::LackingResult lastLacking{};
 };

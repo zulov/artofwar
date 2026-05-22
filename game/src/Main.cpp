@@ -233,7 +233,7 @@ void Main::running(const float timeStep) {
 
 		if (!SIM_GLOBALS.HEADLESS) {
 			Game::getFrameInfo()->addWallTime(timeStep);
-			benchmark.add(1.0f / timeStep);
+			benchmark.add(1.0f / timeStep, frameInfo->isRealFrame(), frameInfo->getLastProcessedFrame());
 			debugManager.draw();
 			SelectedInfo* selectedInfo = control(timeStep, frameInfo);
 			hud->update(benchmark, Game::getCameraManager(), selectedInfo, frameInfo);

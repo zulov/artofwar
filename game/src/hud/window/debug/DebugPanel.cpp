@@ -1,5 +1,6 @@
 #include "DebugPanel.h"
 #include "hud/UiUtils.h"
+#include "simulation/SimGlobals.h"
 #include <Urho3D/UI/Window.h>
 
 DebugPanel::DebugPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style) : SimplePanel(root, _style, "MyDebugHudWindow",
@@ -8,13 +9,22 @@ DebugPanel::DebugPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style) : Simpl
 
 
 void DebugPanel::setText(unsigned int seconds, float avgLow, float avgMiddle,
-                         float avgHighest, const Urho3D::String& camInfo) {
+                         float avgHighest, const float* tickAvgs, const Urho3D::String& camInfo) {
 	msg.Clear();
 	msg.Append("FPS: ")
 	   .Append(Urho3D::String(avgLow)).Append("|")
 	   .Append(Urho3D::String(avgMiddle)).Append("|")
 	   .Append(Urho3D::String(avgHighest)).Append("|")
-	   .Append("\nCamera: \n\t").Append(camInfo);
+	   .Append("\nTick ms:");
+	for (int i = 0; i < FRAMES_IN_PERIOD; ++i) {
+		if (i % 10 == 0) {
+			msg.Append("\n ");
+		}
+		char buf[8];
+		snprintf(buf, sizeof(buf), "%5.2f", tickAvgs[i]);
+		msg.Append(buf);
+	}
+	msg.Append("\nCamera: \n\t").Append(camInfo);
 
 	fpsText->SetText(msg);
 }

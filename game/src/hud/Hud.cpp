@@ -169,6 +169,7 @@ void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInf
 
 	debugPanel->setText(frameInfo->getSeconds(),
 	                    benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
+	                    benchmark.getTickAvgs(),
 	                    cameraManager->getPosInfo());
 	if (frameInfo->shouldRun(PerFrameAction::HUD_UPDATE)) {
 		topPanel->update(Game::getPlayersMan()->getActivePlayer(), frameInfo);

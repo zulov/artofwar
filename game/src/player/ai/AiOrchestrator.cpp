@@ -32,11 +32,11 @@ AiOrchestrator::AiOrchestrator(Player* player, db_nation* nation, AiHistory* his
 	history(history),
 	masterBrain(nation),
 	economyBrain(nation),
-	buildingBrain(nation),
 	unitBrain(nation),
 	militaryBrain(nation) {
 	lastLacking.perResource.fill(0.f);
 	lastLacking.totalSum = 0.f;
+	lastLacking.lackingBuildingForUnit = -1;
 }
 
 void AiOrchestrator::action() {
@@ -45,30 +45,24 @@ void AiOrchestrator::action() {
 	// 1. Master Brain decides urgencies
 	lastMasterOut = masterBrain.decide(
 		player, enemy,
-		std::span<const float>(lastLacking.perResource),
+		lastLacking.perResource,
 		lastLacking.totalSum
 	);
 
 	// 2. Economy Brain (gets lacking feedback)
 	lastEconOut = economyBrain.decide(
 		player, enemy,
-		std::span<const float>(lastLacking.perResource),
+		lastLacking.perResource,
 		lastMasterOut.economyUrgency, lastMasterOut.workerUrgency, lastMasterOut.expandUrgency
 	);
 
-	// 3. Building Brain
-	lastBuildOut = buildingBrain.decide(
-		player, enemy,
-		lastMasterOut.buildingUrgency, lastMasterOut.techUrgency, lastMasterOut.defenceBuildingUrgency
-	);
-
-	// 4. Unit Brain
+	// 3. Unit Brain
 	auto unitOut = unitBrain.decide(
 		player, enemy,
 		lastMasterOut.unitUrgency, lastMasterOut.attackUrgency
 	);
 
-	// 5. Submit requests to WantList
+	// 4. Submit requests to WantList
 	wantList.beginTick();
 
 	// Worker request
@@ -84,22 +78,31 @@ void AiOrchestrator::action() {
 		}
 	}
 
-	// Building requests
+	// Building requests — use MasterBrain urgencies directly
 	auto submitBuilding = [&](float urgency, ParentBuildingType type) {
 		if (urgency > 0.1f) {
-			db_building* building = resolveBuilding(lastBuildOut, type);
+			db_building* building = resolveBuilding(type);
 			if (building) {
 				wantList.addRequest(WantItemType::BUILDING, urgency, 1, building->id);
 			}
 		}
 	};
-	submitBuilding(lastBuildOut.otherUrgency, ParentBuildingType::OTHER);
-	submitBuilding(lastBuildOut.defenceUrgency, ParentBuildingType::DEFENCE);
-	submitBuilding(lastBuildOut.resourceUrgency, ParentBuildingType::RESOURCE);
-	submitBuilding(lastBuildOut.techUrgency, ParentBuildingType::TECH);
-	submitBuilding(lastBuildOut.unitsUrgency, ParentBuildingType::UNITS);
+	submitBuilding(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
+	submitBuilding(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
+	submitBuilding(lastEconOut.resourceBuildingUrgency, ParentBuildingType::RESOURCE);
+	submitBuilding(lastMasterOut.techUrgency, ParentBuildingType::TECH);
 
-	// 6. Execute WantList with callbacks
+	// UNITS building: prefer specific building from lacking feedback, fall back to generic resolve
+	if (lastLacking.lackingBuildingForUnit >= 0) {
+		float boostedUrgency = std::max(lastMasterOut.unitUrgency, 0.5f);
+		wantList.addRequest(WantItemType::BUILDING, boostedUrgency, 1, lastLacking.lackingBuildingForUnit);
+	} else {
+		submitBuilding(lastMasterOut.unitUrgency, ParentBuildingType::UNITS);
+	}
+
+	// 5. Execute WantList with callbacks
+	pendingLackingBuilding = -1;
+
 	auto executeFn = [this](WantItem& item) -> bool {
 		switch (item.type) {
 		case WantItemType::WORKER:
@@ -131,6 +134,7 @@ void AiOrchestrator::action() {
 	};
 
 	lastLacking = wantList.execute(player, executeFn, costFn);
+	lastLacking.lackingBuildingForUnit = pendingLackingBuilding;
 }
 
 void AiOrchestrator::order() {
@@ -240,6 +244,7 @@ bool AiOrchestrator::executeUnit(short unitId) {
 		history->addAction(AiActionType::CREATE_UNIT, AiActionResult::SUCCESS);
 		return true;
 	}
+	pendingLackingBuilding = findBuildingTypeToDeploy(unitId);
 	history->addAction(AiActionType::CREATE_UNIT, AiActionResult::NO_BUILDING_TO_DEPLOY);
 	return false;
 }
@@ -338,18 +343,91 @@ std::vector<Building*> AiOrchestrator::getBuildingsCanDeploy(short unitId) const
 	return allPossible;
 }
 
+short AiOrchestrator::findBuildingTypeToDeploy(short unitId) const {
+	for (const auto building : nation->buildings) {
+		auto unitIds = player->getLevelForBuilding(building->id)->unitsPerNationIds[player->getNation()];
+		if (std::ranges::find(*unitIds, unitId) != unitIds->end()) {
+			return building->id;
+		}
+	}
+	return -1;
+}
+
 // --- Building resolution ---
 
-db_building* AiOrchestrator::resolveBuilding(const BuildingOutput& output, ParentBuildingType type) {
+db_building* AiOrchestrator::resolveBuilding(ParentBuildingType type) {
 	const auto buildings = getBuildingsInType(type);
 	if (buildings.empty()) { return nullptr; }
 	if (buildings.size() == 1) { return buildings.at(0); }
 
 	if (type == ParentBuildingType::RESOURCE) {
-		float prefs[] = {output.foodResPref, output.woodResPref, output.stoneResPref, output.goldResPref};
-		int bestRes = static_cast<int>(std::max_element(prefs, prefs + 4) - prefs);
-		for (const auto building : buildings) {
-			if (building->resourceType == bestRes) { return building; }
+		// 10 building-type need scores from EconomyBrain
+		// Each maps to a capability+resource combination
+		struct BuildingNeed {
+			float need;
+			// Classification criteria (matched against db_building + level 0)
+			int resourceType;     // -1 = any
+			bool wantBonus;       // collect > 0 && resourceRange > 0
+			bool wantConvert;     // toResource >= 0 && spawnResourceRange <= 0
+			bool wantStorage;     // foodStorage > 0 || goldStorage > 0
+			bool wantRefine;      // stoneRefineCapacity > 0 || goldRefineCapacity > 0
+			bool wantSpawn;       // toResource >= 0 && spawnResourceRange > 0
+			// For storage/refine disambiguation
+			bool wantFoodStorage; // foodStorage > 0
+			bool wantGoldStorage; // goldStorage > 0
+			bool wantStoneRefine; // stoneRefineCapacity > 0
+			bool wantGoldRefine;  // goldRefineCapacity > 0
+		};
+
+		BuildingNeed needs[] = {
+			{lastEconOut.needMill,           0, true,  false, false, false, false, false, false, false, false},
+			{lastEconOut.needSawmill,        1, true,  false, false, false, false, false, false, false, false},
+			{lastEconOut.needMineS,          2, true,  false, false, false, false, false, false, false, false},
+			{lastEconOut.needMineG,          3, true,  false, false, false, false, false, false, false, false},
+			{lastEconOut.needFarm,          -1, false, true,  false, false, false, false, false, false, false},
+			{lastEconOut.needGranary,       -1, false, false, true,  false, false, true,  false, false, false},
+			{lastEconOut.needBank,          -1, false, false, true,  false, false, false, true,  false, false},
+			{lastEconOut.needGoldRefinery,  -1, false, false, false, true,  false, false, false, false, true},
+			{lastEconOut.needStoneRefinery, -1, false, false, false, true,  false, false, false, true,  false},
+			{lastEconOut.needTreeNursery,   -1, false, false, false, false, true,  false, false, false, false},
+		};
+
+		// Sort needs descending by score
+		constexpr int NEED_COUNT = 10;
+		int order[NEED_COUNT] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+		std::sort(order, order + NEED_COUNT, [&](int a, int b) { return needs[a].need > needs[b].need; });
+
+		// For each need (highest first), find a matching building
+		for (int i = 0; i < NEED_COUNT; ++i) {
+			const auto& n = needs[order[i]];
+			if (n.need <= 0.f) { break; }
+
+			for (const auto building : buildings) {
+				auto levelOpt = building->getLevel(0);
+				if (!levelOpt.has_value()) { continue; }
+				auto* lvl = levelOpt.value();
+
+				// Resource type check
+				if (n.resourceType >= 0 && building->resourceType != n.resourceType) { continue; }
+
+				bool isBonus = lvl->collect > 0.f && lvl->resourceRange > 0.f;
+				bool isConvert = building->toResource >= 0 && lvl->spawnResourceRange <= 0;
+				bool isSpawn = building->toResource >= 0 && lvl->spawnResourceRange > 0;
+				bool hasFoodStorage = lvl->foodStorage > 0;
+				bool hasGoldStorage = lvl->goldStorage > 0;
+				bool hasStoneRefine = lvl->stoneRefineCapacity > 0.f;
+				bool hasGoldRefine = lvl->goldRefineCapacity > 0.f;
+
+				if (n.wantBonus && !isBonus) { continue; }
+				if (n.wantConvert && !isConvert) { continue; }
+				if (n.wantSpawn && !isSpawn) { continue; }
+				if (n.wantFoodStorage && !hasFoodStorage) { continue; }
+				if (n.wantGoldStorage && !hasGoldStorage) { continue; }
+				if (n.wantStoneRefine && !hasStoneRefine) { continue; }
+				if (n.wantGoldRefine && !hasGoldRefine) { continue; }
+
+				return building;
+			}
 		}
 		return nullptr;
 	}

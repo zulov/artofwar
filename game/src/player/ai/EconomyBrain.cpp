@@ -51,6 +51,16 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	inputData[e(I::GOLD_STORAGE_RATIO)] = 0.f; //TODO implement
 	inputData[e(I::STONE_REFINE_RATIO)] = 0.f; //TODO implement
 	inputData[e(I::GOLD_REFINE_RATIO)] = 0.f; //TODO implement
+	inputData[e(I::STONE_REFINE_GAP)] = 0.f; //TODO res->getStoneRefineGap() / 10.f
+	inputData[e(I::GOLD_REFINE_GAP)] = 0.f; //TODO res->getGoldRefineGap() / 10.f
+	inputData[e(I::BONUS_COVERAGE_FOOD)] = 0.f; //TODO possession->getBonusCoverage(FOOD)
+	inputData[e(I::BONUS_COVERAGE_WOOD)] = 0.f; //TODO possession->getBonusCoverage(WOOD)
+	inputData[e(I::BONUS_COVERAGE_STONE)] = 0.f; //TODO possession->getBonusCoverage(STONE)
+	inputData[e(I::BONUS_COVERAGE_GOLD)] = 0.f; //TODO possession->getBonusCoverage(GOLD)
+	inputData[e(I::FARM_COUNT)] = 0.f; //TODO possession->getConvertBuildingCount() / 5.f
+	inputData[e(I::SPAWNER_COUNT)] = 0.f; //TODO possession->getSpawnerCount() / 5.f
+	inputData[e(I::FOOD_DECAY_RATE)] = 0.f; //TODO res->getFoodDecayRate() / 100.f
+	inputData[e(I::TOTAL_RES_BUILDINGS)] = 0.f; //TODO possession->getResourceBuildingCount() / 20.f
 	inputData[e(I::RES_WO_BONUS)] = 0.f; //TODO implement
 
 	// Lacking per resource (4)
@@ -66,8 +76,27 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 
 	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
 
+	using O = EconomyOutputIdx;
+	constexpr auto o = [](O v) { return static_cast<int>(v); };
+
 	return EconomyOutput{
-		result[0], result[1], result[2], result[3],
-		result[4], result[5]
+		result[o(O::WORKER_ALLOCATION)],
+		result[o(O::FOOD_PRIORITY)],
+		result[o(O::WOOD_PRIORITY)],
+		result[o(O::STONE_PRIORITY)],
+		result[o(O::GOLD_PRIORITY)],
+		result[o(O::EXPAND_PRIORITY)],
+		result[o(O::RESOURCE_BUILDING_URGENCY)],
+		result[o(O::REASSIGN_WORKERS)],
+		result[o(O::NEED_MILL)],
+		result[o(O::NEED_SAWMILL)],
+		result[o(O::NEED_MINE_S)],
+		result[o(O::NEED_MINE_G)],
+		result[o(O::NEED_FARM)],
+		result[o(O::NEED_GRANARY)],
+		result[o(O::NEED_BANK)],
+		result[o(O::NEED_GOLD_REFINERY)],
+		result[o(O::NEED_STONE_REFINERY)],
+		result[o(O::NEED_TREE_NURSERY)]
 	};
 }

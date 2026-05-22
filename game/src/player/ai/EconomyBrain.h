@@ -23,6 +23,16 @@ enum class EconomyInputIdx : unsigned char {
 	GOLD_STORAGE_RATIO,
 	STONE_REFINE_RATIO,
 	GOLD_REFINE_RATIO,
+	STONE_REFINE_GAP,
+	GOLD_REFINE_GAP,
+	BONUS_COVERAGE_FOOD,
+	BONUS_COVERAGE_WOOD,
+	BONUS_COVERAGE_STONE,
+	BONUS_COVERAGE_GOLD,
+	FARM_COUNT,
+	SPAWNER_COUNT,
+	FOOD_DECAY_RATE,
+	TOTAL_RES_BUILDINGS,
 	RES_WO_BONUS,
 	LACKING_FOOD,
 	LACKING_WOOD,
@@ -40,6 +50,18 @@ enum class EconomyOutputIdx : unsigned char {
 	STONE_PRIORITY,
 	GOLD_PRIORITY,
 	EXPAND_PRIORITY,
+	RESOURCE_BUILDING_URGENCY,
+	REASSIGN_WORKERS,
+	NEED_MILL,
+	NEED_SAWMILL,
+	NEED_MINE_S,
+	NEED_MINE_G,
+	NEED_FARM,
+	NEED_GRANARY,
+	NEED_BANK,
+	NEED_GOLD_REFINERY,
+	NEED_STONE_REFINERY,
+	NEED_TREE_NURSERY,
 };
 
 struct EconomyOutput {
@@ -49,6 +71,18 @@ struct EconomyOutput {
 	float stonePriority;
 	float goldPriority;
 	float expandPriority;
+	float resourceBuildingUrgency;
+	float reassignWorkers;
+	float needMill;
+	float needSawmill;
+	float needMineS;
+	float needMineG;
+	float needFarm;
+	float needGranary;
+	float needBank;
+	float needGoldRefinery;
+	float needStoneRefinery;
+	float needTreeNursery;
 };
 
 class EconomyBrain {
