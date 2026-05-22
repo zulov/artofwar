@@ -287,16 +287,13 @@
     <ClCompile Include="src\env\bucket\levels\LevelCacheProvider.cpp" />
     <ClCompile Include="src\env\bucket\levels\LevelCache.cpp" />
     <ClCompile Include="src\hud\window\EventPanel.cpp" />
-    <ClCompile Include="src\stats\AiInputProvider.cpp" />
     <ClCompile Include="src\env\GridCalculatorProvider.cpp" />
     <ClCompile Include="src\env\influence\map\InfluenceMapQuad.cpp" />
     <ClCompile Include="src\env\influence\map\InfluenceMapHistory.cpp" />
     <ClCompile Include="src\control\HealthBarProvider.cpp" />
-    <ClCompile Include="src\player\ai\OrderMaker.cpp" />
     <ClCompile Include="src\commands\action\GeneralActionCommand.cpp" />
     <ClCompile Include="src\math\RandGen.cpp" />
     <ClCompile Include="src\player\ai\AiHistory.cpp" />
-    <ClCompile Include="src\player\ai\ActionMaker.cpp" />
     <ClCompile Include="src\env\CloseIndexes.cpp" />
     <ClCompile Include="src\commands\action\ResourceActionCommand.cpp" />
     <ClCompile Include="src\commands\action\BuildingActionCommand.cpp" />
@@ -403,6 +400,8 @@
     <ClCompile Include="src\player\ai\EconomyBrain.cpp" />
     <ClCompile Include="src\player\ai\MasterBrain.cpp" />
     <ClCompile Include="src\player\ai\MilitaryBrain.cpp" />
+    <ClCompile Include="src\player\ai\BuildSpatialBrain.cpp" />
+    <ClCompile Include="src\player\ai\AttackSpatialBrain.cpp" />
     <ClCompile Include="src\player\ai\UnitBrain.cpp" />
     <ClCompile Include="src\player\ai\WantList.cpp" />
   </ItemGroup>
@@ -438,7 +437,6 @@
     <ClInclude Include="src\hud\window\EventPanel.h" />
     <ClInclude Include="src\env\influence\CenterType.h" />
     <ClInclude Include="src\simulation\SimGlobals.h" />
-    <ClInclude Include="src\stats\AiInputProvider.h" />
     <ClInclude Include="src\objects\Metrics.h" />
     <ClInclude Include="src\objects\queue\QueueUtils.h" />
     <ClInclude Include="src\env\GridCalculatorProvider.h" />
@@ -446,16 +444,13 @@
     <ClInclude Include="src\env\influence\map\InfluenceMapQuad.h" />
     <ClInclude Include="src\env\influence\map\InfluenceMapHistory.h" />
     <ClInclude Include="src\control\HealthBarProvider.h" />
-    <ClInclude Include="src\player\ai\OrderMaker.h" />
     <ClInclude Include="src\commands\action\GeneralActionCommand.h" />
     <ClInclude Include="src\commands\action\GeneralActionType.h" />
     <ClInclude Include="src\math\RandGen.h" />
     <ClInclude Include="src\math\RandType.h" />
     <ClInclude Include="src\objects\unit\order\OrderUtils.h" />
-    <ClInclude Include="src\player\ai\ActionMaker.h" />
     <ClInclude Include="src\player\ai\AiHistory.h" />
     <ClInclude Include="src\player\ai\AiHistoryEnums.h" />
-    <ClInclude Include="src\player\ai\ActionMakerLogger.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
     <ClInclude Include="src\env\CloseIndexes.h" />
     <ClInclude Include="src\commands\action\BuildingActionType.h" />
@@ -634,6 +629,8 @@
     <ClInclude Include="src\player\ai\EconomyBrain.h" />
     <ClInclude Include="src\player\ai\MasterBrain.h" />
     <ClInclude Include="src\player\ai\MilitaryBrain.h" />
+    <ClInclude Include="src\player\ai\BuildSpatialBrain.h" />
+    <ClInclude Include="src\player\ai\AttackSpatialBrain.h" />
     <ClInclude Include="src\player\ai\UnitBrain.h" />
     <ClInclude Include="src\player\ai\WantList.h" />
   </ItemGroup>

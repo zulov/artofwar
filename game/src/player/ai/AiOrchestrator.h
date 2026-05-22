@@ -10,6 +10,8 @@
 #include "EconomyBrain.h"
 #include "UnitBrain.h"
 #include "MilitaryBrain.h"
+#include "BuildSpatialBrain.h"
+#include "AttackSpatialBrain.h"
 
 class Physical;
 class Player;
@@ -60,6 +62,9 @@ private:
 	std::optional<Urho3D::Vector2> findPosToBuild(db_building* building, ParentBuildingType type) const;
 	std::vector<db_building*> getBuildingsInType(ParentBuildingType type);
 
+	// Spatial helpers
+	Building* getBuildingClosestArea(std::vector<Building*>& allPossible, std::span<const float> weights, int minAreas) const;
+
 	// Distance matching
 	float dist(std::valarray<float>& center, const db_basic_metric* metric);
 	float dist(std::valarray<float>& center, const db_building_metric* metric, ParentBuildingType type);
@@ -82,6 +87,8 @@ private:
 	EconomyBrain economyBrain;
 	UnitBrain unitBrain;
 	MilitaryBrain militaryBrain;
+	BuildSpatialBrain buildSpatialBrain;
+	AttackSpatialBrain attackSpatialBrain;
 
 	WantList wantList;
 	short pendingLackingBuilding = -1;

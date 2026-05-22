@@ -33,7 +33,9 @@ AiOrchestrator::AiOrchestrator(Player* player, db_nation* nation, AiHistory* his
 	masterBrain(nation),
 	economyBrain(nation),
 	unitBrain(nation),
-	militaryBrain(nation) {
+	militaryBrain(nation),
+	buildSpatialBrain(nation),
+	attackSpatialBrain(nation) {
 	lastLacking.perResource.fill(0.f);
 	lastLacking.totalSum = 0.f;
 	lastLacking.lackingBuildingForUnit = -1;
@@ -89,7 +91,6 @@ void AiOrchestrator::action() {
 	};
 	submitBuilding(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
 	submitBuilding(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
-	submitBuilding(lastEconOut.resourceBuildingUrgency, ParentBuildingType::RESOURCE);
 	submitBuilding(lastMasterOut.techUrgency, ParentBuildingType::TECH);
 
 	// UNITS building: prefer specific building from lacking feedback, fall back to generic resolve
@@ -171,7 +172,19 @@ void AiOrchestrator::order() {
 			static_cast<uint8_t>(AiOrderType::DEFEND_ECON) + static_cast<uint8_t>(centerType));
 	}
 
-	const auto posOpt = Game::getEnvironment()->getCenterOf(centerType, playerToGo);
+	const auto posOpt = [&]() -> std::optional<Urho3D::Vector2> {
+		auto spatialOut = attackSpatialBrain.decide(
+			player, enemy, milOut,
+			lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency
+		);
+		auto areas = Game::getEnvironment()->getAreas(
+			playerToGo, std::span<const float>(spatialOut.weights), 1
+		);
+		if (!areas.empty()) {
+			return areas[0];
+		}
+		return Game::getEnvironment()->getCenterOf(centerType, playerToGo);
+	}();
 	if (!posOpt.has_value()) {
 		history->addOrder(orderType, AiOrderResult::NO_CENTER_POSITION);
 		return;
@@ -440,12 +453,33 @@ std::optional<Urho3D::Vector2> AiOrchestrator::findPosToBuild(db_building* build
 	if (type == ParentBuildingType::RESOURCE) {
 		return Game::getEnvironment()->getPosToCreateResBonus(building, playerId);
 	}
-	// TODO: use spatial brain for placement
-	// For now, use a neutral placement result (zeros = center bias)
-	std::array<float, 4> defaultResult{};
-	defaultResult.fill(0.5f);
+	// Use BuildSpatialBrain to compute influence map weights
+	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
+	auto spatialOut = buildSpatialBrain.decide(
+		player, enemy,
+		lastMasterOut.buildingUrgency, lastMasterOut.expandUrgency, lastMasterOut.defenceBuildingUrgency
+	);
 	return Game::getEnvironment()->getPosToCreate(
-		std::span<const float>(defaultResult), type, building, playerId);
+		std::span<const float>(spatialOut.weights), type, building, playerId);
+}
+
+Building* AiOrchestrator::getBuildingClosestArea(std::vector<Building*>& allPossible,
+                                                  std::span<const float> weights, int minAreas) const {
+	auto centers = Game::getEnvironment()->getAreas(playerId, weights, minAreas);
+	float closestVal = std::numeric_limits<float>::max();
+	Building* closest = allPossible[0];
+	for (const auto possible : allPossible) {
+		const Urho3D::Vector2& pos = possible->getPosition();
+		for (auto& center : centers) {
+			auto diff = pos - center;
+			auto val = diff.LengthSquared();
+			if (val < closestVal) {
+				closest = possible;
+				closestVal = val;
+			}
+		}
+	}
+	return closest;
 }
 
 std::vector<db_building*> AiOrchestrator::getBuildingsInType(ParentBuildingType type) {

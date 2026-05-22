@@ -14,7 +14,7 @@ Player::Player(unsigned short nationId, unsigned char team, unsigned char id, un
 	currentBuildingUId(currentBuildingUId), currentUnitUId(currentUnitUId),
 	dbNation(Game::getDatabase()->getNation(nationId)),
 	possession(new Possession(nationId)), resources(new Resources()),
-	actionMaker(this, dbNation, &aiHistory), orderMaker(this, dbNation, &aiHistory),
+	aiOrchestrator(this, dbNation, &aiHistory),
 	name(std::move(name)) {
 	unitLevels = new char[Game::getDatabase()->getUnits().size()];
 	buildingLevels = new char[Game::getDatabase()->getBuildings().size()];
@@ -126,9 +126,9 @@ QueueElement* Player::updateQueue() {
 }
 
 void Player::aiAction() {
-	actionMaker.action();
+	aiOrchestrator.action();
 }
 
 void Player::aiOrder() {
-	orderMaker.action();
+	aiOrchestrator.order();
 }

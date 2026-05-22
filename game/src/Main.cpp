@@ -51,7 +51,6 @@
 #include "player/Resources.h"
 #include "player/ai/PossessionMetric.h"
 #include "simulation/formation/FormationManager.h"
-#include "stats/AiInputProvider.h"
 #include "utils/CountUtils.h"
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
@@ -331,7 +330,6 @@ void Main::setSimpleManagers() {
 	Game::setCameraManager(new CameraManager())
 		->setFormationManager(new FormationManager())
 		->setPlayersManager(new PlayersManager())
-		->setAiInputProvider(new AiInputProvider())
 		->setColorPaletteRepo(new ColorPaletteRepo());
 }
 
@@ -598,10 +596,6 @@ void Main::disposeScene() {
 		loading2.inc("dispose playerManager");
 		delete Game::getPlayersMan();
 		Game::setPlayersManager(nullptr);
-
-		loading2.inc("dispose Stats & AIinput");
-		delete Game::getAiInputProvider();
-		Game::setAiInputProvider(nullptr);
 
 		loading2.inc("dispose controls");
 		delete controls;

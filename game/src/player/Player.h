@@ -1,8 +1,7 @@
 #pragma once
 
 #include "objects/queue/QueueManager.h"
-#include "ai/ActionMaker.h"
-#include "ai/OrderMaker.h"
+#include "ai/AiOrchestrator.h"
 #include "ai/AiHistory.h"
 #include "database/db_insert_utils.h"
 
@@ -13,8 +12,6 @@ struct db_nation;
 enum class ActionType : char;
 
 class Player {
-	friend class ActionMaker;
-	friend class OrderMaker;
 	friend void bindRow<Player>(sqlite3_stmt*, int, const Player*);
 
 public:
@@ -74,8 +71,7 @@ private:
 	Resources* resources;
 	QueueManager queue;
 	AiHistory aiHistory;
-	ActionMaker actionMaker;
-	OrderMaker orderMaker;
+	AiOrchestrator aiOrchestrator;
 	Urho3D::String name;
 
 	char* unitLevels;

@@ -173,7 +173,6 @@
     <ClCompile Include="src\player\Player.cpp">
       <Filter>player</Filter>
     </ClCompile>
-    <ClCompile Include="src\player\ai\ActionMaker.cpp" />
     <ClCompile Include="src\math\RandGen.cpp" />
     <ClCompile Include="src\player\ai\ActionCenter.cpp" />
     <ClCompile Include="src\objects\unit\order\FormationOrder.cpp" />
@@ -181,12 +180,10 @@
     <ClCompile Include="src\objects\unit\order\IndividualOrder.cpp" />
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
     <ClCompile Include="src\commands\action\GeneralActionCommand.cpp" />
-    <ClCompile Include="src\player\ai\OrderMaker.cpp" />
     <ClCompile Include="src\control\HealthBarProvider.cpp" />
     <ClCompile Include="src\env\influence\map\InfluenceMapHistory.cpp" />
     <ClCompile Include="src\env\influence\map\InfluenceMapQuad.cpp" />
     <ClCompile Include="src\env\GridCalculatorProvider.cpp" />
-    <ClCompile Include="src\stats\AiInputProvider.cpp" />
     <ClCompile Include="src\hud\window\SimplePanel.cpp">
       <Filter>hud\windows</Filter>
     </ClCompile>
@@ -461,7 +458,6 @@
     <ClInclude Include="src\commands\action\ResourceActionType.h" />
     <ClInclude Include="src\commands\action\BuildingActionType.h" />
     <ClInclude Include="src\objects\queue\QueueActionType.h" />
-    <ClInclude Include="src\player\ai\ActionMaker.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
     <ClInclude Include="src\math\VectorUtils.h" />
     <ClInclude Include="src\math\MathUtils.h" />
@@ -484,8 +480,6 @@
     <ClInclude Include="src\utils\StringUtils.h" />
     <ClInclude Include="src\commands\action\GeneralActionCommand.h" />
     <ClInclude Include="src\commands\action\GeneralActionType.h" />
-    <ClInclude Include="src\player\ai\ActionMakerLogger.h" />
-    <ClInclude Include="src\player\ai\OrderMaker.h" />
     <ClInclude Include="src\control\HealthBarProvider.h" />
     <ClInclude Include="src\env\influence\map\InfluenceMapHistory.h" />
     <ClInclude Include="src\env\influence\map\InfluenceMapQuad.h" />
@@ -494,7 +488,6 @@
     <ClInclude Include="src\player\ai\InfluenceDataType.h" />
     <ClInclude Include="src\objects\queue\QueueUtils.h" />
     <ClInclude Include="src\objects\Metrics.h" />
-    <ClInclude Include="src\stats\AiInputProvider.h" />
     <ClInclude Include="src\hud\window\SimplePanel.h">
       <Filter>hud\windows</Filter>
     </ClInclude>

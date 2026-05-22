@@ -84,11 +84,6 @@ Game* Game::setLog(Urho3D::Log* _log) {
 	return instance;
 }
 
-Game* Game::setAiInputProvider(AiInputProvider* _aiInputProvider) {
-	instance->aiInputProvider = _aiInputProvider;
-	return instance;
-}
-
 Game* Game::setActionCenter(ActionCenter* _actionCenter) {
 	instance->actionCenter = _actionCenter;
 	return instance;

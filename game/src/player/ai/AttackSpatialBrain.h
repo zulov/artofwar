@@ -1,0 +1,51 @@
+#pragma once
+#include <array>
+#include <span>
+#include <magic_enum.hpp>
+#include "env/influence/InfluenceManager.h"
+#include "MilitaryBrain.h"
+
+class Brain;
+class Player;
+struct db_nation;
+
+enum class AttackSpatialInputIdx : unsigned char {
+	ATTACK_WEIGHT,
+	DEFEND_WEIGHT,
+	ATTACK_TARGET,
+	DEFEND_TARGET,
+	ARMY_COUNT,
+	FREE_ARMY_COUNT,
+	ENEMY_ARMY_COUNT,
+	PLAYER_SCORE,
+	ENEMY_SCORE,
+	ATTACK_SUM,
+	DEFENCE_SUM,
+	IN_COMBAT_RATIO,
+	MILITARY_URGENCY,
+	ATTACK_URGENCY,
+};
+
+enum class AttackSpatialOutputIdx : unsigned char {
+	W_BUILDINGS_INFLUENCE,
+	W_UNITS_INFLUENCE,
+	W_ATTACK_SPEED,
+};
+
+struct AttackSpatialOutput {
+	std::array<float, AI_ARMY_MAP_COUNT> weights;
+};
+
+class AttackSpatialBrain {
+public:
+	explicit AttackSpatialBrain(db_nation* nation);
+	AttackSpatialBrain(const AttackSpatialBrain&) = delete;
+
+	AttackSpatialOutput decide(Player* player, Player* enemy,
+	                           const MilitaryOutput& milOut,
+	                           float militaryUrgency, float attackUrgency);
+
+private:
+	Brain* brain;
+	std::array<float, magic_enum::enum_count<AttackSpatialInputIdx>()> inputData{};
+};

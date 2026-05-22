@@ -10,7 +10,6 @@
 #include "player/Resources.h"
 #include "player/PlayersManager.h"
 #include "Game.h"
-#include "stats/AiInputProvider.h"
 #include "env/influence/CenterType.h"
 
 MasterBrain::MasterBrain(db_nation* nation)

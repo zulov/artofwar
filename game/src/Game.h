@@ -20,7 +20,6 @@ class PlayersManager;
 class ColorPaletteRepo;
 class FormationManager;
 class ActionCenter;
-class AiInputProvider;
 
 class Game {
 public:
@@ -42,7 +41,6 @@ public:
 	static Game* setFormationManager(FormationManager* _formationManager);
 	static Game* setColorPaletteRepo(ColorPaletteRepo* _colorPaletteRepo);
 	static Game* setLog(Urho3D::Log* _log);
-	static Game* setAiInputProvider(AiInputProvider* _aiInputProvider);
 	static Game* setActionCenter(ActionCenter* _actionCenter);
 
 	static Urho3D::Localization* getLocalization() { return instance->localization; }
@@ -60,7 +58,6 @@ public:
 	static CameraManager* getCameraManager() { return instance->cameraManager; }
 	static PlayersManager* getPlayersMan() { return instance->playersManager; }
 	static Environment* getEnvironment() { return instance->environment; }
-	static AiInputProvider* getAiInputProvider() { return instance->aiInputProvider; }
 	static ActionCenter* getActionCenter() { return instance->actionCenter; }
 	static FrameInfo* getFrameInfo() { return &instance->frameInfo; }
 
@@ -84,7 +81,6 @@ private:
 	DatabaseCache* databaseCache;
 	Environment* environment;
 
-	AiInputProvider* aiInputProvider;
 	ActionCenter* actionCenter;
 
 	FrameInfo frameInfo;

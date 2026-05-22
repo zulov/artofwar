@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Art of War — AI Orchestrator: How the AI Works</title>
+<style>
+  body { margin: 0; background: #1a1a2e; font-family: 'Segoe UI', sans-serif; color: #e0e0e0; }
+  h1 { text-align: center; margin: 20px 0 5px; font-size: 26px; color: #fff; }
+  h2.page-sub { text-align: center; margin: 0 0 10px; font-size: 14px; color: #888; font-weight: normal; max-width: 1100px; margin-left: auto; margin-right: auto; }
+  .section-title { text-align: center; font-size: 20px; color: #4fc3f7; margin: 30px 0 5px; font-weight: bold; }
+  .section-sub { text-align: center; font-size: 13px; color: #888; margin: 0 0 15px; max-width: 1050px; margin-left: auto; margin-right: auto; }
+  svg text { font-family: 'Segoe UI', sans-serif; pointer-events: none; }
+  svg g { cursor: pointer; }
+  svg g:hover rect { filter: brightness(1.3); }
+  .legend { display: flex; justify-content: center; gap: 24px; margin: 10px 0 0; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .legend-color { width: 18px; height: 18px; border-radius: 4px; }
+  .hint { text-align: center; font-size: 12px; color: #666; margin-top: 4px; }
+  .tooltip {
+    position: fixed; display: none; max-width: 540px; padding: 12px 16px;
+    background: #222; border: 1px solid #555; border-radius: 8px;
+    font-size: 13px; color: #ddd; line-height: 1.5; z-index: 999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6); pointer-events: none;
+  }
+  .tooltip .tt-title { font-weight: bold; color: #fff; margin-bottom: 4px; font-size: 14px; }
+  .tooltip .tt-input { color: #4FC3F7; }
+  .tooltip .tt-output { color: #FFB74D; }
+  .tooltip .tt-logic { color: #A5D6A7; }
+  .tooltip .tt-warn { color: #EF5350; }
+  .tooltip .tt-ok { color: #66BB6A; }
+  .divider { border: none; border-top: 1px solid #37474F; max-width: 1350px; margin: 35px auto; }
+  table.spec { border-collapse: collapse; margin: 10px auto; font-size: 12px; background: #151530; }
+  table.spec th { background: #0f3460; color: #4fc3f7; padding: 6px 12px; border: 1px solid #37474F; text-align: left; }
+  table.spec td { padding: 5px 12px; border: 1px solid #37474F; color: #ccc; }
+  table.spec tr:hover td { background: #1a2744; }
+  table.spec td.brain { color: #4FC3F7; font-weight: bold; }
+  table.spec td.cat { color: #FF9800; font-weight: bold; }
+  table.spec td.range { color: #A5D6A7; text-align: center; }
+  .card { max-width: 1250px; margin: 15px auto; background: #151530; border-radius: 10px; padding: 16px 24px; border: 1px solid #37474F; }
+  .card h3 { margin: 0 0 8px; font-size: 16px; }
+  .card p, .card li { margin: 4px 0; font-size: 13px; color: #aaa; }
+  .card ul { padding-left: 20px; }
+  .card code { color: #FFB74D; font-family: 'Consolas', monospace; font-size: 12px; background: #0d1117; padding: 1px 5px; border-radius: 3px; }
+  .scenario { max-width: 1250px; margin: 15px auto; background: #1a2744; border-radius: 10px; padding: 16px 24px; border: 1px solid #37474F; }
+  .scenario h3 { margin: 0 0 6px; font-size: 15px; color: #FFB74D; }
+  .scenario .sit { font-size: 13px; color: #888; margin: 0 0 8px; }
+  .scenario table { border-collapse: collapse; width: 100%; font-size: 12px; }
+  .scenario th { background: #0f3460; color: #4fc3f7; padding: 4px 8px; border: 1px solid #37474F; text-align: left; }
+  .scenario td { padding: 4px 8px; border: 1px solid #37474F; color: #ccc; }
+  .todo-list { max-width: 1250px; margin: 15px auto; }
+  .todo-item { background: #151530; border-radius: 8px; padding: 10px 20px; margin: 8px 0; border-left: 4px solid #FF9800; }
+  .todo-item.done { border-left-color: #66BB6A; opacity: 0.6; }
+  .todo-item h4 { margin: 0 0 4px; font-size: 14px; color: #fff; }
+  .todo-item p { margin: 0; font-size: 12px; color: #999; }
+</style>
+</head>
+<body>
+
+<h1>AI Orchestrator &mdash; How the AI Works</h1>
+<h2 class="page-sub">
+  Each AI player owns one <b>AiOrchestrator</b> that runs 6 neural-network brains every tick.
+  Two phases: <b>action()</b> decides what to build/train, <b>order()</b> decides where to move.
+</h2>
+
+<!-- ===== LEGEND ===== -->
+<div class="legend">
+  <div class="legend-item"><div class="legend-color" style="background:#4CAF50"></div>Economy</div>
+  <div class="legend-item"><div class="legend-color" style="background:#FF9800"></div>Master</div>
+  <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div>Building</div>
+  <div class="legend-item"><div class="legend-color" style="background:#FF5722"></div>Unit</div>
+  <div class="legend-item"><div class="legend-color" style="background:#f44336"></div>Military</div>
+  <div class="legend-item"><div class="legend-color" style="background:#00BCD4"></div>Spatial</div>
+  <div class="legend-item"><div class="legend-color" style="background:#2196F3"></div>Want List</div>
+</div>
+<div class="hint">Hover over boxes for details</div>
+
+<!-- ===== MAIN FLOW DIAGRAM ===== -->
+<div class="section-title">Phase 1: action() &mdash; What to Build &amp; Train</div>
+<div class="section-sub">Called once per tick. Brains run top-down, outputs feed into a priority queue (Want List) that executes affordable items.</div>
+
+<svg viewBox="0 0 1400 820" width="100%" style="max-width:1400px;display:block;margin:auto;">
+  <defs>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#aaa"/></marker>
+    <marker id="ag" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#4CAF50"/></marker>
+    <marker id="ao" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#FF9800"/></marker>
+    <marker id="ab" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#2196F3"/></marker>
+  </defs>
+
+  <!-- Game State Input -->
+  <g data-tt-title="Game State" data-tt-body="Inputs available to all brains:<br>- Player/enemy scores<br>- Resource stockpiles (food, wood, stone, gold)<br>- Gather speeds<br>- Army counts, attack/defence sums<br>- Spatial distances between centers<br>- Lacking resources from previous tick">
+    <rect x="500" y="10" width="400" height="50" rx="8" fill="#37474F" stroke="#78909C" stroke-width="1.5"/>
+    <text x="700" y="32" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Game State</text>
+    <text x="700" y="48" text-anchor="middle" fill="#90A4AE" font-size="10">scores, resources, army, distances, lacking</text>
+  </g>
+
+  <!-- Arrow down -->
+  <line x1="700" y1="60" x2="700" y2="90" stroke="#aaa" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- Step 1: MasterBrain -->
+  <g data-tt-title="1. MasterBrain (30 inputs &rarr; 9 outputs)" data-tt-body="<span class='tt-logic'>Runs FIRST every tick.</span><br><br><span class='tt-input'>Inputs (30):</span> player/enemy scores, building/worker/army counts, 4 resource stockpiles, 4 gather speeds, attack/defence sums, 4 spatial distances, total lacking, score deltas, game time, KD ratio, in-combat ratio, tech level, gather speed delta<br><br><span class='tt-output'>Outputs (9 urgencies):</span><br>- workerUrgency<br>- economyUrgency<br>- buildingUrgency<br>- unitUrgency<br>- militaryUrgency<br>- expandUrgency<br>- techUrgency<br>- defenceBuildingUrgency<br>- attackUrgency<br><br>These urgencies drive ALL downstream brains.">
+    <rect x="450" y="95" width="500" height="70" rx="10" fill="#1B5E20" stroke="#FF9800" stroke-width="2.5"/>
+    <text x="700" y="120" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">1. MasterBrain</text>
+    <text x="700" y="138" text-anchor="middle" fill="#FFE082" font-size="11">30 inputs &rarr; 9 urgency outputs</text>
+    <text x="700" y="155" text-anchor="middle" fill="#A5D6A7" font-size="10">worker | economy | building | unit | military | expand | tech | defence | attack</text>
+  </g>
+
+  <!-- Arrows from Master to Economy and Unit -->
+  <line x1="550" y1="165" x2="350" y2="210" stroke="#FF9800" stroke-width="2" marker-end="url(#ao)"/>
+  <text x="430" y="190" fill="#FF9800" font-size="9">economy/worker/expand urgencies</text>
+  <line x1="850" y1="165" x2="1050" y2="210" stroke="#FF9800" stroke-width="2" marker-end="url(#ao)"/>
+  <text x="920" y="190" fill="#FF9800" font-size="9">unit/attack urgencies</text>
+
+  <!-- Step 2: EconomyBrain -->
+  <g data-tt-title="2. EconomyBrain (34 inputs &rarr; 18 outputs)" data-tt-body="<span class='tt-logic'>Decides resource priorities and building needs.</span><br><br><span class='tt-input'>Key inputs:</span> 4 resource stockpiles, 4 gather speeds, 4 storage levels, 4 lacking amounts, economy/worker/expand urgencies from Master<br><br><span class='tt-output'>Outputs:</span><br>- workerAllocation (how many workers to train)<br>- foodPriority, woodPriority, stonePriority, goldPriority<br>- resourceBuildingUrgency<br>- 10 building needs: mill, sawmill, mine(S), mine(G), farm, granary, bank, goldRefinery, stoneRefinery, treeNursery<br><br>Resource priorities drive worker collection. Building needs drive resource building selection.">
+    <rect x="150" y="215" width="400" height="70" rx="10" fill="#1B5E20" stroke="#4CAF50" stroke-width="2.5"/>
+    <text x="350" y="240" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">2. EconomyBrain</text>
+    <text x="350" y="258" text-anchor="middle" fill="#A5D6A7" font-size="11">34 inputs &rarr; 18 outputs</text>
+    <text x="350" y="275" text-anchor="middle" fill="#81C784" font-size="10">resource priorities + 10 building needs</text>
+  </g>
+
+  <!-- Step 3: UnitBrain -->
+  <g data-tt-title="3. UnitBrain (14 inputs &rarr; 24-dim profile + count)" data-tt-body="<span class='tt-logic'>Decides what type of unit to train and how many.</span><br><br><span class='tt-input'>Inputs (14):</span> own/enemy army composition ratios (infantry, cavalry, range), army counts, attack/defence sums, enemy score, workers count, unit/attack urgencies<br><br><span class='tt-output'>Outputs:</span><br>- 24-dim unit profile vector (ideal unit properties)<br>- count (how many units to train this tick, max 5)<br><br>The profile vector is matched against db_unit metrics using distance. The closest matching unit type is selected.">
+    <rect x="850" y="215" width="400" height="70" rx="10" fill="#311B92" stroke="#FF5722" stroke-width="2.5"/>
+    <text x="1050" y="240" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">3. UnitBrain</text>
+    <text x="1050" y="258" text-anchor="middle" fill="#FFAB91" font-size="11">14 inputs &rarr; 24-dim profile + count</text>
+    <text x="1050" y="275" text-anchor="middle" fill="#CE93D8" font-size="10">profile matched to unit DB via distance</text>
+  </g>
+
+  <!-- Arrows down to WantList -->
+  <line x1="350" y1="285" x2="350" y2="370" stroke="#4CAF50" stroke-width="2" marker-end="url(#ag)"/>
+  <text x="360" y="330" fill="#4CAF50" font-size="9">worker wants + building wants</text>
+  <line x1="700" y1="165" x2="700" y2="370" stroke="#9C27B0" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#ab)"/>
+  <text x="710" y="330" fill="#9C27B0" font-size="9">building wants (from urgencies)</text>
+  <line x1="1050" y1="285" x2="1050" y2="370" stroke="#FF5722" stroke-width="2" marker-end="url(#ab)"/>
+  <text x="1060" y="330" fill="#FF5722" font-size="9">unit wants (type + count)</text>
+
+  <!-- Step 4: Want List -->
+  <g data-tt-title="4. Want List &mdash; Priority Queue" data-tt-body="<span class='tt-logic'>Central execution system for all resource-spending actions.</span><br><br><b>Per tick:</b><br>1. beginTick() &mdash; carry over unexecuted items<br>2. addRequest() &mdash; brains submit new wants (worker, unit, building)<br>3. Boost re-requested items (x1.15), decay old ones (x0.85), drop below 0.05<br>4. Sort by priority (highest first)<br>5. Walk top-down: affordable &rarr; EXECUTE, not affordable &rarr; RESERVE, continue<br>6. Compute lacking resources for next tick's feedback<br><br><span class='tt-ok'>CAN EXECUTE MULTIPLE ITEMS PER TICK</span><br>The only limit is available resources.<br><br><span class='tt-warn'>Military orders do NOT use this list.</span>">
+    <rect x="200" y="375" width="1000" height="70" rx="10" fill="#0D47A1" stroke="#2196F3" stroke-width="2.5"/>
+    <text x="700" y="400" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">4. Want List &mdash; Priority Queue</text>
+    <text x="700" y="418" text-anchor="middle" fill="#90CAF9" font-size="11">Merge &rarr; Boost/Decay &rarr; Sort &rarr; Execute top-down (multiple items per tick)</text>
+    <text x="700" y="436" text-anchor="middle" fill="#64B5F6" font-size="10">Affordable &rarr; execute | Not affordable &rarr; reserve &amp; track lacking</text>
+  </g>
+
+  <!-- Arrow down to execution -->
+  <line x1="700" y1="445" x2="700" y2="480" stroke="#aaa" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- Execution -->
+  <g data-tt-title="5. Execution Callbacks" data-tt-body="When the Want List decides an item is affordable, it calls back into AiOrchestrator:<br><br><b>executeWorker():</b> find a building that can deploy the worker type, issue BuildingActionCommand<br><br><b>executeUnit(unitId):</b> find a building that can deploy this unit, issue BuildingActionCommand. If no building exists, record lackingBuildingForUnit for next tick.<br><br><b>executeBuilding(buildingId):</b> find position via BuildSpatialBrain + influence maps, issue addBuilding command.">
+    <rect x="300" y="485" width="800" height="60" rx="8" fill="#263238" stroke="#78909C" stroke-width="1.5"/>
+    <text x="700" y="510" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">5. Execution: executeWorker() | executeUnit() | executeBuilding()</text>
+    <text x="700" y="530" text-anchor="middle" fill="#90A4AE" font-size="10">Issues BuildingActionCommand or addBuilding to ActionCenter</text>
+  </g>
+
+  <!-- BuildSpatialBrain on the side -->
+  <line x1="700" y1="545" x2="700" y2="580" stroke="#00BCD4" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <g data-tt-title="BuildSpatialBrain (on demand)" data-tt-body="<span class='tt-logic'>Called by executeBuilding() to decide WHERE to place a building.</span><br><br><span class='tt-input'>Inputs (13):</span> building/expand/defence urgencies, building/worker/army counts, game time, scores, 4 resource stockpiles<br><br><span class='tt-output'>Outputs (7 weights):</span> one weight per influence map layer (buildings, units, attackSpeed, 4x gatherSpeed)<br><br>Weights are passed to InfluenceManager::getAreas() which combines the maps, filters by visibility, and returns best cell indexes for placement.">
+    <rect x="475" y="585" width="450" height="55" rx="8" fill="#006064" stroke="#00BCD4" stroke-width="2"/>
+    <text x="700" y="607" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">BuildSpatialBrain</text>
+    <text x="700" y="625" text-anchor="middle" fill="#80DEEA" font-size="10">13 inputs &rarr; 7 influence map weights &rarr; best placement cell</text>
+  </g>
+
+  <!-- Lacking feedback arrow back to top -->
+  <line x1="200" y1="445" x2="200" y2="750" stroke="#EF5350" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <line x1="200" y1="750" x2="130" y2="750" stroke="#EF5350" stroke-width="1.5"/>
+  <line x1="130" y1="750" x2="130" y2="95" stroke="#EF5350" stroke-width="1.5"/>
+  <line x1="130" y1="95" x2="450" y2="95" stroke="#EF5350" stroke-width="1.5" marker-end="url(#ar)"/>
+  <text x="135" y="430" fill="#EF5350" font-size="10" transform="rotate(-90,135,430)">lacking feedback (next tick)</text>
+</svg>
+
+<!-- ===== PHASE 2 DIAGRAM ===== -->
+<hr class="divider"/>
+<div class="section-title">Phase 2: order() &mdash; Where to Move</div>
+<div class="section-sub">Called once per tick after action(). Handles worker collection and army movement. Military decisions do NOT consume resources.</div>
+
+<svg viewBox="0 0 1400 550" width="100%" style="max-width:1400px;display:block;margin:auto;">
+  <defs>
+    <marker id="ar2" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#aaa"/></marker>
+    <marker id="am" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#f44336"/></marker>
+  </defs>
+
+  <!-- Worker Collection (left side) -->
+  <g data-tt-title="Worker Collection" data-tt-body="<span class='tt-logic'>Assigns idle workers to resource gathering.</span><br><br>1. Find all free workers (idle, not already collecting)<br>2. Use EconomyBrain's resource priorities (food/wood/stone/gold) to rank resources<br>3. For each worker, try resources in priority order<br>4. Find closest resource node within expanding radius (64, 128, 256)<br>5. Issue IndividualOrder with UnitAction::COLLECT<br><br>Workers are assigned individually, not grouped.">
+    <rect x="50" y="20" width="350" height="60" rx="8" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
+    <text x="225" y="45" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">collectWorkers()</text>
+    <text x="225" y="65" text-anchor="middle" fill="#A5D6A7" font-size="10">economy priorities &rarr; assign idle workers to resources</text>
+  </g>
+
+  <!-- Army section -->
+  <text x="700" y="40" text-anchor="middle" fill="#78909C" font-size="12">If free army exists:</text>
+
+  <!-- MilitaryBrain -->
+  <g data-tt-title="MilitaryBrain (19 inputs &rarr; 4 outputs)" data-tt-body="<span class='tt-logic'>Decides attack vs defend, and what to target.</span><br><br><span class='tt-input'>Inputs (19):</span> player/enemy scores, attack/defence sums, 4 spatial distances (army-to-buildings), army counts (own, enemy, free), military/attack urgencies, 6 composition ratios (own+enemy infantry/range/cavalry)<br><br><span class='tt-output'>Outputs (4):</span><br>- attackWeight vs defendWeight (higher wins)<br>- attackTarget (0-1: econ / building / army)<br>- defendTarget (0-1: econ / building / army)<br><br>No resources consumed. Free decision every tick.">
+    <rect x="500" y="60" width="400" height="60" rx="10" fill="#B71C1C" stroke="#f44336" stroke-width="2.5"/>
+    <text x="700" y="82" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">MilitaryBrain</text>
+    <text x="700" y="100" text-anchor="middle" fill="#FFCDD2" font-size="10">19 inputs &rarr; attackWeight, defendWeight, attackTarget, defendTarget</text>
+  </g>
+
+  <line x1="700" y1="120" x2="700" y2="155" stroke="#f44336" stroke-width="2" marker-end="url(#am)"/>
+
+  <!-- AttackSpatialBrain -->
+  <g data-tt-title="AttackSpatialBrain (14 inputs &rarr; 3 outputs)" data-tt-body="<span class='tt-logic'>Decides WHERE to move the army using influence maps.</span><br><br><span class='tt-input'>Inputs (14):</span> MilitaryBrain outputs (attack/defend weights and targets), army counts (own, free, enemy), scores, attack/defence sums, in-combat ratio, military/attack urgencies<br><br><span class='tt-output'>Outputs (3 weights):</span> one per army influence map layer (buildings, units, attackSpeed)<br><br>Weights go to getAreasIterative() which combines maps and returns candidate positions. Falls back to quadtree getCenterOf() if no areas found.">
+    <rect x="475" y="160" width="450" height="55" rx="8" fill="#006064" stroke="#00BCD4" stroke-width="2"/>
+    <text x="700" y="182" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">AttackSpatialBrain</text>
+    <text x="700" y="200" text-anchor="middle" fill="#80DEEA" font-size="10">14 inputs &rarr; 3 influence map weights &rarr; target position</text>
+  </g>
+
+  <line x1="700" y1="215" x2="700" y2="250" stroke="#aaa" stroke-width="1.5" marker-end="url(#ar2)"/>
+
+  <!-- Decision: attack or defend? -->
+  <g data-tt-title="Attack or Defend?" data-tt-body="If attackWeight > defendWeight:<br>&nbsp;&nbsp;target = enemy player's center<br>&nbsp;&nbsp;type determined by attackTarget float<br>Else:<br>&nbsp;&nbsp;target = own player's center<br>&nbsp;&nbsp;type determined by defendTarget float<br><br>Target float thresholds:<br>&nbsp;&nbsp;&lt; 0.33 = ECON (enemy workers)<br>&nbsp;&nbsp;&lt; 0.67 = BUILDING (enemy buildings)<br>&nbsp;&nbsp;&ge; 0.67 = ARMY (enemy army)">
+    <polygon points="700,255 800,290 700,325 600,290" fill="#37474F" stroke="#FF9800" stroke-width="2"/>
+    <text x="700" y="294" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">Attack?</text>
+  </g>
+
+  <line x1="600" y1="290" x2="450" y2="290" stroke="#aaa" stroke-width="1.5" marker-end="url(#ar2)"/>
+  <text x="520" y="283" fill="#66BB6A" font-size="10">defend</text>
+  <line x1="800" y1="290" x2="950" y2="290" stroke="#aaa" stroke-width="1.5" marker-end="url(#ar2)"/>
+  <text x="860" y="283" fill="#EF5350" font-size="10">attack</text>
+
+  <!-- Sub-army loop -->
+  <line x1="700" y1="325" x2="700" y2="365" stroke="#aaa" stroke-width="1.5" marker-end="url(#ar2)"/>
+
+  <g data-tt-title="Sub-Army Movement" data-tt-body="Army is divided into spatial sub-groups using divide().<br><br>For each sub-army:<br><br><b>If FAR from target</b> (distance &gt; 30):<br>&nbsp;&nbsp;Issue GO order toward target position<br>&nbsp;&nbsp;Group order if multiple units, individual otherwise<br><br><b>If CLOSE to target</b> (distance &le; 30):<br>&nbsp;&nbsp;Find nearby enemies based on centerType:<br>&nbsp;&nbsp;&bull; BUILDING &rarr; enemy buildings<br>&nbsp;&nbsp;&bull; ECON &rarr; enemy workers only<br>&nbsp;&nbsp;&bull; ARMY &rarr; all enemy units<br>&nbsp;&nbsp;Find closest enemy, issue ATTACK group order">
+    <rect x="400" y="370" width="600" height="80" rx="8" fill="#263238" stroke="#78909C" stroke-width="1.5"/>
+    <text x="700" y="395" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">For each sub-army</text>
+    <text x="700" y="415" text-anchor="middle" fill="#90A4AE" font-size="11">FAR &rarr; GO order toward target</text>
+    <text x="700" y="435" text-anchor="middle" fill="#90A4AE" font-size="11">CLOSE &rarr; find enemies by type, ATTACK closest</text>
+  </g>
+
+  <!-- Game engine -->
+  <line x1="700" y1="450" x2="700" y2="490" stroke="#aaa" stroke-width="1.5" marker-end="url(#ar2)"/>
+  <rect x="450" y="490" width="500" height="40" rx="8" fill="#1a1a2e" stroke="#37474F" stroke-width="1"/>
+  <text x="700" y="515" text-anchor="middle" fill="#78909C" font-size="12">ActionCenter &rarr; Game Engine executes orders</text>
+</svg>
+
+<!-- ===== BRAIN SUMMARY TABLE ===== -->
+<hr class="divider"/>
+<div class="section-title">All 6 Brains at a Glance</div>
+
+<table class="spec">
+  <tr>
+    <th>Brain</th><th>Phase</th><th>Inputs</th><th>Outputs</th><th>CSV File</th><th>Called</th>
+  </tr>
+  <tr>
+    <td class="brain">MasterBrain</td><td>action</td><td>30</td><td>9 urgencies</td><td>master.csv</td><td>Every tick</td>
+  </tr>
+  <tr>
+    <td class="brain">EconomyBrain</td><td>action</td><td>34</td><td>18 (priorities + building needs)</td><td>economy.csv</td><td>Every tick</td>
+  </tr>
+  <tr>
+    <td class="brain">UnitBrain</td><td>action</td><td>14</td><td>24-dim profile + count</td><td>unit.csv</td><td>Every tick</td>
+  </tr>
+  <tr>
+    <td class="brain">MilitaryBrain</td><td>order</td><td>19</td><td>4 (attack/defend weights + targets)</td><td>military.csv</td><td>Every tick (if free army)</td>
+  </tr>
+  <tr>
+    <td class="brain">BuildSpatialBrain</td><td>action</td><td>13</td><td>7 influence map weights</td><td>build_spatial.csv</td><td>On demand (when placing building)</td>
+  </tr>
+  <tr>
+    <td class="brain">AttackSpatialBrain</td><td>order</td><td>14</td><td>3 influence map weights</td><td>attack_spatial.csv</td><td>On demand (when moving army)</td>
+  </tr>
+</table>
+
+<!-- ===== KEY CONCEPTS ===== -->
+<hr class="divider"/>
+<div class="section-title">Key Concepts</div>
+
+<div class="card">
+  <h3 style="color:#FF9800">Neural Network Brains</h3>
+  <p>Each brain wraps a multi-layer neural network loaded from a CSV file. The network is a simple feedforward NN with layers of weights.</p>
+  <ul>
+    <li><code>Brain</code> class holds <code>vector&lt;Layer*&gt;</code></li>
+    <li><code>BrainProvider</code> caches and reuses loaded brains</li>
+    <li>CSV files are per-nation (via <code>db_nation::actionPrefix</code> / <code>orderPrefix</code>), enabling different AI personalities per faction</li>
+    <li>Input values are normalized (scores /1000, counts /200, etc.)</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3 style="color:#2196F3">Want List</h3>
+  <p>Central priority queue for all resource-spending actions. Brains don't execute directly &mdash; they submit wants.</p>
+  <ul>
+    <li>Three types: <code>WORKER</code>, <code>UNIT</code>, <code>BUILDING</code></li>
+    <li>Re-requested items get <b>boosted</b> (x1.15), old ones <b>decay</b> (x0.85), below 0.05 are <b>dropped</b></li>
+    <li>Sorted by priority, executed top-down while affordable</li>
+    <li>Tracks <b>lacking resources</b> (what couldn't be afforded) &mdash; fed back to MasterBrain next tick</li>
+    <li>Can execute <b>multiple items per tick</b> (e.g., 2 units + 1 building if affordable)</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3 style="color:#00BCD4">Influence Maps &amp; Spatial Brains</h3>
+  <p>The game maintains per-player influence maps at grid resolution. Spatial brains output <b>weights</b> for these maps, not positions directly.</p>
+  <ul>
+    <li><b>7 maps</b> for general use (<code>AI_MAP_COUNT</code>): buildings, units, attackSpeed, 4x gatherSpeed</li>
+    <li><b>3 maps</b> for army use (<code>AI_ARMY_MAP_COUNT</code>): buildings, units, attackSpeed</li>
+    <li>Weights are combined with maps via <code>InfluenceManager::getAreas()</code></li>
+    <li>Result is filtered by visibility (fog of war) and sorted to find best cells</li>
+    <li><code>InfluenceMapQuad</code> provides quadtree-based center finding (fallback for army movement)</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3 style="color:#EF5350">Feedback Loop</h3>
+  <p>The AI self-corrects via a tick-to-tick feedback loop:</p>
+  <ul>
+    <li>Want List computes <b>lacking resources</b> (what it couldn't afford)</li>
+    <li>MasterBrain and EconomyBrain receive this lacking data as input next tick</li>
+    <li>If unit creation fails because no building can deploy it, <code>pendingLackingBuilding</code> is set, boosting building construction urgency</li>
+  </ul>
+</div>
+
+<!-- ===== EXAMPLES ===== -->
+<hr class="divider"/>
+<div class="section-title">Example Scenarios</div>
+
+<div class="scenario">
+  <h3>Scenario 1: Early Game &mdash; Economy Focus</h3>
+  <p class="sit">Resources: 300F 200W 50S 50G | Buildings: 2 | Workers: 3 | Army: 0 | Game time: early</p>
+  <table>
+    <tr><th>Brain</th><th>Key Output</th><th>Effect</th></tr>
+    <tr><td>MasterBrain</td><td>workerUrgency=0.8, economyUrgency=0.9, unitUrgency=0.2</td><td>Focus on economy</td></tr>
+    <tr><td>EconomyBrain</td><td>workerAlloc=0.7, foodPriority=0.6, needMill=0.8, needSawmill=0.5</td><td>Train workers, build mill first</td></tr>
+    <tr><td>UnitBrain</td><td>count=0</td><td>No units (low urgency)</td></tr>
+    <tr><td>Want List</td><td>[WORKER:0.7, BUILDING(mill):0.8]</td><td>Build mill first (higher priority), then worker if affordable</td></tr>
+    <tr><td>BuildSpatial</td><td>weights=[0.2, 0.1, 0.0, 0.9, 0.1, 0.1, 0.1]</td><td>Place mill near food sources (high gatherFood weight)</td></tr>
+  </table>
+</div>
+
+<div class="scenario">
+  <h3>Scenario 2: Under Attack &mdash; Military Response</h3>
+  <p class="sit">Resources: 500F 300W 200S 100G | Army: 15 | Enemy army: 25 nearby | attackSpeed map shows enemy at base</p>
+  <table>
+    <tr><th>Brain</th><th>Key Output</th><th>Effect</th></tr>
+    <tr><td>MasterBrain</td><td>militaryUrgency=0.9, defenceBuildingUrgency=0.7, unitUrgency=0.8</td><td>Defend! Build army and defences</td></tr>
+    <tr><td>MilitaryBrain</td><td>attackWeight=0.2, defendWeight=0.8, defendTarget=0.8</td><td>Defend, target enemy army</td></tr>
+    <tr><td>AttackSpatial</td><td>weights=[0.1, 0.8, 0.7]</td><td>Move toward enemy unit concentration + recent combat area</td></tr>
+    <tr><td>Sub-armies</td><td>CLOSE to target</td><td>Find nearest enemy units, issue ATTACK orders</td></tr>
+  </table>
+</div>
+
+<div class="scenario">
+  <h3>Scenario 3: Strong Economy &mdash; Time to Attack</h3>
+  <p class="sit">Resources: 2000F 1500W 800S 600G | Army: 40 | Enemy army: 20 | Score lead</p>
+  <table>
+    <tr><th>Brain</th><th>Key Output</th><th>Effect</th></tr>
+    <tr><td>MasterBrain</td><td>attackUrgency=0.9, unitUrgency=0.6, economyUrgency=0.3</td><td>Aggressive posture</td></tr>
+    <tr><td>UnitBrain</td><td>profile=[heavy cavalry bias], count=3</td><td>Train 3 cavalry for assault</td></tr>
+    <tr><td>MilitaryBrain</td><td>attackWeight=0.9, defendWeight=0.1, attackTarget=0.1</td><td>Attack enemy economy</td></tr>
+    <tr><td>AttackSpatial</td><td>weights=[0.8, 0.2, 0.1]</td><td>Target area with highest enemy building density</td></tr>
+    <tr><td>Sub-armies</td><td>FAR from target</td><td>All sub-armies march toward enemy base, GO orders</td></tr>
+  </table>
+</div>
+
+<!-- ===== TODO ===== -->
+<hr class="divider"/>
+<div class="section-title">Things To Do</div>
+
+<div class="todo-list">
+  <div class="todo-item">
+    <h4>ScoutSpatialBrain</h4>
+    <p>Decide where to send scouts based on fog of war and last-seen timestamps. Inputs: visibility score, game time, urgencies. Outputs: 3 army map weights (inverted by visibility).</p>
+  </div>
+  <div class="todo-item">
+    <h4>ExpandSpatialBrain</h4>
+    <p>Decide where to expand economy. Inputs: resource levels, gather speeds, expand urgency. Outputs: 7 map weights. Uses the currently unused <code>expandPriority</code> from EconomyBrain.</p>
+  </div>
+  <div class="todo-item">
+    <h4>DeploySpatialBrain &mdash; Which building to deploy units from</h4>
+    <p>Currently <code>getBuildingToDeploy()</code> returns <code>allPossible.at(0)</code>. Should use spatial brain + <code>getBuildingClosestArea()</code> to pick the best-positioned building. Helper already ported.</p>
+  </div>
+  <div class="todo-item">
+    <h4>Tech/Defence building selection</h4>
+    <p><code>resolveBuilding()</code> for non-RESOURCE types defaults to <code>buildings.at(0)</code>. Needs metric matching or a dedicated brain.</p>
+  </div>
+  <div class="todo-item">
+    <h4>Upgrade system</h4>
+    <p>Unit and building level-up logic is fully commented out. Needs: <code>UPGRADE_UNIT</code> / <code>UPGRADE_BUILDING</code> in WantItemType, upgrade decision brain, and re-enabling ActionCenter upgrade commands.</p>
+  </div>
+  <div class="todo-item">
+    <h4>Multi-worker collection</h4>
+    <p>Current system assigns workers individually. Old OrderMaker had a histogram-based group collection system that assigned worker groups to resources simultaneously. Worth porting for better efficiency.</p>
+  </div>
+  <div class="todo-item">
+    <h4>Implement GAME_TIME, KD_RATIO, IN_COMBAT_RATIO inputs</h4>
+    <p>Several MasterBrain inputs are hardcoded to 0.0f with TODO markers. Need actual game state accessors.</p>
+  </div>
+  <div class="todo-item">
+    <h4>Per-sub-army targeting</h4>
+    <p>Currently all sub-armies go to the same target. Each could have different objectives (e.g., one attacks economy, another pins enemy army).</p>
+  </div>
+  <div class="todo-item">
+    <h4>CSV training pipeline</h4>
+    <p>Need to generate/train the neural network CSV files for BuildSpatialBrain (<code>build_spatial.csv</code>, 13&rarr;7) and AttackSpatialBrain (<code>attack_spatial.csv</code>, 14&rarr;3).</p>
+  </div>
+</div>
+
+<!-- ===== FILE REFERENCE ===== -->
+<hr class="divider"/>
+<div class="section-title">File Reference</div>
+
+<table class="spec">
+  <tr><th>File</th><th>Purpose</th></tr>
+  <tr><td class="brain">AiOrchestrator.h/.cpp</td><td>Main AI controller &mdash; owns all brains, runs action() and order()</td></tr>
+  <tr><td class="brain">MasterBrain.h/.cpp</td><td>Top-level urgency allocation (30&rarr;9)</td></tr>
+  <tr><td class="brain">EconomyBrain.h/.cpp</td><td>Resource priorities and building needs (34&rarr;18)</td></tr>
+  <tr><td class="brain">UnitBrain.h/.cpp</td><td>Unit composition selection (14&rarr;24+count)</td></tr>
+  <tr><td class="brain">MilitaryBrain.h/.cpp</td><td>Attack vs defend decision (19&rarr;4)</td></tr>
+  <tr><td class="brain">BuildSpatialBrain.h/.cpp</td><td>Building placement via influence maps (13&rarr;7)</td></tr>
+  <tr><td class="brain">AttackSpatialBrain.h/.cpp</td><td>Army movement via influence maps (14&rarr;3)</td></tr>
+  <tr><td>WantList.h/.cpp</td><td>Priority queue for resource-spending actions</td></tr>
+  <tr><td>nn/Brain.h/.cpp</td><td>Neural network wrapper (layers, feedforward)</td></tr>
+  <tr><td>nn/BrainProvider.h/.cpp</td><td>Brain CSV loader and cache</td></tr>
+  <tr><td>AiHistory.h/.cpp</td><td>Action/order history logging</td></tr>
+  <tr><td>AiUtils.h</td><td>Utility: biggestWithRand, lowestWithRand</td></tr>
+  <tr><td>InfluenceManager.h/.cpp</td><td>Per-player influence maps (7+3 layers), spatial queries</td></tr>
+  <tr><td>Player.h/.cpp</td><td>Owns AiOrchestrator, calls aiAction()/aiOrder()</td></tr>
+</table>
+
+<!-- ===== TOOLTIP SCRIPT ===== -->
+<div class="tooltip" id="tooltip"></div>
+<script>
+const tt = document.getElementById('tooltip');
+document.querySelectorAll('g[data-tt-title]').forEach(g => {
+  g.addEventListener('mouseenter', e => {
+    tt.innerHTML = '<div class="tt-title">' + g.dataset.ttTitle + '</div>' + g.dataset.ttBody;
+    tt.style.display = 'block';
+  });
+  g.addEventListener('mousemove', e => {
+    let x = e.clientX + 16, y = e.clientY + 16;
+    if (x + tt.offsetWidth > window.innerWidth - 20) x = e.clientX - tt.offsetWidth - 16;
+    if (y + tt.offsetHeight > window.innerHeight - 20) y = e.clientY - tt.offsetHeight - 16;
+    tt.style.left = x + 'px'; tt.style.top = y + 'px';
+  });
+  g.addEventListener('mouseleave', () => { tt.style.display = 'none'; });
+});
+</script>
+
+</body>
+</html>
