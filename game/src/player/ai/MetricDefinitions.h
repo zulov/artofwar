@@ -155,44 +155,6 @@ inline struct MetricDefinitions {
 	std::span<const float> writeUnit(db_unit* unit, db_unit_level* level) const;
 	std::span<const float> writeBuilding(db_building* building, db_building_level* level) const;
 
-	const std::span<float> writeResource(Player* one, Player* two) const {
-		return compose(
-			section(aiBasicMetric, one, two),
-			section(aiResourceMetric, one->getResources(), one->getPossession())
-		);
-	}
-
-	const std::span<float> writeResourceWithOutBonus(Player* player, Player* enemy) const {
-		return compose(
-			section(aiBasicMetric, player, enemy),
-			section(aiResourceWithoutBonusMetric, player->getResources(), player->getPossession())
-		);
-	}
-
-	const std::span<float> writeResourceEconomy(Player* player, Player* enemy) const {
-		return compose(
-			section(aiResourceEconomyMetric, player->getResources(), player->getPossession())
-		);
-	}
-
-	//TODO te 3 sie troszke dubluj¹ ogran¹æ indeksami? ale z drugiej srony chce sie ich pozbyc
-	const std::span<float> writeAttackOrDefence(Player* one, Player* two) const {
-		return compose(section(aiAttackOrDefence, one, two));
-	}
-
-	const std::span<float> writeWhereAttack(Player* one, Player* two) const {
-		return compose(
-			section(aiBasicMetric, one, two),
-			section(aiWhereAttack, one, two)
-		);
-	}
-
-	const std::span<float> writeWhereDefend(Player* one, Player* two) const {
-		return compose(
-			section(aiBasicMetric, one, two),
-			section(aiWhereDefend, one, two)
-		);
-	}
 
 	static float diffOfCenters(CenterType type1, Player* p1, CenterType type2, Player* p2, float defaultVal) {
 		return Game::getEnvironment()->getDiffOfCenters(type1, p1->getId(), type2, p2->getId(), defaultVal);
@@ -220,87 +182,6 @@ inline struct MetricDefinitions {
 	static constexpr size_t BUILDING_METRIC_COUNT = magic_enum::enum_count<B>();
 	static std::array<AiUnitMetric, UNIT_METRIC_COUNT> aiUnitMetric;
 	static std::array<AiBuildingMetric, BUILDING_METRIC_COUNT> aiBuildingMetric;
-
-	static inline auto aiResourceMetric = buildMetricArray<R, AiResourceMetric>({
-		{R::GATHER_SPEED_FOOD,  {[](auto r, auto p) { return r->getGatherSpeed(ResourceType::FOOD); }, 10}},
-		{R::GATHER_SPEED_WOOD,  {[](auto r, auto p) { return r->getGatherSpeed(ResourceType::WOOD); }, 10}},
-		{R::GATHER_SPEED_STONE, {[](auto r, auto p) { return r->getGatherSpeed(ResourceType::STONE); }, 10}},
-		{R::GATHER_SPEED_GOLD,  {[](auto r, auto p) { return r->getGatherSpeed(ResourceType::GOLD); }, 10}},
-		{R::VALUE_FOOD,         {[](auto r, auto p) { return r->getValue(ResourceType::FOOD); }, 1000}},
-		{R::VALUE_WOOD,         {[](auto r, auto p) { return r->getValue(ResourceType::WOOD); }, 1000}},
-		{R::VALUE_STONE,        {[](auto r, auto p) { return r->getValue(ResourceType::STONE); }, 1000}},
-		{R::VALUE_GOLD,         {[](auto r, auto p) { return r->getValue(ResourceType::GOLD); }, 1000}},
-		{R::FREE_WORKERS,       {[](auto r, auto p) -> float { return p->getFreeWorkersNumber(); }, 100}},
-		{R::TOTAL_WORKERS,      {[](auto r, auto p) -> float { return p->getWorkersNumber(); }, 100}},
-	});
-
-	static inline auto aiResourceWithoutBonusMetric = buildMetricArray<RNB, AiResourceMetric>({
-		{RNB::VALUE_FOOD,  {[](auto r, auto p) { return p->getResWithOutBonus(ResourceType::FOOD); }, 20}},
-		{RNB::VALUE_WOOD,  {[](auto r, auto p) { return p->getResWithOutBonus(ResourceType::WOOD); }, 20}},
-		{RNB::VALUE_STONE, {[](auto r, auto p) { return p->getResWithOutBonus(ResourceType::STONE); }, 20}},
-		{RNB::VALUE_GOLD,  {[](auto r, auto p) { return p->getResWithOutBonus(ResourceType::GOLD); }, 20}},
-	});
-
-	static inline auto aiResourceEconomyMetric = buildMetricArray<RE, AiResourceMetric>({
-		{RE::GATHER_SPEED_FOOD,      {[](auto r, auto p) { return r->getGatherSpeed(ResourceType::FOOD); }, 10}},
-		{RE::GATHER_SPEED_WOOD,      {[](auto r, auto p) { return r->getGatherSpeed(ResourceType::WOOD); }, 10}},
-		{RE::GATHER_SPEED_STONE,     {[](auto r, auto p) { return r->getGatherSpeed(ResourceType::STONE); }, 10}},
-		{RE::GATHER_SPEED_GOLD,      {[](auto r, auto p) { return r->getGatherSpeed(ResourceType::GOLD); }, 10}},
-		{RE::VALUE_FOOD,             {[](auto r, auto p) { return r->getValue(ResourceType::FOOD); }, 1000}},
-		{RE::VALUE_WOOD,             {[](auto r, auto p) { return r->getValue(ResourceType::WOOD); }, 1000}},
-		{RE::VALUE_STONE,            {[](auto r, auto p) { return r->getValue(ResourceType::STONE); }, 1000}},
-		{RE::VALUE_GOLD,             {[](auto r, auto p) { return r->getValue(ResourceType::GOLD); }, 1000}},
-		{RE::FREE_WORKERS,           {[](auto r, auto p) -> float { return p->getFreeWorkersNumber(); }, 100}},
-		{RE::TOTAL_WORKERS,          {[](auto r, auto p) -> float { return p->getWorkersNumber(); }, 100}},
-		{RE::FOOD_STORAGE,           {[](auto r, auto p) { return r->getFoodStorage(); }, 1000}},
-		{RE::FOOD_EXCESS,            {[](auto r, auto p) { return r->getFoodExcess(); }, 500}},
-		{RE::FOOD_STORAGE_RATIO,     {[](auto r, auto p) { return r->getFoodStorageRatio(); }, 1}},
-		{RE::GOLD_STORAGE_RATIO,     {[](auto r, auto p) { return r->getGoldStorageRatio(); }, 1}},
-		{RE::STONE_REFINE_GAP,       {[](auto r, auto p) { return r->getStoneRefineGap(); }, 10}},
-		{RE::GOLD_REFINE_GAP,        {[](auto r, auto p) { return r->getGoldRefineGap(); }, 10}},
-		{RE::STONE_REFINE_UTIL,      {[](auto r, auto p) { return r->getStoneRefineUtilization(); }, 1}},
-		{RE::GOLD_REFINE_UTIL,       {[](auto r, auto p) { return r->getGoldRefineUtilization(); }, 1}},
-		{RE::BONUS_BUILDING_COUNT,   {[](auto r, auto p) -> float { return p->getBonusBuildingCount(); }, 20}},
-		{RE::SPAWNER_COUNT,          {[](auto r, auto p) -> float { return p->getSpawnerCount(); }, 10}},
-		{RE::CONVERT_BUILDING_COUNT, {[](auto r, auto p) -> float { return p->getConvertBuildingCount(); }, 10}},
-		{RE::STORAGE_BUILDING_COUNT, {[](auto r, auto p) -> float { return p->getStorageBuildingCount(); }, 10}},
-		{RE::REFINE_BUILDING_COUNT,  {[](auto r, auto p) -> float { return p->getRefineBuildingCount(); }, 10}},
-		{RE::RES_BUILDING_FOOD,      {[](auto r, auto p) -> float { return p->getResourceBuildingCounts()[cast(ResourceType::FOOD)]; }, 10}},
-		{RE::RES_BUILDING_WOOD,      {[](auto r, auto p) -> float { return p->getResourceBuildingCounts()[cast(ResourceType::WOOD)]; }, 10}},
-		{RE::RES_BUILDING_STONE,     {[](auto r, auto p) -> float { return p->getResourceBuildingCounts()[cast(ResourceType::STONE)]; }, 10}},
-		{RE::RES_BUILDING_GOLD,      {[](auto r, auto p) -> float { return p->getResourceBuildingCounts()[cast(ResourceType::GOLD)]; }, 10}},
-	});
-
-	static inline auto aiBasicMetric = buildMetricArray<BM, AiPlayerMetric>({
-		{BM::SCORE,           {[](auto p1, auto p2) -> float { return p1->getScore(); }, 1000}},
-		{BM::UNITS_COUNT,     {[](auto p1, auto p2) -> float { return p1->getPossession()->getUnitsNumber(); }, 200}},
-		{BM::BUILDINGS_COUNT, {[](auto p1, auto p2) -> float { return p1->getPossession()->getBuildingsNumber(); }, 50}},
-		{BM::ENEMY_SCORE,     {[](auto p1, auto p2) -> float { return p2->getScore(); }, 1000}},
-	});
-
-	static inline auto aiAttackOrDefence = buildMetricArray<AD, AiPlayerMetric>({
-		{AD::ATTACK_SUM,                  {[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000}},
-		{AD::DEFENCE_SUM,                 {[](auto p1, auto p2) { return p1->getPossession()->getDefenceAttackSum(); }, 100}},
-		{AD::ARMY_TO_OWN_BUILDING,        {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }}},
-		{AD::ARMY_TO_ENEMY_BUILDING,      {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }}},
-		{AD::ENEMY_ARMY_TO_OWN_BUILDING,  {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p1, 1.f); }}},
-		{AD::ENEMY_ARMY_TO_ENEMY_BUILDING,{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p2, CenterType::BUILDING, p2, 0.f); }}},
-	});
-
-	static inline auto aiWhereAttack = buildMetricArray<WA, AiPlayerMetric>({
-		{WA::ATTACK_SUM,            {[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000}},
-		{WA::ARMY_TO_ENEMY_ECON,    {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p2, 1.f); }}},
-		{WA::ARMY_TO_ENEMY_BUILDING,{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p2, 1.f); }}},
-		{WA::ARMY_TO_ENEMY_ARMY,    {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }}},
-	});
-
-	static inline auto aiWhereDefend = buildMetricArray<WD, AiPlayerMetric>({
-		{WD::ATTACK_SUM,          {[](auto p1, auto p2) { return p1->getPossession()->getAttackSum(); }, 1000}},
-		{WD::DEFENCE_SUM,         {[](auto p1, auto p2) { return p1->getPossession()->getDefenceAttackSum(); }, 100}},
-		{WD::ARMY_TO_OWN_ECON,    {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ECON, p1, 0.f); }}},
-		{WD::ARMY_TO_OWN_BUILDING,{[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::BUILDING, p1, 0.f); }}},
-		{WD::ARMY_TO_ENEMY_ARMY,  {[](auto p1, auto p2) { return diffOfCenters(CenterType::ARMY, p1, CenterType::ARMY, p2, 1.f); }}},
-	});
 
 	constexpr static unsigned char aiUnitsTypesIdxs[] = {
 		idx(U::TYPE_INFANTRY), idx(U::TYPE_RANGE), idx(U::TYPE_CAVALRY), idx(U::TYPE_WORKER),

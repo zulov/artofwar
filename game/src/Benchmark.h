@@ -4,7 +4,7 @@
 #include "simulation/SimGlobals.h"
 
 constexpr unsigned char BENCH_LENGTH = 120;
-constexpr unsigned charint LOW_CUTOFF = 12;
+constexpr unsigned char LOW_CUTOFF = 12;
 constexpr unsigned char HIGH_CUTOFF = 108;
 constexpr unsigned char TICK_SAMPLES = 10;
 
@@ -24,7 +24,6 @@ public:
 	const float* getTickAvgs() const { return tickAvg; }
 private:
 	float data[BENCH_LENGTH]{};
-	short index = 0;
 	float avgLowest = 0;
 	float avgMiddle = 0;
 	float avgHighest = 0;
@@ -34,4 +33,5 @@ private:
 	float tickAvg[FRAMES_IN_PERIOD]{};
 
 	std::ofstream output;
+	short index = 0;
 };
