@@ -48,22 +48,36 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::FREE_WORKERS)] = norm(possession->getFreeWorkersNumber(), 100.f);
 	inputData[idx(I::WORKERS_COUNT)] = norm(possession->getWorkersNumber(), 100.f);
 
-	// New inputs — TODO implement
-	inputData[idx(I::FOOD_STORAGE_RATIO)] = 0.f; //TODO implement
-	inputData[idx(I::GOLD_STORAGE_RATIO)] = 0.f; //TODO implement
-	inputData[idx(I::STONE_REFINE_RATIO)] = 0.f; //TODO implement
-	inputData[idx(I::GOLD_REFINE_RATIO)] = 0.f; //TODO implement
-	inputData[idx(I::STONE_REFINE_GAP)] = 0.f; //TODO res->getStoneRefineGap() / 10.f
-	inputData[idx(I::GOLD_REFINE_GAP)] = 0.f; //TODO res->getGoldRefineGap() / 10.f
-	inputData[idx(I::BONUS_COVERAGE_FOOD)] = 0.f; //TODO possession->getBonusCoverage(FOOD)
-	inputData[idx(I::BONUS_COVERAGE_WOOD)] = 0.f; //TODO possession->getBonusCoverage(WOOD)
-	inputData[idx(I::BONUS_COVERAGE_STONE)] = 0.f; //TODO possession->getBonusCoverage(STONE)
-	inputData[idx(I::BONUS_COVERAGE_GOLD)] = 0.f; //TODO possession->getBonusCoverage(GOLD)
-	inputData[idx(I::FARM_COUNT)] = 0.f; //TODO possession->getConvertBuildingCount() / 5.f
-	inputData[idx(I::SPAWNER_COUNT)] = 0.f; //TODO possession->getSpawnerCount() / 5.f
-	inputData[idx(I::FOOD_DECAY_RATE)] = 0.f; //TODO res->getFoodDecayRate() / 100.f
-	inputData[idx(I::TOTAL_RES_BUILDINGS)] = 0.f; //TODO possession->getResourceBuildingCount() / 20.f
-	inputData[idx(I::RES_WO_BONUS)] = 0.f; //TODO implement
+	// Storage ratios (2) — from Resources
+	float foodStorage = res->getFoodStorage();
+	inputData[idx(I::FOOD_STORAGE_RATIO)] = foodStorage > 0.f ? norm(res->getValue(ResourceType::FOOD), foodStorage) : 0.f;
+	float goldStorage = res->getGoldStorage();
+	inputData[idx(I::GOLD_STORAGE_RATIO)] = goldStorage > 0.f ? norm(res->getValue(ResourceType::GOLD), goldStorage) : 0.f;
+
+	// Refine ratios (2) — from Resources
+	float stoneGather = res->getGatherSpeed(ResourceType::STONE);
+	float stoneCap = res->getStoneRefineCapacity();
+	inputData[idx(I::STONE_REFINE_RATIO)] = stoneCap > 0.f ? norm(stoneGather, stoneCap) : 0.f;
+	float goldGather = res->getGatherSpeed(ResourceType::GOLD);
+	float goldCap = res->getGoldRefineCapacity();
+	inputData[idx(I::GOLD_REFINE_RATIO)] = goldCap > 0.f ? norm(goldGather, goldCap) : 0.f;
+
+	// Refine gaps (2) — from Resources
+	inputData[idx(I::STONE_REFINE_GAP)] = norm(std::max(0.f, stoneGather - stoneCap), 10.f);
+	inputData[idx(I::GOLD_REFINE_GAP)] = norm(std::max(0.f, goldGather - goldCap), 10.f);
+
+	// Bonus coverage (4) — from Possession
+	inputData[idx(I::BONUS_COVERAGE_FOOD)] = possession->getBonusCoverage(ResourceType::FOOD);
+	inputData[idx(I::BONUS_COVERAGE_WOOD)] = possession->getBonusCoverage(ResourceType::WOOD);
+	inputData[idx(I::BONUS_COVERAGE_STONE)] = possession->getBonusCoverage(ResourceType::STONE);
+	inputData[idx(I::BONUS_COVERAGE_GOLD)] = possession->getBonusCoverage(ResourceType::GOLD);
+
+	// Building counts (3) — from Possession
+	inputData[idx(I::FARM_COUNT)] = norm(possession->getConvertBuildingCount(), 5.f);
+	inputData[idx(I::SPAWNER_COUNT)] = norm(possession->getSpawnerCount(), 5.f);
+	inputData[idx(I::FOOD_DECAY_RATE)] = norm(res->getLastFoodLost(), 100.f);
+	inputData[idx(I::TOTAL_RES_BUILDINGS)] = norm(possession->getResourceBuildingCount(), 20.f);
+	inputData[idx(I::RES_WO_BONUS)] = norm(possession->getResWithoutBonusSum(), 20.f);
 
 	// Lacking per resource (4)
 	inputData[idx(I::LACKING_FOOD)] = norm(lackingPerResource[0], 500.f);

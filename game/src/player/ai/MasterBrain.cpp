@@ -79,9 +79,9 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 	inputData[idx(I::DELTA_RES)] = deltaRes;
 
 	// New inputs — TODO implement
-	inputData[idx(I::GAME_TIME)] = 0.f; //TODO implement
+	inputData[idx(I::GAME_TIME)] = norm(Game::getFrameInfo()->getSeconds(), 1800.f);
 	inputData[idx(I::KD_RATIO)] = 0.f; //TODO implement
-	inputData[idx(I::IN_COMBAT_RATIO)] = 0.f; //TODO implement
+	inputData[idx(I::IN_COMBAT_RATIO)] = possession->getInCombatRatio();
 	inputData[idx(I::TECH_LEVEL)] = 0.f; //TODO implement
 	inputData[idx(I::DELTA_GATHER_SPEED)] = 0.f; //TODO implement
 

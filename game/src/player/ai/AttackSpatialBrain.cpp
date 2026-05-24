@@ -43,7 +43,7 @@ AttackSpatialOutput AttackSpatialBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::DEFENCE_SUM)] = norm(possession->getDefenceAttackSum(), 100.f);
 
 	// Combat state (1)
-	inputData[idx(I::IN_COMBAT_RATIO)] = 0.f; //TODO implement
+	inputData[idx(I::IN_COMBAT_RATIO)] = possession->getInCombatRatio();
 
 	// Urgencies from MasterBrain (2)
 	inputData[idx(I::MILITARY_URGENCY)] = militaryUrgency;

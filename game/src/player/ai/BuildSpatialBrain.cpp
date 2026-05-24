@@ -8,6 +8,7 @@
 #include "player/Player.h"
 #include "player/Possession.h"
 #include "player/Resources.h"
+#include "Game.h"
 
 BuildSpatialBrain::BuildSpatialBrain(db_nation* nation)
 	: brain(BrainProvider::get(nation->actionPrefix[0] + "build_spatial.csv")) {
@@ -34,7 +35,7 @@ BuildSpatialOutput BuildSpatialBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::ARMY_COUNT)] = norm(possession->getArmyNumber(), 200.f);
 
 	// Game state (3)
-	inputData[idx(I::GAME_TIME)] = 0.f; //TODO implement
+	inputData[idx(I::GAME_TIME)] = norm(Game::getFrameInfo()->getSeconds(), 1800.f);
 	inputData[idx(I::PLAYER_SCORE)] = norm(player->getScore(), 1000.f);
 	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), 1000.f);
 

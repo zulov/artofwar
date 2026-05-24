@@ -76,57 +76,57 @@ unsigned Possession::getWorkersNumber() const {
 }
 
 unsigned Possession::getFreeWorkersNumber() {
-	ensureReady();
+	ensureCounts();
 	return idleWorkersNumber;
 }
 
 unsigned Possession::getFreeArmyNumber() {
-	ensureReady();
+	ensureCounts();
 	return idleArmyNumber;
 }
 
 unsigned Possession::getArmyNumber() {
-	ensureReady();
+	ensureCounts();
 	return armyNumber;
 }
 
 unsigned Possession::getInfantryNumber() {
-	ensureReady();
+	ensureCounts();
 	return typeInfantryNumber;
 }
 
 unsigned Possession::getCavalryNumber() {
-	ensureReady();
+	ensureCounts();
 	return typeCavalryNumber;
 }
 
 unsigned Possession::getMeleeNumber() {
-	ensureReady();
+	ensureCounts();
 	return typeMeleeNumber;
 }
 
 unsigned Possession::getRangeNumber() {
-	ensureReady();
+	ensureCounts();
 	return typeRangeNumber;
 }
 
 unsigned Possession::getLightNumber() {
-	ensureReady();
+	ensureCounts();
 	return typeLightNumber;
 }
 
 unsigned Possession::getHeavyNumber() {
-	ensureReady();
+	ensureCounts();
 	return typeHeavyNumber;
 }
 
 std::span<float> Possession::getResWithOutBonus() {
-	ensureReady();
+	ensureResWithoutBonus();
 	return metric->resWithoutBonus;
 }
 
 float Possession::getResWithOutBonus(ResourceType rt) {
-	ensureReady();
+	ensureResWithoutBonus();
 	return metric->resWithoutBonus[cast(rt)];
 }
 
@@ -143,7 +143,9 @@ void Possession::addKilled(Physical* physical) {
 }
 
 const PossessionMetric* Possession::getMetrics() {
-	ensureReady();
+	ensureUnitMetrics();
+	ensureBuildingMetrics();
+	ensureResWithoutBonus();
 	return metric;
 }
 
@@ -160,13 +162,45 @@ bool Possession::hasAnyFreeArmy() const {
 }
 
 float Possession::getAttackSum() {
-	ensureReady();
+	ensureUnitMetrics();
 	return metric->unitsSum[static_cast<unsigned char>(UnitMetricIdx::ATTACK)];
 }
 
 float Possession::getDefenceAttackSum() {
-	ensureReady();
+	ensureBuildingMetrics();
 	return metric->buildingsSum[static_cast<unsigned char>(BuildingMetricIdx::ATTACK)];
+}
+
+unsigned Possession::getResourceBuildingCount() {
+	ensureBuildingMetrics();
+	return resourceBuildingCount;
+}
+
+unsigned Possession::getConvertBuildingCount() {
+	ensureBuildingMetrics();
+	return convertBuildingCount;
+}
+
+unsigned Possession::getSpawnerCount() {
+	ensureBuildingMetrics();
+	return spawnerCount;
+}
+
+float Possession::getInCombatRatio() {
+	ensureCounts();
+	return armyNumber > 0 ? static_cast<float>(inCombatNumber) / static_cast<float>(armyNumber) : 0.f;
+}
+
+float Possession::getBonusCoverage(ResourceType rt) {
+	ensureResWithoutBonus();
+	return bonusCoverage[cast(rt)];
+}
+
+float Possession::getResWithoutBonusSum() {
+	ensureResWithoutBonus();
+	float sum = 0.f;
+	for (const auto v : metric->resWithoutBonus) { sum += v; }
+	return sum;
 }
 
 void Possession::add(Building* building) {
@@ -183,7 +217,10 @@ void Possession::add(Unit* unit) {
 }
 
 void Possession::updateAndClean(Resources* resources) {
-	ready = false;
+	unitMetricsReady = false;
+	buildingMetricsReady = false;
+	countsReady = false;
+	resWithoutBonusReady = false;
 	cleanDead(buildings, StateManager::isBuildingDead());
 	cleanDead(units, StateManager::isUnitDead());
 	cleanDead(workers, StateManager::isUnitDead());
@@ -198,9 +235,10 @@ void Possession::updateAndClean(Resources* resources) {
 	resourcesSum = sumSpan(resources->getValues());
 }
 
-void Possession::ensureReady() {
-	if (ready) { return; }
-	ready = true;
+void Possession::ensureUnitMetrics() {
+	if (unitMetricsReady) { return; }
+	unitMetricsReady = true;
+
 	resetSpan(metric->unitsSum);
 	resetSpan(metric->freeArmySum);
 
@@ -209,9 +247,8 @@ void Possession::ensureReady() {
 
 	for (const auto unit : units) {
 		auto per = unit->getHealthPercent();
-		levels[unit->getLevel()->id] += per;//ID to -1
+		levels[unit->getLevel()->id] += per;
 
-		//TODO to dac jako kt�tkie
 		if (isFreeSolider(unit)) {
 			levelsFree[unit->getLevel()->id] += per;
 		}
@@ -236,13 +273,36 @@ void Possession::ensureReady() {
 		}
 	}
 
+	assert(validateSpan(__LINE__, __FILE__, metric->unitsSum));
+	assert(validateSpan(__LINE__, __FILE__, metric->freeArmySum));
+}
+
+void Possession::ensureBuildingMetrics() {
+	if (buildingMetricsReady) { return; }
+	buildingMetricsReady = true;
+
 	resetSpan(metric->buildingsSum);
 
 	zerosSpan(levels, levelsSize);
-	zerosSpan(levelsFree, levelsSize);
+
+	resourceBuildingCount = 0;
+	convertBuildingCount = 0;
+	spawnerCount = 0;
 
 	for (const auto building : buildings) {
 		levels[building->getLevel()->id] += building->getHealthPercent();
+
+		if (building->isReady()) {
+			const auto db = building->getDb();
+			if (db->typeResourceAny) { ++resourceBuildingCount; }
+			if (db->toResource >= 0) {
+				if (building->getLevel()->spawnResourceRange > 0) {
+					++spawnerCount;
+				} else {
+					++convertBuildingCount;
+				}
+			}
+		}
 	}
 
 	auto& bLevels = Game::getDatabase()->getBuildingLevels();
@@ -258,10 +318,18 @@ void Possession::ensureReady() {
 		}
 	}
 
+	assert(validateSpan(__LINE__, __FILE__, metric->buildingsSum));
+}
+
+void Possession::ensureCounts() {
+	if (countsReady) { return; }
+	countsReady = true;
+
 	idleWorkersNumber = std::ranges::count_if(workers, isInFreeState);
 
 	idleArmyNumber = 0;
 	armyNumber = 0;
+	inCombatNumber = 0;
 	typeInfantryNumber = 0;
 	typeCavalryNumber = 0;
 	typeRangeNumber = 0;
@@ -275,6 +343,11 @@ void Possession::ensureReady() {
 			++armyNumber;
 			const auto dbUnit = unit->getDb();
 			if (isFree(unit)) { ++idleArmyNumber; }
+			auto state = unit->getState();
+			if (state == UnitState::ATTACK || state == UnitState::SHOT
+				|| state == UnitState::CHARGE || state == UnitState::DEFEND) {
+				++inCombatNumber;
+			}
 			if (dbUnit->typeInfantry) { ++typeInfantryNumber; }
 			if (dbUnit->typeCavalry) { ++typeCavalryNumber; }
 			if (dbUnit->typeRange) { ++typeRangeNumber; }
@@ -284,20 +357,34 @@ void Possession::ensureReady() {
 			if (dbUnit->typeSpecial) { ++typeSpecialNumber; }
 		}
 	}
+}
+
+void Possession::ensureResWithoutBonus() {
+	if (resWithoutBonusReady) { return; }
+	resWithoutBonusReady = true;
 
 	resetSpan(metric->resWithoutBonus);
+	bonusCoverage.fill(0.f);
+	float workerPerRes[4] = {0.f, 0.f, 0.f, 0.f};
+
 	for (const auto worker : workers) {
 		if (worker->getState() == UnitState::COLLECT && worker->isFirstThingAlive()) {
 			auto res = (ResourceEntity*)worker->getThingToInteract();
+			auto resId = res->getResourceId();
+			workerPerRes[resId] += 1.f;
 
 			const auto bonus = res->getBonus(worker->getPlayer());
-			if (bonus <= 1.f) {
-				metric->resWithoutBonus[res->getResourceId()] += 1;
+			if (bonus > 1.f) {
+				bonusCoverage[resId] += 1.f;
+			} else {
+				metric->resWithoutBonus[resId] += 1;
 			}
 		}
 	}
 
-	assert(validateSpan(__LINE__, __FILE__, metric->unitsSum));
-	assert(validateSpan(__LINE__, __FILE__, metric->freeArmySum));
-	assert(validateSpan(__LINE__, __FILE__, metric->buildingsSum));
+	for (int i = 0; i < 4; ++i) {
+		if (workerPerRes[i] > 0.f) {
+			bonusCoverage[i] /= workerPerRes[i];
+		}
+	}
 }

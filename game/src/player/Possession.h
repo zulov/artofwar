@@ -1,4 +1,5 @@
 #pragma once
+#include <array>
 #include <span>
 #include <vector>
 #include <objects/resource/ResourceType.h>
@@ -21,7 +22,10 @@ public:
 	void add(Building* building);
 	void add(Unit* unit);
 	void updateAndClean(Resources* resources);
-	void ensureReady();
+	void ensureUnitMetrics();
+	void ensureBuildingMetrics();
+	void ensureCounts();
+	void ensureResWithoutBonus();
 
 	unsigned getScore() const;
 	unsigned getUnitsNumber() const;
@@ -52,6 +56,14 @@ public:
 	bool hasAnyFreeArmy() const;
 	float getAttackSum();
 	float getDefenceAttackSum();
+
+	unsigned getResourceBuildingCount();
+	unsigned getConvertBuildingCount();
+	unsigned getSpawnerCount();
+
+	float getInCombatRatio();
+	float getBonusCoverage(ResourceType rt);
+	float getResWithoutBonusSum();
 private:
 	std::vector<Building*> buildings;
 	std::vector<std::vector<Building*>*> buildingsPerId;
@@ -65,11 +77,21 @@ private:
 	unsigned typeRangeNumber = 0, typeMeleeNumber = 0;
 	unsigned typeHeavyNumber = 0, typeLightNumber = 0;
 	unsigned typeSpecialNumber = 0;
+	unsigned inCombatNumber = 0;
+
+	unsigned resourceBuildingCount = 0;
+	unsigned convertBuildingCount = 0;
+	unsigned spawnerCount = 0;
+
+	std::array<float, 4> bonusCoverage{};
 
 	float resourcesSum = 0.f;
 	float resourcesDestroyed = 0.f;
 
-	bool ready = false;
+	bool unitMetricsReady = false;
+	bool buildingMetricsReady = false;
+	bool countsReady = false;
+	bool resWithoutBonusReady = false;
 
 	int levelsSize;
 	float* levels;
