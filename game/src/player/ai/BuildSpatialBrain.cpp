@@ -29,20 +29,20 @@ BuildSpatialOutput BuildSpatialBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::DEFENCE_BUILDING_URGENCY)] = defenceBuildingUrgency;
 
 	// Counts (3)
-	inputData[idx(I::BUILDINGS_COUNT)] = static_cast<float>(possession->getBuildingsNumber()) / 50.f;
-	inputData[idx(I::WORKERS_COUNT)] = static_cast<float>(possession->getWorkersNumber()) / 100.f;
-	inputData[idx(I::ARMY_COUNT)] = static_cast<float>(possession->getArmyNumber()) / 200.f;
+	inputData[idx(I::BUILDINGS_COUNT)] = norm(possession->getBuildingsNumber(), 50.f);
+	inputData[idx(I::WORKERS_COUNT)] = norm(possession->getWorkersNumber(), 100.f);
+	inputData[idx(I::ARMY_COUNT)] = norm(possession->getArmyNumber(), 200.f);
 
 	// Game state (3)
 	inputData[idx(I::GAME_TIME)] = 0.f; //TODO implement
-	inputData[idx(I::PLAYER_SCORE)] = player->getScore() / 1000.f;
-	inputData[idx(I::ENEMY_SCORE)] = enemy->getScore() / 1000.f;
+	inputData[idx(I::PLAYER_SCORE)] = norm(player->getScore(), 1000.f);
+	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), 1000.f);
 
 	// Resources (4)
-	inputData[idx(I::RES_FOOD)] = res->getValue(ResourceType::FOOD) / 1000.f;
-	inputData[idx(I::RES_WOOD)] = res->getValue(ResourceType::WOOD) / 1000.f;
-	inputData[idx(I::RES_STONE)] = res->getValue(ResourceType::STONE) / 1000.f;
-	inputData[idx(I::RES_GOLD)] = res->getValue(ResourceType::GOLD) / 1000.f;
+	inputData[idx(I::RES_FOOD)] = norm(res->getValue(ResourceType::FOOD), 1000.f);
+	inputData[idx(I::RES_WOOD)] = norm(res->getValue(ResourceType::WOOD), 1000.f);
+	inputData[idx(I::RES_STONE)] = norm(res->getValue(ResourceType::STONE), 1000.f);
+	inputData[idx(I::RES_GOLD)] = norm(res->getValue(ResourceType::GOLD), 1000.f);
 
 	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
 

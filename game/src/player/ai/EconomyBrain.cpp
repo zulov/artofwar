@@ -10,6 +10,9 @@
 #include "player/Resources.h"
 #include "env/influence/CenterType.h"
 
+#include <algorithm>
+#include <cmath>
+
 EconomyBrain::EconomyBrain(db_nation* nation)
 	: brain(BrainProvider::get(nation->actionPrefix[1] + "economy.csv")) {
 	assert(brain->getInputSize() == inputData.size());
@@ -26,24 +29,24 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	auto* possession = player->getPossession();
 
 	// Scores (2)
-	inputData[idx(I::PLAYER_SCORE)] = player->getScore() / 1000.f;
-	inputData[idx(I::ENEMY_SCORE)] = enemy->getScore() / 1000.f;
+	inputData[idx(I::PLAYER_SCORE)] = norm(player->getScore(), 1000.f);
+	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), 1000.f);
 
 	// Resource values (4)
-	inputData[idx(I::RES_FOOD)] = res->getValue(ResourceType::FOOD) / 1000.f;
-	inputData[idx(I::RES_WOOD)] = res->getValue(ResourceType::WOOD) / 1000.f;
-	inputData[idx(I::RES_STONE)] = res->getValue(ResourceType::STONE) / 1000.f;
-	inputData[idx(I::RES_GOLD)] = res->getValue(ResourceType::GOLD) / 1000.f;
+	inputData[idx(I::RES_FOOD)] = norm(res->getValue(ResourceType::FOOD), 1000.f);
+	inputData[idx(I::RES_WOOD)] = norm(res->getValue(ResourceType::WOOD), 1000.f);
+	inputData[idx(I::RES_STONE)] = norm(res->getValue(ResourceType::STONE), 1000.f);
+	inputData[idx(I::RES_GOLD)] = norm(res->getValue(ResourceType::GOLD), 1000.f);
 
 	// Gather speeds (4)
-	inputData[idx(I::GATHER_FOOD)] = res->getGatherSpeed(ResourceType::FOOD) / 10.f;
-	inputData[idx(I::GATHER_WOOD)] = res->getGatherSpeed(ResourceType::WOOD) / 10.f;
-	inputData[idx(I::GATHER_STONE)] = res->getGatherSpeed(ResourceType::STONE) / 10.f;
-	inputData[idx(I::GATHER_GOLD)] = res->getGatherSpeed(ResourceType::GOLD) / 10.f;
+	inputData[idx(I::GATHER_FOOD)] = norm(res->getGatherSpeed(ResourceType::FOOD), 10.f);
+	inputData[idx(I::GATHER_WOOD)] = norm(res->getGatherSpeed(ResourceType::WOOD), 10.f);
+	inputData[idx(I::GATHER_STONE)] = norm(res->getGatherSpeed(ResourceType::STONE), 10.f);
+	inputData[idx(I::GATHER_GOLD)] = norm(res->getGatherSpeed(ResourceType::GOLD), 10.f);
 
 	// Workers (2)
-	inputData[idx(I::FREE_WORKERS)] = static_cast<float>(possession->getFreeWorkersNumber()) / 100.f;
-	inputData[idx(I::WORKERS_COUNT)] = static_cast<float>(possession->getWorkersNumber()) / 100.f;
+	inputData[idx(I::FREE_WORKERS)] = norm(possession->getFreeWorkersNumber(), 100.f);
+	inputData[idx(I::WORKERS_COUNT)] = norm(possession->getWorkersNumber(), 100.f);
 
 	// New inputs — TODO implement
 	inputData[idx(I::FOOD_STORAGE_RATIO)] = 0.f; //TODO implement
@@ -63,10 +66,10 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::RES_WO_BONUS)] = 0.f; //TODO implement
 
 	// Lacking per resource (4)
-	inputData[idx(I::LACKING_FOOD)] = lackingPerResource[0] / 500.f;
-	inputData[idx(I::LACKING_WOOD)] = lackingPerResource[1] / 500.f;
-	inputData[idx(I::LACKING_STONE)] = lackingPerResource[2] / 500.f;
-	inputData[idx(I::LACKING_GOLD)] = lackingPerResource[3] / 500.f;
+	inputData[idx(I::LACKING_FOOD)] = norm(lackingPerResource[0], 500.f);
+	inputData[idx(I::LACKING_WOOD)] = norm(lackingPerResource[1], 500.f);
+	inputData[idx(I::LACKING_STONE)] = norm(lackingPerResource[2], 500.f);
+	inputData[idx(I::LACKING_GOLD)] = norm(lackingPerResource[3], 500.f);
 
 	// Urgencies from MasterBrain (3)
 	inputData[idx(I::ECONOMY_URGENCY)] = economyUrgency;
@@ -78,8 +81,16 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	using O = EconomyOutputIdx;
 	constexpr auto o = [](O v) { return static_cast<int>(v); };
 
+	float workerAlloc = result[o(O::WORKER_ALLOCATION)];
+	unsigned char workerCount = 0;
+	if (workerAlloc > 0.1f) {
+		int raw = static_cast<int>(std::round(workerAlloc * MAX_WORKERS_PER_TICK));
+		workerCount = static_cast<unsigned char>(std::max(1, raw));
+	}
+
 	return EconomyOutput{
-		result[o(O::WORKER_ALLOCATION)],
+		workerAlloc,
+		workerCount,
 		result[o(O::FOOD_PRIORITY)],
 		result[o(O::WOOD_PRIORITY)],
 		result[o(O::STONE_PRIORITY)],

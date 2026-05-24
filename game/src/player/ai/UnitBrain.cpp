@@ -27,30 +27,30 @@ UnitOutput UnitBrain::decide(Player* player, Player* enemy,
 	// Our army composition — for counter-picking (3)
 	float armyCount = static_cast<float>(possession->getArmyNumber());
 	float safeDiv = std::max(armyCount, 1.f);
-	inputData[idx(I::OUR_INFANTRY_RATIO)] = static_cast<float>(possession->getInfantryNumber()) / safeDiv;
-	inputData[idx(I::OUR_CAVALRY_RATIO)] = static_cast<float>(possession->getCavalryNumber()) / safeDiv;
-	inputData[idx(I::OUR_RANGE_RATIO)] = static_cast<float>(possession->getRangeNumber()) / safeDiv;
+	inputData[idx(I::OUR_INFANTRY_RATIO)] = norm(possession->getInfantryNumber(), safeDiv);
+	inputData[idx(I::OUR_CAVALRY_RATIO)] = norm(possession->getCavalryNumber(), safeDiv);
+	inputData[idx(I::OUR_RANGE_RATIO)] = norm(possession->getRangeNumber(), safeDiv);
 
 	// Enemy army composition — for counter-picking (3)
 	float enemyArmyCount = static_cast<float>(enemyPossession->getArmyNumber());
 	float enemySafeDiv = std::max(enemyArmyCount, 1.f);
-	inputData[idx(I::ENEMY_INFANTRY_RATIO)] = static_cast<float>(enemyPossession->getInfantryNumber()) / enemySafeDiv;
-	inputData[idx(I::ENEMY_CAVALRY_RATIO)] = static_cast<float>(enemyPossession->getCavalryNumber()) / enemySafeDiv;
-	inputData[idx(I::ENEMY_RANGE_RATIO)] = static_cast<float>(enemyPossession->getRangeNumber()) / enemySafeDiv;
+	inputData[idx(I::ENEMY_INFANTRY_RATIO)] = norm(enemyPossession->getInfantryNumber(), enemySafeDiv);
+	inputData[idx(I::ENEMY_CAVALRY_RATIO)] = norm(enemyPossession->getCavalryNumber(), enemySafeDiv);
+	inputData[idx(I::ENEMY_RANGE_RATIO)] = norm(enemyPossession->getRangeNumber(), enemySafeDiv);
 
 	// Army counts (2)
-	inputData[idx(I::ARMY_COUNT)] = armyCount / 200.f;
-	inputData[idx(I::ENEMY_ARMY_COUNT)] = enemyArmyCount / 200.f;
+	inputData[idx(I::ARMY_COUNT)] = norm(armyCount, 200.f);
+	inputData[idx(I::ENEMY_ARMY_COUNT)] = norm(enemyArmyCount, 200.f);
 
 	// Military strength (2)
-	inputData[idx(I::ATTACK_SUM)] = possession->getAttackSum() / 1000.f;
-	inputData[idx(I::DEFENCE_ATTACK_SUM)] = possession->getDefenceAttackSum() / 100.f;
+	inputData[idx(I::ATTACK_SUM)] = norm(possession->getAttackSum(), 1000.f);
+	inputData[idx(I::DEFENCE_ATTACK_SUM)] = norm(possession->getDefenceAttackSum(), 100.f);
 
 	// Enemy score (1)
-	inputData[idx(I::ENEMY_SCORE)] = static_cast<float>(enemy->getScore()) / 1000.f;
+	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), 1000.f);
 
 	// Worker count — army vs worker balance (1)
-	inputData[idx(I::WORKERS_COUNT)] = static_cast<float>(possession->getWorkersNumber()) / 100.f;
+	inputData[idx(I::WORKERS_COUNT)] = norm(possession->getWorkersNumber(), 100.f);
 
 	// Urgencies from Master (2)
 	inputData[idx(I::UNIT_URGENCY)] = unitUrgency;

@@ -6,6 +6,10 @@
 template <typename E>
 constexpr unsigned char idx(E e) { return static_cast<unsigned char>(e); }
 
+inline float norm(int value, float scale) { return static_cast<float>(value) / scale; }
+inline float norm(unsigned value, float scale) { return static_cast<float>(value) / scale; }
+inline float norm(float value, float scale) { return value / scale; }
+
 inline bool randFromTwo(float val) {
 	return val + 1.f > RandGen::nextRand(RandFloatType::AI, 2.f);
 }

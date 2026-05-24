@@ -30,17 +30,17 @@ AttackSpatialOutput AttackSpatialBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::DEFEND_TARGET)] = milOut.defendTarget;
 
 	// Army counts (3)
-	inputData[idx(I::ARMY_COUNT)] = static_cast<float>(possession->getArmyNumber()) / 200.f;
-	inputData[idx(I::FREE_ARMY_COUNT)] = static_cast<float>(possession->getFreeArmyNumber()) / 200.f;
-	inputData[idx(I::ENEMY_ARMY_COUNT)] = static_cast<float>(enemyPossession->getArmyNumber()) / 200.f;
+	inputData[idx(I::ARMY_COUNT)] = norm(possession->getArmyNumber(), 200.f);
+	inputData[idx(I::FREE_ARMY_COUNT)] = norm(possession->getFreeArmyNumber(), 200.f);
+	inputData[idx(I::ENEMY_ARMY_COUNT)] = norm(enemyPossession->getArmyNumber(), 200.f);
 
 	// Scores (2)
-	inputData[idx(I::PLAYER_SCORE)] = player->getScore() / 1000.f;
-	inputData[idx(I::ENEMY_SCORE)] = enemy->getScore() / 1000.f;
+	inputData[idx(I::PLAYER_SCORE)] = norm(player->getScore(), 1000.f);
+	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), 1000.f);
 
 	// Military strength (2)
-	inputData[idx(I::ATTACK_SUM)] = possession->getAttackSum() / 1000.f;
-	inputData[idx(I::DEFENCE_SUM)] = possession->getDefenceAttackSum() / 100.f;
+	inputData[idx(I::ATTACK_SUM)] = norm(possession->getAttackSum(), 1000.f);
+	inputData[idx(I::DEFENCE_SUM)] = norm(possession->getDefenceAttackSum(), 100.f);
 
 	// Combat state (1)
 	inputData[idx(I::IN_COMBAT_RATIO)] = 0.f; //TODO implement

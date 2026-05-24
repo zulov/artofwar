@@ -66,6 +66,7 @@ enum class EconomyOutputIdx : unsigned char {
 
 struct EconomyOutput {
 	float workerAllocation;
+	unsigned char workerCount;
 	float foodPriority;
 	float woodPriority;
 	float stonePriority;

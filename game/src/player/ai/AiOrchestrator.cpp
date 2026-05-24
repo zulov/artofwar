@@ -66,9 +66,8 @@ void AiOrchestrator::action() {
 	wantList.beginTick();
 
 	// Worker request
-	if (lastEconOut.workerAllocation > 0.1f) {
-		int count = std::max(1, static_cast<int>(std::round(lastEconOut.workerAllocation * EconomyBrain::MAX_WORKERS_PER_TICK)));
-		wantList.addRequest(WantItemType::WORKER, lastEconOut.workerAllocation, static_cast<unsigned char>(count));
+	if (lastEconOut.workerCount > 0) {
+		wantList.addRequest(WantItemType::WORKER, lastEconOut.workerAllocation, lastEconOut.workerCount);
 	}
 
 	// Unit request
