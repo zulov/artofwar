@@ -21,7 +21,6 @@ void WantList::addRequest(WantItemType type, float priority, unsigned char count
 			return;
 		}
 	}
-	if (static_cast<int>(items.size()) >= MAX_ITEMS) { return; }
 	items.push_back({type, priority, priority, count, specificId, 0, true});
 }
 
@@ -46,6 +45,9 @@ void WantList::sortByPriority() {
 	std::ranges::sort(items, [](const WantItem& a, const WantItem& b) {
 		return a.priority > b.priority;
 	});
+	if (static_cast<int>(items.size()) > MAX_ITEMS) {
+		items.resize(MAX_ITEMS);
+	}
 }
 
 void WantList::addLacking(const db_with_cost* cost, Resources* resources, LackingResult& lacking) {
@@ -72,20 +74,14 @@ WantList::LackingResult WantList::execute(Player* player, const ExecuteCallback&
 	for (auto& item : items) {
 		const auto* cost = costFn(item);
 
-		if (cost && resources->hasEnough(cost)) {
-			// Affordable — try to execute
-			for (unsigned char i = 0; i < item.count; ++i) {
-				if (!resources->hasEnough(cost)) {
-					addLacking(cost, resources, lacking);
-					break;
-				}
-				if (!executeFn(item)) {
-					break;
-				}
+		for (unsigned char i = 0; i < item.count; ++i) {
+			if (!cost || !resources->hasEnough(cost)) {
+				addLacking(cost, resources, lacking);
+				break;
 			}
-		} else {
-			// Not affordable — accumulate lacking
-			addLacking(cost, resources, lacking);
+			if (!executeFn(item)) {
+				break;
+			}
 		}
 	}
 

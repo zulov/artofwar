@@ -1,8 +1,6 @@
 #pragma once
 
-#include <functional>
 #include <span>
-#include <iterator>
 #include <array>
 
 #include <magic_enum.hpp>

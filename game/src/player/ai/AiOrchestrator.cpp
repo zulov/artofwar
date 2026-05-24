@@ -1,5 +1,6 @@
 #include "AiOrchestrator.h"
 
+#include <cmath>
 #include <limits>
 #include "AiHistory.h"
 #include "AiUtils.h"
@@ -36,9 +37,7 @@ AiOrchestrator::AiOrchestrator(Player* player, db_nation* nation, AiHistory* his
 	militaryBrain(nation),
 	buildSpatialBrain(nation),
 	attackSpatialBrain(nation) {
-	lastLacking.perResource.fill(0.f);
-	lastLacking.totalSum = 0.f;
-	lastLacking.lackingBuildingForUnit = -1;
+	lastLacking.reset();
 }
 
 void AiOrchestrator::action() {
@@ -47,7 +46,6 @@ void AiOrchestrator::action() {
 	// 1. Master Brain decides urgencies
 	lastMasterOut = masterBrain.decide(
 		player, enemy,
-		lastLacking.perResource,
 		lastLacking.totalSum
 	);
 
@@ -69,7 +67,8 @@ void AiOrchestrator::action() {
 
 	// Worker request
 	if (lastEconOut.workerAllocation > 0.1f) {
-		wantList.addRequest(WantItemType::WORKER, lastEconOut.workerAllocation);
+		int count = std::max(1, static_cast<int>(std::round(lastEconOut.workerAllocation * EconomyBrain::MAX_WORKERS_PER_TICK)));
+		wantList.addRequest(WantItemType::WORKER, lastEconOut.workerAllocation, static_cast<unsigned char>(count));
 	}
 
 	// Unit request
@@ -81,61 +80,65 @@ void AiOrchestrator::action() {
 	}
 
 	// Building requests — use MasterBrain urgencies directly
-	auto submitBuilding = [&](float urgency, ParentBuildingType type) {
-		if (urgency > 0.1f) {
-			db_building* building = resolveBuilding(type);
-			if (building) {
-				wantList.addRequest(WantItemType::BUILDING, urgency, 1, building->id);
-			}
-		}
-	};
-	submitBuilding(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
-	submitBuilding(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
-	submitBuilding(lastMasterOut.techUrgency, ParentBuildingType::TECH);
+	submitBuildingRequest(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
+	submitBuildingRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
+	submitBuildingRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
 
 	// UNITS building: prefer specific building from lacking feedback, fall back to generic resolve
 	if (lastLacking.lackingBuildingForUnit >= 0) {
 		float boostedUrgency = std::max(lastMasterOut.unitUrgency, 0.5f);
 		wantList.addRequest(WantItemType::BUILDING, boostedUrgency, 1, lastLacking.lackingBuildingForUnit);
 	} else {
-		submitBuilding(lastMasterOut.unitUrgency, ParentBuildingType::UNITS);
+		submitBuildingRequest(lastMasterOut.unitUrgency, ParentBuildingType::UNITS);
 	}
 
 	// 5. Execute WantList with callbacks
 	pendingLackingBuilding = -1;
 
-	auto executeFn = [this](WantItem& item) -> bool {
-		switch (item.type) {
-		case WantItemType::WORKER:
-			return executeWorker();
-		case WantItemType::UNIT:
-			return executeUnit(item.specificId);
-		case WantItemType::BUILDING:
-			return executeBuilding(item.specificId);
-		}
-		return false;
-	};
+	lastLacking = wantList.execute(player,
+		[this](WantItem& item) { return executeWantItem(item); },
+		[this](const WantItem& item) { return getWantItemCost(item); }
+	);
+	lastLacking.lackingBuildingForUnit = pendingLackingBuilding;
+}
 
-	auto costFn = [this](const WantItem& item) -> const db_with_cost* {
-		switch (item.type) {
-		case WantItemType::WORKER:
-			return nation->workers.empty() ? nullptr : nation->workers.at(0);
-		case WantItemType::UNIT:
-			if (item.specificId >= 0) {
-				return Game::getDatabase()->getUnit(item.specificId);
-			}
-			return nullptr;
-		case WantItemType::BUILDING:
-			if (item.specificId >= 0) {
-				return Game::getDatabase()->getBuilding(item.specificId);
-			}
-			return nullptr;
+void AiOrchestrator::submitBuildingRequest(float urgency, ParentBuildingType type) {
+	if (urgency > 0.1f) {
+		db_building* building = resolveBuilding(type);
+		if (building) {
+			wantList.addRequest(WantItemType::BUILDING, urgency, 1, building->id);
+		}
+	}
+}
+
+bool AiOrchestrator::executeWantItem(WantItem& item) {
+	switch (item.type) {
+	case WantItemType::WORKER:
+		return executeWorker();
+	case WantItemType::UNIT:
+		return executeUnit(item.specificId);
+	case WantItemType::BUILDING:
+		return executeBuilding(item.specificId);
+	}
+	return false;
+}
+
+const db_with_cost* AiOrchestrator::getWantItemCost(const WantItem& item) const {
+	switch (item.type) {
+	case WantItemType::WORKER:
+		return nation->workers.empty() ? nullptr : nation->workers.at(0);
+	case WantItemType::UNIT:
+		if (item.specificId >= 0) {
+			return Game::getDatabase()->getUnit(item.specificId);
 		}
 		return nullptr;
-	};
-
-	lastLacking = wantList.execute(player, executeFn, costFn);
-	lastLacking.lackingBuildingForUnit = pendingLackingBuilding;
+	case WantItemType::BUILDING:
+		if (item.specificId >= 0) {
+			return Game::getDatabase()->getBuilding(item.specificId);
+		}
+		return nullptr;
+	}
+	return nullptr;
 }
 
 void AiOrchestrator::order() {

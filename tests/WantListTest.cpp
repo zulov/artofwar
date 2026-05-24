@@ -76,11 +76,11 @@ TEST_F(WantListFixture, AddRequestCreatesNewForDifferentType) {
 	EXPECT_EQ(wl.getItemCount(), 2);
 }
 
-TEST_F(WantListFixture, MaxItemsEnforced) {
+TEST_F(WantListFixture, AddAlwaysAccepted) {
 	for (int i = 0; i < WantList::MAX_ITEMS + 5; ++i) {
 		wl.addRequest(WantItemType::UNIT, 0.5f, 1, static_cast<short>(i));
 	}
-	EXPECT_EQ(wl.getItemCount(), WantList::MAX_ITEMS);
+	EXPECT_EQ(wl.getItemCount(), WantList::MAX_ITEMS + 5);
 }
 
 TEST_F(WantListFixture, BeginTickMarksAllInactive) {

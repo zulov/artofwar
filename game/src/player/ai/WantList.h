@@ -35,6 +35,12 @@ public:
 		std::array<float, 4> perResource;
 		float totalSum;
 		short lackingBuildingForUnit = -1;
+
+		void reset() {
+			perResource.fill(0.f);
+			totalSum = 0.f;
+			lackingBuildingForUnit = -1;
+		}
 	};
 
 	void beginTick();

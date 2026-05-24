@@ -49,6 +49,9 @@ private:
 	bool executeWorker();
 	bool executeUnit(short unitId);
 	bool executeBuilding(short buildingId);
+	bool executeWantItem(WantItem& item);
+	const db_with_cost* getWantItemCost(const WantItem& item) const;
+	void submitBuildingRequest(float urgency, ParentBuildingType type);
 
 	// Unit resolution
 	db_unit* resolveUnit(const UnitOutput& unitOutput);

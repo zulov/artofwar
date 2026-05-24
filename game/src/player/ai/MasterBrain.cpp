@@ -19,78 +19,70 @@ MasterBrain::MasterBrain(db_nation* nation)
 	assert(brain->getOutputSize() == magic_enum::enum_count<MasterOutputIdx>());
 }
 
-MasterOutput MasterBrain::decide(Player* player, Player* enemy, const std::array<float, 4>& lackingPerResource, float totalLacking) {
-	float deltaScore = player->getScore() - prevScore;
-	float deltaUnits = static_cast<float>(player->getPossession()->getUnitsNumber()) - prevUnits;
+MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacking) {
+	float deltaScore = (player->getScore() - prevScore) / 1000.f;
+	float deltaUnits = (static_cast<float>(player->getPossession()->getUnitsNumber()) - prevUnits) / 200.f;
 	float resSum = 0.f;
 	for (int i = 0; i < 4; ++i) {
 		resSum += player->getResources()->getValues()[i];
 	}
-	float deltaRes = resSum - prevResSum;
-
-	// Normalize deltas
-	deltaScore /= 1000.f;
-	deltaUnits /= 200.f;
-	deltaRes /= 1000.f;
-
-	// Normalize lacking
+	float deltaRes = (resSum - prevResSum) / 1000.f;
 	float normTotalLacking = totalLacking / 2000.f;
 
 	// Build input array
 	using I = MasterInputIdx;
-	constexpr auto e = [](I v) { return static_cast<int>(v); };
 
 	auto* possession = player->getPossession();
 	auto* enemyPossession = enemy->getPossession();
 	auto* res = player->getResources();
 
 	// Scores (2)
-	inputData[e(I::PLAYER_SCORE)] = player->getScore() / 1000.f;
-	inputData[e(I::ENEMY_SCORE)] = enemy->getScore() / 1000.f;
+	inputData[idx(I::PLAYER_SCORE)] = player->getScore() / 1000.f;
+	inputData[idx(I::ENEMY_SCORE)] = enemy->getScore() / 1000.f;
 
 	// Counts (4)
-	inputData[e(I::BUILDINGS_COUNT)] = static_cast<float>(possession->getBuildingsNumber()) / 50.f;
-	inputData[e(I::WORKERS_COUNT)] = static_cast<float>(possession->getWorkersNumber()) / 100.f;
-	inputData[e(I::ARMY_COUNT)] = static_cast<float>(possession->getArmyNumber()) / 200.f;
-	inputData[e(I::ENEMY_ARMY_COUNT)] = static_cast<float>(enemyPossession->getArmyNumber()) / 200.f;
+	inputData[idx(I::BUILDINGS_COUNT)] = static_cast<float>(possession->getBuildingsNumber()) / 50.f;
+	inputData[idx(I::WORKERS_COUNT)] = static_cast<float>(possession->getWorkersNumber()) / 100.f;
+	inputData[idx(I::ARMY_COUNT)] = static_cast<float>(possession->getArmyNumber()) / 200.f;
+	inputData[idx(I::ENEMY_ARMY_COUNT)] = static_cast<float>(enemyPossession->getArmyNumber()) / 200.f;
 
 	// Resources — stockpiles (4)
-	inputData[e(I::RES_FOOD)] = res->getValue(ResourceType::FOOD) / 1000.f;
-	inputData[e(I::RES_WOOD)] = res->getValue(ResourceType::WOOD) / 1000.f;
-	inputData[e(I::RES_STONE)] = res->getValue(ResourceType::STONE) / 1000.f;
-	inputData[e(I::RES_GOLD)] = res->getValue(ResourceType::GOLD) / 1000.f;
+	inputData[idx(I::RES_FOOD)] = res->getValue(ResourceType::FOOD) / 1000.f;
+	inputData[idx(I::RES_WOOD)] = res->getValue(ResourceType::WOOD) / 1000.f;
+	inputData[idx(I::RES_STONE)] = res->getValue(ResourceType::STONE) / 1000.f;
+	inputData[idx(I::RES_GOLD)] = res->getValue(ResourceType::GOLD) / 1000.f;
 
 	// Resources — gather speeds (4)
-	inputData[e(I::GATHER_FOOD)] = res->getGatherSpeed(ResourceType::FOOD) / 10.f;
-	inputData[e(I::GATHER_WOOD)] = res->getGatherSpeed(ResourceType::WOOD) / 10.f;
-	inputData[e(I::GATHER_STONE)] = res->getGatherSpeed(ResourceType::STONE) / 10.f;
-	inputData[e(I::GATHER_GOLD)] = res->getGatherSpeed(ResourceType::GOLD) / 10.f;
+	inputData[idx(I::GATHER_FOOD)] = res->getGatherSpeed(ResourceType::FOOD) / 10.f;
+	inputData[idx(I::GATHER_WOOD)] = res->getGatherSpeed(ResourceType::WOOD) / 10.f;
+	inputData[idx(I::GATHER_STONE)] = res->getGatherSpeed(ResourceType::STONE) / 10.f;
+	inputData[idx(I::GATHER_GOLD)] = res->getGatherSpeed(ResourceType::GOLD) / 10.f;
 
 	// Attack/Defence (2)
-	inputData[e(I::ATTACK_SUM)] = possession->getAttackSum() / 1000.f;
-	inputData[e(I::DEFENCE_SUM)] = possession->getDefenceAttackSum() / 100.f;
+	inputData[idx(I::ATTACK_SUM)] = possession->getAttackSum() / 1000.f;
+	inputData[idx(I::DEFENCE_SUM)] = possession->getDefenceAttackSum() / 100.f;
 
 	// Spatial distances (4)
-	inputData[e(I::DIST_OUR_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, player, 0.f);
-	inputData[e(I::DIST_OUR_ARMY_ENEMY_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, enemy, 1.f);
-	inputData[e(I::DIST_ENEMY_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, player, 1.f);
-	inputData[e(I::DIST_ENEMY_ARMY_ENEMY_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, enemy, 0.f);
+	inputData[idx(I::DIST_OUR_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, player, 0.f);
+	inputData[idx(I::DIST_OUR_ARMY_ENEMY_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, enemy, 1.f);
+	inputData[idx(I::DIST_ENEMY_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, player, 1.f);
+	inputData[idx(I::DIST_ENEMY_ARMY_ENEMY_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, enemy, 0.f);
 
 	// Lacking feedback (1)
-	inputData[e(I::TOTAL_LACKING)] = normTotalLacking;
+	inputData[idx(I::TOTAL_LACKING)] = normTotalLacking;
 
 	// Deltas (3)
-	inputData[e(I::DELTA_SCORE)] = deltaScore;
-	inputData[e(I::DELTA_ENEMY_SCORE)] = 0.f; //TODO implement
-	inputData[e(I::DELTA_UNITS)] = deltaUnits;
-	inputData[e(I::DELTA_RES)] = deltaRes;
+	inputData[idx(I::DELTA_SCORE)] = deltaScore;
+	inputData[idx(I::DELTA_ENEMY_SCORE)] = 0.f; //TODO implement
+	inputData[idx(I::DELTA_UNITS)] = deltaUnits;
+	inputData[idx(I::DELTA_RES)] = deltaRes;
 
 	// New inputs — TODO implement
-	inputData[e(I::GAME_TIME)] = 0.f; //TODO implement
-	inputData[e(I::KD_RATIO)] = 0.f; //TODO implement
-	inputData[e(I::IN_COMBAT_RATIO)] = 0.f; //TODO implement
-	inputData[e(I::TECH_LEVEL)] = 0.f; //TODO implement
-	inputData[e(I::DELTA_GATHER_SPEED)] = 0.f; //TODO implement
+	inputData[idx(I::GAME_TIME)] = 0.f; //TODO implement
+	inputData[idx(I::KD_RATIO)] = 0.f; //TODO implement
+	inputData[idx(I::IN_COMBAT_RATIO)] = 0.f; //TODO implement
+	inputData[idx(I::TECH_LEVEL)] = 0.f; //TODO implement
+	inputData[idx(I::DELTA_GATHER_SPEED)] = 0.f; //TODO implement
 
 	updateHistory(player);
 

@@ -3,6 +3,9 @@
 #include "math/RandGen.h"
 #include "math/VectorUtils.h"
 
+template <typename E>
+constexpr unsigned char idx(E e) { return static_cast<unsigned char>(e); }
+
 inline bool randFromTwo(float val) {
 	return val + 1.f > RandGen::nextRand(RandFloatType::AI, 2.f);
 }

@@ -69,7 +69,7 @@ public:
 	explicit MasterBrain(db_nation* nation);
 	MasterBrain(const MasterBrain&) = delete;
 
-	MasterOutput decide(Player* player, Player* enemy, const std::array<float, 4>& lackingPerResource, float totalLacking);
+	MasterOutput decide(Player* player, Player* enemy, float totalLacking);
 
 private:
 	void updateHistory(Player* player);
