@@ -3,7 +3,6 @@
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"
 #include "simulation/SimGlobals.h"
-#include "utils/defines.h"
 #include "utils/OtherUtils.h"
 
 std::vector<Urho3D::CustomGeometry*> DebugLineRepo::geometry[];

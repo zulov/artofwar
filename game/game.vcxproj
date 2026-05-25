@@ -590,7 +590,6 @@
     <ClInclude Include="src\commands\CommandList.h" />
     <ClInclude Include="src\control\Controls.h" />
     <ClInclude Include="src\control\ControlsState.h" />
-    <ClInclude Include="src\utils\defines.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\scene\LevelBuilder.h" />
     <ClInclude Include="src\objects\ObjectEnums.h" />

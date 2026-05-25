@@ -1,9 +1,7 @@
 #pragma once
-#include "utils/defines.h"
+#include "simulation/SimGlobals.h"
 #include <Urho3D/Math/Vector2.h>
 #include <iostream>
-
-#include "simulation/SimGlobals.h"
 
 constexpr unsigned short FORCE_STATS_SIZE = 1000;
 constexpr bool FORCE_STATS_ENABLE = false;

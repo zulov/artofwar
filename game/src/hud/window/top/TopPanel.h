@@ -3,7 +3,7 @@
 #include <objects/resource/ResourceType.h>
 
 #include "../SimplePanel.h"
-#include "utils/defines.h"
+#include "simulation/SimGlobals.h"
 
 
 namespace Urho3D { class XMLFile; }

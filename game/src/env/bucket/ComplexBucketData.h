@@ -3,7 +3,7 @@
 
 #include "CellEnums.h"
 #include "objects/resource/ResourceEntity.h"
-#include "utils/defines.h"
+#include "simulation/SimGlobals.h"
 #include "utils/Flags.h"
 
 namespace Urho3D {

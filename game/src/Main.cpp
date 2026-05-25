@@ -607,8 +607,8 @@ void Main::disposeScene() {
 		DebugLineRepo::dispose();
 	}
 	SimGlobals::CURRENT_RUN++;
-	if (SimGlobals::CURRENT_RUN < SimGlobals::OUTPUT_NAMES.Size()) {
-		outputName = SimGlobals::OUTPUT_NAMES[SimGlobals::CURRENT_RUN];
+	if (SimGlobals::CURRENT_RUN < SimGlobals::OUTPUT_NAMES.size()) {
+		outputName = SimGlobals::OUTPUT_NAMES[SimGlobals::CURRENT_RUN].c_str();
 	}
 
 	inited = false;
@@ -686,9 +686,13 @@ void Main::readParameters() {
 			} else if (argument == "savename") {
 				saveToLoad = value;
 			} else if (argument == "outputname" && !value.Empty()) {
-				SimGlobals::OUTPUT_NAMES = value.Split('#');
-				SimGlobals::MAX_RUNS = SimGlobals::OUTPUT_NAMES.Size();
-				outputName = SimGlobals::OUTPUT_NAMES[0];
+				auto parts = value.Split('#');
+				SimGlobals::OUTPUT_NAMES.clear();
+				for (unsigned j = 0; j < parts.Size(); ++j) {
+					SimGlobals::OUTPUT_NAMES.emplace_back(parts[j].CString());
+				}
+				SimGlobals::MAX_RUNS = SimGlobals::OUTPUT_NAMES.size();
+				outputName = SimGlobals::OUTPUT_NAMES[0].c_str();
 				++i;
 			} else if (argument == "timelimit" && !value.Empty()) {
 				timeLimit = ToInt(value);

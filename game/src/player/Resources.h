@@ -6,7 +6,7 @@
 #include <span>
 #include <objects/resource/ResourceType.h>
 
-#include "utils/defines.h"
+#include "simulation/SimGlobals.h"
 
 class Possession;
 struct db_with_cost;

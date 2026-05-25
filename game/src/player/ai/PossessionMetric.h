@@ -3,7 +3,7 @@
 
 #include "MetricDefinitions.h"
 #include "math/VectorUtils.h"
-#include "utils/defines.h"
+#include "simulation/SimGlobals.h"
 
 struct PossessionMetric {
 	PossessionMetric() {
@@ -15,7 +15,7 @@ struct PossessionMetric {
 	}
 
 	std::array<float, UNIT_METRIC_SIZE> unitsSum;
-	std::array<float, UNIT_METRIC_SIZE> freeArmySum; //TODO to dac jako któtkie
+	std::array<float, UNIT_METRIC_SIZE> freeArmySum; //TODO to dac jako ktï¿½tkie
 	std::array<float, BUILDING_METRIC_SIZE> buildingsSum;
 
 	std::array<float, RESOURCES_SIZE> resWithoutBonus;

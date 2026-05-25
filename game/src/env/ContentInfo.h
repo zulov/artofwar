@@ -1,7 +1,7 @@
 #pragma once
 #include <algorithm>
 #include "database/DatabaseCache.h"
-#include "utils/defines.h"
+#include "simulation/SimGlobals.h"
 
 
 struct content_info {

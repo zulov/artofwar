@@ -1,6 +1,6 @@
 #pragma once
 #include "hud/window/EventPanel.h"
-#include "utils/defines.h"
+#include "simulation/SimGlobals.h"
 
 namespace Urho3D {
 	class Texture2D;

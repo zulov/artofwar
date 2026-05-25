@@ -1,6 +1,6 @@
 #pragma once
 #include "objects/static/Static.h"
-#include "utils/defines.h"
+#include "simulation/SimGlobals.h"
 #include "database/db_insert_utils.h"
 
 namespace Urho3D {

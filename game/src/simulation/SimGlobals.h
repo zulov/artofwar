@@ -1,7 +1,12 @@
 #pragma once
 #include <chrono>
+#include <string>
+#include <vector>
 
-#include "utils/defines.h"
+constexpr short UNITS_NUMBER = 100;
+constexpr char MAX_PLAYERS = 2;
+constexpr bool DEBUG_LINES_ENABLED = true;
+
 constexpr bool FORCE_BENCHMARK_MODE = false;
 constexpr bool FORCE_ALL_PLAYER_AI = false;
 constexpr bool FORCE_NO_PLAYER_AI = false;
@@ -25,7 +30,7 @@ inline struct SimGlobals {
 	inline static std::string ACTION_AI_PATH[MAX_PLAYERS] = {"", ""};
 	inline static std::string ORDER_AI_PATH[MAX_PLAYERS] = {"", ""};
 
-	inline static Urho3D::Vector<Urho3D::String> OUTPUT_NAMES;
+	inline static std::vector<std::string> OUTPUT_NAMES;
 
 	inline static int CURRENT_RUN = 0;
 	inline static int MAX_RUNS = 0;
