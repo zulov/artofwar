@@ -30,6 +30,9 @@ enum class AttackSpatialOutputIdx : unsigned char {
 	W_BUILDINGS_INFLUENCE,
 	W_UNITS_INFLUENCE,
 	W_ATTACK_SPEED,
+	W_ENEMY_BUILDINGS_INFLUENCE,
+	W_ENEMY_UNITS_INFLUENCE,
+	W_ENEMY_ATTACK_SPEED,
 };
 
 struct AttackSpatialOutput {

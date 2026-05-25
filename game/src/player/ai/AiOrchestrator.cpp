@@ -180,7 +180,7 @@ void AiOrchestrator::order() {
 			lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency
 		);
 		auto areas = Game::getEnvironment()->getAreas(
-			playerToGo, std::span<const float>(spatialOut.weights), 1
+			playerId, std::span<const float>(spatialOut.weights), 1
 		);
 		if (!areas.empty()) {
 			return areas[0];

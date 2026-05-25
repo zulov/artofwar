@@ -27,8 +27,8 @@ namespace Urho3D {
 	class Terrain;
 }
 
-inline constexpr int AI_MAP_COUNT = 7;
-inline constexpr int AI_ARMY_MAP_COUNT = 3;
+inline constexpr int AI_MAP_COUNT = 10;
+inline constexpr int AI_ARMY_MAP_COUNT = 6;
 inline constexpr int CENTER_TYPE_COUNT = 3;
 
 class InfluenceManager {

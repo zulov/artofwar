@@ -64,6 +64,7 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 	}
 
 	for (int player = 0; player < numberOfPlayers; ++player) {
+		const int enemy = 1 - player;
 		std::array<InfluenceMapFloat*, RESOURCES_SIZE> gatherSpeedView;
 		std::array<InfluenceMapInt*, RESOURCES_SIZE> resNotInBonusView;
 		for (int r = 0; r < RESOURCES_SIZE; ++r) {
@@ -79,11 +80,17 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 			                                gatherSpeedView[cast(ResourceType::WOOD)],
 			                                gatherSpeedView[cast(ResourceType::STONE)],
 			                                gatherSpeedView[cast(ResourceType::GOLD)],
+			                                buildingsInfluencePerPlayer[enemy],
+			                                unitsInfluencePerPlayer[enemy],
+			                                attackSpeed[enemy],
 		                                });
 		mapsForAiArmyPerPlayer.emplace_back(std::array<InfluenceMapFloat*, AI_ARMY_MAP_COUNT>{
 			                                    buildingsInfluencePerPlayer[player],
 			                                    unitsInfluencePerPlayer[player],
 			                                    attackSpeed[player],
+			                                    buildingsInfluencePerPlayer[enemy],
+			                                    unitsInfluencePerPlayer[enemy],
+			                                    attackSpeed[enemy],
 		                                    });
 		mapsForCentersPerPlayer.emplace_back(std::array<InfluenceMapQuad*, CENTER_TYPE_COUNT>{
 			                                     econQuad[player],

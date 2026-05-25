@@ -32,6 +32,9 @@ enum class BuildSpatialOutputIdx : unsigned char {
 	W_GATHER_WOOD,
 	W_GATHER_STONE,
 	W_GATHER_GOLD,
+	W_ENEMY_BUILDINGS_INFLUENCE,
+	W_ENEMY_UNITS_INFLUENCE,
+	W_ENEMY_ATTACK_SPEED,
 };
 
 struct BuildSpatialOutput {
