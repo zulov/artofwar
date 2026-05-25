@@ -167,7 +167,6 @@ bool InfluenceMapFloat::cumulateErros(float percent, float* intersection) const 
 	const float diff = max - min;
 
 	if (diff != 0.f) {
-		percent = fixValue(percent, 1.f);
 		//const auto centerVal = percent * diff + min;
 		const auto invDiff = 1.f / diff;
 		const auto endV = values + arraySize;
