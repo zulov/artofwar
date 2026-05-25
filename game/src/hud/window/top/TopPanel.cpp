@@ -7,6 +7,7 @@
 #include "../../UiUtils.h"
 #include "database/DatabaseCache.h"
 #include "info/TopInfoPanel.h"
+#include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
 #include "player/Player.h"
 #include "player/Possession.h"

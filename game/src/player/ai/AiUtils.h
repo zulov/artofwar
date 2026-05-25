@@ -2,6 +2,7 @@
 #include <vector>
 #include "math/RandGen.h"
 #include "math/VectorUtils.h"
+#include "utils/SpanUtils.h"
 
 template <typename E>
 constexpr unsigned char idx(E e) { return static_cast<unsigned char>(e); }

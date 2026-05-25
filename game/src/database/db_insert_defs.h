@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "db_columns.h"
 #include "db_insert_utils.h"
+#include "env/Environment.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"

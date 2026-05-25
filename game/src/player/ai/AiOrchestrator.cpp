@@ -341,7 +341,7 @@ Building* AiOrchestrator::getBuildingToDeployWorker(db_unit* unit) const {
 	return allPossible.at(0);
 }
 
-std::vector<Building*> AiOrchestrator::getBuildingsCanDeploy(short unitId) const {
+std::vector<Building*> AiOrchestrator::getBuildingsCanDeploy(unsigned short unitId) const {
 	const auto& buildings = nation->buildings;
 	std::vector<short> buildingIdsThatCanDeploy;
 	for (const auto building : buildings) {

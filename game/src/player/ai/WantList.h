@@ -12,16 +12,23 @@ enum class WantItemType : unsigned char {
 	WORKER,
 	UNIT,
 	BUILDING,
+	TECH,
 };
 
 struct WantItem {
-	WantItemType type;
 	float priority;
 	float basePriority;
+	WantItemType type;
 	unsigned char count;
-	short specificId;       // resolved db id, -1 = unresolved
+	short specificId; // resolved db id, -1 = unresolved
 	unsigned short age;
 	bool active;
+
+	WantItem(float priority, WantItemType type, unsigned char count, short specificId) :
+		priority(priority), basePriority(priority),
+		type(type),
+		count(count),
+		specificId(specificId), active(true) {}
 };
 
 class WantList {

@@ -88,7 +88,7 @@ struct EconomyOutput {
 
 class EconomyBrain {
 public:
-	static constexpr int MAX_WORKERS_PER_TICK = 3;
+	static constexpr unsigned char MAX_WORKERS_PER_TICK = 3;
 
 	explicit EconomyBrain(db_nation* nation);
 	EconomyBrain(const EconomyBrain&) = delete;

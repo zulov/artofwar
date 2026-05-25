@@ -21,7 +21,7 @@ void WantList::addRequest(WantItemType type, float priority, unsigned char count
 			return;
 		}
 	}
-	items.push_back({type, priority, priority, count, specificId, 0, true});
+	items.push_back({priority, priority, type, count, specificId, 0, true});
 }
 
 void WantList::boostOrDecay() {

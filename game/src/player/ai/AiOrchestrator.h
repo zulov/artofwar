@@ -57,7 +57,7 @@ private:
 	db_unit* resolveUnit(const UnitOutput& unitOutput);
 	Building* getBuildingToDeploy(db_unit* unit) const;
 	Building* getBuildingToDeployWorker(db_unit* unit) const;
-	std::vector<Building*> getBuildingsCanDeploy(short unitId) const;
+	std::vector<Building*> getBuildingsCanDeploy(unsigned short unitId) const;
 	short findBuildingTypeToDeploy(short unitId) const;
 
 	// Building resolution
