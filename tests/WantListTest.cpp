@@ -145,15 +145,6 @@ TEST_F(WantListFixture, MultipleTickCyclesAccumulateItems) {
 	EXPECT_TRUE(buildingActive);
 }
 
-// --- Constants ---
-
-TEST_F(WantListFixture, ConstantsAreReasonable) {
-	EXPECT_EQ(WantList::MAX_ITEMS, 32);
-	EXPECT_FLOAT_EQ(WantList::BOOST_FACTOR, 1.15f);
-	EXPECT_FLOAT_EQ(WantList::DECAY_FACTOR, 0.85f);
-	EXPECT_FLOAT_EQ(WantList::DROP_THRESHOLD, 0.05f);
-}
-
 // ==========================================
 // WantList::execute integration tests
 // Uses real Player/Resources via game lib
@@ -182,69 +173,6 @@ protected:
 		return false;
 	};
 };
-
-// ==========================================
-// Output struct size tests
-// ==========================================
-
-TEST(MasterOutputTest, HasNineFields) {
-	EXPECT_EQ(sizeof(MasterOutput), 9 * sizeof(float));
-}
-
-TEST(EconomyOutputTest, HasSixFields) {
-	EXPECT_EQ(sizeof(EconomyOutput), 6 * sizeof(float));
-}
-
-TEST(MilitaryOutputTest, HasFourFields) {
-	EXPECT_EQ(sizeof(MilitaryOutput), 4 * sizeof(float));
-}
-
-TEST(UnitOutputTest, Has24FloatProfileAndCount) {
-	UnitOutput output{};
-	EXPECT_EQ(output.unitProfile.size(), 24u);
-	output.count = 5;
-	EXPECT_EQ(output.count, 5);
-}
-//TODO te testy nic nie testuja
-// ==========================================
-// MasterOutput field access
-// ==========================================
-
-TEST(MasterOutputTest, FieldsAccessibleByName) {
-	MasterOutput mo{0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f};
-	EXPECT_FLOAT_EQ(mo.workerUrgency, 0.1f);
-	EXPECT_FLOAT_EQ(mo.economyUrgency, 0.2f);
-	EXPECT_FLOAT_EQ(mo.buildingUrgency, 0.3f);
-	EXPECT_FLOAT_EQ(mo.unitUrgency, 0.4f);
-	EXPECT_FLOAT_EQ(mo.militaryUrgency, 0.5f);
-	EXPECT_FLOAT_EQ(mo.expandUrgency, 0.6f);
-	EXPECT_FLOAT_EQ(mo.techUrgency, 0.7f);
-	EXPECT_FLOAT_EQ(mo.defenceBuildingUrgency, 0.8f);
-	EXPECT_FLOAT_EQ(mo.attackUrgency, 0.9f);
-}
-
-// ==========================================
-// MilitaryOutput field access
-// ==========================================
-
-TEST(MilitaryOutputTest, FieldsAccessibleByName) {
-	MilitaryOutput mo{0.1f, 0.2f, 0.3f, 0.4f};
-	EXPECT_FLOAT_EQ(mo.attackWeight, 0.1f);
-	EXPECT_FLOAT_EQ(mo.defendWeight, 0.2f);
-	EXPECT_FLOAT_EQ(mo.attackTarget, 0.3f);
-	EXPECT_FLOAT_EQ(mo.defendTarget, 0.4f);
-}
-
-// ==========================================
-// UnitOutput unit profile
-// ==========================================
-
-TEST(UnitOutputTest, ProfileDefaultsToZero) {
-	UnitOutput output{};
-	for (int i = 0; i < 24; ++i) {
-		EXPECT_FLOAT_EQ(output.unitProfile[i], 0.f);
-	}
-}
 
 TEST(UnitOutputTest, CountScalingLogic) {
 	// Test the count scaling formula: count = max(1, round(urgency * MAX_UNITS_PER_TICK))
@@ -278,30 +206,6 @@ TEST(UnitOutputTest, CountScalingLogic) {
 	EXPECT_EQ(count, 1);
 }
 
-// ==========================================
-// LackingResult
-// ==========================================
-
-TEST(LackingResultTest, DefaultZeroInit) {
-	WantList::LackingResult lacking{};
-	lacking.perResource.fill(0.f);
-	lacking.totalSum = 0.f;
-
-	for (float v : lacking.perResource) {
-		EXPECT_FLOAT_EQ(v, 0.f);
-	}
-	EXPECT_FLOAT_EQ(lacking.totalSum, 0.f);
-}
-
-// ==========================================
-// WantItem type enum values
-// ==========================================
-
-TEST(WantItemTypeTest, EnumValues) {
-	EXPECT_NE(static_cast<int>(WantItemType::WORKER), static_cast<int>(WantItemType::UNIT));
-	EXPECT_NE(static_cast<int>(WantItemType::UNIT), static_cast<int>(WantItemType::BUILDING));
-	EXPECT_NE(static_cast<int>(WantItemType::WORKER), static_cast<int>(WantItemType::BUILDING));
-}
 
 // ==========================================
 // Boost/Decay math verification

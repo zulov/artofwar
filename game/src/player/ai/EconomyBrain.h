@@ -65,13 +65,15 @@ enum class EconomyOutputIdx : unsigned char {
 	NEED_TREE_NURSERY,
 };
 
-struct EconomyOutput {
+struct EconomyOutput {//TODO better names
 	float workerAllocation;
-	unsigned char workerCount;
+	unsigned char workerCount;//TODO move last
+
 	float foodPriority;
 	float woodPriority;
 	float stonePriority;
 	float goldPriority;
+
 	float expandPriority;
 	float reassignWorkers;
 	float needMill;

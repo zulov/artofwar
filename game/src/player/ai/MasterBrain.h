@@ -82,10 +82,10 @@ private:
 	Brain* brain;
 	std::array<float, magic_enum::enum_count<MasterInputIdx>()> inputData{};
 
-	// History for deltas
-	float prevScore = 0.f;
-	float prevEnemyScore = 0.f;
-	float prevUnits = 0.f;
+	// History for deltas, should be loaded from save
+	int prevScore = 0;
+	int prevEnemyScore = 0;
+	unsigned prevUnits = 0;
 	float prevResSum = 0.f;
 	float prevGatherSum = 0.f;
 };

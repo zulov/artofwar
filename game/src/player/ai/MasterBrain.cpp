@@ -22,20 +22,14 @@ MasterBrain::MasterBrain(db_nation* nation)
 }
 
 MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacking, const AiHistory* history) {
+	float resSum = sumSpan(player->getResources()->getValues());
+	float gatherSum = sumSpan(player->getResources()->getGatherSpeeds());
+
 	float deltaScore = norm(player->getScore() - prevScore, 1000.f);
 	float deltaEnemyScore = norm(enemy->getScore() - prevEnemyScore, 1000.f);
-	float deltaUnits = norm(static_cast<float>(player->getPossession()->getUnitsNumber()) - prevUnits, 200.f);
-	float resSum = 0.f;
-	for (int i = 0; i < 4; ++i) {
-		resSum += player->getResources()->getValues()[i];
-	}
+	float deltaUnits = norm(player->getPossession()->getUnitsNumber() - prevUnits, 200.f);
 	float deltaRes = norm(resSum - prevResSum, 1000.f);
-	float gatherSum = 0.f;
-	for (int i = 0; i < 4; ++i) {
-		gatherSum += player->getResources()->getGatherSpeeds()[i];
-	}
 	float deltaGatherSpeed = norm(gatherSum - prevGatherSum, 20.f);
-	float normTotalLacking = norm(totalLacking, 2000.f);
 
 	// Build input array
 	using I = MasterInputIdx;
@@ -44,58 +38,57 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 	auto* enemyPossession = enemy->getPossession();
 	auto* res = player->getResources();
 
-	// Scores (2)
+	// Scores
 	inputData[idx(I::PLAYER_SCORE)] = norm(player->getScore(), 1000.f);
 	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), 1000.f);
 
-	// Counts (4)
+	// Counts
 	inputData[idx(I::BUILDINGS_COUNT)] = norm(possession->getBuildingsNumber(), 50.f);
 	inputData[idx(I::WORKERS_COUNT)] = norm(possession->getWorkersNumber(), 100.f);
 	inputData[idx(I::ARMY_COUNT)] = norm(possession->getArmyNumber(), 200.f);
 	inputData[idx(I::ENEMY_ARMY_COUNT)] = norm(enemyPossession->getArmyNumber(), 200.f);
 
-	// Resources — stockpiles (4)
+	// Resources — stockpiles
 	inputData[idx(I::RES_FOOD)] = norm(res->getValue(ResourceType::FOOD), 1000.f);
 	inputData[idx(I::RES_WOOD)] = norm(res->getValue(ResourceType::WOOD), 1000.f);
 	inputData[idx(I::RES_STONE)] = norm(res->getValue(ResourceType::STONE), 1000.f);
 	inputData[idx(I::RES_GOLD)] = norm(res->getValue(ResourceType::GOLD), 1000.f);
 
-	// Resources — gather speeds (4)
+	// Resources — gather speeds
 	inputData[idx(I::GATHER_FOOD)] = norm(res->getGatherSpeed(ResourceType::FOOD), 10.f);
 	inputData[idx(I::GATHER_WOOD)] = norm(res->getGatherSpeed(ResourceType::WOOD), 10.f);
 	inputData[idx(I::GATHER_STONE)] = norm(res->getGatherSpeed(ResourceType::STONE), 10.f);
 	inputData[idx(I::GATHER_GOLD)] = norm(res->getGatherSpeed(ResourceType::GOLD), 10.f);
 
-	// Attack/Defence (2)
+	// Attack/Defence
 	inputData[idx(I::ATTACK_SUM)] = norm(possession->getAttackSum(), 1000.f);
 	inputData[idx(I::DEFENCE_SUM)] = norm(possession->getDefenceAttackSum(), 100.f);
 
-	// Spatial distances (4)
+	// Spatial distances
 	inputData[idx(I::DIST_OUR_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, player, 0.f);
 	inputData[idx(I::DIST_OUR_ARMY_ENEMY_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, enemy, 1.f);
 	inputData[idx(I::DIST_ENEMY_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, player, 1.f);
 	inputData[idx(I::DIST_ENEMY_ARMY_ENEMY_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, enemy, 0.f);
 
-	// Lacking feedback (1)
-	inputData[idx(I::TOTAL_LACKING)] = normTotalLacking;
+	// Lacking feedback
+	inputData[idx(I::TOTAL_LACKING)] = norm(totalLacking, 2000.f);
 
-	// Deltas (3)
+	// Deltas
 	inputData[idx(I::DELTA_SCORE)] = deltaScore;
 	inputData[idx(I::DELTA_ENEMY_SCORE)] = deltaEnemyScore;
 	inputData[idx(I::DELTA_UNITS)] = deltaUnits;
 	inputData[idx(I::DELTA_RES)] = deltaRes;
+	inputData[idx(I::DELTA_GATHER_SPEED)] = deltaGatherSpeed;
 
-	// New inputs
 	inputData[idx(I::GAME_TIME)] = norm(Game::getFrameInfo()->getSeconds(), 1800.f);
 	float killed = possession->getValueDestroyed();
 	float lost = enemyPossession->getValueDestroyed();
 	inputData[idx(I::KD_RATIO)] = norm(killed, std::max(killed + lost, 1.f));
 	inputData[idx(I::IN_COMBAT_RATIO)] = possession->getInCombatRatio();
 	inputData[idx(I::TECH_LEVEL)] = 0.f; //TODO implement — no tech API exists yet
-	inputData[idx(I::DELTA_GATHER_SPEED)] = deltaGatherSpeed;
 
-	// History inputs (lookback ~30 seconds at 60 ticks/s = 1800 ticks)
-	constexpr unsigned int LOOKBACK = 1800;
+	// History inputs (lookback ~30 seconds at 30 ticks/s = 900 ticks)
+	constexpr unsigned int LOOKBACK = 900;
 	float buildFailures = history->failureScore(AiActionType::CREATE_BUILDING_OTHER, LOOKBACK)
 		+ history->failureScore(AiActionType::CREATE_BUILDING_DEFENCE, LOOKBACK)
 		+ history->failureScore(AiActionType::CREATE_BUILDING_RESOURCE, LOOKBACK)
@@ -125,11 +118,7 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 void MasterBrain::updateHistory(Player* player, Player* enemy) {
 	prevScore = player->getScore();
 	prevEnemyScore = enemy->getScore();
-	prevUnits = static_cast<float>(player->getPossession()->getUnitsNumber());
-	prevResSum = 0.f;
-	prevGatherSum = 0.f;
-	for (int i = 0; i < 4; ++i) {
-		prevResSum += player->getResources()->getValues()[i];
-		prevGatherSum += player->getResources()->getGatherSpeeds()[i];
-	}
+	prevUnits = player->getPossession()->getUnitsNumber();
+	prevResSum = sumSpan(player->getResources()->getValues());
+	prevGatherSum = sumSpan(player->getResources()->getGatherSpeeds());
 }
