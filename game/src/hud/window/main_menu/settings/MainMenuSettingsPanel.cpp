@@ -45,7 +45,7 @@ void MainMenuSettingsPanel::createBody() {
 	Urho3D::Localization* l10n = Game::getLocalization();
 
 	settings = createElement<Urho3D::DropDownList>(rows[0], style, "MainMenuNewGameDropDownList");
-	Urho3D::Vector<Urho3D::String> settingsNames;
+	std::vector<Urho3D::String> settingsNames;
 
 	for (auto graphSetting : Game::getDatabase()->getGraphSettings()) {
 		if (graphSetting) {
@@ -57,7 +57,7 @@ void MainMenuSettingsPanel::createBody() {
 	addChildTexts(settings, settingsNames, style);
 
 	resolution = createElement<Urho3D::DropDownList>(rows[1], style, "MainMenuNewGameDropDownList");
-	Urho3D::Vector<Urho3D::String> resNames;
+	std::vector<Urho3D::String> resNames;
 	for (auto res : Game::getDatabase()->getResolutions()) {
 		resNames.push_back(Urho3D::String(res->x) + "x" + Urho3D::String(res->y));
 	}
@@ -80,7 +80,7 @@ void MainMenuSettingsPanel::createBody() {
 
 	hudSize = createElement<Urho3D::DropDownList>(rows[8], style, "MainMenuNewGameDropDownList");
 
-	Urho3D::Vector<Urho3D::String> hudNames;
+	std::vector<Urho3D::String> hudNames;
 	for (auto hudSize : Game::getDatabase()->getHudSizes()) {
 		hudNames.push_back(hudSize->name);
 	}
