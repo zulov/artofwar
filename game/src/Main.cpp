@@ -689,7 +689,7 @@ void Main::readParameters() {
 				auto parts = value.Split('#');
 				SimGlobals::OUTPUT_NAMES.clear();
 				for (unsigned j = 0; j < parts.Size(); ++j) {
-					SimGlobals::OUTPUT_NAMES.emplace_back(parts[j].CString());
+					SimGlobals::OUTPUT_NAMES.push_back(std::string(parts[j].CString()));
 				}
 				SimGlobals::MAX_RUNS = SimGlobals::OUTPUT_NAMES.size();
 				outputName = SimGlobals::OUTPUT_NAMES[0].c_str();

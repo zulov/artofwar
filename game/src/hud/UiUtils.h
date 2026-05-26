@@ -84,7 +84,7 @@ inline Urho3D::Text* addChildText(Urho3D::UIElement* parent, Urho3D::String styl
 }
 
 
-inline void addChildTexts(Urho3D::DropDownList* cob, const std::vector<Urho3D::String>& names, Urho3D::XMLFile* style) {
+inline void addChildTexts(Urho3D::DropDownList* cob, const Urho3D::Vector<Urho3D::String>& names, Urho3D::XMLFile* style) {
 	for (auto& name : names) {
 		addTextItem(cob, name, style);
 	}
@@ -95,9 +95,9 @@ inline void addTextItem(Urho3D::DropDownList* cob, Urho3D::String& name, Urho3D:
 	addTextItem(cob, name, style)->SetVar(varName, var);
 }
 
-inline void addChildTexts(Urho3D::DropDownList* cob, std::vector<Urho3D::String> names, Urho3D::XMLFile* style,
-                          std::vector<Urho3D::Variant> vars, const Urho3D::String& varsName) {
-	for (int i = 0; i < names.size(); ++i) {
-		addTextItem(cob, names.at(i), style, vars.at(i), varsName);
+inline void addChildTexts(Urho3D::DropDownList* cob, Urho3D::Vector<Urho3D::String> names, Urho3D::XMLFile* style,
+                          Urho3D::Vector<Urho3D::Variant> vars, const Urho3D::String& varsName) {
+	for (unsigned i = 0; i < names.Size(); ++i) {
+		addTextItem(cob, names.At(i), style, vars.At(i), varsName);
 	}
 }
