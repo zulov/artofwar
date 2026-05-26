@@ -62,7 +62,7 @@ private:
 
 	// Building resolution
 	db_building* resolveBuilding(ParentBuildingType type);
-	std::optional<Urho3D::Vector2> findPosToBuild(db_building* building, ParentBuildingType type) const;
+	std::optional<Urho3D::Vector2> findPosToBuild(db_building* building, ParentBuildingType type);
 	std::vector<db_building*> getBuildingsInType(ParentBuildingType type);
 
 	// Spatial helpers

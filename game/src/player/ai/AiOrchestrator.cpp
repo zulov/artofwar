@@ -451,7 +451,7 @@ db_building* AiOrchestrator::resolveBuilding(ParentBuildingType type) {
 	return buildings.at(0);
 }
 
-std::optional<Urho3D::Vector2> AiOrchestrator::findPosToBuild(db_building* building, ParentBuildingType type) const {
+std::optional<Urho3D::Vector2> AiOrchestrator::findPosToBuild(db_building* building, ParentBuildingType type) {
 	if (type == ParentBuildingType::RESOURCE) {
 		return Game::getEnvironment()->getPosToCreateResBonus(building, playerId);
 	}

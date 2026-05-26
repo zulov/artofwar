@@ -16,19 +16,27 @@ enum class WantItemType : unsigned char {
 };
 
 struct WantItem {
-	float priority;
-	float basePriority;
-	WantItemType type;
-	unsigned char count;
-	short specificId; // resolved db id, -1 = unresolved
-	unsigned short age;
-	bool active;
+	float priority{};
+	float basePriority{};
+	WantItemType type{};
+	unsigned char count{};
+	short specificId{};
+	unsigned short age{};
+	bool active{};
+
+	WantItem() = default;
+
+	WantItem(float priority, float basePriority, WantItemType type, unsigned char count, short specificId, unsigned short age, bool active) :
+		priority(priority), basePriority(basePriority),
+		type(type),
+		count(count),
+		specificId(specificId), age(age), active(active) {}
 
 	WantItem(float priority, WantItemType type, unsigned char count, short specificId) :
 		priority(priority), basePriority(priority),
 		type(type),
 		count(count),
-		specificId(specificId), active(true) {}
+		specificId(specificId), age(0), active(true) {}
 };
 
 class WantList {
