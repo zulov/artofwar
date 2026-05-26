@@ -6,7 +6,6 @@
 #include "player/ai/WantList.h"
 #include "player/ai/MasterBrain.h"
 #include "player/ai/EconomyBrain.h"
-#include "player/ai/BuildingBrain.h"
 #include "player/ai/UnitBrain.h"
 #include "player/ai/MilitaryBrain.h"
 
@@ -192,10 +191,6 @@ TEST(MasterOutputTest, HasNineFields) {
 	EXPECT_EQ(sizeof(MasterOutput), 9 * sizeof(float));
 }
 
-TEST(BuildingOutputTest, HasElevenFields) {
-	EXPECT_EQ(sizeof(BuildingOutput), 11 * sizeof(float));
-}
-
 TEST(EconomyOutputTest, HasSixFields) {
 	EXPECT_EQ(sizeof(EconomyOutput), 6 * sizeof(float));
 }
@@ -210,7 +205,7 @@ TEST(UnitOutputTest, Has24FloatProfileAndCount) {
 	output.count = 5;
 	EXPECT_EQ(output.count, 5);
 }
-
+//TODO te testy nic nie testuja
 // ==========================================
 // MasterOutput field access
 // ==========================================
@@ -226,39 +221,6 @@ TEST(MasterOutputTest, FieldsAccessibleByName) {
 	EXPECT_FLOAT_EQ(mo.techUrgency, 0.7f);
 	EXPECT_FLOAT_EQ(mo.defenceBuildingUrgency, 0.8f);
 	EXPECT_FLOAT_EQ(mo.attackUrgency, 0.9f);
-}
-
-// ==========================================
-// EconomyOutput field access
-// ==========================================
-
-TEST(EconomyOutputTest, FieldsAccessibleByName) {
-	EconomyOutput eo{0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f};
-	EXPECT_FLOAT_EQ(eo.workerAllocation, 0.1f);
-	EXPECT_FLOAT_EQ(eo.foodPriority, 0.2f);
-	EXPECT_FLOAT_EQ(eo.woodPriority, 0.3f);
-	EXPECT_FLOAT_EQ(eo.stonePriority, 0.4f);
-	EXPECT_FLOAT_EQ(eo.goldPriority, 0.5f);
-	EXPECT_FLOAT_EQ(eo.expandPriority, 0.6f);
-}
-
-// ==========================================
-// BuildingOutput field access
-// ==========================================
-
-TEST(BuildingOutputTest, FieldsAccessibleByName) {
-	BuildingOutput bo{0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f, 1.1f};
-	EXPECT_FLOAT_EQ(bo.otherUrgency, 0.1f);
-	EXPECT_FLOAT_EQ(bo.defenceUrgency, 0.2f);
-	EXPECT_FLOAT_EQ(bo.resourceUrgency, 0.3f);
-	EXPECT_FLOAT_EQ(bo.techUrgency, 0.4f);
-	EXPECT_FLOAT_EQ(bo.unitsUrgency, 0.5f);
-	EXPECT_FLOAT_EQ(bo.foodResPref, 0.6f);
-	EXPECT_FLOAT_EQ(bo.woodResPref, 0.7f);
-	EXPECT_FLOAT_EQ(bo.stoneResPref, 0.8f);
-	EXPECT_FLOAT_EQ(bo.goldResPref, 0.9f);
-	EXPECT_FLOAT_EQ(bo.blacksmithPref, 1.0f);
-	EXPECT_FLOAT_EQ(bo.universityPref, 1.1f);
 }
 
 // ==========================================
