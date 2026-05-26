@@ -4,6 +4,7 @@
 
 class Brain;
 class Player;
+class AiHistory;
 struct db_nation;
 
 enum class EconomyInputIdx : unsigned char {
@@ -41,6 +42,7 @@ enum class EconomyInputIdx : unsigned char {
 	ECONOMY_URGENCY,
 	WORKER_URGENCY,
 	EXPAND_URGENCY,
+	RECENT_COLLECT_FAILURES,
 };
 
 enum class EconomyOutputIdx : unsigned char {
@@ -50,7 +52,6 @@ enum class EconomyOutputIdx : unsigned char {
 	STONE_PRIORITY,
 	GOLD_PRIORITY,
 	EXPAND_PRIORITY,
-	RESOURCE_BUILDING_URGENCY,
 	REASSIGN_WORKERS,
 	NEED_MILL,
 	NEED_SAWMILL,
@@ -72,7 +73,6 @@ struct EconomyOutput {
 	float stonePriority;
 	float goldPriority;
 	float expandPriority;
-	float resourceBuildingUrgency;
 	float reassignWorkers;
 	float needMill;
 	float needSawmill;
@@ -95,7 +95,8 @@ public:
 
 	EconomyOutput decide(Player* player, Player* enemy,
 	                      const std::array<float, 4>& lackingPerResource,
-	                      float economyUrgency, float workerUrgency, float expandUrgency);
+	                      float economyUrgency, float workerUrgency, float expandUrgency,
+	                      const AiHistory* history);
 
 private:
 	Brain* brain;

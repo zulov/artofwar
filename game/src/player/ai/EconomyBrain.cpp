@@ -3,6 +3,7 @@
 #include <magic_enum.hpp>
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
+#include "AiHistory.h"
 #include "AiUtils.h"
 #include "database/db_struct.h"
 #include "player/Player.h"
@@ -22,7 +23,8 @@ EconomyBrain::EconomyBrain(db_nation* nation)
 
 EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
                                     const std::array<float, 4>& lackingPerResource,
-                                    float economyUrgency, float workerUrgency, float expandUrgency) {
+                                    float economyUrgency, float workerUrgency, float expandUrgency,
+                                    const AiHistory* history) {
 	using I = EconomyInputIdx;
 
 	auto* res = player->getResources();
@@ -90,6 +92,14 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::WORKER_URGENCY)] = workerUrgency;
 	inputData[idx(I::EXPAND_URGENCY)] = expandUrgency;
 
+	// History — collection failures signal resource scarcity nearby
+	constexpr unsigned int LOOKBACK = 1800;
+	float collectFailures = history->failureScore(AiOrderType::COLLECT_RESOURCE_0, LOOKBACK)
+		+ history->failureScore(AiOrderType::COLLECT_RESOURCE_1, LOOKBACK)
+		+ history->failureScore(AiOrderType::COLLECT_RESOURCE_2, LOOKBACK)
+		+ history->failureScore(AiOrderType::COLLECT_RESOURCE_3, LOOKBACK);
+	inputData[idx(I::RECENT_COLLECT_FAILURES)] = norm(collectFailures, 10.f);
+
 	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
 
 	using O = EconomyOutputIdx;
@@ -110,7 +120,6 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 		result[o(O::STONE_PRIORITY)],
 		result[o(O::GOLD_PRIORITY)],
 		result[o(O::EXPAND_PRIORITY)],
-		result[o(O::RESOURCE_BUILDING_URGENCY)],
 		result[o(O::REASSIGN_WORKERS)],
 		result[o(O::NEED_MILL)],
 		result[o(O::NEED_SAWMILL)],

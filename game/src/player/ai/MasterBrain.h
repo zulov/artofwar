@@ -4,6 +4,7 @@
 
 class Brain;
 class Player;
+class AiHistory;
 struct db_nation;
 
 enum class MasterInputIdx : unsigned char {
@@ -37,6 +38,10 @@ enum class MasterInputIdx : unsigned char {
 	IN_COMBAT_RATIO,
 	TECH_LEVEL,
 	DELTA_GATHER_SPEED,
+	RECENT_BUILD_FAILURES,
+	RECENT_UNIT_FAILURES,
+	RECENT_ATTACK_ACTIVITY,
+	RECENT_DEFEND_ACTIVITY,
 
 };
 
@@ -69,16 +74,18 @@ public:
 	explicit MasterBrain(db_nation* nation);
 	MasterBrain(const MasterBrain&) = delete;
 
-	MasterOutput decide(Player* player, Player* enemy, float totalLacking);
+	MasterOutput decide(Player* player, Player* enemy, float totalLacking, const AiHistory* history);
 
 private:
-	void updateHistory(Player* player);
+	void updateHistory(Player* player, Player* enemy);
 
 	Brain* brain;
 	std::array<float, magic_enum::enum_count<MasterInputIdx>()> inputData{};
 
 	// History for deltas
 	float prevScore = 0.f;
+	float prevEnemyScore = 0.f;
 	float prevUnits = 0.f;
 	float prevResSum = 0.f;
+	float prevGatherSum = 0.f;
 };

@@ -24,6 +24,8 @@
 #include "objects/unit/GroupUtils.h"
 #include "objects/unit/order/GroupOrder.h"
 #include "objects/PhysicalUtils.h"
+#include "objects/resource/ResourceEntity.h"
+#include "objects/unit/state/UnitState.h"
 #include "env/influence/CenterType.h"
 #include "database/DatabaseCache.h"
 
@@ -46,14 +48,16 @@ void AiOrchestrator::action() {
 	// 1. Master Brain decides urgencies
 	lastMasterOut = masterBrain.decide(
 		player, enemy,
-		lastLacking.totalSum
+		lastLacking.totalSum,
+		history
 	);
 
 	// 2. Economy Brain (gets lacking feedback)
 	lastEconOut = economyBrain.decide(
 		player, enemy,
 		lastLacking.perResource,
-		lastMasterOut.economyUrgency, lastMasterOut.workerUrgency, lastMasterOut.expandUrgency
+		lastMasterOut.economyUrgency, lastMasterOut.workerUrgency, lastMasterOut.expandUrgency,
+		history
 	);
 
 	// 3. Unit Brain
@@ -82,6 +86,13 @@ void AiOrchestrator::action() {
 	submitBuildingRequest(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
 	submitBuildingRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
 	submitBuildingRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
+
+	// Resource building — urgency derived from highest need score
+	float resBuildUrgency = std::max({lastEconOut.needMill, lastEconOut.needSawmill,
+		lastEconOut.needMineS, lastEconOut.needMineG, lastEconOut.needFarm,
+		lastEconOut.needGranary, lastEconOut.needBank, lastEconOut.needGoldRefinery,
+		lastEconOut.needStoneRefinery, lastEconOut.needTreeNursery});
+	submitBuildingRequest(resBuildUrgency, ParentBuildingType::RESOURCE);
 
 	// UNITS building: prefer specific building from lacking feedback, fall back to generic resolve
 	if (lastLacking.lackingBuildingForUnit >= 0) {
@@ -151,7 +162,8 @@ void AiOrchestrator::order() {
 
 	auto milOut = militaryBrain.decide(
 		player, enemy,
-		lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency
+		lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency,
+		history
 	);
 
 	bool isAttack = milOut.attackWeight > milOut.defendWeight;
@@ -331,14 +343,45 @@ db_unit* AiOrchestrator::resolveUnit(const UnitOutput& unitOutput) {
 Building* AiOrchestrator::getBuildingToDeploy(db_unit* unit) const {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
 	if (allPossible.empty()) { return nullptr; }
-	return allPossible.at(0);
-	// TODO: spatial brain for placement
+	if (allPossible.size() == 1) { return allPossible[0]; }
+
+	// Pick building closest to army center — deploy near the action
+	auto armyCenter = Game::getEnvironment()->getCenterOf(CenterType::ARMY, playerId);
+	if (!armyCenter.has_value()) { return allPossible[0]; }
+
+	auto target = armyCenter.value();
+	Building* best = allPossible[0];
+	float bestDist = std::numeric_limits<float>::max();
+	for (auto* b : allPossible) {
+		float d = b->getPosition().SqDistXZ(target);
+		if (d < bestDist) {
+			bestDist = d;
+			best = b;
+		}
+	}
+	return best;
 }
 
 Building* AiOrchestrator::getBuildingToDeployWorker(db_unit* unit) const {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
 	if (allPossible.empty()) { return nullptr; }
-	return allPossible.at(0);
+	if (allPossible.size() == 1) { return allPossible[0]; }
+
+	// Pick building closest to economy center — deploy near resources
+	auto econCenter = Game::getEnvironment()->getCenterOf(CenterType::ECON, playerId);
+	if (!econCenter.has_value()) { return allPossible[0]; }
+
+	auto target = econCenter.value();
+	Building* best = allPossible[0];
+	float bestDist = std::numeric_limits<float>::max();
+	for (auto* b : allPossible) {
+		float d = b->getPosition().SqDistXZ(target);
+		if (d < bestDist) {
+			bestDist = d;
+			best = b;
+		}
+	}
+	return best;
 }
 
 std::vector<Building*> AiOrchestrator::getBuildingsCanDeploy(unsigned short unitId) const {
@@ -510,17 +553,34 @@ bool AiOrchestrator::enoughResources(const db_with_cost* withCosts) const {
 
 void AiOrchestrator::collectWorkers() {
 	auto freeWorkers = findFreeWorkers();
-	if (freeWorkers.empty()) { return; }
 
 	// Use economy brain's resource priorities to decide which resource to collect
 	float prefs[] = {lastEconOut.foodPriority, lastEconOut.woodPriority,
 	                 lastEconOut.stonePriority, lastEconOut.goldPriority};
+	std::array<int, 4> order = {0, 1, 2, 3};
+	std::ranges::sort(order, [&](int a, int b) { return prefs[a] > prefs[b]; });
+
+	// Reassign one busy worker from lowest-priority resource to highest
+	if (lastEconOut.reassignWorkers > 0.5f) {
+		bool found = false;
+		for (int i = 3; i >= 0 && !found; --i) {
+			int worstResId = order[i];
+			if (prefs[order[0]] - prefs[worstResId] < 0.3f) { break; }
+			for (auto* worker : possession->getWorkers()) {
+				if (worker->getState() != UnitState::COLLECT) { continue; }
+				auto* res = dynamic_cast<ResourceEntity*>(worker->getThingToInteract());
+				if (!res || res->getResourceId() != worstResId) { continue; }
+				freeWorkers.push_back(worker);
+				found = true;
+				break;
+			}
+		}
+	}
+
+	if (freeWorkers.empty()) { return; }
 
 	// For each free worker, assign to highest-priority resource that has a nearby source
 	for (auto* worker : freeWorkers) {
-		// Try resources in priority order
-		std::array<int, 4> order = {0, 1, 2, 3};
-		std::ranges::sort(order, [&](int a, int b) { return prefs[a] > prefs[b]; });
 
 		bool assigned = false;
 		for (int resId : order) {
@@ -536,7 +596,9 @@ void AiOrchestrator::collectWorkers() {
 			}
 		}
 		if (!assigned) {
-			history->addOrder(AiOrderType::COLLECT_RESOURCE_0, AiOrderResult::NO_RESOURCE_IN_RANGE, 1);
+			auto failType = static_cast<AiOrderType>(
+				static_cast<uint8_t>(AiOrderType::COLLECT_RESOURCE_0) + order[0]);
+			history->addOrder(failType, AiOrderResult::NO_RESOURCE_IN_RANGE, 1);
 		}
 	}
 }

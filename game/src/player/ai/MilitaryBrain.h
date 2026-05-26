@@ -5,6 +5,7 @@
 
 class Brain;
 class Player;
+class AiHistory;
 struct db_nation;
 
 enum class MilitaryInputIdx : unsigned char {
@@ -27,6 +28,8 @@ enum class MilitaryInputIdx : unsigned char {
 	ENEMY_INFANTRY_RATIO,
 	ENEMY_RANGE_RATIO,
 	ENEMY_CAVALRY_RATIO,
+	RECENT_ATTACK_FAILURES,
+	RECENT_DEFEND_FAILURES,
 };
 
 enum class MilitaryOutputIdx : unsigned char {
@@ -49,7 +52,8 @@ public:
 	MilitaryBrain(const MilitaryBrain&) = delete;
 
 	MilitaryOutput decide(Player* player, Player* enemy,
-	                       float militaryUrgency, float attackUrgency);
+	                       float militaryUrgency, float attackUrgency,
+	                       const AiHistory* history);
 
 private:
 	Brain* brain;

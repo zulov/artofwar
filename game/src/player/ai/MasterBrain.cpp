@@ -1,6 +1,7 @@
 #include "MasterBrain.h"
 
 #include <magic_enum.hpp>
+#include "AiHistory.h"
 #include "AiUtils.h"
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
@@ -20,14 +21,20 @@ MasterBrain::MasterBrain(db_nation* nation)
 	assert(brain->getOutputSize() == magic_enum::enum_count<MasterOutputIdx>());
 }
 
-MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacking) {
+MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacking, const AiHistory* history) {
 	float deltaScore = norm(player->getScore() - prevScore, 1000.f);
+	float deltaEnemyScore = norm(enemy->getScore() - prevEnemyScore, 1000.f);
 	float deltaUnits = norm(static_cast<float>(player->getPossession()->getUnitsNumber()) - prevUnits, 200.f);
 	float resSum = 0.f;
 	for (int i = 0; i < 4; ++i) {
 		resSum += player->getResources()->getValues()[i];
 	}
 	float deltaRes = norm(resSum - prevResSum, 1000.f);
+	float gatherSum = 0.f;
+	for (int i = 0; i < 4; ++i) {
+		gatherSum += player->getResources()->getGatherSpeeds()[i];
+	}
+	float deltaGatherSpeed = norm(gatherSum - prevGatherSum, 20.f);
 	float normTotalLacking = norm(totalLacking, 2000.f);
 
 	// Build input array
@@ -74,18 +81,38 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 
 	// Deltas (3)
 	inputData[idx(I::DELTA_SCORE)] = deltaScore;
-	inputData[idx(I::DELTA_ENEMY_SCORE)] = 0.f; //TODO implement
+	inputData[idx(I::DELTA_ENEMY_SCORE)] = deltaEnemyScore;
 	inputData[idx(I::DELTA_UNITS)] = deltaUnits;
 	inputData[idx(I::DELTA_RES)] = deltaRes;
 
-	// New inputs — TODO implement
+	// New inputs
 	inputData[idx(I::GAME_TIME)] = norm(Game::getFrameInfo()->getSeconds(), 1800.f);
-	inputData[idx(I::KD_RATIO)] = 0.f; //TODO implement
+	float killed = possession->getValueDestroyed();
+	float lost = enemyPossession->getValueDestroyed();
+	inputData[idx(I::KD_RATIO)] = norm(killed, std::max(killed + lost, 1.f));
 	inputData[idx(I::IN_COMBAT_RATIO)] = possession->getInCombatRatio();
-	inputData[idx(I::TECH_LEVEL)] = 0.f; //TODO implement
-	inputData[idx(I::DELTA_GATHER_SPEED)] = 0.f; //TODO implement
+	inputData[idx(I::TECH_LEVEL)] = 0.f; //TODO implement — no tech API exists yet
+	inputData[idx(I::DELTA_GATHER_SPEED)] = deltaGatherSpeed;
 
-	updateHistory(player);
+	// History inputs (lookback ~30 seconds at 60 ticks/s = 1800 ticks)
+	constexpr unsigned int LOOKBACK = 1800;
+	float buildFailures = history->failureScore(AiActionType::CREATE_BUILDING_OTHER, LOOKBACK)
+		+ history->failureScore(AiActionType::CREATE_BUILDING_DEFENCE, LOOKBACK)
+		+ history->failureScore(AiActionType::CREATE_BUILDING_RESOURCE, LOOKBACK)
+		+ history->failureScore(AiActionType::CREATE_BUILDING_TECH, LOOKBACK)
+		+ history->failureScore(AiActionType::CREATE_BUILDING_UNITS, LOOKBACK);
+	inputData[idx(I::RECENT_BUILD_FAILURES)] = norm(buildFailures, 10.f);
+	inputData[idx(I::RECENT_UNIT_FAILURES)] = norm(history->failureScore(AiActionType::CREATE_UNIT, LOOKBACK), 5.f);
+	float attackActivity = history->recencyScore(AiOrderType::ATTACK_ECON, LOOKBACK)
+		+ history->recencyScore(AiOrderType::ATTACK_BUILDING, LOOKBACK)
+		+ history->recencyScore(AiOrderType::ATTACK_ARMY, LOOKBACK);
+	inputData[idx(I::RECENT_ATTACK_ACTIVITY)] = norm(attackActivity, 10.f);
+	float defendActivity = history->recencyScore(AiOrderType::DEFEND_ECON, LOOKBACK)
+		+ history->recencyScore(AiOrderType::DEFEND_BUILDING, LOOKBACK)
+		+ history->recencyScore(AiOrderType::DEFEND_ARMY, LOOKBACK);
+	inputData[idx(I::RECENT_DEFEND_ACTIVITY)] = norm(defendActivity, 10.f);
+
+	updateHistory(player, enemy);
 
 	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
 
@@ -95,11 +122,14 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 	};
 }
 
-void MasterBrain::updateHistory(Player* player) {
+void MasterBrain::updateHistory(Player* player, Player* enemy) {
 	prevScore = player->getScore();
+	prevEnemyScore = enemy->getScore();
 	prevUnits = static_cast<float>(player->getPossession()->getUnitsNumber());
 	prevResSum = 0.f;
+	prevGatherSum = 0.f;
 	for (int i = 0; i < 4; ++i) {
 		prevResSum += player->getResources()->getValues()[i];
+		prevGatherSum += player->getResources()->getGatherSpeeds()[i];
 	}
 }

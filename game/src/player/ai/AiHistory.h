@@ -35,6 +35,8 @@ public:
 
 	float recencyScore(AiActionType type, unsigned int lookbackTicks) const;
 	float recencyScore(AiOrderType type, unsigned int lookbackTicks) const;
+	float failureScore(AiActionType type, unsigned int lookbackTicks) const;
+	float failureScore(AiOrderType type, unsigned int lookbackTicks) const;
 
 private:
 	const ActionHistoryEntry& getAction(int index) const;

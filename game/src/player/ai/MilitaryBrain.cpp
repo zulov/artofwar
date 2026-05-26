@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <magic_enum.hpp>
+#include "AiHistory.h"
 #include "AiUtils.h"
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
@@ -19,7 +20,8 @@ MilitaryBrain::MilitaryBrain(db_nation* nation)
 }
 
 MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
-                                      float militaryUrgency, float attackUrgency) {
+                                      float militaryUrgency, float attackUrgency,
+                                      const AiHistory* history) {
 	using I = MilitaryInputIdx;
 
 	auto* possession = player->getPossession();
@@ -60,6 +62,17 @@ MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::ENEMY_INFANTRY_RATIO)] = norm(enemyPossession->getInfantryNumber(), enemySafeDiv);
 	inputData[idx(I::ENEMY_RANGE_RATIO)] = norm(enemyPossession->getRangeNumber(), enemySafeDiv);
 	inputData[idx(I::ENEMY_CAVALRY_RATIO)] = norm(enemyPossession->getCavalryNumber(), enemySafeDiv);
+
+	// History — order failures signal unreachable targets
+	constexpr unsigned int LOOKBACK = 1800;
+	float attackFailures = history->failureScore(AiOrderType::ATTACK_ECON, LOOKBACK)
+		+ history->failureScore(AiOrderType::ATTACK_BUILDING, LOOKBACK)
+		+ history->failureScore(AiOrderType::ATTACK_ARMY, LOOKBACK);
+	inputData[idx(I::RECENT_ATTACK_FAILURES)] = norm(attackFailures, 5.f);
+	float defendFailures = history->failureScore(AiOrderType::DEFEND_ECON, LOOKBACK)
+		+ history->failureScore(AiOrderType::DEFEND_BUILDING, LOOKBACK)
+		+ history->failureScore(AiOrderType::DEFEND_ARMY, LOOKBACK);
+	inputData[idx(I::RECENT_DEFEND_FAILURES)] = norm(defendFailures, 5.f);
 
 	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
 

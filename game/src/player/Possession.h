@@ -64,6 +64,7 @@ public:
 	float getInCombatRatio();
 	float getBonusCoverage(ResourceType rt);
 	float getResWithoutBonusSum();
+	float getValueDestroyed() const { return valueDestroyed; }
 private:
 	std::vector<Building*> buildings;
 	std::vector<std::vector<Building*>*> buildingsPerId;
@@ -86,7 +87,7 @@ private:
 	std::array<float, 4> bonusCoverage{};
 
 	float resourcesSum = 0.f;
-	float resourcesDestroyed = 0.f;
+	float valueDestroyed = 0.f;
 
 	bool unitMetricsReady = false;
 	bool buildingMetricsReady = false;

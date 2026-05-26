@@ -139,7 +139,7 @@ const std::vector<Building*>& Possession::getBuildings() {
 }
 
 void Possession::addKilled(Physical* physical) {
-	resourcesDestroyed += physical->getCostSum();
+	valueDestroyed += physical->getCostSum();
 }
 
 const PossessionMetric* Possession::getMetrics() {
