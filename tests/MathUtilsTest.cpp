@@ -82,26 +82,26 @@ TEST_F(MathUtilsFixture, GetCordsInLowerChild15) {
 	EXPECT_EQ(getCordsInLower(2, 4, 15), 3);
 }
 
-// --- sqRootSumError ---
+// --- sumSquaredError ---
 
 TEST_F(MathUtilsFixture, SqRootSumErrorIdentical) {
 	std::valarray<float> v1 = {1.f, 2.f, 3.f};
 	std::valarray<float> v2 = {1.f, 2.f, 3.f};
-	EXPECT_FLOAT_EQ(sqRootSumError(v1, v2), 0.f);
+	EXPECT_FLOAT_EQ(sumSquaredError(v1, v2), 0.f);
 }
 
 TEST_F(MathUtilsFixture, SqRootSumErrorBasic) {
 	std::valarray<float> v1 = {1.f, 2.f, 3.f};
 	std::valarray<float> v2 = {2.f, 3.f, 4.f};
 	// diffs: 1,1,1 -> squared: 1,1,1 -> sum: 3
-	EXPECT_FLOAT_EQ(sqRootSumError(v1, v2), 3.f);
+	EXPECT_FLOAT_EQ(sumSquaredError(v1, v2), 3.f);
 }
 
 TEST_F(MathUtilsFixture, SqRootSumErrorLargerDiffs) {
 	std::valarray<float> v1 = {0.f, 0.f};
 	std::valarray<float> v2 = {3.f, 4.f};
 	// diffs: 3,4 -> squared: 9,16 -> sum: 25
-	EXPECT_FLOAT_EQ(sqRootSumError(v1, v2), 25.f);
+	EXPECT_FLOAT_EQ(sumSquaredError(v1, v2), 25.f);
 }
 
 // --- calculateSize ---
@@ -160,7 +160,7 @@ TEST_F(MathUtilsFixture, FixValueNegativeMax) {
 TEST_F(MathUtilsFixture, SqRootSumErrorSingleElement) {
 	std::valarray<float> v1 = {5.f};
 	std::valarray<float> v2 = {3.f};
-	EXPECT_FLOAT_EQ(sqRootSumError(v1, v2), 4.f);
+	EXPECT_FLOAT_EQ(sumSquaredError(v1, v2), 4.f);
 }
 
 TEST_F(MathUtilsFixture, CalculateSizeLarge) {

@@ -54,7 +54,7 @@ inline int getCordsInLower(int currentRes, int parentRes, int index) {
 	return x * currentRes + z;
 }
 
-inline float sqRootSumError(const std::valarray<float>& val1, const std::valarray<float>& val2) {
+inline float sumSquaredError(const std::valarray<float>& val1, const std::valarray<float>& val2) {
 	auto diff = val1 - val2;
 	diff *= diff;
 	return diff.sum();

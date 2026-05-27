@@ -59,7 +59,7 @@ UnitOutput UnitBrain::decide(Player* player, Player* enemy,
 	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
 
 	UnitOutput output{};
-	for (int i = 0; i < 24; ++i) {
+	for (int i = 0; i < output.unitProfile.size(); ++i) {
 		output.unitProfile[i] = result[i];
 	}
 

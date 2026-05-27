@@ -25,12 +25,12 @@ enum class UnitInputIdx : unsigned char {
 };
 
 enum class UnitOutputIdx : unsigned char {
-	UNIT_PROFILE,  // indices 0..23 (24-dim profile vector)
-	COUNT = 24,    // derived from unitUrgency, not a NN output
+	UNIT_PROFILE,  // indices 0..22 (23-dim profile vector)
+	COUNT = 23,    // derived from unitUrgency, not a NN output
 };
 
 struct UnitOutput {
-	std::array<float, 24> unitProfile;  // ideal unit property vector
+	std::array<float, 23> unitProfile;  // ideal unit property vector
 	unsigned char count;                 // how many to produce
 };
 

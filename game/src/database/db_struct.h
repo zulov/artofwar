@@ -112,6 +112,10 @@ struct db_with_cost {
 struct db_basic_metric {
 	db_basic_metric(const std::span<const float> newValues, float weightForSum) {
 		assert(validateSpan(__LINE__, __FILE__, newValues));
+		for (size_t i = 0; i < newValues.size(); ++i) {
+			assert(newValues[i] >= 0.f && newValues[i] <= 1.f
+				&& "Metric value out of [0,1] range — adjust normalization weight");
+		}
 		float y = 1 / weightForSum;
 		valuesNormForSum.resize(newValues.size());
 		std::ranges::transform(newValues, valuesNormForSum.begin(), [y](float x){ return x * y; });

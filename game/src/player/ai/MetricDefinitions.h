@@ -19,11 +19,12 @@ constexpr unsigned char METRIC_OUTPUT_MAX_SIZE = 64;
 
 enum class UnitMetricIdx : unsigned char {
 	COST, MAX_HP, ARMOR, SIGHT_RADIUS,
-	COLLECT, ATTACK, ATTACK_RELOAD, ATTACK_RANGE,
-	TYPE_INFANTRY, TYPE_RANGE, TYPE_CAVALRY, TYPE_WORKER,
+	ATTACK, ATTACK_RELOAD, ATTACK_RANGE,
+	TYPE_INFANTRY, TYPE_RANGE, TYPE_CAVALRY,
 	TYPE_SPECIAL, TYPE_MELEE, TYPE_HEAVY, TYPE_LIGHT,
 	BONUS_INFANTRY, BONUS_RANGE, BONUS_CAVALRY, BONUS_WORKER,
 	BONUS_SPECIAL, BONUS_MELEE, BONUS_HEAVY, BONUS_LIGHT,
+	BONUS_BUILDING,
 };
 
 enum class BuildingMetricIdx : unsigned char {
@@ -184,7 +185,7 @@ inline struct MetricDefinitions {
 	static std::array<AiBuildingMetric, BUILDING_METRIC_COUNT> aiBuildingMetric;
 
 	constexpr static unsigned char aiUnitsTypesIdxs[] = {
-		idx(U::TYPE_INFANTRY), idx(U::TYPE_RANGE), idx(U::TYPE_CAVALRY), idx(U::TYPE_WORKER),
+		idx(U::TYPE_INFANTRY), idx(U::TYPE_RANGE), idx(U::TYPE_CAVALRY),
 		idx(U::TYPE_SPECIAL),  idx(U::TYPE_MELEE), idx(U::TYPE_HEAVY),   idx(U::TYPE_LIGHT),
 	};
 

@@ -329,7 +329,7 @@ db_unit* AiOrchestrator::resolveUnit(const UnitOutput& unitOutput) {
 	}
 	if (candidates.empty()) { return nullptr; }
 
-	std::valarray<float> center(unitOutput.unitProfile.data(), 24);
+	std::valarray<float> center(unitOutput.unitProfile.data(), unitOutput.unitProfile.size());
 	std::vector<float> diffs;
 	diffs.reserve(candidates.size());
 	for (const auto unit : candidates) {
@@ -538,11 +538,11 @@ std::vector<db_building*> AiOrchestrator::getBuildingsInType(ParentBuildingType 
 }
 
 float AiOrchestrator::dist(std::valarray<float>& center, const db_basic_metric* metric) {
-	return sqRootSumError(center, metric->getValuesNormAsVal());
+	return sumSquaredError(center, metric->getValuesNormAsVal());
 }
 
 float AiOrchestrator::dist(std::valarray<float>& center, const db_building_metric* metric, ParentBuildingType type) {
-	return sqRootSumError(center, metric->getValuesNormAsValForType(type));
+	return sumSquaredError(center, metric->getValuesNormAsValForType(type));
 }
 
 bool AiOrchestrator::enoughResources(const db_with_cost* withCosts) const {
