@@ -94,11 +94,7 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 
 	// History — collection failures signal resource scarcity nearby
 	constexpr unsigned int LOOKBACK = 1800;
-	float collectFailures = history->failureScore(AiOrderType::COLLECT_RESOURCE_0, LOOKBACK)
-		+ history->failureScore(AiOrderType::COLLECT_RESOURCE_1, LOOKBACK)
-		+ history->failureScore(AiOrderType::COLLECT_RESOURCE_2, LOOKBACK)
-		+ history->failureScore(AiOrderType::COLLECT_RESOURCE_3, LOOKBACK);
-	inputData[idx(I::RECENT_COLLECT_FAILURES)] = norm(collectFailures, 10.f);
+	inputData[idx(I::RECENT_COLLECT_FAILURES)] = norm(history->collectFailureScore(LOOKBACK), 10.f);
 
 	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
 

@@ -45,6 +45,7 @@ MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::ARMY_COUNT)] = norm(possession->getArmyNumber(), 200.f);
 	inputData[idx(I::ENEMY_ARMY_COUNT)] = norm(enemyPossession->getArmyNumber(), 200.f);
 	inputData[idx(I::FREE_ARMY_COUNT)] = norm(possession->getFreeArmyNumber(), 200.f);
+	inputData[idx(I::FREE_ARMY_ATTACK_SUM)] = norm(possession->getFreeArmyAttackSum(), 1000.f);
 
 	// Urgencies from Master (2)
 	inputData[idx(I::MILITARY_URGENCY)] = militaryUrgency;
@@ -65,14 +66,10 @@ MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
 
 	// History — order failures signal unreachable targets
 	constexpr unsigned int LOOKBACK = 1800;
-	float attackFailures = history->failureScore(AiOrderType::ATTACK_ECON, LOOKBACK)
-		+ history->failureScore(AiOrderType::ATTACK_BUILDING, LOOKBACK)
-		+ history->failureScore(AiOrderType::ATTACK_ARMY, LOOKBACK);
-	inputData[idx(I::RECENT_ATTACK_FAILURES)] = norm(attackFailures, 5.f);
-	float defendFailures = history->failureScore(AiOrderType::DEFEND_ECON, LOOKBACK)
-		+ history->failureScore(AiOrderType::DEFEND_BUILDING, LOOKBACK)
-		+ history->failureScore(AiOrderType::DEFEND_ARMY, LOOKBACK);
-	inputData[idx(I::RECENT_DEFEND_FAILURES)] = norm(defendFailures, 5.f);
+	inputData[idx(I::RECENT_ATTACK_FAILURES)] = norm(history->attackFailureScore(LOOKBACK), 5.f);
+	inputData[idx(I::RECENT_DEFEND_FAILURES)] = norm(history->defendFailureScore(LOOKBACK), 5.f);
+	inputData[idx(I::RECENT_ATTACK_ACTIVITY)] = norm(history->attackActivityScore(LOOKBACK), 10.f);
+	inputData[idx(I::RECENT_DEFEND_ACTIVITY)] = norm(history->defendActivityScore(LOOKBACK), 10.f);
 
 	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
 

@@ -58,7 +58,7 @@ public:
 		}
 	};
 
-	void beginTick();
+	void resetRequests();
 	void addRequest(WantItemType type, float priority, unsigned char count = 1, short specificId = -1);
 
 	// Callback: returns the db_with_cost* for the item (nullptr if can't resolve).

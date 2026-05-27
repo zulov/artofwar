@@ -1,6 +1,7 @@
 #pragma once
 #include "AiHistoryEnums.h"
 #include <array>
+#include <initializer_list>
 #include <optional>
 #include <vector>
 
@@ -35,8 +36,20 @@ public:
 
 	float recencyScore(AiActionType type, unsigned int lookbackTicks) const;
 	float recencyScore(AiOrderType type, unsigned int lookbackTicks) const;
+	float recencyScore(std::initializer_list<AiActionType> types, unsigned int lookbackTicks) const;
+	float recencyScore(std::initializer_list<AiOrderType> types, unsigned int lookbackTicks) const;
 	float failureScore(AiActionType type, unsigned int lookbackTicks) const;
 	float failureScore(AiOrderType type, unsigned int lookbackTicks) const;
+	float failureScore(std::initializer_list<AiActionType> types, unsigned int lookbackTicks) const;
+	float failureScore(std::initializer_list<AiOrderType> types, unsigned int lookbackTicks) const;
+
+	float buildingFailureScore(unsigned int lookbackTicks) const;
+	float unitFailureScore(unsigned int lookbackTicks) const;
+	float collectFailureScore(unsigned int lookbackTicks) const;
+	float attackFailureScore(unsigned int lookbackTicks) const;
+	float defendFailureScore(unsigned int lookbackTicks) const;
+	float attackActivityScore(unsigned int lookbackTicks) const;
+	float defendActivityScore(unsigned int lookbackTicks) const;
 
 private:
 	const ActionHistoryEntry& getAction(int index) const;

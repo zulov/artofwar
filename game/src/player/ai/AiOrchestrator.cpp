@@ -67,7 +67,7 @@ void AiOrchestrator::action() {
 	);
 
 	// 4. Submit requests to WantList
-	wantList.beginTick();
+	wantList.resetRequests();
 
 	// Worker request
 	if (lastEconOut.workerCount > 0) {

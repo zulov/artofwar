@@ -6,7 +6,7 @@
 #include "player/Player.h"
 #include "player/Resources.h"
 
-void WantList::beginTick() {
+void WantList::resetRequests() {
 	for (auto& item : items) {
 		item.active = false;
 	}

@@ -20,6 +20,7 @@ enum class MilitaryInputIdx : unsigned char {
 	ARMY_COUNT,
 	ENEMY_ARMY_COUNT,
 	FREE_ARMY_COUNT,
+	FREE_ARMY_ATTACK_SUM,
 	MILITARY_URGENCY,
 	ATTACK_URGENCY,
 	OWN_INFANTRY_RATIO,
@@ -30,6 +31,8 @@ enum class MilitaryInputIdx : unsigned char {
 	ENEMY_CAVALRY_RATIO,
 	RECENT_ATTACK_FAILURES,
 	RECENT_DEFEND_FAILURES,
+	RECENT_ATTACK_ACTIVITY,
+	RECENT_DEFEND_ACTIVITY,
 };
 
 enum class MilitaryOutputIdx : unsigned char {

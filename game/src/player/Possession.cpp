@@ -26,16 +26,13 @@ Possession::Possession(unsigned short nation) {
 	                         Game::getDatabase()->getBuildingLevels().size());
 
 	levels = new float[levelsSize];
-	levelsFree = new float[levelsSize];
 	std::fill_n(levels, levelsSize, 0.f);
-	std::fill_n(levelsFree, levelsSize, 0.f);
 }
 
 Possession::~Possession() {
 	clear_vector(buildingsPerId);
 	delete metric;
 	delete[]levels;
-	delete[]levelsFree;
 }
 
 unsigned Possession::getScore() const {
@@ -166,6 +163,11 @@ float Possession::getAttackSum() {
 	return metric->unitsSum[static_cast<unsigned char>(UnitMetricIdx::ATTACK)];
 }
 
+float Possession::getFreeArmyAttackSum() {
+	ensureUnitMetrics();
+	return freeArmyAttackSum;
+}
+
 float Possession::getDefenceAttackSum() {
 	ensureBuildingMetrics();
 	return metric->buildingsSum[static_cast<unsigned char>(BuildingMetricIdx::ATTACK)];
@@ -240,19 +242,15 @@ void Possession::ensureUnitMetrics() {
 	unitMetricsReady = true;
 
 	resetSpan(metric->unitsSum);
-	resetSpan(metric->freeArmySum);
+	freeArmyAttackSum = 0.f;
 
 	assert(zerosSpan(levels, levelsSize));
-	assert(zerosSpan(levelsFree, levelsSize));
 
 	for (const auto unit : units) {
 		auto per = unit->getHealthPercent();
 		levels[unit->getLevel()->id] += per;
-
-		if (isFreeSolider(unit)) {
-			levelsFree[unit->getLevel()->id] += per;
-		}
 	}
+	constexpr auto attackIdx = static_cast<unsigned char>(UnitMetricIdx::ATTACK);
 	auto& uLevels = Game::getDatabase()->getUnitLevels();
 	for (int i = 0; i < levelsSize; ++i) {
 		const auto val = levels[i];
@@ -262,19 +260,18 @@ void Possession::ensureUnitMetrics() {
 			for (int j = 0; j < metric->unitsSum.size(); ++j) {
 				metric->unitsSum[j] += val * metric1[j];
 			}
-			const auto val2 = levelsFree[i];
-			if (val2 > 0.f) {
-				for (int j = 0; j < metric->freeArmySum.size(); ++j) {
-					metric->freeArmySum[j] += val2 * metric1[j];
-				}
-				levelsFree[i] = 0.f;
-			}
 			levels[i] = 0.f;
 		}
 	}
 
+	for (const auto unit : units) {
+		if (isFreeSolider(unit)) {
+			auto& metric1 = uLevels[unit->getLevel()->id]->dbUnitMetric->getValuesNormForSum();
+			freeArmyAttackSum += unit->getHealthPercent() * metric1[attackIdx];
+		}
+	}
+
 	assert(validateSpan(__LINE__, __FILE__, metric->unitsSum));
-	assert(validateSpan(__LINE__, __FILE__, metric->freeArmySum));
 }
 
 void Possession::ensureBuildingMetrics() {

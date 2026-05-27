@@ -55,6 +55,7 @@ public:
 	std::vector<Unit*> getFreeArmy();
 	bool hasAnyFreeArmy() const;
 	float getAttackSum();
+	float getFreeArmyAttackSum();
 	float getDefenceAttackSum();
 
 	unsigned getResourceBuildingCount();
@@ -87,6 +88,7 @@ private:
 	std::array<float, 4> bonusCoverage{};
 
 	float resourcesSum = 0.f;
+	float freeArmyAttackSum = 0.f;
 	float valueDestroyed = 0.f;
 
 	bool unitMetricsReady = false;
@@ -96,7 +98,6 @@ private:
 
 	int levelsSize;
 	float* levels;
-	float* levelsFree;
 
 	PossessionMetric* metric;
 };

@@ -89,21 +89,10 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 
 	// History inputs (lookback ~30 seconds at 30 ticks/s = 900 ticks)
 	constexpr unsigned int LOOKBACK = 900;
-	float buildFailures = history->failureScore(AiActionType::CREATE_BUILDING_OTHER, LOOKBACK)
-		+ history->failureScore(AiActionType::CREATE_BUILDING_DEFENCE, LOOKBACK)
-		+ history->failureScore(AiActionType::CREATE_BUILDING_RESOURCE, LOOKBACK)
-		+ history->failureScore(AiActionType::CREATE_BUILDING_TECH, LOOKBACK)
-		+ history->failureScore(AiActionType::CREATE_BUILDING_UNITS, LOOKBACK);
-	inputData[idx(I::RECENT_BUILD_FAILURES)] = norm(buildFailures, 10.f);
-	inputData[idx(I::RECENT_UNIT_FAILURES)] = norm(history->failureScore(AiActionType::CREATE_UNIT, LOOKBACK), 5.f);
-	float attackActivity = history->recencyScore(AiOrderType::ATTACK_ECON, LOOKBACK)
-		+ history->recencyScore(AiOrderType::ATTACK_BUILDING, LOOKBACK)
-		+ history->recencyScore(AiOrderType::ATTACK_ARMY, LOOKBACK);
-	inputData[idx(I::RECENT_ATTACK_ACTIVITY)] = norm(attackActivity, 10.f);
-	float defendActivity = history->recencyScore(AiOrderType::DEFEND_ECON, LOOKBACK)
-		+ history->recencyScore(AiOrderType::DEFEND_BUILDING, LOOKBACK)
-		+ history->recencyScore(AiOrderType::DEFEND_ARMY, LOOKBACK);
-	inputData[idx(I::RECENT_DEFEND_ACTIVITY)] = norm(defendActivity, 10.f);
+	inputData[idx(I::RECENT_BUILD_FAILURES)] = norm(history->buildingFailureScore(LOOKBACK), 10.f);
+	inputData[idx(I::RECENT_UNIT_FAILURES)] = norm(history->unitFailureScore(LOOKBACK), 5.f);
+	inputData[idx(I::RECENT_ATTACK_ACTIVITY)] = norm(history->attackActivityScore(LOOKBACK), 10.f);
+	inputData[idx(I::RECENT_DEFEND_ACTIVITY)] = norm(history->defendActivityScore(LOOKBACK), 10.f);
 
 	updateHistory(player, enemy);
 
