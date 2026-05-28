@@ -76,9 +76,9 @@ void AiOrchestrator::action() {
 
 	// Unit request
 	if (unitOut.count > 0) {
-		db_unit* unit = resolveUnit(unitOut);
-		if (unit) {
-			wantList.addRequest(WantItemType::UNIT, lastMasterOut.unitUrgency, unitOut.count, unit->id);
+		auto units = resolveUnit(unitOut);
+		for (auto* unit : units) {
+			wantList.addRequest(WantItemType::UNIT, lastMasterOut.unitUrgency, 1, unit->id);
 		}
 	}
 
@@ -318,7 +318,7 @@ bool AiOrchestrator::executeBuilding(short buildingId) {
 
 // --- Unit resolution ---
 
-db_unit* AiOrchestrator::resolveUnit(const UnitOutput& unitOutput) {
+std::vector<db_unit*> AiOrchestrator::resolveUnit(const UnitOutput& unitOutput) {
 	auto& units = nation->units;
 	std::vector<db_unit*> candidates;
 	candidates.reserve(units.size());
@@ -327,7 +327,7 @@ db_unit* AiOrchestrator::resolveUnit(const UnitOutput& unitOutput) {
 			candidates.push_back(unit);
 		}
 	}
-	if (candidates.empty()) { return nullptr; }
+	if (candidates.empty()) { return {}; }
 
 	std::valarray<float> center(unitOutput.unitProfile.data(), unitOutput.unitProfile.size());
 	std::vector<float> diffs;
@@ -336,8 +336,12 @@ db_unit* AiOrchestrator::resolveUnit(const UnitOutput& unitOutput) {
 		diffs.push_back(dist(center, player->getLevelForUnit(unit->id)->dbUnitMetric));
 	}
 
-	const auto inx = lowestWithRand(diffs);
-	return candidates[inx];
+	std::vector<db_unit*> result;
+	result.reserve(unitOutput.count);
+	for (const auto inx : lowestWithRand(diffs, unitOutput.count)) {
+		result.push_back(candidates[inx]);
+	}
+	return result;
 }
 
 Building* AiOrchestrator::getBuildingToDeploy(db_unit* unit) const {

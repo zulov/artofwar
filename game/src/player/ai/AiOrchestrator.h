@@ -54,7 +54,7 @@ private:
 	void submitBuildingRequest(float urgency, ParentBuildingType type);
 
 	// Unit resolution
-	db_unit* resolveUnit(const UnitOutput& unitOutput);
+	std::vector<db_unit*> resolveUnit(const UnitOutput& unitOutput);
 	Building* getBuildingToDeploy(db_unit* unit) const;
 	Building* getBuildingToDeployWorker(db_unit* unit) const;
 	std::vector<Building*> getBuildingsCanDeploy(unsigned short unitId) const;
