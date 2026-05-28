@@ -317,6 +317,10 @@ bool AiOrchestrator::executeBuilding(short buildingId) {
 }
 
 // --- Unit resolution ---
+// TODO: Consider producing more samples than 'count' (e.g. count + N extras) and storing
+// the extras as fallback candidates in WantItem. When executeUnit() fails for the primary
+// unit (no building), it could try the fallback before giving up. This avoids wasting a
+// tick when the ideal unit is unbuildable but a similar one is available.
 
 std::vector<db_unit*> AiOrchestrator::resolveUnit(const UnitOutput& unitOutput) {
 	auto& units = nation->units;

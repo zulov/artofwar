@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Art of War — AI System Deep Dive</title>
+<style>
+  body { margin: 0; background: #1a1a2e; font-family: 'Segoe UI', sans-serif; color: #e0e0e0; }
+  h1 { text-align: center; margin: 20px 0 5px; font-size: 28px; color: #fff; }
+  h2.page-sub { text-align: center; margin: 0 0 10px; font-size: 14px; color: #888; font-weight: normal; max-width: 1100px; margin-left: auto; margin-right: auto; }
+  .section-title { text-align: center; font-size: 22px; color: #4fc3f7; margin: 35px 0 5px; font-weight: bold; }
+  .section-sub { text-align: center; font-size: 13px; color: #888; margin: 0 0 15px; max-width: 1100px; margin-left: auto; margin-right: auto; }
+  svg text { font-family: 'Segoe UI', sans-serif; pointer-events: none; }
+  .card { max-width: 1300px; margin: 15px auto; background: #151530; border-radius: 10px; padding: 16px 24px; border: 1px solid #37474F; }
+  .card h3 { margin: 0 0 8px; font-size: 17px; color: #fff; }
+  .card p, .card li { margin: 4px 0; font-size: 13px; color: #aaa; line-height: 1.6; }
+  .card ul { padding-left: 20px; }
+  .card .code { font-family: 'Consolas', monospace; font-size: 12px; color: #FFB74D; background: #0d0d1a; padding: 8px 12px; border-radius: 6px; display: block; margin: 8px 0; white-space: pre; overflow-x: auto; }
+  .pro { color: #66BB6A; }
+  .con { color: #EF5350; }
+  .neutral { color: #FFB74D; }
+  .highlight { color: #4FC3F7; }
+  .divider { border: none; border-top: 1px solid #37474F; max-width: 1350px; margin: 35px auto; }
+  table.spec { border-collapse: collapse; margin: 10px auto; font-size: 12px; background: #151530; max-width: 1300px; width: 100%; }
+  table.spec th { background: #0f3460; color: #4fc3f7; padding: 6px 12px; border: 1px solid #37474F; text-align: left; }
+  table.spec td { padding: 5px 12px; border: 1px solid #37474F; color: #ccc; }
+  table.spec tr:hover td { background: #1a2744; }
+  .example { max-width: 1300px; margin: 15px auto; background: #1a2744; border-radius: 10px; padding: 16px 24px; border: 1px solid #37474F; }
+  .example h3 { margin: 0 0 6px; font-size: 15px; color: #FFB74D; }
+  .example p { font-size: 13px; color: #aaa; margin: 4px 0; line-height: 1.6; }
+  .example .step { color: #4FC3F7; font-weight: bold; }
+  .example .result { color: #66BB6A; }
+  .proscons { display: flex; gap: 20px; flex-wrap: wrap; max-width: 1300px; margin: 15px auto; }
+  .proscons > div { flex: 1; min-width: 400px; background: #151530; border-radius: 10px; padding: 16px 24px; border: 1px solid #37474F; }
+  .proscons h3 { font-size: 16px; margin: 0 0 8px; }
+  .proscons li { font-size: 13px; color: #aaa; margin: 4px 0; line-height: 1.5; }
+  .toc { max-width: 1300px; margin: 20px auto; background: #151530; border-radius: 10px; padding: 16px 24px; border: 1px solid #37474F; }
+  .toc a { color: #4fc3f7; text-decoration: none; font-size: 14px; }
+  .toc a:hover { text-decoration: underline; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin: 6px 0; }
+</style>
+</head>
+<body>
+
+<h1>Art of War — AI System Deep Dive</h1>
+<h2 class="page-sub">Complete architecture reference with examples, design rationale, pros and cons. Neural network brains evolved via genetic algorithm, profile-based unit matching, priority-driven want list, and feedback loops.</h2>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+<h3>Contents</h3>
+<ol>
+  <li><a href="#overview">System Overview — One Tick</a></li>
+  <li><a href="#master">Master Brain — Strategic Coordinator</a></li>
+  <li><a href="#economy">Economy Brain — Resource Management</a></li>
+  <li><a href="#unit">Unit Brain — Profile-Based Unit Selection</a></li>
+  <li><a href="#metric">Metric System — 23-Dimensional Unit Space</a></li>
+  <li><a href="#matching">Distance Matching — How Units Are Chosen</a></li>
+  <li><a href="#wantlist">Want List — Priority Queue Execution</a></li>
+  <li><a href="#military">Military Brain — Combat Orders</a></li>
+  <li><a href="#history">History System — Feedback Loop</a></li>
+  <li><a href="#examples">Worked Examples</a></li>
+  <li><a href="#proscons">Pros and Cons</a></li>
+  <li><a href="#gaps">Known Gaps</a></li>
+</ol>
+</div>
+
+<!-- ========================================== -->
+<!-- 1. SYSTEM OVERVIEW                          -->
+<!-- ========================================== -->
+<hr class="divider">
+<div class="section-title" id="overview">1. System Overview — One Tick</div>
+<div class="section-sub">Every AI tick: Master Brain reads game state and outputs urgencies. Sub-brains generate specific requests. Want List prioritizes and executes. Lacking feedback loops back.</div>
+
+<svg viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1400px;">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#888"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#00897B"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="900" fill="#12122a" rx="12"/>
+
+  <!-- Title -->
+  <text x="700" y="35" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">AI Decision Pipeline — One Tick</text>
+
+  <!-- Game State Box -->
+  <rect x="50" y="60" width="200" height="120" rx="8" fill="#263238" stroke="#546E7A" stroke-width="1.5"/>
+  <text x="150" y="85" text-anchor="middle" fill="#B0BEC5" font-size="14" font-weight="bold">Game State</text>
+  <text x="150" y="105" text-anchor="middle" fill="#78909C" font-size="11">Score, Resources</text>
+  <text x="150" y="120" text-anchor="middle" fill="#78909C" font-size="11">Army Counts, Distances</text>
+  <text x="150" y="135" text-anchor="middle" fill="#78909C" font-size="11">KD Ratio, Combat</text>
+  <text x="150" y="150" text-anchor="middle" fill="#78909C" font-size="11">History Feedback</text>
+  <text x="150" y="168" text-anchor="middle" fill="#546E7A" font-size="10">34 inputs</text>
+
+  <!-- Arrow: Game State -> Master Brain -->
+  <line x1="250" y1="120" x2="340" y2="120" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Master Brain -->
+  <rect x="350" y="60" width="220" height="120" rx="8" fill="#E65100" fill-opacity="0.25" stroke="#FF9800" stroke-width="2"/>
+  <text x="460" y="90" text-anchor="middle" fill="#FF9800" font-size="15" font-weight="bold">Master Brain</text>
+  <text x="460" y="110" text-anchor="middle" fill="#FFB74D" font-size="11">34 inputs -> 9 outputs</text>
+  <text x="460" y="130" text-anchor="middle" fill="#FFB74D" font-size="11">Urgencies: worker, economy,</text>
+  <text x="460" y="145" text-anchor="middle" fill="#FFB74D" font-size="11">building, unit, military,</text>
+  <text x="460" y="160" text-anchor="middle" fill="#FFB74D" font-size="11">expand, tech, defence, attack</text>
+
+  <!-- Sub-brains row -->
+  <!-- Economy Brain -->
+  <rect x="100" y="270" width="190" height="100" rx="8" fill="#1B5E20" fill-opacity="0.25" stroke="#4CAF50" stroke-width="2"/>
+  <text x="195" y="295" text-anchor="middle" fill="#4CAF50" font-size="14" font-weight="bold">Economy Brain</text>
+  <text x="195" y="315" text-anchor="middle" fill="#A5D6A7" font-size="11">Worker count, priorities</text>
+  <text x="195" y="330" text-anchor="middle" fill="#A5D6A7" font-size="11">Resource building needs</text>
+  <text x="195" y="345" text-anchor="middle" fill="#A5D6A7" font-size="11">Reassignment signals</text>
+
+  <!-- Unit Brain -->
+  <rect x="350" y="270" width="190" height="100" rx="8" fill="#BF360C" fill-opacity="0.25" stroke="#FF5722" stroke-width="2"/>
+  <text x="445" y="295" text-anchor="middle" fill="#FF5722" font-size="14" font-weight="bold">Unit Brain</text>
+  <text x="445" y="315" text-anchor="middle" fill="#FF8A65" font-size="11">14 inputs -> 23-dim profile</text>
+  <text x="445" y="330" text-anchor="middle" fill="#FF8A65" font-size="11">Ideal unit description</text>
+  <text x="445" y="345" text-anchor="middle" fill="#FF8A65" font-size="11">Count from urgency</text>
+
+  <!-- Military Brain -->
+  <rect x="600" y="270" width="190" height="100" rx="8" fill="#B71C1C" fill-opacity="0.25" stroke="#f44336" stroke-width="2"/>
+  <text x="695" y="295" text-anchor="middle" fill="#f44336" font-size="14" font-weight="bold">Military Brain</text>
+  <text x="695" y="315" text-anchor="middle" fill="#EF9A9A" font-size="11">Attack vs Defend weight</text>
+  <text x="695" y="330" text-anchor="middle" fill="#EF9A9A" font-size="11">Target selection</text>
+  <text x="695" y="345" text-anchor="middle" fill="#EF9A9A" font-size="11">Direct army orders</text>
+
+  <!-- Spatial Brains -->
+  <rect x="850" y="270" width="190" height="100" rx="8" fill="#006064" fill-opacity="0.25" stroke="#00BCD4" stroke-width="2"/>
+  <text x="945" y="295" text-anchor="middle" fill="#00BCD4" font-size="14" font-weight="bold">Spatial Brains</text>
+  <text x="945" y="315" text-anchor="middle" fill="#80DEEA" font-size="11">Build placement weights</text>
+  <text x="945" y="330" text-anchor="middle" fill="#80DEEA" font-size="11">Attack target weights</text>
+  <text x="945" y="345" text-anchor="middle" fill="#80DEEA" font-size="11">Influence map areas</text>
+
+  <!-- Arrows: Master -> Sub-brains -->
+  <line x1="400" y1="180" x2="195" y2="270" stroke="#FF9800" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="6,3"/>
+  <line x1="460" y1="180" x2="445" y2="270" stroke="#FF9800" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="6,3"/>
+  <line x1="520" y1="180" x2="695" y2="270" stroke="#FF9800" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="6,3"/>
+  <line x1="550" y1="180" x2="945" y2="270" stroke="#FF9800" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="6,3"/>
+  <text x="300" y="230" fill="#FF9800" font-size="10">urgencies</text>
+
+  <!-- Unit Metric Matching -->
+  <rect x="350" y="420" width="190" height="70" rx="8" fill="#4A148C" fill-opacity="0.25" stroke="#9C27B0" stroke-width="1.5"/>
+  <text x="445" y="448" text-anchor="middle" fill="#CE93D8" font-size="13" font-weight="bold">Profile Matching</text>
+  <text x="445" y="468" text-anchor="middle" fill="#CE93D8" font-size="11">sumSquaredError to DB units</text>
+  <text x="445" y="482" text-anchor="middle" fill="#CE93D8" font-size="10">lowestWithRand x count</text>
+
+  <!-- Arrow: Unit Brain -> Matching -->
+  <line x1="445" y1="370" x2="445" y2="420" stroke="#9C27B0" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Want List -->
+  <rect x="200" y="540" width="350" height="110" rx="8" fill="#0D47A1" fill-opacity="0.25" stroke="#2196F3" stroke-width="2"/>
+  <text x="375" y="565" text-anchor="middle" fill="#2196F3" font-size="15" font-weight="bold">Want List</text>
+  <text x="375" y="585" text-anchor="middle" fill="#90CAF9" font-size="11">Priority queue: WORKER | UNIT | BUILDING | TECH</text>
+  <text x="375" y="602" text-anchor="middle" fill="#90CAF9" font-size="11">Boost active items (x1.15/age), decay inactive (x0.85)</text>
+  <text x="375" y="619" text-anchor="middle" fill="#90CAF9" font-size="11">Sort by priority, execute if affordable</text>
+  <text x="375" y="636" text-anchor="middle" fill="#90CAF9" font-size="11">Max 32 items, drop below 0.05 threshold</text>
+
+  <!-- Arrows into Want List -->
+  <line x1="195" y1="370" x2="300" y2="540" stroke="#4CAF50" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="220" y="460" fill="#4CAF50" font-size="10">workers</text>
+  <line x1="445" y1="490" x2="400" y2="540" stroke="#FF5722" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="440" y="520" fill="#FF5722" font-size="10">units</text>
+
+  <!-- Execution -->
+  <rect x="650" y="540" width="250" height="110" rx="8" fill="#1a1a2e" stroke="#78909C" stroke-width="1.5"/>
+  <text x="775" y="568" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Execution</text>
+  <text x="775" y="590" text-anchor="middle" fill="#B0BEC5" font-size="11">executeWorker() -> spawn at econ</text>
+  <text x="775" y="607" text-anchor="middle" fill="#B0BEC5" font-size="11">executeUnit() -> spawn at army</text>
+  <text x="775" y="624" text-anchor="middle" fill="#B0BEC5" font-size="11">executeBuilding() -> spatial brain</text>
+  <text x="775" y="641" text-anchor="middle" fill="#78909C" font-size="10">Resource check -> BuildingActionCommand</text>
+
+  <!-- Arrow: Want List -> Execution -->
+  <line x1="550" y1="595" x2="650" y2="595" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Feedback -->
+  <rect x="200" y="720" width="700" height="80" rx="8" fill="#004D40" fill-opacity="0.25" stroke="#00897B" stroke-width="2"/>
+  <text x="550" y="748" text-anchor="middle" fill="#00897B" font-size="14" font-weight="bold">Feedback Loop</text>
+  <text x="550" y="768" text-anchor="middle" fill="#80CBC4" font-size="11">LackingResult: per-resource deficits + total sum + lackingBuildingForUnit</text>
+  <text x="550" y="785" text-anchor="middle" fill="#80CBC4" font-size="11">Feeds back to Master Brain (totalLacking) and Economy Brain (perResource) next tick</text>
+
+  <!-- Arrow: Execution -> Feedback -->
+  <line x1="775" y1="650" x2="775" y2="720" stroke="#00897B" stroke-width="1.5" marker-end="url(#arrowGreen)"/>
+  <!-- Arrow: Feedback -> Game State (loop) -->
+  <path d="M 200 760 Q 50 760 50 400 Q 50 120 50 120" stroke="#00897B" stroke-width="1.5" fill="none" marker-end="url(#arrowGreen)" stroke-dasharray="6,3"/>
+  <text x="30" y="440" fill="#00897B" font-size="10" transform="rotate(-90,30,440)">next tick</text>
+
+  <!-- Military direct path -->
+  <rect x="650" y="420" width="190" height="70" rx="8" fill="#B71C1C" fill-opacity="0.15" stroke="#f44336" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="745" y="448" text-anchor="middle" fill="#EF9A9A" font-size="13">Army Orders</text>
+  <text x="745" y="468" text-anchor="middle" fill="#EF9A9A" font-size="11">GO / ATTACK commands</text>
+  <text x="745" y="482" text-anchor="middle" fill="#EF9A9A" font-size="10">No resources needed</text>
+  <line x1="695" y1="370" x2="745" y2="420" stroke="#f44336" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="4,2"/>
+  <text x="730" y="400" fill="#EF9A9A" font-size="10">direct</text>
+
+  <!-- History -->
+  <rect x="1050" y="270" width="190" height="100" rx="8" fill="#004D40" fill-opacity="0.25" stroke="#00897B" stroke-width="1.5"/>
+  <text x="1145" y="298" text-anchor="middle" fill="#00897B" font-size="14" font-weight="bold">History</text>
+  <text x="1145" y="318" text-anchor="middle" fill="#80CBC4" font-size="11">128-entry circular buffer</text>
+  <text x="1145" y="333" text-anchor="middle" fill="#80CBC4" font-size="11">Actions + Orders</text>
+  <text x="1145" y="348" text-anchor="middle" fill="#80CBC4" font-size="11">Recency/failure scores</text>
+  <text x="1145" y="363" text-anchor="middle" fill="#80CBC4" font-size="10">Lookback: 900 ticks (~30s)</text>
+
+  <line x1="1050" y1="320" x2="570" y2="120" stroke="#00897B" stroke-width="1" marker-end="url(#arrowGreen)" stroke-dasharray="4,2"/>
+
+  <!-- Legend -->
+  <rect x="1050" y="60" width="300" height="180" rx="8" fill="#12122a" stroke="#37474F" stroke-width="1"/>
+  <text x="1200" y="85" text-anchor="middle" fill="#78909C" font-size="12" font-weight="bold">Legend</text>
+  <rect x="1070" y="95" width="14" height="14" rx="3" fill="#FF9800"/>
+  <text x="1095" y="107" fill="#ccc" font-size="11">Master Brain (strategic)</text>
+  <rect x="1070" y="115" width="14" height="14" rx="3" fill="#4CAF50"/>
+  <text x="1095" y="127" fill="#ccc" font-size="11">Economy Brain</text>
+  <rect x="1070" y="135" width="14" height="14" rx="3" fill="#FF5722"/>
+  <text x="1095" y="147" fill="#ccc" font-size="11">Unit Brain</text>
+  <rect x="1070" y="155" width="14" height="14" rx="3" fill="#f44336"/>
+  <text x="1095" y="167" fill="#ccc" font-size="11">Military Brain (direct orders)</text>
+  <rect x="1070" y="175" width="14" height="14" rx="3" fill="#2196F3"/>
+  <text x="1095" y="187" fill="#ccc" font-size="11">Want List (priority queue)</text>
+  <rect x="1070" y="195" width="14" height="14" rx="3" fill="#00897B"/>
+  <text x="1095" y="207" fill="#ccc" font-size="11">Feedback / History</text>
+  <rect x="1070" y="215" width="14" height="14" rx="3" fill="#9C27B0"/>
+  <text x="1095" y="227" fill="#ccc" font-size="11">Metric matching</text>
+</svg>
+
+<!-- ========================================== -->
+<!-- 2. MASTER BRAIN                             -->
+<!-- ========================================== -->
+<hr class="divider">
+<div class="section-title" id="master">2. Master Brain — Strategic Coordinator</div>
+<div class="section-sub">Reads 34 game-state inputs and outputs 9 urgency signals. These urgencies drive all sub-brains and the want list.</div>
+
+<div class="card">
+<h3>Inputs (34)</h3>
+<table class="spec">
+<tr><th>Category</th><th>Inputs</th><th>Normalization</th></tr>
+<tr><td>Scores</td><td>PLAYER_SCORE, ENEMY_SCORE</td><td>/1000</td></tr>
+<tr><td>Counts</td><td>BUILDINGS_COUNT, WORKERS_COUNT, ARMY_COUNT, ENEMY_ARMY_COUNT</td><td>/50, /100, /200, /200</td></tr>
+<tr><td>Resources</td><td>RES_FOOD/WOOD/STONE/GOLD</td><td>/1000 each</td></tr>
+<tr><td>Gather Speeds</td><td>GATHER_FOOD/WOOD/STONE/GOLD</td><td>/10 each</td></tr>
+<tr><td>Military</td><td>ATTACK_SUM, DEFENCE_SUM</td><td>/1000, /100</td></tr>
+<tr><td>Spatial</td><td>4 army-to-building distances</td><td>influence map</td></tr>
+<tr><td>Feedback</td><td>TOTAL_LACKING</td><td>/2000</td></tr>
+<tr><td>Deltas</td><td>DELTA_SCORE, DELTA_ENEMY_SCORE, DELTA_UNITS, DELTA_RES, DELTA_GATHER_SPEED</td><td>/1000, /1000, /200, /1000, /20</td></tr>
+<tr><td>Combat</td><td>GAME_TIME, KD_RATIO, IN_COMBAT_RATIO, TECH_LEVEL</td><td>/1800, ratio, ratio, TODO</td></tr>
+<tr><td>History</td><td>RECENT_BUILD_FAILURES, RECENT_UNIT_FAILURES, RECENT_ATTACK_ACTIVITY, RECENT_DEFEND_ACTIVITY</td><td>/10, /5, /10, /10</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Outputs (9 urgencies, tanh [-1, +1])</h3>
+<p>Negative = "don't do this". Positive = "prioritize this". Fed to sub-brains and want list as priority weights.</p>
+<table class="spec">
+<tr><th>Output</th><th>Drives</th><th>Effect</th></tr>
+<tr><td>WORKER_URGENCY</td><td>Economy Brain</td><td>How many workers to produce</td></tr>
+<tr><td>ECONOMY_URGENCY</td><td>Economy Brain</td><td>Resource allocation intensity</td></tr>
+<tr><td>BUILDING_URGENCY</td><td>Want List</td><td>OTHER building construction priority</td></tr>
+<tr><td>UNIT_URGENCY</td><td>Unit Brain + Want List</td><td>Military unit production count + priority</td></tr>
+<tr><td>MILITARY_URGENCY</td><td>Military Brain</td><td>Overall combat engagement level</td></tr>
+<tr><td>EXPAND_URGENCY</td><td>Spatial Brains</td><td>Expand territory vs stay compact</td></tr>
+<tr><td>TECH_URGENCY</td><td>Want List</td><td>Tech building priority (not yet implemented)</td></tr>
+<tr><td>DEFENCE_BUILDING_URGENCY</td><td>Want List</td><td>Defensive structure priority</td></tr>
+<tr><td>ATTACK_URGENCY</td><td>Unit + Military Brain</td><td>Aggression level</td></tr>
+</table>
+</div>
+
+<!-- ========================================== -->
+<!-- 3. ECONOMY BRAIN                            -->
+<!-- ========================================== -->
+<hr class="divider">
+<div class="section-title" id="economy">3. Economy Brain — Resource Management</div>
+<div class="section-sub">Receives master urgencies + lacking feedback. Outputs worker counts, resource priorities, building needs, and worker reassignment signals.</div>
+
+<div class="card">
+<h3>Key Outputs</h3>
+<ul>
+  <li><span class="highlight">workerCount</span> — how many workers to add to want list</li>
+  <li><span class="highlight">foodPriority / woodPriority / stonePriority / goldPriority</span> — which resource to collect first</li>
+  <li><span class="highlight">needMill / needSawmill / needMineS / needMineG / needFarm / ...</span> — 10 building need scores for resource buildings</li>
+  <li><span class="highlight">reassignWorkers</span> — should we pull a worker off the lowest-priority resource (threshold: 0.5)</li>
+</ul>
+<h3>Worker Collection Flow</h3>
+<p>Free workers are assigned to the highest-priority resource with a nearby source (search radii: 64, 128, 256). If reassignment is active, one worker is stolen from the worst resource and reassigned. Only one worker is reassigned per tick.</p>
+</div>
+
+<!-- ========================================== -->
+<!-- 4. UNIT BRAIN                               -->
+<!-- ========================================== -->
+<hr class="divider">
+<div class="section-title" id="unit">4. Unit Brain — Profile-Based Unit Selection</div>
+<div class="section-sub">Instead of picking a unit by ID, outputs a 23-dimensional "ideal unit profile" describing what the AI wants. Matched against real units by distance.</div>
+
+<svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1200px;">
+  <rect width="1200" height="500" fill="#12122a" rx="12"/>
+  <text x="600" y="30" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">Unit Brain Pipeline</text>
+
+  <!-- Inputs -->
+  <rect x="30" y="60" width="200" height="280" rx="8" fill="#263238" stroke="#546E7A" stroke-width="1.5"/>
+  <text x="130" y="85" text-anchor="middle" fill="#B0BEC5" font-size="13" font-weight="bold">14 Inputs</text>
+  <text x="130" y="108" text-anchor="middle" fill="#78909C" font-size="10">OUR_INFANTRY_RATIO</text>
+  <text x="130" y="123" text-anchor="middle" fill="#78909C" font-size="10">OUR_CAVALRY_RATIO</text>
+  <text x="130" y="138" text-anchor="middle" fill="#78909C" font-size="10">OUR_RANGE_RATIO</text>
+  <text x="130" y="158" text-anchor="middle" fill="#78909C" font-size="10">ENEMY_INFANTRY_RATIO</text>
+  <text x="130" y="173" text-anchor="middle" fill="#78909C" font-size="10">ENEMY_CAVALRY_RATIO</text>
+  <text x="130" y="188" text-anchor="middle" fill="#78909C" font-size="10">ENEMY_RANGE_RATIO</text>
+  <text x="130" y="210" text-anchor="middle" fill="#78909C" font-size="10">ARMY_COUNT</text>
+  <text x="130" y="225" text-anchor="middle" fill="#78909C" font-size="10">ENEMY_ARMY_COUNT</text>
+  <text x="130" y="245" text-anchor="middle" fill="#78909C" font-size="10">ATTACK_SUM</text>
+  <text x="130" y="260" text-anchor="middle" fill="#78909C" font-size="10">DEFENCE_ATTACK_SUM</text>
+  <text x="130" y="280" text-anchor="middle" fill="#78909C" font-size="10">ENEMY_SCORE</text>
+  <text x="130" y="295" text-anchor="middle" fill="#78909C" font-size="10">WORKERS_COUNT</text>
+  <text x="130" y="315" text-anchor="middle" fill="#FFB74D" font-size="10">UNIT_URGENCY</text>
+  <text x="130" y="330" text-anchor="middle" fill="#FFB74D" font-size="10">ATTACK_URGENCY</text>
+
+  <!-- Neural Network -->
+  <rect x="300" y="120" width="180" height="160" rx="8" fill="#BF360C" fill-opacity="0.25" stroke="#FF5722" stroke-width="2"/>
+  <text x="390" y="155" text-anchor="middle" fill="#FF5722" font-size="14" font-weight="bold">Neural Network</text>
+  <text x="390" y="178" text-anchor="middle" fill="#FF8A65" font-size="11">14 -> hidden -> 23</text>
+  <text x="390" y="198" text-anchor="middle" fill="#FF8A65" font-size="11">tanh activation</text>
+  <text x="390" y="218" text-anchor="middle" fill="#FF8A65" font-size="11">output: [-1, +1]</text>
+  <text x="390" y="245" text-anchor="middle" fill="#546E7A" font-size="10">Weights evolved by GA</text>
+
+  <line x1="230" y1="200" x2="300" y2="200" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 23-dim profile -->
+  <rect x="550" y="80" width="200" height="340" rx="8" fill="#4A148C" fill-opacity="0.2" stroke="#9C27B0" stroke-width="1.5"/>
+  <text x="650" y="105" text-anchor="middle" fill="#CE93D8" font-size="13" font-weight="bold">23-dim Profile</text>
+  <text x="650" y="128" text-anchor="middle" fill="#CE93D8" font-size="10">[0] COST</text>
+  <text x="650" y="143" text-anchor="middle" fill="#CE93D8" font-size="10">[1] MAX_HP</text>
+  <text x="650" y="158" text-anchor="middle" fill="#CE93D8" font-size="10">[2] ARMOR</text>
+  <text x="650" y="173" text-anchor="middle" fill="#CE93D8" font-size="10">[3] SIGHT_RADIUS</text>
+  <text x="650" y="188" text-anchor="middle" fill="#FF8A65" font-size="10">[4-6] ATTACK, RELOAD, RANGE</text>
+  <text x="650" y="208" text-anchor="middle" fill="#4FC3F7" font-size="10">[7-13] TYPE flags</text>
+  <text x="650" y="223" text-anchor="middle" fill="#4FC3F7" font-size="10">infantry/range/cavalry/</text>
+  <text x="650" y="238" text-anchor="middle" fill="#4FC3F7" font-size="10">special/melee/heavy/light</text>
+  <text x="650" y="263" text-anchor="middle" fill="#66BB6A" font-size="10">[14-22] BONUS multipliers</text>
+  <text x="650" y="278" text-anchor="middle" fill="#66BB6A" font-size="10">vs inf/range/cav/worker/</text>
+  <text x="650" y="293" text-anchor="middle" fill="#66BB6A" font-size="10">special/melee/heavy/light/</text>
+  <text x="650" y="308" text-anchor="middle" fill="#FFB74D" font-size="10" font-weight="bold">BUILDING</text>
+  <text x="650" y="340" text-anchor="middle" fill="#546E7A" font-size="10">Negative = "avoid this trait"</text>
+  <text x="650" y="355" text-anchor="middle" fill="#546E7A" font-size="10">Positive = "want this trait"</text>
+  <text x="650" y="375" text-anchor="middle" fill="#546E7A" font-size="10">Example: TYPE_CAVALRY=-0.8</text>
+  <text x="650" y="390" text-anchor="middle" fill="#546E7A" font-size="10">means "actively avoid cavalry"</text>
+
+  <line x1="480" y1="200" x2="550" y2="200" stroke="#9C27B0" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Matching -->
+  <rect x="830" y="120" width="300" height="160" rx="8" fill="#1a2744" stroke="#2196F3" stroke-width="1.5"/>
+  <text x="980" y="148" text-anchor="middle" fill="#2196F3" font-size="13" font-weight="bold">Distance Matching</text>
+  <text x="980" y="172" text-anchor="middle" fill="#90CAF9" font-size="11">For each non-worker unit:</text>
+  <text x="980" y="192" text-anchor="middle" fill="#90CAF9" font-size="11">dist = sum((profile[i] - metric[i])^2)</text>
+  <text x="980" y="215" text-anchor="middle" fill="#90CAF9" font-size="11">lowestWithRand(dists, count)</text>
+  <text x="980" y="235" text-anchor="middle" fill="#90CAF9" font-size="11">Lower distance = higher pick probability</text>
+  <text x="980" y="258" text-anchor="middle" fill="#546E7A" font-size="10">Stochastic: best match most likely,</text>
+  <text x="980" y="271" text-anchor="middle" fill="#546E7A" font-size="10">not guaranteed (GA exploration)</text>
+
+  <line x1="750" y1="200" x2="830" y2="200" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Count -->
+  <rect x="300" y="340" width="180" height="60" rx="8" fill="#263238" stroke="#546E7A" stroke-width="1"/>
+  <text x="390" y="365" text-anchor="middle" fill="#B0BEC5" font-size="11">count = round(unitUrgency * 5)</text>
+  <text x="390" y="385" text-anchor="middle" fill="#78909C" font-size="10">Max 5 per tick, 0 if urgency &lt;= 0</text>
+
+  <!-- Output -->
+  <rect x="830" y="340" width="300" height="60" rx="8" fill="#1B5E20" fill-opacity="0.2" stroke="#4CAF50" stroke-width="1.5"/>
+  <text x="980" y="365" text-anchor="middle" fill="#4CAF50" font-size="12" font-weight="bold">Result: vector&lt;db_unit*&gt;</text>
+  <text x="980" y="385" text-anchor="middle" fill="#A5D6A7" font-size="11">Each becomes WantItem(UNIT, urgency, count=1, id)</text>
+
+  <line x1="980" y1="280" x2="980" y2="340" stroke="#4CAF50" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Count to output -->
+  <text x="600" y="465" text-anchor="middle" fill="#78909C" font-size="11">count rolls of lowestWithRand produce variety: e.g., 2x heavy infantry + 1x light infantry</text>
+</svg>
+
+<!-- ========================================== -->
+<!-- 5. METRIC SYSTEM                            -->
+<!-- ========================================== -->
+<hr class="divider">
+<div class="section-title" id="metric">5. Metric System — 23-Dimensional Unit Space</div>
+<div class="section-sub">Each unit type has a precomputed 23-float metric vector. The brain outputs a vector in the same space. Distance = similarity.</div>
+
+<div class="card">
+<h3>UnitMetricIdx Enum (23 dimensions)</h3>
+<table class="spec">
+<tr><th>#</th><th>Metric</th><th>Source</th><th>Weight</th><th>Range</th><th>Purpose</th></tr>
+<tr><td>0</td><td>COST</td><td>getSumCost()</td><td>400</td><td>0-1+</td><td>Prefer cheap or expensive units</td></tr>
+<tr><td>1</td><td>MAX_HP</td><td>maxHp</td><td>300</td><td>0-1+</td><td>Tankiness preference</td></tr>
+<tr><td>2</td><td>ARMOR</td><td>armor</td><td>1</td><td>0-1</td><td>Damage reduction</td></tr>
+<tr><td>3</td><td>SIGHT_RADIUS</td><td>sightRadius</td><td>20</td><td>0-1</td><td>Vision range</td></tr>
+<tr><td>4</td><td>ATTACK</td><td>attack</td><td>10</td><td>0-1+</td><td>Damage output</td></tr>
+<tr><td>5</td><td>ATTACK_RELOAD</td><td>attackReload</td><td>200</td><td>0-1</td><td>Attack speed</td></tr>
+<tr><td>6</td><td>ATTACK_RANGE</td><td>attackRange</td><td>20</td><td>0-1</td><td>Ranged vs melee</td></tr>
+<tr><td>7-13</td><td>TYPE_*</td><td>bool flags</td><td>1</td><td>0 or 1</td><td>Unit class: infantry/range/cavalry/special/melee/heavy/light</td></tr>
+<tr><td>14-21</td><td>BONUS_*</td><td>float multipliers</td><td>3</td><td>0-1</td><td>Counter-damage: vs infantry/range/cavalry/worker/special/melee/heavy/light</td></tr>
+<tr><td>22</td><td>BONUS_BUILDING</td><td>bonusBuilding</td><td>3</td><td>0-1</td><td>Anti-building (siege) bonus</td></tr>
+</table>
+
+<h3>Validation</h3>
+<p>All metric values are asserted to be in <span class="highlight">[0, 1]</span> at DB load time. If a new unit exceeds this range, the assert fires, forcing the designer to either adjust the unit stats or increase the normalization weight. This prevents silent metric-brain mismatch.</p>
+</div>
+
+<!-- ========================================== -->
+<!-- 6. DISTANCE MATCHING                        -->
+<!-- ========================================== -->
+<hr class="divider">
+<div class="section-title" id="matching">6. Distance Matching — How Units Are Chosen</div>
+<div class="section-sub">Sum of squared errors between brain output and unit metric vectors. Lower distance = more similar = higher selection probability.</div>
+
+<svg viewBox="0 0 1200 420" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1200px;">
+  <rect width="1200" height="420" fill="#12122a" rx="12"/>
+  <text x="600" y="30" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">sumSquaredError + lowestWithRand</text>
+
+  <!-- Brain output -->
+  <rect x="30" y="60" width="250" height="160" rx="8" fill="#BF360C" fill-opacity="0.2" stroke="#FF5722" stroke-width="1.5"/>
+  <text x="155" y="85" text-anchor="middle" fill="#FF5722" font-size="13" font-weight="bold">Brain Output (23 floats)</text>
+  <text x="155" y="110" text-anchor="middle" fill="#FF8A65" font-size="11">TYPE_INFANTRY = 0.9</text>
+  <text x="155" y="125" text-anchor="middle" fill="#FF8A65" font-size="11">TYPE_CAVALRY = -0.8</text>
+  <text x="155" y="140" text-anchor="middle" fill="#FF8A65" font-size="11">TYPE_HEAVY = -0.6</text>
+  <text x="155" y="155" text-anchor="middle" fill="#FF8A65" font-size="11">ARMOR = -0.3</text>
+  <text x="155" y="170" text-anchor="middle" fill="#FF8A65" font-size="11">BONUS_CAVALRY = 0.7</text>
+  <text x="155" y="195" text-anchor="middle" fill="#546E7A" font-size="10">"I want light anti-cav infantry"</text>
+
+  <!-- Unit A -->
+  <rect x="350" y="60" width="200" height="120" rx="8" fill="#1B5E20" fill-opacity="0.2" stroke="#4CAF50" stroke-width="1.5"/>
+  <text x="450" y="85" text-anchor="middle" fill="#4CAF50" font-size="12" font-weight="bold">Light Spearman</text>
+  <text x="450" y="105" text-anchor="middle" fill="#A5D6A7" font-size="10">INFANTRY=1, CAVALRY=0</text>
+  <text x="450" y="120" text-anchor="middle" fill="#A5D6A7" font-size="10">HEAVY=0, ARMOR=0.2</text>
+  <text x="450" y="135" text-anchor="middle" fill="#A5D6A7" font-size="10">BONUS_CAV=0.5</text>
+  <text x="450" y="160" text-anchor="middle" fill="#66BB6A" font-size="11" font-weight="bold">dist = 1.30</text>
+
+  <!-- Unit B -->
+  <rect x="350" y="210" width="200" height="120" rx="8" fill="#B71C1C" fill-opacity="0.2" stroke="#EF5350" stroke-width="1.5"/>
+  <text x="450" y="235" text-anchor="middle" fill="#EF5350" font-size="12" font-weight="bold">Heavy Knight</text>
+  <text x="450" y="255" text-anchor="middle" fill="#EF9A9A" font-size="10">INFANTRY=0, CAVALRY=1</text>
+  <text x="450" y="270" text-anchor="middle" fill="#EF9A9A" font-size="10">HEAVY=1, ARMOR=0.8</text>
+  <text x="450" y="285" text-anchor="middle" fill="#EF9A9A" font-size="10">BONUS_CAV=0</text>
+  <text x="450" y="310" text-anchor="middle" fill="#EF5350" font-size="11" font-weight="bold">dist = 8.31</text>
+
+  <!-- Arrows -->
+  <line x1="280" y1="120" x2="350" y2="120" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="280" y1="140" x2="350" y2="260" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- lowestWithRand -->
+  <rect x="630" y="100" width="280" height="200" rx="8" fill="#0D47A1" fill-opacity="0.2" stroke="#2196F3" stroke-width="1.5"/>
+  <text x="770" y="128" text-anchor="middle" fill="#2196F3" font-size="13" font-weight="bold">lowestWithRand(dists, count)</text>
+  <text x="770" y="155" text-anchor="middle" fill="#90CAF9" font-size="11">1. Invert: weight = totalSum - dist</text>
+  <text x="770" y="175" text-anchor="middle" fill="#90CAF9" font-size="11">2. Spearman: 8.31 - 1.30 = 7.01</text>
+  <text x="770" y="195" text-anchor="middle" fill="#90CAF9" font-size="11">   Knight:   8.31 - 8.31 = 0.00</text>
+  <text x="770" y="220" text-anchor="middle" fill="#90CAF9" font-size="11">3. Weighted random sample</text>
+  <text x="770" y="240" text-anchor="middle" fill="#90CAF9" font-size="11">4. Repeat 'count' times</text>
+  <text x="770" y="265" text-anchor="middle" fill="#66BB6A" font-size="11">Weights computed ONCE,</text>
+  <text x="770" y="280" text-anchor="middle" fill="#66BB6A" font-size="11">sampled N times efficiently</text>
+
+  <line x1="550" y1="160" x2="630" y2="200" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="550" y1="270" x2="630" y2="200" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- Result -->
+  <rect x="990" y="140" width="170" height="120" rx="8" fill="#1B5E20" fill-opacity="0.2" stroke="#4CAF50" stroke-width="1.5"/>
+  <text x="1075" y="168" text-anchor="middle" fill="#4CAF50" font-size="12" font-weight="bold">Result (count=3)</text>
+  <text x="1075" y="195" text-anchor="middle" fill="#A5D6A7" font-size="11">[0] Light Spearman</text>
+  <text x="1075" y="215" text-anchor="middle" fill="#A5D6A7" font-size="11">[1] Light Spearman</text>
+  <text x="1075" y="235" text-anchor="middle" fill="#A5D6A7" font-size="11">[2] Light Spearman</text>
+  <text x="1075" y="252" text-anchor="middle" fill="#546E7A" font-size="9">(could vary with more candidates)</text>
+
+  <line x1="910" y1="200" x2="990" y2="200" stroke="#4CAF50" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Explanation -->
+  <text x="600" y="380" text-anchor="middle" fill="#78909C" font-size="12">Negative brain outputs create REPULSION: TYPE_CAVALRY=-0.8 vs metric=1.0 gives (1.8)^2 = 3.24 penalty</text>
+  <text x="600" y="400" text-anchor="middle" fill="#78909C" font-size="12">If brain could only output [0,1], max penalty would be (1.0)^2 = 1.0 — tanh gives 3x stronger avoidance</text>
+</svg>
+
+<!-- ========================================== -->
+<!-- 7. WANT LIST                                -->
+<!-- ========================================== -->
+<hr class="divider">
+<div class="section-title" id="wantlist">7. Want List — Priority Queue Execution</div>
+<div class="section-sub">All production requests compete in a single priority queue. Multiple items can execute per tick.</div>
+
+<svg viewBox="0 0 1200 380" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1200px;">
+  <rect width="1200" height="380" fill="#12122a" rx="12"/>
+  <text x="600" y="30" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">Want List Execution Flow</text>
+
+  <!-- Phase 1 -->
+  <rect x="30" y="60" width="200" height="100" rx="8" fill="#263238" stroke="#546E7A" stroke-width="1.5"/>
+  <text x="130" y="85" text-anchor="middle" fill="#B0BEC5" font-size="12" font-weight="bold">1. Reset + Add</text>
+  <text x="130" y="105" text-anchor="middle" fill="#78909C" font-size="10">Mark all inactive</text>
+  <text x="130" y="120" text-anchor="middle" fill="#78909C" font-size="10">Re-add active requests</text>
+  <text x="130" y="140" text-anchor="middle" fill="#78909C" font-size="10">Merge duplicates (same type+id)</text>
+
+  <!-- Phase 2 -->
+  <rect x="270" y="60" width="200" height="100" rx="8" fill="#E65100" fill-opacity="0.2" stroke="#FF9800" stroke-width="1.5"/>
+  <text x="370" y="85" text-anchor="middle" fill="#FF9800" font-size="12" font-weight="bold">2. Boost / Decay</text>
+  <text x="370" y="108" text-anchor="middle" fill="#FFB74D" font-size="10">Active: priority = base * (1 + 1.15 * age)</text>
+  <text x="370" y="125" text-anchor="middle" fill="#FFB74D" font-size="10">Inactive: priority *= 0.85</text>
+  <text x="370" y="142" text-anchor="middle" fill="#78909C" font-size="10">Persistent needs grow urgent</text>
+
+  <!-- Phase 3 -->
+  <rect x="510" y="60" width="200" height="100" rx="8" fill="#0D47A1" fill-opacity="0.2" stroke="#2196F3" stroke-width="1.5"/>
+  <text x="610" y="85" text-anchor="middle" fill="#2196F3" font-size="12" font-weight="bold">3. Sort + Cap</text>
+  <text x="610" y="108" text-anchor="middle" fill="#90CAF9" font-size="10">Sort descending by priority</text>
+  <text x="610" y="125" text-anchor="middle" fill="#90CAF9" font-size="10">Cap at 32 items</text>
+  <text x="610" y="142" text-anchor="middle" fill="#90CAF9" font-size="10">Drop items below 0.05</text>
+
+  <!-- Phase 4 -->
+  <rect x="750" y="60" width="200" height="100" rx="8" fill="#1B5E20" fill-opacity="0.2" stroke="#4CAF50" stroke-width="1.5"/>
+  <text x="850" y="85" text-anchor="middle" fill="#4CAF50" font-size="12" font-weight="bold">4. Execute</text>
+  <text x="850" y="108" text-anchor="middle" fill="#A5D6A7" font-size="10">For each item (priority order):</text>
+  <text x="850" y="125" text-anchor="middle" fill="#A5D6A7" font-size="10">  Check cost -> has resources?</text>
+  <text x="850" y="142" text-anchor="middle" fill="#A5D6A7" font-size="10">  Yes: execute + deduct</text>
+
+  <!-- Phase 5 -->
+  <rect x="990" y="60" width="170" height="100" rx="8" fill="#004D40" fill-opacity="0.2" stroke="#00897B" stroke-width="1.5"/>
+  <text x="1075" y="85" text-anchor="middle" fill="#00897B" font-size="12" font-weight="bold">5. Lacking</text>
+  <text x="1075" y="108" text-anchor="middle" fill="#80CBC4" font-size="10">Track per-resource</text>
+  <text x="1075" y="125" text-anchor="middle" fill="#80CBC4" font-size="10">deficit for items</text>
+  <text x="1075" y="142" text-anchor="middle" fill="#80CBC4" font-size="10">we couldn't afford</text>
+
+  <!-- Arrows -->
+  <line x1="230" y1="110" x2="270" y2="110" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="470" y1="110" x2="510" y2="110" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="710" y1="110" x2="750" y2="110" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="950" y1="110" x2="990" y2="110" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- Example queue -->
+  <text x="600" y="200" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">Example Queue (sorted)</text>
+  <rect x="100" y="215" width="1000" height="30" rx="4" fill="#0f3460"/>
+  <text x="120" y="235" fill="#4fc3f7" font-size="11" font-weight="bold">Priority</text>
+  <text x="250" y="235" fill="#4fc3f7" font-size="11" font-weight="bold">Type</text>
+  <text x="400" y="235" fill="#4fc3f7" font-size="11" font-weight="bold">Count</text>
+  <text x="530" y="235" fill="#4fc3f7" font-size="11" font-weight="bold">ID</text>
+  <text x="700" y="235" fill="#4fc3f7" font-size="11" font-weight="bold">Status</text>
+
+  <rect x="100" y="248" width="1000" height="25" rx="0" fill="#151530"/>
+  <text x="120" y="266" fill="#FFB74D" font-size="11">2.30</text>
+  <text x="250" y="266" fill="#ccc" font-size="11">UNIT</text>
+  <text x="400" y="266" fill="#ccc" font-size="11">1</text>
+  <text x="530" y="266" fill="#ccc" font-size="11">Heavy Infantry</text>
+  <text x="700" y="266" fill="#66BB6A" font-size="11">EXECUTED (affordable)</text>
+
+  <rect x="100" y="275" width="1000" height="25" rx="0" fill="#1a1a2e"/>
+  <text x="120" y="293" fill="#FFB74D" font-size="11">1.85</text>
+  <text x="250" y="293" fill="#ccc" font-size="11">WORKER</text>
+  <text x="400" y="293" fill="#ccc" font-size="11">2</text>
+  <text x="530" y="293" fill="#ccc" font-size="11">-</text>
+  <text x="700" y="293" fill="#66BB6A" font-size="11">EXECUTED x2</text>
+
+  <rect x="100" y="302" width="1000" height="25" rx="0" fill="#151530"/>
+  <text x="120" y="320" fill="#FFB74D" font-size="11">1.20</text>
+  <text x="250" y="320" fill="#ccc" font-size="11">BUILDING</text>
+  <text x="400" y="320" fill="#ccc" font-size="11">1</text>
+  <text x="530" y="320" fill="#ccc" font-size="11">Barracks</text>
+  <text x="700" y="320" fill="#EF5350" font-size="11">LACKING (need 50 wood)</text>
+
+  <rect x="100" y="329" width="1000" height="25" rx="0" fill="#1a1a2e"/>
+  <text x="120" y="347" fill="#FFB74D" font-size="11">0.45</text>
+  <text x="250" y="347" fill="#ccc" font-size="11">UNIT</text>
+  <text x="400" y="347" fill="#ccc" font-size="11">1</text>
+  <text x="530" y="347" fill="#ccc" font-size="11">Light Spearman</text>
+  <text x="700" y="347" fill="#66BB6A" font-size="11">EXECUTED</text>
+</svg>
+
+<!-- ========================================== -->
+<!-- 8. MILITARY BRAIN                           -->
+<!-- ========================================== -->
+<hr class="divider">
+<div class="section-title" id="military">8. Military Brain — Combat Orders</div>
+<div class="section-sub">Separate from the want list. Issues direct army movement/attack orders. No resource cost.</div>
+
+<div class="card">
+<h3>Decision Flow</h3>
+<ul>
+  <li><span class="step">1. Attack vs Defend:</span> Compare attackWeight vs defendWeight from MilitaryBrain output</li>
+  <li><span class="step">2. Target type:</span> ECON (workers), BUILDING (structures), or ARMY (enemy units) — based on continuous output mapped to thirds</li>
+  <li><span class="step">3. Position:</span> AttackSpatialBrain computes influence map weights, getAreas() finds best area. Fallback: center of target type</li>
+  <li><span class="step">4. Execution:</span> Free army divided into sub-groups. If far from target: GO order. If close: find closest enemy entity and ATTACK</li>
+</ul>
+<h3>Limitations</h3>
+<ul>
+  <li class="con">No retreat — army fights to the death, no health threshold check</li>
+  <li class="con">No regrouping — sub-armies attack independently</li>
+  <li class="con">Single enemy only — ignores other players in FFA</li>
+</ul>
+</div>
+
+<!-- ========================================== -->
+<!-- 9. HISTORY SYSTEM                           -->
+<!-- ========================================== -->
+<hr class="divider">
+<div class="section-title" id="history">9. History System — Feedback Loop</div>
+<div class="section-sub">128-entry circular buffer tracking actions (build, produce) and orders (attack, defend, collect). Provides recency and failure scores to Master Brain.</div>
+
+<div class="card">
+<h3>Two Buffers</h3>
+<table class="spec">
+<tr><th>Buffer</th><th>Entry</th><th>Tracks</th></tr>
+<tr><td>Actions (128)</td><td>tick, AiActionType, AiActionResult, chosenId</td><td>CREATE_UNIT, CREATE_WORKER, CREATE_BUILDING_*</td></tr>
+<tr><td>Orders (128)</td><td>tick, AiOrderType, AiOrderResult, unitCount</td><td>ATTACK_*, DEFEND_*, COLLECT_RESOURCE_*</td></tr>
+</table>
+
+<h3>Scoring Functions</h3>
+<ul>
+  <li><span class="highlight">recencyScore(type, lookback)</span> — sum of (1 - age/lookback) for successful entries. Higher = more recent activity</li>
+  <li><span class="highlight">failureScore(type, lookback)</span> — same formula but for failed entries. Higher = more recent failures</li>
+  <li>Composite: buildingFailureScore, unitFailureScore, attackActivityScore, defendActivityScore</li>
+</ul>
+<p>Lookback is 900 ticks (~30 seconds at 30 tps). With 128 entries, the buffer covers sustained activity without overflowing during active phases.</p>
+</div>
+
+<!-- ========================================== -->
+<!-- 10. WORKED EXAMPLES                         -->
+<!-- ========================================== -->
+<hr class="divider">
+<div class="section-title" id="examples">10. Worked Examples</div>
+
+<div class="example">
+<h3>Example 1: Early Game — Economy Focus</h3>
+<p class="sit">Tick 300. Score: 50. Army: 2 militia. Enemy: unknown (no contact). Resources: 200F, 150W, 50S, 0G. 5 workers.</p>
+<p><span class="step">Master Brain:</span> Low enemy threat -> low MILITARY_URGENCY (-0.3). Few buildings -> BUILDING_URGENCY = 0.6. Low resources -> ECONOMY_URGENCY = 0.8. WORKER_URGENCY = 0.7.</p>
+<p><span class="step">Economy Brain:</span> workerCount = 3, foodPriority = 0.8, woodPriority = 0.6, stonePriority = 0.1, goldPriority = 0.0. needMill = 0.7 (need food bonus building).</p>
+<p><span class="step">Unit Brain:</span> unitUrgency = 0.1 -> count = round(0.1 * 5) = 1. Profile outputs weak preference for cheap infantry. One unit added to want list.</p>
+<p><span class="step">Want List:</span> Workers (priority 0.7 x3) > Mill building (0.7) > Infantry unit (0.1). Workers execute first — 3 villagers queued. Mill building queued. Infantry may not have enough resources left.</p>
+<p><span class="result">Result:</span> 3 workers produced, 1 mill built, 0-1 military units. Economy grows.</p>
+</div>
+
+<div class="example">
+<h3>Example 2: Mid Game — Enemy Cavalry Rush</h3>
+<p class="sit">Tick 2000. Enemy has 15 cavalry, 5 archers. Our army: 8 infantry, 3 archers. KD_RATIO = 0.3 (losing).</p>
+<p><span class="step">Master Brain:</span> High enemy army + low KD -> UNIT_URGENCY = 0.9, MILITARY_URGENCY = 0.7, ATTACK_URGENCY = -0.2 (defend). DEFENCE_BUILDING_URGENCY = 0.5.</p>
+<p><span class="step">Unit Brain:</span> count = round(0.9 * 5) = 5. Sees enemy cavalry ratio is high.</p>
+<p>Brain outputs: TYPE_INFANTRY = 0.8, TYPE_HEAVY = 0.3, BONUS_CAVALRY = 0.9, TYPE_CAVALRY = -0.7 (avoid cavalry).</p>
+<p><span class="step">Profile Matching:</span> lowestWithRand runs 5 times. Spearman (anti-cavalry infantry) has lowest distance. Results: 4x Spearman, 1x Pikeman (similar but slightly different roll).</p>
+<p><span class="step">Military Brain:</span> defendWeight > attackWeight. Target: BUILDING (protect base). Army sent to defend near own buildings.</p>
+<p><span class="result">Result:</span> 5 anti-cavalry units queued (if affordable). Army defends base. Counter-composition evolves naturally.</p>
+</div>
+
+<div class="example">
+<h3>Example 3: Unbuildable Unit Fallback</h3>
+<p class="sit">Brain wants cavalry archers, but the Archery Range is destroyed. Only Barracks is standing.</p>
+<p><span class="step">resolveUnit():</span> Profile matches "Mounted Archer" (cavalry + range type). Returns it.</p>
+<p><span class="step">executeUnit():</span> getBuildingsCanDeploy("Mounted Archer") returns empty. Sets pendingLackingBuilding = Archery Range ID.</p>
+<p><span class="step">Feedback:</span> Next tick, lackingBuildingForUnit is set. submitBuildingRequest adds Archery Range to want list with boosted urgency (min 0.5). Meanwhile, the WantItem for Mounted Archer fails and decays.</p>
+<p><span class="result">Result:</span> AI prioritizes rebuilding the Archery Range. Unit request fails gracefully. Resources freed for the building.</p>
+</div>
+
+<div class="example">
+<h3>Example 4: Negative Profile = Active Avoidance</h3>
+<p class="sit">Brain wants siege units to break enemy walls.</p>
+<p>Brain outputs: BONUS_BUILDING = 0.8, TYPE_HEAVY = 0.5, TYPE_CAVALRY = -0.9, TYPE_LIGHT = -0.7, ATTACK = 0.6</p>
+<p><span class="step">Distance calculation for a Light Scout:</span></p>
+<p>TYPE_CAVALRY: (-0.9 - 1.0)^2 = 3.61, TYPE_LIGHT: (-0.7 - 1.0)^2 = 2.89, BONUS_BUILDING: (0.8 - 0.0)^2 = 0.64</p>
+<p>Total penalty from just 3 dimensions: 7.14</p>
+<p><span class="step">Distance for a Battering Ram:</span></p>
+<p>TYPE_CAVALRY: (-0.9 - 0.0)^2 = 0.81, TYPE_LIGHT: (-0.7 - 0.0)^2 = 0.49, BONUS_BUILDING: (0.8 - 0.67)^2 = 0.02</p>
+<p>Total: 1.32</p>
+<p><span class="result">Result:</span> Battering Ram wins decisively. The [-1, 0] range provides 3x stronger rejection than [0, 1] alone.</p>
+</div>
+
+<!-- ========================================== -->
+<!-- 11. PROS AND CONS                           -->
+<!-- ========================================== -->
+<hr class="divider">
+<div class="section-title" id="proscons">11. Pros and Cons</div>
+
+<div class="proscons">
+<div>
+<h3 class="pro">Strengths</h3>
+<ul>
+  <li><span class="pro">Nation-agnostic unit selection</span> — Same NN works across factions with different unit rosters. Profile describes properties, not IDs.</li>
+  <li><span class="pro">Emergent counter-play</span> — The brain learns to output anti-cavalry profiles when enemy has cavalry, without hardcoded rules.</li>
+  <li><span class="pro">GA-evolvable</span> — All brains are neural networks with weights from CSV files. No hand-tuning needed for strategy. Evolution discovers good play.</li>
+  <li><span class="pro">Stochastic variety</span> — lowestWithRand prevents perfectly predictable play. Multiple rolls per tick produce army variety.</li>
+  <li><span class="pro">Priority-based resource allocation</span> — Want list naturally balances economy vs military vs tech. Persistent needs escalate via age boost.</li>
+  <li><span class="pro">Feedback loops</span> — Lacking resources feed back to Master Brain. Building failures feed back to unit production. History informs future decisions.</li>
+  <li><span class="pro">Metric validation</span> — Assert at DB load ensures all metrics stay in [0, 1]. New units that violate this are caught immediately.</li>
+  <li><span class="pro">Negative outputs as repulsion</span> — tanh [-1, 1] gives the brain 3x stronger "avoid" signals vs [0, 1] range, enabling active trait avoidance.</li>
+  <li><span class="pro">Efficient multi-sampling</span> — lowestWithRand(diffs, count) computes weights once, samples N times. sampleWeighted is O(candidates) per sample.</li>
+  <li><span class="pro">Brain caching</span> — BrainProvider caches brains by filename. Same-input same-output optimization in Brain::decide() skips redundant forward passes.</li>
+</ul>
+</div>
+<div>
+<h3 class="con">Weaknesses</h3>
+<ul>
+  <li><span class="con">No retreat logic</span> — Army fights to death. No health threshold, no "pull back and regroup." Armies are wasted in losing engagements.</li>
+  <li><span class="con">Tech system unimplemented</span> — TECH_LEVEL = 0, WantItemType::TECH never used. AI never researches upgrades.</li>
+  <li><span class="con">Non-resource building selection is a stub</span> — resolveBuilding() for DEFENCE/TECH/UNITS/OTHER returns buildings.at(0). No NN-driven selection.</li>
+  <li><span class="con">No scouting</span> — AI cannot explore fog of war. Plays blind until enemy contact. Disadvantaged on large maps.</li>
+  <li><span class="con">Single enemy</span> — getEnemyFor() returns one enemy. FFA/multiplayer ignored.</li>
+  <li><span class="con">No attack outcome tracking</span> — History records "order sent" as success, not whether the battle was won.</li>
+  <li><span class="con">Worker reassignment is slow</span> — Only 1 worker per tick, only if priority gap > 0.3. Slow to adapt economy.</li>
+  <li><span class="con">Save/load breaks deltas</span> — MasterBrain prev* fields not serialized. First tick after load produces false delta spikes.</li>
+  <li><span class="con">No training pipeline in repo</span> — No GA implementation, no fitness functions, no weight export. Brains must be evolved externally.</li>
+  <li><span class="con">lowestWithRand samples with replacement</span> — Can return the same unit type multiple times when variety might be better.</li>
+</ul>
+</div>
+</div>
+
+<!-- ========================================== -->
+<!-- 12. KNOWN GAPS                              -->
+<!-- ========================================== -->
+<hr class="divider">
+<div class="section-title" id="gaps">12. Known Gaps — Priority Order</div>
+
+<div class="card">
+<table class="spec">
+<tr><th>Priority</th><th>Gap</th><th>Impact</th><th>Location</th></tr>
+<tr><td style="color:#EF5350;font-weight:bold;">P1</td><td>Tech/upgrade system</td><td>AI never upgrades — falls behind in late game</td><td>MasterBrain.cpp:88, AiOrchestrator.cpp:124</td></tr>
+<tr><td style="color:#EF5350;font-weight:bold;">P2</td><td>No retreat logic</td><td>Army wasted in losing fights</td><td>AiOrchestrator.cpp:154-246</td></tr>
+<tr><td style="color:#FF9800;font-weight:bold;">P3</td><td>Building selection stub</td><td>Wrong buildings chosen for non-resource types</td><td>AiOrchestrator.cpp:497-498</td></tr>
+<tr><td style="color:#FF9800;font-weight:bold;">P4</td><td>No scouting</td><td>Blind until contact</td><td>(not implemented)</td></tr>
+<tr><td style="color:#FFB74D;">P5</td><td>Save/load delta spike</td><td>One-tick false urgency after load</td><td>MasterBrain.h:85-90</td></tr>
+<tr><td style="color:#FFB74D;">P6</td><td>Single enemy limitation</td><td>Ignores FFA opponents</td><td>AiOrchestrator.cpp:46</td></tr>
+<tr><td style="color:#78909C;">P7</td><td>Attack outcome tracking</td><td>Can't learn from lost battles</td><td>AiOrchestrator.cpp:245</td></tr>
+<tr><td style="color:#78909C;">P8</td><td>Worker reassignment speed</td><td>Slow economy adaptation</td><td>AiOrchestrator.cpp:568-582</td></tr>
+</table>
+</div>
+
+</body>
+</html>

@@ -100,6 +100,16 @@ float AiHistory::failureScore(std::initializer_list<AiOrderType> types, unsigned
 	return score;
 }
 
+float AiHistory::recencyScore(AiOrderType type, unsigned int lookbackTicks) const {
+	const unsigned int now = Game::getFrameInfo()->getTotalTicks();
+	const unsigned int minTick = now > lookbackTicks ? now - lookbackTicks : 0;
+	float score = 0.f;
+	for (int i = orderCount - 1; i >= 0; --i) {
+		const auto& entry = getOrder(i);
+		if (entry.tick < minTick) { break; }
+		if (entry.orderType == type && entry.result == AiOrderResult::SUCCESS) {
+			score += 1.f - static_cast<float>(now - entry.tick) / lookbackTicks;
+		}
 	}
 	return score;
 }
