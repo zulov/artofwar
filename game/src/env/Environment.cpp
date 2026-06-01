@@ -406,7 +406,7 @@ const std::vector<short>& Environment::getCloseIndexs(int center) const {
 	return mainGrid.getCloseIndexes(center);
 }
 
-std::optional<Urho3D::Vector2> Environment::getPosFromIndexes(db_building* building, char player,
+std::optional<Urho3D::Vector2> Environment::getPosFromIndexes(db_building* building, unsigned char player,
                                                               const std::vector<unsigned>* indexes) {
 	const float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
 	for (const auto centerIndex : *indexes) {
@@ -430,7 +430,7 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(std::span<const float
 	return getPosFromIndexes(building, player, indexes);
 }
 
-std::optional<Urho3D::Vector2> Environment::getPosToCreateResBonus(db_building* building, char player) {
+std::optional<Urho3D::Vector2> Environment::getPosToCreateResBonus(db_building* building, unsigned char player) {
 	std::vector<unsigned> allIndexes;
 
 	auto indexes = influenceManager.getAreasResBonus(building->resourceType, player);

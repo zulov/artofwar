@@ -5,8 +5,8 @@ using U = MetricDefinitions::U;
 using B = MetricDefinitions::B;
 
 std::array<AiUnitMetric, MetricDefinitions::UNIT_METRIC_COUNT> MetricDefinitions::aiUnitMetric = buildMetricArray<U, AiUnitMetric>({
-	{U::COST,            {[](auto u, auto l) -> float { return u->getSumCost(); }, 400}},
-	{U::MAX_HP,          {[](auto u, auto l) -> float { return l->maxHp; }, 300}},
+	{U::COST,            {[](auto u, auto l) -> float { return u->getSumCost(); }, 500}},
+	{U::MAX_HP,          {[](auto u, auto l) -> float { return l->maxHp; }, 500}},
 	{U::ARMOR,           {[](auto u, auto l) -> float { return l->armor; }}},
 	{U::SIGHT_RADIUS,    {[](auto u, auto l) -> float { return l->sightRadius; }, 20}},
 	{U::ATTACK,          {[](auto u, auto l) -> float { return l->attack; }, 10}},
@@ -31,14 +31,14 @@ std::array<AiUnitMetric, MetricDefinitions::UNIT_METRIC_COUNT> MetricDefinitions
 });
 
 std::array<AiBuildingMetric, MetricDefinitions::BUILDING_METRIC_COUNT> MetricDefinitions::aiBuildingMetric = buildMetricArray<B, AiBuildingMetric>({
-	{B::COST,               {[](auto b, auto l) -> float { return b->getSumCost(); }, 400}},
-	{B::MAX_HP,             {[](auto b, auto l) -> float { return l->maxHp; }, 500}},
+	{B::COST,               {[](auto b, auto l) -> float { return b->getSumCost(); }, 1000}},
+	{B::MAX_HP,             {[](auto b, auto l) -> float { return l->maxHp; }, 5000}},
 	{B::ARMOR,              {[](auto b, auto l) -> float { return l->armor; }}},
 	{B::SIGHT_RADIUS,       {[](auto b, auto l) -> float { return l->sightRadius; }, 50}},
 	{B::COLLECT,            {[](auto b, auto l) -> float { return l->collect; }, 2}},
 	{B::ATTACK,             {[](auto b, auto l) -> float { return l->attack; }, 20}},
 	{B::ATTACK_RELOAD,      {[](auto b, auto l) -> float { return l->attackReload; }, 200}},
-	{B::ATTACK_RANGE,       {[](auto b, auto l) -> float { return l->attackRange; }, 20}},
+	{B::ATTACK_RANGE,       {[](auto b, auto l) -> float { return l->attackRange; }, 30}},
 	{B::RESOURCE_RANGE,     {[](auto b, auto l) -> float { return l->resourceRange; }, 20}},
 	{B::TYPE_CENTER,        {[](auto b, auto l) -> float { return b->typeCenter; }}},
 	{B::TYPE_HOME,          {[](auto b, auto l) -> float { return b->typeHome; }}},
