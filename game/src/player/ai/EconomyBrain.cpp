@@ -10,9 +10,36 @@
 #include "player/Possession.h"
 #include "player/Resources.h"
 #include "env/influence/CenterType.h"
+#include "Game.h"
+#include "env/Environment.h"
+#include "objects/resource/ResourceEntity.h"
 
 #include <algorithm>
 #include <cmath>
+
+namespace {
+std::pair<float, float> getNearbySupply(char playerId) {
+	constexpr float SEARCH_RADIUS = 128.f;
+	float foodHp = 0.f, woodHp = 0.f;
+
+	auto* env = Game::getEnvironment();
+	auto center = env->getCenterOf(CenterType::ECON, playerId);
+	if (center.has_value()) {
+		auto* resources = env->getResources(center.value(), SEARCH_RADIUS);
+		for (auto* phys : *resources) {
+			auto* resEntity = static_cast<ResourceEntity*>(phys);
+			char resId = resEntity->getResourceId();
+			if (resId == 0) {
+				foodHp += resEntity->getHp();
+			} else if (resId == 1) {
+				woodHp += resEntity->getHp();
+			}
+		}
+	}
+
+	return {foodHp, woodHp};
+}
+}
 
 EconomyBrain::EconomyBrain(db_nation* nation)
 	: brain(BrainProvider::get(nation->actionPrefix[1] + "economy.csv")) {
@@ -74,10 +101,10 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::BONUS_COVERAGE_STONE)] = possession->getBonusCoverage(ResourceType::STONE);
 	inputData[idx(I::BONUS_COVERAGE_GOLD)] = possession->getBonusCoverage(ResourceType::GOLD);
 
-	// Building counts (3) — from Possession
-	inputData[idx(I::FARM_COUNT)] = norm(possession->getConvertBuildingCount(), 5.f);
-	inputData[idx(I::SPAWNER_COUNT)] = norm(possession->getSpawnerCount(), 5.f);
-	inputData[idx(I::FOOD_DECAY_RATE)] = norm(res->getLastFoodLost(), 100.f);
+	// Nearby resource supply (2)
+	auto [foodSupply, woodSupply] = getNearbySupply(player->getId());
+	inputData[idx(I::NEARBY_FOOD_SUPPLY)] = norm(foodSupply, 5000.f);
+	inputData[idx(I::NEARBY_WOOD_SUPPLY)] = norm(woodSupply, 5000.f);
 	inputData[idx(I::TOTAL_RES_BUILDINGS)] = norm(possession->getResourceBuildingCount(), 20.f);
 	inputData[idx(I::RES_WO_BONUS)] = norm(possession->getResWithoutBonusSum(), 20.f);
 
@@ -117,15 +144,15 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 		result[o(O::GOLD_PRIORITY)],
 		result[o(O::EXPAND_PRIORITY)],
 		result[o(O::REASSIGN_WORKERS)],
-		result[o(O::NEED_MILL)],
-		result[o(O::NEED_SAWMILL)],
-		result[o(O::NEED_MINE_S)],
-		result[o(O::NEED_MINE_G)],
-		result[o(O::NEED_FARM)],
-		result[o(O::NEED_GRANARY)],
-		result[o(O::NEED_BANK)],
-		result[o(O::NEED_GOLD_REFINERY)],
-		result[o(O::NEED_STONE_REFINERY)],
-		result[o(O::NEED_TREE_NURSERY)]
+		result[o(O::NEED_BONUS_FOOD)],
+		result[o(O::NEED_BONUS_WOOD)],
+		result[o(O::NEED_BONUS_STONE)],
+		result[o(O::NEED_BONUS_GOLD)],
+		result[o(O::NEED_FOOD_SOURCE)],
+		result[o(O::NEED_FOOD_STORAGE)],
+		result[o(O::NEED_GOLD_STORAGE)],
+		result[o(O::NEED_GOLD_REFINE)],
+		result[o(O::NEED_STONE_REFINE)],
+		result[o(O::NEED_WOOD_SOURCE)]
 	};
 }

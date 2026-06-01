@@ -29,6 +29,12 @@
 #include "env/influence/CenterType.h"
 #include "database/DatabaseCache.h"
 
+namespace {
+bool isResBonus(db_building* b, db_building_level* l, ResourceType res) {
+	return b->resourceType == cast(res) && l->collect > 0.f && l->resourceRange > 0.f;
+}
+}
+
 
 AiOrchestrator::AiOrchestrator(Player* player, db_nation* nation, AiHistory* history) :
 	player(player), playerId(player->getId()), possession(player->getPossession()), nation(nation),
@@ -87,12 +93,33 @@ void AiOrchestrator::action() {
 	submitBuildingRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
 	submitBuildingRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
 
-	// Resource building — urgency derived from highest need score
-	float resBuildUrgency = std::max({lastEconOut.needMill, lastEconOut.needSawmill,
-		lastEconOut.needMineS, lastEconOut.needMineG, lastEconOut.needFarm,
-		lastEconOut.needGranary, lastEconOut.needBank, lastEconOut.needGoldRefinery,
-		lastEconOut.needStoneRefinery, lastEconOut.needTreeNursery});
-	submitBuildingRequest(resBuildUrgency, ParentBuildingType::RESOURCE);
+	// Resource buildings — submit each need individually
+	{
+		const auto buildings = getBuildingsInType(ParentBuildingType::RESOURCE);
+
+		auto findAndSubmit = [&](float need, auto&& match) {
+			if (need <= 0.1f) { return; }
+			for (const auto b : buildings) {
+				auto lvlOpt = b->getLevel(0);
+				if (!lvlOpt.has_value()) { continue; }
+				if (match(b, lvlOpt.value())) {
+					wantList.addRequest(WantItemType::BUILDING, need, 1, b->id);
+					return;
+				}
+			}
+		};
+
+		findAndSubmit(lastEconOut.needBonusFood,  [](auto* b, auto* l) { return isResBonus(b, l, ResourceType::FOOD); });
+		findAndSubmit(lastEconOut.needBonusWood,  [](auto* b, auto* l) { return isResBonus(b, l, ResourceType::WOOD); });
+		findAndSubmit(lastEconOut.needBonusStone, [](auto* b, auto* l) { return isResBonus(b, l, ResourceType::STONE); });
+		findAndSubmit(lastEconOut.needBonusGold,  [](auto* b, auto* l) { return isResBonus(b, l, ResourceType::GOLD); });
+		findAndSubmit(lastEconOut.needFoodSource, [](auto* b, auto* l) { return b->toResource >= 0 && l->spawnResourceRange <= 0; });
+		findAndSubmit(lastEconOut.needWoodSource, [](auto* b, auto* l) { return b->toResource >= 0 && l->spawnResourceRange > 0; });
+		findAndSubmit(lastEconOut.needFoodStorage,[](auto* b, auto* l) { return l->foodStorage > 0; });
+		findAndSubmit(lastEconOut.needGoldStorage,[](auto* b, auto* l) { return l->goldStorage > 0; });
+		findAndSubmit(lastEconOut.needStoneRefine,[](auto* b, auto* l) { return l->stoneRefineCapacity > 0.f; });
+		findAndSubmit(lastEconOut.needGoldRefine, [](auto* b, auto* l) { return l->goldRefineCapacity > 0.f; });
+	}
 
 	// UNITS building: prefer specific building from lacking feedback, fall back to generic resolve
 	if (lastLacking.lackingBuildingForUnit >= 0) {
@@ -425,78 +452,6 @@ db_building* AiOrchestrator::resolveBuilding(ParentBuildingType type) {
 	const auto buildings = getBuildingsInType(type);
 	if (buildings.empty()) { return nullptr; }
 	if (buildings.size() == 1) { return buildings.at(0); }
-
-	if (type == ParentBuildingType::RESOURCE) {
-		// 10 building-type need scores from EconomyBrain
-		// Each maps to a capability+resource combination
-		struct BuildingNeed {
-			float need;
-			// Classification criteria (matched against db_building + level 0)
-			int resourceType;     // -1 = any
-			bool wantBonus;       // collect > 0 && resourceRange > 0
-			bool wantConvert;     // toResource >= 0 && spawnResourceRange <= 0
-			bool wantStorage;     // foodStorage > 0 || goldStorage > 0
-			bool wantRefine;      // stoneRefineCapacity > 0 || goldRefineCapacity > 0
-			bool wantSpawn;       // toResource >= 0 && spawnResourceRange > 0
-			// For storage/refine disambiguation
-			bool wantFoodStorage; // foodStorage > 0
-			bool wantGoldStorage; // goldStorage > 0
-			bool wantStoneRefine; // stoneRefineCapacity > 0
-			bool wantGoldRefine;  // goldRefineCapacity > 0
-		};
-
-		BuildingNeed needs[] = {
-			{lastEconOut.needMill,           0, true,  false, false, false, false, false, false, false, false},
-			{lastEconOut.needSawmill,        1, true,  false, false, false, false, false, false, false, false},
-			{lastEconOut.needMineS,          2, true,  false, false, false, false, false, false, false, false},
-			{lastEconOut.needMineG,          3, true,  false, false, false, false, false, false, false, false},
-			{lastEconOut.needFarm,          -1, false, true,  false, false, false, false, false, false, false},
-			{lastEconOut.needGranary,       -1, false, false, true,  false, false, true,  false, false, false},
-			{lastEconOut.needBank,          -1, false, false, true,  false, false, false, true,  false, false},
-			{lastEconOut.needGoldRefinery,  -1, false, false, false, true,  false, false, false, false, true},
-			{lastEconOut.needStoneRefinery, -1, false, false, false, true,  false, false, false, true,  false},
-			{lastEconOut.needTreeNursery,   -1, false, false, false, false, true,  false, false, false, false},
-		};
-
-		// Sort needs descending by score
-		constexpr int NEED_COUNT = 10;
-		int order[NEED_COUNT] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-		std::sort(order, order + NEED_COUNT, [&](int a, int b) { return needs[a].need > needs[b].need; });
-
-		// For each need (highest first), find a matching building
-		for (int i = 0; i < NEED_COUNT; ++i) {
-			const auto& n = needs[order[i]];
-			if (n.need <= 0.f) { break; }
-
-			for (const auto building : buildings) {
-				auto levelOpt = building->getLevel(0);
-				if (!levelOpt.has_value()) { continue; }
-				auto* lvl = levelOpt.value();
-
-				// Resource type check
-				if (n.resourceType >= 0 && building->resourceType != n.resourceType) { continue; }
-
-				bool isBonus = lvl->collect > 0.f && lvl->resourceRange > 0.f;
-				bool isConvert = building->toResource >= 0 && lvl->spawnResourceRange <= 0;
-				bool isSpawn = building->toResource >= 0 && lvl->spawnResourceRange > 0;
-				bool hasFoodStorage = lvl->foodStorage > 0;
-				bool hasGoldStorage = lvl->goldStorage > 0;
-				bool hasStoneRefine = lvl->stoneRefineCapacity > 0.f;
-				bool hasGoldRefine = lvl->goldRefineCapacity > 0.f;
-
-				if (n.wantBonus && !isBonus) { continue; }
-				if (n.wantConvert && !isConvert) { continue; }
-				if (n.wantSpawn && !isSpawn) { continue; }
-				if (n.wantFoodStorage && !hasFoodStorage) { continue; }
-				if (n.wantGoldStorage && !hasGoldStorage) { continue; }
-				if (n.wantStoneRefine && !hasStoneRefine) { continue; }
-				if (n.wantGoldRefine && !hasGoldRefine) { continue; }
-
-				return building;
-			}
-		}
-		return nullptr;
-	}
 
 	// TODO: use building metric matching with brain output
 	return buildings.at(0);

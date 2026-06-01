@@ -30,9 +30,8 @@ enum class EconomyInputIdx : unsigned char {
 	BONUS_COVERAGE_WOOD,
 	BONUS_COVERAGE_STONE,
 	BONUS_COVERAGE_GOLD,
-	FARM_COUNT,
-	SPAWNER_COUNT,
-	FOOD_DECAY_RATE,
+	NEARBY_FOOD_SUPPLY,
+	NEARBY_WOOD_SUPPLY,
 	TOTAL_RES_BUILDINGS,
 	RES_WO_BONUS,
 	LACKING_FOOD,
@@ -53,16 +52,16 @@ enum class EconomyOutputIdx : unsigned char {
 	GOLD_PRIORITY,
 	EXPAND_PRIORITY,
 	REASSIGN_WORKERS,
-	NEED_MILL,
-	NEED_SAWMILL,
-	NEED_MINE_S,
-	NEED_MINE_G,
-	NEED_FARM,
-	NEED_GRANARY,
-	NEED_BANK,
-	NEED_GOLD_REFINERY,
-	NEED_STONE_REFINERY,
-	NEED_TREE_NURSERY,
+	NEED_BONUS_FOOD,
+	NEED_BONUS_WOOD,
+	NEED_BONUS_STONE,
+	NEED_BONUS_GOLD,
+	NEED_FOOD_SOURCE,
+	NEED_FOOD_STORAGE,
+	NEED_GOLD_STORAGE,
+	NEED_GOLD_REFINE,
+	NEED_STONE_REFINE,
+	NEED_WOOD_SOURCE,
 };
 
 struct EconomyOutput {//TODO better names
@@ -76,16 +75,16 @@ struct EconomyOutput {//TODO better names
 
 	float expandPriority;
 	float reassignWorkers;
-	float needMill;
-	float needSawmill;
-	float needMineS;
-	float needMineG;
-	float needFarm;
-	float needGranary;
-	float needBank;
-	float needGoldRefinery;
-	float needStoneRefinery;
-	float needTreeNursery;
+	float needBonusFood;
+	float needBonusWood;
+	float needBonusStone;
+	float needBonusGold;
+	float needFoodSource;
+	float needFoodStorage;
+	float needGoldStorage;
+	float needGoldRefine;
+	float needStoneRefine;
+	float needWoodSource;
 };
 
 class EconomyBrain {
