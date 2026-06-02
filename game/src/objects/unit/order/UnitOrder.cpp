@@ -8,7 +8,7 @@
 #include "env/Environment.h"
 #include "utils/consts.h"
 
-UnitOrder::UnitOrder(short id, bool append, Urho3D::Vector2& vector):
+UnitOrder::UnitOrder(short id, bool append, const Urho3D::Vector2& vector):
 	id(id), append(append), toUse(nullptr), vector(new Urho3D::Vector2(vector)) {}
 
 UnitOrder::UnitOrder(short id, bool append, Physical* toUse):

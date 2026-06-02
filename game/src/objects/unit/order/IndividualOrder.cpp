@@ -6,31 +6,22 @@
 #include "env/Environment.h"
 #include "objects/unit/ActionParameter.h"
 
-IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, Urho3D::Vector2& vector, bool append):
-	UnitOrder(static_cast<short>(action), append, vector), unit(unit) {
-}
+IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, const Urho3D::Vector2& vector, bool append) :
+	UnitOrder(static_cast<short>(action), append, vector), unit(unit) {}
 
-IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, Physical* toUse, bool append):
-	UnitOrder(static_cast<short>(action), append, toUse), unit(unit) {
-	assert(toUse->isAlive());
-}
+IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, Physical* toUse, bool append) :
+	UnitOrder(static_cast<short>(action), append, toUse), unit(unit) { assert(toUse->isAlive()); }
 
-bool IndividualOrder::expired() {
-	return toUse != nullptr && !toUse->isAlive();
-}
+bool IndividualOrder::expired() { return toUse != nullptr && !toUse->isAlive(); }
 
 bool IndividualOrder::add() {
 	unit->addOrder(this);
 	return false;
 }
 
-short IndividualOrder::getSize() const {
-	return 1;
-}
+short IndividualOrder::getSize() const { return 1; }
 
-void IndividualOrder::addCollectAim() {
-	followAndAct();
-}
+void IndividualOrder::addCollectAim() { followAndAct(); }
 
 void IndividualOrder::addTargetAim() {
 	unit->action(static_cast<UnitAction>(id), getTargetAim(unit->getMainGridIndex(), *vector));
@@ -40,34 +31,20 @@ void IndividualOrder::addTargetAim() {
 
 void IndividualOrder::addFollowAim() {
 	const auto indexes = toUse->getIndexesForUse();
-	if (indexes.empty()) {
-		unit->action(static_cast<UnitAction>(id), getFollowAim(unit->getMainGridIndex(), indexes));
-	}
+	if (indexes.empty()) { unit->action(static_cast<UnitAction>(id), getFollowAim(unit->getMainGridIndex(), indexes)); }
 }
 
-void IndividualOrder::addChargeAim() {
-	unit->action(static_cast<UnitAction>(id), getChargeAim(*vector));
-}
+void IndividualOrder::addChargeAim() { unit->action(static_cast<UnitAction>(id), getChargeAim(*vector)); }
 
-void IndividualOrder::addAttackAim() {
-	followAndAct();
-}
+void IndividualOrder::addAttackAim() { followAndAct(); }
 
-void IndividualOrder::addDefendAim() {
-	simpleAction();
-}
+void IndividualOrder::addDefendAim() { simpleAction(); }
 
-void IndividualOrder::addDeadAim() {
-	simpleAction();
-}
+void IndividualOrder::addDeadAim() { simpleAction(); }
 
-void IndividualOrder::addStopAim() {
-	simpleAction();
-}
+void IndividualOrder::addStopAim() { simpleAction(); }
 
-void IndividualOrder::simpleAction() const {
-	unit->action(static_cast<UnitAction>(id));
-}
+void IndividualOrder::simpleAction() const { unit->action(static_cast<UnitAction>(id)); }
 
 void IndividualOrder::followAndAct() {
 	//TODO to trzeba dobrze przemu�le�
@@ -82,9 +59,7 @@ void IndividualOrder::followAndAct() {
 				unit->action(UnitAction::FOLLOW, param);
 				unit->addOrder(new IndividualOrder(unit, UnitAction(id), toUse, true));
 			}
-		} else {
-			unit->action(static_cast<UnitAction>(id), ActionParameter(toUse));
-		}
+		} else { unit->action(static_cast<UnitAction>(id), ActionParameter(toUse)); }
 	}
 }
 
@@ -93,9 +68,7 @@ std::vector<int> IndividualOrder::getIndexesToAct() const {
 	std::vector<int> indexes;
 	if (static_cast<UnitAction>(id) == UnitAction::ATTACK) {
 		if (unit->getDb()->typeRange) {
-			if (toUse->belowRangeLimit()) {
-				indexes = toUse->getIndexesForRangeUse(unit);
-			}
+			if (toUse->belowRangeLimit()) { indexes = toUse->getIndexesForRangeUse(unit); }
 		}
 	}
 	if (indexes.empty()) {

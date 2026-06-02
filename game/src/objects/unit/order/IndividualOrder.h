@@ -6,7 +6,7 @@ enum class UnitAction : char;
 
 class IndividualOrder : public UnitOrder {
 public:
-	IndividualOrder(Unit* unit, UnitAction action, Urho3D::Vector2& vector, bool append = false);
+	IndividualOrder(Unit* unit, UnitAction action, const Urho3D::Vector2& vector, bool append = false);
 	IndividualOrder(Unit* unit, UnitAction action, Physical* toUse, bool append = false);
 	~IndividualOrder() override = default;
 
