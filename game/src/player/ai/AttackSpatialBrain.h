@@ -10,10 +10,10 @@ class Player;
 struct db_nation;
 
 enum class AttackSpatialInputIdx : unsigned char {
-	ATTACK_WEIGHT,
-	DEFEND_WEIGHT,
-	ATTACK_TARGET,
-	DEFEND_TARGET,
+	ATTACK_RATIO,
+	DEFEND_RATIO,
+	ATTACK_STANCE,
+	DEFEND_STANCE,
 	ARMY_COUNT,
 	FREE_ARMY_COUNT,
 	ENEMY_ARMY_COUNT,

@@ -51,7 +51,7 @@ MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::MILITARY_URGENCY)] = militaryUrgency;
 	inputData[idx(I::ATTACK_URGENCY)] = attackUrgency;
 
-	// Army composition ratios — TODO implement
+	// Army composition ratios
 	float armyCount = static_cast<float>(possession->getArmyNumber());
 	float safeDiv = std::max(armyCount, 1.f);
 	inputData[idx(I::OWN_INFANTRY_RATIO)] = norm(possession->getInfantryNumber(), safeDiv);
@@ -73,7 +73,16 @@ MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
 
 	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
 
+	using O = MilitaryOutputIdx;
+	constexpr auto o = [](O v) { return static_cast<int>(v); };
+
 	return MilitaryOutput{
-		result[0], result[1], result[2], result[3]
+		result[o(O::ATTACK_RATIO)],
+		result[o(O::DEFEND_RATIO)],
+		result[o(O::ATTACK_STANCE)],
+		result[o(O::DEFEND_STANCE)],
+		result[o(O::PREFER_INFANTRY)],
+		result[o(O::PREFER_RANGE)],
+		result[o(O::PREFER_CAVALRY)]
 	};
 }

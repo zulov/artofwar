@@ -66,10 +66,18 @@ void AiOrchestrator::action() {
 		history
 	);
 
-	// 3. Unit Brain
+	// 3. Military Brain (composition prefs feed into UnitBrain)
+	lastMilOut = militaryBrain.decide(
+		player, enemy,
+		lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency,
+		history
+	);
+
+	// 4. Unit Brain
 	auto unitOut = unitBrain.decide(
 		player, enemy,
-		lastMasterOut.unitUrgency, lastMasterOut.attackUrgency
+		lastMasterOut.unitUrgency, lastMasterOut.attackUrgency,
+		lastMilOut.preferInfantry, lastMilOut.preferRange, lastMilOut.preferCavalry
 	);
 
 	// 4. Submit requests to WantList
@@ -182,94 +190,149 @@ void AiOrchestrator::order() {
 	// Worker collection
 	collectWorkers();
 
-	// Military orders via MilitaryBrain
-	if (!possession->hasAnyFreeArmy()) { return; }
-
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
+	const auto& milOut = lastMilOut;
 
-	auto milOut = militaryBrain.decide(
-		player, enemy,
-		lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency,
-		history
-	);
+	// Get ALL army (free + busy) for stance-based control
+	std::vector<Unit*> allArmy = possession->getAllArmy();
+	if (allArmy.empty()) { return; }
 
-	bool isAttack = milOut.attackWeight > milOut.defendWeight;
-	char playerToGo = isAttack ? enemy->getId() : playerId;
+	const int totalArmy = static_cast<int>(allArmy.size());
 
-	auto targetToCenterType = [](float target) -> CenterType {
-		if (target < 0.33f) { return CenterType::ECON; }
-		if (target < 0.67f) { return CenterType::BUILDING; }
-		return CenterType::ARMY;
-	};
+	int attackCount = static_cast<int>(std::round(std::max(0.f, milOut.attackRatio) * totalArmy));
+	int defendCount = static_cast<int>(std::round(std::max(0.f, milOut.defendRatio) * totalArmy));
 
-	CenterType centerType = targetToCenterType(isAttack ? milOut.attackTarget : milOut.defendTarget);
-
-	auto orderType = AiOrderType::NONE;
-	if (isAttack) {
-		orderType = static_cast<AiOrderType>(
-			static_cast<uint8_t>(AiOrderType::ATTACK_ECON) + static_cast<uint8_t>(centerType));
-	} else {
-		orderType = static_cast<AiOrderType>(
-			static_cast<uint8_t>(AiOrderType::DEFEND_ECON) + static_cast<uint8_t>(centerType));
+	// Clamp so attack + defend <= total
+	if (attackCount + defendCount > totalArmy) {
+		float sum = milOut.attackRatio + milOut.defendRatio;
+		if (sum > 0.f) {
+			attackCount = static_cast<int>(std::round((milOut.attackRatio / sum) * totalArmy));
+			defendCount = totalArmy - attackCount;
+		} else {
+			attackCount = 0;
+			defendCount = 0;
+		}
 	}
 
-	const auto posOpt = [&]() -> std::optional<Urho3D::Vector2> {
-		auto spatialOut = attackSpatialBrain.decide(
-			player, enemy, milOut,
-			lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency
-		);
+	// Resolve target positions
+	auto spatialOut = attackSpatialBrain.decide(
+		player, enemy, milOut,
+		lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency
+	);
+
+	auto attackPosOpt = [&]() -> std::optional<Urho3D::Vector2> {
 		auto areas = Game::getEnvironment()->getAreas(
 			playerId, std::span<const float>(spatialOut.weights), 1
 		);
-		if (!areas.empty()) {
-			return areas[0];
-		}
-		return Game::getEnvironment()->getCenterOf(centerType, playerToGo);
+		if (!areas.empty()) { return areas[0]; }
+		return Game::getEnvironment()->getCenterOf(CenterType::BUILDING, enemy->getId());
 	}();
-	if (!posOpt.has_value()) {
-		history->addOrder(orderType, AiOrderResult::NO_CENTER_POSITION);
+
+	auto defendPosOpt = Game::getEnvironment()->getCenterOf(CenterType::BUILDING, playerId);
+
+	if (!attackPosOpt.has_value() && !defendPosOpt.has_value()) {
+		history->addOrder(AiOrderType::NONE, AiOrderResult::NO_CENTER_POSITION);
 		return;
 	}
 
+	// Distance-based assignment over ALL army
+	if (attackPosOpt.has_value() && attackCount > 0) {
+		std::sort(allArmy.begin(), allArmy.end(), [&](const Unit* a, const Unit* b) {
+			return a->getPosition().SqDistXZ(attackPosOpt.value()) < b->getPosition().SqDistXZ(attackPosOpt.value());
+		});
+	}
+
+	std::vector<Unit*> attackGroup(allArmy.begin(), allArmy.begin() + std::min(attackCount, totalArmy));
+	std::vector<Unit*> remaining(allArmy.begin() + static_cast<int>(attackGroup.size()), allArmy.end());
+
+	if (defendPosOpt.has_value() && defendCount > 0 && !remaining.empty()) {
+		std::sort(remaining.begin(), remaining.end(), [&](const Unit* a, const Unit* b) {
+			return a->getPosition().SqDistXZ(defendPosOpt.value()) < b->getPosition().SqDistXZ(defendPosOpt.value());
+		});
+	}
+
+	std::vector<Unit*> defendGroup(remaining.begin(), remaining.begin() + std::min(defendCount, static_cast<int>(remaining.size())));
+
 	constexpr float SEMI_CLOSE = 30.f;
 	constexpr float SQ_SEMI_CLOSE = SEMI_CLOSE * SEMI_CLOSE;
+	constexpr float STANCE_ADVANCE = 0.3f;
+	constexpr float STANCE_RETREAT = -0.3f;
 
-	std::vector<Unit*> army = possession->getFreeArmy();
-	auto target = posOpt.value();
-	for (auto& subArmy : divide(army)) {
-		auto armyCenter = computeCenter(subArmy);
-		if (armyCenter.SqDistXZ(target) > SQ_SEMI_CLOSE) {
-			Game::getActionCenter()->addUnitAction(
-				subArmy.size() > 1
-					? static_cast<UnitOrder*>(new GroupOrder(subArmy, UnitActionType::ORDER, castC(UnitAction::GO), target))
-					: static_cast<UnitOrder*>(new IndividualOrder(subArmy.at(0), UnitAction::GO, target))
-			);
-		} else {
-			const auto unit = subArmy.at(0);
-			std::vector<Physical*>* things = nullptr;
-			std::vector<Physical*> tempThings;
-			if (centerType == CenterType::BUILDING) {
-				things = Game::getEnvironment()->getBuildingsFromTeamNotEq(unit, -1, SEMI_CLOSE);
-			} else if (centerType == CenterType::ECON) {
-				const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
-				tempThings.reserve(neights->size());
-				std::ranges::copy_if(*neights, std::back_inserter(tempThings), isWorker);
-				things = &tempThings;
+	// Helper: advance group toward target, attack when close
+	auto issueAdvance = [&](std::vector<Unit*>& group, const Urho3D::Vector2& target) {
+		for (auto& subArmy : divide(group)) {
+			auto armyCenter = computeCenter(subArmy);
+			if (armyCenter.SqDistXZ(target) > SQ_SEMI_CLOSE) {
+				Game::getActionCenter()->addUnitAction(
+					subArmy.size() > 1
+						? static_cast<UnitOrder*>(new GroupOrder(subArmy, UnitActionType::ORDER, castC(UnitAction::GO), target))
+						: static_cast<UnitOrder*>(new IndividualOrder(subArmy.at(0), UnitAction::GO, target))
+				);
 			} else {
-				things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+				const auto unit = subArmy.at(0);
+				auto* things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+				if (things && !things->empty()) {
+					const auto closest = Game::getEnvironment()->closestPhysical(
+						unit->getMainGridIndex(), things, belowClose, true);
+					if (closest) {
+						Game::getActionCenter()->addUnitAction(
+							new GroupOrder(subArmy, UnitActionType::ORDER,
+							               castC(UnitAction::ATTACK), closest));
+					}
+				}
 			}
+		}
+	};
+
+	// Helper: hold — only free units engage nearby enemies
+	auto issueHold = [&](std::vector<Unit*>& group) {
+		for (auto* unit : group) {
+			if (!isFree(unit)) { continue; }
+			auto* things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
 			if (things && !things->empty()) {
 				const auto closest = Game::getEnvironment()->closestPhysical(
 					unit->getMainGridIndex(), things, belowClose, true);
 				if (closest) {
 					Game::getActionCenter()->addUnitAction(
-						new GroupOrder(subArmy, UnitActionType::ORDER,
-						               castC(UnitAction::ATTACK), closest));
+						new IndividualOrder(unit, UnitAction::ATTACK, closest));
 				}
 			}
 		}
+	};
+
+	// Issue orders for attack group
+	if (!attackGroup.empty() && attackPosOpt.has_value()) {
+		if (milOut.attackStance < STANCE_RETREAT && defendPosOpt.has_value()) {
+			// Retreat: pull back toward own base
+			for (auto* unit : attackGroup) {
+				Game::getActionCenter()->addUnitAction(
+					new IndividualOrder(unit, UnitAction::GO, defendPosOpt.value())
+				);
+			}
+		} else if (milOut.attackStance < STANCE_ADVANCE) {
+			issueHold(attackGroup);
+		} else {
+			issueAdvance(attackGroup, attackPosOpt.value());
+		}
+		history->addOrder(AiOrderType::ATTACK_ECON, AiOrderResult::SUCCESS, static_cast<uint8_t>(attackGroup.size()));
 	}
-	history->addOrder(orderType, AiOrderResult::SUCCESS, static_cast<uint8_t>(army.size()));
+
+	// Issue orders for defend group
+	if (!defendGroup.empty() && defendPosOpt.has_value()) {
+		if (milOut.defendStance < STANCE_RETREAT) {
+			// Disengage: stop all units, let them idle
+			for (auto* unit : defendGroup) {
+				Game::getActionCenter()->addUnitAction(
+					new IndividualOrder(unit, UnitAction::STOP, unit->getPosition())
+				);
+			}
+		} else if (milOut.defendStance < STANCE_ADVANCE) {
+			issueHold(defendGroup);
+		} else {
+			issueAdvance(defendGroup, defendPosOpt.value());
+		}
+		history->addOrder(AiOrderType::DEFEND_ECON, AiOrderResult::SUCCESS, static_cast<uint8_t>(defendGroup.size()));
+	}
 }
 
 // --- Execution callbacks ---

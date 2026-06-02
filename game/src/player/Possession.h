@@ -53,6 +53,7 @@ public:
 
 	const std::vector<Unit*>& getWorkers() const { return workers; }
 	std::vector<Unit*> getFreeArmy();
+	std::vector<Unit*> getAllArmy();
 	bool hasAnyFreeArmy() const;
 	float getAttackSum();
 	float getFreeArmyAttackSum();

@@ -99,5 +99,6 @@ private:
 	// Cached outputs
 	MasterOutput lastMasterOut{};
 	EconomyOutput lastEconOut{};
+	MilitaryOutput lastMilOut{};
 	WantList::LackingResult lastLacking{};
 };

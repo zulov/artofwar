@@ -154,6 +154,14 @@ std::vector<Unit*> Possession::getFreeArmy() {
 	return army;
 }
 
+std::vector<Unit*> Possession::getAllArmy() {
+	std::vector<Unit*> army(units.size());
+
+	const auto it = std::ranges::copy_if(units, army.begin(), isSolider).out;
+	army.resize(std::distance(army.begin(), it));
+	return army;
+}
+
 bool Possession::hasAnyFreeArmy() const {
 	return std::ranges::any_of(units, isFreeSolider);
 }

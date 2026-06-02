@@ -22,6 +22,9 @@ enum class UnitInputIdx : unsigned char {
 	WORKERS_COUNT,
 	UNIT_URGENCY,
 	ATTACK_URGENCY,
+	PREFER_INFANTRY,
+	PREFER_RANGE,
+	PREFER_CAVALRY,
 };
 
 enum class UnitOutputIdx : unsigned char {
@@ -42,7 +45,8 @@ public:
 	UnitBrain(const UnitBrain&) = delete;
 
 	UnitOutput decide(Player* player, Player* enemy,
-	                   float unitUrgency, float attackUrgency);
+	                   float unitUrgency, float attackUrgency,
+	                   float preferInfantry, float preferRange, float preferCavalry);
 
 private:
 	Brain* brain;

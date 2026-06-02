@@ -18,7 +18,8 @@ UnitBrain::UnitBrain(db_nation* nation)
 }
 
 UnitOutput UnitBrain::decide(Player* player, Player* enemy,
-                              float unitUrgency, float attackUrgency) {
+                              float unitUrgency, float attackUrgency,
+                              float preferInfantry, float preferRange, float preferCavalry) {
 	using I = UnitInputIdx;
 
 	auto* possession = player->getPossession();
@@ -55,6 +56,11 @@ UnitOutput UnitBrain::decide(Player* player, Player* enemy,
 	// Urgencies from Master (2)
 	inputData[idx(I::UNIT_URGENCY)] = unitUrgency;
 	inputData[idx(I::ATTACK_URGENCY)] = attackUrgency;
+
+	// Composition preferences from MilitaryBrain (3)
+	inputData[idx(I::PREFER_INFANTRY)] = preferInfantry;
+	inputData[idx(I::PREFER_RANGE)] = preferRange;
+	inputData[idx(I::PREFER_CAVALRY)] = preferCavalry;
 
 	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
 

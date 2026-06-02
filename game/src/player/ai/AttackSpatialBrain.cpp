@@ -24,10 +24,10 @@ AttackSpatialOutput AttackSpatialBrain::decide(Player* player, Player* enemy,
 	auto* enemyPossession = enemy->getPossession();
 
 	// MilitaryBrain outputs (4)
-	inputData[idx(I::ATTACK_WEIGHT)] = milOut.attackWeight;
-	inputData[idx(I::DEFEND_WEIGHT)] = milOut.defendWeight;
-	inputData[idx(I::ATTACK_TARGET)] = milOut.attackTarget;
-	inputData[idx(I::DEFEND_TARGET)] = milOut.defendTarget;
+	inputData[idx(I::ATTACK_RATIO)] = milOut.attackRatio;
+	inputData[idx(I::DEFEND_RATIO)] = milOut.defendRatio;
+	inputData[idx(I::ATTACK_STANCE)] = milOut.attackStance;
+	inputData[idx(I::DEFEND_STANCE)] = milOut.defendStance;
 
 	// Army counts (3)
 	inputData[idx(I::ARMY_COUNT)] = norm(possession->getArmyNumber(), 200.f);

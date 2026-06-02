@@ -36,17 +36,23 @@ enum class MilitaryInputIdx : unsigned char {
 };
 
 enum class MilitaryOutputIdx : unsigned char {
-	ATTACK_WEIGHT,
-	DEFEND_WEIGHT,
-	ATTACK_TARGET,
-	DEFEND_TARGET,
+	ATTACK_RATIO,
+	DEFEND_RATIO,
+	ATTACK_STANCE,
+	DEFEND_STANCE,
+	PREFER_INFANTRY,
+	PREFER_RANGE,
+	PREFER_CAVALRY,
 };
 
 struct MilitaryOutput {
-	float attackWeight;
-	float defendWeight;
-	float attackTarget;
-	float defendTarget;
+	float attackRatio;
+	float defendRatio;
+	float attackStance;
+	float defendStance;
+	float preferInfantry;
+	float preferRange;
+	float preferCavalry;
 };
 
 class MilitaryBrain {
