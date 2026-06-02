@@ -13,7 +13,7 @@ enum class UnitAction : char;
 class UnitOrder {
 public:
 	UnitOrder(short id, bool append, Physical* toUse);
-	UnitOrder(short id, bool append, Urho3D::Vector2& vector);
+	UnitOrder(short id, bool append, const Urho3D::Vector2& vector);
 	virtual ~UnitOrder();
 	virtual void execute();
 

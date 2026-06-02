@@ -134,7 +134,7 @@ void Controls::leftClickBuild(hit_data& hitData) {
 	createBuilding({hitData.position.x_, hitData.position.z_});
 }
 
-UnitOrder* Controls::vectorOrder(UnitAction order, Urho3D::Vector2& vector, const bool shiftPressed,
+UnitOrder* Controls::vectorOrder(UnitAction order,const Urho3D::Vector2& vector, const bool shiftPressed,
                                  const std::vector<Physical*>& vec) const {
 	if (vec.size() == 1) { return new IndividualOrder(static_cast<Unit*>(vec.at(0)), order, vector, shiftPressed); }
 	return new GroupOrder(vec, UnitActionType::ORDER, static_cast<short>(order), vector, shiftPressed);
