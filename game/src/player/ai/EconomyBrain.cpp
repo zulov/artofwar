@@ -42,7 +42,8 @@ std::pair<float, float> getNearbySupply(char playerId) {
 }
 
 EconomyBrain::EconomyBrain(db_nation* nation)
-	: brain(BrainProvider::get(nation->actionPrefix[1] + "economy.csv")) {
+	: brain(BrainProvider::get(nation->actionPrefix[1] + "economy.csv")),
+	  nation(nation) {
 	assert(brain->getInputSize() == inputData.size());
 	assert(brain->getInputSize() == magic_enum::enum_count<EconomyInputIdx>());
 	assert(brain->getOutputSize() == magic_enum::enum_count<EconomyOutputIdx>());
@@ -51,6 +52,7 @@ EconomyBrain::EconomyBrain(db_nation* nation)
 EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
                                     const std::array<float, 4>& lackingPerResource,
                                     float economyUrgency, float workerUrgency, float expandUrgency,
+                                    float techUrgency, float gameTime,
                                     const AiHistory* history) {
 	using I = EconomyInputIdx;
 
@@ -123,6 +125,16 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	constexpr unsigned int LOOKBACK = 1800;
 	inputData[idx(I::RECENT_COLLECT_FAILURES)] = norm(history->collectFailureScore(LOOKBACK), 10.f);
 
+	// Upgrade inputs (4)
+	inputData[idx(I::TECH_URGENCY)] = techUrgency;
+
+	inputData[idx(I::AVG_WORKER_LEVEL)] = avgUnitLevel(nation->workers, player,
+		[](const db_unit*) { return true; });
+
+	inputData[idx(I::AVG_RES_BUILDING_LEVEL)] = avgBuildingLevel(nation->buildings, player, ParentBuildingType::RESOURCE);
+
+	inputData[idx(I::GAME_TIME)] = gameTime;
+
 	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
 
 	using O = EconomyOutputIdx;
@@ -131,7 +143,7 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	float workerAlloc = result[o(O::WORKER_ALLOCATION)];
 	unsigned char workerCount = 0;
 	if (workerAlloc > 0.1f) {
-		int raw = static_cast<int>(std::round(workerAlloc * MAX_WORKERS_PER_TICK));
+		int raw = roundToInt(workerAlloc * MAX_WORKERS_PER_TICK);
 		workerCount = static_cast<unsigned char>(std::max(1, raw));
 	}
 
@@ -153,6 +165,8 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 		result[o(O::NEED_GOLD_STORAGE)],
 		result[o(O::NEED_GOLD_REFINE)],
 		result[o(O::NEED_STONE_REFINE)],
-		result[o(O::NEED_WOOD_SOURCE)]
+		result[o(O::NEED_WOOD_SOURCE)],
+		result[o(O::WORKER_UPGRADE_URGENCY)],
+		result[o(O::RES_BUILDING_UPGRADE_URGENCY)]
 	};
 }

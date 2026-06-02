@@ -25,16 +25,28 @@ enum class UnitInputIdx : unsigned char {
 	PREFER_INFANTRY,
 	PREFER_RANGE,
 	PREFER_CAVALRY,
+
+	// Upgrade inputs
+	TECH_URGENCY,
+	AVG_UNIT_LEVEL,
+	AVG_BUILDING_LEVEL,
+	GAME_TIME,
 };
 
+static constexpr int UNIT_PROFILE_SIZE = 23;
+
 enum class UnitOutputIdx : unsigned char {
-	UNIT_PROFILE,  // indices 0..22 (23-dim profile vector)
-	COUNT = 23,    // derived from unitUrgency, not a NN output
+	UNIT_PROFILE,                                // indices 0..22 (23-dim profile vector)
+	UNIT_UPGRADE_URGENCY = UNIT_PROFILE_SIZE,    // single float: should we upgrade a unit?
+	BUILDING_UPGRADE_URGENCY,                    // single float: should we upgrade a building?
+	COUNT,                                       // derived from unitUrgency, not a NN output
 };
 
 struct UnitOutput {
-	std::array<float, 23> unitProfile;  // ideal unit property vector
-	unsigned char count;                 // how many to produce
+	std::array<float, UNIT_PROFILE_SIZE> unitProfile;  // ideal unit property vector (reused for upgrade matching)
+	unsigned char count;                                // how many to produce
+	float unitUpgradeUrgency;                           // how much we want to upgrade a unit
+	float buildingUpgradeUrgency;                       // how much we want to upgrade a building
 };
 
 class UnitBrain {
@@ -46,9 +58,11 @@ public:
 
 	UnitOutput decide(Player* player, Player* enemy,
 	                   float unitUrgency, float attackUrgency,
-	                   float preferInfantry, float preferRange, float preferCavalry);
+	                   float preferInfantry, float preferRange, float preferCavalry,
+	                   float techUrgency, float gameTime);
 
 private:
 	Brain* brain;
+	db_nation* nation;
 	std::array<float, magic_enum::enum_count<UnitInputIdx>()> inputData{};
 };

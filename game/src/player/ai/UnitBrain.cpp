@@ -11,7 +11,8 @@
 #include <cmath>
 
 UnitBrain::UnitBrain(db_nation* nation)
-	: brain(BrainProvider::get(nation->actionPrefix[3] + "unit.csv")) {
+	: brain(BrainProvider::get(nation->actionPrefix[3] + "unit.csv")),
+	  nation(nation) {
 	assert(brain->getInputSize() == inputData.size());
 	assert(brain->getInputSize() == magic_enum::enum_count<UnitInputIdx>());
 	assert(brain->getOutputSize() == static_cast<int>(UnitOutputIdx::COUNT));
@@ -19,7 +20,8 @@ UnitBrain::UnitBrain(db_nation* nation)
 
 UnitOutput UnitBrain::decide(Player* player, Player* enemy,
                               float unitUrgency, float attackUrgency,
-                              float preferInfantry, float preferRange, float preferCavalry) {
+                              float preferInfantry, float preferRange, float preferCavalry,
+                              float techUrgency, float gameTime) {
 	using I = UnitInputIdx;
 
 	auto* possession = player->getPossession();
@@ -62,16 +64,34 @@ UnitOutput UnitBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::PREFER_RANGE)] = preferRange;
 	inputData[idx(I::PREFER_CAVALRY)] = preferCavalry;
 
+	// Upgrade inputs (4)
+	inputData[idx(I::TECH_URGENCY)] = techUrgency;
+
+	// Average unit level across nation's non-worker units
+	inputData[idx(I::AVG_UNIT_LEVEL)] = avgUnitLevel(nation->units, player,
+		[](const db_unit* u) { return !u->typeWorker; });
+
+	// Average building level across nation's unit-producing buildings
+	inputData[idx(I::AVG_BUILDING_LEVEL)] = avgBuildingLevel(nation->buildings, player, ParentBuildingType::UNITS);
+
+	inputData[idx(I::GAME_TIME)] = gameTime;
+
 	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
 
 	UnitOutput output{};
-	for (int i = 0; i < output.unitProfile.size(); ++i) {
+
+	// Unit profile (23-dim) — reused for both production and upgrade matching
+	for (int i = 0; i < UNIT_PROFILE_SIZE; ++i) {
 		output.unitProfile[i] = result[i];
 	}
 
+	// Upgrade urgencies
+	output.unitUpgradeUrgency = result[static_cast<int>(UnitOutputIdx::UNIT_UPGRADE_URGENCY)];
+	output.buildingUpgradeUrgency = result[static_cast<int>(UnitOutputIdx::BUILDING_UPGRADE_URGENCY)];
+
 	// Count scaling
 	if (unitUrgency > 0.f) {
-		int raw = static_cast<int>(std::round(unitUrgency * MAX_UNITS_PER_TICK));
+		int raw = roundToInt(unitUrgency * MAX_UNITS_PER_TICK);
 		output.count = static_cast<unsigned char>(std::max(1, raw));
 	} else {
 		output.count = 0;

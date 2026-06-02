@@ -49,12 +49,19 @@ private:
 	bool executeWorker();
 	bool executeUnit(short unitId);
 	bool executeBuilding(short buildingId);
+	bool executeUnitUpgrade(short unitId);
+	bool executeBuildingUpgrade(short buildingId);
 	bool executeWantItem(WantItem& item);
 	const db_with_cost* getWantItemCost(const WantItem& item) const;
 	void submitBuildingRequest(float urgency, ParentBuildingType type);
+	void submitBuildingUpgradeRequest(float urgency, ParentBuildingType type);
 
 	// Unit resolution
 	std::vector<db_unit*> resolveUnit(const UnitOutput& unitOutput);
+	db_unit* resolveUnitUpgrade(const UnitOutput& unitOutput);
+	db_building* resolveBuildingUpgrade(const UnitOutput& unitOutput);
+	db_unit* resolveWorkerUpgrade();
+	db_building* resolveResBuildingUpgrade(const EconomyOutput& econOutput);
 	Building* getBuildingToDeploy(db_unit* unit) const;
 	Building* getBuildingToDeployWorker(db_unit* unit) const;
 	std::vector<Building*> getBuildingsCanDeploy(unsigned short unitId) const;

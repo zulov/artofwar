@@ -12,7 +12,8 @@ enum class WantItemType : unsigned char {
 	WORKER,
 	UNIT,
 	BUILDING,
-	TECH,
+	UNIT_UPGRADE,
+	BUILDING_UPGRADE,
 };
 
 struct WantItem {

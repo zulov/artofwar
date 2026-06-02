@@ -42,6 +42,12 @@ enum class EconomyInputIdx : unsigned char {
 	WORKER_URGENCY,
 	EXPAND_URGENCY,
 	RECENT_COLLECT_FAILURES,
+
+	// Upgrade inputs
+	TECH_URGENCY,
+	AVG_WORKER_LEVEL,
+	AVG_RES_BUILDING_LEVEL,
+	GAME_TIME,
 };
 
 enum class EconomyOutputIdx : unsigned char {
@@ -62,6 +68,10 @@ enum class EconomyOutputIdx : unsigned char {
 	NEED_GOLD_REFINE,
 	NEED_STONE_REFINE,
 	NEED_WOOD_SOURCE,
+
+	// Upgrade outputs
+	WORKER_UPGRADE_URGENCY,
+	RES_BUILDING_UPGRADE_URGENCY,
 };
 
 struct EconomyOutput {//TODO better names
@@ -85,6 +95,10 @@ struct EconomyOutput {//TODO better names
 	float needGoldRefine;
 	float needStoneRefine;
 	float needWoodSource;
+
+	// Upgrade urgencies
+	float workerUpgradeUrgency;
+	float resBuildingUpgradeUrgency;
 };
 
 class EconomyBrain {
@@ -97,9 +111,11 @@ public:
 	EconomyOutput decide(Player* player, Player* enemy,
 	                      const std::array<float, 4>& lackingPerResource,
 	                      float economyUrgency, float workerUrgency, float expandUrgency,
+	                      float techUrgency, float gameTime,
 	                      const AiHistory* history);
 
 private:
 	Brain* brain;
+	db_nation* nation;
 	std::array<float, magic_enum::enum_count<EconomyInputIdx>()> inputData{};
 };

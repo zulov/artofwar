@@ -403,6 +403,7 @@
     <ClCompile Include="src\player\ai\BuildSpatialBrain.cpp" />
     <ClCompile Include="src\player\ai\AttackSpatialBrain.cpp" />
     <ClCompile Include="src\player\ai\UnitBrain.cpp" />
+    <ClCompile Include="src\player\ai\AiUtils.cpp" />
     <ClCompile Include="src\player\ai\WantList.cpp" />
   </ItemGroup>
   <ItemGroup>
