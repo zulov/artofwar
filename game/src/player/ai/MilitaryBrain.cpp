@@ -77,8 +77,8 @@ MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
 	constexpr auto o = [](O v) { return static_cast<int>(v); };
 
 	return MilitaryOutput{
-		result[o(O::ATTACK_RATIO)],
-		result[o(O::DEFEND_RATIO)],
+		std::max(0.f, result[o(O::ATTACK_RATIO)]),
+		std::max(0.f, result[o(O::DEFEND_RATIO)]),
 		result[o(O::ATTACK_STANCE)],
 		result[o(O::DEFEND_STANCE)],
 		result[o(O::PREFER_INFANTRY)],

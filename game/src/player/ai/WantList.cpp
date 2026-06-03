@@ -61,7 +61,7 @@ void WantList::addLacking(const db_with_cost* cost, Resources* resources, Lackin
 	}
 }
 
-WantList::LackingResult WantList::execute(Player* player, const ExecuteCallback& executeFn, const CostCallback& costFn) {
+WantList::LackingResult WantList::execute(Player* player, IWantExecutor& executor) {
 	LackingResult lacking{};
 	lacking.perResource.fill(0.f);
 	lacking.totalSum = 0.f;
@@ -72,14 +72,14 @@ WantList::LackingResult WantList::execute(Player* player, const ExecuteCallback&
 	auto* resources = player->getResources();
 
 	for (auto& item : items) {
-		const auto* cost = costFn(item);
+		const auto* cost = executor.cost(item);
 
 		for (unsigned char i = 0; i < item.count; ++i) {
 			if (!cost || !resources->hasEnough(cost)) {
 				addLacking(cost, resources, lacking);
 				break;
 			}
-			if (!executeFn(item)) {
+			if (!executor.execute(item)) {
 				break;
 			}
 		}

@@ -1,12 +1,23 @@
 #pragma once
 #include <array>
-#include <functional>
 #include <span>
 #include <vector>
 
 struct db_with_cost;
 class Player;
 class Resources;
+struct WantItem;
+
+// Strategy for resolving a want's cost and carrying it out.
+// Keeps WantList a pure scheduler: it never needs to know how items are built.
+class IWantExecutor {
+public:
+	virtual ~IWantExecutor() = default;
+	// Returns the cost of the item (nullptr if it can't be resolved).
+	virtual const db_with_cost* cost(const WantItem& item) const = 0;
+	// Executes the item once it is known affordable; returns false to stop repeating it.
+	virtual bool execute(WantItem& item) = 0;
+};
 
 enum class WantItemType : unsigned char {
 	WORKER,
@@ -64,10 +75,7 @@ public:
 
 	// Callback: returns the db_with_cost* for the item (nullptr if can't resolve).
 	// If item is affordable, callback should execute it and return true.
-	using ExecuteCallback = std::function<bool(WantItem& item)>;
-	using CostCallback = std::function<const db_with_cost*(const WantItem& item)>;
-
-	LackingResult execute(Player* player, const ExecuteCallback& executeFn, const CostCallback& costFn);
+	LackingResult execute(Player* player, IWantExecutor& executor);
 
 	const std::vector<WantItem>& getItems() const { return items; }
 	int getItemCount() const { return static_cast<int>(items.size()); }

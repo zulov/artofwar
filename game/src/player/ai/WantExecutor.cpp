@@ -1,0 +1,267 @@
+#include "WantExecutor.h"
+
+#include <limits>
+#include <ranges>
+#include <span>
+
+#include "AiHistory.h"
+#include "Game.h"
+#include "MasterBrain.h"
+#include "commands/action/BuildingActionCommand.h"
+#include "commands/action/BuildingActionType.h"
+#include "commands/upgrade/UpgradeCommand.h"
+#include "database/DatabaseCache.h"
+#include "env/Environment.h"
+#include "env/influence/CenterType.h"
+#include "math/MathUtils.h"
+#include "objects/building/Building.h"
+#include "objects/building/ParentBuildingType.h"
+#include "objects/queue/QueueActionType.h"
+#include "player/Player.h"
+#include "player/PlayersManager.h"
+#include "player/Possession.h"
+#include "player/Resources.h"
+#include "player/ai/ActionCenter.h"
+
+WantExecutor::WantExecutor(Player* player, db_nation* nation, AiHistory* history) :
+	player(player), playerId(player->getId()), possession(player->getPossession()),
+	nation(nation), history(history), buildSpatialBrain(nation) {}
+
+void WantExecutor::prepare(const MasterOutput& masterOut) {
+	this->masterOut = &masterOut;
+	pendingLackingBuilding = -1;
+}
+
+bool WantExecutor::execute(WantItem& item) {
+	switch (item.type) {
+	case WantItemType::WORKER:
+		return executeWorker(item.specificId);
+	case WantItemType::UNIT:
+		return executeUnit(item.specificId);
+	case WantItemType::BUILDING:
+		return executeBuilding(item.specificId);
+	case WantItemType::UNIT_UPGRADE:
+		return executeUnitUpgrade(item.specificId);
+	case WantItemType::BUILDING_UPGRADE:
+		return executeBuildingUpgrade(item.specificId);
+	}
+	return false;
+}
+
+const db_with_cost* WantExecutor::cost(const WantItem& item) const {
+	if (item.specificId) { return nullptr; }
+
+	switch (item.type) {
+	case WantItemType::WORKER:
+		return Game::getDatabase()->getUnit(item.specificId);
+	case WantItemType::UNIT:
+		return Game::getDatabase()->getUnit(item.specificId);
+	case WantItemType::BUILDING:
+		return Game::getDatabase()->getBuilding(item.specificId);
+	case WantItemType::UNIT_UPGRADE:
+		if (auto nextLevel = player->getNextLevelForUnit(item.specificId)) { return *nextLevel; }
+	case WantItemType::BUILDING_UPGRADE:
+		if (auto bNextLevel = player->getNextLevelForBuilding(item.specificId)) { return *bNextLevel; }
+	}
+	return nullptr;
+}
+
+// --- Execution ---
+
+bool WantExecutor::executeWorker(short unitId) {
+	if (nation->workers.empty()) { return false; }
+	auto* unit = nation->workers.at(0);
+	if (Building* building = getBuildingToDeployWorker(unit)) {
+		Game::getActionCenter()->add(
+				new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id));
+		history->addAction(AiActionType::CREATE_WORKER, AiActionResult::SUCCESS);
+		return true;
+	}
+	history->addAction(AiActionType::CREATE_WORKER, AiActionResult::NO_BUILDING_TO_DEPLOY);
+	return false;
+}
+
+bool WantExecutor::executeUnit(short unitId) {
+	if (unitId < 0) { return false; }
+	auto* unit = Game::getDatabase()->getUnit(unitId);
+	if (Building* building = getBuildingToDeploy(unit)) {
+		Game::getActionCenter()->add(
+				new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id));
+		history->addAction(AiActionType::CREATE_UNIT, AiActionResult::SUCCESS);
+		return true;
+	}
+	pendingLackingBuilding = findBuildingTypeToDeploy(unitId);
+	history->addAction(AiActionType::CREATE_UNIT, AiActionResult::NO_BUILDING_TO_DEPLOY);
+	return false;
+}
+
+bool WantExecutor::executeBuilding(short buildingId) {
+	if (buildingId < 0) { return false; }
+	auto* building = Game::getDatabase()->getBuilding(buildingId);
+
+	// Find which ParentBuildingType this building belongs to
+	ParentBuildingType type = ParentBuildingType::OTHER;
+	for (int i = 0; i < 5; ++i) {
+		if (building->parentType[i]) {
+			type = static_cast<ParentBuildingType>(i);
+			break;
+		}
+	}
+
+	AiActionType actionType;
+	switch (type) {
+	case ParentBuildingType::OTHER:
+		actionType = AiActionType::CREATE_BUILDING_OTHER;
+		break;
+	case ParentBuildingType::DEFENCE:
+		actionType = AiActionType::CREATE_BUILDING_DEFENCE;
+		break;
+	case ParentBuildingType::RESOURCE:
+		actionType = AiActionType::CREATE_BUILDING_RESOURCE;
+		break;
+	case ParentBuildingType::TECH:
+		actionType = AiActionType::CREATE_BUILDING_TECH;
+		break;
+	case ParentBuildingType::UNITS:
+		actionType = AiActionType::CREATE_BUILDING_UNITS;
+		break;
+	default:
+		actionType = AiActionType::NONE;
+		break;
+	}
+
+	if (type == ParentBuildingType::RESOURCE) {
+		if (sumSpan(possession->getResWithOutBonus()) < 0.5f) {
+			history->addAction(actionType, AiActionResult::NO_RESOURCE_BONUS);
+			return false;
+		}
+	}
+
+	auto pos = findPosToBuild(building, type);
+	if (pos.has_value()) {
+		Game::getActionCenter()->addBuilding(building->id, pos.value(), playerId, false);
+		history->addAction(actionType, AiActionResult::SUCCESS);
+		return true;
+	}
+	history->addAction(actionType, AiActionResult::NO_POSITION_TO_BUILD);
+	return false;
+}
+
+bool WantExecutor::executeUnitUpgrade(short unitId) {
+	if (unitId < 0) { return false; }
+	auto nextLevel = player->getNextLevelForUnit(unitId);
+	if (!nextLevel.has_value()) {
+		history->addAction(AiActionType::UPGRADE_UNIT, AiActionResult::NO_UPGRADE_AVAILABLE);
+		return false;
+	}
+
+	// Find a building that can handle this unit's upgrade
+	auto buildings = getBuildingsCanDeploy(unitId);
+	if (!buildings.empty()) {
+		Game::getActionCenter()->add(
+				new BuildingActionCommand(buildings[0], BuildingActionType::UNIT_LEVEL, unitId));
+		history->addAction(AiActionType::UPGRADE_UNIT, AiActionResult::SUCCESS);
+		return true;
+	}
+
+	// No building available — signal to build one
+	pendingLackingBuilding = findBuildingTypeToDeploy(unitId);
+	history->addAction(AiActionType::UPGRADE_UNIT, AiActionResult::NO_BUILDING_TO_DEPLOY);
+	return false;
+}
+
+bool WantExecutor::executeBuildingUpgrade(short buildingId) {
+	if (buildingId < 0) { return false; }
+	auto nextLevel = player->getNextLevelForBuilding(buildingId);
+	if (!nextLevel.has_value()) {
+		history->addAction(AiActionType::UPGRADE_BUILDING, AiActionResult::NO_UPGRADE_AVAILABLE);
+		return false;
+	}
+	Game::getActionCenter()->add(
+			new UpgradeCommand(playerId, buildingId, QueueActionType::BUILDING_LEVEL));
+	history->addAction(AiActionType::UPGRADE_BUILDING, AiActionResult::SUCCESS);
+	return true;
+}
+
+// --- Deployment / placement helpers ---
+
+Building* WantExecutor::getBuildingToDeploy(db_unit* unit) const {
+	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
+	if (allPossible.empty()) { return nullptr; }
+	if (allPossible.size() == 1) { return allPossible[0]; }
+
+	// Pick building closest to army center — deploy near the action
+	auto armyCenter = Game::getEnvironment()->getCenterOf(CenterType::ARMY, playerId);
+	if (!armyCenter.has_value()) { return allPossible[0]; }
+
+	auto target = armyCenter.value();
+	Building* best = allPossible[0];
+	float bestDist = std::numeric_limits<float>::max();
+	for (auto* b : allPossible) {
+		float d = b->getPosition().SqDistXZ(target);
+		if (d < bestDist) {
+			bestDist = d;
+			best = b;
+		}
+	}
+	return best;
+}
+
+Building* WantExecutor::getBuildingToDeployWorker(db_unit* unit) const {
+	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
+	if (allPossible.empty()) { return nullptr; }
+	if (allPossible.size() == 1) { return allPossible[0]; }
+
+	// Pick building closest to economy center — deploy near resources
+	auto econCenter = Game::getEnvironment()->getCenterOf(CenterType::ECON, playerId);
+	if (!econCenter.has_value()) { return allPossible[0]; }
+
+	auto target = econCenter.value();
+	Building* best = allPossible[0];
+	float bestDist = std::numeric_limits<float>::max();
+	for (auto* b : allPossible) {
+		float d = b->getPosition().SqDistXZ(target);
+		if (d < bestDist) {
+			bestDist = d;
+			best = b;
+		}
+	}
+	return best;
+}
+
+std::vector<Building*> WantExecutor::getBuildingsCanDeploy(unsigned short unitId) const {
+	const auto& buildings = nation->buildings;
+	std::vector<short> buildingIdsThatCanDeploy;
+	for (const auto building : buildings) {
+		auto unitIds = player->getLevelForBuilding(building->id)->unitsPerNationIds[player->getNation()];
+		if (std::ranges::find(*unitIds, unitId) != unitIds->end()) { buildingIdsThatCanDeploy.push_back(building->id); }
+	}
+	std::vector<Building*> allPossible;
+	for (auto thatCanDeploy : buildingIdsThatCanDeploy) {
+		std::ranges::copy_if(*possession->getBuildings(thatCanDeploy),
+		                     std::back_inserter(allPossible), [](Building* b) { return b->isReady(); });
+	}
+	return allPossible;
+}
+
+short WantExecutor::findBuildingTypeToDeploy(short unitId) const {
+	for (const auto building : nation->buildings) {
+		auto unitIds = player->getLevelForBuilding(building->id)->unitsPerNationIds[player->getNation()];
+		if (std::ranges::find(*unitIds, unitId) != unitIds->end()) { return building->id; }
+	}
+	return -1;
+}
+
+std::optional<Urho3D::Vector2> WantExecutor::findPosToBuild(db_building* building, ParentBuildingType type) {
+	if (type == ParentBuildingType::RESOURCE) {
+		return Game::getEnvironment()->getPosToCreateResBonus(building, playerId);
+	}
+	// Use BuildSpatialBrain to compute influence map weights
+	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
+	auto spatialOut = buildSpatialBrain.decide(
+			player, enemy,
+			masterOut->buildingUrgency, masterOut->expandUrgency, masterOut->defenceBuildingUrgency
+			);
+	return Game::getEnvironment()->getPosToCreate(
+			std::span<const float>(spatialOut.weights), type, building, playerId);
+}

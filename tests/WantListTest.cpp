@@ -164,13 +164,22 @@ protected:
 
 	int executeCount = 0;
 
-	WantList::ExecuteCallback countingExecute = [this](WantItem& item) {
-		executeCount++;
-		return true;
+	// Counts every successful execution.
+	struct CountingExecutor : IWantExecutor {
+		int* counter;
+		const db_with_cost* itemCost;
+		explicit CountingExecutor(int* counter, const db_with_cost* itemCost) :
+			counter(counter), itemCost(itemCost) {}
+		const db_with_cost* cost(const WantItem&) const override { return itemCost; }
+		bool execute(WantItem&) override { ++*counter; return true; }
 	};
 
-	WantList::ExecuteCallback alwaysFail = [](WantItem& item) {
-		return false;
+	// Always reports failure to execute.
+	struct FailingExecutor : IWantExecutor {
+		const db_with_cost* itemCost;
+		explicit FailingExecutor(const db_with_cost* itemCost) : itemCost(itemCost) {}
+		const db_with_cost* cost(const WantItem&) const override { return itemCost; }
+		bool execute(WantItem&) override { return false; }
 	};
 };
 
