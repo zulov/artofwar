@@ -88,7 +88,8 @@ void AiOrchestrator::action() {
 
 	// Worker request
 	if (lastEconOut.workerCount > 0) {
-		wantList.addRequest(WantItemType::WORKER, lastEconOut.workerAllocation, workerId, lastEconOut.workerCount);
+		wantList.addRequest(WantItemType::WORKER, lastEconOut.workerAllocation, resolveWorkerId(),
+		                    lastEconOut.workerCount);
 	}
 
 	// Unit request
@@ -139,27 +140,24 @@ void AiOrchestrator::action() {
 	submitBuildingRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
 	submitBuildingRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
 
-	// Resource buildings — submit each need individually
-	const auto buildings = getBuildingsInType(ParentBuildingType::RESOURCE);
-
-	findAndSubmit(lastEconOut.needBonusFood, buildings,
-	              [](auto* b, auto* l) { return isResBonus(b, l, ResourceType::FOOD); });
-	findAndSubmit(lastEconOut.needBonusWood, buildings,
-	              [](auto* b, auto* l) { return isResBonus(b, l, ResourceType::WOOD); });
-	findAndSubmit(lastEconOut.needBonusStone, buildings,
-	              [](auto* b, auto* l) { return isResBonus(b, l, ResourceType::STONE); });
-	findAndSubmit(lastEconOut.needBonusGold, buildings,
-	              [](auto* b, auto* l) { return isResBonus(b, l, ResourceType::GOLD); });
-	findAndSubmit(lastEconOut.needFoodSource, buildings, [](auto* b, auto* l) {
-		return b->toResource >= 0 && l->spawnResourceRange <= 0;
-	});
-	findAndSubmit(lastEconOut.needWoodSource, buildings, [](auto* b, auto* l) {
-		return b->toResource >= 0 && l->spawnResourceRange > 0;
-	});
-	findAndSubmit(lastEconOut.needFoodStorage, buildings, [](auto* b, auto* l) { return l->foodStorage > 0; });
-	findAndSubmit(lastEconOut.needGoldStorage, buildings, [](auto* b, auto* l) { return l->goldStorage > 0; });
-	findAndSubmit(lastEconOut.needStoneRefine, buildings, [](auto* b, auto* l) { return l->stoneRefineCapacity > 0.f; });
-	findAndSubmit(lastEconOut.needGoldRefine, buildings, [](auto* b, auto* l) { return l->goldRefineCapacity > 0.f; });
+	// Resource buildings — for each one, request it with the strongest need it satisfies.
+	// NOTE: this requests EVERY matching building. We may later want to limit/shape this per
+	// category, e.g. request two bonus-food buildings, or pick the single best one per type.
+	for (const auto b : getBuildingsInType(ParentBuildingType::RESOURCE)) {
+		auto* l = player->getLevelForBuilding(b->id);
+		float need = 0.f;
+		if (isResBonus(b, l, ResourceType::FOOD)) { need = std::max(need, lastEconOut.needBonusFood); }
+		if (isResBonus(b, l, ResourceType::WOOD)) { need = std::max(need, lastEconOut.needBonusWood); }
+		if (isResBonus(b, l, ResourceType::STONE)) { need = std::max(need, lastEconOut.needBonusStone); }
+		if (isResBonus(b, l, ResourceType::GOLD)) { need = std::max(need, lastEconOut.needBonusGold); }
+		if (b->toResource >= 0 && l->spawnResourceRange <= 0) { need = std::max(need, lastEconOut.needFoodSource); }
+		if (b->toResource >= 0 && l->spawnResourceRange > 0) { need = std::max(need, lastEconOut.needWoodSource); }
+		if (l->foodStorage > 0) { need = std::max(need, lastEconOut.needFoodStorage); }
+		if (l->goldStorage > 0) { need = std::max(need, lastEconOut.needGoldStorage); }
+		if (l->stoneRefineCapacity > 0.f) { need = std::max(need, lastEconOut.needStoneRefine); }
+		if (l->goldRefineCapacity > 0.f) { need = std::max(need, lastEconOut.needGoldRefine); }
+		if (need > 0.1f) { wantList.addRequest(WantItemType::BUILDING, need, b->id); }
+	}
 
 	// UNITS building: prefer specific building from lacking feedback, fall back to generic resolve
 	if (lastLacking.lackingBuildingForUnit >= 0) {
@@ -177,18 +175,6 @@ void AiOrchestrator::submitBuildingRequest(float urgency, ParentBuildingType typ
 	if (urgency > 0.1f) {
 		if (db_building* building = resolveBuilding(type)) {
 			wantList.addRequest(WantItemType::BUILDING, urgency, building->id);
-		}
-	}
-}
-
-template <typename Match>
-void AiOrchestrator::findAndSubmit(float need, const std::vector<db_building*>& buildings, Match&& match) {
-	if (need <= 0.1f) { return; }
-	for (const auto b : buildings) {
-		auto* level = player->getLevelForBuilding(b->id);
-		if (match(b, level)) {
-			wantList.addRequest(WantItemType::BUILDING, need, b->id);
-			return;
 		}
 	}
 }
@@ -428,6 +414,11 @@ db_building* AiOrchestrator::resolveBuildingUpgrade(const UnitOutput& unitOutput
 db_unit* AiOrchestrator::resolveWorkerUpgrade() {
 	for (auto* worker : nation->workers) { if (player->getNextLevelForUnit(worker->id).has_value()) { return worker; } }
 	return nullptr;
+}
+
+// TODO: pick a worker type intentionally; for now just use the first one the nation has.
+short AiOrchestrator::resolveWorkerId() const {
+	return nation->workers.empty() ? -1 : nation->workers.at(0)->id;
 }
 
 db_building* AiOrchestrator::resolveResBuildingUpgrade(const EconomyOutput& econOutput) {

@@ -49,14 +49,13 @@ private:
 	// WantList request building (brain outputs -> wants)
 	void submitBuildingRequest(float urgency, ParentBuildingType type);
 	void submitBuildingUpgradeRequest(float urgency, ParentBuildingType type);
-	template <typename Match>
-	void findAndSubmit(float need, const std::vector<db_building*>& buildings, Match&& match);
 
 	// Unit resolution
 	std::vector<db_unit*> resolveUnit(const UnitOutput& unitOutput);
 	db_unit* resolveUnitUpgrade(const UnitOutput& unitOutput);
 	db_building* resolveBuildingUpgrade(const UnitOutput& unitOutput);
 	db_unit* resolveWorkerUpgrade();
+	short resolveWorkerId() const;
 	db_building* resolveResBuildingUpgrade(const EconomyOutput& econOutput);
 
 	// Building resolution
