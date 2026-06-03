@@ -48,6 +48,65 @@ AiOrchestrator::AiOrchestrator(Player* player, db_nation* nation, AiHistory* his
 	attackSpatialBrain(nation),
 	wantExecutor(player, nation, history) { lastLacking.reset(); }
 
+void AiOrchestrator::createWorkers() {
+	if (lastEconOut.workerCount > 0) {
+		wantList.addRequest(WantItemType::WORKER, lastEconOut.workerAllocation, resolveWorkerId(),
+		                    lastEconOut.workerCount);
+	}
+}
+
+void AiOrchestrator::createUnits(const UnitOutput& unitOut) {
+	if (unitOut.count > 0) {
+		for (auto* unit : resolveUnit(unitOut)) {
+			wantList.addRequest(WantItemType::UNIT, lastMasterOut.unitUrgency, unit->id);
+		}
+	}
+}
+
+void AiOrchestrator::upgradeUnits(const UnitOutput& unitOut) {
+	if (unitOut.unitUpgradeUrgency > 0.1f) {
+		if (auto* unitToUpgrade = resolveUnitUpgrade(unitOut)) {
+			wantList.addRequest(WantItemType::UNIT_UPGRADE, unitOut.unitUpgradeUrgency, unitToUpgrade->id);
+		}
+	}
+}
+
+void AiOrchestrator::upgradeWorkers() {
+	if (lastEconOut.workerUpgradeUrgency > 0.1f) {
+		if (auto* workerToUpgrade = resolveWorkerUpgrade()) {
+			wantList.addRequest(WantItemType::UNIT_UPGRADE, lastEconOut.workerUpgradeUrgency, workerToUpgrade->id);
+		}
+	}
+}
+
+// Resource buildings — for each one, request it with the strongest need it satisfies.
+// NOTE: this requests EVERY matching building. We may later want to limit/shape this per
+// category, e.g. request two bonus-food buildings, or pick the single best one per type.
+void AiOrchestrator::createResBuilding() {
+	for (const auto b : getBuildingsInType(ParentBuildingType::RESOURCE)) {
+		auto* l = player->getLevelForBuilding(b->id);
+		float need = 0.f;
+		if (isResBonus(b, l, ResourceType::FOOD)) { need = std::max(need, lastEconOut.needBonusFood); }
+		if (isResBonus(b, l, ResourceType::WOOD)) { need = std::max(need, lastEconOut.needBonusWood); }
+		if (isResBonus(b, l, ResourceType::STONE)) { need = std::max(need, lastEconOut.needBonusStone); }
+		if (isResBonus(b, l, ResourceType::GOLD)) { need = std::max(need, lastEconOut.needBonusGold); }
+		if (b->toResource >= 0 && l->spawnResourceRange <= 0) { need = std::max(need, lastEconOut.needFoodSource); }
+		if (b->toResource >= 0 && l->spawnResourceRange > 0) { need = std::max(need, lastEconOut.needWoodSource); }
+		if (l->foodStorage > 0) { need = std::max(need, lastEconOut.needFoodStorage); }
+		if (l->goldStorage > 0) { need = std::max(need, lastEconOut.needGoldStorage); }
+		if (l->stoneRefineCapacity > 0.f) { need = std::max(need, lastEconOut.needStoneRefine); }
+		if (l->goldRefineCapacity > 0.f) { need = std::max(need, lastEconOut.needGoldRefine); }
+		if (need > 0.1f) { wantList.addRequest(WantItemType::BUILDING, need, b->id); }
+	}
+}
+
+void AiOrchestrator::createLackingUnitBuilding() {
+	if (lastLacking.lackingBuildingForUnit >= 0) {
+		wantList.addRequest(WantItemType::BUILDING, std::max(lastMasterOut.unitUrgency, 0.5f),
+		                    lastLacking.lackingBuildingForUnit);
+	}
+}
+
 void AiOrchestrator::action() {
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
 
@@ -86,25 +145,11 @@ void AiOrchestrator::action() {
 	// 4. Submit requests to WantList
 	wantList.resetRequests();
 
-	// Worker request
-	if (lastEconOut.workerCount > 0) {
-		wantList.addRequest(WantItemType::WORKER, lastEconOut.workerAllocation, resolveWorkerId(),
-		                    lastEconOut.workerCount);
-	}
+	createWorkers();
+	upgradeWorkers();
 
-	// Unit request
-	if (unitOut.count > 0) {
-		for (auto* unit : resolveUnit(unitOut)) {
-			wantList.addRequest(WantItemType::UNIT, lastMasterOut.unitUrgency, unit->id);
-		}
-	}
-
-	// Unit upgrade request
-	if (unitOut.unitUpgradeUrgency > 0.1f) {
-		if (auto* unitToUpgrade = resolveUnitUpgrade(unitOut)) {
-			wantList.addRequest(WantItemType::UNIT_UPGRADE, unitOut.unitUpgradeUrgency, unitToUpgrade->id);
-		}
-	}
+	createUnits(unitOut);
+	upgradeUnits(unitOut);
 
 	// Unit-producing building upgrade request (barracks, archery range, stable)
 	if (unitOut.buildingUpgradeUrgency > 0.1f) {
@@ -113,18 +158,11 @@ void AiOrchestrator::action() {
 		}
 	}
 
-	// Worker upgrade request
-	if (lastEconOut.workerUpgradeUrgency > 0.1f) {
-		if (auto* workerToUpgrade = resolveWorkerUpgrade()) {
-			wantList.addRequest(WantItemType::UNIT_UPGRADE, lastEconOut.workerUpgradeUrgency, workerToUpgrade->id);
-		}
-	}
 
 	// Resource building upgrade request (farms, mills, mines, refineries, etc.)
 	if (lastEconOut.resBuildingUpgradeUrgency > 0.1f) {
 		if (auto* resBuildingToUpgrade = resolveResBuildingUpgrade(lastEconOut)) {
-			wantList.addRequest(WantItemType::BUILDING_UPGRADE, lastEconOut.resBuildingUpgradeUrgency,
-			                    resBuildingToUpgrade->id);
+			wantList.addRequest(WantItemType::BUILDING_UPGRADE, lastEconOut.resBuildingUpgradeUrgency, resBuildingToUpgrade->id);
 		}
 	}
 
@@ -136,34 +174,13 @@ void AiOrchestrator::action() {
 	submitBuildingUpgradeRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
 
 	// Building requests — use MasterBrain urgencies directly
-	submitBuildingRequest(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
 	submitBuildingRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
+	submitBuildingRequest(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
 	submitBuildingRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
 
-	// Resource buildings — for each one, request it with the strongest need it satisfies.
-	// NOTE: this requests EVERY matching building. We may later want to limit/shape this per
-	// category, e.g. request two bonus-food buildings, or pick the single best one per type.
-	for (const auto b : getBuildingsInType(ParentBuildingType::RESOURCE)) {
-		auto* l = player->getLevelForBuilding(b->id);
-		float need = 0.f;
-		if (isResBonus(b, l, ResourceType::FOOD)) { need = std::max(need, lastEconOut.needBonusFood); }
-		if (isResBonus(b, l, ResourceType::WOOD)) { need = std::max(need, lastEconOut.needBonusWood); }
-		if (isResBonus(b, l, ResourceType::STONE)) { need = std::max(need, lastEconOut.needBonusStone); }
-		if (isResBonus(b, l, ResourceType::GOLD)) { need = std::max(need, lastEconOut.needBonusGold); }
-		if (b->toResource >= 0 && l->spawnResourceRange <= 0) { need = std::max(need, lastEconOut.needFoodSource); }
-		if (b->toResource >= 0 && l->spawnResourceRange > 0) { need = std::max(need, lastEconOut.needWoodSource); }
-		if (l->foodStorage > 0) { need = std::max(need, lastEconOut.needFoodStorage); }
-		if (l->goldStorage > 0) { need = std::max(need, lastEconOut.needGoldStorage); }
-		if (l->stoneRefineCapacity > 0.f) { need = std::max(need, lastEconOut.needStoneRefine); }
-		if (l->goldRefineCapacity > 0.f) { need = std::max(need, lastEconOut.needGoldRefine); }
-		if (need > 0.1f) { wantList.addRequest(WantItemType::BUILDING, need, b->id); }
-	}
+	createResBuilding();
 
-	// UNITS building: prefer specific building from lacking feedback, fall back to generic resolve
-	if (lastLacking.lackingBuildingForUnit >= 0) {
-		wantList.addRequest(WantItemType::BUILDING, std::max(lastMasterOut.unitUrgency, 0.5f),
-		                    lastLacking.lackingBuildingForUnit);
-	} else { submitBuildingRequest(lastMasterOut.unitUrgency, ParentBuildingType::UNITS); }
+	createLackingUnitBuilding();
 
 	// 5. Execute WantList
 	wantExecutor.prepare(lastMasterOut);
@@ -171,6 +188,7 @@ void AiOrchestrator::action() {
 	lastLacking.lackingBuildingForUnit = wantExecutor.getLackingBuilding();
 }
 
+//return first of its type
 void AiOrchestrator::submitBuildingRequest(float urgency, ParentBuildingType type) {
 	if (urgency > 0.1f) {
 		if (db_building* building = resolveBuilding(type)) {
@@ -224,7 +242,7 @@ void AiOrchestrator::order() {
 
 	auto attackPosOpt = [&]() -> std::optional<Urho3D::Vector2> {
 		auto areas = Game::getEnvironment()->getAreas(
-				playerId, std::span<const float>(spatialOut.weights), 1);
+				playerId, std::span<const float>(spatialOut.weights), 1);//why only one
 		if (!areas.empty()) { return areas[0]; }
 		return Game::getEnvironment()->getCenterOf(CenterType::BUILDING, enemy->getId());
 	}();
@@ -238,21 +256,21 @@ void AiOrchestrator::order() {
 
 	// Distance-based assignment over ALL army
 	if (attackPosOpt.has_value() && attackCount > 0) {
-		std::sort(allArmy.begin(), allArmy.end(), [&](const Unit* a, const Unit* b) {
+		std::ranges::sort(allArmy, [&](const Unit* a, const Unit* b) {
 			return a->getPosition().SqDistXZ(attackPosOpt.value()) < b->getPosition().SqDistXZ(attackPosOpt.value());
 		});
 	}
 
-	std::vector<Unit*> attackGroup(allArmy.begin(), allArmy.begin() + std::min(attackCount, totalArmy));
-	std::vector<Unit*> remaining(allArmy.begin() + static_cast<int>(attackGroup.size()), allArmy.end());
+	std::vector attackGroup(allArmy.begin(), allArmy.begin() + std::min(attackCount, static_cast<int>(totalArmy)));
+	std::vector remaining(allArmy.begin() + static_cast<int>(attackGroup.size()), allArmy.end());
 
 	if (defendPosOpt.has_value() && defendCount > 0 && !remaining.empty()) {
-		std::sort(remaining.begin(), remaining.end(), [&](const Unit* a, const Unit* b) {
+		std::ranges::sort(remaining, [&](const Unit* a, const Unit* b) {
 			return a->getPosition().SqDistXZ(defendPosOpt.value()) < b->getPosition().SqDistXZ(defendPosOpt.value());
 		});
 	}
 
-	std::vector<Unit*> defendGroup(remaining.begin(),
+	std::vector defendGroup(remaining.begin(),
 	                               remaining.begin() + std::min(defendCount, static_cast<int>(remaining.size())));
 
 	constexpr float SEMI_CLOSE = 30.f;
@@ -296,8 +314,7 @@ void AiOrchestrator::order() {
 				const auto closest = Game::getEnvironment()->closestPhysical(
 						unit->getMainGridIndex(), things, belowClose, true);
 				if (closest) {
-					Game::getActionCenter()->addUnitAction(
-							new IndividualOrder(unit, UnitAction::ATTACK, closest));
+					Game::getActionCenter()->addUnitAction(new IndividualOrder(unit, UnitAction::ATTACK, closest));
 				}
 			}
 		}
@@ -308,9 +325,7 @@ void AiOrchestrator::order() {
 		if (lastMilOut.attackStance < STANCE_RETREAT && defendPosOpt.has_value()) {
 			// Retreat: pull back toward own base
 			for (auto* unit : attackGroup) {
-				Game::getActionCenter()->addUnitAction(
-						new IndividualOrder(unit, UnitAction::GO, defendPosOpt.value())
-						);
+				Game::getActionCenter()->addUnitAction(new IndividualOrder(unit, UnitAction::GO, defendPosOpt.value()));
 			}
 		} else if (lastMilOut.attackStance < STANCE_ADVANCE) { issueHold(attackGroup); } else {
 			issueAdvance(attackGroup, attackPosOpt.value());
@@ -323,9 +338,7 @@ void AiOrchestrator::order() {
 		if (lastMilOut.defendStance < STANCE_RETREAT) {
 			// Disengage: stop all units, let them idle
 			for (auto* unit : defendGroup) {
-				Game::getActionCenter()->addUnitAction(
-						new IndividualOrder(unit, UnitAction::STOP, unit->getPosition())
-						);
+				Game::getActionCenter()->addUnitAction(new IndividualOrder(unit, UnitAction::STOP, unit->getPosition()));
 			}
 		} else if (lastMilOut.defendStance < STANCE_ADVANCE) { issueHold(defendGroup); } else {
 			issueAdvance(defendGroup, defendPosOpt.value());
@@ -347,12 +360,7 @@ std::vector<db_unit*> AiOrchestrator::resolveUnit(const UnitOutput& unitOutput) 
 	for (auto unit : units) { if (!unit->typeWorker) { candidates.push_back(unit); } }
 	if (candidates.empty()) { return {}; }
 
-	std::valarray<float> center(unitOutput.unitProfile.data(), unitOutput.unitProfile.size());
-	std::vector<float> diffs;
-	diffs.reserve(candidates.size());
-	for (const auto unit : candidates) {
-		diffs.push_back(dist(center, player->getLevelForUnit(unit->id)->dbUnitMetric));
-	}
+	std::vector<float> diffs = unitsProfileMatch(unitOutput, candidates);
 
 	std::vector<db_unit*> result;
 	result.reserve(unitOutput.count);
@@ -369,14 +377,19 @@ db_unit* AiOrchestrator::resolveUnitUpgrade(const UnitOutput& unitOutput) {
 	}
 	if (candidates.empty()) { return nullptr; }
 
-	std::valarray<float> center(unitOutput.unitProfile.data(), unitOutput.unitProfile.size());
+	std::vector<float> diffs = unitsProfileMatch(unitOutput, candidates);
+
+	return candidates[lowestWithRand(diffs)];
+}
+
+std::vector<float> AiOrchestrator::unitsProfileMatch(const UnitOutput& unitOutput, std::vector<db_unit*> candidates) {
+	std::valarray center(unitOutput.unitProfile.data(), unitOutput.unitProfile.size());
 	std::vector<float> diffs;
 	diffs.reserve(candidates.size());
 	for (const auto unit : candidates) {
 		diffs.push_back(dist(center, player->getLevelForUnit(unit->id)->dbUnitMetric));
 	}
-
-	return candidates[lowestWithRand(diffs)];
+	return diffs;
 }
 
 db_building* AiOrchestrator::resolveBuildingUpgrade(const UnitOutput& unitOutput) {
@@ -421,7 +434,7 @@ short AiOrchestrator::resolveWorkerId() const {
 	return nation->workers.empty() ? -1 : nation->workers.at(0)->id;
 }
 
-db_building* AiOrchestrator::resolveResBuildingUpgrade(const EconomyOutput& econOutput) {
+db_building* AiOrchestrator::resolveResBuildingUpgrade(const EconomyOutput& econOutput) const {
 	auto& buildings = nation->buildings;
 	std::vector<db_building*> candidates;
 	candidates.reserve(buildings.size());
@@ -506,7 +519,7 @@ void AiOrchestrator::menageWorkers() {
 	// Use economy brain's resource priorities to decide which resource to collect
 	float prefs[] = {lastEconOut.foodPriority, lastEconOut.woodPriority,
 	                 lastEconOut.stonePriority, lastEconOut.goldPriority};
-	std::array<int, 4> order = {0, 1, 2, 3};
+	std::array order = {0, 1, 2, 3};
 	std::ranges::sort(order, [&](int a, int b) { return prefs[a] > prefs[b]; });
 
 	// Reassign one busy worker from lowest-priority resource to highest
@@ -519,7 +532,7 @@ void AiOrchestrator::menageWorkers() {
 	if (freeWorkers.empty()) { return; }
 
 	// Split workers across resources proportionally to their needs.
-	std::array<int, 4> remaining = computeWorkerTargets(prefs, static_cast<int>(freeWorkers.size()));
+	std::array<int, RESOURCES_SIZE> remaining = computeWorkerTargets(prefs, freeWorkers.size());
 
 	for (auto* worker : freeWorkers) {
 		bool assigned = false;
@@ -552,7 +565,7 @@ void AiOrchestrator::menageWorkers() {
 // Distributes workerCount workers across the 4 resource types proportionally to their
 // (non-negative) needs, using largest-remainder rounding so the targets sum to workerCount.
 std::array<int, 4> AiOrchestrator::computeWorkerTargets(const float (&prefs)[4], int workerCount) const {
-	std::array<int, 4> target = {0, 0, 0, 0};
+	std::array target = {0, 0, 0, 0};
 	float weight[4];
 	float total = 0.f;
 	for (int i = 0; i < 4; ++i) {
@@ -584,10 +597,8 @@ std::array<int, 4> AiOrchestrator::computeWorkerTargets(const float (&prefs)[4],
 bool AiOrchestrator::tryAssignCollect(Unit* worker, int resId) {
 	auto* closest = closestInRange(worker, resId);
 	if (!closest) { return false; }
-	auto orderType = static_cast<AiOrderType>(
-		static_cast<uint8_t>(AiOrderType::COLLECT_RESOURCE_0) + resId);
-	Game::getActionCenter()->addUnitAction(
-			new IndividualOrder(worker, UnitAction::COLLECT, closest));
+	auto orderType = static_cast<AiOrderType>(static_cast<uint8_t>(AiOrderType::COLLECT_RESOURCE_0) + resId);
+	Game::getActionCenter()->addUnitAction(new IndividualOrder(worker, UnitAction::COLLECT, closest));
 	history->addOrder(orderType, AiOrderResult::SUCCESS, 1);
 	return true;
 }

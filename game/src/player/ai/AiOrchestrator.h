@@ -40,8 +40,15 @@ enum class ParentBuildingType : char;
 class AiOrchestrator {
 public:
 	explicit AiOrchestrator(Player* player, db_nation* nation, AiHistory* history);
+	void createWorkers();
+	void createUnits(const UnitOutput& unitOut);
+	void upgradeUnits(const UnitOutput& unitOut);
+	void upgradeWorkers();
+	void createResBuilding();
+	void createLackingUnitBuilding();
 	AiOrchestrator(const AiOrchestrator&) = delete;
 
+	void createUnits(const UnitOutput& unitOut);
 	void action();
 	void order();
 
@@ -52,11 +59,12 @@ private:
 
 	// Unit resolution
 	std::vector<db_unit*> resolveUnit(const UnitOutput& unitOutput);
+	std::vector<float> unitsProfileMatch(const UnitOutput& unitOutput, std::vector<db_unit*> candidates);
 	db_unit* resolveUnitUpgrade(const UnitOutput& unitOutput);
 	db_building* resolveBuildingUpgrade(const UnitOutput& unitOutput);
 	db_unit* resolveWorkerUpgrade();
 	short resolveWorkerId() const;
-	db_building* resolveResBuildingUpgrade(const EconomyOutput& econOutput);
+	db_building* resolveResBuildingUpgrade(const EconomyOutput& econOutput) const;
 
 	// Building resolution
 	db_building* resolveBuilding(ParentBuildingType type);
