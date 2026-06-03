@@ -124,7 +124,7 @@ public:
 	std::optional<Urho3D::Vector2> getPosToCreate(std::span<const float> result, ParentBuildingType type,
 	                                              db_building* building, char player);
 	std::optional<Urho3D::Vector2> getPosToCreateResBonus(db_building* building, unsigned char player);
-	std::vector<Urho3D::Vector2> getAreas(char player, std::span<const float>, int min);
+	std::vector<Urho3D::Vector2> getAreas(unsigned char player, std::span<const float>, int min);
 	void addCollect(Unit* unit, short resId, float value);
 	void addAttack(char player, const Urho3D::Vector2& position, float value);
 	void drawInfluence();

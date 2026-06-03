@@ -32,9 +32,9 @@
 #include "database/DatabaseCache.h"
 
 namespace {
-bool isResBonus(db_building* b, db_building_level* l, ResourceType res) {
-	return b->resourceType == cast(res) && l->collect > 0.f && l->resourceRange > 0.f;
-}
+	bool isResBonus(db_building* b, db_building_level* l, ResourceType res) {
+		return b->resourceType == cast(res) && l->collect > 0.f && l->resourceRange > 0.f;
+	}
 }
 
 
@@ -46,99 +46,91 @@ AiOrchestrator::AiOrchestrator(Player* player, db_nation* nation, AiHistory* his
 	unitBrain(nation),
 	militaryBrain(nation),
 	buildSpatialBrain(nation),
-	attackSpatialBrain(nation) {
-	lastLacking.reset();
-}
+	attackSpatialBrain(nation) { lastLacking.reset(); }
 
 void AiOrchestrator::action() {
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
 
 	// 1. Master Brain decides urgencies
 	lastMasterOut = masterBrain.decide(
-		player, enemy,
-		lastLacking.totalSum,
-		history
-	);
+			player, enemy,
+			lastLacking.totalSum,
+			history
+			);
 
 	// 2. Economy Brain (gets lacking feedback)
 	float gameTime = norm(Game::getFrameInfo()->getSeconds(), 600.f); // normalize to ~10 min
 	lastEconOut = economyBrain.decide(
-		player, enemy,
-		lastLacking.perResource,
-		lastMasterOut.economyUrgency, lastMasterOut.workerUrgency, lastMasterOut.expandUrgency,
-		lastMasterOut.techUrgency, gameTime,
-		history
-	);
+			player, enemy,
+			lastLacking.perResource,
+			lastMasterOut.economyUrgency, lastMasterOut.workerUrgency, lastMasterOut.expandUrgency,
+			lastMasterOut.techUrgency, gameTime,
+			history
+			);
 
 	// 3. Military Brain (composition prefs feed into UnitBrain)
 	lastMilOut = militaryBrain.decide(
-		player, enemy,
-		lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency,
-		history
-	);
+			player, enemy,
+			lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency,
+			history
+			);
 
 	// 4. Unit Brain
 	auto unitOut = unitBrain.decide(
-		player, enemy,
-		lastMasterOut.unitUrgency, lastMasterOut.attackUrgency,
-		lastMilOut.preferInfantry, lastMilOut.preferRange, lastMilOut.preferCavalry,
-		lastMasterOut.techUrgency, gameTime
-	);
+			player, enemy,
+			lastMasterOut.unitUrgency, lastMasterOut.attackUrgency,
+			lastMilOut.preferInfantry, lastMilOut.preferRange, lastMilOut.preferCavalry,
+			lastMasterOut.techUrgency, gameTime
+			);
 
 	// 4. Submit requests to WantList
 	wantList.resetRequests();
 
 	// Worker request
 	if (lastEconOut.workerCount > 0) {
-		wantList.addRequest(WantItemType::WORKER, lastEconOut.workerAllocation, lastEconOut.workerCount);
+		wantList.addRequest(WantItemType::WORKER, lastEconOut.workerAllocation, workerId, lastEconOut.workerCount);
 	}
 
 	// Unit request
 	if (unitOut.count > 0) {
-		auto units = resolveUnit(unitOut);
-		for (auto* unit : units) {
-			wantList.addRequest(WantItemType::UNIT, lastMasterOut.unitUrgency, 1, unit->id);
+		for (auto* unit : resolveUnit(unitOut)) {
+			wantList.addRequest(WantItemType::UNIT, lastMasterOut.unitUrgency, unit->id);
 		}
 	}
 
 	// Unit upgrade request
 	if (unitOut.unitUpgradeUrgency > 0.1f) {
-		auto* unitToUpgrade = resolveUnitUpgrade(unitOut);
-		if (unitToUpgrade) {
-			wantList.addRequest(WantItemType::UNIT_UPGRADE, unitOut.unitUpgradeUrgency, 1, unitToUpgrade->id);
+		if (auto* unitToUpgrade = resolveUnitUpgrade(unitOut)) {
+			wantList.addRequest(WantItemType::UNIT_UPGRADE, unitOut.unitUpgradeUrgency, unitToUpgrade->id);
 		}
 	}
 
 	// Unit-producing building upgrade request (barracks, archery range, stable)
 	if (unitOut.buildingUpgradeUrgency > 0.1f) {
-		auto* buildingToUpgrade = resolveBuildingUpgrade(unitOut);
-		if (buildingToUpgrade) {
-			wantList.addRequest(WantItemType::BUILDING_UPGRADE, unitOut.buildingUpgradeUrgency, 1, buildingToUpgrade->id);
+		if (auto* buildingToUpgrade = resolveBuildingUpgrade(unitOut)) {
+			wantList.addRequest(WantItemType::BUILDING_UPGRADE, unitOut.buildingUpgradeUrgency, buildingToUpgrade->id);
 		}
 	}
 
 	// Worker upgrade request
 	if (lastEconOut.workerUpgradeUrgency > 0.1f) {
-		auto* workerToUpgrade = resolveWorkerUpgrade();
-		if (workerToUpgrade) {
-			wantList.addRequest(WantItemType::UNIT_UPGRADE, lastEconOut.workerUpgradeUrgency, 1, workerToUpgrade->id);
+		if (auto* workerToUpgrade = resolveWorkerUpgrade()) {
+			wantList.addRequest(WantItemType::UNIT_UPGRADE, lastEconOut.workerUpgradeUrgency, workerToUpgrade->id);
 		}
 	}
 
 	// Resource building upgrade request (farms, mills, mines, refineries, etc.)
 	if (lastEconOut.resBuildingUpgradeUrgency > 0.1f) {
-		auto* resBuildingToUpgrade = resolveResBuildingUpgrade(lastEconOut);
-		if (resBuildingToUpgrade) {
-			wantList.addRequest(WantItemType::BUILDING_UPGRADE, lastEconOut.resBuildingUpgradeUrgency, 1, resBuildingToUpgrade->id);
+		if (auto* resBuildingToUpgrade = resolveResBuildingUpgrade(lastEconOut)) {
+			wantList.addRequest(WantItemType::BUILDING_UPGRADE, lastEconOut.resBuildingUpgradeUrgency,
+			                    resBuildingToUpgrade->id);
 		}
 	}
 
 	// Defence building upgrade request (tower)
 	submitBuildingUpgradeRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
-
 	// Other building upgrade request (center, house)
 	submitBuildingUpgradeRequest(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
-
 	// Tech building upgrade request (blacksmith, university)
 	submitBuildingUpgradeRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
 
@@ -148,56 +140,55 @@ void AiOrchestrator::action() {
 	submitBuildingRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
 
 	// Resource buildings — submit each need individually
-	{
-		const auto buildings = getBuildingsInType(ParentBuildingType::RESOURCE);
+	const auto buildings = getBuildingsInType(ParentBuildingType::RESOURCE);
 
-		auto findAndSubmit = [&](float need, auto&& match) {
-			if (need <= 0.1f) { return; }
-			for (const auto b : buildings) {
-				auto lvlOpt = b->getLevel(0);
-				if (!lvlOpt.has_value()) { continue; }
-				if (match(b, lvlOpt.value())) {
-					wantList.addRequest(WantItemType::BUILDING, need, 1, b->id);
-					return;
-				}
+	auto findAndSubmit = [&](float need, auto&& match) {
+		if (need <= 0.1f) { return; }
+		for (const auto b : buildings) {
+			auto lvlOpt = b->getLevel(0);
+			if (!lvlOpt.has_value()) { continue; }
+			if (match(b, lvlOpt.value())) {
+				wantList.addRequest(WantItemType::BUILDING, need, b->id);
+				return;
 			}
-		};
+		}
+	};
 
-		findAndSubmit(lastEconOut.needBonusFood,  [](auto* b, auto* l) { return isResBonus(b, l, ResourceType::FOOD); });
-		findAndSubmit(lastEconOut.needBonusWood,  [](auto* b, auto* l) { return isResBonus(b, l, ResourceType::WOOD); });
-		findAndSubmit(lastEconOut.needBonusStone, [](auto* b, auto* l) { return isResBonus(b, l, ResourceType::STONE); });
-		findAndSubmit(lastEconOut.needBonusGold,  [](auto* b, auto* l) { return isResBonus(b, l, ResourceType::GOLD); });
-		findAndSubmit(lastEconOut.needFoodSource, [](auto* b, auto* l) { return b->toResource >= 0 && l->spawnResourceRange <= 0; });
-		findAndSubmit(lastEconOut.needWoodSource, [](auto* b, auto* l) { return b->toResource >= 0 && l->spawnResourceRange > 0; });
-		findAndSubmit(lastEconOut.needFoodStorage,[](auto* b, auto* l) { return l->foodStorage > 0; });
-		findAndSubmit(lastEconOut.needGoldStorage,[](auto* b, auto* l) { return l->goldStorage > 0; });
-		findAndSubmit(lastEconOut.needStoneRefine,[](auto* b, auto* l) { return l->stoneRefineCapacity > 0.f; });
-		findAndSubmit(lastEconOut.needGoldRefine, [](auto* b, auto* l) { return l->goldRefineCapacity > 0.f; });
-	}
+	findAndSubmit(lastEconOut.needBonusFood, [](auto* b, auto* l) { return isResBonus(b, l, ResourceType::FOOD); });
+	findAndSubmit(lastEconOut.needBonusWood, [](auto* b, auto* l) { return isResBonus(b, l, ResourceType::WOOD); });
+	findAndSubmit(lastEconOut.needBonusStone, [](auto* b, auto* l) { return isResBonus(b, l, ResourceType::STONE); });
+	findAndSubmit(lastEconOut.needBonusGold, [](auto* b, auto* l) { return isResBonus(b, l, ResourceType::GOLD); });
+	findAndSubmit(lastEconOut.needFoodSource, [](auto* b, auto* l) {
+		return b->toResource >= 0 && l->spawnResourceRange <= 0;
+	});
+	findAndSubmit(lastEconOut.needWoodSource, [](auto* b, auto* l) {
+		return b->toResource >= 0 && l->spawnResourceRange > 0;
+	});
+	findAndSubmit(lastEconOut.needFoodStorage, [](auto* b, auto* l) { return l->foodStorage > 0; });
+	findAndSubmit(lastEconOut.needGoldStorage, [](auto* b, auto* l) { return l->goldStorage > 0; });
+	findAndSubmit(lastEconOut.needStoneRefine, [](auto* b, auto* l) { return l->stoneRefineCapacity > 0.f; });
+	findAndSubmit(lastEconOut.needGoldRefine, [](auto* b, auto* l) { return l->goldRefineCapacity > 0.f; });
 
 	// UNITS building: prefer specific building from lacking feedback, fall back to generic resolve
 	if (lastLacking.lackingBuildingForUnit >= 0) {
-		float boostedUrgency = std::max(lastMasterOut.unitUrgency, 0.5f);
-		wantList.addRequest(WantItemType::BUILDING, boostedUrgency, 1, lastLacking.lackingBuildingForUnit);
-	} else {
-		submitBuildingRequest(lastMasterOut.unitUrgency, ParentBuildingType::UNITS);
-	}
+		wantList.addRequest(WantItemType::BUILDING, std::max(lastMasterOut.unitUrgency, 0.5f),
+		                    lastLacking.lackingBuildingForUnit);
+	} else { submitBuildingRequest(lastMasterOut.unitUrgency, ParentBuildingType::UNITS); }
 
 	// 5. Execute WantList with callbacks
 	pendingLackingBuilding = -1;
 
 	lastLacking = wantList.execute(player,
-		[this](WantItem& item) { return executeWantItem(item); },
-		[this](const WantItem& item) { return getWantItemCost(item); }
-	);
+	                               [this](WantItem& item) { return executeWantItem(item); },
+	                               [this](const WantItem& item) { return getWantItemCost(item); }
+			);
 	lastLacking.lackingBuildingForUnit = pendingLackingBuilding;
 }
 
 void AiOrchestrator::submitBuildingRequest(float urgency, ParentBuildingType type) {
 	if (urgency > 0.1f) {
-		db_building* building = resolveBuilding(type);
-		if (building) {
-			wantList.addRequest(WantItemType::BUILDING, urgency, 1, building->id);
+		if (db_building* building = resolveBuilding(type)) {
+			wantList.addRequest(WantItemType::BUILDING, urgency, building->id);
 		}
 	}
 }
@@ -207,7 +198,7 @@ void AiOrchestrator::submitBuildingUpgradeRequest(float urgency, ParentBuildingT
 	for (auto* building : nation->buildings) {
 		if (building->parentType[static_cast<int>(type)]
 			&& player->getNextLevelForBuilding(building->id).has_value()) {
-			wantList.addRequest(WantItemType::BUILDING_UPGRADE, urgency, 1, building->id);
+			wantList.addRequest(WantItemType::BUILDING_UPGRADE, urgency, building->id);
 		}
 	}
 }
@@ -215,7 +206,7 @@ void AiOrchestrator::submitBuildingUpgradeRequest(float urgency, ParentBuildingT
 bool AiOrchestrator::executeWantItem(WantItem& item) {
 	switch (item.type) {
 	case WantItemType::WORKER:
-		return executeWorker();
+		return executeWorker(item.specificId);
 	case WantItemType::UNIT:
 		return executeUnit(item.specificId);
 	case WantItemType::BUILDING:
@@ -229,42 +220,26 @@ bool AiOrchestrator::executeWantItem(WantItem& item) {
 }
 
 const db_with_cost* AiOrchestrator::getWantItemCost(const WantItem& item) const {
+	if (item.specificId) { return nullptr; }
+
 	switch (item.type) {
 	case WantItemType::WORKER:
-		return nation->workers.empty() ? nullptr : nation->workers.at(0);
+		return Game::getDatabase()->getUnit(item.specificId);
 	case WantItemType::UNIT:
-		if (item.specificId >= 0) {
-			return Game::getDatabase()->getUnit(item.specificId);
-		}
-		return nullptr;
+		return Game::getDatabase()->getUnit(item.specificId);
 	case WantItemType::BUILDING:
-		if (item.specificId >= 0) {
-			return Game::getDatabase()->getBuilding(item.specificId);
-		}
-		return nullptr;
+		return Game::getDatabase()->getBuilding(item.specificId);
 	case WantItemType::UNIT_UPGRADE:
-		if (item.specificId >= 0) {
-			auto nextLevel = player->getNextLevelForUnit(item.specificId);
-			if (nextLevel.has_value()) {
-				return nextLevel.value();
-			}
-		}
-		return nullptr;
+		if (auto nextLevel = player->getNextLevelForUnit(item.specificId)) { return *nextLevel; }
 	case WantItemType::BUILDING_UPGRADE:
-		if (item.specificId >= 0) {
-			auto nextLevel = player->getNextLevelForBuilding(item.specificId);
-			if (nextLevel.has_value()) {
-				return nextLevel.value();
-			}
-		}
-		return nullptr;
+		if (auto bNextLevel = player->getNextLevelForBuilding(item.specificId)) { return *bNextLevel; }
 	}
 	return nullptr;
 }
 
 void AiOrchestrator::order() {
 	// Worker collection
-	collectWorkers();
+	menageWorkers();
 
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
 	const auto& milOut = lastMilOut;
@@ -273,7 +248,7 @@ void AiOrchestrator::order() {
 	std::vector<Unit*> allArmy = possession->getAllArmy();
 	if (allArmy.empty()) { return; }
 
-	const int totalArmy = static_cast<int>(allArmy.size());
+	const auto totalArmy = allArmy.size();
 
 	int attackCount = roundToInt(std::max(0.f, milOut.attackRatio) * totalArmy);
 	int defendCount = roundToInt(std::max(0.f, milOut.defendRatio) * totalArmy);
@@ -292,14 +267,13 @@ void AiOrchestrator::order() {
 
 	// Resolve target positions
 	auto spatialOut = attackSpatialBrain.decide(
-		player, enemy, milOut,
-		lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency
-	);
+			player, enemy, milOut,
+			lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency
+			);
 
 	auto attackPosOpt = [&]() -> std::optional<Urho3D::Vector2> {
 		auto areas = Game::getEnvironment()->getAreas(
-			playerId, std::span<const float>(spatialOut.weights), 1
-		);
+				playerId, std::span<const float>(spatialOut.weights), 1);
 		if (!areas.empty()) { return areas[0]; }
 		return Game::getEnvironment()->getCenterOf(CenterType::BUILDING, enemy->getId());
 	}();
@@ -327,7 +301,8 @@ void AiOrchestrator::order() {
 		});
 	}
 
-	std::vector<Unit*> defendGroup(remaining.begin(), remaining.begin() + std::min(defendCount, static_cast<int>(remaining.size())));
+	std::vector<Unit*> defendGroup(remaining.begin(),
+	                               remaining.begin() + std::min(defendCount, static_cast<int>(remaining.size())));
 
 	constexpr float SEMI_CLOSE = 30.f;
 	constexpr float SQ_SEMI_CLOSE = SEMI_CLOSE * SEMI_CLOSE;
@@ -340,20 +315,21 @@ void AiOrchestrator::order() {
 			auto armyCenter = computeCenter(subArmy);
 			if (armyCenter.SqDistXZ(target) > SQ_SEMI_CLOSE) {
 				Game::getActionCenter()->addUnitAction(
-					subArmy.size() > 1
-						? static_cast<UnitOrder*>(new GroupOrder(subArmy, UnitActionType::ORDER, castC(UnitAction::GO), target))
+						subArmy.size() > 1
+						? static_cast<UnitOrder*>(new GroupOrder(subArmy, UnitActionType::ORDER, castC(UnitAction::GO),
+						                                         target))
 						: static_cast<UnitOrder*>(new IndividualOrder(subArmy.at(0), UnitAction::GO, target))
-				);
+						);
 			} else {
 				const auto unit = subArmy.at(0);
 				auto* things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
 				if (things && !things->empty()) {
 					const auto closest = Game::getEnvironment()->closestPhysical(
-						unit->getMainGridIndex(), things, belowClose, true);
+							unit->getMainGridIndex(), things, belowClose, true);
 					if (closest) {
 						Game::getActionCenter()->addUnitAction(
-							new GroupOrder(subArmy, UnitActionType::ORDER,
-							               castC(UnitAction::ATTACK), closest));
+								new GroupOrder(subArmy, UnitActionType::ORDER,
+								               castC(UnitAction::ATTACK), closest));
 					}
 				}
 			}
@@ -367,10 +343,10 @@ void AiOrchestrator::order() {
 			auto* things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
 			if (things && !things->empty()) {
 				const auto closest = Game::getEnvironment()->closestPhysical(
-					unit->getMainGridIndex(), things, belowClose, true);
+						unit->getMainGridIndex(), things, belowClose, true);
 				if (closest) {
 					Game::getActionCenter()->addUnitAction(
-						new IndividualOrder(unit, UnitAction::ATTACK, closest));
+							new IndividualOrder(unit, UnitAction::ATTACK, closest));
 				}
 			}
 		}
@@ -382,12 +358,10 @@ void AiOrchestrator::order() {
 			// Retreat: pull back toward own base
 			for (auto* unit : attackGroup) {
 				Game::getActionCenter()->addUnitAction(
-					new IndividualOrder(unit, UnitAction::GO, defendPosOpt.value())
-				);
+						new IndividualOrder(unit, UnitAction::GO, defendPosOpt.value())
+						);
 			}
-		} else if (milOut.attackStance < STANCE_ADVANCE) {
-			issueHold(attackGroup);
-		} else {
+		} else if (milOut.attackStance < STANCE_ADVANCE) { issueHold(attackGroup); } else {
 			issueAdvance(attackGroup, attackPosOpt.value());
 		}
 		history->addOrder(AiOrderType::ATTACK_ECON, AiOrderResult::SUCCESS, static_cast<uint8_t>(attackGroup.size()));
@@ -399,12 +373,10 @@ void AiOrchestrator::order() {
 			// Disengage: stop all units, let them idle
 			for (auto* unit : defendGroup) {
 				Game::getActionCenter()->addUnitAction(
-					new IndividualOrder(unit, UnitAction::STOP, unit->getPosition())
-				);
+						new IndividualOrder(unit, UnitAction::STOP, unit->getPosition())
+						);
 			}
-		} else if (milOut.defendStance < STANCE_ADVANCE) {
-			issueHold(defendGroup);
-		} else {
+		} else if (milOut.defendStance < STANCE_ADVANCE) { issueHold(defendGroup); } else {
 			issueAdvance(defendGroup, defendPosOpt.value());
 		}
 		history->addOrder(AiOrderType::DEFEND_ECON, AiOrderResult::SUCCESS, static_cast<uint8_t>(defendGroup.size()));
@@ -413,13 +385,12 @@ void AiOrchestrator::order() {
 
 // --- Execution callbacks ---
 
-bool AiOrchestrator::executeWorker() {
+bool AiOrchestrator::executeWorker(short unitId) {
 	if (nation->workers.empty()) { return false; }
 	auto* unit = nation->workers.at(0);
-	Building* building = getBuildingToDeployWorker(unit);
-	if (building) {
+	if (Building* building = getBuildingToDeployWorker(unit)) {
 		Game::getActionCenter()->add(
-			new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id));
+				new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id));
 		history->addAction(AiActionType::CREATE_WORKER, AiActionResult::SUCCESS);
 		return true;
 	}
@@ -430,10 +401,9 @@ bool AiOrchestrator::executeWorker() {
 bool AiOrchestrator::executeUnit(short unitId) {
 	if (unitId < 0) { return false; }
 	auto* unit = Game::getDatabase()->getUnit(unitId);
-	Building* building = getBuildingToDeploy(unit);
-	if (building) {
+	if (Building* building = getBuildingToDeploy(unit)) {
 		Game::getActionCenter()->add(
-			new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id));
+				new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id));
 		history->addAction(AiActionType::CREATE_UNIT, AiActionResult::SUCCESS);
 		return true;
 	}
@@ -457,12 +427,24 @@ bool AiOrchestrator::executeBuilding(short buildingId) {
 
 	AiActionType actionType;
 	switch (type) {
-	case ParentBuildingType::OTHER: actionType = AiActionType::CREATE_BUILDING_OTHER; break;
-	case ParentBuildingType::DEFENCE: actionType = AiActionType::CREATE_BUILDING_DEFENCE; break;
-	case ParentBuildingType::RESOURCE: actionType = AiActionType::CREATE_BUILDING_RESOURCE; break;
-	case ParentBuildingType::TECH: actionType = AiActionType::CREATE_BUILDING_TECH; break;
-	case ParentBuildingType::UNITS: actionType = AiActionType::CREATE_BUILDING_UNITS; break;
-	default: actionType = AiActionType::NONE; break;
+	case ParentBuildingType::OTHER:
+		actionType = AiActionType::CREATE_BUILDING_OTHER;
+		break;
+	case ParentBuildingType::DEFENCE:
+		actionType = AiActionType::CREATE_BUILDING_DEFENCE;
+		break;
+	case ParentBuildingType::RESOURCE:
+		actionType = AiActionType::CREATE_BUILDING_RESOURCE;
+		break;
+	case ParentBuildingType::TECH:
+		actionType = AiActionType::CREATE_BUILDING_TECH;
+		break;
+	case ParentBuildingType::UNITS:
+		actionType = AiActionType::CREATE_BUILDING_UNITS;
+		break;
+	default:
+		actionType = AiActionType::NONE;
+		break;
 	}
 
 	if (type == ParentBuildingType::RESOURCE) {
@@ -494,7 +476,7 @@ bool AiOrchestrator::executeUnitUpgrade(short unitId) {
 	auto buildings = getBuildingsCanDeploy(unitId);
 	if (!buildings.empty()) {
 		Game::getActionCenter()->add(
-			new BuildingActionCommand(buildings[0], BuildingActionType::UNIT_LEVEL, unitId));
+				new BuildingActionCommand(buildings[0], BuildingActionType::UNIT_LEVEL, unitId));
 		history->addAction(AiActionType::UPGRADE_UNIT, AiActionResult::SUCCESS);
 		return true;
 	}
@@ -513,7 +495,7 @@ bool AiOrchestrator::executeBuildingUpgrade(short buildingId) {
 		return false;
 	}
 	Game::getActionCenter()->add(
-		new UpgradeCommand(playerId, buildingId, QueueActionType::BUILDING_LEVEL));
+			new UpgradeCommand(playerId, buildingId, QueueActionType::BUILDING_LEVEL));
 	history->addAction(AiActionType::UPGRADE_BUILDING, AiActionResult::SUCCESS);
 	return true;
 }
@@ -528,11 +510,7 @@ std::vector<db_unit*> AiOrchestrator::resolveUnit(const UnitOutput& unitOutput) 
 	auto& units = nation->units;
 	std::vector<db_unit*> candidates;
 	candidates.reserve(units.size());
-	for (auto unit : units) {
-		if (!unit->typeWorker) {
-			candidates.push_back(unit);
-		}
-	}
+	for (auto unit : units) { if (!unit->typeWorker) { candidates.push_back(unit); } }
 	if (candidates.empty()) { return {}; }
 
 	std::valarray<float> center(unitOutput.unitProfile.data(), unitOutput.unitProfile.size());
@@ -544,9 +522,7 @@ std::vector<db_unit*> AiOrchestrator::resolveUnit(const UnitOutput& unitOutput) 
 
 	std::vector<db_unit*> result;
 	result.reserve(unitOutput.count);
-	for (const auto inx : lowestWithRand(diffs, unitOutput.count)) {
-		result.push_back(candidates[inx]);
-	}
+	for (const auto inx : lowestWithRand(diffs, unitOutput.count)) { result.push_back(candidates[inx]); }
 	return result;
 }
 
@@ -555,9 +531,7 @@ db_unit* AiOrchestrator::resolveUnitUpgrade(const UnitOutput& unitOutput) {
 	std::vector<db_unit*> candidates;
 	candidates.reserve(units.size());
 	for (auto unit : units) {
-		if (!unit->typeWorker && player->getNextLevelForUnit(unit->id).has_value()) {
-			candidates.push_back(unit);
-		}
+		if (!unit->typeWorker && player->getNextLevelForUnit(unit->id).has_value()) { candidates.push_back(unit); }
 	}
 	if (candidates.empty()) { return nullptr; }
 
@@ -577,9 +551,7 @@ db_building* AiOrchestrator::resolveBuildingUpgrade(const UnitOutput& unitOutput
 	candidates.reserve(buildings.size());
 	for (auto building : buildings) {
 		if (building->parentType[static_cast<int>(ParentBuildingType::UNITS)]
-			&& player->getNextLevelForBuilding(building->id).has_value()) {
-			candidates.push_back(building);
-		}
+			&& player->getNextLevelForBuilding(building->id).has_value()) { candidates.push_back(building); }
 	}
 	if (candidates.empty()) { return nullptr; }
 
@@ -606,11 +578,7 @@ db_building* AiOrchestrator::resolveBuildingUpgrade(const UnitOutput& unitOutput
 }
 
 db_unit* AiOrchestrator::resolveWorkerUpgrade() {
-	for (auto* worker : nation->workers) {
-		if (player->getNextLevelForUnit(worker->id).has_value()) {
-			return worker;
-		}
-	}
+	for (auto* worker : nation->workers) { if (player->getNextLevelForUnit(worker->id).has_value()) { return worker; } }
 	return nullptr;
 }
 
@@ -620,9 +588,7 @@ db_building* AiOrchestrator::resolveResBuildingUpgrade(const EconomyOutput& econ
 	candidates.reserve(buildings.size());
 	for (auto* building : buildings) {
 		if (building->parentType[static_cast<int>(ParentBuildingType::RESOURCE)]
-			&& player->getNextLevelForBuilding(building->id).has_value()) {
-			candidates.push_back(building);
-		}
+			&& player->getNextLevelForBuilding(building->id).has_value()) { candidates.push_back(building); }
 	}
 	if (candidates.empty()) { return nullptr; }
 	if (candidates.size() == 1) { return candidates[0]; }
@@ -651,8 +617,12 @@ db_building* AiOrchestrator::resolveResBuildingUpgrade(const EconomyOutput& econ
 			if (building->typeResourceStone) { weight += std::max(0.f, econOutput.needBonusStone); }
 			if (building->typeResourceGold) { weight += std::max(0.f, econOutput.needBonusGold); }
 		}
-		if (building->toResource >= 0 && level->spawnResourceRange <= 0) { weight += std::max(0.f, econOutput.needFoodSource); }
-		if (building->toResource >= 0 && level->spawnResourceRange > 0) { weight += std::max(0.f, econOutput.needWoodSource); }
+		if (building->toResource >= 0 && level->spawnResourceRange <= 0) {
+			weight += std::max(0.f, econOutput.needFoodSource);
+		}
+		if (building->toResource >= 0 && level->spawnResourceRange > 0) {
+			weight += std::max(0.f, econOutput.needWoodSource);
+		}
 
 		weights.push_back(weight);
 	}
@@ -711,9 +681,7 @@ std::vector<Building*> AiOrchestrator::getBuildingsCanDeploy(unsigned short unit
 	std::vector<short> buildingIdsThatCanDeploy;
 	for (const auto building : buildings) {
 		auto unitIds = player->getLevelForBuilding(building->id)->unitsPerNationIds[player->getNation()];
-		if (std::ranges::find(*unitIds, unitId) != unitIds->end()) {
-			buildingIdsThatCanDeploy.push_back(building->id);
-		}
+		if (std::ranges::find(*unitIds, unitId) != unitIds->end()) { buildingIdsThatCanDeploy.push_back(building->id); }
 	}
 	std::vector<Building*> allPossible;
 	for (auto thatCanDeploy : buildingIdsThatCanDeploy) {
@@ -726,9 +694,7 @@ std::vector<Building*> AiOrchestrator::getBuildingsCanDeploy(unsigned short unit
 short AiOrchestrator::findBuildingTypeToDeploy(short unitId) const {
 	for (const auto building : nation->buildings) {
 		auto unitIds = player->getLevelForBuilding(building->id)->unitsPerNationIds[player->getNation()];
-		if (std::ranges::find(*unitIds, unitId) != unitIds->end()) {
-			return building->id;
-		}
+		if (std::ranges::find(*unitIds, unitId) != unitIds->end()) { return building->id; }
 	}
 	return -1;
 }
@@ -751,15 +717,15 @@ std::optional<Urho3D::Vector2> AiOrchestrator::findPosToBuild(db_building* build
 	// Use BuildSpatialBrain to compute influence map weights
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
 	auto spatialOut = buildSpatialBrain.decide(
-		player, enemy,
-		lastMasterOut.buildingUrgency, lastMasterOut.expandUrgency, lastMasterOut.defenceBuildingUrgency
-	);
+			player, enemy,
+			lastMasterOut.buildingUrgency, lastMasterOut.expandUrgency, lastMasterOut.defenceBuildingUrgency
+			);
 	return Game::getEnvironment()->getPosToCreate(
-		std::span<const float>(spatialOut.weights), type, building, playerId);
+			std::span<const float>(spatialOut.weights), type, building, playerId);
 }
 
 Building* AiOrchestrator::getBuildingClosestArea(std::vector<Building*>& allPossible,
-                                                  std::span<const float> weights, int minAreas) const {
+                                                 std::span<const float> weights, int minAreas) const {
 	auto centers = Game::getEnvironment()->getAreas(playerId, weights, minAreas);
 	float closestVal = std::numeric_limits<float>::max();
 	Building* closest = allPossible[0];
@@ -780,9 +746,7 @@ Building* AiOrchestrator::getBuildingClosestArea(std::vector<Building*>& allPoss
 std::vector<db_building*> AiOrchestrator::getBuildingsInType(ParentBuildingType type) {
 	std::vector<db_building*> buildings;
 	for (auto dbBuilding : nation->buildings) {
-		if (dbBuilding->parentType[castC(type)]) {
-			buildings.push_back(dbBuilding);
-		}
+		if (dbBuilding->parentType[castC(type)]) { buildings.push_back(dbBuilding); }
 	}
 	return buildings;
 }
@@ -801,7 +765,7 @@ bool AiOrchestrator::enoughResources(const db_with_cost* withCosts) const {
 
 // --- Worker collection ---
 
-void AiOrchestrator::collectWorkers() {
+void AiOrchestrator::menageWorkers() {
 	auto freeWorkers = findFreeWorkers();
 
 	// Use economy brain's resource priorities to decide which resource to collect
@@ -831,7 +795,6 @@ void AiOrchestrator::collectWorkers() {
 
 	// For each free worker, assign to highest-priority resource that has a nearby source
 	for (auto* worker : freeWorkers) {
-
 		bool assigned = false;
 		for (int resId : order) {
 			auto* closest = closestInRange(worker, resId);
@@ -839,7 +802,7 @@ void AiOrchestrator::collectWorkers() {
 				auto orderType = static_cast<AiOrderType>(
 					static_cast<uint8_t>(AiOrderType::COLLECT_RESOURCE_0) + resId);
 				Game::getActionCenter()->addUnitAction(
-					new IndividualOrder(worker, UnitAction::COLLECT, closest));
+						new IndividualOrder(worker, UnitAction::COLLECT, closest));
 				history->addOrder(orderType, AiOrderResult::SUCCESS, 1);
 				assigned = true;
 				break;
@@ -867,9 +830,7 @@ Physical* AiOrchestrator::closestInRange(Unit* worker, int resourceId) {
 	for (const auto radius : {64.f, 128.f, 256.f}) {
 		const auto list = env->getResources(worker->getPosition(), resourceId, radius, prevRadius);
 		const auto closest = env->closestPhysical(worker->getMainGridIndex(), list, belowClose, false);
-		if (closest) {
-			return closest;
-		}
+		if (closest) { return closest; }
 		prevRadius = radius;
 	}
 	return nullptr;

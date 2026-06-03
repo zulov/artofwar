@@ -46,7 +46,7 @@ public:
 
 private:
 	// WantList execution callbacks
-	bool executeWorker();
+	bool executeWorker(short unitId);
 	bool executeUnit(short unitId);
 	bool executeBuilding(short buildingId);
 	bool executeUnitUpgrade(short unitId);
@@ -82,7 +82,7 @@ private:
 	bool enoughResources(const db_with_cost* withCosts) const;
 
 	// Worker collection
-	void collectWorkers();
+	void menageWorkers();
 	std::vector<Unit*> findFreeWorkers() const;
 	Physical* closestInRange(Unit* worker, int resourceId);
 	UnitOrder* unitOrderCollect(std::vector<Unit*>& workers, Physical* closest) const;

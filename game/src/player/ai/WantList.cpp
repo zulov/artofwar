@@ -12,7 +12,7 @@ void WantList::resetRequests() {
 	}
 }
 
-void WantList::addRequest(WantItemType type, float priority, unsigned char count, short specificId) {
+void WantList::addRequest(WantItemType type, float priority, short specificId, unsigned char count) {
 	for (auto& item : items) {
 		if (item.type == type && item.specificId == specificId) {
 			item.active = true;
@@ -21,7 +21,7 @@ void WantList::addRequest(WantItemType type, float priority, unsigned char count
 			return;
 		}
 	}
-	items.push_back(WantItem(priority, type, count, specificId));
+	items.emplace_back(priority, type, count, specificId);
 }
 
 void WantList::boostOrDecay() {

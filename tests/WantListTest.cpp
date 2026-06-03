@@ -40,7 +40,7 @@ TEST_F(WantListFixture, AddRequestCreatesItem) {
 }
 
 TEST_F(WantListFixture, AddRequestWithSpecificIdAndCount) {
-	wl.addRequest(WantItemType::BUILDING, 0.8f, 2, 42);
+	wl.addRequest(WantItemType::BUILDING, 0.8f, 42, 2);
 
 	ASSERT_EQ(wl.getItemCount(), 1);
 	const auto& item = wl.getItems()[0];
@@ -50,11 +50,11 @@ TEST_F(WantListFixture, AddRequestWithSpecificIdAndCount) {
 }
 
 TEST_F(WantListFixture, AddRequestReactivatesExistingMatch) {
-	wl.addRequest(WantItemType::UNIT, 0.5f, 1, 7);
+	wl.addRequest(WantItemType::UNIT, 0.5f, 7,1);
 	wl.resetRequests();
 	EXPECT_FALSE(wl.getItems()[0].active);
 
-	wl.addRequest(WantItemType::UNIT, 0.9f, 3, 7);
+	wl.addRequest(WantItemType::UNIT, 0.9f, 7, 3);
 
 	ASSERT_EQ(wl.getItemCount(), 1);
 	const auto& item = wl.getItems()[0];
@@ -64,28 +64,28 @@ TEST_F(WantListFixture, AddRequestReactivatesExistingMatch) {
 }
 
 TEST_F(WantListFixture, AddRequestCreatesNewForDifferentId) {
-	wl.addRequest(WantItemType::UNIT, 0.5f, 1, 7);
-	wl.addRequest(WantItemType::UNIT, 0.6f, 1, 8);
+	wl.addRequest(WantItemType::UNIT, 0.5f,7, 1);
+	wl.addRequest(WantItemType::UNIT, 0.6f,8, 1);
 	EXPECT_EQ(wl.getItemCount(), 2);
 }
 
 TEST_F(WantListFixture, AddRequestCreatesNewForDifferentType) {
-	wl.addRequest(WantItemType::UNIT, 0.5f, 1, -1);
-	wl.addRequest(WantItemType::WORKER, 0.5f, 1, -1);
+	wl.addRequest(WantItemType::UNIT, 0.5f, -1,1);
+	wl.addRequest(WantItemType::WORKER, 0.5f,-1, 1);
 	EXPECT_EQ(wl.getItemCount(), 2);
 }
 
 TEST_F(WantListFixture, AddAlwaysAccepted) {
 	for (int i = 0; i < WantList::MAX_ITEMS + 5; ++i) {
-		wl.addRequest(WantItemType::UNIT, 0.5f, 1, static_cast<short>(i));
+		wl.addRequest(WantItemType::UNIT, 0.5f, static_cast<short>(i));
 	}
 	EXPECT_EQ(wl.getItemCount(), WantList::MAX_ITEMS + 5);
 }
 
 TEST_F(WantListFixture, BeginTickMarksAllInactive) {
 	wl.addRequest(WantItemType::WORKER, 0.5f);
-	wl.addRequest(WantItemType::UNIT, 0.6f, 1, 1);
-	wl.addRequest(WantItemType::BUILDING, 0.9f, 1, 5);
+	wl.addRequest(WantItemType::UNIT, 0.6f,  1);
+	wl.addRequest(WantItemType::BUILDING, 0.9f, 5);
 
 	wl.resetRequests();
 
@@ -106,8 +106,8 @@ TEST_F(WantListFixture, SameTypeDefaultIdReactivates) {
 }
 
 TEST_F(WantListFixture, DifferentSpecificIdCreatesNew) {
-	wl.addRequest(WantItemType::BUILDING, 0.5f, 1, 1);
-	wl.addRequest(WantItemType::BUILDING, 0.5f, 1, 2);
+	wl.addRequest(WantItemType::BUILDING, 0.5f, 1);
+	wl.addRequest(WantItemType::BUILDING, 0.5f, 2);
 	EXPECT_EQ(wl.getItemCount(), 2);
 }
 
@@ -116,11 +116,11 @@ TEST_F(WantListFixture, DifferentSpecificIdCreatesNew) {
 TEST_F(WantListFixture, MultipleTickCyclesAccumulateItems) {
 	wl.resetRequests();
 	wl.addRequest(WantItemType::WORKER, 0.5f);
-	wl.addRequest(WantItemType::UNIT, 0.6f, 2, 10);
+	wl.addRequest(WantItemType::UNIT, 0.6f,10,2);
 
 	wl.resetRequests();
 	wl.addRequest(WantItemType::WORKER, 0.7f);
-	wl.addRequest(WantItemType::BUILDING, 0.8f, 1, 5);
+	wl.addRequest(WantItemType::BUILDING, 0.8f, 5);
 
 	ASSERT_EQ(wl.getItemCount(), 3);
 
