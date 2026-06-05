@@ -15,7 +15,7 @@
 #include "env/influence/CenterType.h"
 
 MasterBrain::MasterBrain(db_nation* nation)
-	: brain(BrainProvider::get(nation->actionPrefix[0] + "master.csv")) {
+	: brain(BrainProvider::get(nation->actionPrefix[0] + "master.csv")), nation(nation) {
 	assert(brain->getInputSize() == inputData.size());
 	assert(brain->getInputSize() == magic_enum::enum_count<MasterInputIdx>());
 	assert(brain->getOutputSize() == magic_enum::enum_count<MasterOutputIdx>());
@@ -85,7 +85,8 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 	float lost = enemyPossession->getValueDestroyed();
 	inputData[idx(I::KD_RATIO)] = norm(killed, std::max(killed + lost, 1.f));
 	inputData[idx(I::IN_COMBAT_RATIO)] = possession->getInCombatRatio();
-	inputData[idx(I::TECH_LEVEL)] = 0.f; //TODO implement — no tech API exists yet
+	// Overall tech progress: pooled average upgrade level across all units and buildings ([0,1]).
+	inputData[idx(I::TECH_LEVEL)] = avgTechLevel(nation->units, nation->buildings, player);
 
 	// History inputs (lookback ~30 seconds at 30 ticks/s = 900 ticks)
 	constexpr unsigned int LOOKBACK = 900;

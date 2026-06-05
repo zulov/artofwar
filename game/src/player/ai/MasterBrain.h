@@ -82,6 +82,8 @@ private:
 	Brain* brain;
 	std::array<float, magic_enum::enum_count<MasterInputIdx>()> inputData{};
 
+	db_nation* nation;
+
 	// History for deltas, should be loaded from save
 	int prevScore = 0;
 	int prevEnemyScore = 0;

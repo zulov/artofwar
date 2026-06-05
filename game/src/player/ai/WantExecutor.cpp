@@ -49,7 +49,7 @@ bool WantExecutor::execute(WantItem& item) {
 }
 
 const db_with_cost* WantExecutor::cost(const WantItem& item) const {
-	if (item.specificId) { return nullptr; }
+	if (item.specificId < 0) { return nullptr; }
 
 	switch (item.type) {
 	case WantItemType::WORKER:
@@ -60,8 +60,10 @@ const db_with_cost* WantExecutor::cost(const WantItem& item) const {
 		return Game::getDatabase()->getBuilding(item.specificId);
 	case WantItemType::UNIT_UPGRADE:
 		if (auto nextLevel = player->getNextLevelForUnit(item.specificId)) { return *nextLevel; }
+		return nullptr;
 	case WantItemType::BUILDING_UPGRADE:
 		if (auto bNextLevel = player->getNextLevelForBuilding(item.specificId)) { return *bNextLevel; }
+		return nullptr;
 	}
 	return nullptr;
 }
@@ -69,8 +71,8 @@ const db_with_cost* WantExecutor::cost(const WantItem& item) const {
 // --- Execution ---
 
 bool WantExecutor::executeWorker(short unitId) {
-	if (nation->workers.empty()) { return false; }
-	auto* unit = nation->workers.at(0);
+	if (unitId < 0) { return false; }
+	auto* unit = Game::getDatabase()->getUnit(unitId);
 	if (Building* building = getBuildingToDeployWorker(unit)) {
 		Game::getActionCenter()->add(
 				new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id));

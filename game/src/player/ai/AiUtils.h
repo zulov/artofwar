@@ -28,6 +28,10 @@ float avgUnitLevel(const std::vector<db_unit*>& units, Player* player,
 float avgBuildingLevel(const std::vector<db_building*>& buildings, Player* player,
                        ParentBuildingType type);
 
+// Overall tech progress: pooled average upgrade level across ALL units and ALL buildings,
+// each normalized per-type by its max level. Returns [0, 1].
+float avgTechLevel(const std::vector<db_unit*>& units, const std::vector<db_building*>& buildings, Player* player);
+
 inline bool randFromTwo(float val) {
 	return val + 1.f > RandGen::nextRand(RandFloatType::AI, 2.f);
 }
