@@ -110,9 +110,9 @@ void Controls::selectOne(Physical* entity, char player) {
 	}
 }
 
-void Controls::select(const std::vector<Physical*>* entities) {
+void Controls::select(const std::vector<Physical*>& entities) {
 	auto player = Game::getPlayersMan()->getActivePlayerID();
-	for (const auto physical : *entities) { selectOne(physical, player); }
+	for (const auto physical : entities) { selectOne(physical, player); }
 	updateAdditionalInfo();
 }
 

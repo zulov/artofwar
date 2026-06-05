@@ -48,7 +48,6 @@ public:
 	void createLackingUnitBuilding();
 	AiOrchestrator(const AiOrchestrator&) = delete;
 
-	void createUnits(const UnitOutput& unitOut);
 	void action();
 	void order();
 

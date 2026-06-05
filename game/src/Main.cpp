@@ -500,7 +500,7 @@ void Main::HandleSelectedButton(Urho3D::StringHash eventType, Urho3D::VariantMap
 	controls->unSelectAll();
 	const auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	auto sHudElement = static_cast<SelectedHudElement*>(element->GetVar("SelectedHudElement").GetVoidPtr());
-	controls->select(&sHudElement->getSelected());
+	controls->select(sHudElement->getSelected());
 }
 
 void Main::HandleKeyDown(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eventData) {

@@ -23,24 +23,20 @@ Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolut
 	sparseUnitGrid((short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256.f),
 	terrain(terrain), influenceManager(MAX_PLAYERS, mapSize, terrain),
 	calculator(GridCalculatorProvider::get(mainMapResolution, mapSize)) {
-	neights = new std::vector<Physical*>();
-
 	auto a = {160, 192, 256, 320, 384, 512};
 	assert(std::ranges::any_of(a, [mainMapResolution](int i) {return mainMapResolution == i; }));
 }
 
 
-Environment::~Environment() {
-	delete neights;
-}
+Environment::~Environment() = default;
 
-std::vector<Physical*>* Environment::getNeighboursFromSparseSamePlayer(Physical* physical, const float radius,
+const std::vector<Physical*>& Environment::getNeighboursFromSparseSamePlayer(Physical* physical, const float radius,
                                                                        char player) {
 	return getNeighbours(physical, sparseUnitGrid, radius,
 	                     [player](const Physical* thing) { return thing->getPlayer() == player && thing->isAlive(); });
 }
 
-std::vector<Physical*>* Environment::getNeighboursFromTeamNotEq(Physical* physical, const float radius) {
+const std::vector<Physical*>& Environment::getNeighboursFromTeamNotEq(Physical* physical, const float radius) {
 	auto player = physical->getPlayer();
 
 	return getNeighbours(physical, sparseUnitGrid, radius,
@@ -94,9 +90,9 @@ short Environment::getOccupationLevel(int index) const {
 	return mainGrid.getGradient(index);
 }
 
-std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
+const std::vector<Physical*>& Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
                                                    const std::function<bool(Physical*)>& condition) const {
-	neights->clear();
+	neights.clear();
 	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getPosition(), radius);
 	const float sqRadius = radius * radius;
 
@@ -108,15 +104,15 @@ std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& buc
 	return neights;
 }
 
-std::vector<Physical*>* Environment::getResources(const Urho3D::Vector2& center, float radius) {
-	neights->clear();
+const std::vector<Physical*>& Environment::getResources(const Urho3D::Vector2& center, float radius) {
+	neights.clear();
 
 	BucketIterator& bucketIterator = resourceStaticGrid.getArrayNeight(center, radius);
 	const float sqRadius = radius * radius;
 
 	while (Physical* neight = bucketIterator.next()) {
 		if (center.SqDistXZ(neight->getPosition()) <= sqRadius) {
-			neights->push_back(neight);
+			neights.push_back(neight);
 		}
 	}
 
@@ -127,22 +123,22 @@ void Environment::addIfInRange(const Physical* physical, Physical* neight, const
                                const std::function<bool(Physical*)>& condition) const {
 	if (physical != neight && condition(neight)
 		&& physical->getPosition().SqDistXZ( neight->getPosition()) < sqRadius) {
-		neights->push_back(neight);
+		neights.push_back(neight);
 	}
 }
 
 void Environment::addIfInRange(const Physical* physical, Physical* neight, const float sqRadius) const {
 	if (physical != neight
 		&& physical->getPosition().SqDistXZ( neight->getPosition()) < sqRadius) {
-		neights->push_back(neight);
+		neights.push_back(neight);
 	}
 }
 
-std::vector<Physical*>* Environment::getNeighbours(Unit* unit, float radius) {
+const std::vector<Physical*>& Environment::getNeighbours(Unit* unit, float radius) {
 	return getNeighbours(unit, mainGrid, radius, [](const Physical*) { return true; });
 }
 
-std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float radius) {
+const std::vector<Physical*>& Environment::getNeighboursWithCache(Unit* unit, float radius) {
 	const auto currentIdx = unit->getMainGridIndex();
 	assert(currentIdx>=0);
 	if (mainGrid.onlyOneInside(currentIdx)) {
@@ -152,33 +148,33 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 
 	const float sqRadius = radius * radius;
 
-	neights->clear();
+	neights.clear();
 	auto pred = [sqRadius,unit](const Physical* neight) {
 		return (unit != neight && unit->getPosition().SqDistXZ( neight->getPosition()) < sqRadius);
 	};
-	std::ranges::copy_if(*simpleNeight, std::back_inserter(*neights), pred);
+	std::ranges::copy_if(*simpleNeight, std::back_inserter(neights), pred);
 
 	return neights;
 }
 
-const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clicked) const {
+const std::vector<Physical*>& Environment::getNeighboursSimilarAs(Physical* clicked) const {
 	if (!clicked) {
-		return &Consts::EMPTY_PHYSICAL;
+		return Consts::EMPTY_PHYSICAL;
 	}
 
-	return grids[castC(clicked->getType())]->getArrayNeightSimilarAs(clicked, 20.f);
+	return *grids[castC(clicked->getType())]->getArrayNeightSimilarAs(clicked, 20.f);
 }
 
-std::vector<Physical*>*
+const std::vector<Physical*>&
 Environment::getResources(const Urho3D::Vector2& center, int id, float radius, float prevRadius) {
 	const float sqRadius = radius * radius;
 	const float sqPrevRadius = prevRadius < 0.f ? prevRadius : prevRadius * prevRadius;
-	neights->clear();
+	neights.clear();
 	for (auto neight : resourceStaticGrid.get(center, radius)) {
 		if (id == -1 || id == neight->getDbId()) {
 			auto dist = center.SqDistXZ(neight->getPosition());
 			if (dist <= sqRadius && dist > sqPrevRadius) {
-				neights->push_back(neight);
+				neights.push_back(neight);
 			}
 		}
 	}
@@ -186,7 +182,7 @@ Environment::getResources(const Urho3D::Vector2& center, int id, float radius, f
 	return neights;
 }
 
-std::vector<Physical*>*
+const std::vector<Physical*>&
 Environment::getBuildingsFromTeamNotEq(Physical* physical, int id, float radius) {
 	auto team = physical->getTeam();
 	auto condition = [id, team](const Physical* physical) {
@@ -289,14 +285,14 @@ std::optional<Urho3D::Vector2> Environment::validatePosition(int index, const Ur
 	return mainGrid.getDirectionFrom(index, position);
 }
 
-const std::vector<Physical*>* Environment::getNeighbours(MouseHeld& held, char player) {
+const std::vector<Physical*>& Environment::getNeighbours(MouseHeld& held, char player) {
 	for (const auto grid : grids) {
 		const auto result = grid->getArrayNeight(held, player);
 		if (!result->empty()) {
-			return result;
+			return *result;
 		}
 	}
-	return &Consts::EMPTY_PHYSICAL;
+	return Consts::EMPTY_PHYSICAL;
 }
 
 float Environment::getGroundHeightAt(float x, float z) const {
@@ -543,17 +539,17 @@ Urho3D::Vector2 Environment::getPosFromPercent(float x, float z) const {
 	return {getPosFromPercent(x), getPosFromPercent(z)};
 }
 
-Physical* Environment::closestPhysical(int startIdx, const std::vector<Physical*>* things,
+Physical* Environment::closestPhysical(int startIdx, const std::vector<Physical*>& things,
                                        const std::function<bool(Physical*)>& condition, bool closeEnough) {
-	if (things->empty()) {
+	if (things.empty()) {
 		return nullptr;
 	}
 	std::vector<int> allIndexes;
-	allIndexes.reserve(things->size());
+	allIndexes.reserve(things.size());
 	std::vector<Physical*> thingsFiltered;
-	thingsFiltered.reserve(things->size());
+	thingsFiltered.reserve(things.size());
 
-	for (const auto entity : *things) {
+	for (const auto entity : things) {
 		if (entity->isAlive() && condition(entity)) {
 			//TODO perf ogranizcyc liczbe indeksow, np wybrac jeden dla obiektu
 			entity->addIndexesForUse(allIndexes);
@@ -574,16 +570,16 @@ Physical* Environment::closestPhysical(int startIdx, const std::vector<Physical*
 	return nullptr;
 }
 
-Physical* Environment::closestPhysicalSimple(const Physical* physical, const std::vector<Physical*>* things,
+Physical* Environment::closestPhysicalSimple(const Physical* physical, const std::vector<Physical*>& things,
                                              float range) const {
-	if (things->empty()) {
+	if (things.empty()) {
 		return nullptr;
 	}
 	range *= range;
 	float closestDist = 9999999;
 	Physical* closest = nullptr;
 	const auto center = physical->getPosition();
-	for (const auto entity : *things) {
+	for (const auto entity : things) {
 		const float dist = center.SqDistXZ(entity->getPosition());
 		if (dist < closestDist && dist <= range) {
 			closestDist = dist;

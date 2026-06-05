@@ -48,7 +48,7 @@ public:
 						const auto before = physical->getHealthPercent();
 
 						const auto [value, died] = physical->absorbAttack(
-							unit->getAttackVal(physical) / thingsToInteract.size());//TODO mo¿e nie dzieliæ uzale¿nic od czegoœ?
+							unit->getAttackVal(physical) / thingsToInteract.size());//TODO moï¿½e nie dzieliï¿½ uzaleï¿½nic od czegoï¿½?
 						Game::getEnvironment()->addAttack(unit->getPlayer(), physical->getPosition(), value);
 						if (died) {
 							Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(physical);
@@ -67,10 +67,10 @@ public:
 		}
 	}
 
-	std::vector<Physical*> toCharge(const std::vector<Physical*>* enemies, Unit* unit) const {
+	std::vector<Physical*> toCharge(const std::vector<Physical*>& enemies, Unit* unit) const {
 		std::vector<Physical*> thingsToInteract;
 		const auto sqRange = unit->chargeData->attackRange * unit->chargeData->attackRange;
-		for (auto entity : *enemies) {
+		for (auto entity : enemies) {
 			if (entity->isAlive() && unit->getPosition().SqDistXZ(entity->getPosition()) <= sqRange) {
 				thingsToInteract.push_back(entity);
 			}

@@ -62,10 +62,10 @@ void ResourceEntity::action(ResourceActionType type, char player) {
 	switch (type) {
 	case ResourceActionType::COLLECT: {
 		if (hasAnyFreeSpace()) {
-			const auto neights = Game::getEnvironment()->getNeighboursFromSparseSamePlayer(this, 24, player);
+			const auto& neights = Game::getEnvironment()->getNeighboursFromSparseSamePlayer(this, 24, player);
 			int k = 0;
 			const char limit = belowCloseLimit();
-			for (auto neight : *neights) {
+			for (auto neight : neights) {
 				if (k < limit) {
 					auto unit = static_cast<Unit*>(neight);
 					if (isFreeWorker(unit)) {

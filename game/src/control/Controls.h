@@ -35,7 +35,7 @@ public:
 	void updateAdditionalInfo() const;
 	void setCircle(int i, Urho3D::Vector4 val) const;
 	void resetCircles() const;
-	void select(const std::vector<Physical*>* entities);
+	void select(const std::vector<Physical*>& entities);
 	void selectOne(Physical* entity, char player);
 	void unSelectAll();
 

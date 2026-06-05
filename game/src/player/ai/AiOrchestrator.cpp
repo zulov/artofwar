@@ -316,8 +316,8 @@ void AiOrchestrator::issueAdvance(std::vector<Unit*>& group, const Urho3D::Vecto
 					);
 		} else {
 			const auto unit = subArmy.at(0);
-			auto* things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
-			if (things && !things->empty()) {
+			auto& things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+			if (!things.empty()) {
 				const auto closest = Game::getEnvironment()->closestPhysical(
 						unit->getMainGridIndex(), things, belowClose, true);
 				if (closest) {
@@ -334,8 +334,8 @@ void AiOrchestrator::issueAdvance(std::vector<Unit*>& group, const Urho3D::Vecto
 void AiOrchestrator::issueHold(std::vector<Unit*>& group) {
 	for (auto* unit : group) {
 		if (!isFree(unit)) { continue; }
-		auto* things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
-		if (things && !things->empty()) {
+		auto& things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+		if (!things.empty()) {
 			const auto closest = Game::getEnvironment()->closestPhysical(
 					unit->getMainGridIndex(), things, belowClose, true);
 			if (closest) {
@@ -624,7 +624,7 @@ Physical* AiOrchestrator::closestInRange(Unit* worker, int resourceId) {
 	float prevRadius = -1.f;
 	const auto env = Game::getEnvironment();
 	for (const auto radius : {64.f, 128.f, 256.f}) {
-		const auto list = env->getResources(worker->getPosition(), resourceId, radius, prevRadius);
+		const auto& list = env->getResources(worker->getPosition(), resourceId, radius, prevRadius);
 		const auto closest = env->closestPhysical(worker->getMainGridIndex(), list, belowClose, false);
 		if (closest) { return closest; }
 		prevRadius = radius;

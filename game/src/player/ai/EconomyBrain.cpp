@@ -25,8 +25,8 @@ std::pair<float, float> getNearbySupply(char playerId) {
 	auto* env = Game::getEnvironment();
 	auto center = env->getCenterOf(CenterType::ECON, playerId);
 	if (center.has_value()) {
-		auto* resources = env->getResources(center.value(), SEARCH_RADIUS);
-		for (auto* phys : *resources) {
+		auto& resources = env->getResources(center.value(), SEARCH_RADIUS);
+		for (auto* phys : resources) {
 			auto* resEntity = static_cast<ResourceEntity*>(phys);
 			char resId = resEntity->getResourceId();
 			if (resId == 0) {

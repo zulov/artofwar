@@ -32,14 +32,14 @@ void Force::randSepForce(Urho3D::Vector2& diff) const {
 	diff.ScaleTo(CLOSEST_DIST);
 }
 
-void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Physical*>* neights) {
-	if (neights->empty()) {
+void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, const std::vector<Physical*>& neights) {
+	if (neights.empty()) {
 		return;
 	}
 	Urho3D::Vector2 force;
 	const bool isLeader = Game::getFormationManager()->isLeader(unit);
 
-	const std::span<Unit*> neights2 = std::span((Unit**)neights->data(), neights->size());
+	const std::span<Unit* const> neights2 = std::span((Unit* const*)neights.data(), neights.size());
 	for (const auto neight : neights2) {
 		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;

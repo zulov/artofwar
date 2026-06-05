@@ -31,16 +31,16 @@ public:
 	explicit Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolution);
 	~Environment();
 
-	std::vector<Physical*>* getNeighboursFromSparseSamePlayer(Physical* physical, float radius, char player);
-	std::vector<Physical*>* getNeighboursFromTeamNotEq(Physical* physical, float radius);
+	const std::vector<Physical*>& getNeighboursFromSparseSamePlayer(Physical* physical, float radius, char player);
+	const std::vector<Physical*>& getNeighboursFromTeamNotEq(Physical* physical, float radius);
 
-	std::vector<Physical*>* getNeighboursWithCache(Unit* unit, float radius);
-	const std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
+	const std::vector<Physical*>& getNeighboursWithCache(Unit* unit, float radius);
+	const std::vector<Physical*>& getNeighboursSimilarAs(Physical* clicked) const;
 
-	std::vector<Physical*>* getResources(const Urho3D::Vector2& center, int id, float radius, float prevRadius);
-	std::vector<Physical*>* getResources(const Urho3D::Vector2& center, float radius);
+	const std::vector<Physical*>& getResources(const Urho3D::Vector2& center, int id, float radius, float prevRadius);
+	const std::vector<Physical*>& getResources(const Urho3D::Vector2& center, float radius);
 
-	std::vector<Physical*>* getBuildingsFromTeamNotEq(Physical* physical, int id, float radius);
+	const std::vector<Physical*>& getBuildingsFromTeamNotEq(Physical* physical, int id, float radius);
 
 	void updateInfluenceUnits1(std::vector<Unit*>* units) const;
 	void updateInfluenceUnits2(std::vector<Unit*>* units) const;
@@ -64,7 +64,7 @@ public:
 	Urho3D::Vector2 repulseObstacle(Unit* unit);
 	std::optional<Urho3D::Vector2> validatePosition(int index, const Urho3D::Vector2& position) const;
 
-	const std::vector<Physical*>* getNeighbours(MouseHeld& pair, char player);
+	const std::vector<Physical*>& getNeighbours(MouseHeld& pair, char player);
 
 	float getGroundHeightAt(float x, float z) const;
 	float getGroundHeightAt(const Urho3D::Vector2& pos) const;
@@ -91,9 +91,9 @@ public:
 	content_info* getContentInfo(Urho3D::Vector2 centerPercent, bool checks[], int activePlayer);
 
 	Urho3D::Vector2 getPosFromPercent(float x, float z) const;
-	Physical* closestPhysical(int startIdx, const std::vector<Physical*>* things,
+	Physical* closestPhysical(int startIdx, const std::vector<Physical*>& things,
 	                          const std::function<bool(Physical*)>& condition, bool closeEnough);
-	Physical* closestPhysicalSimple(const Physical* physical, const std::vector<Physical*>* things, float range) const;
+	Physical* closestPhysicalSimple(const Physical* physical, const std::vector<Physical*>& things, float range) const;
 
 	Urho3D::Vector2 getCenter(int index) const;
 
@@ -153,9 +153,9 @@ public:
 	void refreshAllStatic(std::vector<ResourceEntity*>* resources, std::vector<Building*>* buildings);
 	short getOccupationLevel(int index) const;
 private:
-	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
+	const std::vector<Physical*>& getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
 	                                      const std::function<bool(Physical*)>& condition) const;
-	std::vector<Physical*>* getNeighbours(Unit* unit, float radius);
+	const std::vector<Physical*>& getNeighbours(Unit* unit, float radius);
 
 	void addIfInRange(const Physical* physical, Physical* neight, const float sqRadius,
 	                  const std::function<bool(Physical*)>& condition) const;
@@ -171,5 +171,5 @@ private:
 	Grid* grids[3] = {&mainGrid, &buildingGrid, &resourceStaticGrid};
 	GridCalculator* calculator;
 
-	std::vector<Physical*>* neights;
+	mutable std::vector<Physical*> neights;
 };
