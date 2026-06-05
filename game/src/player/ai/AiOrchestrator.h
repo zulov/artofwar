@@ -50,6 +50,11 @@ private:
 	void submitBuildingRequest(float urgency, ParentBuildingType type);
 	void submitBuildingUpgradeRequest(float urgency, ParentBuildingType type);
 
+	// Army control (used by order())
+	std::optional<Urho3D::Vector2> resolveAttackPos(Player* enemy, const AttackSpatialOutput& spatialOut);
+	void issueAdvance(std::vector<Unit*>& group, const Urho3D::Vector2& target);
+	void issueHold(std::vector<Unit*>& group);
+
 	// Unit resolution
 	std::vector<db_unit*> resolveUnit(const UnitOutput& unitOutput);
 	db_unit* resolveUnitUpgrade(const UnitOutput& unitOutput);

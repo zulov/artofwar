@@ -1,5 +1,6 @@
 #include "AiOrchestrator.h"
 
+#include <algorithm>
 #include <cmath>
 #include <limits>
 #include "AiHistory.h"
@@ -35,6 +36,11 @@ namespace {
 	bool isResBonus(db_building* b, db_building_level* l, ResourceType res) {
 		return b->resourceType == cast(res) && l->collect > 0.f && l->resourceRange > 0.f;
 	}
+
+	constexpr float SEMI_CLOSE = 30.f;
+	constexpr float SQ_SEMI_CLOSE = SEMI_CLOSE * SEMI_CLOSE;
+	constexpr float STANCE_ADVANCE = 0.3f;
+	constexpr float STANCE_RETREAT = -0.3f;
 }
 
 
@@ -201,33 +207,23 @@ void AiOrchestrator::order() {
 
 	const auto totalArmy = allArmy.size();
 
+	// Brain guarantees attackRatio + defendRatio <= 1; rounding may still push the
+	// integer counts 1 over the total, so trim defend to keep attack + defend <= total.
 	int attackCount = roundToInt(lastMilOut.attackRatio * totalArmy);
 	int defendCount = roundToInt(lastMilOut.defendRatio * totalArmy);
-
-	// Clamp so attack + defend <= total
 	if (attackCount + defendCount > totalArmy) {
-		float sum = lastMilOut.attackRatio + lastMilOut.defendRatio;
-		if (sum > 0.f) {
-			attackCount = roundToInt((lastMilOut.attackRatio / sum) * totalArmy);
-			defendCount = totalArmy - attackCount;
-		} else {
-			attackCount = 0;
-			defendCount = 0;
-		}
+		defendCount = static_cast<int>(totalArmy) - attackCount;
 	}
 
-	// Resolve target positions
-	auto spatialOut = attackSpatialBrain.decide(
-			player, enemy, lastMilOut,
-			lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency
-			);
-
-	auto attackPosOpt = [&]() -> std::optional<Urho3D::Vector2> {
-		auto areas = Game::getEnvironment()->getAreas(
-				playerId, std::span<const float>(spatialOut.weights), 1);
-		if (!areas.empty()) { return areas[0]; }
-		return Game::getEnvironment()->getCenterOf(CenterType::BUILDING, enemy->getId());
-	}();
+	// Resolve target positions — only run the spatial brain if there are attackers to move
+	std::optional<Urho3D::Vector2> attackPosOpt;
+	if (attackCount > 0) {
+		auto spatialOut = attackSpatialBrain.decide(
+				player, enemy, lastMilOut,
+				lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency
+				);
+		attackPosOpt = resolveAttackPos(enemy, spatialOut);
+	}
 
 	auto defendPosOpt = Game::getEnvironment()->getCenterOf(CenterType::BUILDING, playerId);
 
@@ -243,7 +239,7 @@ void AiOrchestrator::order() {
 		});
 	}
 
-	std::vector<Unit*> attackGroup(allArmy.begin(), allArmy.begin() + std::min(attackCount, totalArmy));
+	std::vector<Unit*> attackGroup(allArmy.begin(), allArmy.begin() + std::min(attackCount, static_cast<int>(totalArmy)));
 	std::vector<Unit*> remaining(allArmy.begin() + static_cast<int>(attackGroup.size()), allArmy.end());
 
 	if (defendPosOpt.has_value() && defendCount > 0 && !remaining.empty()) {
@@ -254,54 +250,6 @@ void AiOrchestrator::order() {
 
 	std::vector<Unit*> defendGroup(remaining.begin(),
 	                               remaining.begin() + std::min(defendCount, static_cast<int>(remaining.size())));
-
-	constexpr float SEMI_CLOSE = 30.f;
-	constexpr float SQ_SEMI_CLOSE = SEMI_CLOSE * SEMI_CLOSE;
-	constexpr float STANCE_ADVANCE = 0.3f;
-	constexpr float STANCE_RETREAT = -0.3f;
-
-	// Helper: advance group toward target, attack when close
-	auto issueAdvance = [&](std::vector<Unit*>& group, const Urho3D::Vector2& target) {
-		for (auto& subArmy : divide(group)) {
-			auto armyCenter = computeCenter(subArmy);
-			if (armyCenter.SqDistXZ(target) > SQ_SEMI_CLOSE) {
-				Game::getActionCenter()->addUnitAction(
-						subArmy.size() > 1
-						? static_cast<UnitOrder*>(new GroupOrder(subArmy, UnitActionType::ORDER, castC(UnitAction::GO),
-						                                         target))
-						: static_cast<UnitOrder*>(new IndividualOrder(subArmy.at(0), UnitAction::GO, target))
-						);
-			} else {
-				const auto unit = subArmy.at(0);
-				auto* things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
-				if (things && !things->empty()) {
-					const auto closest = Game::getEnvironment()->closestPhysical(
-							unit->getMainGridIndex(), things, belowClose, true);
-					if (closest) {
-						Game::getActionCenter()->addUnitAction(
-								new GroupOrder(subArmy, UnitActionType::ORDER,
-								               castC(UnitAction::ATTACK), closest));
-					}
-				}
-			}
-		}
-	};
-
-	// Helper: hold — only free units engage nearby enemies
-	auto issueHold = [&](std::vector<Unit*>& group) {
-		for (auto* unit : group) {
-			if (!isFree(unit)) { continue; }
-			auto* things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
-			if (things && !things->empty()) {
-				const auto closest = Game::getEnvironment()->closestPhysical(
-						unit->getMainGridIndex(), things, belowClose, true);
-				if (closest) {
-					Game::getActionCenter()->addUnitAction(
-							new IndividualOrder(unit, UnitAction::ATTACK, closest));
-				}
-			}
-		}
-	};
 
 	// Issue orders for attack group
 	if (!attackGroup.empty() && attackPosOpt.has_value()) {
@@ -331,6 +279,56 @@ void AiOrchestrator::order() {
 			issueAdvance(defendGroup, defendPosOpt.value());
 		}
 		history->addOrder(AiOrderType::DEFEND_ECON, AiOrderResult::SUCCESS, static_cast<uint8_t>(defendGroup.size()));
+	}
+}
+
+std::optional<Urho3D::Vector2> AiOrchestrator::resolveAttackPos(Player* enemy, const AttackSpatialOutput& spatialOut) {
+	auto areas = Game::getEnvironment()->getAreas(
+			playerId, std::span<const float>(spatialOut.weights), 1);
+	if (!areas.empty()) { return areas[0]; }
+	return Game::getEnvironment()->getCenterOf(CenterType::BUILDING, enemy->getId());
+}
+
+// Advance group toward target, attack when close
+void AiOrchestrator::issueAdvance(std::vector<Unit*>& group, const Urho3D::Vector2& target) {
+	for (auto& subArmy : divide(group)) {
+		auto armyCenter = computeCenter(subArmy);
+		if (armyCenter.SqDistXZ(target) > SQ_SEMI_CLOSE) {
+			Game::getActionCenter()->addUnitAction(
+					subArmy.size() > 1
+					? static_cast<UnitOrder*>(new GroupOrder(subArmy, UnitActionType::ORDER, castC(UnitAction::GO),
+					                                         target))
+					: static_cast<UnitOrder*>(new IndividualOrder(subArmy.at(0), UnitAction::GO, target))
+					);
+		} else {
+			const auto unit = subArmy.at(0);
+			auto* things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+			if (things && !things->empty()) {
+				const auto closest = Game::getEnvironment()->closestPhysical(
+						unit->getMainGridIndex(), things, belowClose, true);
+				if (closest) {
+					Game::getActionCenter()->addUnitAction(
+							new GroupOrder(subArmy, UnitActionType::ORDER,
+							               castC(UnitAction::ATTACK), closest));
+				}
+			}
+		}
+	}
+}
+
+// Hold — only free units engage nearby enemies
+void AiOrchestrator::issueHold(std::vector<Unit*>& group) {
+	for (auto* unit : group) {
+		if (!isFree(unit)) { continue; }
+		auto* things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+		if (things && !things->empty()) {
+			const auto closest = Game::getEnvironment()->closestPhysical(
+					unit->getMainGridIndex(), things, belowClose, true);
+			if (closest) {
+				Game::getActionCenter()->addUnitAction(
+						new IndividualOrder(unit, UnitAction::ATTACK, closest));
+			}
+		}
 	}
 }
 
@@ -553,26 +551,24 @@ void AiOrchestrator::menageWorkers() {
 // (non-negative) needs, using largest-remainder rounding so the targets sum to workerCount.
 std::array<int, 4> AiOrchestrator::computeWorkerTargets(const float (&prefs)[4], int workerCount) const {
 	std::array<int, 4> target = {0, 0, 0, 0};
-	float weight[4];
+
 	float total = 0.f;
-	for (int i = 0; i < 4; ++i) {
-		weight[i] = std::max(0.f, prefs[i]);
-		total += weight[i];
-	}
+	for (float pref : prefs) { total += std::max(0.f, pref); }
 	if (total <= 0.f || workerCount <= 0) { return target; }
 
+	// Floor each share, remembering the fractional remainder for the tie-break below.
 	float frac[4];
-	int assigned = 0;
+	int leftover = workerCount;
 	for (int i = 0; i < 4; ++i) {
-		float raw = weight[i] / total * static_cast<float>(workerCount);
+		const float raw = std::max(0.f, prefs[i]) / total * static_cast<float>(workerCount);
 		target[i] = static_cast<int>(std::floor(raw));
 		frac[i] = raw - static_cast<float>(target[i]);
-		assigned += target[i];
+		leftover -= target[i];
 	}
+
 	// Hand out the remaining workers to the largest fractional parts.
-	for (int leftover = workerCount - assigned; leftover > 0; --leftover) {
-		int best = 0;
-		for (int i = 1; i < 4; ++i) { if (frac[i] > frac[best]) { best = i; } }
+	for (; leftover > 0; --leftover) {
+		const int best = static_cast<int>(std::ranges::max_element(frac) - frac);
 		++target[best];
 		frac[best] = -1.f;
 	}
