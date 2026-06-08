@@ -111,6 +111,7 @@ void AiOrchestrator::createResBuilding() {
 		if (need > 0.1f) { candidates.push_back({need, b->id}); }
 	}
 
+	const size_t keep = std::min<size_t>(candidates.size(), MAX_RES_BUILDING_REQUESTS);
 	std::partial_sort(candidates.begin(), candidates.begin() + keep, candidates.end(),
 	                  [](const Candidate& a, const Candidate& b) { return a.need > b.need; });
 	for (size_t i = 0; i < keep; ++i) {
