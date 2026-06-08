@@ -215,6 +215,7 @@ bool WantExecutor::buildingProducesUnit(db_building* building, unsigned short un
 
 std::vector<Building*> WantExecutor::getBuildingsCanDeploy(unsigned short unitId) const {
 	std::vector<Building*> allPossible;
+	allPossible.reserve(nation->buildings.size());
 	for (const auto building : nation->buildings) {
 		if (buildingProducesUnit(building, unitId)) {
 			std::ranges::copy_if(*possession->getBuildings(building->id),

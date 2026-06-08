@@ -82,9 +82,7 @@ UnitOutput UnitBrain::decide(Player* player, Player* enemy,
 	UnitOutput output{};
 
 	// Unit profile (23-dim) — reused for both production and upgrade matching
-	for (int i = 0; i < UNIT_PROFILE_SIZE; ++i) {
-		output.unitProfile[i] = result[i];
-	}
+	std::copy_n(result.begin(), UNIT_PROFILE_SIZE, output.unitProfile.begin());
 
 	// Upgrade urgencies
 	output.unitUpgradeUrgency = result[static_cast<int>(UnitOutputIdx::UNIT_UPGRADE_URGENCY)];

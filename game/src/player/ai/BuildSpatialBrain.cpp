@@ -1,5 +1,6 @@
 #include "BuildSpatialBrain.h"
 
+#include <algorithm>
 #include "AiUtils.h"
 #include "NormScale.h"
 #include <magic_enum.hpp>
@@ -49,8 +50,6 @@ BuildSpatialOutput BuildSpatialBrain::decide(Player* player, Player* enemy,
 	auto result = brain->decide(inputData);
 
 	BuildSpatialOutput output;
-	for (int i = 0; i < AI_MAP_COUNT; ++i) {
-		output.weights[i] = result[i];
-	}
+	std::copy_n(result.begin(), AI_MAP_COUNT, output.weights.begin());
 	return output;
 }

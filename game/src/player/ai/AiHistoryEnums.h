@@ -41,6 +41,15 @@ enum class AiOrderType : uint8_t {
 	NONE
 };
 
+// The COLLECT_RESOURCE_<n> entries are addressed positionally as
+// AiOrderType(COLLECT_RESOURCE_0 + resourceId) (see AiOrchestrator), so they must
+// stay contiguous, start at 0, and have exactly one entry per ResourceType.
+static_assert(static_cast<uint8_t>(AiOrderType::COLLECT_RESOURCE_0) == 0,
+              "COLLECT_RESOURCE_0 must be the first AiOrderType (positional indexing by resourceId)");
+static_assert(static_cast<uint8_t>(AiOrderType::COLLECT_RESOURCE_3)
+              == static_cast<uint8_t>(AiOrderType::COLLECT_RESOURCE_0) + (RESOURCES_SIZE - 1),
+              "There must be exactly one COLLECT_RESOURCE_<n> entry per ResourceType, contiguous from 0");
+
 enum class AiOrderResult : uint8_t {
 	SUCCESS,
 	NO_RESOURCE_IN_RANGE,

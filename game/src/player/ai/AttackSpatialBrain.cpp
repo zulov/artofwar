@@ -1,5 +1,6 @@
 #include "AttackSpatialBrain.h"
 
+#include <algorithm>
 #include "AiUtils.h"
 #include "NormScale.h"
 #include <magic_enum.hpp>
@@ -53,8 +54,6 @@ AttackSpatialOutput AttackSpatialBrain::decide(Player* player, Player* enemy,
 	auto result = brain->decide(inputData);
 
 	AttackSpatialOutput output;
-	for (int i = 0; i < AI_ARMY_MAP_COUNT; ++i) {
-		output.weights[i] = result[i];
-	}
+	std::copy_n(result.begin(), AI_ARMY_MAP_COUNT, output.weights.begin());
 	return output;
 }

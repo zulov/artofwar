@@ -46,3 +46,9 @@ TEST_F(RandGenFixture, IntRandomValuesRespectProvidedUpperBound) {
 		EXPECT_LT(value, 7);
 	}
 }
+
+TEST_F(RandGenFixture, IntRandomReturnsZeroForNonPositiveBound) {
+	// max <= 0 must not hit the modulo (mod-by-zero is UB); it returns 0 instead.
+	EXPECT_EQ(RandGen::nextRand(RandIntType::SAVE, 0), 0);
+	EXPECT_EQ(RandGen::nextRand(RandIntType::SAVE, -5), 0);
+}

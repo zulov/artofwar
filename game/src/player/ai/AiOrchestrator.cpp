@@ -5,6 +5,7 @@
 #include <limits>
 #include "AiHistory.h"
 #include "AiUtils.h"
+#include "NormScale.h"
 #include "Game.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
@@ -41,6 +42,7 @@ namespace {
 	constexpr float SQ_SEMI_CLOSE = SEMI_CLOSE * SEMI_CLOSE;
 	constexpr float STANCE_ADVANCE = 0.3f;
 	constexpr float STANCE_RETREAT = -0.3f;
+	constexpr int MAX_RES_BUILDING_REQUESTS = 3;
 }
 
 
@@ -85,10 +87,14 @@ void AiOrchestrator::upgradeWorkers() {
 	}
 }
 
-// Resource buildings — for each one, request it with the strongest need it satisfies.
-// NOTE: this requests EVERY matching building. We may later want to limit/shape this per
-// category, e.g. request two bonus-food buildings, or pick the single best one per type.
+
 void AiOrchestrator::createResBuilding() {
+	struct Candidate {
+		float need;
+		unsigned short id;
+	};
+	std::vector<Candidate> candidates;
+
 	for (const auto b : getBuildingsInType(ParentBuildingType::RESOURCE)) {
 		auto* l = player->getLevelForBuilding(b->id);
 		float need = 0.f;
@@ -102,7 +108,13 @@ void AiOrchestrator::createResBuilding() {
 		if (l->goldStorage > 0) { need = std::max(need, lastEconOut.needGoldStorage); }
 		if (l->stoneRefineCapacity > 0.f) { need = std::max(need, lastEconOut.needStoneRefine); }
 		if (l->goldRefineCapacity > 0.f) { need = std::max(need, lastEconOut.needGoldRefine); }
-		if (need > 0.1f) { wantList.addRequest(WantItemType::BUILDING, need, b->id); }
+		if (need > 0.1f) { candidates.push_back({need, b->id}); }
+	}
+
+	std::partial_sort(candidates.begin(), candidates.begin() + keep, candidates.end(),
+	                  [](const Candidate& a, const Candidate& b) { return a.need > b.need; });
+	for (size_t i = 0; i < keep; ++i) {
+		wantList.addRequest(WantItemType::BUILDING, candidates[i].need, candidates[i].id);
 	}
 }
 
@@ -124,7 +136,7 @@ void AiOrchestrator::action() {
 			);
 
 	// 2. Economy Brain (gets lacking feedback)
-	float gameTime = norm(Game::getFrameInfo()->getSeconds(), 600.f); // normalize to ~10 min
+	float gameTime = norm(Game::getFrameInfo()->getSeconds(), NormScale::GAME_TIME_SHORT);
 	lastEconOut = economyBrain.decide(
 			player, enemy,
 			lastLacking.perResource,
@@ -148,7 +160,7 @@ void AiOrchestrator::action() {
 			lastMasterOut.techUrgency, gameTime
 			);
 
-	// 4. Submit requests to WantList
+	// 5. Submit requests to WantList
 	wantList.resetRequests();
 
 	createWorkers();
@@ -188,7 +200,7 @@ void AiOrchestrator::action() {
 
 	createLackingUnitBuilding();
 
-	// 5. Execute WantList
+	// 6. Execute WantList
 	wantExecutor.prepare(lastMasterOut);
 	lastLacking = wantList.execute(player, wantExecutor);
 	lastLacking.lackingBuildingForUnit = wantExecutor.getLackingBuilding();
@@ -215,7 +227,7 @@ void AiOrchestrator::submitBuildingUpgradeRequest(float urgency, ParentBuildingT
 
 void AiOrchestrator::order() {
 	// Worker collection
-	menageWorkers();
+	manageWorkers();
 
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
 
@@ -496,6 +508,7 @@ db_building* AiOrchestrator::resolveBuilding(ParentBuildingType type) {
 
 std::vector<db_building*> AiOrchestrator::getBuildingsInType(ParentBuildingType type) {
 	std::vector<db_building*> buildings;
+	buildings.reserve(nation->buildings.size());
 	for (auto dbBuilding : nation->buildings) {
 		if (dbBuilding->parentType[castC(type)]) { buildings.push_back(dbBuilding); }
 	}
@@ -512,7 +525,7 @@ float AiOrchestrator::dist(std::valarray<float>& center, const db_building_metri
 
 // --- Worker collection ---
 
-void AiOrchestrator::menageWorkers() {
+void AiOrchestrator::manageWorkers() {
 	auto freeWorkers = findFreeWorkers();
 
 	// Use economy brain's resource priorities to decide which resource to collect
@@ -614,6 +627,7 @@ Unit* AiOrchestrator::findReassignableWorker(const std::array<int, 4>& order, co
 
 std::vector<Unit*> AiOrchestrator::findFreeWorkers() const {
 	std::vector<Unit*> freeWorkers;
+	freeWorkers.reserve(possession->getWorkers().size());
 	std::ranges::copy_if(possession->getWorkers(),
 	                     std::back_inserter(freeWorkers),
 	                     isFreeWorker);

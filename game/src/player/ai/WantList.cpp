@@ -2,9 +2,6 @@
 
 #include <algorithm>
 #include <ranges>
-#include "database/db_struct.h"
-#include "player/Player.h"
-#include "player/Resources.h"
 
 void WantList::resetRequests() {
 	for (auto& item : items) {
@@ -50,42 +47,4 @@ void WantList::sortByPriority() {
 	if (static_cast<int>(items.size()) > MAX_ITEMS) {
 		items.resize(MAX_ITEMS);
 	}
-}
-
-void WantList::addLacking(const db_with_cost* cost, Resources* resources, LackingResult& lacking) {
-	if (!cost) { return; }
-	for (int i = 0; i < RESOURCES_SIZE; ++i) {
-		float deficit = static_cast<float>(cost->values[i]) - resources->getValues()[i];
-		if (deficit > 0.f) {
-			lacking.perResource[i] += deficit;
-			lacking.totalSum += deficit;
-		}
-	}
-}
-
-WantList::LackingResult WantList::execute(Player* player, IWantExecutor& executor) {
-	LackingResult lacking{};
-	lacking.reset();
-
-	boostOrDecay();
-	sortByPriority();
-
-	auto* resources = player->getResources();
-
-	for (auto& item : items) {
-		const auto* cost = executor.cost(item);
-
-		for (unsigned char i = 0; i < item.count; ++i) {
-			if (!cost || !resources->hasEnough(cost)) {
-				addLacking(cost, resources, lacking);
-				break;
-			}
-			if (!executor.execute(item)) {
-				break;
-			}
-		}
-	}
-
-	dropDead();
-	return lacking;
 }

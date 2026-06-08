@@ -30,7 +30,7 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 	float deltaEnemyScore = norm(enemy->getScore() - prevEnemyScore, NormScale::SCORE);
 	float deltaUnits = norm(player->getPossession()->getUnitsNumber() - prevUnits, NormScale::ARMY);
 	float deltaRes = norm(resSum - prevResSum, NormScale::RES);
-	float deltaGatherSpeed = norm(gatherSum - prevGatherSum, 20.f);
+	float deltaGatherSpeed = norm(gatherSum - prevGatherSum, NormScale::GATHER_DELTA);
 
 	// Build input array
 	using I = MasterInputIdx;
@@ -72,7 +72,7 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 	inputData[idx(I::DIST_ENEMY_ARMY_ENEMY_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, enemy, 0.f);
 
 	// Lacking feedback
-	inputData[idx(I::TOTAL_LACKING)] = norm(totalLacking, 2000.f);
+	inputData[idx(I::TOTAL_LACKING)] = norm(totalLacking, NormScale::TOTAL_LACKING);
 
 	// Deltas
 	inputData[idx(I::DELTA_SCORE)] = deltaScore;
@@ -100,9 +100,17 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 
 	auto result = brain->decide(inputData);
 
+	using O = MasterOutputIdx;
 	return MasterOutput{
-		result[0], result[1], result[2], result[3],
-		result[4], result[5], result[6], result[7], result[8]
+		result[idx(O::WORKER_URGENCY)],
+		result[idx(O::ECONOMY_URGENCY)],
+		result[idx(O::BUILDING_URGENCY)],
+		result[idx(O::UNIT_URGENCY)],
+		result[idx(O::MILITARY_URGENCY)],
+		result[idx(O::EXPAND_URGENCY)],
+		result[idx(O::TECH_URGENCY)],
+		result[idx(O::DEFENCE_BUILDING_URGENCY)],
+		result[idx(O::ATTACK_URGENCY)]
 	};
 }
 

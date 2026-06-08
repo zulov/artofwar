@@ -2,6 +2,7 @@
 #include <cmath>
 #include <functional>
 #include <vector>
+#include "WeightedSample.h"
 #include "math/RandGen.h"
 #include "math/VectorUtils.h"
 #include "utils/SpanUtils.h"
@@ -37,60 +38,17 @@ inline bool randFromTwo(float val) {
 }
 
 inline int sampleWeighted(std::span<const float> weights, float totalWeight) {
-	if (totalWeight <= 0) { return 0; }
-	const float rand = RandGen::nextRand(RandFloatType::AI, totalWeight);
-	float sum = 0.f;
-	for (int i = 0; i < weights.size(); ++i) {
-		sum += weights[i];
-		if (rand < sum) {
-			return i;
-		}
-	}
-	return static_cast<int>(weights.size()) - 1;
+	return weighted::sample(weights, totalWeight);
 }
 
 inline int biggestWithRand(std::span<const float> vals) {
-	assert(validateSpan(__LINE__, __FILE__, vals));
-	assert(!vals.empty());
-
-	std::vector<float> clamped(vals.begin(), vals.end());
-	for (float& val : clamped) {
-		if (val < 0) {
-			val = 0.f;
-		}
-	}
-	assert(allPositive(__LINE__, __FILE__, clamped));
-	const float max = std::accumulate(clamped.begin(), clamped.end(), 0.f);
-	return sampleWeighted(clamped, max);
+	return weighted::biggest(vals);
 }
 
 inline int lowestWithRand(std::span<const float> diffs) {
-	assert(allPositive(__LINE__, __FILE__, diffs));
-	const float sum = std::accumulate(diffs.begin(), diffs.end(), 0.f);
-
-	std::vector<float> inverted(diffs.begin(), diffs.end());
-	for (float& val : inverted) {
-		val = sum - val;
-	}
-
-	return biggestWithRand(inverted);
+	return weighted::lowest(diffs);
 }
 
 inline std::vector<int> lowestWithRand(std::span<const float> diffs, int count) {
-	assert(allPositive(__LINE__, __FILE__, diffs));
-	const float sum = std::accumulate(diffs.begin(), diffs.end(), 0.f);
-
-	std::vector<float> inverted(diffs.begin(), diffs.end());
-	for (float& val : inverted) {
-		val = sum - val;
-		if (val < 0) { val = 0.f; }
-	}
-
-	const float totalWeight = std::accumulate(inverted.begin(), inverted.end(), 0.f);
-	std::vector<int> result;
-	result.reserve(count);
-	for (int i = 0; i < count; ++i) {
-		result.push_back(sampleWeighted(inverted, totalWeight));
-	}
-	return result;
+	return weighted::lowestN(diffs, count);
 }

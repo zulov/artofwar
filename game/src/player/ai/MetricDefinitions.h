@@ -6,6 +6,7 @@
 #include <magic_enum.hpp>
 
 #include "AiMetric.h"
+#include "UnitBrain.h"
 #include "Game.h"
 #include "env/Environment.h"
 #include "env/influence/CenterType.h"
@@ -218,3 +219,7 @@ inline struct MetricDefinitions {
 constexpr unsigned char BASIC_METRIC_SIZE = magic_enum::enum_count<BasicMetricIdx>();
 constexpr unsigned char UNIT_METRIC_SIZE = magic_enum::enum_count<UnitMetricIdx>();
 constexpr unsigned char BUILDING_METRIC_SIZE = magic_enum::enum_count<BuildingMetricIdx>();
+
+
+static_assert(UNIT_PROFILE_SIZE == UNIT_METRIC_SIZE,
+              "UnitBrain UNIT_PROFILE_SIZE must match the UnitMetricIdx count");

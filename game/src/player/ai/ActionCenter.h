@@ -7,7 +7,6 @@ namespace Urho3D {
 	class Vector2;
 }
 
-enum class QueueActionType : char;
 class UnitOrder;
 class GeneralActionCommand;
 class BuildingActionCommand;

@@ -4,10 +4,8 @@
 #include <cmath>
 
 #include "player/ai/WantList.h"
-#include "player/ai/MasterBrain.h"
-#include "player/ai/EconomyBrain.h"
+#include "player/ai/WantList.cpp"
 #include "player/ai/UnitBrain.h"
-#include "player/ai/MilitaryBrain.h"
 
 // ==========================================
 // WantList unit tests
@@ -146,42 +144,8 @@ TEST_F(WantListFixture, MultipleTickCyclesAccumulateItems) {
 }
 
 // ==========================================
-// WantList::execute integration tests
-// Uses real Player/Resources via game lib
+// UnitOutput / count scaling
 // ==========================================
-
-#include "player/Player.h"
-#include "player/Resources.h"
-#include "database/db_struct.h"
-
-class WantListExecuteFixture : public ::testing::Test {
-protected:
-	WantList wl;
-
-	// Costs for test items
-	db_with_cost cheapCost{10, 10, 0, 0};      // 10 food + 10 wood
-	db_with_cost expensiveCost{900, 900, 900, 900}; // very expensive
-
-	int executeCount = 0;
-
-	// Counts every successful execution.
-	struct CountingExecutor : IWantExecutor {
-		int* counter;
-		const db_with_cost* itemCost;
-		explicit CountingExecutor(int* counter, const db_with_cost* itemCost) :
-			counter(counter), itemCost(itemCost) {}
-		const db_with_cost* cost(const WantItem&) const override { return itemCost; }
-		bool execute(WantItem&) override { ++*counter; return true; }
-	};
-
-	// Always reports failure to execute.
-	struct FailingExecutor : IWantExecutor {
-		const db_with_cost* itemCost;
-		explicit FailingExecutor(const db_with_cost* itemCost) : itemCost(itemCost) {}
-		const db_with_cost* cost(const WantItem&) const override { return itemCost; }
-		bool execute(WantItem&) override { return false; }
-	};
-};
 
 TEST(UnitOutputTest, CountScalingLogic) {
 	// Test the count scaling formula: count = max(1, round(urgency * MAX_UNITS_PER_TICK))
@@ -221,20 +185,32 @@ TEST(UnitOutputTest, CountScalingLogic) {
 // ==========================================
 
 TEST(BoostDecayMathTest, BoostFormulaIncreasesPriorityWithAge) {
-	// boost formula: priority = basePriority * (1 + BOOST_FACTOR * age)
-	float basePri = 0.5f;
-	float boost = WantList::BOOST_FACTOR;
+	// Saturating boost (matches WantList::boostOrDecay):
+	//   priority = basePriority * (1 + BOOST_MAX * age / (age + BOOST_HALF_AGE))
+	constexpr float basePri = 0.5f;
+	auto boosted = [](float base, float age) {
+		const float boost = WantList::BOOST_MAX * age / (age + WantList::BOOST_HALF_AGE);
+		return base * (1.f + boost);
+	};
 
-	float age0 = basePri * (1.f + boost * 0);
-	float age1 = basePri * (1.f + boost * 1);
-	float age2 = basePri * (1.f + boost * 2);
-	float age5 = basePri * (1.f + boost * 5);
+	const float age0 = boosted(basePri, 0.f);
+	const float age1 = boosted(basePri, 1.f);
+	const float age2 = boosted(basePri, 2.f);
+	const float age5 = boosted(basePri, 5.f);
 
-	EXPECT_FLOAT_EQ(age0, 0.5f);        // no boost at age 0
-	EXPECT_GT(age1, age0);               // increases with age
+	EXPECT_FLOAT_EQ(age0, basePri);     // no boost at age 0
+	EXPECT_GT(age1, age0);              // monotonically increases with age
 	EXPECT_GT(age2, age1);
 	EXPECT_GT(age5, age2);
-	EXPECT_NEAR(age1, 0.5f * 2.15f, 1e-5f); // 0.5 * (1 + 1.15) = 1.075
+
+	// At age == BOOST_HALF_AGE the boost is exactly half of BOOST_MAX.
+	const float halfAge = boosted(basePri, WantList::BOOST_HALF_AGE);
+	EXPECT_NEAR(halfAge, basePri * (1.f + WantList::BOOST_MAX / 2.f), 1e-5f);
+
+	// Boost saturates: it can never reach the (1 + BOOST_MAX) ceiling.
+	const float ceiling = basePri * (1.f + WantList::BOOST_MAX);
+	EXPECT_LT(boosted(basePri, 1000.f), ceiling);
+	EXPECT_GT(boosted(basePri, 1000.f), basePri * (1.f + WantList::BOOST_MAX * 0.99f));
 }
 
 TEST(BoostDecayMathTest, DecayReducesPriority) {

@@ -1,6 +1,4 @@
 #pragma once
-#include <functional>
-
 
 class Player;
 class Possession;
@@ -18,35 +16,37 @@ struct AiMetric {
 };
 
 struct AiUnitMetric : AiMetric {
-	std::function<float(db_unit* unit, db_unit_level* level)> fn;
+	using Fn = float (*)(db_unit* unit, db_unit_level* level);
+	Fn fn = nullptr;
 
 	AiUnitMetric() = default;
-	AiUnitMetric(const std::function<float(db_unit* unit, db_unit_level* level)>& fn, float weight = 1.f) : AiMetric(weight), fn(fn) {
+	AiUnitMetric(Fn fn, float weight = 1.f) : AiMetric(weight), fn(fn) {
 	}
 };
 
 struct AiBuildingMetric : AiMetric {
-	std::function<float(db_building* building, db_building_level* level)> fn;
+	using Fn = float (*)(db_building* building, db_building_level* level);
+	Fn fn = nullptr;
 
 	AiBuildingMetric() = default;
-	AiBuildingMetric(const std::function<float(db_building* building, db_building_level* level)>& fn, float weight = 1.f) : AiMetric(weight), fn(fn) {
+	AiBuildingMetric(Fn fn, float weight = 1.f) : AiMetric(weight), fn(fn) {
 	}
 };
 
 struct AiResourceMetric : AiMetric {
-	std::function<float(Resources* resources, Possession* possession)> fn;
+	using Fn = float (*)(Resources* resources, Possession* possession);
+	Fn fn = nullptr;
 
 	AiResourceMetric() = default;
-	AiResourceMetric(const std::function<float(Resources* resources, Possession* possession)>& fn,
-	                 float weight) : AiMetric(weight), fn(fn) {
+	AiResourceMetric(Fn fn, float weight) : AiMetric(weight), fn(fn) {
 	}
 };
 
 struct AiPlayerMetric : AiMetric {
-	std::function<float(Player* one, Player* two)> fn;
+	using Fn = float (*)(Player* one, Player* two);
+	Fn fn = nullptr;
 
 	AiPlayerMetric() = default;
-	AiPlayerMetric(const std::function<float(Player* one, Player* two)>& fn,
-	               float weight = 1.f) : AiMetric(weight), fn(fn) {
+	AiPlayerMetric(Fn fn, float weight = 1.f) : AiMetric(weight), fn(fn) {
 	}
 };

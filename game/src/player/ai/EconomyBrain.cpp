@@ -95,8 +95,8 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::GOLD_REFINE_RATIO)] = goldCap > 0.f ? norm(goldGather, goldCap) : 0.f;
 
 	// Refine gaps (2) — from Resources
-	inputData[idx(I::STONE_REFINE_GAP)] = norm(std::max(0.f, stoneGather - stoneCap), 10.f);
-	inputData[idx(I::GOLD_REFINE_GAP)] = norm(std::max(0.f, goldGather - goldCap), 10.f);
+	inputData[idx(I::STONE_REFINE_GAP)] = norm(std::max(0.f, stoneGather - stoneCap), NormScale::REFINE_GAP);
+	inputData[idx(I::GOLD_REFINE_GAP)] = norm(std::max(0.f, goldGather - goldCap), NormScale::REFINE_GAP);
 
 	// Bonus coverage (4) — from Possession
 	inputData[idx(I::BONUS_COVERAGE_FOOD)] = possession->getBonusCoverage(ResourceType::FOOD);
@@ -106,16 +106,16 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 
 	// Nearby resource supply (2)
 	auto [foodSupply, woodSupply] = getNearbySupply(player->getId());
-	inputData[idx(I::NEARBY_FOOD_SUPPLY)] = norm(foodSupply, 5000.f);
-	inputData[idx(I::NEARBY_WOOD_SUPPLY)] = norm(woodSupply, 5000.f);
-	inputData[idx(I::TOTAL_RES_BUILDINGS)] = norm(possession->getResourceBuildingCount(), 20.f);
-	inputData[idx(I::RES_WO_BONUS)] = norm(possession->getResWithoutBonusSum(), 20.f);
+	inputData[idx(I::NEARBY_FOOD_SUPPLY)] = norm(foodSupply, NormScale::NEARBY_SUPPLY);
+	inputData[idx(I::NEARBY_WOOD_SUPPLY)] = norm(woodSupply, NormScale::NEARBY_SUPPLY);
+	inputData[idx(I::TOTAL_RES_BUILDINGS)] = norm(possession->getResourceBuildingCount(), NormScale::RES_BUILDINGS);
+	inputData[idx(I::RES_WO_BONUS)] = norm(possession->getResWithoutBonusSum(), NormScale::RES_BUILDINGS);
 
 	// Lacking per resource (4)
-	inputData[idx(I::LACKING_FOOD)] = norm(lackingPerResource[0], 500.f);
-	inputData[idx(I::LACKING_WOOD)] = norm(lackingPerResource[1], 500.f);
-	inputData[idx(I::LACKING_STONE)] = norm(lackingPerResource[2], 500.f);
-	inputData[idx(I::LACKING_GOLD)] = norm(lackingPerResource[3], 500.f);
+	inputData[idx(I::LACKING_FOOD)] = norm(lackingPerResource[0], NormScale::LACKING_PER_RES);
+	inputData[idx(I::LACKING_WOOD)] = norm(lackingPerResource[1], NormScale::LACKING_PER_RES);
+	inputData[idx(I::LACKING_STONE)] = norm(lackingPerResource[2], NormScale::LACKING_PER_RES);
+	inputData[idx(I::LACKING_GOLD)] = norm(lackingPerResource[3], NormScale::LACKING_PER_RES);
 
 	// Urgencies from MasterBrain (3)
 	inputData[idx(I::ECONOMY_URGENCY)] = economyUrgency;
@@ -139,9 +139,8 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	auto result = brain->decide(inputData);
 
 	using O = EconomyOutputIdx;
-	constexpr auto o = [](O v) { return static_cast<int>(v); };
 
-	float workerAlloc = result[o(O::WORKER_ALLOCATION)];
+	float workerAlloc = result[idx(O::WORKER_ALLOCATION)];
 	unsigned char workerCount = 0;
 	if (workerAlloc > 0.1f) {
 		int raw = roundToInt(workerAlloc * MAX_WORKERS_PER_TICK);
@@ -150,24 +149,24 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 
 	return EconomyOutput{
 		workerAlloc,
-		workerCount,
-		result[o(O::FOOD_PRIORITY)],
-		result[o(O::WOOD_PRIORITY)],
-		result[o(O::STONE_PRIORITY)],
-		result[o(O::GOLD_PRIORITY)],
-		result[o(O::EXPAND_PRIORITY)],
-		result[o(O::REASSIGN_WORKERS)],
-		result[o(O::NEED_BONUS_FOOD)],
-		result[o(O::NEED_BONUS_WOOD)],
-		result[o(O::NEED_BONUS_STONE)],
-		result[o(O::NEED_BONUS_GOLD)],
-		result[o(O::NEED_FOOD_SOURCE)],
-		result[o(O::NEED_FOOD_STORAGE)],
-		result[o(O::NEED_GOLD_STORAGE)],
-		result[o(O::NEED_GOLD_REFINE)],
-		result[o(O::NEED_STONE_REFINE)],
-		result[o(O::NEED_WOOD_SOURCE)],
-		result[o(O::WORKER_UPGRADE_URGENCY)],
-		result[o(O::RES_BUILDING_UPGRADE_URGENCY)]
+		result[idx(O::FOOD_PRIORITY)],
+		result[idx(O::WOOD_PRIORITY)],
+		result[idx(O::STONE_PRIORITY)],
+		result[idx(O::GOLD_PRIORITY)],
+		result[idx(O::EXPAND_PRIORITY)],
+		result[idx(O::REASSIGN_WORKERS)],
+		result[idx(O::NEED_BONUS_FOOD)],
+		result[idx(O::NEED_BONUS_WOOD)],
+		result[idx(O::NEED_BONUS_STONE)],
+		result[idx(O::NEED_BONUS_GOLD)],
+		result[idx(O::NEED_FOOD_SOURCE)],
+		result[idx(O::NEED_FOOD_STORAGE)],
+		result[idx(O::NEED_GOLD_STORAGE)],
+		result[idx(O::NEED_GOLD_REFINE)],
+		result[idx(O::NEED_STONE_REFINE)],
+		result[idx(O::NEED_WOOD_SOURCE)],
+		result[idx(O::WORKER_UPGRADE_URGENCY)],
+		result[idx(O::RES_BUILDING_UPGRADE_URGENCY)],
+		workerCount
 	};
 }

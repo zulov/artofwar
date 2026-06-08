@@ -79,7 +79,7 @@ private:
 	float dist(std::valarray<float>& center, const db_building_metric* metric, ParentBuildingType type);
 
 	// Worker collection
-	void menageWorkers();
+	void manageWorkers();
 	std::array<int, 4> computeWorkerTargets(const float (&prefs)[4], int workerCount) const;
 	bool tryAssignCollect(Unit* worker, int resId);
 	Unit* findReassignableWorker(const std::array<int, 4>& order, const float (&prefs)[4]) const;

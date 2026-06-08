@@ -17,7 +17,7 @@ Brain::Brain(const std::string& filename, std::vector<LayerData>& layers) :
 
 Brain::~Brain() { clear_vector(allLayers); }
 
-DecideResult Brain::decide(std::span<const float> data) {
+std::span<const float> Brain::decide(std::span<const float> data) {
 	assert(validateSpan(__LINE__, __FILE__, data));
 	bool sameInput = allLayers.front()->setInput(data);
 	if (!sameInput) {

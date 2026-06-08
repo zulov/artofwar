@@ -74,9 +74,8 @@ enum class EconomyOutputIdx : unsigned char {
 	RES_BUILDING_UPGRADE_URGENCY,
 };
 
-struct EconomyOutput {//TODO better names
+struct EconomyOutput {
 	float workerAllocation;
-	unsigned char workerCount;//TODO move last
 
 	float foodPriority;
 	float woodPriority;
@@ -99,6 +98,8 @@ struct EconomyOutput {//TODO better names
 	// Upgrade urgencies
 	float workerUpgradeUrgency;
 	float resBuildingUpgradeUrgency;
+
+	unsigned char workerCount;
 };
 
 class EconomyBrain {

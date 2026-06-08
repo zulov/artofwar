@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "DecideResult.h"
-
 class Layer;
 struct LayerData;
 //TODO remember AVX2 set
@@ -15,7 +13,7 @@ public:
 	Brain(const Brain& rhs) = delete;
 	~Brain();
 
-	DecideResult decide(std::span<const float> data);
+	std::span<const float> decide(std::span<const float> data);
 	std::string getName() const;
 	int getInputSize() const;
 	int getOutputSize() const;

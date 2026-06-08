@@ -405,6 +405,7 @@
     <ClCompile Include="src\player\ai\UnitBrain.cpp" />
     <ClCompile Include="src\player\ai\AiUtils.cpp" />
     <ClCompile Include="src\player\ai\WantList.cpp" />
+    <ClCompile Include="src\player\ai\WantListExecute.cpp" />
     <ClCompile Include="src\player\ai\WantExecutor.cpp" />
   </ItemGroup>
   <ItemGroup>

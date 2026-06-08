@@ -1,6 +1,5 @@
 #pragma once
 #include <array>
-#include <span>
 #include <magic_enum.hpp>
 
 class Brain;
