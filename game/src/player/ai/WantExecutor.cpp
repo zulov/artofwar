@@ -73,7 +73,7 @@ const db_with_cost* WantExecutor::cost(const WantItem& item) const {
 bool WantExecutor::executeWorker(short unitId) {
 	if (unitId < 0) { return false; }
 	auto* unit = Game::getDatabase()->getUnit(unitId);
-	if (Building* building = getBuildingToDeployWorker(unit)) {
+	if (Building* building = pickDeployBuilding(unit, CenterType::ECON)) {
 		Game::getActionCenter()->add(
 				new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id));
 		history->addAction(AiActionType::CREATE_WORKER, AiActionResult::SUCCESS);
@@ -86,7 +86,7 @@ bool WantExecutor::executeWorker(short unitId) {
 bool WantExecutor::executeUnit(short unitId) {
 	if (unitId < 0) { return false; }
 	auto* unit = Game::getDatabase()->getUnit(unitId);
-	if (Building* building = getBuildingToDeploy(unit)) {
+	if (Building* building = pickDeployBuilding(unit, CenterType::ARMY)) {
 		Game::getActionCenter()->add(
 				new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id));
 		history->addAction(AiActionType::CREATE_UNIT, AiActionResult::SUCCESS);
@@ -187,16 +187,15 @@ bool WantExecutor::executeBuildingUpgrade(short buildingId) {
 
 // --- Deployment / placement helpers ---
 
-Building* WantExecutor::getBuildingToDeploy(db_unit* unit) const {
+Building* WantExecutor::pickDeployBuilding(db_unit* unit, CenterType center) const {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
 	if (allPossible.empty()) { return nullptr; }
 	if (allPossible.size() == 1) { return allPossible[0]; }
 
-	// Pick building closest to army center — deploy near the action
-	auto armyCenter = Game::getEnvironment()->getCenterOf(CenterType::ARMY, playerId);
-	if (!armyCenter.has_value()) { return allPossible[0]; }
+	auto centerPos = Game::getEnvironment()->getCenterOf(center, playerId);
+	if (!centerPos.has_value()) { return allPossible[0]; }
 
-	auto target = armyCenter.value();
+	auto target = centerPos.value();
 	Building* best = allPossible[0];
 	float bestDist = std::numeric_limits<float>::max();
 	for (auto* b : allPossible) {
@@ -209,47 +208,25 @@ Building* WantExecutor::getBuildingToDeploy(db_unit* unit) const {
 	return best;
 }
 
-Building* WantExecutor::getBuildingToDeployWorker(db_unit* unit) const {
-	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
-	if (allPossible.empty()) { return nullptr; }
-	if (allPossible.size() == 1) { return allPossible[0]; }
-
-	// Pick building closest to economy center — deploy near resources
-	auto econCenter = Game::getEnvironment()->getCenterOf(CenterType::ECON, playerId);
-	if (!econCenter.has_value()) { return allPossible[0]; }
-
-	auto target = econCenter.value();
-	Building* best = allPossible[0];
-	float bestDist = std::numeric_limits<float>::max();
-	for (auto* b : allPossible) {
-		float d = b->getPosition().SqDistXZ(target);
-		if (d < bestDist) {
-			bestDist = d;
-			best = b;
-		}
-	}
-	return best;
+bool WantExecutor::buildingProducesUnit(db_building* building, unsigned short unitId) const {
+	const auto* unitIds = player->getLevelForBuilding(building->id)->unitsPerNationIds[player->getNation()];
+	return std::ranges::find(*unitIds, unitId) != unitIds->end();
 }
 
 std::vector<Building*> WantExecutor::getBuildingsCanDeploy(unsigned short unitId) const {
-	const auto& buildings = nation->buildings;
-	std::vector<short> buildingIdsThatCanDeploy;
-	for (const auto building : buildings) {
-		auto unitIds = player->getLevelForBuilding(building->id)->unitsPerNationIds[player->getNation()];
-		if (std::ranges::find(*unitIds, unitId) != unitIds->end()) { buildingIdsThatCanDeploy.push_back(building->id); }
-	}
 	std::vector<Building*> allPossible;
-	for (auto thatCanDeploy : buildingIdsThatCanDeploy) {
-		std::ranges::copy_if(*possession->getBuildings(thatCanDeploy),
-		                     std::back_inserter(allPossible), [](Building* b) { return b->isReady(); });
+	for (const auto building : nation->buildings) {
+		if (buildingProducesUnit(building, unitId)) {
+			std::ranges::copy_if(*possession->getBuildings(building->id),
+			                     std::back_inserter(allPossible), [](Building* b) { return b->isReady(); });
+		}
 	}
 	return allPossible;
 }
 
 short WantExecutor::findBuildingTypeToDeploy(short unitId) const {
 	for (const auto building : nation->buildings) {
-		auto unitIds = player->getLevelForBuilding(building->id)->unitsPerNationIds[player->getNation()];
-		if (std::ranges::find(*unitIds, unitId) != unitIds->end()) { return building->id; }
+		if (buildingProducesUnit(building, static_cast<unsigned short>(unitId))) { return building->id; }
 	}
 	return -1;
 }

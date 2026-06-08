@@ -1,6 +1,7 @@
 #include "AttackSpatialBrain.h"
 
 #include "AiUtils.h"
+#include "NormScale.h"
 #include <magic_enum.hpp>
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
@@ -30,17 +31,17 @@ AttackSpatialOutput AttackSpatialBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::DEFEND_STANCE)] = milOut.defendStance;
 
 	// Army counts (3)
-	inputData[idx(I::ARMY_COUNT)] = norm(possession->getArmyNumber(), 200.f);
-	inputData[idx(I::FREE_ARMY_COUNT)] = norm(possession->getFreeArmyNumber(), 200.f);
-	inputData[idx(I::ENEMY_ARMY_COUNT)] = norm(enemyPossession->getArmyNumber(), 200.f);
+	inputData[idx(I::ARMY_COUNT)] = norm(possession->getArmyNumber(), NormScale::ARMY);
+	inputData[idx(I::FREE_ARMY_COUNT)] = norm(possession->getFreeArmyNumber(), NormScale::ARMY);
+	inputData[idx(I::ENEMY_ARMY_COUNT)] = norm(enemyPossession->getArmyNumber(), NormScale::ARMY);
 
 	// Scores (2)
-	inputData[idx(I::PLAYER_SCORE)] = norm(player->getScore(), 1000.f);
-	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), 1000.f);
+	inputData[idx(I::PLAYER_SCORE)] = norm(player->getScore(), NormScale::SCORE);
+	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), NormScale::SCORE);
 
 	// Military strength (2)
-	inputData[idx(I::ATTACK_SUM)] = norm(possession->getAttackSum(), 1000.f);
-	inputData[idx(I::DEFENCE_SUM)] = norm(possession->getDefenceAttackSum(), 100.f);
+	inputData[idx(I::ATTACK_SUM)] = norm(possession->getAttackSum(), NormScale::ATTACK);
+	inputData[idx(I::DEFENCE_SUM)] = norm(possession->getDefenceAttackSum(), NormScale::DEFENCE);
 
 	// Combat state (1)
 	inputData[idx(I::IN_COMBAT_RATIO)] = possession->getInCombatRatio();
@@ -49,7 +50,7 @@ AttackSpatialOutput AttackSpatialBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::MILITARY_URGENCY)] = militaryUrgency;
 	inputData[idx(I::ATTACK_URGENCY)] = attackUrgency;
 
-	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
+	auto result = brain->decide(inputData);
 
 	AttackSpatialOutput output;
 	for (int i = 0; i < AI_ARMY_MAP_COUNT; ++i) {

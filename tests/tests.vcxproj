@@ -81,8 +81,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="UidTest.cpp" />
-    <ClCompile Include="InfluenceMapFloatTest.cpp" />
-    <ClCompile Include="WantListTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\game\game.vcxproj">

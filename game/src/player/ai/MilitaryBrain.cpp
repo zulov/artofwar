@@ -4,6 +4,7 @@
 #include <magic_enum.hpp>
 #include "AiHistory.h"
 #include "AiUtils.h"
+#include "NormScale.h"
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
 #include "MetricDefinitions.h"
@@ -28,12 +29,12 @@ MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
 	auto* enemyPossession = enemy->getPossession();
 
 	// Scores (2)
-	inputData[idx(I::PLAYER_SCORE)] = norm(player->getScore(), 1000.f);
-	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), 1000.f);
+	inputData[idx(I::PLAYER_SCORE)] = norm(player->getScore(), NormScale::SCORE);
+	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), NormScale::SCORE);
 
 	// Military strength (2)
-	inputData[idx(I::ATTACK_SUM)] = norm(possession->getAttackSum(), 1000.f);
-	inputData[idx(I::DEFENCE_SUM)] = norm(possession->getDefenceAttackSum(), 100.f);
+	inputData[idx(I::ATTACK_SUM)] = norm(possession->getAttackSum(), NormScale::ATTACK);
+	inputData[idx(I::DEFENCE_SUM)] = norm(possession->getDefenceAttackSum(), NormScale::DEFENCE);
 
 	// Spatial — army/building distances (4)
 	inputData[idx(I::DIST_OUR_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, player, 0.f);
@@ -42,10 +43,10 @@ MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::DIST_ENEMY_ARMY_ENEMY_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, enemy, 0.f);
 
 	// Army counts (3)
-	inputData[idx(I::ARMY_COUNT)] = norm(possession->getArmyNumber(), 200.f);
-	inputData[idx(I::ENEMY_ARMY_COUNT)] = norm(enemyPossession->getArmyNumber(), 200.f);
-	inputData[idx(I::FREE_ARMY_COUNT)] = norm(possession->getFreeArmyNumber(), 200.f);
-	inputData[idx(I::FREE_ARMY_ATTACK_SUM)] = norm(possession->getFreeArmyAttackSum(), 1000.f);
+	inputData[idx(I::ARMY_COUNT)] = norm(possession->getArmyNumber(), NormScale::ARMY);
+	inputData[idx(I::ENEMY_ARMY_COUNT)] = norm(enemyPossession->getArmyNumber(), NormScale::ARMY);
+	inputData[idx(I::FREE_ARMY_COUNT)] = norm(possession->getFreeArmyNumber(), NormScale::ARMY);
+	inputData[idx(I::FREE_ARMY_ATTACK_SUM)] = norm(possession->getFreeArmyAttackSum(), NormScale::ATTACK);
 
 	// Urgencies from Master (2)
 	inputData[idx(I::MILITARY_URGENCY)] = militaryUrgency;
@@ -66,12 +67,12 @@ MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
 
 	// History — order failures signal unreachable targets
 	constexpr unsigned int LOOKBACK = 1800;
-	inputData[idx(I::RECENT_ATTACK_FAILURES)] = norm(history->attackFailureScore(LOOKBACK), 5.f);
-	inputData[idx(I::RECENT_DEFEND_FAILURES)] = norm(history->defendFailureScore(LOOKBACK), 5.f);
-	inputData[idx(I::RECENT_ATTACK_ACTIVITY)] = norm(history->attackActivityScore(LOOKBACK), 10.f);
-	inputData[idx(I::RECENT_DEFEND_ACTIVITY)] = norm(history->defendActivityScore(LOOKBACK), 10.f);
+	inputData[idx(I::RECENT_ATTACK_FAILURES)] = norm(history->attackFailureScore(LOOKBACK), NormScale::FAILURE);
+	inputData[idx(I::RECENT_DEFEND_FAILURES)] = norm(history->defendFailureScore(LOOKBACK), NormScale::FAILURE);
+	inputData[idx(I::RECENT_ATTACK_ACTIVITY)] = norm(history->attackActivityScore(LOOKBACK), NormScale::ACTIVITY);
+	inputData[idx(I::RECENT_DEFEND_ACTIVITY)] = norm(history->defendActivityScore(LOOKBACK), NormScale::ACTIVITY);
 
-	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
+	auto result = brain->decide(inputData);
 
 	using O = MilitaryOutputIdx;
 	constexpr auto o = [](O v) { return static_cast<int>(v); };

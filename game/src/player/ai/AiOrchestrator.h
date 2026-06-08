@@ -85,7 +85,6 @@ private:
 	Unit* findReassignableWorker(const std::array<int, 4>& order, const float (&prefs)[4]) const;
 	std::vector<Unit*> findFreeWorkers() const;
 	Physical* closestInRange(Unit* worker, int resourceId);
-	UnitOrder* unitOrderCollect(std::vector<Unit*>& workers, Physical* closest) const;
 
 	Player* player;
 	unsigned char playerId;

@@ -1,7 +1,7 @@
 #include "InfluenceManager.h"
-
 #include <exprtk/exprtk.hpp>
-
+#include <magic_enum.hpp>
+#include "CenterType.h"
 #include "MapsUtils.h"
 #include "VisibilityManager.h"
 #include "map/InfluenceMapHistory.h"
@@ -17,6 +17,10 @@
 #include "env/ContentInfo.h"
 #include "utils/AssertUtils.h"
 #include "utils/OtherUtils.h"
+
+// mapsForCentersPerPlayer is sized CENTER_TYPE_COUNT and indexed by CenterType.
+static_assert(magic_enum::enum_count<CenterType>() == CENTER_TYPE_COUNT,
+              "CENTER_TYPE_COUNT must equal the number of CenterType enumerators");
 
 
 InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain) {

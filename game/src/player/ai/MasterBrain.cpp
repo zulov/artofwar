@@ -3,6 +3,7 @@
 #include <magic_enum.hpp>
 #include "AiHistory.h"
 #include "AiUtils.h"
+#include "NormScale.h"
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
 #include "MetricDefinitions.h"
@@ -25,10 +26,10 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 	float resSum = sumSpan(player->getResources()->getValues());
 	float gatherSum = sumSpan(player->getResources()->getGatherSpeeds());
 
-	float deltaScore = norm(player->getScore() - prevScore, 1000.f);
-	float deltaEnemyScore = norm(enemy->getScore() - prevEnemyScore, 1000.f);
-	float deltaUnits = norm(player->getPossession()->getUnitsNumber() - prevUnits, 200.f);
-	float deltaRes = norm(resSum - prevResSum, 1000.f);
+	float deltaScore = norm(player->getScore() - prevScore, NormScale::SCORE);
+	float deltaEnemyScore = norm(enemy->getScore() - prevEnemyScore, NormScale::SCORE);
+	float deltaUnits = norm(player->getPossession()->getUnitsNumber() - prevUnits, NormScale::ARMY);
+	float deltaRes = norm(resSum - prevResSum, NormScale::RES);
 	float deltaGatherSpeed = norm(gatherSum - prevGatherSum, 20.f);
 
 	// Build input array
@@ -39,30 +40,30 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 	auto* res = player->getResources();
 
 	// Scores
-	inputData[idx(I::PLAYER_SCORE)] = norm(player->getScore(), 1000.f);
-	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), 1000.f);
+	inputData[idx(I::PLAYER_SCORE)] = norm(player->getScore(), NormScale::SCORE);
+	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), NormScale::SCORE);
 
 	// Counts
-	inputData[idx(I::BUILDINGS_COUNT)] = norm(possession->getBuildingsNumber(), 50.f);
-	inputData[idx(I::WORKERS_COUNT)] = norm(possession->getWorkersNumber(), 100.f);
-	inputData[idx(I::ARMY_COUNT)] = norm(possession->getArmyNumber(), 200.f);
-	inputData[idx(I::ENEMY_ARMY_COUNT)] = norm(enemyPossession->getArmyNumber(), 200.f);
+	inputData[idx(I::BUILDINGS_COUNT)] = norm(possession->getBuildingsNumber(), NormScale::BUILDINGS);
+	inputData[idx(I::WORKERS_COUNT)] = norm(possession->getWorkersNumber(), NormScale::WORKERS);
+	inputData[idx(I::ARMY_COUNT)] = norm(possession->getArmyNumber(), NormScale::ARMY);
+	inputData[idx(I::ENEMY_ARMY_COUNT)] = norm(enemyPossession->getArmyNumber(), NormScale::ARMY);
 
 	// Resources — stockpiles
-	inputData[idx(I::RES_FOOD)] = norm(res->getValue(ResourceType::FOOD), 1000.f);
-	inputData[idx(I::RES_WOOD)] = norm(res->getValue(ResourceType::WOOD), 1000.f);
-	inputData[idx(I::RES_STONE)] = norm(res->getValue(ResourceType::STONE), 1000.f);
-	inputData[idx(I::RES_GOLD)] = norm(res->getValue(ResourceType::GOLD), 1000.f);
+	inputData[idx(I::RES_FOOD)] = norm(res->getValue(ResourceType::FOOD), NormScale::RES);
+	inputData[idx(I::RES_WOOD)] = norm(res->getValue(ResourceType::WOOD), NormScale::RES);
+	inputData[idx(I::RES_STONE)] = norm(res->getValue(ResourceType::STONE), NormScale::RES);
+	inputData[idx(I::RES_GOLD)] = norm(res->getValue(ResourceType::GOLD), NormScale::RES);
 
 	// Resources — gather speeds
-	inputData[idx(I::GATHER_FOOD)] = norm(res->getGatherSpeed(ResourceType::FOOD), 10.f);
-	inputData[idx(I::GATHER_WOOD)] = norm(res->getGatherSpeed(ResourceType::WOOD), 10.f);
-	inputData[idx(I::GATHER_STONE)] = norm(res->getGatherSpeed(ResourceType::STONE), 10.f);
-	inputData[idx(I::GATHER_GOLD)] = norm(res->getGatherSpeed(ResourceType::GOLD), 10.f);
+	inputData[idx(I::GATHER_FOOD)] = norm(res->getGatherSpeed(ResourceType::FOOD), NormScale::GATHER);
+	inputData[idx(I::GATHER_WOOD)] = norm(res->getGatherSpeed(ResourceType::WOOD), NormScale::GATHER);
+	inputData[idx(I::GATHER_STONE)] = norm(res->getGatherSpeed(ResourceType::STONE), NormScale::GATHER);
+	inputData[idx(I::GATHER_GOLD)] = norm(res->getGatherSpeed(ResourceType::GOLD), NormScale::GATHER);
 
 	// Attack/Defence
-	inputData[idx(I::ATTACK_SUM)] = norm(possession->getAttackSum(), 1000.f);
-	inputData[idx(I::DEFENCE_SUM)] = norm(possession->getDefenceAttackSum(), 100.f);
+	inputData[idx(I::ATTACK_SUM)] = norm(possession->getAttackSum(), NormScale::ATTACK);
+	inputData[idx(I::DEFENCE_SUM)] = norm(possession->getDefenceAttackSum(), NormScale::DEFENCE);
 
 	// Spatial distances
 	inputData[idx(I::DIST_OUR_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, player, 0.f);
@@ -80,7 +81,7 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 	inputData[idx(I::DELTA_RES)] = deltaRes;
 	inputData[idx(I::DELTA_GATHER_SPEED)] = deltaGatherSpeed;
 
-	inputData[idx(I::GAME_TIME)] = norm(Game::getFrameInfo()->getSeconds(), 1800.f);
+	inputData[idx(I::GAME_TIME)] = norm(Game::getFrameInfo()->getSeconds(), NormScale::GAME_TIME);
 	float killed = possession->getValueDestroyed();
 	float lost = enemyPossession->getValueDestroyed();
 	inputData[idx(I::KD_RATIO)] = norm(killed, std::max(killed + lost, 1.f));
@@ -90,14 +91,14 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 
 	// History inputs (lookback ~30 seconds at 30 ticks/s = 900 ticks)
 	constexpr unsigned int LOOKBACK = 900;
-	inputData[idx(I::RECENT_BUILD_FAILURES)] = norm(history->buildingFailureScore(LOOKBACK), 10.f);
-	inputData[idx(I::RECENT_UNIT_FAILURES)] = norm(history->unitFailureScore(LOOKBACK), 5.f);
-	inputData[idx(I::RECENT_ATTACK_ACTIVITY)] = norm(history->attackActivityScore(LOOKBACK), 10.f);
-	inputData[idx(I::RECENT_DEFEND_ACTIVITY)] = norm(history->defendActivityScore(LOOKBACK), 10.f);
+	inputData[idx(I::RECENT_BUILD_FAILURES)] = norm(history->buildingFailureScore(LOOKBACK), NormScale::BUILD_FAILURE);
+	inputData[idx(I::RECENT_UNIT_FAILURES)] = norm(history->unitFailureScore(LOOKBACK), NormScale::FAILURE);
+	inputData[idx(I::RECENT_ATTACK_ACTIVITY)] = norm(history->attackActivityScore(LOOKBACK), NormScale::ACTIVITY);
+	inputData[idx(I::RECENT_DEFEND_ACTIVITY)] = norm(history->defendActivityScore(LOOKBACK), NormScale::ACTIVITY);
 
 	updateHistory(player, enemy);
 
-	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
+	auto result = brain->decide(inputData);
 
 	return MasterOutput{
 		result[0], result[1], result[2], result[3],

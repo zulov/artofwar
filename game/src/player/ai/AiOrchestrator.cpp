@@ -631,10 +631,3 @@ Physical* AiOrchestrator::closestInRange(Unit* worker, int resourceId) {
 	}
 	return nullptr;
 }
-
-UnitOrder* AiOrchestrator::unitOrderCollect(std::vector<Unit*>& workers, Physical* closest) const {
-	if (workers.size() > 1) {
-		return new GroupOrder(workers, UnitActionType::ORDER, castC(UnitAction::COLLECT), closest);
-	}
-	return new IndividualOrder(workers.at(0), UnitAction::COLLECT, closest);
-}

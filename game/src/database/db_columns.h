@@ -124,3 +124,15 @@ std::vector<std::string> columnNames() {
 	}
 	return result;
 }
+
+// --- Save/Load contract checks ---
+static_assert(magic_enum::enum_count<PlayerCol>() == 12,
+              "PlayerCol must match the 12 columns in SQLConsts::PLAYER_COL and bindRow<Player>");
+static_assert(magic_enum::enum_count<UnitCol>() == 10,
+              "UnitCol must match the 10 columns in SQLConsts::UNIT_COL and bindRow<Unit>");
+static_assert(magic_enum::enum_count<BuildingCol>() == 10,
+              "BuildingCol must match the 10 columns in SQLConsts::BUILDING_COL and bindRow<Building>");
+static_assert(magic_enum::enum_count<ResourceCol>() == 7,
+              "ResourceCol must match the 7 columns in SQLConsts::RESOURCE_COL and bindRow<ResourceEntity>");
+static_assert(magic_enum::enum_count<ConfigCol>() == 3,
+              "ConfigCol must match the 3 columns in SQLConsts::CONFIG_COL");

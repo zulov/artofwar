@@ -1,7 +1,7 @@
 #include "pch.h"
 
 #include "player/ai/AiUtils.h"
-#include "../game/src/math/RandGen.cpp"
+#include "math/RandGen.h"
 
 class AiUtilsFixture : public ::testing::Test {
 protected:

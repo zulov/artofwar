@@ -1,6 +1,8 @@
 #pragma once
 #include <cstdint>
 
+#include "objects/resource/ResourceType.h"
+
 enum class AiActionType : uint8_t {
 	CREATE_WORKER,
 	CREATE_UNIT,
@@ -45,3 +47,4 @@ enum class AiOrderResult : uint8_t {
 	NO_CENTER_POSITION,
 	NONE
 };
+

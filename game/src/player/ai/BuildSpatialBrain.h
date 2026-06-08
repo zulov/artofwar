@@ -41,6 +41,10 @@ struct BuildSpatialOutput {
 	std::array<float, AI_MAP_COUNT> weights;
 };
 
+// The output layer width, the output enum, and the influence-map weight array must agree.
+static_assert(magic_enum::enum_count<BuildSpatialOutputIdx>() == AI_MAP_COUNT,
+              "BuildSpatialOutputIdx count must match AI_MAP_COUNT");
+
 class BuildSpatialBrain {
 public:
 	explicit BuildSpatialBrain(db_nation* nation);

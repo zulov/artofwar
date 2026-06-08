@@ -1,6 +1,7 @@
 #include "BuildSpatialBrain.h"
 
 #include "AiUtils.h"
+#include "NormScale.h"
 #include <magic_enum.hpp>
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
@@ -30,22 +31,22 @@ BuildSpatialOutput BuildSpatialBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::DEFENCE_BUILDING_URGENCY)] = defenceBuildingUrgency;
 
 	// Counts (3)
-	inputData[idx(I::BUILDINGS_COUNT)] = norm(possession->getBuildingsNumber(), 50.f);
-	inputData[idx(I::WORKERS_COUNT)] = norm(possession->getWorkersNumber(), 100.f);
-	inputData[idx(I::ARMY_COUNT)] = norm(possession->getArmyNumber(), 200.f);
+	inputData[idx(I::BUILDINGS_COUNT)] = norm(possession->getBuildingsNumber(), NormScale::BUILDINGS);
+	inputData[idx(I::WORKERS_COUNT)] = norm(possession->getWorkersNumber(), NormScale::WORKERS);
+	inputData[idx(I::ARMY_COUNT)] = norm(possession->getArmyNumber(), NormScale::ARMY);
 
 	// Game state (3)
-	inputData[idx(I::GAME_TIME)] = norm(Game::getFrameInfo()->getSeconds(), 1800.f);
-	inputData[idx(I::PLAYER_SCORE)] = norm(player->getScore(), 1000.f);
-	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), 1000.f);
+	inputData[idx(I::GAME_TIME)] = norm(Game::getFrameInfo()->getSeconds(), NormScale::GAME_TIME);
+	inputData[idx(I::PLAYER_SCORE)] = norm(player->getScore(), NormScale::SCORE);
+	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), NormScale::SCORE);
 
 	// Resources (4)
-	inputData[idx(I::RES_FOOD)] = norm(res->getValue(ResourceType::FOOD), 1000.f);
-	inputData[idx(I::RES_WOOD)] = norm(res->getValue(ResourceType::WOOD), 1000.f);
-	inputData[idx(I::RES_STONE)] = norm(res->getValue(ResourceType::STONE), 1000.f);
-	inputData[idx(I::RES_GOLD)] = norm(res->getValue(ResourceType::GOLD), 1000.f);
+	inputData[idx(I::RES_FOOD)] = norm(res->getValue(ResourceType::FOOD), NormScale::RES);
+	inputData[idx(I::RES_WOOD)] = norm(res->getValue(ResourceType::WOOD), NormScale::RES);
+	inputData[idx(I::RES_STONE)] = norm(res->getValue(ResourceType::STONE), NormScale::RES);
+	inputData[idx(I::RES_GOLD)] = norm(res->getValue(ResourceType::GOLD), NormScale::RES);
 
-	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
+	auto result = brain->decide(inputData);
 
 	BuildSpatialOutput output;
 	for (int i = 0; i < AI_MAP_COUNT; ++i) {

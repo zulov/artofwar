@@ -1,6 +1,7 @@
 #include "UnitBrain.h"
 
 #include "AiUtils.h"
+#include "NormScale.h"
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
 #include "database/db_struct.h"
@@ -42,18 +43,18 @@ UnitOutput UnitBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::ENEMY_RANGE_RATIO)] = norm(enemyPossession->getRangeNumber(), enemySafeDiv);
 
 	// Army counts (2)
-	inputData[idx(I::ARMY_COUNT)] = norm(armyCount, 200.f);
-	inputData[idx(I::ENEMY_ARMY_COUNT)] = norm(enemyArmyCount, 200.f);
+	inputData[idx(I::ARMY_COUNT)] = norm(armyCount, NormScale::ARMY);
+	inputData[idx(I::ENEMY_ARMY_COUNT)] = norm(enemyArmyCount, NormScale::ARMY);
 
 	// Military strength (2)
-	inputData[idx(I::ATTACK_SUM)] = norm(possession->getAttackSum(), 1000.f);
-	inputData[idx(I::DEFENCE_ATTACK_SUM)] = norm(possession->getDefenceAttackSum(), 100.f);
+	inputData[idx(I::ATTACK_SUM)] = norm(possession->getAttackSum(), NormScale::ATTACK);
+	inputData[idx(I::DEFENCE_ATTACK_SUM)] = norm(possession->getDefenceAttackSum(), NormScale::DEFENCE);
 
 	// Enemy score (1)
-	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), 1000.f);
+	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), NormScale::SCORE);
 
 	// Worker count — army vs worker balance (1)
-	inputData[idx(I::WORKERS_COUNT)] = norm(possession->getWorkersNumber(), 100.f);
+	inputData[idx(I::WORKERS_COUNT)] = norm(possession->getWorkersNumber(), NormScale::WORKERS);
 
 	// Urgencies from Master (2)
 	inputData[idx(I::UNIT_URGENCY)] = unitUrgency;
@@ -76,7 +77,7 @@ UnitOutput UnitBrain::decide(Player* player, Player* enemy,
 
 	inputData[idx(I::GAME_TIME)] = gameTime;
 
-	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
+	auto result = brain->decide(inputData);
 
 	UnitOutput output{};
 

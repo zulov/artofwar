@@ -21,6 +21,7 @@ namespace Urho3D {
 }
 
 enum class ParentBuildingType : char;
+enum class CenterType : char;
 
 // Carries out WantList items: turns an abstract want (worker/unit/building/upgrade)
 // into concrete game actions. Holds all the low-level "how" so AiOrchestrator can
@@ -47,8 +48,9 @@ private:
 	bool executeUnitUpgrade(short unitId);
 	bool executeBuildingUpgrade(short buildingId);
 
-	Building* getBuildingToDeploy(db_unit* unit) const;
-	Building* getBuildingToDeployWorker(db_unit* unit) const;
+	// Pick the ready building (that can produce 'unit') closest to the given center.
+	Building* pickDeployBuilding(db_unit* unit, CenterType center) const;
+	bool buildingProducesUnit(db_building* building, unsigned short unitId) const;
 	std::vector<Building*> getBuildingsCanDeploy(unsigned short unitId) const;
 	short findBuildingTypeToDeploy(short unitId) const;
 	std::optional<Urho3D::Vector2> findPosToBuild(db_building* building, ParentBuildingType type);

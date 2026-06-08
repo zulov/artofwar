@@ -5,6 +5,7 @@
 #include "nn/BrainProvider.h"
 #include "AiHistory.h"
 #include "AiUtils.h"
+#include "NormScale.h"
 #include "database/db_struct.h"
 #include "player/Player.h"
 #include "player/Possession.h"
@@ -60,24 +61,24 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	auto* possession = player->getPossession();
 
 	// Scores (2)
-	inputData[idx(I::PLAYER_SCORE)] = norm(player->getScore(), 1000.f);
-	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), 1000.f);
+	inputData[idx(I::PLAYER_SCORE)] = norm(player->getScore(), NormScale::SCORE);
+	inputData[idx(I::ENEMY_SCORE)] = norm(enemy->getScore(), NormScale::SCORE);
 
 	// Resource values (4)
-	inputData[idx(I::RES_FOOD)] = norm(res->getValue(ResourceType::FOOD), 1000.f);
-	inputData[idx(I::RES_WOOD)] = norm(res->getValue(ResourceType::WOOD), 1000.f);
-	inputData[idx(I::RES_STONE)] = norm(res->getValue(ResourceType::STONE), 1000.f);
-	inputData[idx(I::RES_GOLD)] = norm(res->getValue(ResourceType::GOLD), 1000.f);
+	inputData[idx(I::RES_FOOD)] = norm(res->getValue(ResourceType::FOOD), NormScale::RES);
+	inputData[idx(I::RES_WOOD)] = norm(res->getValue(ResourceType::WOOD), NormScale::RES);
+	inputData[idx(I::RES_STONE)] = norm(res->getValue(ResourceType::STONE), NormScale::RES);
+	inputData[idx(I::RES_GOLD)] = norm(res->getValue(ResourceType::GOLD), NormScale::RES);
 
 	// Gather speeds (4)
-	inputData[idx(I::GATHER_FOOD)] = norm(res->getGatherSpeed(ResourceType::FOOD), 10.f);
-	inputData[idx(I::GATHER_WOOD)] = norm(res->getGatherSpeed(ResourceType::WOOD), 10.f);
-	inputData[idx(I::GATHER_STONE)] = norm(res->getGatherSpeed(ResourceType::STONE), 10.f);
-	inputData[idx(I::GATHER_GOLD)] = norm(res->getGatherSpeed(ResourceType::GOLD), 10.f);
+	inputData[idx(I::GATHER_FOOD)] = norm(res->getGatherSpeed(ResourceType::FOOD), NormScale::GATHER);
+	inputData[idx(I::GATHER_WOOD)] = norm(res->getGatherSpeed(ResourceType::WOOD), NormScale::GATHER);
+	inputData[idx(I::GATHER_STONE)] = norm(res->getGatherSpeed(ResourceType::STONE), NormScale::GATHER);
+	inputData[idx(I::GATHER_GOLD)] = norm(res->getGatherSpeed(ResourceType::GOLD), NormScale::GATHER);
 
 	// Workers (2)
-	inputData[idx(I::FREE_WORKERS)] = norm(possession->getFreeWorkersNumber(), 100.f);
-	inputData[idx(I::WORKERS_COUNT)] = norm(possession->getWorkersNumber(), 100.f);
+	inputData[idx(I::FREE_WORKERS)] = norm(possession->getFreeWorkersNumber(), NormScale::WORKERS);
+	inputData[idx(I::WORKERS_COUNT)] = norm(possession->getWorkersNumber(), NormScale::WORKERS);
 
 	// Storage ratios (2) — from Resources
 	float foodStorage = res->getFoodStorage();
@@ -123,7 +124,7 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 
 	// History — collection failures signal resource scarcity nearby
 	constexpr unsigned int LOOKBACK = 1800;
-	inputData[idx(I::RECENT_COLLECT_FAILURES)] = norm(history->collectFailureScore(LOOKBACK), 10.f);
+	inputData[idx(I::RECENT_COLLECT_FAILURES)] = norm(history->collectFailureScore(LOOKBACK), NormScale::BUILD_FAILURE);
 
 	// Upgrade inputs (4)
 	inputData[idx(I::TECH_URGENCY)] = techUrgency;
@@ -135,7 +136,7 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 
 	inputData[idx(I::GAME_TIME)] = gameTime;
 
-	auto result = brain->decide(std::span<const float>(inputData.data(), inputData.size()));
+	auto result = brain->decide(inputData);
 
 	using O = EconomyOutputIdx;
 	constexpr auto o = [](O v) { return static_cast<int>(v); };

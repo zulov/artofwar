@@ -3,6 +3,8 @@
 #include <span>
 #include <vector>
 
+#include "objects/resource/ResourceType.h"
+
 struct db_with_cost;
 class Player;
 class Resources;
@@ -54,12 +56,17 @@ struct WantItem {
 class WantList {
 public:
 	static constexpr int MAX_ITEMS = 32;
-	static constexpr float BOOST_FACTOR = 1.15f;
+	// Persistence boost: a continuously-requested want ramps up with age but with
+	// diminishing returns toward a hard ceiling, so it can never starve the queue.
+	//   multiplier = 1 + BOOST_MAX * age / (age + BOOST_HALF_AGE)
+	// age 0 -> x1, age == BOOST_HALF_AGE -> x(1 + BOOST_MAX/2), age -> inf -> x(1 + BOOST_MAX)
+	static constexpr float BOOST_MAX = 2.0f;       // ceiling: up to +200% (x3 base) as age grows
+	static constexpr float BOOST_HALF_AGE = 8.0f;  // age at which half of BOOST_MAX is reached
 	static constexpr float DECAY_FACTOR = 0.85f;
 	static constexpr float DROP_THRESHOLD = 0.05f;
 
 	struct LackingResult {
-		std::array<float, 4> perResource;
+		std::array<float, RESOURCES_SIZE> perResource;
 		float totalSum;
 		short lackingBuildingForUnit = -1;
 
