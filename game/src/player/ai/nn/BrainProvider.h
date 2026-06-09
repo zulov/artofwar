@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-struct Brain;
+class Brain;
 struct LayerData;
 //TODO pref load all brains from sqllite as blobs?
 class BrainProvider {

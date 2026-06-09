@@ -86,7 +86,7 @@ static std::vector<unsigned char> intersection(std::vector<std::vector<unsigned 
 		std::vector<unsigned char> temp;
 		std::ranges::set_intersection(common, *ids[i],
 		                              std::back_inserter(temp));
-		common = temp; //TODO optimize, mo¿e nie kopiowaæ
+		common = temp; //TODO optimize, moÅ¼e nie kopiowaÄ‡
 		if (temp.empty()) {
 			break;
 		}

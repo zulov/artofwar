@@ -57,7 +57,7 @@ void QueuePanel::show(const QueueManager& queue) {
 }
 
 void QueuePanel::update(SelectedInfo* selectedInfo) {
-	//TODO wykonuje sie nawet jeœli sie nic nie zmieni³o
+	//TODO wykonuje sie nawet jeÅ›li sie nic nie zmieniÅ‚o
 	short j = 0;
 	if (window->IsVisible()) {
 		for (auto infoType : selectedInfo->getSelectedTypes()) {
