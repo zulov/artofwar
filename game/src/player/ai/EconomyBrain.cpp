@@ -24,24 +24,14 @@ namespace {
 std::pair<float, float> getNearbySupply(char playerId) {
 	// Resources within the level-1 query radius of the economy center.
 	constexpr ResourceQueryLevel SEARCH_LEVEL = ResourceQueryLevel::R128;
-	float foodHp = 0.f, woodHp = 0.f;
 
 	auto* env = Game::getEnvironment();
 	auto center = env->getCenterOf(CenterType::ECON, playerId);
 	if (center.has_value()) {
-		auto& resources = env->getResourcesWithin(center.value(), -1, castC(SEARCH_LEVEL));
-		for (auto* phys : resources) {
-			auto* resEntity = static_cast<ResourceEntity*>(phys);
-			char resId = resEntity->getResourceId();
-			if (resId == 0) {
-				foodHp += resEntity->getHp();
-			} else if (resId == 1) {
-				woodHp += resEntity->getHp();
-			}
-		}
+		return env->sumFoodWoodWithin(center.value(), castC(SEARCH_LEVEL));
 	}
 
-	return {foodHp, woodHp};
+	return {0.f, 0.f};
 }
 }
 

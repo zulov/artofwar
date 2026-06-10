@@ -194,6 +194,25 @@ Environment::getResourcesWithin(const Urho3D::Vector2& center, int id, int level
 	return collectResources(center, id, level, -1.f);
 }
 
+std::pair<float, float>
+Environment::sumFoodWoodWithin(const Urho3D::Vector2& center, int level) {
+	const float radius = resourceStaticGrid.getRadiusForLevel(level);
+	const float sqRadius = radius * radius;
+	float foodHp = 0.f, woodHp = 0.f;
+	for (auto neight : resourceStaticGrid.get(center, level)) {
+		if (center.SqDistXZ(neight->getPosition()) <= sqRadius) {
+			const auto* res = static_cast<const ResourceEntity*>(neight);
+			const char resId = res->getResourceId();
+			if (resId == 0) {
+				foodHp += res->getHp();
+			} else if (resId == 1) {
+				woodHp += res->getHp();
+			}
+		}
+	}
+	return {foodHp, woodHp};
+}
+
 const std::vector<Physical*>&
 Environment::getBuildingsFromTeamNotEq(Physical* physical, int id, float radius) {
 	auto team = physical->getTeam();

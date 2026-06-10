@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <optional>
+#include <utility>
 #include <Urho3D/Math/Vector2.h>
 #include <Urho3D/Math/Vector3.h>
 
@@ -40,6 +41,8 @@ public:
 	const std::vector<Physical*>& getResources(const Urho3D::Vector2& center, int id, int level);
 	const std::vector<Physical*>& getResourcesWithin(const Urho3D::Vector2& center, int id, int level);
 	const std::vector<Physical*>& getResources(const Urho3D::Vector2& center, float radius);
+
+	std::pair<float, float> sumFoodWoodWithin(const Urho3D::Vector2& center, int level);
 
 	int getResourceLevelCount() const { return resourceStaticGrid.levelCount(); }
 
