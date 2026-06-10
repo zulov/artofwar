@@ -37,11 +37,11 @@ public:
 	~Hud();
 	void clear();
 
-	void update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
+	void update(const Benchmark& benchmark, const CameraManager* cameraManager, SelectedInfo* selectedInfo,
 	            FrameInfo* frameInfo) const;
 	void createMiniMap() const;
 
-	void updateSelected(SelectedInfo* selectedInfo, FrameInfo* frameInfo) const;
+	void updateSelected(SelectedInfo* selectedInfo, const FrameInfo* frameInfo) const;
 
 	void hoverOnIcon(HudData* hudElement) const { menuPanel->setHoverInfo(hudElement); }
 	void hoverOffIcon() const { menuPanel->removeHoverInfo(); }

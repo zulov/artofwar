@@ -54,10 +54,9 @@ public:
 
 	// --- AI queries ---
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, unsigned char player) const;
-	std::vector<unsigned>* getAreas(std::span<const float> result, ParentBuildingType type, unsigned char player) const;
+	const std::vector<unsigned>& getAreas(std::span<const float> result, ParentBuildingType type, unsigned char player) const;
 	std::vector<unsigned> getAreasResBonus(unsigned char resId, unsigned char player) const;
-	std::vector<Urho3D::Vector2> getAreasIterative(std::span<const float> result, unsigned char player,
-	                                               float tolerance, int min) const;
+	std::vector<Urho3D::Vector2> getAreasIterative(std::span<const float> result, unsigned char player);
 
 	// --- Utility ---
 	bool isVisible(unsigned char player, const Urho3D::Vector2& pos) const;
@@ -75,12 +74,11 @@ public:
 
 private:
 	// --- Private helpers ---
-	std::vector<unsigned>* getAreas(std::span<InfluenceMapFloat* const> maps, std::span<const float> result,
+	const std::vector<unsigned>& getAreas(std::span<InfluenceMapFloat*> maps, std::span<const float> result,
 	                                unsigned char player) const;
-	std::vector<int> getIndexesIterative(std::span<const float> result, float tolerance, int min,
-	                                     std::span<InfluenceMapFloat* const> maps) const;
-	std::vector<unsigned>* bestIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
-	std::vector<Urho3D::Vector2> centersFromIndexes(const std::vector<int>& intersection) const;
+
+	const std::vector<unsigned>& bestIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
+	std::vector<Urho3D::Vector2> centersFromIndexes(const std::vector<unsigned>& indexes) const;
 	int getIndexInInfluence(Unit* unit) const;
 
 	// --- Per-player influence maps ---

@@ -148,14 +148,14 @@ std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float t
 	auto minV = diff * (percent - tolerance) + min;
 	auto maxV = diff * (percent + tolerance) + min;
 
-	float* iter = values;
+	float* i = values;
 	std::vector<int> indexes;
 	indexes.reserve(16);
-	auto pred = [minV,maxV](float i) { return i >= minV && i <= maxV; };
-	while ((iter = std::find_if(iter, values + arraySize, pred)) != values + arraySize) {
+	auto pred = [minV,maxV](float v) { return v >= minV && v <= maxV; };
+	while ((i = std::find_if(i, values + arraySize, pred)) != values + arraySize) {
 		//TODO performance!!!	
-		indexes.push_back(iter - values);
-		++iter;
+		indexes.push_back(i - values);
+		++i;
 	}
 	return indexes; //TODO should stay sorted
 }

@@ -403,9 +403,9 @@ const std::vector<short>& Environment::getCloseIndexs(int center) const {
 }
 
 std::optional<Urho3D::Vector2> Environment::getPosFromIndexes(db_building* building, unsigned char player,
-                                                              const std::vector<unsigned>* indexes) {
+                                                              const std::vector<unsigned>& indexes) {
 	const float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
-	for (const auto centerIndex : *indexes) {
+	for (const auto centerIndex : indexes) {
 		Urho3D::Vector2 center = influenceManager.getCenter(centerIndex);
 		for (const auto index : mainGrid.getCloseCenters(center, ratio)) {
 			//ten index jest widoczny
@@ -421,30 +421,24 @@ std::optional<Urho3D::Vector2> Environment::getPosFromIndexes(db_building* build
 std::optional<Urho3D::Vector2> Environment::getPosToCreate(std::span<const float> result, ParentBuildingType type,
                                                            db_building* building,
                                                            char player) {
-	const std::vector<unsigned>* indexes = influenceManager.getAreas(result, type, player);
+	auto &indexes = influenceManager.getAreas(result, type, player);
 
 	return getPosFromIndexes(building, player, indexes);
 }
 
 std::optional<Urho3D::Vector2> Environment::getPosToCreateResBonus(db_building* building, unsigned char player) {
-	std::vector<unsigned> allIndexes;
-
-	auto indexes = influenceManager.getAreasResBonus(building->resourceType, player);
-
-	allIndexes.insert(allIndexes.end(), indexes.begin(), indexes.end());
-
-	return getPosFromIndexes(building, player, &allIndexes);
+	return getPosFromIndexes(building, player, influenceManager.getAreasResBonus(building->resourceType, player));
 }
 
-std::vector<Urho3D::Vector2> Environment::getAreas(unsigned char player, std::span<const float> result, int min) {
-	return influenceManager.getAreasIterative(result, player, 0.1, min);
+std::vector<Urho3D::Vector2> Environment::getAreas(unsigned char player, std::span<const float> result){
+	return influenceManager.getAreasIterative(result, player);
 }
 
-void Environment::addCollect(Unit* unit, short resId, float value) {
+void Environment::addCollect(Unit* unit, short resId, float value) const {
 	influenceManager.addCollect(unit, resId, value);
 }
 
-void Environment::addAttack(char player, const Urho3D::Vector2& position, float value) {
+void Environment::addAttack(char player, const Urho3D::Vector2& position, float value) const {
 	influenceManager.addAttack(player, position, value);
 }
 

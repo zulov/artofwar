@@ -156,24 +156,20 @@ Hud::~Hud() {
 }
 
 void Hud::createConsole(Urho3D::Engine* engine) const {
-	auto console = engine->CreateConsole();
-	if (console) {
+	if (auto console = engine->CreateConsole()) {
 		console->SetDefaultStyle(style);
 		console->GetBackground()->SetOpacity(0.8f);
 	}
 }
 
-void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
+void Hud::update(const Benchmark& benchmark, const CameraManager* cameraManager, SelectedInfo* selectedInfo,
                  FrameInfo* frameInfo) const {
 	updateSelected(selectedInfo, frameInfo);
 
-	debugPanel->setText(frameInfo->getSeconds(),
-	                    benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
-	                    benchmark.getTickAvgs(),
-	                    cameraManager->getPosInfo());
+	debugPanel->setText(benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
+	                    benchmark.getTickAvgs(), cameraManager->getPosInfo());
 	if (frameInfo->shouldRun(PerFrameAction::HUD_UPDATE)) {
 		topPanel->update(Game::getPlayersMan()->getActivePlayer(), frameInfo);
-
 		scorePanel->update(Game::getPlayersMan()->getAllPlayers());
 	}
 	miniMapPanel->update();
@@ -207,7 +203,7 @@ void Hud::updateStateVisibilty(GameState state) {
 	}
 }
 
-void Hud::updateSelected(SelectedInfo* selectedInfo, FrameInfo* frameInfo) const {
+void Hud::updateSelected(SelectedInfo* selectedInfo, const FrameInfo* frameInfo) const {
 	if (selectedInfo->isSthSelected() || selectedInfo->hasChanged()) {
 		if (selectedInfo->hasChanged()
 			|| frameInfo->shouldRun(PerFrameAction::QUEUE_HUD)) {

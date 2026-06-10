@@ -119,14 +119,14 @@ public:
 
 	const std::vector<short>& getCloseIndexs(int center) const;
 	std::optional<Urho3D::Vector2> getPosFromIndexes(db_building* building, unsigned char player,
-	                                                 const std::vector<unsigned>* indexes);
+	                                                 const std::vector<unsigned>& indexes);
 
 	std::optional<Urho3D::Vector2> getPosToCreate(std::span<const float> result, ParentBuildingType type,
 	                                              db_building* building, char player);
 	std::optional<Urho3D::Vector2> getPosToCreateResBonus(db_building* building, unsigned char player);
-	std::vector<Urho3D::Vector2> getAreas(unsigned char player, std::span<const float>, int min);
-	void addCollect(Unit* unit, short resId, float value);
-	void addAttack(char player, const Urho3D::Vector2& position, float value);
+	std::vector<Urho3D::Vector2> getAreas(unsigned char player, std::span<const float>);
+	void addCollect(Unit* unit, short resId, float value) const;
+	void addAttack(char player, const Urho3D::Vector2& position, float value) const;
 	void drawInfluence();
 	bool cellIsPassable(int index) const;
 	bool cellIsCollectable(int index) const;

@@ -84,7 +84,7 @@ FrameInfo* Simulation::update(float timeStep) {
 
 		Game::getActionCenter()->executeActions();
 
-		calculateForces();
+		calculateForces();//can this two method be merged
 		applyForce(); //zmiany stanu MOVE <-> STOP
 
 		moveUnitsAndCheck(); //zmiany stanu

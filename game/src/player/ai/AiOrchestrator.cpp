@@ -112,8 +112,8 @@ void AiOrchestrator::createResBuilding() {
 	}
 
 	const size_t keep = std::min<size_t>(candidates.size(), MAX_RES_BUILDING_REQUESTS);
-	std::partial_sort(candidates.begin(), candidates.begin() + keep, candidates.end(),
-	                  [](const Candidate& a, const Candidate& b) { return a.need > b.need; });
+	std::ranges::partial_sort(candidates, candidates.begin() + keep,
+	                          [](const Candidate& a, const Candidate& b) { return a.need > b.need; });
 	for (size_t i = 0; i < keep; ++i) {
 		wantList.addRequest(WantItemType::BUILDING, candidates[i].need, candidates[i].id);
 	}
@@ -310,8 +310,7 @@ void AiOrchestrator::order() {
 }
 
 std::optional<Urho3D::Vector2> AiOrchestrator::resolveAttackPos(Player* enemy, const AttackSpatialOutput& spatialOut) {
-	auto areas = Game::getEnvironment()->getAreas(
-			playerId, std::span<const float>(spatialOut.weights), 1);
+	auto areas = Game::getEnvironment()->getAreas(playerId, std::span<const float>(spatialOut.weights));
 	if (!areas.empty()) { return areas[0]; }
 	return Game::getEnvironment()->getCenterOf(CenterType::BUILDING, enemy->getId());
 }

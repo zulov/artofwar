@@ -331,61 +331,35 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 	return ci;
 }
 
-std::vector<int> InfluenceManager::getIndexesIterative(std::span<const float> result, float tolerance, int min,
-                                                       std::span<InfluenceMapFloat* const> maps) const {
-	assert(result.size() == maps.size());
-	for (auto map : maps) {
-		map->ensureReady();
-	}
-	int k = 0;
-	for (auto step : {0.0f, 0.05f, 0.1f}) {
-		tolerance += step;
-		k++;
-		std::vector<int> intersection = maps[0]->getIndexesWithByValue(result[0], tolerance);
-		for (char i = 1; i < maps.size(); ++i) {
-			std::vector<int> indexes = maps[i]->getIndexesWithByValue(result[i], tolerance);
-			std::vector<int> temp;
-			std::ranges::set_intersection(intersection, indexes,
-			                              std::back_inserter(temp));
-			if (temp.empty() || temp.size() < min && k != 3) {
-				intersection.clear();
-				break;
-			}
-			intersection = temp; //TODO optimize, nie kopiować?
-		}
-		if (!intersection.empty()) {
-			return intersection;
-		}
-	}
-	return {};
-}
 
-std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(std::span<const float> result, unsigned char player,
-                                                                 float tolerance, int min) const {
+
+std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(std::span<const float> result, unsigned char player) {
 	//TODO better!!!
 	if (result.size() == AI_MAP_COUNT) {
-		return centersFromIndexes(getIndexesIterative(result, tolerance, min, mapsForAiPerPlayer[player]));
+		return centersFromIndexes(getAreas(mapsForAiPerPlayer[player] ,result, player));
 	}
 	if (result.size() == AI_ARMY_MAP_COUNT) {
-		return centersFromIndexes(getIndexesIterative(result, tolerance, min, mapsForAiArmyPerPlayer[player]));
+		return centersFromIndexes(getAreas(mapsForAiArmyPerPlayer[player], result, player));
 	}
 	assert(false);
 }
 
-std::vector<unsigned>*
+const std::vector<unsigned>&
 InfluenceManager::getAreas(std::span<const float> result, ParentBuildingType type, unsigned char player) const {
 	if (type == ParentBuildingType::RESOURCE) {
-		return getAreas(mapsGatherSpeedPerPlayer[player], result, player);
+		std::array<InfluenceMapFloat*, RESOURCES_SIZE> maps = mapsGatherSpeedPerPlayer[player];
+		return getAreas(maps, result, player);
 	}
-	return getAreas(mapsForAiPerPlayer[player], result, player);
+	std::array<InfluenceMapFloat*, AI_MAP_COUNT> maps = mapsForAiPerPlayer[player];
+	return getAreas(maps, result, player);
 }
 
 std::vector<unsigned> InfluenceManager::getAreasResBonus(unsigned char id, unsigned char player) const {
 	return mapsResNotInBonusPerPlayer[player][id]->getMaxIdxs();
 }
 
-std::vector<unsigned>*
-InfluenceManager::getAreas(std::span<InfluenceMapFloat* const> maps, std::span<const float> result, unsigned char player) const {
+const std::vector<unsigned>&
+InfluenceManager::getAreas(std::span<InfluenceMapFloat*> maps, std::span<const float> result, unsigned char player) const {
 	assert(result.size() == maps.size());
 
 	std::fill_n(intersection, arraySize, 0.f); //TODO perf move to removeunsean
@@ -451,7 +425,7 @@ void InfluenceManager::nextVisibilityType() const {
 	visibilityManager->nextVisibilityType();
 }
 
-std::vector<unsigned>* InfluenceManager::bestIndexes(float* values, const std::vector<unsigned>& indexes,
+const std::vector<unsigned>& InfluenceManager::bestIndexes(float* values, const std::vector<unsigned>& indexes,
                                                      float minVal) const {
 	tempIndexes.clear();
 
@@ -461,13 +435,13 @@ std::vector<unsigned>* InfluenceManager::bestIndexes(float* values, const std::v
 		}
 		tempIndexes.emplace_back(*ptr);
 	}
-	return &tempIndexes;
+	return tempIndexes;
 }
 
-std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(const std::vector<int>& intersection) const {
+std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(const std::vector<unsigned>& indexes) const {
 	std::vector<Urho3D::Vector2> centers;
-	centers.reserve(intersection.size());
-	for (const auto value : intersection) {
+	centers.reserve(indexes.size());
+	for (const auto value : indexes) {
 		centers.emplace_back(calculator->getCenter(value));
 	}
 	return centers;

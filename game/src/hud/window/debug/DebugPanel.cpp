@@ -8,7 +8,7 @@ DebugPanel::DebugPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style) : Simpl
 }
 
 
-void DebugPanel::setText(unsigned int seconds, float avgLow, float avgMiddle,
+void DebugPanel::setText(float avgLow, float avgMiddle,
                          float avgHighest, const float* tickAvgs, const Urho3D::String& camInfo) {
 	msg.Clear();
 	msg.Append("FPS: ")
@@ -18,10 +18,10 @@ void DebugPanel::setText(unsigned int seconds, float avgLow, float avgMiddle,
 	   .Append("\nTick ms:");
 	for (int i = 0; i < FRAMES_IN_PERIOD; ++i) {
 		if (i % 10 == 0) {
-			msg.Append("\n ");
+			msg.Append("\n");
 		}
-		char buf[8];
-		snprintf(buf, sizeof(buf), "%5.2f", tickAvgs[i]);
+		char buf[6];
+		snprintf(buf, sizeof(buf), "%5.0f", tickAvgs[i]);
 		msg.Append(buf);
 	}
 	msg.Append("\nCamera: \n\t").Append(camInfo);
