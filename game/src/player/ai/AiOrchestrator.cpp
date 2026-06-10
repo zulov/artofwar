@@ -310,9 +310,15 @@ void AiOrchestrator::order() {
 }
 
 std::optional<Urho3D::Vector2> AiOrchestrator::resolveAttackPos(Player* enemy, const AttackSpatialOutput& spatialOut) {
-	auto areas = Game::getEnvironment()->getAreas(playerId, std::span<const float>(spatialOut.weights));
-	if (!areas.empty()) { return areas[0]; }
-	return Game::getEnvironment()->getCenterOf(CenterType::BUILDING, enemy->getId());
+	auto* env = Game::getEnvironment();
+	const auto& areas = env->getAreaCenters(playerId, std::span<const float>(spatialOut.weights));
+	if (!areas.empty()) {
+		// Only the best candidate is needed to position the army.
+		// TODO consider using the remaining areas (e.g. fallback positions or
+		// spreading sub-armies) instead of discarding them.
+		return areas[0];
+	}
+	return env->getCenterOf(CenterType::BUILDING, enemy->getId());
 }
 
 // Advance group toward target, attack when close

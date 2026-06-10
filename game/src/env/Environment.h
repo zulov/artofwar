@@ -130,7 +130,9 @@ public:
 	std::optional<Urho3D::Vector2> getPosToCreate(std::span<const float> result, ParentBuildingType type,
 	                                              db_building* building, char player);
 	std::optional<Urho3D::Vector2> getPosToCreateResBonus(db_building* building, unsigned char player);
-	std::vector<Urho3D::Vector2> getAreas(unsigned char player, std::span<const float>);
+	// Candidate area centers (world positions), best-first. Influence-map cell indexes are
+	// not exposed. Reference valid until the next influence query.
+	const std::vector<Urho3D::Vector2>& getAreaCenters(unsigned char player, std::span<const float>);
 	void addCollect(Unit* unit, short resId, float value) const;
 	void addAttack(char player, const Urho3D::Vector2& position, float value) const;
 	void drawInfluence();

@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include <array>
+#include <limits>
 #include <span>
 
 #include "math/VectorUtils.h"
@@ -70,4 +71,94 @@ TEST_F(VectorUtilsFixture, MoveNLastElementsClampsOversizedRequest) {
 	std::vector<int> expectedDestination = { 1, 2 };
 	EXPECT_EQ(destination, expectedDestination);
 	EXPECT_TRUE(source.empty());
+}
+
+TEST_F(VectorUtilsFixture, CollectSortedBelowOrdersIndexesByValueAscending) {
+	std::vector<int> values = { 40, 10, 30, 20 };
+	std::vector<unsigned int> out;
+	collectSortedBelow(out, std::span<int>(values), 100, -1);
+
+	// All values pass the threshold; indexes returned smallest-value first.
+	EXPECT_EQ(out, std::vector<unsigned int>({ 1, 3, 2, 0 }));
+}
+
+TEST_F(VectorUtilsFixture, CollectSortedBelowExcludesValuesAboveThreshold) {
+	std::vector<int> values = { 40, 10, 30, 20 };
+	std::vector<unsigned int> out;
+	collectSortedBelow(out, std::span<int>(values), 25, -1);
+
+	// Only values <= 25 (indexes 1 and 3) are kept, still ascending.
+	EXPECT_EQ(out, std::vector<unsigned int>({ 1, 3 }));
+}
+
+TEST_F(VectorUtilsFixture, CollectSortedBelowKeepsThresholdBoundaryValue) {
+	std::vector<int> values = { 40, 10, 30, 20 };
+	std::vector<unsigned int> out;
+	collectSortedBelow(out, std::span<int>(values), 20, -1);
+
+	// Threshold is inclusive: value == 20 (index 3) is kept.
+	EXPECT_EQ(out, std::vector<unsigned int>({ 1, 3 }));
+}
+
+TEST_F(VectorUtilsFixture, CollectSortedBelowCapKeepsSmallestValues) {
+	std::vector<int> values = { 40, 10, 30, 20, 5 };
+	std::vector<unsigned int> out;
+	collectSortedBelow(out, std::span<int>(values), 100, 2);
+
+	// All pass the threshold, but only the 2 smallest are kept, ascending.
+	EXPECT_EQ(out, std::vector<unsigned int>({ 4, 1 }));
+}
+
+TEST_F(VectorUtilsFixture, CollectSortedBelowCapLargerThanQualifyingSetReturnsAll) {
+	std::vector<int> values = { 40, 10, 30, 20 };
+	std::vector<unsigned int> out;
+	collectSortedBelow(out, std::span<int>(values), 25, 10);
+
+	// maxCount exceeds the number of qualifying values: keep them all, ascending.
+	EXPECT_EQ(out, std::vector<unsigned int>({ 1, 3 }));
+}
+
+TEST_F(VectorUtilsFixture, CollectSortedBelowCapZeroReturnsEmpty) {
+	std::vector<int> values = { 40, 10, 30, 20 };
+	std::vector<unsigned int> out;
+	collectSortedBelow(out, std::span<int>(values), 100, 0);
+
+	EXPECT_TRUE(out.empty());
+}
+
+TEST_F(VectorUtilsFixture, CollectSortedBelowExcludesInfinitySentinel) {
+	// Mirrors getAreas: unseen cells are marked +inf and must be filtered out.
+	constexpr float inf = std::numeric_limits<float>::max();
+	std::vector<float> values = { inf, 2.f, inf, 1.f, 3.f };
+	std::vector<unsigned int> out;
+	collectSortedBelow(out, std::span<float>(values), 100.f, -1);
+
+	EXPECT_EQ(out, std::vector<unsigned int>({ 3, 1, 4 }));
+}
+
+TEST_F(VectorUtilsFixture, CollectSortedBelowReusesBufferAcrossCalls) {
+	std::vector<int> first = { 4, 1, 3, 2 };
+	std::vector<int> second = { 30, 50, 10 };
+	std::vector<unsigned int> out = { 99, 98, 97 }; // pre-populated stale contents
+
+	collectSortedBelow(out, std::span<int>(first), 100, -1);
+	EXPECT_EQ(out, std::vector<unsigned int>({ 1, 3, 2, 0 }));
+
+	// Second call must clear stale state and not leak entries from the first.
+	collectSortedBelow(out, std::span<int>(second), 100, -1);
+	EXPECT_EQ(out, std::vector<unsigned int>({ 2, 0, 1 }));
+}
+
+TEST_F(VectorUtilsFixture, CollectSortedBelowOutputIsNonDecreasingByValue) {
+	std::vector<int> values = { 7, 3, 9, 1, 8, 2, 6, 4 };
+	std::vector<unsigned int> out;
+	collectSortedBelow(out, std::span<int>(values), 100, 5);
+
+	ASSERT_EQ(out.size(), 5u);
+	// Invariant getAreas relies on: result strictly ordered ascending by value.
+	for (size_t i = 1; i < out.size(); ++i) {
+		EXPECT_LE(values[out[i - 1]], values[out[i]]);
+	}
+	// And those must be the 5 smallest values: {1,2,3,4,6}.
+	EXPECT_EQ(out, std::vector<unsigned int>({ 3, 5, 1, 7, 6 }));
 }

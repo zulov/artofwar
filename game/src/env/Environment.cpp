@@ -461,8 +461,8 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreateResBonus(db_building* 
 	return getPosFromIndexes(building, player, influenceManager.getAreasResBonus(building->resourceType, player));
 }
 
-std::vector<Urho3D::Vector2> Environment::getAreas(unsigned char player, std::span<const float> result){
-	return influenceManager.getAreasIterative(result, player);
+const std::vector<Urho3D::Vector2>& Environment::getAreaCenters(unsigned char player, std::span<const float> result){
+	return influenceManager.getAreaCenters(result, player);
 }
 
 void Environment::addCollect(Unit* unit, short resId, float value) const {

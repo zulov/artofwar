@@ -333,15 +333,17 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 
 
 
-std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(std::span<const float> result, unsigned char player) {
-	//TODO better!!!
+const std::vector<Urho3D::Vector2>&
+InfluenceManager::getAreaCenters(std::span<const float> result, unsigned char player) {
 	if (result.size() == AI_MAP_COUNT) {
-		return centersFromIndexes(getAreas(mapsForAiPerPlayer[player] ,result, player));
+		return centersFromIndexes(getAreas(mapsForAiPerPlayer[player], result, player));
 	}
 	if (result.size() == AI_ARMY_MAP_COUNT) {
 		return centersFromIndexes(getAreas(mapsForAiArmyPerPlayer[player], result, player));
 	}
 	assert(false);
+	tempCenters.clear();
+	return tempCenters; // unreachable in debug; avoids UB on unexpected span size in release
 }
 
 const std::vector<unsigned>&
@@ -424,13 +426,14 @@ void InfluenceManager::nextVisibilityType() const {
 	visibilityManager->nextVisibilityType();
 }
 
-std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(const std::vector<unsigned>& indexes) const {
-	std::vector<Urho3D::Vector2> centers;
-	centers.reserve(indexes.size());
+const std::vector<Urho3D::Vector2>&
+InfluenceManager::centersFromIndexes(const std::vector<unsigned>& indexes) const {
+	tempCenters.clear();
+	tempCenters.reserve(indexes.size());
 	for (const auto value : indexes) {
-		centers.emplace_back(calculator->getCenter(value));
+		tempCenters.emplace_back(calculator->getCenter(value));
 	}
-	return centers;
+	return tempCenters;
 }
 
 float InfluenceManager::getFieldSize() const {
