@@ -19,7 +19,7 @@ Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolut
 	mapSize(mainMapResolution * BUCKET_GRID_FIELD_SIZE),
 	mainGrid(mainMapResolution, mapSize, 24),
 	buildingGrid(mapSize / BUCKET_GRID_FIELD_SIZE_BUILD, mapSize, 256.f),
-	resourceStaticGrid(mapSize / BUCKET_GRID_FIELD_SIZE_RESOURCE, mapSize, {64.f, 128.f, 256.f}),
+	resourceStaticGrid(mapSize / BUCKET_GRID_FIELD_SIZE_RESOURCE, mapSize, RESOURCE_GRID_QUERY_RADIUS_LEVELS),
 	sparseUnitGrid((short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256.f),
 	terrain(terrain), influenceManager(MAX_PLAYERS, mapSize, terrain),
 	calculator(GridCalculatorProvider::get(mainMapResolution, mapSize)) {
@@ -166,20 +166,32 @@ const std::vector<Physical*>& Environment::getNeighboursSimilarAs(Physical* clic
 }
 
 const std::vector<Physical*>&
-Environment::getResources(const Urho3D::Vector2& center, int id, float radius, float prevRadius) {
+Environment::collectResources(const Urho3D::Vector2& center, int id, int level, float innerRadius) {
+	const float radius = resourceStaticGrid.getRadiusForLevel(level);
 	const float sqRadius = radius * radius;
-	const float sqPrevRadius = prevRadius < 0.f ? prevRadius : prevRadius * prevRadius;
+	const float sqInnerRadius = innerRadius < 0.f ? innerRadius : innerRadius * innerRadius;
 	neights.clear();
-	for (auto neight : resourceStaticGrid.get(center, radius)) {
+	for (auto neight : resourceStaticGrid.get(center, level)) {
 		if (id == -1 || id == neight->getDbId()) {
 			auto dist = center.SqDistXZ(neight->getPosition());
-			if (dist <= sqRadius && dist > sqPrevRadius) {
+			if (dist <= sqRadius && dist > sqInnerRadius) {
 				neights.push_back(neight);
 			}
 		}
 	}
 
 	return neights;
+}
+
+const std::vector<Physical*>&
+Environment::getResources(const Urho3D::Vector2& center, int id, int level) {
+	const float innerRadius = level > 0 ? resourceStaticGrid.getRadiusForLevel(level - 1) : -1.f;
+	return collectResources(center, id, level, innerRadius);
+}
+
+const std::vector<Physical*>&
+Environment::getResourcesWithin(const Urho3D::Vector2& center, int id, int level) {
+	return collectResources(center, id, level, -1.f);
 }
 
 const std::vector<Physical*>&

@@ -37,8 +37,11 @@ public:
 	const std::vector<Physical*>& getNeighboursWithCache(Unit* unit, float radius);
 	const std::vector<Physical*>& getNeighboursSimilarAs(Physical* clicked) const;
 
-	const std::vector<Physical*>& getResources(const Urho3D::Vector2& center, int id, float radius, float prevRadius);
+	const std::vector<Physical*>& getResources(const Urho3D::Vector2& center, int id, int level);
+	const std::vector<Physical*>& getResourcesWithin(const Urho3D::Vector2& center, int id, int level);
 	const std::vector<Physical*>& getResources(const Urho3D::Vector2& center, float radius);
+
+	int getResourceLevelCount() const { return resourceStaticGrid.levelCount(); }
 
 	const std::vector<Physical*>& getBuildingsFromTeamNotEq(Physical* physical, int id, float radius);
 
@@ -153,6 +156,8 @@ public:
 	void refreshAllStatic(std::vector<ResourceEntity*>* resources, std::vector<Building*>* buildings);
 	short getOccupationLevel(int index) const;
 private:
+	const std::vector<Physical*>& collectResources(const Urho3D::Vector2& center, int id, int level,
+	                                                float innerRadius);
 	const std::vector<Physical*>& getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
 	                                      const std::function<bool(Physical*)>& condition) const;
 	const std::vector<Physical*>& getNeighbours(Unit* unit, float radius);

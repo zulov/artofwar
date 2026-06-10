@@ -635,13 +635,12 @@ std::vector<Unit*> AiOrchestrator::findFreeWorkers() const {
 }
 
 Physical* AiOrchestrator::closestInRange(Unit* worker, int resourceId) {
-	float prevRadius = -1.f;
 	const auto env = Game::getEnvironment();
-	for (const auto radius : {64.f, 128.f, 256.f}) {
-		const auto& list = env->getResources(worker->getPosition(), resourceId, radius, prevRadius);
+	const int levelCount = env->getResourceLevelCount();
+	for (int level = 0; level < levelCount; ++level) {
+		const auto& list = env->getResources(worker->getPosition(), resourceId, level);
 		const auto closest = env->closestPhysical(worker->getMainGridIndex(), list, belowClose, false);
 		if (closest) { return closest; }
-		prevRadius = radius;
 	}
 	return nullptr;
 }

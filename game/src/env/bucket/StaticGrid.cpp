@@ -81,20 +81,10 @@ void StaticGrid::ensureInited(int index, int centerIndex) {
 	}
 }
 
-const std::vector<Physical*>& StaticGrid::get(const Urho3D::Vector2& center, float radius) {
-	const int index = getIndexForRadius(radius);
+const std::vector<Physical*>& StaticGrid::get(const Urho3D::Vector2& center, int level) {
 	const int centerIndex = calculator->indexFromPosition(center);
 
-	ensureInited(index, centerIndex);
+	ensureInited(level, centerIndex);
 
-	return bucketsPerRadius[index][centerIndex].getContent();
-}
-
-int StaticGrid::getIndexForRadius(float radius) const {
-	for (int i = 0; i < queryRadius.size(); ++i) {
-		if (queryRadius[i] >= radius) {
-			return i;
-		}
-	}
-	return queryRadius.size() - 1;
+	return bucketsPerRadius[level][centerIndex].getContent();
 }
