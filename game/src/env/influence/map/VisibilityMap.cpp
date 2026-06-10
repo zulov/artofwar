@@ -13,6 +13,8 @@
 
 VisibilityMap::VisibilityMap(unsigned short resolution, float size, float valueThresholdDebug)
 	: InfluenceMap(resolution, size, valueThresholdDebug),
+	  visibilityRes(resolution),
+	  influenceRes(resolution / 2),
 	  levelCache(LevelCacheProvider::get(resolution, 60.f, calculator)) {
 	values = new VisibilityType[arraySize];
 	std::fill_n(values, arraySize, VisibilityType::NONE);
@@ -157,14 +159,16 @@ void VisibilityMap::ensureReady() {
 	if (valuesForInfluenceReady == false) {
 		std::fill_n(valuesForInfluence, arraySize / 4, false);
 		const auto parent = values;
-		const int parentRes = sqrt(arraySize); //TODO bug a co z zaokragleniem
 		const auto current = valuesForInfluence;
-		const int currentRes = sqrt(arraySize / 4);
-		for (int j = 0; j < arraySize; ++j) {
-			if (parent[j] == VisibilityType::VISIBLE) {
-				const int newIndex = getCordsInLower(currentRes, parentRes, j);
-				assert(newIndex<currentRes*currentRes);
-				current[newIndex] = true;
+		int j = 0;
+		for (int prow = 0; prow < visibilityRes; ++prow) {
+			const int rowBase = (prow / 2) * influenceRes;
+			for (int pcol = 0; pcol < visibilityRes; ++pcol, ++j) {
+				if (parent[j] == VisibilityType::VISIBLE) {
+					const int newIndex = rowBase + (pcol / 2);
+					assert(newIndex < influenceRes * influenceRes);
+					current[newIndex] = true;
+				}
 			}
 		}
 		valuesForInfluenceReady = true;

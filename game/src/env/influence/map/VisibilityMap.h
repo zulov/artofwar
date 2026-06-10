@@ -26,6 +26,10 @@ public:
 
 private:
 	void ensureReady();
+	// Side length of this (full-res) visibility grid, and of the half-res influence mask
+	// (valuesForInfluence) it is downsampled into. Precomputed; both are powers of two.
+	const int visibilityRes;
+	const int influenceRes;
 	VisibilityType* values;
 	float* ranges;
 	std::vector<int> changedIndexes;
