@@ -7,7 +7,6 @@
 #include "db_container.h"
 #include "scene/save/SQLConsts.h"
 
-class sqlite3;
 struct db_unit;
 struct db_building;
 struct db_nation;

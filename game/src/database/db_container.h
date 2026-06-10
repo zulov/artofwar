@@ -2,15 +2,14 @@
 
 #include "db_grah_structs.h"
 #include "db_struct.h"
+#include "db_other_struct.h"
 #include "utils/DeleteUtils.h"
 
 struct db_hud_vars;
-struct db_map;
 struct db_hud_size;
 struct db_graph_settings;
 struct db_resolution;
 struct db_settings;
-struct db_player_colors;
 
 struct db_container {
 	std::vector<db_hud_size*> hudSizes;

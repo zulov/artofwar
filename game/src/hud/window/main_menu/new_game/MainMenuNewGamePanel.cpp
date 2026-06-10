@@ -73,7 +73,7 @@ void MainMenuNewGamePanel::HandleCheck(Urho3D::StringHash eventType, Urho3D::Var
 }
 
 void MainMenuNewGamePanel::HandleNewGame(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
-	data->map = map->GetSelection();//TODO bug niezgodnosc indeksów w wyborze i id
+	data->map = map->GetSelection();//TODO bug niezgodnosc indeksÃ³w w wyborze i id
 	data->difficulty = difficulty->GetSelection();
 	data->gameSpeed = gameSpeed->GetSelection();
 	data->players.push_back(myLine.getNewGamePlayer());
