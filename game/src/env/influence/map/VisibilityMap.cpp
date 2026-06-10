@@ -132,10 +132,13 @@ int VisibilityMap::removeUnseen(float* intersection) {
 	ensureReady();
 	int notSeen = 0;
 	const auto end = valuesForInfluence + arraySize / 4;
+
 	for (auto ptrI = valuesForInfluence; ptrI < end; ++ptrI, ++intersection) {
 		if (!(*ptrI)) {
 			++notSeen;
 			*intersection = std::numeric_limits<float>::max();
+		} else {
+			*intersection = 0.f;
 		}
 	}
 	return arraySize / 4 - notSeen;

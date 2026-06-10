@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <iterator>
 #include <numeric>
 #include <vector>
@@ -74,6 +75,23 @@ static std::vector<unsigned int> sort_indexes(std::span<T> v, int size = -1) {
 template <typename T>
 static std::vector<unsigned int> sort_indexes_desc(std::span<T> v, int size = -1) {
 	return sort_indexes(v, [&v](auto i1, auto i2) { return v[i1] > v[i2]; }, size);
+}
+
+template <typename T>
+static void collectSortedBelow(std::vector<unsigned int>& out, std::span<T> v, T threshold, int maxCount) {
+	out.clear();
+	for (unsigned int i = 0; i < v.size(); ++i) {
+		if (v[i] <= threshold) {
+			out.push_back(i);
+		}
+	}
+	auto pred = [&v](unsigned int i1, unsigned int i2) { return v[i1] < v[i2]; };
+	if (maxCount >= 0 && static_cast<int>(out.size()) > maxCount) {
+		std::partial_sort(out.begin(), out.begin() + maxCount, out.end(), pred);
+		out.resize(maxCount);
+	} else {
+		std::sort(out.begin(), out.end(), pred);
+	}
 }
 
 static std::vector<unsigned char> intersection(std::vector<std::vector<unsigned char>*>& ids) {

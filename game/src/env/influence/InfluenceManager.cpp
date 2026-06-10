@@ -362,7 +362,6 @@ const std::vector<unsigned>&
 InfluenceManager::getAreas(std::span<InfluenceMapFloat*> maps, std::span<const float> result, unsigned char player) const {
 	assert(result.size() == maps.size());
 
-	std::fill_n(intersection, arraySize, 0.f); //TODO perf move to removeunsean
 	const int noOfVisible = visibilityManager->removeUnseen(player, intersection);
 
 	char numberOfNotEmptyMap = 0;
@@ -374,9 +373,9 @@ InfluenceManager::getAreas(std::span<InfluenceMapFloat*> maps, std::span<const f
 	}
 
 	const int size = Urho3D::Min(noOfVisible, calculator->getResolution() * calculator->getResolution() / 8);
-	const auto idx = sort_indexes(std::span(intersection, arraySize), size);
 
-	return bestIndexes(intersection, idx, 0.1f * numberOfNotEmptyMap);
+	collectSortedBelow(tempIndexes, std::span(intersection, arraySize), 0.1f * numberOfNotEmptyMap, size);
+	return tempIndexes;
 }
 
 int InfluenceManager::getIndexInInfluence(Unit* unit) const {
@@ -423,19 +422,6 @@ int InfluenceManager::getIndex(const Urho3D::Vector2& position) const {
 
 void InfluenceManager::nextVisibilityType() const {
 	visibilityManager->nextVisibilityType();
-}
-
-const std::vector<unsigned>& InfluenceManager::bestIndexes(float* values, const std::vector<unsigned>& indexes,
-                                                     float minVal) const {
-	tempIndexes.clear();
-
-	for (auto ptr = indexes.begin(); ptr < indexes.end(); ++ptr) {
-		if (values[*ptr] > minVal) {
-			break;
-		}
-		tempIndexes.emplace_back(*ptr);
-	}
-	return tempIndexes;
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(const std::vector<unsigned>& indexes) const {

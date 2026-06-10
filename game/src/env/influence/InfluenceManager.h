@@ -77,7 +77,6 @@ private:
 	const std::vector<unsigned>& getAreas(std::span<InfluenceMapFloat*> maps, std::span<const float> result,
 	                                unsigned char player) const;
 
-	const std::vector<unsigned>& bestIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
 	std::vector<Urho3D::Vector2> centersFromIndexes(const std::vector<unsigned>& indexes) const;
 	int getIndexInInfluence(Unit* unit) const;
 
