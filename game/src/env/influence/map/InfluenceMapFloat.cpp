@@ -159,17 +159,19 @@ bool InfluenceMapFloat::cumulateErrors(float percent, float* intersection) {
 
 	if (diff != 0.f) {
 		//const auto centerVal = percent * diff + min;
-		const auto invDiff = 1.f / diff;
+		const auto coef = 1.f / diff * percent;
 		const auto endV = values + arraySize;
-		auto flip = percent < 0.f ? -min : max;
-
-		for (auto ptrV = values; ptrV < endV; ++ptrV, ++intersection) {
-			float val = flip - *ptrV;
-
-			val *= invDiff * percent;
-			*intersection += val * val;
+		if (percent < 0.f) {
+			for (auto ptrV = values; ptrV < endV; ++ptrV, ++intersection) {
+				float val = (max - *ptrV) * coef;
+				*intersection += val * val;
+			}
+		} else {
+			for (auto ptrV = values; ptrV < endV; ++ptrV, ++intersection) {
+				float val = (*ptrV - min) * coef;
+				*intersection += val * val;
+			}
 		}
-
 		return true;
 	}
 	return false;
