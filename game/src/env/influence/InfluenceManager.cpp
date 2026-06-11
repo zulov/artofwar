@@ -1,6 +1,8 @@
 #include "InfluenceManager.h"
 #include <exprtk/exprtk.hpp>
 #include <magic_enum.hpp>
+#include <ranges>
+
 #include "CenterType.h"
 #include "MapsUtils.h"
 #include "VisibilityManager.h"
@@ -114,7 +116,7 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 
 	arraySize = calculator->getResolution() * calculator->getResolution();
 	assert(arraySize <= std::numeric_limits<unsigned short>::max());
-	intersection = new float[arraySize];
+	errorsSum = new float[arraySize];
 
 	assert(unitsNumberPerPlayer[0]->getResolution() == unitsInfluencePerPlayer[0]->getResolution()
 	       && calculator->getResolution() == unitsNumberPerPlayer[0]->getResolution());
@@ -140,7 +142,7 @@ InfluenceManager::~InfluenceManager() {
 	delete visibilityManager;
 	delete ci;
 
-	delete[]intersection;
+	delete[]errorsSum;
 	delete[] sharedTemplateV;
 }
 
@@ -334,12 +336,12 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 
 
 const std::vector<Urho3D::Vector2>&
-InfluenceManager::getAreaCenters(std::span<const float> result, unsigned char player) {
+InfluenceManager::getBestVisibleAreas(std::span<const float> result, unsigned char player) {
 	if (result.size() == AI_MAP_COUNT) {
-		return centersFromIndexes(getAreas(mapsForAiPerPlayer[player], result, player));
+		return centersFromIndexes(getBestVisibleIndexes(mapsForAiPerPlayer[player], result, player));
 	}
 	if (result.size() == AI_ARMY_MAP_COUNT) {
-		return centersFromIndexes(getAreas(mapsForAiArmyPerPlayer[player], result, player));
+		return centersFromIndexes(getBestVisibleIndexes(mapsForAiArmyPerPlayer[player], result, player));
 	}
 	assert(false);
 	tempCenters.clear();
@@ -350,10 +352,10 @@ const std::vector<unsigned>&
 InfluenceManager::getAreas(std::span<const float> result, ParentBuildingType type, unsigned char player) const {
 	if (type == ParentBuildingType::RESOURCE) {
 		std::array<InfluenceMapFloat*, RESOURCES_SIZE> maps = mapsGatherSpeedPerPlayer[player];
-		return getAreas(maps, result, player);
+		return getBestVisibleIndexes(maps, result, player);
 	}
 	std::array<InfluenceMapFloat*, AI_MAP_COUNT> maps = mapsForAiPerPlayer[player];
-	return getAreas(maps, result, player);
+	return getBestVisibleIndexes(maps, result, player);
 }
 
 std::vector<unsigned> InfluenceManager::getAreasResBonus(unsigned char id, unsigned char player) const {
@@ -361,22 +363,20 @@ std::vector<unsigned> InfluenceManager::getAreasResBonus(unsigned char id, unsig
 }
 
 const std::vector<unsigned>&
-InfluenceManager::getAreas(std::span<InfluenceMapFloat*> maps, std::span<const float> result, unsigned char player) const {
+InfluenceManager::getBestVisibleIndexes(std::span<InfluenceMapFloat*> maps, std::span<const float> result, unsigned char player) const {
 	assert(result.size() == maps.size());
 
-	const int noOfVisible = visibilityManager->removeUnseen(player, intersection);
+	//unseen means max float max error
+	const int noOfVisible = visibilityManager->removeUnseen(player, errorsSum);
 
 	char numberOfNotEmptyMap = 0;
-	for (char i = 0; i < maps.size(); ++i) {
-		const auto map = maps[i];
-		map->ensureReady();
-		const auto ok = map->cumulateErros(result[i], intersection);
-		numberOfNotEmptyMap += ok;
+	for (auto&& [map, value] : std::views::zip(maps, result)) {
+		numberOfNotEmptyMap += map->cumulateErrors(value, errorsSum);
 	}
 
-	const int size = Urho3D::Min(noOfVisible, calculator->getResolution() * calculator->getResolution() / 8);
+	const int size = Urho3D::Min(noOfVisible, arraySize / 8);
 
-	collectSortedBelow(tempIndexes, std::span(intersection, arraySize), 0.1f * numberOfNotEmptyMap, size);
+	collectSortedBelow(tempIndexes, std::span(errorsSum, arraySize), 0.1f * numberOfNotEmptyMap, size);
 	return tempIndexes;
 }
 

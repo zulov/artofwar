@@ -25,11 +25,10 @@ public:
 	float getPercent();
 
 private:
-	void ensureReady();
-	// Side length of this (full-res) visibility grid, and of the half-res influence mask
-	// (valuesForInfluence) it is downsampled into. Precomputed; both are powers of two.
-	const int visibilityRes;
+	void ensureReady() override;
+
 	const int influenceRes;
+	const int influenceArraySize;
 	VisibilityType* values;
 	float* ranges;
 	std::vector<int> changedIndexes;

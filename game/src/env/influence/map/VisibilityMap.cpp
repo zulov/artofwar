@@ -11,15 +11,15 @@
 #include "utils/OtherUtils.h"
 
 
-VisibilityMap::VisibilityMap(unsigned short resolution, float size, float valueThresholdDebug)
-	: InfluenceMap(resolution, size, valueThresholdDebug),
-	  visibilityRes(resolution),
-	  influenceRes(resolution / 2),
-	  levelCache(LevelCacheProvider::get(resolution, 60.f, calculator)) {
+VisibilityMap::VisibilityMap(unsigned short resolution, float size, float valueThresholdDebug) :
+	InfluenceMap(resolution, size, valueThresholdDebug),
+	influenceRes(resolution / 2),
+	influenceArraySize(influenceRes * influenceRes),
+	levelCache(LevelCacheProvider::get(resolution, 60.f, calculator)) {
 	values = new VisibilityType[arraySize];
 	std::fill_n(values, arraySize, VisibilityType::NONE);
-	valuesForInfluence = new bool[arraySize / 4];
-	std::fill_n(valuesForInfluence, arraySize / 4, false);
+	valuesForInfluence = new bool[influenceArraySize];
+	std::fill_n(valuesForInfluence, influenceArraySize, false);
 	ranges = new float[arraySize];
 	std::fill_n(ranges, arraySize, 0.f);
 }
@@ -57,36 +57,22 @@ void VisibilityMap::finishAtIndex(int i) const {
 
 void VisibilityMap::finish() {
 	if (changedIndexes.size() >= CHANGED_INDEXES_MAX_SIZE) {
-		for (int i = 0; i < arraySize; ++i) {
-			if (ranges[i] > 0.f) {
-				finishAtIndex(i);
-			}
-		}
-	} else {
-		for (const int i : changedIndexes) {
-			finishAtIndex(i);
-		}
-	}
+		for (int i = 0; i < arraySize; ++i) { if (ranges[i] > 0.f) { finishAtIndex(i); } }
+	} else { for (const int i : changedIndexes) { finishAtIndex(i); } }
 
 	changedIndexes.clear();
 }
 
-void VisibilityMap::updateInt(Physical* thing, int value) {
-	update(thing);
-}
+void VisibilityMap::updateInt(Physical* thing, int value) { update(thing); }
 
-void VisibilityMap::updateInt(int index, int value) const {
-	assert(false);
-}
+void VisibilityMap::updateInt(int index, int value) const { assert(false); }
 
 void VisibilityMap::reset() {
 	valuesForInfluenceReady = false;
 	percentReady = false;
 	minMaxInited = false;
 	char* end = (char*)values + arraySize;
-	for (char* i = (char*)values; i < end; i++) {
-		*i &= 1;
-	}
+	for (char* i = (char*)values; i < end; i++) { *i &= 1; }
 }
 
 char VisibilityMap::getValueAt(const Urho3D::Vector2& pos) const {
@@ -100,17 +86,13 @@ VisibilityType VisibilityMap::getValueAt(float x, float z) const {
 
 float VisibilityMap::getValueAsPercent(const Urho3D::Vector2& pos) const {
 	const float diff = max - min;
-	if (diff != 0.f) {
-		return (getValueAt(pos) - min) / diff;
-	}
+	if (diff != 0.f) { return (getValueAt(pos) - min) / diff; }
 	return 0.5f;
 }
 
 float VisibilityMap::getValueAsPercent(const int index) const {
 	const float diff = max - min;
-	if (diff != 0.f) {
-		return (getValueAt(index) - min) / diff;
-	}
+	if (diff != 0.f) { return (getValueAt(index) - min) / diff; }
 	return 0.5f;
 }
 
@@ -133,17 +115,15 @@ void VisibilityMap::computeMinMax() {
 int VisibilityMap::removeUnseen(float* intersection) {
 	ensureReady();
 	int notSeen = 0;
-	const auto end = valuesForInfluence + arraySize / 4;
+	const auto end = valuesForInfluence + influenceArraySize;
 
 	for (auto ptrI = valuesForInfluence; ptrI < end; ++ptrI, ++intersection) {
 		if (!(*ptrI)) {
 			++notSeen;
 			*intersection = std::numeric_limits<float>::max();
-		} else {
-			*intersection = 0.f;
-		}
+		} else { *intersection = 0.f; }
 	}
-	return arraySize / 4 - notSeen;
+	return influenceArraySize - notSeen;
 }
 
 float VisibilityMap::getPercent() {
@@ -157,13 +137,14 @@ float VisibilityMap::getPercent() {
 
 void VisibilityMap::ensureReady() {
 	if (valuesForInfluenceReady == false) {
-		std::fill_n(valuesForInfluence, arraySize / 4, false);
+		std::fill_n(valuesForInfluence, influenceArraySize, false);
 		const auto parent = values;
 		const auto current = valuesForInfluence;
 		int j = 0;
-		for (int prow = 0; prow < visibilityRes; ++prow) {
+		auto res = getResolution();
+		for (int prow = 0; prow < res; ++prow) {
 			const int rowBase = (prow / 2) * influenceRes;
-			for (int pcol = 0; pcol < visibilityRes; ++pcol, ++j) {
+			for (int pcol = 0; pcol < res; ++pcol, ++j) {
 				if (parent[j] == VisibilityType::VISIBLE) {
 					const int newIndex = rowBase + (pcol / 2);
 					assert(newIndex < influenceRes * influenceRes);

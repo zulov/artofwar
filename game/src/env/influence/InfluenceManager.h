@@ -59,7 +59,7 @@ public:
 	// Returns candidate area centers (world positions) ordered best-first. Influence-map
 	// cell indexes are intentionally NOT exposed; the reference is valid until the next
 	// getArea* call (reuses an internal buffer).
-	const std::vector<Urho3D::Vector2>& getAreaCenters(std::span<const float> result, unsigned char player);
+	const std::vector<Urho3D::Vector2>& getBestVisibleAreas(std::span<const float> result, unsigned char player);
 
 	// --- Utility ---
 	bool isVisible(unsigned char player, const Urho3D::Vector2& pos) const;
@@ -77,7 +77,7 @@ public:
 
 private:
 	// --- Private helpers ---
-	const std::vector<unsigned>& getAreas(std::span<InfluenceMapFloat*> maps, std::span<const float> result,
+	const std::vector<unsigned>& getBestVisibleIndexes(std::span<InfluenceMapFloat*> maps, std::span<const float> result,
 	                                unsigned char player) const;
 
 	const std::vector<Urho3D::Vector2>& centersFromIndexes(const std::vector<unsigned>& indexes) const;
@@ -111,7 +111,7 @@ private:
 	// --- Scratch buffers ---
 	mutable content_info* ci;
 	mutable unsigned int arraySize;
-	mutable float* intersection; // [arraySize]
+	mutable float* errorsSum; // [arraySize]
 	mutable std::vector<unsigned> tempIndexes;
 	mutable std::vector<Urho3D::Vector2> tempCenters;
 

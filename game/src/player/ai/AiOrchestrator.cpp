@@ -311,7 +311,7 @@ void AiOrchestrator::order() {
 
 std::optional<Urho3D::Vector2> AiOrchestrator::resolveAttackPos(Player* enemy, const AttackSpatialOutput& spatialOut) {
 	auto* env = Game::getEnvironment();
-	const auto& areas = env->getAreaCenters(playerId, std::span<const float>(spatialOut.weights));
+	const auto& areas = env->getBestVisibleAreas(playerId, std::span<const float>(spatialOut.weights));
 	if (!areas.empty()) {
 		// Only the best candidate is needed to position the army.
 		// TODO consider using the remaining areas (e.g. fallback positions or

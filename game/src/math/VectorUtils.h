@@ -79,6 +79,7 @@ static std::vector<unsigned int> sort_indexes_desc(std::span<T> v, int size = -1
 
 template <typename T>
 static void collectSortedBelow(std::vector<unsigned int>& out, std::span<T> v, T threshold, int maxCount) {
+	//assert(validateSpan(v));
 	out.clear();
 	for (unsigned int i = 0; i < v.size(); ++i) {
 		if (v[i] <= threshold) {

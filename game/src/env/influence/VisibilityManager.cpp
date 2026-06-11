@@ -159,7 +159,7 @@ float VisibilityManager::getVisibilityScore(char player) const {
 	return visibilityPerPlayer[player]->getPercent();
 }
 
-int VisibilityManager::removeUnseen(char player, float* intersection) const {
+int VisibilityManager::removeUnseen(unsigned char player, float* intersection) const {
 	return visibilityPerPlayer[player]->removeUnseen(intersection);
 }
 
