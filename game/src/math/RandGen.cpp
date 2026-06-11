@@ -52,6 +52,9 @@ float RandGen::nextRand(RandFloatType type, float max) {
 }
 
 int RandGen::nextRand(RandIntType type, int max) {
+	if (max <= 0) {
+		return 0; // guard against modulo-by-zero (and negative bounds)
+	}
 	const auto id = castC(type);
 	instance->indexesInt[id]++;
 	instance->indexesInt[id] = instance->indexesInt[id] % RAND_TAB_SIZE;

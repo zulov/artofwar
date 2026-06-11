@@ -22,7 +22,7 @@ struct UId {
 		return static_cast<ObjectType>(type);
 	}
 
-	static unsigned create(ObjectType type, char player = -1) {
+	static unsigned create(ObjectType type, char player = 0) {
 		assert(type != ObjectType::NONE);
 		unsigned v = static_cast<char>(type);
 		return (((player < 0 ? 0 : player) << 2) + v) << 27;

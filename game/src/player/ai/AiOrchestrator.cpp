@@ -227,85 +227,102 @@ void AiOrchestrator::submitBuildingUpgradeRequest(float urgency, ParentBuildingT
 }
 
 void AiOrchestrator::order() {
-	// Worker collection
 	manageWorkers();
 
-	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
-
-	// Get ALL army (free + busy) for stance-based control
 	std::vector<Unit*> allArmy = possession->getAllArmy();
 	if (allArmy.empty()) { return; }
 
-	const auto totalArmy = allArmy.size();
+	const int totalArmy = static_cast<int>(allArmy.size());
 
+	// --- 1. Split the army into attack / defend counts ---
 	// Brain guarantees attackRatio + defendRatio <= 1; rounding may still push the
 	// integer counts 1 over the total, so trim defend to keep attack + defend <= total.
-	int attackCount = roundToInt(lastMilOut.attackRatio * totalArmy);
+	const int attackCount = roundToInt(lastMilOut.attackRatio * totalArmy);
 	int defendCount = roundToInt(lastMilOut.defendRatio * totalArmy);
 	if (attackCount + defendCount > totalArmy) {
-		defendCount = static_cast<int>(totalArmy) - attackCount;
+		defendCount = totalArmy - attackCount;
 	}
 
-	// Resolve target positions — only run the spatial brain if there are attackers to move
+	// --- 2. Resolve target positions ---
+	// Only run the (expensive) spatial brain when there are attackers to position.
+	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
 	std::optional<Urho3D::Vector2> attackPosOpt;
 	if (attackCount > 0) {
-		auto spatialOut = attackSpatialBrain.decide(
+		const auto spatialOut = attackSpatialBrain.decide(
 				player, enemy, lastMilOut,
-				lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency
-				);
+				lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency);
 		attackPosOpt = resolveAttackPos(enemy, spatialOut);
 	}
-
-	auto defendPosOpt = Game::getEnvironment()->getCenterOf(CenterType::BUILDING, playerId);
+	const auto defendPosOpt = Game::getEnvironment()->getCenterOf(CenterType::BUILDING, playerId);
 
 	if (!attackPosOpt.has_value() && !defendPosOpt.has_value()) {
 		history->addOrder(AiOrderType::NONE, AiOrderResult::NO_CENTER_POSITION);
 		return;
 	}
 
-	// Distance-based assignment over ALL army
+	// --- 3. Assign units to groups by proximity to their target ---
+	// Attackers are the closest units to the attack position; defenders are the
+	// closest of the rest to the base.
 	if (attackPosOpt.has_value() && attackCount > 0) {
-		std::ranges::sort(allArmy, [&](const Unit* a, const Unit* b) {
-			return a->getPosition().SqDistXZ(attackPosOpt.value()) < b->getPosition().SqDistXZ(attackPosOpt.value());
-		});
+		sortByDistanceTo(allArmy, attackPosOpt.value());
 	}
-
-	std::vector attackGroup(allArmy.begin(), allArmy.begin() + std::min(attackCount, static_cast<int>(totalArmy)));
+	std::vector attackGroup(allArmy.begin(), allArmy.begin() + std::min(attackCount, totalArmy));
 	std::vector remaining(allArmy.begin() + static_cast<int>(attackGroup.size()), allArmy.end());
 
 	if (defendPosOpt.has_value() && defendCount > 0 && !remaining.empty()) {
-		std::ranges::sort(remaining, [&](const Unit* a, const Unit* b) {
-			return a->getPosition().SqDistXZ(defendPosOpt.value()) < b->getPosition().SqDistXZ(defendPosOpt.value());
-		});
+		sortByDistanceTo(remaining, defendPosOpt.value());
 	}
-
 	std::vector defendGroup(remaining.begin(),
-	                               remaining.begin() + std::min(defendCount, static_cast<int>(remaining.size())));
+	                        remaining.begin() + std::min(defendCount, static_cast<int>(remaining.size())));
 
-	// Issue orders for attack group
+	// --- 4. Issue stance-based orders ---
 	if (!attackGroup.empty() && attackPosOpt.has_value()) {
-		if (lastMilOut.attackStance < STANCE_RETREAT && defendPosOpt.has_value()) {
-			// Retreat: pull back toward own base
-			for (auto* unit : attackGroup) {
-				Game::getActionCenter()->addUnitAction(new IndividualOrder(unit, UnitAction::GO, defendPosOpt.value()));
-			}
-		} else if (lastMilOut.attackStance < STANCE_ADVANCE) { issueHold(attackGroup); } else {
-			issueAdvance(attackGroup, attackPosOpt.value());
-		}
+		issueAttackOrders(attackGroup, lastMilOut.attackStance, attackPosOpt.value(), defendPosOpt);
 		history->addOrder(AiOrderType::ATTACK_ECON, AiOrderResult::SUCCESS, static_cast<uint8_t>(attackGroup.size()));
 	}
-
-	// Issue orders for defend group
 	if (!defendGroup.empty() && defendPosOpt.has_value()) {
-		if (lastMilOut.defendStance < STANCE_RETREAT) {
-			// Disengage: stop all units, let them idle
-			for (auto* unit : defendGroup) {
-				Game::getActionCenter()->addUnitAction(new IndividualOrder(unit, UnitAction::STOP, unit->getPosition()));
-			}
-		} else if (lastMilOut.defendStance < STANCE_ADVANCE) { issueHold(defendGroup); } else {
-			issueAdvance(defendGroup, defendPosOpt.value());
-		}
+		issueDefendOrders(defendGroup, lastMilOut.defendStance, defendPosOpt.value());
 		history->addOrder(AiOrderType::DEFEND_ECON, AiOrderResult::SUCCESS, static_cast<uint8_t>(defendGroup.size()));
+	}
+}
+
+void AiOrchestrator::sortByDistanceTo(std::vector<Unit*>& group, const Urho3D::Vector2& target) {
+	std::ranges::sort(group, [&](const Unit* a, const Unit* b) {
+		return a->getPosition().SqDistXZ(target) < b->getPosition().SqDistXZ(target);
+	});
+}
+
+// Attack group stance bands:
+//   RETREAT (stance < STANCE_RETREAT): pull back toward own base, if known.
+//   HOLD    (stance < STANCE_ADVANCE): only free units engage nearby enemies.
+//   ADVANCE (otherwise):               move on the attack target and engage.
+void AiOrchestrator::issueAttackOrders(std::vector<Unit*>& group, float stance,
+                                       const Urho3D::Vector2& attackTarget,
+                                       const std::optional<Urho3D::Vector2>& fallbackTarget) {
+	if (stance < STANCE_RETREAT && fallbackTarget.has_value()) {
+		for (auto* unit : group) {
+			Game::getActionCenter()->addUnitAction(new IndividualOrder(unit, UnitAction::GO, fallbackTarget.value()));
+		}
+	} else if (stance < STANCE_ADVANCE) {
+		issueHold(group);
+	} else {
+		issueAdvance(group, attackTarget);
+	}
+}
+
+// Defend group stance bands:
+//   RETREAT (stance < STANCE_RETREAT): disengage \u2014 stop all units and idle.
+//   HOLD    (stance < STANCE_ADVANCE): only free units engage nearby enemies.
+//   ADVANCE (otherwise):               move on the base position and engage.
+void AiOrchestrator::issueDefendOrders(std::vector<Unit*>& group, float stance, const Urho3D::Vector2& defendTarget) {
+	if (stance < STANCE_RETREAT) {
+		for (auto* unit : group) {
+			Game::getActionCenter()->addUnitAction(new IndividualOrder(unit, UnitAction::STOP, unit->getPosition()));
+		}
+	} else if (stance < STANCE_ADVANCE) {
+		issueHold(group);
+	} else {
+		issueAdvance(group, defendTarget);
 	}
 }
 

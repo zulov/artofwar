@@ -72,7 +72,7 @@ TEST_F(CumulateErrosFixture, PositivePercentSeeksHighValues) {
 	setupMap(vals);
 	resetIntersection();
 
-	map->cumulateErros(0.8f, intersection);
+	map->cumulateErrors(0.8f, intersection);
 
 	// percent=0.8, min=0, max=1, invDiff=1
 	// val = (max - cellVal) * invDiff * percent = (1 - cellVal) * 0.8
@@ -98,7 +98,7 @@ TEST_F(CumulateErrosFixture, NegativePercentSeeksLowValues) {
 	setupMap(vals);
 	resetIntersection();
 
-	map->cumulateErros(-0.8f, intersection);
+	map->cumulateErrors(-0.8f, intersection);
 
 	// percent=-0.8, min=0, max=1
 	// val = (cellVal - min) * invDiff * percent = cellVal * (-0.8)
@@ -125,7 +125,7 @@ TEST_F(CumulateErrosFixture, ZeroPercentIgnoresMap) {
 	setupMap(vals);
 	resetIntersection();
 
-	map->cumulateErros(0.0f, intersection);
+	map->cumulateErrors(0.0f, intersection);
 
 	// All errors should be zero regardless of cell values
 	for (int i = 0; i < ARRAY_SIZE; ++i) {
@@ -141,11 +141,11 @@ TEST_F(CumulateErrosFixture, LargerWeightProducesLargerErrors) {
 	setupMap(vals);
 
 	resetIntersection();
-	map->cumulateErros(0.3f, intersection);
+	map->cumulateErrors(0.3f, intersection);
 	float errSmallWeight = intersection[0];
 
 	resetIntersection();
-	map->cumulateErros(0.9f, intersection);
+	map->cumulateErrors(0.9f, intersection);
 	float errLargeWeight = intersection[0];
 
 	EXPECT_GT(errLargeWeight, errSmallWeight);
@@ -157,11 +157,11 @@ TEST_F(CumulateErrosFixture, LargerNegativeWeightProducesLargerErrors) {
 	setupMap(vals);
 
 	resetIntersection();
-	map->cumulateErros(-0.3f, intersection);
+	map->cumulateErrors(-0.3f, intersection);
 	float errSmallWeight = intersection[0];
 
 	resetIntersection();
-	map->cumulateErros(-0.9f, intersection);
+	map->cumulateErrors(-0.9f, intersection);
 	float errLargeWeight = intersection[0];
 
 	EXPECT_GT(errLargeWeight, errSmallWeight);
@@ -175,30 +175,33 @@ TEST_F(CumulateErrosFixture, ErrorsAccumulateAcrossMultipleCalls) {
 	setupMap(vals);
 	resetIntersection();
 
-	map->cumulateErros(0.8f, intersection);
+	map->cumulateErrors(0.8f, intersection);
 	float afterFirst = intersection[0];
 
-	map->cumulateErros(0.8f, intersection);
+	map->cumulateErrors(0.8f, intersection);
 	float afterSecond = intersection[0];
 
 	EXPECT_NEAR(afterSecond, afterFirst * 2.f, 1e-5f);
 }
 
-// --- Skips cells marked as unseen (MAX value) ---
+// --- Unseen cells (huge sentinel) stay effectively excluded by magnitude ---
+// NOTE: the explicit `if (*intersection < maxVal)` skip was removed; every cell
+// is now processed. A pre-seeded huge sentinel still dominates because the added
+// squared error is negligible vs FLT_MAX, so such cells remain ranked last.
 
-TEST_F(CumulateErrosFixture, SkipsUnseenCells) {
+TEST_F(CumulateErrosFixture, UnseenSentinelStaysLargest) {
 	std::vector<float> vals(ARRAY_SIZE, 0.f);
 	vals[0] = 1.0f;
 	setupMap(vals);
 	resetIntersection();
 
-	// Mark cell 0 as unseen
+	// Mark cell 0 as unseen with the sentinel used by VisibilityManager.
 	constexpr auto maxVal = std::numeric_limits<float>::max() - 1.f;
 	intersection[0] = maxVal + 1.f;
 
-	map->cumulateErros(0.8f, intersection);
+	map->cumulateErrors(0.8f, intersection);
 
-	// Cell 0 should not have been modified (still above maxVal)
+	// Cell 0 remains huge -> still effectively excluded from selection.
 	EXPECT_GT(intersection[0], maxVal);
 }
 
@@ -209,7 +212,7 @@ TEST_F(CumulateErrosFixture, UniformMapReturnsFalse) {
 	setupMap(vals);
 	resetIntersection();
 
-	bool result = map->cumulateErros(0.8f, intersection);
+	bool result = map->cumulateErrors(0.8f, intersection);
 	EXPECT_FALSE(result);
 }
 
@@ -221,7 +224,7 @@ TEST_F(CumulateErrosFixture, NonUniformMapReturnsTrue) {
 	setupMap(vals);
 	resetIntersection();
 
-	bool result = map->cumulateErros(0.8f, intersection);
+	bool result = map->cumulateErrors(0.8f, intersection);
 	EXPECT_TRUE(result);
 }
 
@@ -242,7 +245,7 @@ TEST_F(CumulateErrosFixture, CombinedSeekHighAndSeekLow) {
 	bldVals[3] = 0.1f;
 	setupMap(bldVals);
 	resetIntersection();
-	map->cumulateErros(0.9f, intersection); // seek high buildings
+	map->cumulateErrors(0.9f, intersection); // seek high buildings
 
 	// Second map: "gathering" - seek low (avoid)
 	std::vector<float> gatherVals(ARRAY_SIZE, 0.f);
@@ -251,7 +254,7 @@ TEST_F(CumulateErrosFixture, CombinedSeekHighAndSeekLow) {
 	gatherVals[2] = 0.0f;
 	gatherVals[3] = 0.9f;
 	setupMap(gatherVals);
-	map->cumulateErros(-0.6f, intersection); // avoid gathering
+	map->cumulateErrors(-0.6f, intersection); // avoid gathering
 
 	// Cell 0 should win (high buildings, no gathering)
 	EXPECT_LT(intersection[0], intersection[1]);
@@ -264,6 +267,90 @@ TEST_F(CumulateErrosFixture, CombinedSeekHighAndSeekLow) {
 	EXPECT_GT(intersection[3], intersection[2]);
 }
 
+// --- Regression: min != 0 must produce correct errors (guards branch/flip bugs) ---
+// These cases are critical: when min == 0 several incorrect formulations still
+// coincidentally yield the right numbers. A non-zero min disambiguates them.
+// Reference (original intended formula), invDiff = 1 / (max - min):
+//   seek-high (percent >= 0): err = ((max - cellVal) * invDiff * percent)^2
+//   seek-low  (percent <  0): err = ((cellVal - min) * invDiff * percent)^2
+
+TEST_F(CumulateErrosFixture, NonZeroMinSeekHighExactErrors) {
+	// min=10, max=20 -> invDiff = 0.1
+	std::vector<float> vals(ARRAY_SIZE, 10.f); // baseline = min
+	vals[0] = 10.f;
+	vals[1] = 12.5f;
+	vals[2] = 15.f;
+	vals[3] = 17.5f;
+	vals[4] = 20.f; // = max
+	setupMap(vals);
+	resetIntersection();
+
+	map->cumulateErrors(0.8f, intersection);
+
+	// err = ((max - cellVal) * 0.1 * 0.8)^2
+	EXPECT_NEAR(intersection[0], 0.6400f, 1e-5f); // (10*0.08)^2
+	EXPECT_NEAR(intersection[1], 0.3600f, 1e-5f); // (7.5*0.08)^2
+	EXPECT_NEAR(intersection[2], 0.1600f, 1e-5f); // (5*0.08)^2
+	EXPECT_NEAR(intersection[3], 0.0400f, 1e-5f); // (2.5*0.08)^2
+	EXPECT_NEAR(intersection[4], 0.0000f, 1e-5f); // (0)^2
+
+	// Ranking: highest cell -> lowest error (seek high)
+	EXPECT_LT(intersection[4], intersection[3]);
+	EXPECT_LT(intersection[3], intersection[2]);
+	EXPECT_LT(intersection[2], intersection[1]);
+	EXPECT_LT(intersection[1], intersection[0]);
+}
+
+TEST_F(CumulateErrosFixture, NonZeroMinSeekLowExactErrors) {
+	// min=10, max=20 -> invDiff = 0.1
+	std::vector<float> vals(ARRAY_SIZE, 10.f);
+	vals[0] = 10.f; // = min
+	vals[1] = 12.5f;
+	vals[2] = 15.f;
+	vals[3] = 17.5f;
+	vals[4] = 20.f; // = max
+	setupMap(vals);
+	resetIntersection();
+
+	map->cumulateErrors(-0.8f, intersection);
+
+	// err = ((cellVal - min) * 0.1 * 0.8)^2  (sign of percent cancels under square)
+	EXPECT_NEAR(intersection[0], 0.0000f, 1e-5f); // (0)^2
+	EXPECT_NEAR(intersection[1], 0.0400f, 1e-5f); // (2.5*0.08)^2
+	EXPECT_NEAR(intersection[2], 0.1600f, 1e-5f); // (5*0.08)^2
+	EXPECT_NEAR(intersection[3], 0.3600f, 1e-5f); // (7.5*0.08)^2
+	EXPECT_NEAR(intersection[4], 0.6400f, 1e-5f); // (10*0.08)^2
+
+	// Ranking: lowest cell -> lowest error (seek low)
+	EXPECT_LT(intersection[0], intersection[1]);
+	EXPECT_LT(intersection[1], intersection[2]);
+	EXPECT_LT(intersection[2], intersection[3]);
+	EXPECT_LT(intersection[3], intersection[4]);
+}
+
+TEST_F(CumulateErrosFixture, NegativeMinRangeSeekLowExactErrors) {
+	// min=-4, max=4 -> invDiff = 0.125, stresses negative min in both branches
+	std::vector<float> vals(ARRAY_SIZE, -4.f);
+	vals[0] = -4.f; // = min
+	vals[1] = 0.f;
+	vals[2] = 2.f;
+	vals[3] = 4.f; // = max
+	setupMap(vals);
+	resetIntersection();
+
+	map->cumulateErrors(-0.5f, intersection);
+
+	// err = ((cellVal - min) * 0.125 * 0.5)^2
+	EXPECT_NEAR(intersection[0], 0.00000000f, 1e-6f); // (0)^2
+	EXPECT_NEAR(intersection[1], 0.06250000f, 1e-6f); // (4*0.0625)^2
+	EXPECT_NEAR(intersection[2], 0.14062500f, 1e-6f); // (6*0.0625)^2
+	EXPECT_NEAR(intersection[3], 0.25000000f, 1e-6f); // (8*0.0625)^2
+
+	EXPECT_LT(intersection[0], intersection[1]);
+	EXPECT_LT(intersection[1], intersection[2]);
+	EXPECT_LT(intersection[2], intersection[3]);
+}
+
 // --- Symmetry: positive and negative with same magnitude produce mirrored rankings ---
 
 TEST_F(CumulateErrosFixture, PositiveAndNegativeAreSymmetric) {
@@ -274,12 +361,12 @@ TEST_F(CumulateErrosFixture, PositiveAndNegativeAreSymmetric) {
 	setupMap(vals);
 
 	resetIntersection();
-	map->cumulateErros(0.8f, intersection);
+	map->cumulateErrors(0.8f, intersection);
 	float posErr0 = intersection[0]; // high error (cell is low, wants high)
 	float posErr2 = intersection[2]; // low error (cell is high, wants high)
 
 	resetIntersection();
-	map->cumulateErros(-0.8f, intersection);
+	map->cumulateErrors(-0.8f, intersection);
 	float negErr0 = intersection[0]; // low error (cell is low, wants low)
 	float negErr2 = intersection[2]; // high error (cell is high, wants low)
 
