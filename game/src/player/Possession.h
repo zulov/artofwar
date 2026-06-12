@@ -13,6 +13,12 @@ class Unit;
 class Building;
 class Resources;
 
+struct ArmyByActivity {
+	std::vector<Unit*> attacking;
+	std::vector<Unit*> defending;
+	std::vector<Unit*> idle;
+};
+
 class Possession {
 public:
 	Possession(unsigned short nation);
@@ -54,6 +60,9 @@ public:
 	const std::vector<Unit*>& getWorkers() const { return workers; }
 	std::vector<Unit*> getFreeArmy();
 	std::vector<Unit*> getAllArmy();
+	const std::vector<Unit*>& getArmyInAttack();
+	const std::vector<Unit*>& getArmyInDefend();
+	const ArmyByActivity& getArmyByActivity();
 	bool hasAnyFreeArmy() const;
 	float getAttackSum();
 	float getFreeArmyAttackSum();
@@ -73,6 +82,8 @@ private:
 
 	std::vector<Unit*> units;
 	std::vector<Unit*> workers;
+
+	ArmyByActivity armyByActivity;
 
 	unsigned idleWorkersNumber = 0;
 	unsigned idleArmyNumber = 0, armyNumber = 0;

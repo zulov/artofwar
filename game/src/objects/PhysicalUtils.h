@@ -40,6 +40,15 @@ inline bool isSolider(Unit* unit) {
 	return !unit->getDb()->typeWorker;
 }
 
+inline bool isInAttack(Unit* unit) {
+	const auto state = unit->getState();
+	return state == UnitState::ATTACK || state == UnitState::CHARGE || state == UnitState::SHOT;
+}
+
+inline bool isInDefend(Unit* unit) {
+	return unit->getState() == UnitState::DEFEND;
+}
+
 inline float getCircleSize(const db_building* dbBuilding, const db_building_level* level) {
 	if (dbBuilding->typeDefence) {
 		return level->attackRange;

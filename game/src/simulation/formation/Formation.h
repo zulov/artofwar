@@ -20,6 +20,8 @@ public:
 	float getPriority(int id) const;
 
 	FormationState getState() const { return state; }
+	bool isInAttack() const;
+	bool isInDefend() const;
 	std::optional<Unit*> getLeader();
 
 	void addOrder(FormationOrder* order);

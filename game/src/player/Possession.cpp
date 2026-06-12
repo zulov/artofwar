@@ -10,6 +10,8 @@
 #include "objects/building/ParentBuildingType.h"
 #include "objects/resource/ResourceEntity.h"
 #include "ai/MetricDefinitions.h"
+#include "simulation/formation/Formation.h"
+#include "simulation/formation/FormationManager.h"
 
 Possession::Possession(unsigned short nation) {
 	for (const auto building : Game::getDatabase()->getNation(nation)->buildings) {
@@ -160,6 +162,46 @@ std::vector<Unit*> Possession::getAllArmy() {
 	const auto it = std::ranges::copy_if(units, army.begin(), isSolider).out;
 	army.resize(std::distance(army.begin(), it));
 	return army;
+}
+
+const std::vector<Unit*>& Possession::getArmyInAttack() {
+	return getArmyByActivity().attacking;
+}
+
+const std::vector<Unit*>& Possession::getArmyInDefend() {
+	return getArmyByActivity().defending;
+}
+
+const ArmyByActivity& Possession::getArmyByActivity() {
+	armyByActivity.attacking.clear();
+	armyByActivity.defending.clear();
+	armyByActivity.idle.clear();
+
+	const auto formationManager = Game::getFormationManager();
+
+	for (const auto unit : units) {
+		if (!isSolider(unit)) { continue; }
+
+		bool attacking;
+		bool defending;
+		if (unit->getFormation() >= 0) {
+			const auto formation = formationManager->getFormation(unit);
+			attacking = formation->isInAttack();
+			defending = formation->isInDefend();
+		} else {
+			attacking = isInAttack(unit);
+			defending = isInDefend(unit);
+		}
+
+		if (attacking) {
+			armyByActivity.attacking.push_back(unit);
+		} else if (defending) {
+			armyByActivity.defending.push_back(unit);
+		} else {
+			armyByActivity.idle.push_back(unit);
+		}
+	}
+	return armyByActivity;
 }
 
 bool Possession::hasAnyFreeArmy() const {

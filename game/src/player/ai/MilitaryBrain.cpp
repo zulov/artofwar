@@ -42,19 +42,24 @@ MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::DIST_ENEMY_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, player, 1.f);
 	inputData[idx(I::DIST_ENEMY_ARMY_ENEMY_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, enemy, 0.f);
 
-	// Army counts (3)
+	// Army counts (4)
 	inputData[idx(I::ARMY_COUNT)] = norm(possession->getArmyNumber(), NormScale::ARMY);
 	inputData[idx(I::ENEMY_ARMY_COUNT)] = norm(enemyPossession->getArmyNumber(), NormScale::ARMY);
-	inputData[idx(I::FREE_ARMY_COUNT)] = norm(possession->getFreeArmyNumber(), NormScale::ARMY);
+	const auto& armyByActivity = possession->getArmyByActivity();
+	inputData[idx(I::FREE_ARMY_COUNT)] = norm(static_cast<unsigned>(armyByActivity.idle.size()), NormScale::ARMY);
 	inputData[idx(I::FREE_ARMY_ATTACK_SUM)] = norm(possession->getFreeArmyAttackSum(), NormScale::ATTACK);
+
+	// Army activity ratios (fraction of our army currently attacking / defending)
+	float armyCount = static_cast<float>(possession->getArmyNumber());
+	float safeDiv = std::max(armyCount, 1.f);
+	inputData[idx(I::ARMY_ATTACKING_RATIO)] = norm(static_cast<unsigned>(armyByActivity.attacking.size()), safeDiv);
+	inputData[idx(I::ARMY_DEFENDING_RATIO)] = norm(static_cast<unsigned>(armyByActivity.defending.size()), safeDiv);
 
 	// Urgencies from Master (2)
 	inputData[idx(I::MILITARY_URGENCY)] = militaryUrgency;
 	inputData[idx(I::ATTACK_URGENCY)] = attackUrgency;
 
 	// Army composition ratios
-	float armyCount = static_cast<float>(possession->getArmyNumber());
-	float safeDiv = std::max(armyCount, 1.f);
 	inputData[idx(I::OWN_INFANTRY_RATIO)] = norm(possession->getInfantryNumber(), safeDiv);
 	inputData[idx(I::OWN_RANGE_RATIO)] = norm(possession->getRangeNumber(), safeDiv);
 	inputData[idx(I::OWN_CAVALRY_RATIO)] = norm(possession->getCavalryNumber(), safeDiv);

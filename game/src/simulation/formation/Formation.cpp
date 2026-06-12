@@ -37,6 +37,18 @@ Formation::~Formation() {
 	delete[] levelOfReach;
 }
 
+bool Formation::isInAttack() const {
+	const auto inAttack = [](const FormationOrder* order) { return isAttackAction(order->getAction()); };
+	if (pendingOrder && inAttack(pendingOrder)) { return true; }
+	return std::ranges::any_of(unitOrders, inAttack);
+}
+
+bool Formation::isInDefend() const {
+	const auto inDefend = [](const FormationOrder* order) { return isDefendAction(order->getAction()); };
+	if (pendingOrder && inDefend(pendingOrder)) { return true; }
+	return std::ranges::any_of(unitOrders, inDefend);
+}
+
 void Formation::chooseLeader(const Urho3D::Vector2& localCenter) {
 	float maxDist = 99999.f;
 	leader = nullptr;

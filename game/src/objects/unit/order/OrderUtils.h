@@ -4,6 +4,14 @@
 #include "env/Environment.h"
 #include "objects/PhysicalUtils.h"
 
+inline bool isAttackAction(UnitAction action) {
+	return action == UnitAction::ATTACK || action == UnitAction::CHARGE;
+}
+
+inline bool isDefendAction(UnitAction action) {
+	return action == UnitAction::DEFEND;
+}
+
 template <typename T>
 void removeExpired(std::vector<T*>& orders) {
 	//TODO use std::stable partition

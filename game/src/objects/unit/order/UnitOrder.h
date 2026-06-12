@@ -22,6 +22,7 @@ public:
 	virtual short getSize() const =0;
 
 	bool getAppend() const { return append; }
+	UnitAction getAction() const { return static_cast<UnitAction>(id); }
 
 protected:
 	Physical* toUse = nullptr;
