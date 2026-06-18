@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <cstddef>
 #include <span>
 #include <magic_enum.hpp>
 
@@ -37,24 +38,71 @@ enum class MilitaryInputIdx : unsigned char {
 	RECENT_DEFEND_ACTIVITY,
 };
 
-enum class MilitaryOutputIdx : unsigned char {
-	ATTACK_RATIO,
-	DEFEND_RATIO,
-	ATTACK_STANCE,
-	DEFEND_STANCE,
-	PREFER_INFANTRY,
-	PREFER_RANGE,
-	PREFER_CAVALRY,
+enum class MilitaryCenterIdx : unsigned char {
+	OUR_ARMY,
+	OUR_ECON,
+	OUR_BUILDING,
+	ENEMY_ARMY,
+	ENEMY_ECON,
+	ENEMY_BUILDING,
+	LAST_BATTLE,
 };
 
+static constexpr size_t MILITARY_CENTER_COUNT = magic_enum::enum_count<MilitaryCenterIdx>();
+static constexpr size_t MILITARY_CENTER_PAIR_COUNT = MILITARY_CENTER_COUNT * (MILITARY_CENTER_COUNT - 1) / 2;
+
+// One signed output per unordered pair. Positive means pressure from the first
+// enum name to the second; negative means pressure in the opposite direction.
+enum class MilitaryOutputIdx : unsigned char {
+	OUR_ARMY_OUR_ECON,
+	OUR_ARMY_OUR_BUILDING,
+	OUR_ARMY_ENEMY_ARMY,
+	OUR_ARMY_ENEMY_ECON,
+	OUR_ARMY_ENEMY_BUILDING,
+	OUR_ARMY_LAST_BATTLE,
+	OUR_ECON_OUR_BUILDING,
+	OUR_ECON_ENEMY_ARMY,
+	OUR_ECON_ENEMY_ECON,
+	OUR_ECON_ENEMY_BUILDING,
+	OUR_ECON_LAST_BATTLE,
+	OUR_BUILDING_ENEMY_ARMY,
+	OUR_BUILDING_ENEMY_ECON,
+	OUR_BUILDING_ENEMY_BUILDING,
+	OUR_BUILDING_LAST_BATTLE,
+	ENEMY_ARMY_ENEMY_ECON,
+	ENEMY_ARMY_ENEMY_BUILDING,
+	ENEMY_ARMY_LAST_BATTLE,
+	ENEMY_ECON_ENEMY_BUILDING,
+	ENEMY_ECON_LAST_BATTLE,
+	ENEMY_BUILDING_LAST_BATTLE,
+};
+
+static_assert(magic_enum::enum_count<MilitaryOutputIdx>() == MILITARY_CENTER_PAIR_COUNT,
+              "MilitaryOutputIdx must contain every unordered pair of MilitaryCenterIdx values");
+
+constexpr size_t militaryCenterPairIndex(MilitaryCenterIdx first, MilitaryCenterIdx second) {
+	const int a = static_cast<int>(first);
+	const int b = static_cast<int>(second);
+	const int low = a < b ? a : b;
+	const int high = a < b ? b : a;
+	size_t index = 0;
+	for (int i = 0; i < low; ++i) { index += MILITARY_CENTER_COUNT - static_cast<size_t>(i) - 1; }
+	return index + static_cast<size_t>(high - low - 1);
+}
+
 struct MilitaryOutput {
-	float attackRatio;
-	float defendRatio;
-	float attackStance;
-	float defendStance;
-	float preferInfantry;
-	float preferRange;
-	float preferCavalry;
+	std::array<float, MILITARY_CENTER_PAIR_COUNT> centerPairPressure{};
+	float preferInfantry = 0.f;
+	float preferRange = 0.f;
+	float preferCavalry = 0.f;
+
+	float pressure(MilitaryCenterIdx from, MilitaryCenterIdx to) const {
+		if (from == to) { return 0.f; }
+		const float pairValue = centerPairPressure[militaryCenterPairIndex(from, to)];
+		return static_cast<int>(from) < static_cast<int>(to)
+			       ? (pairValue > 0.f ? pairValue : 0.f)
+			       : (pairValue < 0.f ? -pairValue : 0.f);
+	}
 };
 
 class MilitaryBrain {

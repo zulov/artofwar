@@ -79,25 +79,7 @@ MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
 
 	auto result = brain->decide(inputData);
 
-	using O = MilitaryOutputIdx;
-
-	// Clamp ratios to [0, 1] individually, then scale down proportionally so
-	// attackRatio + defendRatio <= 1 (can't commit more than the whole army).
-	float attackRatio = std::clamp(result[idx(O::ATTACK_RATIO)], 0.f, 1.f);
-	float defendRatio = std::clamp(result[idx(O::DEFEND_RATIO)], 0.f, 1.f);
-	const float ratioSum = attackRatio + defendRatio;
-	if (ratioSum > 1.f) {
-		attackRatio /= ratioSum;
-		defendRatio /= ratioSum;
-	}
-
-	return MilitaryOutput{
-		attackRatio,
-		defendRatio,
-		result[idx(O::ATTACK_STANCE)],
-		result[idx(O::DEFEND_STANCE)],
-		result[idx(O::PREFER_INFANTRY)],
-		result[idx(O::PREFER_RANGE)],
-		result[idx(O::PREFER_CAVALRY)]
-	};
+	MilitaryOutput output;
+	std::copy_n(result.begin(), output.centerPairPressure.size(), output.centerPairPressure.begin());
+	return output;
 }

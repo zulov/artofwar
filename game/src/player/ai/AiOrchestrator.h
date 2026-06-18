@@ -59,10 +59,6 @@ private:
 	// Army control (used by order())
 	std::optional<Urho3D::Vector2> resolveAttackPos(Player* enemy, const AttackSpatialOutput& spatialOut);
 	static void sortByDistanceTo(std::vector<Unit*>& group, const Urho3D::Vector2& target);
-	void issueAttackOrders(std::vector<Unit*>& group, float stance,
-	                       const Urho3D::Vector2& attackTarget,
-	                       const std::optional<Urho3D::Vector2>& fallbackTarget);
-	void issueDefendOrders(std::vector<Unit*>& group, float stance, const Urho3D::Vector2& defendTarget);
 	void issueAdvance(std::vector<Unit*>& group, const Urho3D::Vector2& target);
 	void issueHold(std::vector<Unit*>& group);
 

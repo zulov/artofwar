@@ -3,17 +3,12 @@
 #include <span>
 #include <magic_enum.hpp>
 #include "env/influence/InfluenceManager.h"
-#include "MilitaryBrain.h"
 
 class Brain;
 class Player;
 struct db_nation;
 
 enum class AttackSpatialInputIdx : unsigned char {
-	ATTACK_RATIO,
-	DEFEND_RATIO,
-	ATTACK_STANCE,
-	DEFEND_STANCE,
 	ARMY_COUNT,
 	FREE_ARMY_COUNT,
 	ENEMY_ARMY_COUNT,
@@ -49,7 +44,6 @@ public:
 	AttackSpatialBrain(const AttackSpatialBrain&) = delete;
 
 	AttackSpatialOutput decide(Player* player, Player* enemy,
-	                           const MilitaryOutput& milOut,
 	                           float militaryUrgency, float attackUrgency);
 
 private:

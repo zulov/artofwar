@@ -50,6 +50,7 @@
   <ItemGroup>
     <ClCompile Include="AiHistoryTest.cpp" />
     <ClCompile Include="AiUtilsTest.cpp" />
+    <ClCompile Include="MilitaryCommandCalculatorTest.cpp" />
     <ClCompile Include="ArrayProviderUtilsTest.cpp" />
     <ClCompile Include="MetricComposeTest.cpp" />
     <ClCompile Include="CloseIndexTest.cpp" />

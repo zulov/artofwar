@@ -18,18 +18,11 @@ AttackSpatialBrain::AttackSpatialBrain(db_nation* nation)
 }
 
 AttackSpatialOutput AttackSpatialBrain::decide(Player* player, Player* enemy,
-                                                const MilitaryOutput& milOut,
                                                 float militaryUrgency, float attackUrgency) {
 	using I = AttackSpatialInputIdx;
 
 	auto* possession = player->getPossession();
 	auto* enemyPossession = enemy->getPossession();
-
-	// MilitaryBrain outputs (4)
-	inputData[idx(I::ATTACK_RATIO)] = milOut.attackRatio;
-	inputData[idx(I::DEFEND_RATIO)] = milOut.defendRatio;
-	inputData[idx(I::ATTACK_STANCE)] = milOut.attackStance;
-	inputData[idx(I::DEFEND_STANCE)] = milOut.defendStance;
 
 	// Army counts (3)
 	inputData[idx(I::ARMY_COUNT)] = norm(possession->getArmyNumber(), NormScale::ARMY);

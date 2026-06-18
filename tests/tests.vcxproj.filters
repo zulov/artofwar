@@ -9,6 +9,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PathFinderTest.cpp" />
     <ClCompile Include="AiHistoryTest.cpp" />
+    <ClCompile Include="MilitaryCommandCalculatorTest.cpp" />
     <ClCompile Include="MetricComposeTest.cpp" />
   </ItemGroup>
   <ItemGroup>
