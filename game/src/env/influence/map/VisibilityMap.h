@@ -17,7 +17,7 @@ public:
 	VisibilityType getValueAt(float x, float z) const;
 	float getValueAsPercent(unsigned index) const override;
 	float getValueAt(unsigned index) const override;
-	void computeMinMax() override;
+	void computeMinMax();
 	int removeUnseen(float* intersection);
 	float getPercent();
 

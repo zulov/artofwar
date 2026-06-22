@@ -159,7 +159,7 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 		for (const auto unit : (*units)) {
 			const auto pId = unit->getPlayer();
 			const auto index = getIndexInInfluence(unit);
-			unitsNumberPerPlayer[pId]->updateInt(index);
+			unitsNumberPerPlayer[pId]->update(index);
 			unitsInfluencePerPlayer[pId]->tempUpdate(index);
 		}
 	}	
@@ -208,7 +208,7 @@ void InfluenceManager::updateNotInBonus(std::vector<Unit*>* units) const {
 		if (unit->getDb()->typeWorker && unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
 			auto res = (ResourceEntity*)unit->getThingToInteract();
 			//TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
-			mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getResourceId()]->updateInt(res->getIndexInInfluence());
+			mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getResourceId()]->update(res->getIndexInInfluence());
 		}
 	}
 }

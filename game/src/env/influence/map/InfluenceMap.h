@@ -11,17 +11,15 @@ public:
 	virtual ~InfluenceMap() = default;
 
 	virtual float getValueAt(unsigned index) const =0;
-	virtual void computeMinMax() = 0;
 	virtual void ensureReady() = 0;
 	void draw(short batch, short maxParts);
-	Urho3D::Vector3 getVertex(const Urho3D::Vector2 &center, Urho3D::Vector2 vertex) const;
-	void drawCell(int index, short batch) const;
 
 	float getFieldSize() const;
-	virtual float getValueAsPercent(unsigned index) const =0;
+
 	void print(Urho3D::String name);
 	unsigned short getResolution() const { return calculator->getResolution(); }
 protected:
+	virtual float getValueAsPercent(unsigned index) const = 0;
 	GridCalculator* calculator;
 	unsigned int arraySize;
 	const float valueThresholdDebug;
@@ -34,4 +32,8 @@ protected:
 	unsigned short counter = 0;
 
 	bool minMaxInited = false;
+
+private:
+	void drawCell(int index, short batch) const;
+	Urho3D::Vector3 getVertex(const Urho3D::Vector2& center, Urho3D::Vector2 vertex) const;
 };

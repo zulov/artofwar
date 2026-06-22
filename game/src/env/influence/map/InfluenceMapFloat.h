@@ -15,9 +15,8 @@ public:
 	void tempUpdate(int index, float value = 1.f);
 
 	virtual void reset();
-	float getValueAt(unsigned index) const override;
-	float getValueAsPercent(unsigned index) const override;
-	void computeMinMax() override;
+
+
 	void ensureReady() override;
 
 	std::vector<int> getIndexesWithByValue(float percent, float tolerance);
@@ -28,6 +27,8 @@ public:
 	static float* createTemplateV(float coef, char level);
 
 protected:
+	float getValueAt(unsigned index) const override;
+	float getValueAsPercent(unsigned index) const override;
 	float* values;
 	float* tempVals;
 	float coef;
@@ -35,7 +36,7 @@ protected:
 	std::vector<int> changedIndexes;
 private:
 	void applyKernel(int index) const;
-
+	void computeMinMax();
 	unsigned char level;
 	unsigned char levelRes;
 	float* templateV;

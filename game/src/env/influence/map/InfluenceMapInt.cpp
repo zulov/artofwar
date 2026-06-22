@@ -16,7 +16,7 @@ InfluenceMapInt::~InfluenceMapInt() {
 	delete[] values;
 }
 
-void InfluenceMapInt::updateInt(unsigned index, unsigned char value) const {
+void InfluenceMapInt::update(unsigned index, unsigned char value) const {
 	assert(values[index] + value >= values[index] && "unsigned char overflow in InfluenceMapInt::updateInt");
 	values[index] += value;
 }
@@ -44,11 +44,18 @@ float InfluenceMapInt::getValueAt(unsigned index) const {
 }
 
 void InfluenceMapInt::ensureReady() {
-	computeMinMax();
+	if (!minMaxInited) {
+		const auto [minPtr, maxPtr] = std::minmax_element(values, values + arraySize);
+		min = *minPtr;
+		max = *maxPtr;
+		minIdx = std::distance(values, minPtr);
+		maxIdx = std::distance(values, maxPtr);
+		minMaxInited = true;
+	}
 }
 
 std::vector<unsigned> InfluenceMapInt::getMaxIdxs() {
-	computeMinMax();
+	ensureReady();
 	if (max <= 0.5f) {
 		return {};
 	}
@@ -62,15 +69,4 @@ std::vector<unsigned> InfluenceMapInt::getMaxIdxs() {
 		}
 	}
 	return idx;
-}
-
-void InfluenceMapInt::computeMinMax() {
-	if (!minMaxInited) {
-		const auto [minPtr, maxPtr] = std::minmax_element(values, values + arraySize);
-		min = *minPtr;
-		max = *maxPtr;
-		minIdx = std::distance(values, minPtr);
-		maxIdx = std::distance(values, maxPtr);
-		minMaxInited = true;
-	}
 }
