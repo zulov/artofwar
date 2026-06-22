@@ -87,8 +87,8 @@ void VisibilityManager::hideOrShow(VisibilityMap* current, Physical* physical) {
 	physical->setVisibility(type);
 }
 
-void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
-                                         std::vector<ResourceEntity*>* resources) {
+void VisibilityManager::updateVisibility(const std::vector<Building*>* buildings, const std::vector<Unit*>* units,
+                                         const std::vector<ResourceEntity*>* resources) {
 	MapsUtils::resetMaps(visibilityPerPlayer);
 	for (const auto unit : (*units)) {
 		visibilityPerPlayer[unit->getPlayer()]->update(unit->getPosition(), unit->getSightRadius());

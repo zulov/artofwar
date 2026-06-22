@@ -16,8 +16,8 @@ InfluenceMapInt::~InfluenceMapInt() {
 	delete[] values;
 }
 
-void InfluenceMapInt::updateInt(int index, int value) const {
-	assert(values[index] + static_cast<unsigned char>(value) >= values[index] && "unsigned char overflow in InfluenceMapInt::updateInt");
+void InfluenceMapInt::updateInt(unsigned index, unsigned char value) const {
+	assert(values[index] + value >= values[index] && "unsigned char overflow in InfluenceMapInt::updateInt");
 	values[index] += value;
 }
 
@@ -31,15 +31,7 @@ unsigned char InfluenceMapInt::getValueAt(const Urho3D::Vector2& pos) const {
 	return getValueAt(index);
 }
 
-float InfluenceMapInt::getValueAsPercent(const Urho3D::Vector2& pos) const {
-	const float diff = max - min;
-	if (diff != 0.f) {
-		return (getValueAt(pos) - min) / diff;
-	}
-	return 0.5f;
-}
-
-float InfluenceMapInt::getValueAsPercent(const int index) const {
+float InfluenceMapInt::getValueAsPercent(unsigned index) const {
 	const float diff = max - min;
 	if (diff != 0.f) {
 		return (getValueAt(index) - min) / diff;
@@ -47,7 +39,7 @@ float InfluenceMapInt::getValueAsPercent(const int index) const {
 	return 0.5f;
 }
 
-float InfluenceMapInt::getValueAt(int index) const {
+float InfluenceMapInt::getValueAt(unsigned index) const {
 	return values[index];
 }
 

@@ -14,11 +14,11 @@ struct GridCalculator {
 
 	GridCalculator(const GridCalculator&) = delete;
 
-	int getIndex(short posX, short posZ) const {
+	unsigned getIndex(short posX, short posZ) const {
 		return getNotSafeIndex(getValid(posX), getValid(posZ));
 	}
 
-	int getNotSafeIndex(unsigned short posX, unsigned short posZ) const {
+	unsigned getNotSafeIndex(unsigned short posX, unsigned short posZ) const {
 		assert((posX * resolution + posZ) >= 0 && (posX * resolution + posZ) < sqResolution);
 		return posX * resolution + posZ;
 	}

@@ -18,10 +18,9 @@ public:
 	void tempUpdate(int index, float value = 1.f);
 	void update(int index) const;
 	virtual void reset();
-	float getValueAt(int index) const override;
+	float getValueAt(unsigned index) const override;
 	float getValueAt(const Urho3D::Vector2& pos) const;
-	float getValueAsPercent(const Urho3D::Vector2& pos) const override;
-	float getValueAsPercent(int index) const override;
+	float getValueAsPercent(unsigned index) const override;
 	void computeMinMax() override;
 	void ensureReady() override;
 

@@ -82,7 +82,7 @@ void InfluenceMapFloat::reset() {
 	std::fill_n(values, arraySize, 0.f);
 }
 
-float InfluenceMapFloat::getValueAt(int index) const {
+float InfluenceMapFloat::getValueAt(unsigned index) const {
 	assert(!valuesCalculateNeeded);
 	return values[index];
 }
@@ -92,15 +92,7 @@ float InfluenceMapFloat::getValueAt(const Urho3D::Vector2& pos) const {
 	return getValueAt(calculator->indexFromPosition(pos));
 }
 
-float InfluenceMapFloat::getValueAsPercent(const Urho3D::Vector2& pos) const {
-	assert(minMaxInited);
-	assert(!valuesCalculateNeeded);
-	const float diff = max - min;
-	if (diff != 0.f) { return (getValueAt(pos) - min) / diff; }
-	return 0.5f;
-}
-
-float InfluenceMapFloat::getValueAsPercent(int index) const {
+float InfluenceMapFloat::getValueAsPercent(unsigned index) const {
 	assert(minMaxInited);
 	assert(!valuesCalculateNeeded);
 	const float diff = max - min;

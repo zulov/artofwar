@@ -22,7 +22,7 @@ void InfluenceMap::draw(short batch, short maxParts) {
 	}
 }
 
-Urho3D::Vector3 InfluenceMap::getVertex(const Urho3D::Vector2 center, Urho3D::Vector2 vertex) const {
+Urho3D::Vector3 InfluenceMap::getVertex(const Urho3D::Vector2 &center, Urho3D::Vector2 vertex) const {
 	auto result = Game::getEnvironment()->getPosWithHeightAt(center.x_ + vertex.x_, center.y_ + vertex.y_);
 	result.y_ += 1.f;
 	return result;
