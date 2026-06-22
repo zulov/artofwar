@@ -20,7 +20,7 @@ public:
 	float getFieldSize() const;
 	virtual float getValueAsPercent(unsigned index) const =0;
 	void print(Urho3D::String name);
-	unsigned short getResolution() const { return calculator->getResolution(); };
+	unsigned short getResolution() const { return calculator->getResolution(); }
 protected:
 	GridCalculator* calculator;
 	unsigned int arraySize;

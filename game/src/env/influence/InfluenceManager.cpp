@@ -162,8 +162,8 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 			unitsNumberPerPlayer[pId]->updateInt(index);
 			unitsInfluencePerPlayer[pId]->tempUpdate(index);
 		}
-	}
-
+	}	
+	//TODO perf to tutaj chyba niepotrzebne i tak bedzie zrobione lazy
 	MapsUtils::finalize(unitsInfluencePerPlayer);
 }
 
@@ -185,6 +185,7 @@ void InfluenceManager::updateBuildings(const std::vector<Building*>* buildings) 
 		buildingsInfluencePerPlayer[player]->tempUpdate(index);
 		buildingsQuad[player]->updateInt(index);
 	}
+	// TODO perf to tutaj chyba niepotrzebne i tak bedzie zrobione lazy
 	MapsUtils::finalize(buildingsInfluencePerPlayer);
 }
 

@@ -9,17 +9,13 @@ class InfluenceMapFloat : public InfluenceMap {
 public:
 	InfluenceMapFloat(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug,
 	                  float* sharedTemplateV);
-	virtual ~InfluenceMapFloat();
-
-	//void update(Physical* thing, float value = 1.f) override;
-	//void updateInt(Physical* thing, int value = 1) override;
+	~InfluenceMapFloat() override;
 
 	void tempUpdate(const Urho3D::Vector2& pos, float value = 1.f);
 	void tempUpdate(int index, float value = 1.f);
-	void update(int index) const;
+
 	virtual void reset();
 	float getValueAt(unsigned index) const override;
-	float getValueAt(const Urho3D::Vector2& pos) const;
 	float getValueAsPercent(unsigned index) const override;
 	void computeMinMax() override;
 	void ensureReady() override;
@@ -38,7 +34,7 @@ protected:
 	bool valuesCalculateNeeded = false;
 	std::vector<int> changedIndexes;
 private:
-	void update(float value, unsigned short centerX, unsigned short centerZ) const;
+	void applyKernel(int index) const;
 
 	unsigned char level;
 	unsigned char levelRes;

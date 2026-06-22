@@ -54,13 +54,9 @@ void InfluenceMapFloat::tempUpdate(int index, float value) {
 	valuesCalculateNeeded = true;
 }
 
-void InfluenceMapFloat::update(int index) const {
+void InfluenceMapFloat::applyKernel(int index) const {
 	auto [centerX, centerZ] = calculator->getCords(index);
-	update(tempVals[index], centerX, centerZ);
-	tempVals[index] = 0.f;
-}
-
-void InfluenceMapFloat::update(float value, const unsigned short centerX, const unsigned short centerZ) const {
+	auto value = tempVals[index];
 	const auto minI = calculator->getValidLow(centerX - level);
 	const auto maxI = calculator->getValidHigh(centerX + level);
 
@@ -68,13 +64,16 @@ void InfluenceMapFloat::update(float value, const unsigned short centerX, const 
 	const auto maxJ = calculator->getValidHigh(centerZ + level);
 
 	const auto jStart = (minJ - centerZ + level);
-	for (short i = minI; i <= maxI; ++i) {
-		const int index = calculator->getNotSafeIndex(i, minJ);
-		auto* t = &values[index];
+	for (auto i = minI; i <= maxI; ++i) {
+		auto* t = &values[calculator->getNotSafeIndex(i, minJ)];
 		auto idx = (i - centerX + level) * levelRes + jStart;
 		auto ptr = templateV + idx;
-		for (short j = minJ; j <= maxJ; ++j) { *(t++) += value * *(ptr++); }
+		for (short j = minJ; j <= maxJ; ++j) {
+			*(t++) += value * *(ptr++);
+		}
 	}
+	//TODO to chyba jest błedne miejsce
+	tempVals[index] = 0.f;
 }
 
 void InfluenceMapFloat::reset() {
@@ -85,11 +84,6 @@ void InfluenceMapFloat::reset() {
 float InfluenceMapFloat::getValueAt(unsigned index) const {
 	assert(!valuesCalculateNeeded);
 	return values[index];
-}
-
-float InfluenceMapFloat::getValueAt(const Urho3D::Vector2& pos) const {
-	assert(!valuesCalculateNeeded);
-	return getValueAt(calculator->indexFromPosition(pos));
 }
 
 float InfluenceMapFloat::getValueAsPercent(unsigned index) const {
@@ -166,9 +160,9 @@ void InfluenceMapFloat::updateFromTemp() {
 		if (changedIndexes.size() >= CHANGED_INDEXES_MAX_SIZE) {
 			for (int i = 0; i < arraySize; ++i) {
 				const auto val = tempVals[i];
-				if (val > 0.f) { update(i); }
+				if (val > 0.f) { applyKernel(i); }
 			}
-		} else { for (const int i : changedIndexes) { update(i); } }
+		} else { for (const int i : changedIndexes) { applyKernel(i); } }
 		changedIndexes.clear();
 		//std::fill_n(tempVals, arraySize, 0.f);
 		valuesCalculateNeeded = false;
