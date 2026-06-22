@@ -34,9 +34,8 @@ InfluenceMapQuad::~InfluenceMapQuad() {
 
 void InfluenceMapQuad::ensureReady() {
 	if (dataReady == false) {
-		std::fill_n(data, dataSize - maps.back().size(), 0.f);
-		auto sum = sumSpan(maps.back());
-		if (sum != 0.f) {
+		std::fill_n(data, dataSize - last.size(), 0.f);
+		if (anyGreaterThanZero(last)) { // TODO to chyba zawsze jest wiekszze od zera jak tu wchodzi
 			unsigned short parentRes = calculator->getResolution();
 			unsigned short currentRes = parentRes / 2;
 			for (int i = maps.size() - 2; i >= 0; --i, parentRes /= 2, currentRes /= 2) {

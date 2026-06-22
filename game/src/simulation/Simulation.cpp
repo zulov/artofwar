@@ -301,7 +301,7 @@ void Simulation::aiPlayers() const {
 		}
 	}	
 }
-
+//TODO try ecs
 void Simulation::moveUnitsAndCheck() {
 	const auto camInfo = Game::getCameraManager()->getCamInfo(UPDATE_DRAW_DISTANCE);
 

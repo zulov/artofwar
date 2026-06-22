@@ -44,14 +44,6 @@ InfluenceMapFloat::~InfluenceMapFloat() {
 	delete[] tempVals;
 }
 
-void InfluenceMapFloat::update(Physical* thing, float value) {
-	assert(false);
-	auto& pos = thing->getPosition();
-	update(value, calculator->getIndex(pos.x_), calculator->getIndex(pos.y_));
-}
-
-void InfluenceMapFloat::updateInt(Physical* thing, int value) { assert(false); }
-
 void InfluenceMapFloat::tempUpdate(const Urho3D::Vector2& pos, float value) {
 	tempUpdate(calculator->indexFromPosition(pos), value);
 }

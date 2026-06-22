@@ -166,12 +166,12 @@ private:
 	void setAim(Aim* aim);
 	void setTransform(const Urho3D::Vector2 &rotation, float y) const;
 	db_unit* getDbUnit() const;
-	Urho3D::Vector2 velocity, acceleration;
+	Urho3D::Vector2 velocity, acceleration;//TODO ECS
 	Aims aims;
 
 	db_unit_level* dbLevel;
 
-	ChargeData* chargeData{};
+	ChargeData* chargeData{};//TODO ECS
 
 	Physical* thingToInteract{}; //TODO wczytac z uId
 

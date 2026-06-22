@@ -16,17 +16,6 @@ InfluenceMapInt::~InfluenceMapInt() {
 	delete[] values;
 }
 
-void InfluenceMapInt::update(Physical* thing, float value) {
-	const int index = calculator->indexFromPosition(thing->getPosition());
-
-	assert(values[index] + static_cast<unsigned char>(round(value)) >= values[index] && "unsigned char overflow in InfluenceMapInt::update");
-	values[index] += round(value);
-}
-
-void InfluenceMapInt::updateInt(Physical* thing, int value) {
-	updateInt(calculator->indexFromPosition(thing->getPosition()), value);
-}
-
 void InfluenceMapInt::updateInt(int index, int value) const {
 	assert(values[index] + static_cast<unsigned char>(value) >= values[index] && "unsigned char overflow in InfluenceMapInt::updateInt");
 	values[index] += value;
@@ -37,7 +26,7 @@ void InfluenceMapInt::reset() {
 	minMaxInited = false;
 }
 
-char InfluenceMapInt::getValueAt(const Urho3D::Vector2& pos) const {
+unsigned char InfluenceMapInt::getValueAt(const Urho3D::Vector2& pos) const {
 	auto index = calculator->indexFromPosition(pos);
 	return getValueAt(index);
 }

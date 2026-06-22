@@ -444,7 +444,6 @@
     <ClInclude Include="src\objects\Metrics.h" />
     <ClInclude Include="src\objects\queue\QueueUtils.h" />
     <ClInclude Include="src\env\GridCalculatorProvider.h" />
-    <ClInclude Include="src\env\influence\map\InfluenceMapI.h" />
     <ClInclude Include="src\env\influence\map\InfluenceMapQuad.h" />
     <ClInclude Include="src\env\influence\map\InfluenceMapHistory.h" />
     <ClInclude Include="src\control\HealthBarProvider.h" />
@@ -456,7 +455,6 @@
     <ClInclude Include="src\player\ai\AiHistory.h" />
     <ClInclude Include="src\player\ai\AiHistoryEnums.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
-    <ClInclude Include="src\player\ai\MilitaryCommandCalculator.h" />
     <ClInclude Include="src\env\CloseIndexes.h" />
     <ClInclude Include="src\commands\action\BuildingActionType.h" />
     <ClInclude Include="src\commands\action\ResourceActionType.h" />

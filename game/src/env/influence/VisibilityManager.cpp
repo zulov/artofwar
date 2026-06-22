@@ -91,10 +91,10 @@ void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std:
                                          std::vector<ResourceEntity*>* resources) {
 	MapsUtils::resetMaps(visibilityPerPlayer);
 	for (const auto unit : (*units)) {
-		visibilityPerPlayer[unit->getPlayer()]->update(unit);
+		visibilityPerPlayer[unit->getPlayer()]->update(unit->getPosition(), unit->getSightRadius());
 	}
 	for (const auto building : (*buildings)) {
-		visibilityPerPlayer[building->getPlayer()]->update(building);
+		visibilityPerPlayer[building->getPlayer()]->update(building->getPosition(), building->getSightRadius());
 	}
 	for (const auto perPlayer : visibilityPerPlayer) {
 		perPlayer->finish();

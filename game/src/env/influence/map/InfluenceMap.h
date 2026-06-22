@@ -1,12 +1,11 @@
 #pragma once
-#include "InfluenceMapI.h"
 #include "env/GridCalculator.h"
 #include <Urho3D/Math/Vector3.h>
 
 struct GridCalculator;
 class Physical;
 
-class InfluenceMap : public InfluenceMapI {
+class InfluenceMap {
 public:
 	InfluenceMap(unsigned short resolution, float size, float valueThresholdDebug);
 	virtual ~InfluenceMap() = default;
@@ -21,8 +20,8 @@ public:
 	float getFieldSize() const;
 	virtual float getValueAsPercent(const Urho3D::Vector2& pos) const =0;
 	virtual float getValueAsPercent(const int index) const =0;
-	void print(Urho3D::String name) override;
-	unsigned short getResolution() const override { return calculator->getResolution(); }
+	void print(Urho3D::String name);
+	unsigned short getResolution() const { return calculator->getResolution(); };
 protected:
 	GridCalculator* calculator;
 	unsigned int arraySize;

@@ -29,7 +29,7 @@ public:
 	void setToImage(unsigned* data, std::array<int, 4>& indexes, unsigned color);
 	void setToImage(unsigned* data, std::array<int, 4>& indexes, unsigned color, bool operatorA);
 	void hideOrShow(VisibilityMap* current, Physical* physical);
-	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units, std::vector<ResourceEntity*>* resources);
+	void updateVisibility(const std::vector<Building*>* buildings, std::vector<Unit*>* units, std::vector<ResourceEntity*>* resources);
 	void drawMaps(short currentDebugBatch, char index) const;
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;
 	float getVisibilityScore(char player) const;

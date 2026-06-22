@@ -3,7 +3,6 @@
 #include <span>
 #include <vector>
 #include <Urho3D/Math/Vector2.h>
-#include "InfluenceMapI.h"
 
 struct GridCalculator;
 

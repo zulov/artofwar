@@ -9,12 +9,10 @@ public:
 	VisibilityMap(unsigned short resolution, float size, float valueThresholdDebug);
 	~VisibilityMap() override;
 
-	void update(Physical* thing, float value = 1.f) override;
-	void finishAtIndex(int i) const;
+	void update(const Urho3D::Vector2& pos, float sRadius);
+	void finishAtIndex(unsigned i) const;
 	void finish();
-	void updateInt(Physical* thing, int value = 1) override;
-	void updateInt(int index, int value = 1) const;
-	void reset() override;
+	void reset();
 	char getValueAt(const Urho3D::Vector2& pos) const;
 	VisibilityType getValueAt(float x, float z) const;
 	float getValueAsPercent(const Urho3D::Vector2& pos) const override;
