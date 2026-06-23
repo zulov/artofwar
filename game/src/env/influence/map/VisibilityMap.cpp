@@ -137,4 +137,5 @@ void VisibilityMap::ensureReady() {
 		}
 		valuesForInfluenceReady = true;
 	}
+	computeMinMax();
 }
