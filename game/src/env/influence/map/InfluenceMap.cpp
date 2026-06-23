@@ -1,6 +1,9 @@
 #include "InfluenceMap.h"
 
+#include <algorithm>
+#include <iterator>
 #include <Urho3D/Resource/Image.h>
+#include <vector>
 
 #include "Game.h"
 #include "debug/DebugLineRepo.h"
@@ -49,6 +52,7 @@ void InfluenceMap::print(Urho3D::String name) {
 	const auto resolution = getResolution();
 	image->SetSize(resolution, resolution, 4);
 	ensureReady();
+	computeMinMax();
 	for (unsigned short x = 0; x != resolution; ++x) {
 		const int index = calculator->getNotSafeIndex(x, 0);
 		for (short y = 0; y != resolution; ++y) {
@@ -63,6 +67,21 @@ void InfluenceMap::print(Urho3D::String name) {
 	++counter;
 
 	delete image;
+}
+
+void InfluenceMap::computeMinMax() const {
+	if (!minMaxInited) {
+		std::vector<float> data(arraySize);
+		for (unsigned i = 0; i < arraySize; ++i) {
+			data[i] = getValueAt(i);
+		}
+		const auto [minPtr, maxPtr] = std::minmax_element(data.begin(), data.end());
+		min = *minPtr;
+		max = *maxPtr;
+		minIdx = std::distance(data.begin(), minPtr);
+		maxIdx = std::distance(data.begin(), maxPtr);
+		minMaxInited = true;
+	}
 }
 
 float InfluenceMap::getValueAsPercent(unsigned index) const {

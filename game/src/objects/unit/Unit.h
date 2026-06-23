@@ -86,6 +86,11 @@ public:
 	void setIndexToInteract(int index);
 	int getIndexToInteract() const { return indexToInteract; }
 
+	float getCommandPriority() const { return commandPriority; }
+	void setCommandPriority(float priority) { commandPriority = priority; }
+	void decayCommandPriority(float step);
+	void resetCommandPriority() { commandPriority = 0.f; }
+
 	void setNextState(UnitState stateTo, const ActionParameter& actionParameter);
 	void setNextState(UnitState stateTo);
 	ActionParameter& getNextActionParameter();
@@ -195,4 +200,5 @@ private:
 
 	ActionParameter nextActionParameter;
 	Urho3D::Vector2 inCellPos;
+	float commandPriority = 0.f;
 };

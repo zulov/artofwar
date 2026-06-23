@@ -260,6 +260,10 @@ void Unit::removeCurrentAim() {
 	aims.removeCurrentAim();
 }
 
+void Unit::decayCommandPriority(float step) {
+	commandPriority = std::max(0.f, commandPriority - step);
+}
+
 void Unit::setIndexToInteract(int index) {
 	indexToInteract = index;
 }
@@ -414,6 +418,7 @@ void Unit::setPositionInFormation(short _pos) {
 
 void Unit::clearAims() {
 	aims.clear();
+	resetCommandPriority();
 }
 
 void Unit::setNextState(UnitState stateTo, const ActionParameter& actionParameter) {
