@@ -57,6 +57,7 @@ public:
 
 	const PossessionMetric* getMetrics();
 
+	const std::vector<Unit*>& getUnits() const { return units; }
 	const std::vector<Unit*>& getWorkers() const { return workers; }
 	std::vector<Unit*> getFreeArmy();
 	std::vector<Unit*> getAllArmy();

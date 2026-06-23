@@ -4,11 +4,10 @@
 #include "utils/OtherUtils.h"
 
 namespace {
-	MilitaryCenterSnapshot makeCenter(const Urho3D::Vector2& pos, float confidence = 1.f) {
+	MilitaryCenterSnapshot makeCenter(const Urho3D::Vector2& pos) {
 		MilitaryCenterSnapshot s;
 		s.available = true;
 		s.position = pos;
-		s.confidence = confidence;
 		return s;
 	}
 }
@@ -47,7 +46,7 @@ TEST(MilitaryCommandCalculatorTest, IgnoresUnavailableCenters) {
 	EXPECT_FLOAT_EQ(result.best.score, 0.f);
 }
 
-TEST(MilitaryCommandCalculatorTest, ConfidenceScalesInfluence) {
+TEST(MilitaryCommandCalculatorTest, DistanceScalesInfluence) {
 	MilitaryCommandCalculator calc(100.f);
 	MilitaryOutput output;
 	output.centerPairPressure.fill(0.f);
@@ -55,8 +54,8 @@ TEST(MilitaryCommandCalculatorTest, ConfidenceScalesInfluence) {
 	output.centerPairPressure[militaryCenterPairIndex(MilitaryCenterIdx::OUR_BUILDING, MilitaryCenterIdx::ENEMY_BUILDING)] = 0.2f;
 
 	std::array<MilitaryCenterSnapshot, MILITARY_CENTER_COUNT> centers{};
-	centers[castC(MilitaryCenterIdx::OUR_ARMY)] = makeCenter({0.f, 0.f}, 1.f);
-	centers[castC(MilitaryCenterIdx::OUR_BUILDING)] = makeCenter({0.f, 0.f}, 0.1f);
+	centers[castC(MilitaryCenterIdx::OUR_ARMY)] = makeCenter({0.f, 0.f});
+	centers[castC(MilitaryCenterIdx::OUR_BUILDING)] = makeCenter({0.f, 0.f});
 	centers[castC(MilitaryCenterIdx::ENEMY_ECON)] = makeCenter({10.f, 0.f});
 	centers[castC(MilitaryCenterIdx::ENEMY_BUILDING)] = makeCenter({20.f, 0.f});
 

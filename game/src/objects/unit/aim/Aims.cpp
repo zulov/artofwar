@@ -25,6 +25,7 @@ void Aims::clearExpired() {
 
 bool Aims::process(Unit* unit) {//TODO bug to chyba źle zwraca nie wiem jaki był tego cel
 	clearExpired();//TODO quick fifx?
+
 	if (current) {
 		if (current->ifReach(unit)) {
 			removeCurrentAim();

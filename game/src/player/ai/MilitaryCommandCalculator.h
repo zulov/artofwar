@@ -12,7 +12,6 @@
 struct MilitaryCenterSnapshot {
 	bool available = false;
 	Urho3D::Vector2 position{};
-	float confidence = 1.f;
 };
 
 struct MilitaryCommandScore {
@@ -39,7 +38,7 @@ public:
 		for (size_t i = 0; i < MILITARY_CENTER_COUNT; ++i) {
 			if (!centers[i].available) { continue; }
 			const float distance = (unitPos - centers[i].position).Length();
-			sourceWeights[i] = closeness(distance, centers[i].confidence);
+			sourceWeights[i] = closeness(distance);
 		}
 
 		for (size_t source = 0; source < MILITARY_CENTER_COUNT; ++source) {
@@ -65,10 +64,10 @@ public:
 		return result;
 	}
 
-private:
-	float closeness(float distance, float confidence) const {
+	private:
+	float closeness(float distance) const {
 		if (radius <= 0.f) { return 0.f; }
-		return std::clamp(1.f - distance / radius, 0.f, 1.f) * confidence;
+		return std::clamp(1.f - distance / radius, 0.f, 1.f);
 	}
 
 	float radius;

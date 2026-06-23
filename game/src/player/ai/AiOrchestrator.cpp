@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <utility>
 #include "AiHistory.h"
 #include "AiUtils.h"
 #include "NormScale.h"
@@ -24,6 +25,7 @@
 #include "math/MathUtils.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/IndividualOrder.h"
+#include "objects/unit/order/UnitOrder.h"
 #include "objects/unit/order/UnitConst.h"
 #include "objects/unit/GroupUtils.h"
 #include "objects/unit/order/GroupOrder.h"
@@ -42,6 +44,30 @@ namespace {
 	constexpr float SQ_SEMI_CLOSE = SEMI_CLOSE * SEMI_CLOSE;
 	constexpr int MAX_RES_BUILDING_REQUESTS = 3;
 	constexpr float MIN_ARMY_ORDER_PRESSURE = 0.1f;
+	constexpr float MILITARY_COMMAND_RADIUS = 120.f;
+
+	struct ArmyTargetSpec {
+		MilitaryCenterIdx center;
+		CenterType centerType;
+		bool enemyOwner;
+		AiOrderType orderType;
+	};
+
+	constexpr ArmyTargetSpec ARMY_TARGET_SPECS[] = {
+		{MilitaryCenterIdx::OUR_ECON, CenterType::ECON, false, AiOrderType::DEFEND_ECON},
+		{MilitaryCenterIdx::OUR_BUILDING, CenterType::BUILDING, false, AiOrderType::DEFEND_BUILDING},
+		{MilitaryCenterIdx::ENEMY_ARMY, CenterType::ARMY, true, AiOrderType::ATTACK_ARMY},
+		{MilitaryCenterIdx::ENEMY_ECON, CenterType::ECON, true, AiOrderType::ATTACK_ECON},
+		{MilitaryCenterIdx::ENEMY_BUILDING, CenterType::BUILDING, true, AiOrderType::ATTACK_BUILDING},
+	};
+	constexpr size_t ARMY_TARGET_SPEC_COUNT = sizeof(ARMY_TARGET_SPECS) / sizeof(ARMY_TARGET_SPECS[0]);
+
+	constexpr size_t armyTargetIndex(MilitaryCenterIdx center) {
+		for (size_t i = 0; i < ARMY_TARGET_SPEC_COUNT; ++i) {
+			if (ARMY_TARGET_SPECS[i].center == center) { return i; }
+		}
+		return ARMY_TARGET_SPEC_COUNT;
+	}
 }
 
 
@@ -53,6 +79,7 @@ AiOrchestrator::AiOrchestrator(Player* player, db_nation* nation, AiHistory* his
 	unitBrain(nation),
 	militaryBrain(nation),
 	attackSpatialBrain(nation),
+	militaryCommandCalculator(MILITARY_COMMAND_RADIUS),
 	wantExecutor(player, nation, history) { lastLacking.reset(); }
 
 void AiOrchestrator::createWorkers() {
@@ -227,50 +254,90 @@ void AiOrchestrator::submitBuildingUpgradeRequest(float urgency, ParentBuildingT
 
 void AiOrchestrator::order() {
 	manageWorkers();
+	decayUnitOrderPriorities();
 
 	std::vector<Unit*> allArmy = possession->getAllArmy();
 	if (allArmy.empty()) { return; }
 
-	struct Candidate {
-		MilitaryCenterIdx center;
-		CenterType centerType;
-		bool enemyOwner;
-		AiOrderType orderType;
-	};
-	const Candidate candidates[] = {
-		{MilitaryCenterIdx::OUR_ECON, CenterType::ECON, false, AiOrderType::DEFEND_ECON},
-		{MilitaryCenterIdx::OUR_BUILDING, CenterType::BUILDING, false, AiOrderType::DEFEND_BUILDING},
-		{MilitaryCenterIdx::ENEMY_ARMY, CenterType::ARMY, true, AiOrderType::ATTACK_ARMY},
-		{MilitaryCenterIdx::ENEMY_ECON, CenterType::ECON, true, AiOrderType::ATTACK_ECON},
-		{MilitaryCenterIdx::ENEMY_BUILDING, CenterType::BUILDING, true, AiOrderType::ATTACK_BUILDING},
-	};
-
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
 	const auto enemyId = enemy->getId();
-	float bestPressure = MIN_ARMY_ORDER_PRESSURE;
-	std::optional<Urho3D::Vector2> bestTarget;
-	AiOrderType bestOrderType = AiOrderType::NONE;
-
-	for (auto candidate : candidates) {
-		const float pressure = lastMilOut.pressure(MilitaryCenterIdx::OUR_ARMY, candidate.center);
-		if (pressure <= bestPressure) { continue; }
-		const unsigned char owner = candidate.enemyOwner ? enemyId : playerId;
-		if (auto target = Game::getEnvironment()->getCenterOf(candidate.centerType, owner)) {
-			bestPressure = pressure;
-			bestTarget = target;
-			bestOrderType = candidate.orderType;
+	auto armyCenter = Game::getEnvironment()->getCenterOf(CenterType::ARMY, playerId);
+	if (!armyCenter.has_value()) {
+		history->addOrder(AiOrderType::NONE, AiOrderResult::NO_CENTER_POSITION);
+		issueHold(allArmy, MIN_ARMY_ORDER_PRESSURE);
+		return;
+	}
+	std::array<MilitaryCenterSnapshot, MILITARY_CENTER_COUNT> centers{};
+	centers[castC(MilitaryCenterIdx::OUR_ARMY)] = {true, armyCenter.value()};
+	for (const auto& spec : ARMY_TARGET_SPECS) {
+		const unsigned char owner = spec.enemyOwner ? enemyId : playerId;
+		if (auto target = Game::getEnvironment()->getCenterOf(spec.centerType, owner)) {
+			centers[castC(spec.center)] = {true, *target};
 		}
 	}
 
+	const auto result = militaryCommandCalculator.calculate(armyCenter.value(), centers, lastMilOut);
+	if (result.best.score <= MIN_ARMY_ORDER_PRESSURE) {
+		history->addOrder(AiOrderType::NONE, AiOrderResult::NO_CENTER_POSITION);
+		issueHold(allArmy, MIN_ARMY_ORDER_PRESSURE);
+		return;
+	}
+
+	const auto specIndex = armyTargetIndex(result.best.center);
+	if (specIndex == ARMY_TARGET_SPEC_COUNT) {
+		history->addOrder(AiOrderType::NONE, AiOrderResult::NO_CENTER_POSITION);
+		issueHold(allArmy, MIN_ARMY_ORDER_PRESSURE);
+		return;
+	}
+
+	const auto& bestSpec = ARMY_TARGET_SPECS[specIndex];
+	const unsigned char owner = bestSpec.enemyOwner ? enemyId : playerId;
+	auto bestTarget = Game::getEnvironment()->getCenterOf(bestSpec.centerType, owner);
 	if (!bestTarget.has_value()) {
 		history->addOrder(AiOrderType::NONE, AiOrderResult::NO_CENTER_POSITION);
-		issueHold(allArmy);
+		issueHold(allArmy, MIN_ARMY_ORDER_PRESSURE);
 		return;
 	}
 
 	sortByDistanceTo(allArmy, bestTarget.value());
-	issueAdvance(allArmy, bestTarget.value());
-	history->addOrder(bestOrderType, AiOrderResult::SUCCESS, static_cast<uint8_t>(allArmy.size()));
+	issueAdvance(allArmy, bestTarget.value(), result.best.score);
+	history->addOrder(bestSpec.orderType, AiOrderResult::SUCCESS, static_cast<uint8_t>(allArmy.size()));
+}
+
+void AiOrchestrator::decayUnitOrderPriorities() const {
+	for (auto* unit : possession->getAllArmy()) {
+		unit->decayCommandPriority(COMMAND_PRIORITY_DECAY);
+	}
+}
+
+std::vector<Unit*> AiOrchestrator::filterUnitsByPriority(const std::vector<Unit*>& units, float priority) const {
+	std::vector<Unit*> accepted;
+	accepted.reserve(units.size());
+	for (auto* unit : units) {
+		if (priority > unit->getCommandPriority()) {
+			accepted.push_back(unit);
+		}
+	}
+	return accepted;
+}
+
+bool AiOrchestrator::trySubmitUnitOrder(const std::vector<Unit*>& units, float priority, UnitOrder* order) const {
+	for (auto* unit : units) {
+		if (priority <= unit->getCommandPriority()) {
+			delete order;
+			return false;
+		}
+	}
+
+	for (auto* unit : units) {
+		unit->setCommandPriority(priority);
+	}
+	Game::getActionCenter()->addUnitAction(order);
+	return true;
+}
+
+bool AiOrchestrator::trySubmitUnitOrder(Unit* unit, float priority, UnitOrder* order) const {
+	return trySubmitUnitOrder(std::vector<Unit*>{unit}, priority, order);
 }
 
 void AiOrchestrator::sortByDistanceTo(std::vector<Unit*>& group, const Urho3D::Vector2& target) {
@@ -292,26 +359,33 @@ std::optional<Urho3D::Vector2> AiOrchestrator::resolveAttackPos(Player* enemy, c
 }
 
 // Advance group toward target, attack when close
-void AiOrchestrator::issueAdvance(std::vector<Unit*>& group, const Urho3D::Vector2& target) {
+void AiOrchestrator::issueAdvance(std::vector<Unit*>& group, const Urho3D::Vector2& target, float priority) {
 	for (auto& subArmy : divide(group)) {
-		auto armyCenter = computeCenter(subArmy);
+		auto accepted = filterUnitsByPriority(subArmy, priority);
+		if (accepted.empty()) { continue; }
+		auto armyCenter = computeCenter(accepted);
 		if (armyCenter.SqDistXZ(target) > SQ_SEMI_CLOSE) {
-			Game::getActionCenter()->addUnitAction(
-					subArmy.size() > 1
-					? static_cast<UnitOrder*>(new GroupOrder(subArmy, UnitActionType::ORDER, castC(UnitAction::GO),
-					                                         target))
-					: static_cast<UnitOrder*>(new IndividualOrder(subArmy.at(0), UnitAction::GO, target))
-					);
+			if (accepted.size() > 1) {
+				trySubmitUnitOrder(accepted, priority,
+					new GroupOrder(accepted, UnitActionType::ORDER, castC(UnitAction::GO), target));
+			} else {
+				trySubmitUnitOrder(accepted.at(0), priority,
+					new IndividualOrder(accepted.at(0), UnitAction::GO, target));
+			}
 		} else {
-			const auto unit = subArmy.at(0);
+			const auto unit = accepted.at(0);
 			auto& things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
 			if (!things.empty()) {
 				const auto closest = Game::getEnvironment()->closestPhysical(
 						unit->getMainGridIndex(), things, belowClose, true);
 				if (closest) {
-					Game::getActionCenter()->addUnitAction(
-							new GroupOrder(subArmy, UnitActionType::ORDER,
-							               castC(UnitAction::ATTACK), closest));
+					if (accepted.size() > 1) {
+						trySubmitUnitOrder(accepted, priority,
+							new GroupOrder(accepted, UnitActionType::ORDER, castC(UnitAction::ATTACK), closest));
+					} else {
+						trySubmitUnitOrder(unit, priority,
+							new IndividualOrder(unit, UnitAction::ATTACK, closest));
+					}
 				}
 			}
 		}
@@ -319,7 +393,7 @@ void AiOrchestrator::issueAdvance(std::vector<Unit*>& group, const Urho3D::Vecto
 }
 
 // Hold — only free units engage nearby enemies
-void AiOrchestrator::issueHold(std::vector<Unit*>& group) {
+void AiOrchestrator::issueHold(std::vector<Unit*>& group, float priority) {
 	for (auto* unit : group) {
 		if (!isFree(unit)) { continue; }
 		auto& things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
@@ -327,8 +401,7 @@ void AiOrchestrator::issueHold(std::vector<Unit*>& group) {
 			const auto closest = Game::getEnvironment()->closestPhysical(
 					unit->getMainGridIndex(), things, belowClose, true);
 			if (closest) {
-				Game::getActionCenter()->addUnitAction(
-						new IndividualOrder(unit, UnitAction::ATTACK, closest));
+				trySubmitUnitOrder(unit, priority, new IndividualOrder(unit, UnitAction::ATTACK, closest));
 			}
 		}
 	}
