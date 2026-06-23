@@ -13,19 +13,18 @@ public:
 
 	std::optional<Urho3D::Vector2> getCenter();
 	void update(int index, float value = 1.f);
-	void updateInt(int index, unsigned char value = 1);
 	void reset();
 	void print(const Urho3D::String& name, std::span<float> map);
 	void print(Urho3D::String name);
 
 private:
 	int getMaxElement(const std::array<int, 4>& indexes, std::span<float> values) const;
-	GridCalculator* calculator;
 	void ensureReady();
+	GridCalculator* calculator;
 	std::vector<std::span<float>> maps;
 	std::span<float> last;
 	float* data;
-	int dataSize;
+	unsigned dataSize;
 	bool dataReady = false;//TODO bug czy dobrze jest resetowana
 	unsigned short counter = 0;
 };

@@ -11,11 +11,10 @@ public:
 	                  float* sharedTemplateV);
 	~InfluenceMapFloat() override;
 
-	void tempUpdate(const Urho3D::Vector2& pos, float value = 1.f);
-	void tempUpdate(int index, float value = 1.f);
+	void update(const Urho3D::Vector2& pos, float value = 1.f);
+	void update(int index, float value = 1.f);
 
 	virtual void reset();
-
 
 	void ensureReady() override;
 
@@ -28,7 +27,6 @@ public:
 
 protected:
 	float getValueAt(unsigned index) const override;
-	float getValueAsPercent(unsigned index) const override;
 	float* values;
 	float* tempVals;
 	float coef;

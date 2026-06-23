@@ -4,7 +4,6 @@
 #include <numeric>
 
 #include "math/VectorUtils.h"
-#include "objects/Physical.h"
 
 InfluenceMapInt::InfluenceMapInt(unsigned short resolution, float size, float valueThresholdDebug): InfluenceMap(
 	 resolution, size, valueThresholdDebug) {
@@ -29,14 +28,6 @@ void InfluenceMapInt::reset() {
 unsigned char InfluenceMapInt::getValueAt(const Urho3D::Vector2& pos) const {
 	auto index = calculator->indexFromPosition(pos);
 	return getValueAt(index);
-}
-
-float InfluenceMapInt::getValueAsPercent(unsigned index) const {
-	const float diff = max - min;
-	if (diff != 0.f) {
-		return (getValueAt(index) - min) / diff;
-	}
-	return 0.5f;
 }
 
 float InfluenceMapInt::getValueAt(unsigned index) const {

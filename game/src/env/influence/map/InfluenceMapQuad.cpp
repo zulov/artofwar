@@ -1,5 +1,6 @@
 #include "InfluenceMapQuad.h"
 
+#include <algorithm>
 #include <array>
 #include <Urho3D/Resource/Image.h>
 #include "Game.h"
@@ -34,6 +35,7 @@ InfluenceMapQuad::~InfluenceMapQuad() {
 
 void InfluenceMapQuad::ensureReady() {
 	if (dataReady == false) {
+		dataReady = true;
 		std::fill_n(data, dataSize - last.size(), 0.f);
 		if (anyGreaterThanZero(last)) { // TODO to chyba zawsze jest wiekszze od zera jak tu wchodzi
 			unsigned short parentRes = calculator->getResolution();
@@ -53,14 +55,13 @@ void InfluenceMapQuad::ensureReady() {
 				}
 			}
 		}
-		dataReady = true;
 	}
 }
 
 std::optional<Urho3D::Vector2> InfluenceMapQuad::getCenter() {
 	ensureReady(); //TODO performce remember center
-	bool hasData = std::ranges::any_of(maps[0], [](float v) { return v > 0.f; });
-	if (hasData) {
+
+	if (anyGreaterThanZero(maps[0])) {
 		int index = std::distance(maps[0].begin(), std::ranges::max_element(maps[0]));
 		unsigned short res = sqrt(maps[0].size());
 		for (int i = 1; i < maps.size(); ++i) {
@@ -84,18 +85,13 @@ void InfluenceMapQuad::update(int index, float value) {
 	last[index] += value;
 }
 
-void InfluenceMapQuad::updateInt(int index, unsigned char value) {
-	dataReady = false;
-	last[index] += value;
-}
-
 void InfluenceMapQuad::reset() {
 	dataReady = false;
 	std::fill_n(maps.back().begin(), maps.back().size(), 0.f);
 }
 
 void InfluenceMapQuad::print(const Urho3D::String& name, std::span<float> map) {
-	auto [minIdx, maxIdx] = std::minmax_element(map.begin(), map.end());
+	auto [minIdx, maxIdx] = std::ranges::minmax_element(map);
 	const auto min = *minIdx;
 	const auto max = *maxIdx;
 	const float diff = max - min;

@@ -1,6 +1,7 @@
 #pragma once
-#include "env/GridCalculator.h"
 #include <Urho3D/Math/Vector3.h>
+
+#include "env/GridCalculator.h"
 
 struct GridCalculator;
 class Physical;
@@ -14,12 +15,9 @@ public:
 	virtual void ensureReady() = 0;
 	void draw(short batch, short maxParts);
 
-	float getFieldSize() const;
-
 	void print(Urho3D::String name);
 	unsigned short getResolution() const { return calculator->getResolution(); }
 protected:
-	virtual float getValueAsPercent(unsigned index) const = 0;
 	GridCalculator* calculator;
 	unsigned int arraySize;
 	const float valueThresholdDebug;
@@ -34,6 +32,7 @@ protected:
 	bool minMaxInited = false;
 
 private:
+	float getValueAsPercent(unsigned index) const;
 	void drawCell(int index, short batch) const;
 	Urho3D::Vector3 getVertex(const Urho3D::Vector2& center, Urho3D::Vector2 vertex) const;
 };

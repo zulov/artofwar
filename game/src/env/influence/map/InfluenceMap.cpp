@@ -44,10 +44,6 @@ void InfluenceMap::drawCell(int index, short batch) const {
 	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, b, d, a, color, batch);
 }
 
-float InfluenceMap::getFieldSize() const {
-	return calculator->getFieldSize();
-}
-
 void InfluenceMap::print(Urho3D::String name) {
 	auto image = new Urho3D::Image(Game::getContext());
 	const auto resolution = getResolution();
@@ -67,4 +63,12 @@ void InfluenceMap::print(Urho3D::String name) {
 	++counter;
 
 	delete image;
+}
+
+float InfluenceMap::getValueAsPercent(unsigned index) const {
+	const float diff = max - min;
+	if (diff != 0.f) {
+		return (getValueAt(index) - min) / diff;
+	}
+	return 0.5f;
 }

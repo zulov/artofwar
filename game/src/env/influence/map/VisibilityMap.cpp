@@ -79,12 +79,6 @@ VisibilityType VisibilityMap::getValueAt(float x, float z) const {
 	return static_cast<VisibilityType>(val);
 }
 
-float VisibilityMap::getValueAsPercent(unsigned index) const {
-	const float diff = max - min;
-	if (diff != 0.f) { return (getValueAt(index) - min) / diff; }
-	return 0.5f;
-}
-
 float VisibilityMap::getValueAt(unsigned index) const {
 	assert(index < getResolution() * getResolution());
 	return castC(values[index]);

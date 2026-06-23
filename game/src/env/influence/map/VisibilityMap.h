@@ -15,7 +15,7 @@ public:
 	void reset();
 	char getValueAt(const Urho3D::Vector2& pos) const;
 	VisibilityType getValueAt(float x, float z) const;
-	float getValueAsPercent(unsigned index) const override;
+
 	float getValueAt(unsigned index) const override;
 	void computeMinMax();
 	int removeUnseen(float* intersection);

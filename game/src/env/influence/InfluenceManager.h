@@ -40,10 +40,8 @@ public:
 	void updateUnits(std::vector<Unit*>* units) const;
 	void updateBuildings(const std::vector<Building*>* buildings) const;
 
-	void updateQuadUnits(const std::vector<Unit*>* units) const;
 	void updateQuadOther() const;
 	void updateWithHistory() const;
-	void updateNotInBonus(std::vector<Unit*>* units) const;
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
 	                      std::vector<ResourceEntity*>* resources) const;
 	void resetHistoryThresholds() const;
