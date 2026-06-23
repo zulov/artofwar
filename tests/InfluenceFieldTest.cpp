@@ -4,7 +4,37 @@
 #include <limits>
 
 #include "env/GridCalculator.h"
+#include "env/GridCalculatorProvider.h"
 #include "env/influence/map/InfluenceField.h"
+
+#include "../game/src/env/influence/map/InfluenceField.cpp"
+
+InfluenceMap::InfluenceMap(unsigned short resolution, float size, float valueThresholdDebug)
+	: arraySize(resolution * resolution), valueThresholdDebug(valueThresholdDebug),
+	  calculator(GridCalculatorProvider::get(resolution, size)) {}
+
+void InfluenceMap::computeMinMax() const {
+	if (minMaxInited) {
+		return;
+	}
+
+	min = getValueAt(0);
+	max = min;
+	minIdx = 0;
+	maxIdx = 0;
+	for (unsigned i = 1; i < arraySize; ++i) {
+		const float value = getValueAt(i);
+		if (value < min) {
+			min = value;
+			minIdx = static_cast<int>(i);
+		}
+		if (value > max) {
+			max = value;
+			maxIdx = static_cast<int>(i);
+		}
+	}
+	minMaxInited = true;
+}
 
 // Testable subclass exposing internals for direct manipulation
 class TestableInfluenceField : public InfluenceField {
