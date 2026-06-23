@@ -6,7 +6,6 @@
 #include "CenterType.h"
 #include "MapsUtils.h"
 #include "VisibilityManager.h"
-#include "map/InfluenceMapHistory.h"
 #include "debug/DebugLineRepo.h"
 #include "math/VectorUtils.h"
 #include "env/bucket/CellEnums.h"
@@ -54,14 +53,14 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 		                                     new InfluenceField(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV));
 
 		for (auto& gs : gatherSpeed) {
-			gs.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV));
+			gs.emplace_back(new InfluenceField(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV));
 		}
 
 		for (auto& resNotInBonus : resNotInBonus) {
 			resNotInBonus.emplace_back(new InfluenceField(resolution, mapSize, 0.5f, INF_LEVEL, 5, sharedTemplateV, false));
 		}
 
-		attackSpeed.emplace_back(new InfluenceMapHistory(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV));
+		attackSpeed.emplace_back(new InfluenceField(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV));
 		armyQuad.emplace_back(new InfluenceField(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, false));
 		buildingsQuad.emplace_back(new InfluenceField(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, false));
 		econQuad.emplace_back(new InfluenceField(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, false));

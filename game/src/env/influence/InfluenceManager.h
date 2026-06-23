@@ -17,7 +17,6 @@ struct content_info;
 class Building;
 class ResourceEntity;
 class InfluenceField;
-class InfluenceMapHistory;
 class VisibilityManager;
 class Unit;
 
@@ -83,8 +82,8 @@ private:
 	std::vector<InfluenceField*> buildingsInfluencePerPlayer;
 	std::vector<InfluenceField*> unitsInfluencePerPlayer;
 	std::vector<InfluenceField*> unitsNumberPerPlayer;
-	std::vector<InfluenceMapHistory*> attackSpeed;
-	std::vector<InfluenceMapHistory*> gatherSpeed[RESOURCES_SIZE];
+	std::vector<InfluenceField*> attackSpeed;
+	std::vector<InfluenceField*> gatherSpeed[RESOURCES_SIZE];
 	std::vector<InfluenceField*> resNotInBonus[RESOURCES_SIZE];
 	std::vector<InfluenceField*> econQuad;
 	std::vector<InfluenceField*> buildingsQuad;

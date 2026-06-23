@@ -43,6 +43,14 @@ InfluenceField::InfluenceField(unsigned short resolution, float size, float coef
 	}
 }
 
+InfluenceField::InfluenceField(unsigned short resolution, float size, float coef, char level, float minimalThreshold,
+	                             float vanishCoef, float valueThresholdDebug, float* sharedTemplateV, bool kernelView,
+	                             bool ownsTemplateV)
+	: InfluenceField(resolution, size, coef, level, valueThresholdDebug, sharedTemplateV, kernelView, ownsTemplateV) {
+	this->minimalThreshold = minimalThreshold;
+	this->vanishCoef = vanishCoef;
+}
+
 InfluenceField::InfluenceField(unsigned short resolution, float size, float valueThresholdDebug)
 	: InfluenceField(resolution, size, 0.5f, 4, valueThresholdDebug, createTemplateV(0.5f, 4), true, true) {}
 
@@ -92,12 +100,28 @@ void InfluenceField::updateFromTemp() {
 }
 
 void InfluenceField::reset() {
+	if (vanishCoef != 1.f || minimalThreshold != 0.f) {
+		const auto end = rawValues + arraySize;
+		for (auto i = rawValues; i < end; ++i) {
+			*i *= vanishCoef;
+		}
+		invalidateCaches();
+		return;
+	}
 	std::fill_n(rawValues, arraySize, 0.f);
 	std::fill_n(values, arraySize, 0.f);
 	std::fill_n(quadValues, quadArraySize, 0.f);
 	valuesCalculateNeeded = false;
 	quadDirty = true;
 	minMaxInited = false;
+}
+
+void InfluenceField::resetToZero() {
+	const auto end = rawValues + arraySize;
+	for (auto i = rawValues; i < end; ++i) {
+		*i = *i >= minimalThreshold ? *i : 0.f;
+	}
+	invalidateCaches();
 }
 
 void InfluenceField::invalidateCaches() {

@@ -13,6 +13,9 @@ class InfluenceField : public InfluenceMap {
 public:
 	InfluenceField(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug,
 	                  float* sharedTemplateV, bool kernelView = true, bool ownsTemplateV = false);
+	InfluenceField(unsigned short resolution, float size, float coef, char level, float minimalThreshold,
+	                  float vanishCoef, float valueThresholdDebug, float* sharedTemplateV, bool kernelView = true,
+	                  bool ownsTemplateV = false);
 	InfluenceField(unsigned short resolution, float size, float valueThresholdDebug);
 	InfluenceField(unsigned short resolution, float size);
 	~InfluenceField() override;
@@ -23,6 +26,7 @@ public:
 	void updateFromTemp();
 
 	void reset() override;
+	void resetToZero();
 
 	float getRaw(unsigned index) const;
 	float getRaw(const Urho3D::Vector2& pos) const;
@@ -70,4 +74,6 @@ private:
 	std::vector<unsigned short> quadResolutions;
 	DefaultView defaultView;
 	mutable bool quadDirty = true;
+	float minimalThreshold = 0.f;
+	float vanishCoef = 1.f;
 };

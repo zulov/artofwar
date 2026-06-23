@@ -5,7 +5,6 @@
 
 #include "env/GridCalculator.h"
 #include "env/influence/map/InfluenceField.h"
-#include "env/influence/map/InfluenceMapHistory.h"
 
 // Testable subclass exposing internals for direct manipulation
 class TestableInfluenceField : public InfluenceField {
@@ -385,32 +384,37 @@ TEST(InfluenceFieldRegression, GetMaxIdxsHandlesSingleCellMap) {
 	EXPECT_EQ(indexes[0], 0u);
 }
 
-TEST(InfluenceMapHistoryRegression, ResetDecaysRawAndRebuildsKernelCache) {
-	auto* templateV = InfluenceField::createTemplateV(1.f, 1);
-	{
-		InfluenceMapHistory map(1, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, templateV);
-		map.update(0, 2.f);
+TEST(InfluenceFieldRegression, ResetDecaysRawAndRebuildsKernelCache) {
+	InfluenceField map(1, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceField::createTemplateV(1.f, 1));
+	map.update(0, 2.f);
 
-		EXPECT_FLOAT_EQ(map.getKernel(0), 2.f);
-		map.reset();
+	EXPECT_FLOAT_EQ(map.getKernel(0), 2.f);
+	map.reset();
 
-		EXPECT_FLOAT_EQ(map.getRaw(0), 1.f);
-		EXPECT_FLOAT_EQ(map.getKernel(0), 1.f);
-	}
-	delete[] templateV;
+	EXPECT_FLOAT_EQ(map.getRaw(0), 1.f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 1.f);
 }
 
-TEST(InfluenceMapHistoryRegression, ResetToZeroDropsValuesBelowThreshold) {
-	auto* templateV = InfluenceField::createTemplateV(1.f, 1);
-	{
-		InfluenceMapHistory map(1, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, templateV);
-		map.update(0, 0.25f);
+TEST(InfluenceFieldRegression, ResetToZeroDropsValuesBelowThreshold) {
+	InfluenceField map(1, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceField::createTemplateV(1.f, 1));
+	map.update(0, 0.25f);
 
-		EXPECT_FLOAT_EQ(map.getKernel(0), 0.25f);
-		map.resetToZero();
+	EXPECT_FLOAT_EQ(map.getKernel(0), 0.25f);
+	map.resetToZero();
 
-		EXPECT_FLOAT_EQ(map.getRaw(0), 0.f);
-		EXPECT_FLOAT_EQ(map.getKernel(0), 0.f);
-	}
-	delete[] templateV;
+	EXPECT_FLOAT_EQ(map.getRaw(0), 0.f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 0.f);
+}
+
+TEST(InfluenceFieldRegression, HistoryResetDecaysRawAndInvalidatesKernel) {
+	InfluenceField map(1, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceField::createTemplateV(1.f, 1));
+	map.update(0, 4.f);
+
+	EXPECT_FLOAT_EQ(map.getRaw(0), 4.f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 4.f);
+
+	map.reset();
+
+	EXPECT_FLOAT_EQ(map.getRaw(0), 2.f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 2.f);
 }

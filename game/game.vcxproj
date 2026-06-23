@@ -288,7 +288,6 @@
     <ClCompile Include="src\env\bucket\levels\LevelCache.cpp" />
     <ClCompile Include="src\hud\window\EventPanel.cpp" />
     <ClCompile Include="src\env\GridCalculatorProvider.cpp" />
-    <ClCompile Include="src\env\influence\map\InfluenceMapHistory.cpp" />
     <ClCompile Include="src\control\HealthBarProvider.cpp" />
     <ClCompile Include="src\commands\action\GeneralActionCommand.cpp" />
     <ClCompile Include="src\math\RandGen.cpp" />
@@ -442,7 +441,6 @@
     <ClInclude Include="src\objects\Metrics.h" />
     <ClInclude Include="src\objects\queue\QueueUtils.h" />
     <ClInclude Include="src\env\GridCalculatorProvider.h" />
-    <ClInclude Include="src\env\influence\map\InfluenceMapHistory.h" />
     <ClInclude Include="src\control\HealthBarProvider.h" />
     <ClInclude Include="src\commands\action\GeneralActionCommand.h" />
     <ClInclude Include="src\commands\action\GeneralActionType.h" />
