@@ -121,7 +121,7 @@ protected:
 	void setPlayerAndTeam(char playerId, char teamId);
 
 	Urho3D::Node* node{};
-	Urho3D::Vector2 position;
+	Urho3D::Vector2 position;//TODO try ecs
 	db_entity* dbEntity{};
 
 	float hp = -1.f;

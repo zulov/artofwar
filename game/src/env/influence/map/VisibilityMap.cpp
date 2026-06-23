@@ -30,12 +30,11 @@ VisibilityMap::~VisibilityMap() {
 	delete[] ranges;
 }
 
-void VisibilityMap::update(Physical* thing, float value) {
-	const auto sRadius = thing->getSightRadius();
+void VisibilityMap::update(const Urho3D::Vector2& pos, float sRadius) {
 	if (sRadius < 0) { return; }
 	valuesForInfluenceReady = false;
 	percentReady = false;
-	const auto centerIdx = calculator->indexFromPosition(thing->getPosition());
+	const auto centerIdx = calculator->indexFromPosition(pos);
 	if (ranges[centerIdx] < sRadius) {
 		if (ranges[centerIdx] == 0.f && changedIndexes.size() < CHANGED_INDEXES_MAX_SIZE) {
 			changedIndexes.push_back(centerIdx);
@@ -44,7 +43,7 @@ void VisibilityMap::update(Physical* thing, float value) {
 	}
 }
 
-void VisibilityMap::finishAtIndex(int i) const {
+void VisibilityMap::finishAtIndex(unsigned i) const {
 	const auto levels = levelCache->get(ranges[i], i);
 
 	for (const auto idx : *levels) {
@@ -57,15 +56,11 @@ void VisibilityMap::finishAtIndex(int i) const {
 
 void VisibilityMap::finish() {
 	if (changedIndexes.size() >= CHANGED_INDEXES_MAX_SIZE) {
-		for (int i = 0; i < arraySize; ++i) { if (ranges[i] > 0.f) { finishAtIndex(i); } }
+		for (unsigned i = 0; i < arraySize; ++i) { if (ranges[i] > 0.f) { finishAtIndex(i); } }
 	} else { for (const int i : changedIndexes) { finishAtIndex(i); } }
 
 	changedIndexes.clear();
 }
-
-void VisibilityMap::updateInt(Physical* thing, int value) { update(thing); }
-
-void VisibilityMap::updateInt(int index, int value) const { assert(false); }
 
 void VisibilityMap::reset() {
 	valuesForInfluenceReady = false;
@@ -84,19 +79,7 @@ VisibilityType VisibilityMap::getValueAt(float x, float z) const {
 	return static_cast<VisibilityType>(val);
 }
 
-float VisibilityMap::getValueAsPercent(const Urho3D::Vector2& pos) const {
-	const float diff = max - min;
-	if (diff != 0.f) { return (getValueAt(pos) - min) / diff; }
-	return 0.5f;
-}
-
-float VisibilityMap::getValueAsPercent(const int index) const {
-	const float diff = max - min;
-	if (diff != 0.f) { return (getValueAt(index) - min) / diff; }
-	return 0.5f;
-}
-
-float VisibilityMap::getValueAt(int index) const {
+float VisibilityMap::getValueAt(unsigned index) const {
 	assert(index < getResolution() * getResolution());
 	return castC(values[index]);
 }

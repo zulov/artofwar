@@ -8,8 +8,7 @@
 constexpr unsigned int SECONDS_IN_MONTH = 5;
 
 enum class PerFrameAction:char {
-	INFLUENCE_UNITS_1 = 0,
-	INFLUENCE_UNITS_2,
+	INFLUENCE_UNITS = 0,
 	INFLUENCE_OTHER,
 	INFLUENCE_QUAD_OTHER,
 	SELF_AI,
@@ -110,12 +109,7 @@ private:
 			2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		}, //INFLUENCE_UNITS_1
-		{
-			0, 2, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		}, //INFLUENCE_UNITS_2
+		}, //INFLUENCE_UNITS
 		{
 			0, 0, 0, 5, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

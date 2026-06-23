@@ -49,14 +49,11 @@ void Simulation::clearNodesWithoutDelete() const {
 
 void Simulation::updateInfluenceMaps(bool force) const {
 	const auto* frameInfo = Game::getFrameInfo();
-	if (frameInfo->canUpdate(PerFrameAction::INFLUENCE_UNITS_1, force)) {
-		env->updateInfluenceUnits1(units);
-	}
-	if (frameInfo->canUpdate(PerFrameAction::INFLUENCE_UNITS_2, force)) {
-		env->updateInfluenceUnits2(units);
+	if (frameInfo->canUpdate(PerFrameAction::INFLUENCE_UNITS, force)) {
+		env->updateInfluenceUnits(units);
 	}
 	if (frameInfo->canUpdate(PerFrameAction::INFLUENCE_OTHER, force)) {
-		env->updateInfluenceOther(buildings, units);
+		env->updateInfluenceBuildings(buildings);
 	}
 	if (frameInfo->canUpdate(PerFrameAction::INFLUENCE_HISTORY_RESET, force)) {
 		env->updateInfluenceHistoryReset();
@@ -301,7 +298,7 @@ void Simulation::aiPlayers() const {
 		}
 	}	
 }
-
+//TODO try ecs
 void Simulation::moveUnitsAndCheck() {
 	const auto camInfo = Game::getCameraManager()->getCamInfo(UPDATE_DRAW_DISTANCE);
 

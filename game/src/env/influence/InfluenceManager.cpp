@@ -12,11 +12,11 @@
 #include "map/InfluenceMapInt.h"
 #include "math/VectorUtils.h"
 #include "env/bucket/CellEnums.h"
-#include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
-#include "objects/unit/Unit.h"
 #include "env/GridCalculatorProvider.h"
 #include "env/ContentInfo.h"
+#include "objects/building/Building.h"
+#include "objects/unit/Unit.h"
 #include "utils/AssertUtils.h"
 #include "utils/OtherUtils.h"
 
@@ -148,32 +148,43 @@ InfluenceManager::~InfluenceManager() {
 
 void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 	MapsUtils::resetMaps(unitsInfluencePerPlayer);
+	MapsUtils::resetMaps(armyQuad);
+	for (auto& vec : resNotInBonus) {
+		MapsUtils::resetMaps(vec);
+	}
+
 	if (SIM_GLOBALS.HEADLESS) {
 		for (const auto unit : (*units)) {
 			const auto pId = unit->getPlayer();
 			const auto index = getIndexInInfluence(unit);
-			unitsInfluencePerPlayer[pId]->tempUpdate(index);
+			unitsInfluencePerPlayer[pId]->update(index);
+			if (!unit->getDb()->typeWorker) {
+				armyQuad[pId]->update(index);
+			} else if (unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
+				auto res = static_cast<ResourceEntity*>(unit->getThingToInteract());
+				// TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
+				mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getResourceId()]->update(res->getIndexInInfluence());
+			}
 		}
 	} else {
 		MapsUtils::resetMaps(unitsNumberPerPlayer);
 		for (const auto unit : (*units)) {
 			const auto pId = unit->getPlayer();
 			const auto index = getIndexInInfluence(unit);
-			unitsNumberPerPlayer[pId]->updateInt(index);
-			unitsInfluencePerPlayer[pId]->tempUpdate(index);
-		}
-	}
+			unitsInfluencePerPlayer[pId]->update(index);
+			if (!unit->getDb()->typeWorker) {
+				armyQuad[pId]->update(index);
+			} else if (unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
+				auto res = static_cast<ResourceEntity*>(unit->getThingToInteract());
+				// TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
+				mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getResourceId()]->update(res->getIndexInInfluence());
+			}
 
-	MapsUtils::finalize(unitsInfluencePerPlayer);
-}
-
-void InfluenceManager::updateQuadUnits(const std::vector<Unit*>* units) const {
-	MapsUtils::resetMaps(armyQuad);
-	for (const auto unit : (*units)) {
-		if (!unit->getDb()->typeWorker) {
-			armyQuad[unit->getPlayer()]->updateInt(getIndexInInfluence(unit));
+			unitsNumberPerPlayer[pId]->update(index);
 		}
-	}
+	}	
+	//TODO perf to tutaj chyba niepotrzebne i tak bedzie zrobione lazy
+	//MapsUtils::finalize(unitsInfluencePerPlayer);
 }
 
 void InfluenceManager::updateBuildings(const std::vector<Building*>* buildings) const {
@@ -182,10 +193,11 @@ void InfluenceManager::updateBuildings(const std::vector<Building*>* buildings) 
 	for (const auto building : (*buildings)) {
 		const auto player = building->getPlayer();
 		const auto index = building->getIndexInInfluence();
-		buildingsInfluencePerPlayer[player]->tempUpdate(index);
-		buildingsQuad[player]->updateInt(index);
+		buildingsInfluencePerPlayer[player]->update(index);
+		buildingsQuad[player]->update(index);
 	}
-	MapsUtils::finalize(buildingsInfluencePerPlayer);
+	// TODO perf to tutaj chyba niepotrzebne i tak bedzie zrobione lazy
+	//MapsUtils::finalize(buildingsInfluencePerPlayer);
 }
 
 void InfluenceManager::updateWithHistory() const {
@@ -194,22 +206,8 @@ void InfluenceManager::updateWithHistory() const {
 		MapsUtils::finalize(vec);
 	}
 
-	MapsUtils::resetMaps(attackSpeed);
-	MapsUtils::finalize(attackSpeed);
-}
-
-void InfluenceManager::updateNotInBonus(std::vector<Unit*>* units) const {
-	for (auto& vec : resNotInBonus) {
-		MapsUtils::resetMaps(vec);
-	}
-	//TODO perf tylko workerów sprawdzić
-	for (const auto unit : *units) {
-		if (unit->getDb()->typeWorker && unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
-			auto res = (ResourceEntity*)unit->getThingToInteract();
-			//TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
-			mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getResourceId()]->updateInt(res->getIndexInInfluence());
-		}
-	}
+	MapsUtils::resetMaps(attackSpeed);//obniza wartosci
+	MapsUtils::finalize(attackSpeed);//dopisuje nowe
 }
 
 void InfluenceManager::updateQuadOther() const {
@@ -393,13 +391,13 @@ void InfluenceManager::addCollect(Unit* unit, short resId, float value) const {
 
 	assert(gatherSpeed[cast(ResourceType::FOOD)][playerId]->getResolution() == calculator->getResolution());
 	const auto index = getIndexInInfluence(unit);
-	gatherSpeed[resId][playerId]->tempUpdate(index, value);
+	gatherSpeed[resId][playerId]->update(index, value);
 
 	econQuad[playerId]->update(index, value);
 }
 
 void InfluenceManager::addAttack(unsigned char player, const Urho3D::Vector2& position, float value) const {
-	attackSpeed[player]->tempUpdate(position, value);
+	attackSpeed[player]->update(position, value);
 }
 
 std::optional<Urho3D::Vector2> InfluenceManager::getCenterOf(CenterType id, unsigned char player) const {
@@ -437,5 +435,5 @@ InfluenceManager::centersFromIndexes(const std::vector<unsigned>& indexes) const
 }
 
 float InfluenceManager::getFieldSize() const {
-	return unitsInfluencePerPlayer[0]->getFieldSize();
+	return calculator->getFieldSize();
 }

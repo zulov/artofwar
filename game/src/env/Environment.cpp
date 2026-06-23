@@ -222,19 +222,13 @@ Environment::getBuildingsFromTeamNotEq(Physical* physical, int id, float radius)
 	return getNeighbours(physical, buildingGrid, radius, condition);
 }
 
-void Environment::updateInfluenceUnits1(std::vector<Unit*>* units) const {
+void Environment::updateInfluenceUnits(std::vector<Unit*>* units) const {
 	influenceManager.updateUnits(units);
 }
 
-void Environment::updateInfluenceUnits2(std::vector<Unit*>* units) const {
-	influenceManager.updateQuadUnits(units);
-}
-
-
-void Environment::updateInfluenceOther(std::vector<Building*>* buildings, std::vector<Unit*>* units) const {
+void Environment::updateInfluenceBuildings(const std::vector<Building*>* buildings) const {
 	influenceManager.updateBuildings(buildings);
 	influenceManager.updateWithHistory();
-	influenceManager.updateNotInBonus(units);
 }
 
 void Environment::updateQuadOther() const {

@@ -48,10 +48,9 @@ public:
 
 	const std::vector<Physical*>& getBuildingsFromTeamNotEq(Physical* physical, int id, float radius);
 
-	void updateInfluenceUnits1(std::vector<Unit*>* units) const;
-	void updateInfluenceUnits2(std::vector<Unit*>* units) const;
+	void updateInfluenceUnits(std::vector<Unit*>* units) const;
 
-	void updateInfluenceOther(std::vector<Building*>* buildings, std::vector<Unit*>* units) const;
+	void updateInfluenceBuildings(const std::vector<Building*>* buildings) const;
 	void updateQuadOther() const;
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
 	                      std::vector<ResourceEntity*>* resources) const;

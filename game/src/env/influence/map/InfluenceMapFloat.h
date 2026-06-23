@@ -9,20 +9,13 @@ class InfluenceMapFloat : public InfluenceMap {
 public:
 	InfluenceMapFloat(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug,
 	                  float* sharedTemplateV);
-	virtual ~InfluenceMapFloat();
+	~InfluenceMapFloat() override;
 
-	void update(Physical* thing, float value = 1.f) override;
-	void updateInt(Physical* thing, int value = 1) override;
+	void update(const Urho3D::Vector2& pos, float value = 1.f);
+	void update(int index, float value = 1.f);
 
-	void tempUpdate(const Urho3D::Vector2& pos, float value = 1.f);
-	void tempUpdate(int index, float value = 1.f);
-	void update(int index) const;
-	void reset() override;
-	float getValueAt(int index) const override;
-	float getValueAt(const Urho3D::Vector2& pos) const;
-	float getValueAsPercent(const Urho3D::Vector2& pos) const override;
-	float getValueAsPercent(int index) const override;
-	void computeMinMax() override;
+	virtual void reset();
+
 	void ensureReady() override;
 
 	std::vector<int> getIndexesWithByValue(float percent, float tolerance);
@@ -33,14 +26,15 @@ public:
 	static float* createTemplateV(float coef, char level);
 
 protected:
+	float getValueAt(unsigned index) const override;
 	float* values;
 	float* tempVals;
 	float coef;
 	bool valuesCalculateNeeded = false;
 	std::vector<int> changedIndexes;
 private:
-	void update(float value, unsigned short centerX, unsigned short centerZ) const;
-
+	void applyKernel(int index) const;
+	void computeMinMax();
 	unsigned char level;
 	unsigned char levelRes;
 	float* templateV;

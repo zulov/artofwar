@@ -22,7 +22,7 @@ void InfluenceMap::draw(short batch, short maxParts) {
 	}
 }
 
-Urho3D::Vector3 InfluenceMap::getVertex(const Urho3D::Vector2 center, Urho3D::Vector2 vertex) const {
+Urho3D::Vector3 InfluenceMap::getVertex(const Urho3D::Vector2 &center, Urho3D::Vector2 vertex) const {
 	auto result = Game::getEnvironment()->getPosWithHeightAt(center.x_ + vertex.x_, center.y_ + vertex.y_);
 	result.y_ += 1.f;
 	return result;
@@ -44,17 +44,12 @@ void InfluenceMap::drawCell(int index, short batch) const {
 	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, b, d, a, color, batch);
 }
 
-float InfluenceMap::getFieldSize() const {
-	return calculator->getFieldSize();
-}
-
 void InfluenceMap::print(Urho3D::String name) {
 	auto image = new Urho3D::Image(Game::getContext());
 	const auto resolution = getResolution();
 	image->SetSize(resolution, resolution, 4);
 	ensureReady();
-	computeMinMax();
-	for (short x = 0; x != resolution; ++x) {
+	for (unsigned short x = 0; x != resolution; ++x) {
 		const int index = calculator->getNotSafeIndex(x, 0);
 		for (short y = 0; y != resolution; ++y) {
 			const auto color = Game::getColorPaletteRepo()->getSolidColor(getValueAsPercent(index + y), 1.f);
@@ -68,4 +63,12 @@ void InfluenceMap::print(Urho3D::String name) {
 	++counter;
 
 	delete image;
+}
+
+float InfluenceMap::getValueAsPercent(unsigned index) const {
+	const float diff = max - min;
+	if (diff != 0.f) {
+		return (getValueAt(index) - min) / diff;
+	}
+	return 0.5f;
 }

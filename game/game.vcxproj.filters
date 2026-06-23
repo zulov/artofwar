@@ -202,6 +202,19 @@
     <ClCompile Include="src\utils\CountUtils.cpp" />
     <ClCompile Include="src\objects\UId.h" />
     <ClCompile Include="src\database\db_update_utils.h" />
+    <ClCompile Include="src\player\ai\AiHistory.cpp" />
+    <ClCompile Include="src\database\db_struct_metric.cpp" />
+    <ClCompile Include="src\player\ai\AiOrchestrator.cpp" />
+    <ClCompile Include="src\player\ai\EconomyBrain.cpp" />
+    <ClCompile Include="src\player\ai\MasterBrain.cpp" />
+    <ClCompile Include="src\player\ai\MilitaryBrain.cpp" />
+    <ClCompile Include="src\player\ai\BuildSpatialBrain.cpp" />
+    <ClCompile Include="src\player\ai\AttackSpatialBrain.cpp" />
+    <ClCompile Include="src\player\ai\UnitBrain.cpp" />
+    <ClCompile Include="src\player\ai\AiUtils.cpp" />
+    <ClCompile Include="src\player\ai\WantList.cpp" />
+    <ClCompile Include="src\player\ai\WantListExecute.cpp" />
+    <ClCompile Include="src\player\ai\WantExecutor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -474,7 +487,6 @@
     <ClInclude Include="src\objects\unit\order\OrderUtils.h" />
     <ClInclude Include="src\objects\unit\order\UnitOrder.h" />
     <ClInclude Include="src\utils\consts.h" />
-    <ClInclude Include="src\utils\defines.h" />
     <ClInclude Include="src\utils\DeleteUtils.h" />
     <ClInclude Include="src\utils\NamesUtils.h" />
     <ClInclude Include="src\utils\replace_utils.h" />
@@ -484,7 +496,6 @@
     <ClInclude Include="src\control\HealthBarProvider.h" />
     <ClInclude Include="src\env\influence\map\InfluenceMapHistory.h" />
     <ClInclude Include="src\env\influence\map\InfluenceMapQuad.h" />
-    <ClInclude Include="src\env\influence\map\InfluenceMapI.h" />
     <ClInclude Include="src\env\GridCalculatorProvider.h" />
     <ClInclude Include="src\player\ai\InfluenceDataType.h" />
     <ClInclude Include="src\objects\queue\QueueUtils.h" />
@@ -501,7 +512,6 @@
     <ClInclude Include="src\env\influence\CenterType.h" />
     <ClInclude Include="src\utils\OtherUtils.h" />
     <ClInclude Include="src\player\ai\nn\BrainProvider.h" />
-    <ClInclude Include="src\simulation\PerFrameAction.h" />
     <ClInclude Include="src\simulation\SimGlobals.h" />
     <ClInclude Include="src\utils\FileUtils.h" />
     <ClInclude Include="src\player\ai\AiTypes.h" />
@@ -533,6 +543,17 @@
     <ClInclude Include="src\database\db_insert_defs.h" />
     <ClInclude Include="src\utils\CountUtils.h" />
     <ClInclude Include="src\env\bucket\ArrayProviderUtils.h" />
+    <ClInclude Include="src\player\ai\AiHistory.h" />
+    <ClInclude Include="src\player\ai\AiHistoryEnums.h" />
+    <ClInclude Include="src\player\ai\AiOrchestrator.h" />
+    <ClInclude Include="src\player\ai\EconomyBrain.h" />
+    <ClInclude Include="src\player\ai\MasterBrain.h" />
+    <ClInclude Include="src\player\ai\MilitaryBrain.h" />
+    <ClInclude Include="src\player\ai\BuildSpatialBrain.h" />
+    <ClInclude Include="src\player\ai\AttackSpatialBrain.h" />
+    <ClInclude Include="src\player\ai\UnitBrain.h" />
+    <ClInclude Include="src\player\ai\WantList.h" />
+    <ClInclude Include="src\player\ai\WantExecutor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
