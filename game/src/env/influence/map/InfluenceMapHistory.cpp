@@ -4,22 +4,23 @@
 InfluenceMapHistory::InfluenceMapHistory(unsigned short resolution, float size, float coef, char level,
                                          float minimalThreshold, float vanishCoef, float valueThresholdDebug,
                                          float* sharedTemplateV):
-	InfluenceMapFloat(resolution, size, coef, level, valueThresholdDebug, sharedTemplateV),
+	InfluenceField(resolution, size, coef, level, valueThresholdDebug, sharedTemplateV),
 	minimalThreshold(minimalThreshold), vanishCoef(vanishCoef) {}
 
 void InfluenceMapHistory::reset() {
-	const auto end = values + arraySize;
+	const auto end = rawValues + arraySize;
 
-	for (auto i = values; i < end; ++i) {
+	for (auto i = rawValues; i < end; ++i) {
 		*i *= vanishCoef;
 	}
-	minMaxInited = false;
+	invalidateCaches();
 }
 
-void InfluenceMapHistory::resetToZero() const {
-	const auto end = values + arraySize;
+void InfluenceMapHistory::resetToZero() {
+	const auto end = rawValues + arraySize;
 
-	for (auto i = values; i < end; ++i) {
+	for (auto i = rawValues; i < end; ++i) {
 		*i = *i >= minimalThreshold ? *i : 0.f;
 	}
+	invalidateCaches();
 }

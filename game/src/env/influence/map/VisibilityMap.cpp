@@ -84,17 +84,6 @@ float VisibilityMap::getValueAt(unsigned index) const {
 	return castC(values[index]);
 }
 
-void VisibilityMap::computeMinMax() {
-	if (!minMaxInited) {
-		const auto [minPtr, maxPtr] = std::minmax_element(values, values + arraySize);
-		min = castC(*minPtr);
-		max = castC(*maxPtr);
-		minIdx = std::distance(values, minPtr);
-		maxIdx = std::distance(values, maxPtr);
-		minMaxInited = true;
-	}
-}
-
 int VisibilityMap::removeUnseen(float* intersection) {
 	ensureReady();
 	int notSeen = 0;

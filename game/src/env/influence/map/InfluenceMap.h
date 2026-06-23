@@ -18,18 +18,19 @@ public:
 	void print(Urho3D::String name);
 	unsigned short getResolution() const { return calculator->getResolution(); }
 protected:
+	virtual void computeMinMax() const;
 	GridCalculator* calculator;
 	unsigned int arraySize;
 	const float valueThresholdDebug;
 
-	float min;
-	float max;
-	int minIdx;
-	int maxIdx;
+	mutable float min;
+	mutable float max;
+	mutable int minIdx;
+	mutable int maxIdx;
 
 	unsigned short counter = 0;
 
-	bool minMaxInited = false;
+	mutable bool minMaxInited = false;
 
 private:
 	float getValueAsPercent(unsigned index) const;

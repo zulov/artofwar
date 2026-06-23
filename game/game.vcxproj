@@ -288,7 +288,6 @@
     <ClCompile Include="src\env\bucket\levels\LevelCache.cpp" />
     <ClCompile Include="src\hud\window\EventPanel.cpp" />
     <ClCompile Include="src\env\GridCalculatorProvider.cpp" />
-    <ClCompile Include="src\env\influence\map\InfluenceMapQuad.cpp" />
     <ClCompile Include="src\env\influence\map\InfluenceMapHistory.cpp" />
     <ClCompile Include="src\control\HealthBarProvider.cpp" />
     <ClCompile Include="src\commands\action\GeneralActionCommand.cpp" />
@@ -312,8 +311,7 @@
     <ClCompile Include="src\colors\ColorPaletteRepo.cpp" />
     <ClCompile Include="src\objects\unit\state\State.cpp" />
     <ClCompile Include="src\env\influence\InfluenceManager.cpp" />
-    <ClCompile Include="src\env\influence\map\InfluenceMapFloat.cpp" />
-    <ClCompile Include="src\env\influence\map\InfluenceMapInt.cpp" />
+    <ClCompile Include="src\env\influence\map\InfluenceField.cpp" />
     <ClCompile Include="src\simulation\formation\Formation.cpp" />
     <ClCompile Include="src\simulation\formation\FormationManager.cpp" />
     <ClCompile Include="src\hud\window\menu\info\LeftMenuInfoPanel.cpp" />
@@ -444,7 +442,6 @@
     <ClInclude Include="src\objects\Metrics.h" />
     <ClInclude Include="src\objects\queue\QueueUtils.h" />
     <ClInclude Include="src\env\GridCalculatorProvider.h" />
-    <ClInclude Include="src\env\influence\map\InfluenceMapQuad.h" />
     <ClInclude Include="src\env\influence\map\InfluenceMapHistory.h" />
     <ClInclude Include="src\control\HealthBarProvider.h" />
     <ClInclude Include="src\commands\action\GeneralActionCommand.h" />
@@ -500,8 +497,7 @@
     <ClInclude Include="src\env\GridCalculator.h" />
     <ClInclude Include="src\env\influence\InfluenceManager.h" />
     <ClInclude Include="src\env\influence\map\InfluenceMap.h" />
-    <ClInclude Include="src\env\influence\map\InfluenceMapFloat.h" />
-    <ClInclude Include="src\env\influence\map\InfluenceMapInt.h" />
+    <ClInclude Include="src\env\influence\map\InfluenceField.h" />
     <ClInclude Include="src\simulation\force\ForceStats.h" />
     <ClInclude Include="src\simulation\formation\Formation.h" />
     <ClInclude Include="src\simulation\formation\FormationManager.h" />

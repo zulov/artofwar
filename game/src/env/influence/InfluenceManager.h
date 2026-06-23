@@ -14,11 +14,9 @@ enum class CenterType : char;
 enum class CellState : char;
 struct GridCalculator;
 struct content_info;
-class InfluenceMapInt;
 class Building;
 class ResourceEntity;
-class InfluenceMapFloat;
-class InfluenceMapQuad;
+class InfluenceField;
 class InfluenceMapHistory;
 class VisibilityManager;
 class Unit;
@@ -75,31 +73,29 @@ public:
 
 private:
 	// --- Private helpers ---
-	const std::vector<unsigned>& getBestVisibleIndexes(std::span<InfluenceMapFloat*> maps, std::span<const float> result,
+	const std::vector<unsigned>& getBestVisibleIndexes(std::span<InfluenceField*> maps, std::span<const float> result,
 	                                unsigned char player) const;
 
 	const std::vector<Urho3D::Vector2>& centersFromIndexes(const std::vector<unsigned>& indexes) const;
 	int getIndexInInfluence(Unit* unit) const;
 
 	// --- Per-player influence maps ---
-	std::vector<InfluenceMapFloat*> buildingsInfluencePerPlayer;
-	std::vector<InfluenceMapFloat*> unitsInfluencePerPlayer;
-	std::vector<InfluenceMapInt*> unitsNumberPerPlayer;
+	std::vector<InfluenceField*> buildingsInfluencePerPlayer;
+	std::vector<InfluenceField*> unitsInfluencePerPlayer;
+	std::vector<InfluenceField*> unitsNumberPerPlayer;
 	std::vector<InfluenceMapHistory*> attackSpeed;
 	std::vector<InfluenceMapHistory*> gatherSpeed[RESOURCES_SIZE];
-	std::vector<InfluenceMapInt*> resNotInBonus[RESOURCES_SIZE];
-
-	// --- Quadtree center maps (per player) ---
-	std::vector<InfluenceMapQuad*> econQuad;
-	std::vector<InfluenceMapQuad*> buildingsQuad;
-	std::vector<InfluenceMapQuad*> armyQuad;
+	std::vector<InfluenceField*> resNotInBonus[RESOURCES_SIZE];
+	std::vector<InfluenceField*> econQuad;
+	std::vector<InfluenceField*> buildingsQuad;
+	std::vector<InfluenceField*> armyQuad;
 
 	// --- AI map views (non-owning, per player) ---
-	std::vector<std::array<InfluenceMapFloat*, AI_MAP_COUNT>> mapsForAiPerPlayer;
-	std::vector<std::array<InfluenceMapFloat*, AI_ARMY_MAP_COUNT>> mapsForAiArmyPerPlayer;
-	std::vector<std::array<InfluenceMapFloat*, RESOURCES_SIZE>> mapsGatherSpeedPerPlayer;
-	std::vector<std::array<InfluenceMapInt*, RESOURCES_SIZE>> mapsResNotInBonusPerPlayer;
-	std::vector<std::array<InfluenceMapQuad*, CENTER_TYPE_COUNT>> mapsForCentersPerPlayer;
+	std::vector<std::array<InfluenceField*, AI_MAP_COUNT>> mapsForAiPerPlayer;
+	std::vector<std::array<InfluenceField*, AI_ARMY_MAP_COUNT>> mapsForAiArmyPerPlayer;
+	std::vector<std::array<InfluenceField*, RESOURCES_SIZE>> mapsGatherSpeedPerPlayer;
+	std::vector<std::array<InfluenceField*, RESOURCES_SIZE>> mapsResNotInBonusPerPlayer;
+	std::vector<std::array<InfluenceField*, CENTER_TYPE_COUNT>> mapsForCentersPerPlayer;
 
 	// --- Infrastructure ---
 	GridCalculator* calculator;

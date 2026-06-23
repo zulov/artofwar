@@ -4,16 +4,17 @@
 #include <limits>
 
 #include "env/GridCalculator.h"
-#include "env/influence/map/InfluenceMapFloat.h"
+#include "env/influence/map/InfluenceField.h"
+#include "env/influence/map/InfluenceMapHistory.h"
 
 // Testable subclass exposing internals for direct manipulation
-class TestableInfluenceMapFloat : public InfluenceMapFloat {
+class TestableInfluenceField : public InfluenceField {
 public:
-	TestableInfluenceMapFloat(unsigned short resolution, float size, float coef, char level)
-		: InfluenceMapFloat(resolution, size, coef, level, 0.f, createTemplateV(coef, level)) {
+	TestableInfluenceField(unsigned short resolution, float size, float coef, char level)
+		: InfluenceField(resolution, size, coef, level, 0.f, createTemplateV(coef, level), true, true) {
 	}
 
-	~TestableInfluenceMapFloat() override = default;
+	~TestableInfluenceField() override = default;
 
 	void setValues(const std::vector<float>& vals) {
 		assert(vals.size() == arraySize);
@@ -30,18 +31,18 @@ public:
 	unsigned int getArraySize() const { return arraySize; }
 };
 
-class CumulateErrosFixture : public ::testing::Test {
+class CumulateErrorsFixture : public ::testing::Test {
 protected:
 	// 4x4 grid, size=8 -> fieldSize=2
 	static constexpr unsigned short RES = 4;
 	static constexpr float SIZE = 8.f;
 	static constexpr int ARRAY_SIZE = RES * RES;
 
-	TestableInfluenceMapFloat* map;
+	TestableInfluenceField* map;
 	float intersection[ARRAY_SIZE];
 
 	void SetUp() override {
-		map = new TestableInfluenceMapFloat(RES, SIZE, 1.f, 1);
+		map = new TestableInfluenceField(RES, SIZE, 1.f, 1);
 	}
 
 	void TearDown() override {
@@ -63,7 +64,7 @@ protected:
 
 // --- Positive percent: seek high values ---
 
-TEST_F(CumulateErrosFixture, PositivePercentSeeksHighValues) {
+TEST_F(CumulateErrorsFixture, PositivePercentSeeksHighValues) {
 	// Values: cell 0=0.0, cell 1=0.5, cell 2=1.0, rest=0.0
 	std::vector<float> vals(ARRAY_SIZE, 0.f);
 	vals[0] = 0.f;
@@ -90,7 +91,7 @@ TEST_F(CumulateErrosFixture, PositivePercentSeeksHighValues) {
 
 // --- Negative percent: seek low values ---
 
-TEST_F(CumulateErrosFixture, NegativePercentSeeksLowValues) {
+TEST_F(CumulateErrorsFixture, NegativePercentSeeksLowValues) {
 	std::vector<float> vals(ARRAY_SIZE, 0.f);
 	vals[0] = 0.f;
 	vals[1] = 0.5f;
@@ -117,7 +118,7 @@ TEST_F(CumulateErrosFixture, NegativePercentSeeksLowValues) {
 
 // --- Zero percent: ignore map ---
 
-TEST_F(CumulateErrosFixture, ZeroPercentIgnoresMap) {
+TEST_F(CumulateErrorsFixture, ZeroPercentIgnoresMap) {
 	std::vector<float> vals(ARRAY_SIZE, 0.f);
 	vals[0] = 0.f;
 	vals[1] = 0.5f;
@@ -135,7 +136,7 @@ TEST_F(CumulateErrosFixture, ZeroPercentIgnoresMap) {
 
 // --- Weight magnitude controls influence strength ---
 
-TEST_F(CumulateErrosFixture, LargerWeightProducesLargerErrors) {
+TEST_F(CumulateErrorsFixture, LargerWeightProducesLargerErrors) {
 	std::vector<float> vals(ARRAY_SIZE, 0.f);
 	vals[0] = 0.f; // worst cell for seek-high
 	setupMap(vals);
@@ -151,7 +152,7 @@ TEST_F(CumulateErrosFixture, LargerWeightProducesLargerErrors) {
 	EXPECT_GT(errLargeWeight, errSmallWeight);
 }
 
-TEST_F(CumulateErrosFixture, LargerNegativeWeightProducesLargerErrors) {
+TEST_F(CumulateErrorsFixture, LargerNegativeWeightProducesLargerErrors) {
 	std::vector<float> vals(ARRAY_SIZE, 0.f);
 	vals[0] = 1.0f; // worst cell for seek-low
 	setupMap(vals);
@@ -169,7 +170,7 @@ TEST_F(CumulateErrosFixture, LargerNegativeWeightProducesLargerErrors) {
 
 // --- Cumulation: errors from multiple maps accumulate ---
 
-TEST_F(CumulateErrosFixture, ErrorsAccumulateAcrossMultipleCalls) {
+TEST_F(CumulateErrorsFixture, ErrorsAccumulateAcrossMultipleCalls) {
 	std::vector<float> vals(ARRAY_SIZE, 0.f);
 	vals[0] = 0.5f;
 	setupMap(vals);
@@ -189,7 +190,7 @@ TEST_F(CumulateErrosFixture, ErrorsAccumulateAcrossMultipleCalls) {
 // is now processed. A pre-seeded huge sentinel still dominates because the added
 // squared error is negligible vs FLT_MAX, so such cells remain ranked last.
 
-TEST_F(CumulateErrosFixture, UnseenSentinelStaysLargest) {
+TEST_F(CumulateErrorsFixture, UnseenSentinelStaysLargest) {
 	std::vector<float> vals(ARRAY_SIZE, 0.f);
 	vals[0] = 1.0f;
 	setupMap(vals);
@@ -207,7 +208,7 @@ TEST_F(CumulateErrosFixture, UnseenSentinelStaysLargest) {
 
 // --- Uniform map returns false ---
 
-TEST_F(CumulateErrosFixture, UniformMapReturnsFalse) {
+TEST_F(CumulateErrorsFixture, UniformMapReturnsFalse) {
 	std::vector<float> vals(ARRAY_SIZE, 0.5f);
 	setupMap(vals);
 	resetIntersection();
@@ -218,7 +219,7 @@ TEST_F(CumulateErrosFixture, UniformMapReturnsFalse) {
 
 // --- Non-uniform map returns true ---
 
-TEST_F(CumulateErrosFixture, NonUniformMapReturnsTrue) {
+TEST_F(CumulateErrorsFixture, NonUniformMapReturnsTrue) {
 	std::vector<float> vals(ARRAY_SIZE, 0.f);
 	vals[0] = 1.0f;
 	setupMap(vals);
@@ -230,7 +231,7 @@ TEST_F(CumulateErrosFixture, NonUniformMapReturnsTrue) {
 
 // --- Combined scenario: two maps, seek high buildings + seek low gathering ---
 
-TEST_F(CumulateErrosFixture, CombinedSeekHighAndSeekLow) {
+TEST_F(CumulateErrorsFixture, CombinedSeekHighAndSeekLow) {
 	// Simulate building placement: seek high buildings, avoid gathering
 	// Cell 0: high buildings (0.9), no gathering (0.0) -> best candidate
 	// Cell 1: high buildings (0.9), high gathering (0.8) -> worse due to gathering
@@ -274,7 +275,7 @@ TEST_F(CumulateErrosFixture, CombinedSeekHighAndSeekLow) {
 //   seek-high (percent >= 0): err = ((max - cellVal) * invDiff * percent)^2
 //   seek-low  (percent <  0): err = ((cellVal - min) * invDiff * percent)^2
 
-TEST_F(CumulateErrosFixture, NonZeroMinSeekHighExactErrors) {
+TEST_F(CumulateErrorsFixture, NonZeroMinSeekHighExactErrors) {
 	// min=10, max=20 -> invDiff = 0.1
 	std::vector<float> vals(ARRAY_SIZE, 10.f); // baseline = min
 	vals[0] = 10.f;
@@ -301,7 +302,7 @@ TEST_F(CumulateErrosFixture, NonZeroMinSeekHighExactErrors) {
 	EXPECT_LT(intersection[1], intersection[0]);
 }
 
-TEST_F(CumulateErrosFixture, NonZeroMinSeekLowExactErrors) {
+TEST_F(CumulateErrorsFixture, NonZeroMinSeekLowExactErrors) {
 	// min=10, max=20 -> invDiff = 0.1
 	std::vector<float> vals(ARRAY_SIZE, 10.f);
 	vals[0] = 10.f; // = min
@@ -328,7 +329,7 @@ TEST_F(CumulateErrosFixture, NonZeroMinSeekLowExactErrors) {
 	EXPECT_LT(intersection[3], intersection[4]);
 }
 
-TEST_F(CumulateErrosFixture, NegativeMinRangeSeekLowExactErrors) {
+TEST_F(CumulateErrorsFixture, NegativeMinRangeSeekLowExactErrors) {
 	// min=-4, max=4 -> invDiff = 0.125, stresses negative min in both branches
 	std::vector<float> vals(ARRAY_SIZE, -4.f);
 	vals[0] = -4.f; // = min
@@ -353,7 +354,7 @@ TEST_F(CumulateErrosFixture, NegativeMinRangeSeekLowExactErrors) {
 
 // --- Symmetry: positive and negative with same magnitude produce mirrored rankings ---
 
-TEST_F(CumulateErrosFixture, PositiveAndNegativeAreSymmetric) {
+TEST_F(CumulateErrorsFixture, PositiveAndNegativeAreSymmetric) {
 	std::vector<float> vals(ARRAY_SIZE, 0.f);
 	vals[0] = 0.0f;
 	vals[1] = 0.5f;
@@ -373,4 +374,43 @@ TEST_F(CumulateErrosFixture, PositiveAndNegativeAreSymmetric) {
 	// Errors should be mirrored
 	EXPECT_NEAR(posErr0, negErr2, 1e-5f);
 	EXPECT_NEAR(posErr2, negErr0, 1e-5f);
+}
+
+TEST(InfluenceFieldRegression, GetMaxIdxsHandlesSingleCellMap) {
+	TestableInfluenceField map(1, 8.f, 1.f, 1);
+	map.update(0, 1.f);
+
+	const auto indexes = map.getMaxIdxs();
+	ASSERT_EQ(indexes.size(), 1u);
+	EXPECT_EQ(indexes[0], 0u);
+}
+
+TEST(InfluenceMapHistoryRegression, ResetDecaysRawAndRebuildsKernelCache) {
+	auto* templateV = InfluenceField::createTemplateV(1.f, 1);
+	{
+		InfluenceMapHistory map(1, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, templateV);
+		map.update(0, 2.f);
+
+		EXPECT_FLOAT_EQ(map.getKernel(0), 2.f);
+		map.reset();
+
+		EXPECT_FLOAT_EQ(map.getRaw(0), 1.f);
+		EXPECT_FLOAT_EQ(map.getKernel(0), 1.f);
+	}
+	delete[] templateV;
+}
+
+TEST(InfluenceMapHistoryRegression, ResetToZeroDropsValuesBelowThreshold) {
+	auto* templateV = InfluenceField::createTemplateV(1.f, 1);
+	{
+		InfluenceMapHistory map(1, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, templateV);
+		map.update(0, 0.25f);
+
+		EXPECT_FLOAT_EQ(map.getKernel(0), 0.25f);
+		map.resetToZero();
+
+		EXPECT_FLOAT_EQ(map.getRaw(0), 0.f);
+		EXPECT_FLOAT_EQ(map.getKernel(0), 0.f);
+	}
+	delete[] templateV;
 }
