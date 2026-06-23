@@ -25,15 +25,13 @@ public:
 	void updateInt(unsigned index, unsigned char value = 1);
 	void updateFromTemp();
 
-	void reset() override;
+	void reset();
 	void resetToZero();
 
 	float getRaw(unsigned index) const;
 	float getRaw(const Urho3D::Vector2& pos) const;
 	float getKernel(unsigned index) const;
 	float getKernel(const Urho3D::Vector2& pos) const;
-	float getKernal(unsigned index) const { return getKernel(index); }
-	float getKernal(const Urho3D::Vector2& pos) const { return getKernel(pos); }
 
 	float getValueAt(unsigned index) const override;
 	float getValueAt(const Urho3D::Vector2& pos) const;
