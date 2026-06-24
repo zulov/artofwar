@@ -153,7 +153,7 @@
     <ClCompile Include="src\hud\window\top\info\TopInfoPanel.cpp" />
     <ClCompile Include="src\env\influence\InfluenceManager.cpp" />
     <ClCompile Include="src\env\influence\map\InfluenceMap.cpp" />
-    <ClCompile Include="src\env\influence\map\InfluenceField.cpp" />
+    <ClCompile Include="src\env\influence\map\InfluenceMapDebug.cpp" />
     <ClCompile Include="src\objects\resource\ResourceEntity.cpp" />
     <ClCompile Include="src\objects\resource\ResourceFactory.cpp" />
     <ClCompile Include="src\player\Resources.cpp" />
@@ -440,7 +440,6 @@
     <ClInclude Include="src\hud\window\top\info\TopInfoPanel.h" />
     <ClInclude Include="src\env\influence\InfluenceManager.h" />
     <ClInclude Include="src\env\influence\map\InfluenceMap.h" />
-    <ClInclude Include="src\env\influence\map\InfluenceField.h" />
     <ClInclude Include="src\objects\resource\ResourceEntity.h" />
     <ClInclude Include="src\objects\resource\ResourceFactory.h" />
     <ClInclude Include="src\player\Resources.h" />

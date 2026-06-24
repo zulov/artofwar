@@ -23,7 +23,6 @@ static_assert(magic_enum::enum_count<CenterType>() == CENTER_TYPE_COUNT,
 
 
 InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain) {
-	unitsNumberPerPlayer.reserve(numberOfPlayers);
 	buildingsInfluencePerPlayer.reserve(numberOfPlayers);
 	unitsInfluencePerPlayer.reserve(numberOfPlayers);
 
@@ -37,45 +36,42 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 
 	attackSpeed.reserve(numberOfPlayers);
 	armyQuad.reserve(numberOfPlayers);
-	buildingsQuad.reserve(numberOfPlayers);
 	econQuad.reserve(numberOfPlayers);
 
 	mapsForAiArmyPerPlayer.reserve(numberOfPlayers);
 	mapsForAiPerPlayer.reserve(numberOfPlayers);
 	mapsForCentersPerPlayer.reserve(numberOfPlayers);
 	unsigned short resolution = mapSize / INF_GRID_FIELD_SIZE;
-  sharedTemplateV = InfluenceField::createTemplateV(0.5f, INF_LEVEL);
+  sharedTemplateV = InfluenceMap::createTemplateV(0.5f, INF_LEVEL);
 	for (int player = 0; player < numberOfPlayers; ++player) {
-		unitsNumberPerPlayer.emplace_back(new InfluenceField(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, false));
 		buildingsInfluencePerPlayer.emplace_back(
-		                                         new InfluenceField(resolution, mapSize, 0.5f, INF_LEVEL, 2, sharedTemplateV));
+	                                         new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 2, sharedTemplateV));
 		unitsInfluencePerPlayer.emplace_back(
-		                                     new InfluenceField(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV));
+	                                     new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV));
 
 		for (auto& gs : gatherSpeed) {
-			gs.emplace_back(new InfluenceField(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV));
+			gs.emplace_back(new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV));
 		}
 
 		for (auto& resNotInBonus : resNotInBonus) {
-			resNotInBonus.emplace_back(new InfluenceField(resolution, mapSize, 0.5f, INF_LEVEL, 5, sharedTemplateV, false));
+			resNotInBonus.emplace_back(new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 5, sharedTemplateV, false));
 		}
 
-		attackSpeed.emplace_back(new InfluenceField(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV));
-		armyQuad.emplace_back(new InfluenceField(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, false));
-		buildingsQuad.emplace_back(new InfluenceField(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, false));
-		econQuad.emplace_back(new InfluenceField(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, false));
+		attackSpeed.emplace_back(new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV));
+		armyQuad.emplace_back(new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, false));
+		econQuad.emplace_back(new InfluenceMap(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, false));
 	}
 
 	for (int player = 0; player < numberOfPlayers; ++player) {
 		const int enemy = 1 - player;
-		std::array<InfluenceField*, RESOURCES_SIZE> gatherSpeedView;
-		std::array<InfluenceField*, RESOURCES_SIZE> resNotInBonusView;
+		std::array<InfluenceMap*, RESOURCES_SIZE> gatherSpeedView;
+		std::array<InfluenceMap*, RESOURCES_SIZE> resNotInBonusView;
 		for (int r = 0; r < RESOURCES_SIZE; ++r) {
 			gatherSpeedView[r] = gatherSpeed[r][player];
 			resNotInBonusView[r] = resNotInBonus[r][player];
 		}
 
-		mapsForAiPerPlayer.emplace_back(std::array<InfluenceField*, AI_MAP_COUNT>{
+		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMap*, AI_MAP_COUNT>{
 			                                buildingsInfluencePerPlayer[player],
 			                                unitsInfluencePerPlayer[player],
 			                                attackSpeed[player],
@@ -87,7 +83,7 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 			                                unitsInfluencePerPlayer[enemy],
 			                                attackSpeed[enemy],
 		                                });
-		mapsForAiArmyPerPlayer.emplace_back(std::array<InfluenceField*, AI_ARMY_MAP_COUNT>{
+		mapsForAiArmyPerPlayer.emplace_back(std::array<InfluenceMap*, AI_ARMY_MAP_COUNT>{
 			                                    buildingsInfluencePerPlayer[player],
 			                                    unitsInfluencePerPlayer[player],
 			                                    attackSpeed[player],
@@ -95,11 +91,11 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 			                                    unitsInfluencePerPlayer[enemy],
 			                                    attackSpeed[enemy],
 		                                    });
-		mapsForCentersPerPlayer.emplace_back(std::array<InfluenceField*, CENTER_TYPE_COUNT>{
-			                                     econQuad[player],
-			                                     buildingsQuad[player],
-			                                     armyQuad[player]
-		                                     });
+		mapsForCentersPerPlayer.emplace_back(std::array<InfluenceMap*, CENTER_TYPE_COUNT>{
+				                             econQuad[player],
+				                             buildingsInfluencePerPlayer[player],
+				                             armyQuad[player]
+			                             });
 
 		mapsGatherSpeedPerPlayer.emplace_back(gatherSpeedView);
 		mapsResNotInBonusPerPlayer.emplace_back(resNotInBonusView);
@@ -115,12 +111,10 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 	assert(arraySize <= std::numeric_limits<unsigned short>::max());
 	errorsSum = new float[arraySize];
 
-	assert(unitsNumberPerPlayer[0]->getResolution() == unitsInfluencePerPlayer[0]->getResolution()
-	       && calculator->getResolution() == unitsNumberPerPlayer[0]->getResolution());
+	assert(calculator->getResolution() == unitsInfluencePerPlayer[0]->getResolution());
 }
 
 InfluenceManager::~InfluenceManager() {
-	clear_vector(unitsNumberPerPlayer);
 	clear_vector(buildingsInfluencePerPlayer);
 	clear_vector(unitsInfluencePerPlayer);
 	for (auto& vec : gatherSpeed) {
@@ -133,7 +127,6 @@ InfluenceManager::~InfluenceManager() {
 	clear_vector(attackSpeed);
 
 	clear_vector(armyQuad);
-	clear_vector(buildingsQuad);
 	clear_vector(econQuad);
 
 	delete visibilityManager;
@@ -145,7 +138,6 @@ InfluenceManager::~InfluenceManager() {
 
 void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 	MapsUtils::resetMaps(unitsInfluencePerPlayer);
-	MapsUtils::resetMaps(unitsNumberPerPlayer);
 	MapsUtils::resetMaps(armyQuad);
 	for (auto& vec : resNotInBonus) {
 		MapsUtils::resetMaps(vec);
@@ -156,7 +148,6 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 			const auto pId = unit->getPlayer();
 			const auto index = getIndexInInfluence(unit);
 			unitsInfluencePerPlayer[pId]->update(index);
-			unitsNumberPerPlayer[pId]->update(index);
 			if (!unit->getDb()->typeWorker) {
 				armyQuad[pId]->update(index);
 			} else if (unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
@@ -178,7 +169,6 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 				mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getResourceId()]->update(res->getIndexInInfluence());
 			}
 
-			unitsNumberPerPlayer[pId]->update(index);
 		}
 	}	
 	//TODO perf to tutaj chyba niepotrzebne i tak bedzie zrobione lazy
@@ -187,12 +177,10 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 
 void InfluenceManager::updateBuildings(const std::vector<Building*>* buildings) const {
 	MapsUtils::resetMaps(buildingsInfluencePerPlayer);
-	MapsUtils::resetMaps(buildingsQuad);
 	for (const auto building : (*buildings)) {
 		const auto player = building->getPlayer();
 		const auto index = building->getIndexInInfluence();
 		buildingsInfluencePerPlayer[player]->update(index);
-		buildingsQuad[player]->update(index);
 	}
 	// TODO perf to tutaj chyba niepotrzebne i tak bedzie zrobione lazy
 	//MapsUtils::finalize(buildingsInfluencePerPlayer);
@@ -232,38 +220,38 @@ void InfluenceManager::draw(InfluenceDataType type, unsigned char index) {
 	case InfluenceDataType::NONE:
 		break;
 	case InfluenceDataType::UNITS_NUMBER_PER_PLAYER:
-		MapsUtils::drawMap(currentDebugBatch, index, unitsNumberPerPlayer);
+		MapsUtils::drawMapRaw(currentDebugBatch, index, unitsInfluencePerPlayer);
 		break;
 	case InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER:
-		MapsUtils::drawMap(currentDebugBatch, index, unitsInfluencePerPlayer);
+		MapsUtils::drawMapKernel(currentDebugBatch, index, unitsInfluencePerPlayer);
 		break;
 	case InfluenceDataType::BUILDING_INFLUENCE_PER_PLAYER:
-		MapsUtils::drawMap(currentDebugBatch, index, buildingsInfluencePerPlayer);
+		MapsUtils::drawMapKernel(currentDebugBatch, index, buildingsInfluencePerPlayer);
 		break;
 	case InfluenceDataType::FOOD_SPEED:
-		MapsUtils::drawMap(currentDebugBatch, index, gatherSpeed[cast(ResourceType::FOOD)]);
+		MapsUtils::drawMapKernel(currentDebugBatch, index, gatherSpeed[cast(ResourceType::FOOD)]);
 		break;
 	case InfluenceDataType::WOOD_SPEED:
-		MapsUtils::drawMap(currentDebugBatch, index, gatherSpeed[cast(ResourceType::WOOD)]);
+		MapsUtils::drawMapKernel(currentDebugBatch, index, gatherSpeed[cast(ResourceType::WOOD)]);
 		break;
 	case InfluenceDataType::STONE_SPEED:
-		MapsUtils::drawMap(currentDebugBatch, index, gatherSpeed[cast(ResourceType::STONE)]);
+		MapsUtils::drawMapKernel(currentDebugBatch, index, gatherSpeed[cast(ResourceType::STONE)]);
 		break;
 	case InfluenceDataType::GOLD_SPEED:
-		MapsUtils::drawMap(currentDebugBatch, index, gatherSpeed[cast(ResourceType::GOLD)]);
+		MapsUtils::drawMapKernel(currentDebugBatch, index, gatherSpeed[cast(ResourceType::GOLD)]);
 		break;
 	case InfluenceDataType::ATTACK_SPEED:
-		MapsUtils::drawMap(currentDebugBatch, index, attackSpeed);
+		MapsUtils::drawMapKernel(currentDebugBatch, index, attackSpeed);
 		break;
-	// case InfluenceDataType::ECON_QUAD:
-	// 	drawMap(index, econQuad);
-	// 	break;
-	// case InfluenceDataType::BUILDINGS_QUAD:
-	// 	drawMap(index, buildingsQuad);
-	// 	break;
-	// case InfluenceDataType::UNITS_QUAD:
-	// 	drawMap(index, armyQuad);
-	// 	break;
+	case InfluenceDataType::ECON_QUAD:
+		MapsUtils::drawMapRaw(currentDebugBatch, index, econQuad);
+		break;
+	case InfluenceDataType::BUILDINGS_QUAD:
+		MapsUtils::drawMapRaw(currentDebugBatch, index, buildingsInfluencePerPlayer);
+		break;
+	case InfluenceDataType::UNITS_QUAD:
+		MapsUtils::drawMapRaw(currentDebugBatch, index, armyQuad);
+		break;
 	case InfluenceDataType::VISIBILITY:
 		visibilityManager->drawMaps(currentDebugBatch, index);
 		break;
@@ -278,7 +266,6 @@ void InfluenceManager::draw(InfluenceDataType type, unsigned char index) {
 }
 
 void InfluenceManager::drawAll() const {
-	MapsUtils::drawAll(unitsNumberPerPlayer, "unitsInt");
 	MapsUtils::drawAll(buildingsInfluencePerPlayer, "buildingsInt");
 	MapsUtils::drawAll(unitsInfluencePerPlayer, "units");
 
@@ -289,7 +276,6 @@ void InfluenceManager::drawAll() const {
 	MapsUtils::drawAll(attackSpeed, "attack");
 
 	MapsUtils::drawAll(armyQuad, "armyQuad");
-	MapsUtils::drawAll(buildingsQuad, "buildingsQuad");
 	MapsUtils::drawAll(econQuad, "econQuad");
 }
 
@@ -302,8 +288,8 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 	case CellState::COLLECT:
 	case CellState::DEPLOY:
 		if (checks[3] || checks[4]) {
-			for (int i = 0; i < unitsNumberPerPlayer.size(); ++i) {
-				const auto value = unitsNumberPerPlayer[i]->getValueAt(center);
+			for (int i = 0; i < unitsInfluencePerPlayer.size(); ++i) {
+				const auto value = unitsInfluencePerPlayer[i]->getRaw(center);
 				if ((checks[3] && i == activePlayer || checks[4] && i != activePlayer) && value > 0) {
 					ci->unitsNumberPerPlayer[i] = value;
 					ci->hasUnit = true;
@@ -347,19 +333,19 @@ InfluenceManager::getBestVisibleAreas(std::span<const float> result, unsigned ch
 const std::vector<unsigned>&
 InfluenceManager::getAreas(std::span<const float> result, ParentBuildingType type, unsigned char player) const {
 	if (type == ParentBuildingType::RESOURCE) {
-		std::array<InfluenceField*, RESOURCES_SIZE> maps = mapsGatherSpeedPerPlayer[player];
+		std::array<InfluenceMap*, RESOURCES_SIZE> maps = mapsGatherSpeedPerPlayer[player];
 		return getBestVisibleIndexes(maps, result, player);
 	}
-	std::array<InfluenceField*, AI_MAP_COUNT> maps = mapsForAiPerPlayer[player];
+	std::array<InfluenceMap*, AI_MAP_COUNT> maps = mapsForAiPerPlayer[player];
 	return getBestVisibleIndexes(maps, result, player);
 }
 
 std::vector<unsigned> InfluenceManager::getAreasResBonus(unsigned char id, unsigned char player) const {
-	return mapsResNotInBonusPerPlayer[player][id]->getMaxIdxs();
+	return mapsResNotInBonusPerPlayer[player][id]->getRawMaxIdxs();
 }
 
 const std::vector<unsigned>&
-InfluenceManager::getBestVisibleIndexes(std::span<InfluenceField*> maps, std::span<const float> result, unsigned char player) const {
+InfluenceManager::getBestVisibleIndexes(std::span<InfluenceMap*> maps, std::span<const float> result, unsigned char player) const {
 	assert(result.size() == maps.size());
 
 	//unseen means max float max error

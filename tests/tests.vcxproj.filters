@@ -11,7 +11,7 @@
     <ClCompile Include="AiHistoryTest.cpp" />
     <ClCompile Include="MilitaryCommandCalculatorTest.cpp" />
     <ClCompile Include="MetricComposeTest.cpp" />
-    <ClCompile Include="InfluenceFieldTest.cpp" />
+    <ClCompile Include="InfluenceMapTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

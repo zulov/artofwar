@@ -5,45 +5,20 @@
 
 #include "env/GridCalculator.h"
 #include "env/GridCalculatorProvider.h"
-#include "env/influence/map/InfluenceField.h"
+#include "env/influence/map/InfluenceMap.h"
 
-#include "../game/src/env/influence/map/InfluenceField.cpp"
+#include "../game/src/env/influence/map/InfluenceMap.cpp"
 
-InfluenceMap::InfluenceMap(unsigned short resolution, float size, float valueThresholdDebug)
-	: arraySize(resolution * resolution), valueThresholdDebug(valueThresholdDebug),
-	  calculator(GridCalculatorProvider::get(resolution, size)) {}
 
-void InfluenceMap::computeMinMax() const {
-	if (minMaxInited) {
-		return;
-	}
-
-	min = getValueAt(0);
-	max = min;
-	minIdx = 0;
-	maxIdx = 0;
-	for (unsigned i = 1; i < arraySize; ++i) {
-		const float value = getValueAt(i);
-		if (value < min) {
-			min = value;
-			minIdx = static_cast<int>(i);
-		}
-		if (value > max) {
-			max = value;
-			maxIdx = static_cast<int>(i);
-		}
-	}
-	minMaxInited = true;
-}
 
 // Testable subclass exposing internals for direct manipulation
-class TestableInfluenceField : public InfluenceField {
+class TestableInfluenceMap : public InfluenceMap {
 public:
-	TestableInfluenceField(unsigned short resolution, float size, float coef, char level)
-		: InfluenceField(resolution, size, coef, level, 0.f, createTemplateV(coef, level), true, true) {
+	TestableInfluenceMap(unsigned short resolution, float size, float coef, char level)
+		: InfluenceMap(resolution, size, coef, level, 0.f, createTemplateV(coef, level), true) {
 	}
 
-	~TestableInfluenceField() override = default;
+	~TestableInfluenceMap() override = default;
 
 	void setValues(const std::vector<float>& vals) {
 		assert(vals.size() == arraySize);
@@ -67,11 +42,11 @@ protected:
 	static constexpr float SIZE = 8.f;
 	static constexpr int ARRAY_SIZE = RES * RES;
 
-	TestableInfluenceField* map;
+	TestableInfluenceMap* map;
 	float intersection[ARRAY_SIZE];
 
 	void SetUp() override {
-		map = new TestableInfluenceField(RES, SIZE, 1.f, 1);
+		map = new TestableInfluenceMap(RES, SIZE, 1.f, 1);
 	}
 
 	void TearDown() override {
@@ -405,17 +380,17 @@ TEST_F(CumulateErrorsFixture, PositiveAndNegativeAreSymmetric) {
 	EXPECT_NEAR(posErr2, negErr0, 1e-5f);
 }
 
-TEST(InfluenceFieldRegression, GetMaxIdxsHandlesSingleCellMap) {
-	TestableInfluenceField map(1, 8.f, 1.f, 1);
+TEST(InfluenceMapRegression, GetKernelMaxIdxsHandlesSingleCellMap) {
+	TestableInfluenceMap map(1, 8.f, 1.f, 1);
 	map.update(0, 1.f);
 
-	const auto indexes = map.getMaxIdxs();
+	const auto indexes = map.getKernelMaxIdxs();
 	ASSERT_EQ(indexes.size(), 1u);
 	EXPECT_EQ(indexes[0], 0u);
 }
 
-TEST(InfluenceFieldRegression, ResetDecaysRawAndRebuildsKernelCache) {
-	InfluenceField map(1, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceField::createTemplateV(1.f, 1));
+TEST(InfluenceMapRegression, ResetDecaysRawAndRebuildsKernelCache) {
+	InfluenceMap map(1, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
 	map.update(0, 2.f);
 
 	EXPECT_FLOAT_EQ(map.getKernel(0), 2.f);
@@ -425,8 +400,8 @@ TEST(InfluenceFieldRegression, ResetDecaysRawAndRebuildsKernelCache) {
 	EXPECT_FLOAT_EQ(map.getKernel(0), 1.f);
 }
 
-TEST(InfluenceFieldRegression, ResetToZeroDropsValuesBelowThreshold) {
-	InfluenceField map(1, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceField::createTemplateV(1.f, 1));
+TEST(InfluenceMapRegression, ResetToZeroDropsValuesBelowThreshold) {
+	InfluenceMap map(1, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
 	map.update(0, 0.25f);
 
 	EXPECT_FLOAT_EQ(map.getKernel(0), 0.25f);
@@ -436,8 +411,8 @@ TEST(InfluenceFieldRegression, ResetToZeroDropsValuesBelowThreshold) {
 	EXPECT_FLOAT_EQ(map.getKernel(0), 0.f);
 }
 
-TEST(InfluenceFieldRegression, HistoryResetDecaysRawAndInvalidatesKernel) {
-	InfluenceField map(1, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceField::createTemplateV(1.f, 1));
+TEST(InfluenceMapRegression, HistoryResetDecaysRawAndInvalidatesKernel) {
+	InfluenceMap map(1, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
 	map.update(0, 4.f);
 
 	EXPECT_FLOAT_EQ(map.getRaw(0), 4.f);

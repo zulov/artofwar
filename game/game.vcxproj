@@ -310,7 +310,8 @@
     <ClCompile Include="src\colors\ColorPaletteRepo.cpp" />
     <ClCompile Include="src\objects\unit\state\State.cpp" />
     <ClCompile Include="src\env\influence\InfluenceManager.cpp" />
-    <ClCompile Include="src\env\influence\map\InfluenceField.cpp" />
+    <ClCompile Include="src\env\influence\map\VisibilityMap.cpp" />
+    <ClCompile Include="src\env\influence\map\InfluenceMapDebug.cpp" />
     <ClCompile Include="src\simulation\formation\Formation.cpp" />
     <ClCompile Include="src\simulation\formation\FormationManager.cpp" />
     <ClCompile Include="src\hud\window\menu\info\LeftMenuInfoPanel.cpp" />
@@ -389,7 +390,6 @@
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
     <ClCompile Include="src\hud\window\top\info\TopInfoPanel.cpp" />
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
-    <ClCompile Include="src\env\influence\map\VisibilityMap.cpp" />
     <ClCompile Include="src\env\bucket\StaticGrid.cpp" />
     <ClCompile Include="src\env\influence\VisibilityManager.cpp" />
     <ClCompile Include="src\utils\CountUtils.cpp" />
@@ -495,7 +495,6 @@
     <ClInclude Include="src\env\GridCalculator.h" />
     <ClInclude Include="src\env\influence\InfluenceManager.h" />
     <ClInclude Include="src\env\influence\map\InfluenceMap.h" />
-    <ClInclude Include="src\env\influence\map\InfluenceField.h" />
     <ClInclude Include="src\simulation\force\ForceStats.h" />
     <ClInclude Include="src\simulation\formation\Formation.h" />
     <ClInclude Include="src\simulation\formation\FormationManager.h" />

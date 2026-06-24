@@ -1,8 +1,8 @@
 #pragma once
-#include "env/influence/map/InfluenceField.h"
+#include "env/influence/map/InfluenceMap.h"
 
 template<std::size_t N>
-inline bool validSizes(std::array<InfluenceField*, N> &array) {
+inline bool validSizes(std::array<InfluenceMap*, N> &array) {
 	for (int i = 1; i < array.size(); ++i) {
 		if (array[i-1]->getResolution()!=array[i]->getResolution()) {
 			return false;

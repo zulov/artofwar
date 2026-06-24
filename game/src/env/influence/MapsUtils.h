@@ -40,4 +40,16 @@ namespace MapsUtils {
 		index = index % maps.size();
 		maps[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 	}
+
+	template <typename T>
+	void drawMapRaw(short currentDebugBatch, char index, const std::vector<T*>& maps) {
+		index = index % maps.size();
+		maps[index]->drawRaw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+	}
+
+	template <typename T>
+	void drawMapKernel(short currentDebugBatch, char index, const std::vector<T*>& maps) {
+		index = index % maps.size();
+		maps[index]->drawKernel(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+	}
 }

@@ -1,14 +1,22 @@
 #pragma once
-#include "InfluenceMap.h"
+
+#include <span>
+#include <vector>
+
+#include <Urho3D/Math/Vector2.h>
+#include <Urho3D/Math/Vector3.h>
+
+#include "env/GridCalculator.h"
 
 enum class VisibilityType : char;
 class LevelCache;
 
-class VisibilityMap : public InfluenceMap {
+class VisibilityMap {
 public:
 	VisibilityMap(unsigned short resolution, float size, float valueThresholdDebug);
-	~VisibilityMap() override;
+	~VisibilityMap();
 
+	void draw(short batch, short maxParts);
 	void update(const Urho3D::Vector2& pos, float sRadius);
 	void finishAtIndex(unsigned i) const;
 	void finish();
@@ -16,13 +24,19 @@ public:
 	char getValueAt(const Urho3D::Vector2& pos) const;
 	VisibilityType getValueAt(float x, float z) const;
 
-	float getValueAt(unsigned index) const override;
+	float getValueAt(unsigned index) const;
 	int removeUnseen(float* intersection);
 	float getPercent();
+	unsigned short getResolution() const { return calculator->getResolution(); }
 
 private:
-	void ensureReady() override;
+	void ensureReady();
 
+	GridCalculator* calculator;
+	unsigned int arraySize;
+	const float valueThresholdDebug;
+	void drawCell(int index, short batch) const;
+	Urho3D::Vector3 getVertex(const Urho3D::Vector2& center, Urho3D::Vector2 vertex) const;
 	const int influenceRes;
 	const int influenceArraySize;
 	VisibilityType* values;

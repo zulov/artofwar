@@ -1,18 +1,37 @@
 #include "VisibilityMap.h"
 #include <cassert>
+#include <algorithm>
+#include <numeric>
+#include <limits>
+#include <Urho3D/Resource/Image.h>
 
 #include "VisibilityType.h"
-#include "math/MathUtils.h"
-#include "utils/SpanUtils.h"
-#include "objects/Physical.h"
-#include "env/bucket/levels/LevelCache.h"
+#include "Game.h"
+#include "debug/DebugLineRepo.h"
+#include "colors/ColorPaletteRepo.h"
+#include "env/GridCalculatorProvider.h"
+#include "env/Environment.h"
 #include "env/bucket/levels/LevelCacheProvider.h"
 #include "env/influence/VisibilityManager.h"
+#include "math/MathUtils.h"
+#include "objects/Physical.h"
 #include "utils/OtherUtils.h"
+#include "utils/SpanUtils.h"
+#include "env/bucket/levels/LevelCache.h"
+
+void VisibilityMap::draw(short batch, short maxParts) {
+	auto size = arraySize / maxParts;
+	ensureReady();
+	for (int i = batch * size; i < arraySize && i < (batch + 1) * size; ++i) {
+		drawCell(i, batch);
+	}
+}
 
 
 VisibilityMap::VisibilityMap(unsigned short resolution, float size, float valueThresholdDebug) :
-	InfluenceMap(resolution, size, valueThresholdDebug),
+	calculator(GridCalculatorProvider::get(resolution, size)),
+	arraySize(resolution * resolution),
+	valueThresholdDebug(valueThresholdDebug),
 	influenceRes(resolution / 2),
 	influenceArraySize(influenceRes * influenceRes),
 	levelCache(LevelCacheProvider::get(resolution, 60.f, calculator)) {
@@ -65,7 +84,6 @@ void VisibilityMap::finish() {
 void VisibilityMap::reset() {
 	valuesForInfluenceReady = false;
 	percentReady = false;
-	minMaxInited = false;
 	char* end = (char*)values + arraySize;
 	for (char* i = (char*)values; i < end; i++) { *i &= 1; }
 }
@@ -126,5 +144,22 @@ void VisibilityMap::ensureReady() {
 		}
 		valuesForInfluenceReady = true;
 	}
-	computeMinMax();
+}
+
+Urho3D::Vector3 VisibilityMap::getVertex(const Urho3D::Vector2& center, Urho3D::Vector2 vertex) const {
+	auto result = Game::getEnvironment()->getPosWithHeightAt(center.x_ + vertex.x_, center.y_ + vertex.y_);
+	result.y_ += 1.f;
+	return result;
+}
+
+void VisibilityMap::drawCell(int index, short batch) const {
+	const auto center = calculator->getCenter(index);
+	const auto v = calculator->getFieldSize() / 2.3f;
+	const auto a = getVertex(center, Urho3D::Vector2(-v, v));
+	const auto b = getVertex(center, Urho3D::Vector2(v, -v));
+	const auto c = getVertex(center, Urho3D::Vector2(v, v));
+	const auto d = getVertex(center, Urho3D::Vector2(-v, -v));
+	const auto color = Game::getColorPaletteRepo()->getColor(getValueAt(index), valueThresholdDebug);
+	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, a, c, b, color, batch);
+	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, b, d, a, color, batch);
 }

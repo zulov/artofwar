@@ -16,7 +16,7 @@ struct GridCalculator;
 struct content_info;
 class Building;
 class ResourceEntity;
-class InfluenceField;
+class InfluenceMap;
 class VisibilityManager;
 class Unit;
 
@@ -72,29 +72,27 @@ public:
 
 private:
 	// --- Private helpers ---
-	const std::vector<unsigned>& getBestVisibleIndexes(std::span<InfluenceField*> maps, std::span<const float> result,
+	const std::vector<unsigned>& getBestVisibleIndexes(std::span<InfluenceMap*> maps, std::span<const float> result,
 	                                unsigned char player) const;
 
 	const std::vector<Urho3D::Vector2>& centersFromIndexes(const std::vector<unsigned>& indexes) const;
 	int getIndexInInfluence(Unit* unit) const;
 
 	// --- Per-player influence maps ---
-	std::vector<InfluenceField*> buildingsInfluencePerPlayer;
-	std::vector<InfluenceField*> unitsInfluencePerPlayer;
-	std::vector<InfluenceField*> unitsNumberPerPlayer;
-	std::vector<InfluenceField*> attackSpeed;
-	std::vector<InfluenceField*> gatherSpeed[RESOURCES_SIZE];
-	std::vector<InfluenceField*> resNotInBonus[RESOURCES_SIZE];
-	std::vector<InfluenceField*> econQuad;
-	std::vector<InfluenceField*> buildingsQuad;
-	std::vector<InfluenceField*> armyQuad;
+	std::vector<InfluenceMap*> buildingsInfluencePerPlayer;
+	std::vector<InfluenceMap*> unitsInfluencePerPlayer;
+	std::vector<InfluenceMap*> attackSpeed;
+	std::vector<InfluenceMap*> gatherSpeed[RESOURCES_SIZE];
+	std::vector<InfluenceMap*> resNotInBonus[RESOURCES_SIZE];
+	std::vector<InfluenceMap*> econQuad;
+	std::vector<InfluenceMap*> armyQuad;
 
 	// --- AI map views (non-owning, per player) ---
-	std::vector<std::array<InfluenceField*, AI_MAP_COUNT>> mapsForAiPerPlayer;
-	std::vector<std::array<InfluenceField*, AI_ARMY_MAP_COUNT>> mapsForAiArmyPerPlayer;
-	std::vector<std::array<InfluenceField*, RESOURCES_SIZE>> mapsGatherSpeedPerPlayer;
-	std::vector<std::array<InfluenceField*, RESOURCES_SIZE>> mapsResNotInBonusPerPlayer;
-	std::vector<std::array<InfluenceField*, CENTER_TYPE_COUNT>> mapsForCentersPerPlayer;
+	std::vector<std::array<InfluenceMap*, AI_MAP_COUNT>> mapsForAiPerPlayer;
+	std::vector<std::array<InfluenceMap*, AI_ARMY_MAP_COUNT>> mapsForAiArmyPerPlayer;
+	std::vector<std::array<InfluenceMap*, RESOURCES_SIZE>> mapsGatherSpeedPerPlayer;
+	std::vector<std::array<InfluenceMap*, RESOURCES_SIZE>> mapsResNotInBonusPerPlayer;
+	std::vector<std::array<InfluenceMap*, CENTER_TYPE_COUNT>> mapsForCentersPerPlayer;
 
 	// --- Infrastructure ---
 	GridCalculator* calculator;
