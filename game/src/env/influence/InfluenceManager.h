@@ -84,8 +84,8 @@ private:
 	std::vector<InfluenceMap*> attackSpeed;
 	std::vector<InfluenceMap*> gatherSpeed[RESOURCES_SIZE];
 	std::vector<InfluenceMap*> resNotInBonus[RESOURCES_SIZE];
-	std::vector<InfluenceMap*> econQuad;
-	std::vector<InfluenceMap*> armyQuad;
+	std::vector<InfluenceMap*> economyInfluence;
+	std::vector<InfluenceMap*> armyInfluence;
 
 	// --- AI map views (non-owning, per player) ---
 	std::vector<std::array<InfluenceMap*, AI_MAP_COUNT>> mapsForAiPerPlayer;

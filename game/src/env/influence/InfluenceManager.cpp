@@ -35,8 +35,8 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 	}
 
 	attackSpeed.reserve(numberOfPlayers);
-	armyQuad.reserve(numberOfPlayers);
-	econQuad.reserve(numberOfPlayers);
+	armyInfluence.reserve(numberOfPlayers);
+	economyInfluence.reserve(numberOfPlayers);
 
 	mapsForAiArmyPerPlayer.reserve(numberOfPlayers);
 	mapsForAiPerPlayer.reserve(numberOfPlayers);
@@ -58,8 +58,8 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 		}
 
 		attackSpeed.emplace_back(new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV));
-		armyQuad.emplace_back(new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, false));
-		econQuad.emplace_back(new InfluenceMap(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, false));
+		armyInfluence.emplace_back(new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, false));
+		economyInfluence.emplace_back(new InfluenceMap(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, false));
 	}
 
 	for (int player = 0; player < numberOfPlayers; ++player) {
@@ -92,9 +92,9 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 			                                    attackSpeed[enemy],
 		                                    });
 		mapsForCentersPerPlayer.emplace_back(std::array<InfluenceMap*, CENTER_TYPE_COUNT>{
-				                             econQuad[player],
+				                             economyInfluence[player],
 				                             buildingsInfluencePerPlayer[player],
-				                             armyQuad[player]
+				                             armyInfluence[player]
 			                             });
 
 		mapsGatherSpeedPerPlayer.emplace_back(gatherSpeedView);
@@ -126,8 +126,8 @@ InfluenceManager::~InfluenceManager() {
 
 	clear_vector(attackSpeed);
 
-	clear_vector(armyQuad);
-	clear_vector(econQuad);
+	clear_vector(armyInfluence);
+	clear_vector(economyInfluence);
 
 	delete visibilityManager;
 	delete ci;
@@ -138,7 +138,7 @@ InfluenceManager::~InfluenceManager() {
 
 void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 	MapsUtils::resetMaps(unitsInfluencePerPlayer);
-	MapsUtils::resetMaps(armyQuad);
+	MapsUtils::resetMaps(armyInfluence);
 	for (auto& vec : resNotInBonus) {
 		MapsUtils::resetMaps(vec);
 	}
@@ -149,7 +149,7 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 			const auto index = getIndexInInfluence(unit);
 			unitsInfluencePerPlayer[pId]->update(index);
 			if (!unit->getDb()->typeWorker) {
-				armyQuad[pId]->update(index);
+				armyInfluence[pId]->update(index);
 			} else if (unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
 				auto res = static_cast<ResourceEntity*>(unit->getThingToInteract());
 				// TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
@@ -162,7 +162,7 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 			const auto index = getIndexInInfluence(unit);
 			unitsInfluencePerPlayer[pId]->update(index);
 			if (!unit->getDb()->typeWorker) {
-				armyQuad[pId]->update(index);
+				armyInfluence[pId]->update(index);
 			} else if (unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
 				auto res = static_cast<ResourceEntity*>(unit->getThingToInteract());
 				// TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
@@ -197,7 +197,7 @@ void InfluenceManager::updateWithHistory() const {
 }
 
 void InfluenceManager::updateQuadOther() const {
-	MapsUtils::resetMaps(econQuad);
+	MapsUtils::resetMaps(economyInfluence);
 }
 
 void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
@@ -244,13 +244,13 @@ void InfluenceManager::draw(InfluenceDataType type, unsigned char index) {
 		MapsUtils::drawMapKernel(currentDebugBatch, index, attackSpeed);
 		break;
 	case InfluenceDataType::ECON_QUAD:
-		MapsUtils::drawMapRaw(currentDebugBatch, index, econQuad);
+		MapsUtils::drawMapRaw(currentDebugBatch, index, economyInfluence);
 		break;
 	case InfluenceDataType::BUILDINGS_QUAD:
 		MapsUtils::drawMapRaw(currentDebugBatch, index, buildingsInfluencePerPlayer);
 		break;
 	case InfluenceDataType::UNITS_QUAD:
-		MapsUtils::drawMapRaw(currentDebugBatch, index, armyQuad);
+		MapsUtils::drawMapRaw(currentDebugBatch, index, armyInfluence);
 		break;
 	case InfluenceDataType::VISIBILITY:
 		visibilityManager->drawMaps(currentDebugBatch, index);
@@ -275,8 +275,8 @@ void InfluenceManager::drawAll() const {
 	}
 	MapsUtils::drawAll(attackSpeed, "attack");
 
-	MapsUtils::drawAll(armyQuad, "armyQuad");
-	MapsUtils::drawAll(econQuad, "econQuad");
+	MapsUtils::drawAll(armyInfluence, "armyInfluence");
+	MapsUtils::drawAll(economyInfluence, "economyInfluence");
 }
 
 content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfo,
@@ -377,7 +377,7 @@ void InfluenceManager::addCollect(Unit* unit, short resId, float value) const {
 	const auto index = getIndexInInfluence(unit);
 	gatherSpeed[resId][playerId]->update(index, value);
 
-	econQuad[playerId]->update(index, value);
+	economyInfluence[playerId]->update(index, value);
 }
 
 void InfluenceManager::addAttack(unsigned char player, const Urho3D::Vector2& position, float value) const {
