@@ -26,7 +26,7 @@ namespace Urho3D {
 
 inline constexpr int AI_MAP_COUNT = 10;
 inline constexpr int AI_ARMY_MAP_COUNT = 6;
-inline constexpr int CENTER_TYPE_COUNT = 3;
+inline constexpr int CENTER_TYPE_COUNT = 4;
 
 class InfluenceManager {
 public:

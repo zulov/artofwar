@@ -94,7 +94,8 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 		mapsForCentersPerPlayer.emplace_back(std::array<InfluenceMap*, CENTER_TYPE_COUNT>{
 				                             economyInfluence[player],
 				                             buildingsInfluencePerPlayer[player],
-				                             armyInfluence[player]
+				                             armyInfluence[player],
+				                             attackSpeed[player]
 			                             });
 
 		mapsGatherSpeedPerPlayer.emplace_back(gatherSpeedView);
