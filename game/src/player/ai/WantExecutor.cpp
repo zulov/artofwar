@@ -7,9 +7,10 @@
 #include "AiHistory.h"
 #include "Game.h"
 #include "MasterBrain.h"
+#include "commands/action/GeneralActionCommand.h"
+#include "commands/action/GeneralActionType.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
-#include "commands/upgrade/UpgradeCommand.h"
 #include "database/DatabaseCache.h"
 #include "env/Environment.h"
 #include "env/influence/CenterType.h"
@@ -141,7 +142,10 @@ bool WantExecutor::executeBuilding(short buildingId) {
 
 	auto pos = findPosToBuild(building, type);
 	if (pos.has_value()) {
-		Game::getActionCenter()->addBuilding(building->id, pos.value(), playerId, false);
+		if (!Game::getActionCenter()->addBuilding(building->id, pos.value(), playerId, false)) {
+			history->addAction(actionType, AiActionResult::NO_POSITION_TO_BUILD);
+			return false;
+		}
 		history->addAction(actionType, AiActionResult::SUCCESS);
 		return true;
 	}
@@ -180,7 +184,7 @@ bool WantExecutor::executeBuildingUpgrade(short buildingId) {
 		return false;
 	}
 	Game::getActionCenter()->add(
-			new UpgradeCommand(playerId, buildingId, QueueActionType::BUILDING_LEVEL));
+			new GeneralActionCommand(buildingId, GeneralActionType::BUILDING_LEVEL, playerId));
 	history->addAction(AiActionType::UPGRADE_BUILDING, AiActionResult::SUCCESS);
 	return true;
 }

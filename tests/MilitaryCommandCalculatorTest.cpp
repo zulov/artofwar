@@ -12,6 +12,22 @@ namespace {
 	}
 }
 
+TEST(MilitaryCommandCalculatorTest, MilitaryCenterPairOrderMatchesPressureEncoding) {
+	EXPECT_EQ(militaryCenterPairIndex(MilitaryCenterIdx::OUR_ARMY, MilitaryCenterIdx::OUR_ECON), 0u);
+	EXPECT_EQ(militaryCenterPairIndex(MilitaryCenterIdx::OUR_ARMY, MilitaryCenterIdx::LAST_BATTLE), 5u);
+	EXPECT_EQ(militaryCenterPairIndex(MilitaryCenterIdx::OUR_ECON, MilitaryCenterIdx::LAST_BATTLE), 10u);
+	EXPECT_EQ(militaryCenterPairIndex(MilitaryCenterIdx::ENEMY_BUILDING, MilitaryCenterIdx::LAST_BATTLE), 20u);
+
+	MilitaryOutput output;
+	output.centerPairPressure.fill(0.f);
+	const auto idx = militaryCenterPairIndex(MilitaryCenterIdx::OUR_ARMY, MilitaryCenterIdx::ENEMY_ECON);
+	output.centerPairPressure[idx] = 0.5f;
+	EXPECT_FLOAT_EQ(output.pressure(MilitaryCenterIdx::OUR_ARMY, MilitaryCenterIdx::ENEMY_ECON), 0.5f);
+	EXPECT_FLOAT_EQ(output.pressure(MilitaryCenterIdx::ENEMY_ECON, MilitaryCenterIdx::OUR_ARMY), 0.f);
+	output.centerPairPressure[idx] = -0.5f;
+	EXPECT_FLOAT_EQ(output.pressure(MilitaryCenterIdx::ENEMY_ECON, MilitaryCenterIdx::OUR_ARMY), 0.5f);
+}
+
 TEST(MilitaryCommandCalculatorTest, ChoosesEnemyArmyForExamplePressures) {
 	MilitaryCommandCalculator calc(100.f);
 	MilitaryOutput output;

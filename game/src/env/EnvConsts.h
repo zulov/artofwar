@@ -24,7 +24,7 @@ constexpr inline InfluenceDataType ENV_TO_INF_MAP[magic_enum::enum_count<Environ
 	InfluenceDataType::FOOD_SPEED, InfluenceDataType::WOOD_SPEED,
 	InfluenceDataType::STONE_SPEED, InfluenceDataType::GOLD_SPEED, InfluenceDataType::ATTACK_SPEED,
 
-	//InfluenceDataType::ECON_QUAD, InfluenceDataType::BUILDINGS_QUAD, InfluenceDataType::UNITS_QUAD,
+	//InfluenceDataType::ECON_QUAD, InfluenceDataType::BUILDINGS_QUAD, InfluenceDataType::ARMY_QUAD,
 
 	InfluenceDataType::VISIBILITY
 };

@@ -292,7 +292,10 @@ void AiOrchestrator::order() {
 
 	const auto& bestSpec = ARMY_TARGET_SPECS[specIndex];
 	const unsigned char owner = bestSpec.enemyOwner ? enemyId : playerId;
-	auto bestTarget = Game::getEnvironment()->getCenterOf(bestSpec.centerType, owner);
+	const auto spatialOut = attackSpatialBrain.decide(
+			player, enemy,
+			lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency);
+	auto bestTarget = resolveAttackPos(owner, bestSpec.centerType, spatialOut);
 	if (!bestTarget.has_value()) {
 		history->addOrder(AiOrderType::NONE, AiOrderResult::NO_CENTER_POSITION);
 		issueHold(allArmy, MIN_ARMY_ORDER_PRESSURE);
@@ -346,7 +349,8 @@ void AiOrchestrator::sortByDistanceTo(std::vector<Unit*>& group, const Urho3D::V
 	});
 }
 
-std::optional<Urho3D::Vector2> AiOrchestrator::resolveAttackPos(Player* enemy, const AttackSpatialOutput& spatialOut) {
+std::optional<Urho3D::Vector2> AiOrchestrator::resolveAttackPos(unsigned char owner, CenterType fallbackType,
+	                                                               const AttackSpatialOutput& spatialOut) {
 	auto* env = Game::getEnvironment();
 	const auto& areas = env->getBestVisibleAreas(playerId, std::span<const float>(spatialOut.weights));
 	if (!areas.empty()) {
@@ -355,7 +359,7 @@ std::optional<Urho3D::Vector2> AiOrchestrator::resolveAttackPos(Player* enemy, c
 		// spreading sub-armies) instead of discarding them.
 		return areas[0];
 	}
-	return env->getCenterOf(CenterType::BUILDING, enemy->getId());
+	return env->getCenterOf(fallbackType, owner);
 }
 
 // Advance group toward target, attack when close

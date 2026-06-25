@@ -14,7 +14,7 @@ enum class InfluenceDataType : char {
 
 	ECON_QUAD,
 	BUILDINGS_QUAD,
-	UNITS_QUAD,
+	ARMY_QUAD,
 
 	VISIBILITY
 };
