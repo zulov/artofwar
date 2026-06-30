@@ -90,7 +90,7 @@
 <div class="mechanism" style="border-color: #e6c44d;">
   <h2 style="color: #e6c44d;">Resource Building Types & Roles</h2>
 
-  <p>Every resource building in the game has one or more <strong>capabilities</strong>. The AI classifies each building into 5 capability dimensions: BONUS, SPAWN, CONVERT, STORAGE, REFINE. A single building can have multiple capabilities (dual-purpose).</p>
+  <p>Every resource building in the game has one or more <strong>capabilities</strong> along 5 dimensions: BONUS (speed boost near nodes), SOURCE (creates/renews resource nodes), STORAGE, and REFINE. A single building can have multiple capabilities (dual-purpose). The AI's <code>EconomyBrain</code> emits a need per capability+resource (10 NEED_* outputs) and matches them to buildings by these DB-derived capabilities.</p>
 
   <table>
     <tr>
@@ -507,171 +507,105 @@
 <div class="mechanism" style="border-color: #e6c44d;">
   <h2 style="color: #e6c44d;">AI Resource Building Decision Architecture</h2>
 
-  <p>The AI decides which resource building to construct using a <strong>need-based scoring system</strong>. The flow is:</p>
+  <p>The AI decides which resource building to construct using a <strong>need-based system</strong> built into the unified <code>EconomyBrain</code>. There is no separate resource sub-brain. For the full brain I/O spec see <a href="economy_brain_architecture.html" style="color:#7fdbff">economy_brain_architecture.html</a>. The flow is:</p>
 
   <div style="background:#0f3460; border-radius:12px; padding:25px; margin:15px 0;">
     <div class="diagram" style="flex-wrap: wrap; gap: 10px;">
       <div class="box">
         <span class="title">Step 1</span>
-        <span class="val">ifBuilding<br>brain</span>
+        <span class="val">EconomyBrain<br>(38 in, 19 out)</span>
       </div>
       <div class="arrow">&rarr;</div>
-      <div class="box">
+      <div class="box highlight">
         <span class="title">Step 2</span>
-        <span class="val">whichBuildingType<br>= RESOURCE</span>
+        <span class="val">10 NEED_*<br>building outputs</span>
       </div>
       <div class="arrow">&rarr;</div>
       <div class="box highlight">
         <span class="title">Step 3</span>
-        <span class="val">whichResNeed<br>brain (5 outputs)</span>
+        <span class="val">createResBuilding():<br>score each building</span>
       </div>
       <div class="arrow">&rarr;</div>
-      <div class="box highlight">
+      <div class="box">
         <span class="title">Step 4</span>
-        <span class="val">score buildings<br>need * capability</span>
+        <span class="val">top 3 needs &gt; 0.1<br>&rarr; BUILDING wants</span>
       </div>
       <div class="arrow">&rarr;</div>
       <div class="box result">
         <span class="title">Step 5</span>
-        <span class="val">best building<br>+ findPos</span>
+        <span class="val">WantList executes<br>+ findPosToBuild</span>
       </div>
     </div>
   </div>
 
-  <h3 style="color:#e6c44d; margin: 20px 0 8px;">Step 3: whichResNeed Brain</h3>
-  <p>The <code>whichResNeed</code> brain takes 27 economy metrics as input and outputs 5 need scores:</p>
+  <h3 style="color:#e6c44d; margin: 20px 0 8px;">Step 2: EconomyBrain Building-Need Outputs (10)</h3>
+  <p>The unified <code>EconomyBrain</code> emits 10 direct building-need outputs (tanh, [-1,+1]). Each names a capability + resource rather than a specific building, so it stays nation-agnostic:</p>
 
   <table>
-    <tr><th>Output</th><th>Meaning</th></tr>
-    <tr><td>BONUS</td><td>Need for collection speed bonuses near resource nodes</td></tr>
-    <tr><td>SPAWN</td><td>Need for renewable resource supply (tree nursery)</td></tr>
-    <tr><td>CONVERT</td><td>Need for one-shot resource creation (farm)</td></tr>
-    <tr><td>STORAGE</td><td>Need for storage to prevent food decay / enable gold interest</td></tr>
-    <tr><td>REFINE</td><td>Need for stone/gold refinement bonus</td></tr>
+    <tr><th>Output</th><th>Capability</th><th>Resource</th><th>Matches building where...</th></tr>
+    <tr><td>NEED_BONUS_FOOD</td><td>BONUS</td><td>FOOD</td><td>collect &gt; 0, resourceRange &gt; 0, resourceType == FOOD</td></tr>
+    <tr><td>NEED_BONUS_WOOD</td><td>BONUS</td><td>WOOD</td><td>collect &gt; 0, resourceRange &gt; 0, resourceType == WOOD</td></tr>
+    <tr><td>NEED_BONUS_STONE</td><td>BONUS</td><td>STONE</td><td>collect &gt; 0, resourceRange &gt; 0, resourceType == STONE</td></tr>
+    <tr><td>NEED_BONUS_GOLD</td><td>BONUS</td><td>GOLD</td><td>collect &gt; 0, resourceRange &gt; 0, resourceType == GOLD</td></tr>
+    <tr><td>NEED_FOOD_SOURCE</td><td>SOURCE</td><td>FOOD</td><td>toResource &gt;= 0, spawnResourceRange &lt;= 0 (e.g. farm)</td></tr>
+    <tr><td>NEED_WOOD_SOURCE</td><td>SOURCE</td><td>WOOD</td><td>toResource &gt;= 0, spawnResourceRange &gt; 0 (e.g. tree nursery)</td></tr>
+    <tr><td>NEED_FOOD_STORAGE</td><td>STORAGE</td><td>FOOD</td><td>foodStorage &gt; 0 (e.g. granary)</td></tr>
+    <tr><td>NEED_GOLD_STORAGE</td><td>STORAGE</td><td>GOLD</td><td>goldStorage &gt; 0 (e.g. bank)</td></tr>
+    <tr><td>NEED_STONE_REFINE</td><td>REFINE</td><td>STONE</td><td>stoneRefineCapacity &gt; 0</td></tr>
+    <tr><td>NEED_GOLD_REFINE</td><td>REFINE</td><td>GOLD</td><td>goldRefineCapacity &gt; 0</td></tr>
   </table>
 
-  <h3 style="color:#e6c44d; margin: 20px 0 8px;">Brain Input Metrics (ResourceEconomyMetricIdx, 27 metrics)</h3>
-  <table>
-    <tr><th>Metric</th><th>Source</th><th>Weight</th></tr>
-    <tr><td>GATHER_SPEED_FOOD/WOOD/STONE/GOLD</td><td>Resources::getGatherSpeeds()</td><td>10</td></tr>
-    <tr><td>VALUE_FOOD/WOOD/STONE/GOLD</td><td>Resources::getValues()</td><td>1000</td></tr>
-    <tr><td>FREE_WORKERS</td><td>Possession::getFreeWorkersNumber()</td><td>100</td></tr>
-    <tr><td>TOTAL_WORKERS</td><td>Possession::getWorkersNumber()</td><td>100</td></tr>
-    <tr><td>FOOD_STORAGE</td><td>Resources::getFoodStorage()</td><td>1000</td></tr>
-    <tr><td>FOOD_EXCESS</td><td>Resources::getFoodExcess()</td><td>500</td></tr>
-    <tr><td>FOOD_STORAGE_RATIO</td><td>Resources::getFoodStorageRatio()</td><td>1</td></tr>
-    <tr><td>GOLD_STORAGE_RATIO</td><td>Resources::getGoldStorageRatio()</td><td>1</td></tr>
-    <tr><td>STONE_REFINE_GAP</td><td>Resources::getStoneRefineGap()</td><td>10</td></tr>
-    <tr><td>GOLD_REFINE_GAP</td><td>Resources::getGoldRefineGap()</td><td>10</td></tr>
-    <tr><td>STONE_REFINE_UTIL</td><td>Resources::getStoneRefineUtilization()</td><td>1</td></tr>
-    <tr><td>GOLD_REFINE_UTIL</td><td>Resources::getGoldRefineUtilization()</td><td>1</td></tr>
-    <tr><td>BONUS_BUILDING_COUNT</td><td>Possession::getBonusBuildingCount()</td><td>20</td></tr>
-    <tr><td>SPAWNER_COUNT</td><td>Possession::getSpawnerCount()</td><td>10</td></tr>
-    <tr><td>CONVERT_BUILDING_COUNT</td><td>Possession::getConvertBuildingCount()</td><td>10</td></tr>
-    <tr><td>STORAGE_BUILDING_COUNT</td><td>Possession::getStorageBuildingCount()</td><td>10</td></tr>
-    <tr><td>REFINE_BUILDING_COUNT</td><td>Possession::getRefineBuildingCount()</td><td>10</td></tr>
-    <tr><td>RES_BUILDING_FOOD/WOOD/STONE/GOLD</td><td>Possession::getResourceBuildingCounts()</td><td>10</td></tr>
-  </table>
+  <p>These outputs are produced from the brain's resource-economy inputs: per-resource stockpiles &amp; gather speeds, storage ratios, refine ratios/gaps, bonus coverage, nearby supply, resource-building counts, and lacking feedback. (Full input list in <a href="economy_brain_architecture.html" style="color:#7fdbff">economy_brain_architecture.html</a>.)</p>
 
-  <div class="file-ref">MetricDefinitions.h: ResourceEconomyMetricIdx enum, aiResourceEconomyMetric array</div>
+  <div class="file-ref">EconomyBrain.h: EconomyOutputIdx (NEED_* entries) | MetricDefinitions.h: ResourceEconomyMetricIdx (resource-economy metric set)</div>
 
-  <h3 style="color:#e6c44d; margin: 20px 0 8px;">Step 4: Building Capability Vectors & Scoring</h3>
-  <p>Each candidate building gets a capability vector computed from its DB fields. The building with the highest dot product <code>score = sum(need[i] * capability[i])</code> wins.</p>
-
-  <table>
-    <tr><th>Building</th><th>BONUS</th><th>SPAWN</th><th>CONVERT</th><th>STORAGE</th><th>REFINE</th><th>Derivation</th></tr>
-    <tr>
-      <td>mill (6)</td><td style="color:#4caf50;">18.75</td><td>0</td><td>0</td><td>0</td><td>0</td>
-      <td>collect(1.25) * resRng(15)</td>
-    </tr>
-    <tr>
-      <td>sawmill (7)</td><td style="color:#4caf50;">18.75</td><td>0</td><td>0</td><td>0</td><td>0</td>
-      <td>collect(1.25) * resRng(15)</td>
-    </tr>
-    <tr>
-      <td>mine_s (8)</td><td style="color:#4caf50;">18.75</td><td>0</td><td>0</td><td>0</td><td>0</td>
-      <td>collect(1.25) * resRng(15)</td>
-    </tr>
-    <tr>
-      <td>mine_g (9)</td><td style="color:#4caf50;">18.75</td><td>0</td><td>0</td><td>0</td><td>0</td>
-      <td>collect(1.25) * resRng(15)</td>
-    </tr>
-    <tr style="background:#1a2c1a;">
-      <td>farm (10)</td><td>0</td><td>0</td><td style="color:#e6c44d;">1.0</td><td>0</td><td>0</td>
-      <td>toResource=4, spawnRange=0</td>
-    </tr>
-    <tr>
-      <td>granary (13)</td><td>0</td><td>0</td><td>0</td><td style="color:#4caf50;">200</td><td>0</td>
-      <td>foodStorage=200</td>
-    </tr>
-    <tr style="background:#1a2a3a;">
-      <td>bank (14)</td><td>0</td><td>0</td><td>0</td><td style="color:#4caf50;">200</td><td>0</td>
-      <td>collect=0 so no BONUS. goldStorage=200</td>
-    </tr>
-    <tr style="background:#1a2a3a;">
-      <td>goldRefinery (15)</td><td>0</td><td>0</td><td>0</td><td>0</td><td style="color:#4caf50;">10</td>
-      <td>collect=0 so no BONUS. goldRefCap=10</td>
-    </tr>
-    <tr style="background:#1a2a3a;">
-      <td>stoneRefinery (16)</td><td>0</td><td>0</td><td>0</td><td>0</td><td style="color:#4caf50;">10</td>
-      <td>collect=0 so no BONUS. stoneRefCap=10</td>
-    </tr>
-    <tr style="background:#1a2c1a;">
-      <td>tree_nursery (17)</td><td>0</td><td style="color:#4caf50;">1.0</td><td>0</td><td>0</td><td>0</td>
-      <td>collect=0 so no BONUS. toResource=7, spawnRange=100</td>
-    </tr>
-  </table>
+  <h3 style="color:#e6c44d; margin: 20px 0 8px;">Step 3: Scoring &amp; Selection (createResBuilding)</h3>
+  <p>Each tick <code>AiOrchestrator::createResBuilding()</code> walks every resource building the nation can build and assigns it a single <code>need</code> = the max of whichever NEED_* outputs match its capabilities (by the DB fields above). The top 3 buildings with <code>need &gt; 0.1</code> are submitted to the WantList as BUILDING requests.</p>
 
   <div class="formula-box">
-    <div class="label">Capability computation (ActionMaker::computeCapabilityVector)</div>
+    <div class="label">Per-building need (AiOrchestrator::createResBuilding)</div>
     <pre style="color:#7fdbff; margin:0;">
-BONUS   = (collect > 0 && resourceRange > 0) ? collect * resourceRange : 0
-SPAWN   = (toResource >= 0 && spawnResourceRange > 0)  ? 1.0 : 0
-CONVERT = (toResource >= 0 && spawnResourceRange <= 0) ? 1.0 : 0
-STORAGE = foodStorage + goldStorage   (if > 0)
-REFINE  = stoneRefineCapacity + goldRefineCapacity   (if > 0)</pre>
+need = 0
+if FOOD bonus  (collect>0, resRange>0, resType==FOOD):  need = max(need, NEED_BONUS_FOOD)
+if WOOD bonus / STONE bonus / GOLD bonus:               need = max(need, NEED_BONUS_*)
+if food source (toResource>=0, spawnResourceRange<=0):  need = max(need, NEED_FOOD_SOURCE)
+if wood source (toResource>=0, spawnResourceRange>0):   need = max(need, NEED_WOOD_SOURCE)
+if foodStorage>0:                                       need = max(need, NEED_FOOD_STORAGE)
+if goldStorage>0:                                       need = max(need, NEED_GOLD_STORAGE)
+if stoneRefineCapacity>0:                               need = max(need, NEED_STONE_REFINE)
+if goldRefineCapacity>0:                                need = max(need, NEED_GOLD_REFINE)
+
+keep top 3 by need (need > 0.1) -> wantList.addRequest(BUILDING, need, building.id)</pre>
   </div>
 
-  <div class="file-ref">ActionMaker.cpp: computeCapabilityVector(), chooseBuildingResource()</div>
+  <p>A building with several capabilities (e.g. a bank with BONUS+STORAGE, or a tree nursery with BONUS+SOURCE) takes the maximum across all the needs it satisfies. Resource-building <em>upgrades</em> use a separate weighted-choice path (<code>resolveResBuildingUpgrade</code>) driven by <code>RES_BUILDING_UPGRADE_URGENCY</code> plus resource-type priorities.</p>
+
+  <div class="file-ref">AiOrchestrator.cpp: createResBuilding(), resolveResBuildingUpgrade()</div>
 </div>
 
 <!-- ============================================ -->
 <!-- PLACEMENT -->
 <!-- ============================================ -->
 <div class="mechanism" style="border-color: #2980b9;">
-  <h2 style="color: #7fdbff;">Placement Strategy per Building Capability</h2>
+  <h2 style="color: #7fdbff;">Placement Strategy</h2>
 
-  <p>After the best building is chosen, <code>findPosToBuild()</code> dispatches to a placement method based on the building's primary capability:</p>
+  <p>When the WantList executes a BUILDING want, <code>WantExecutor::findPosToBuild()</code> chooses where to place it based on the building's parent type:</p>
 
   <table>
-    <tr><th>Capability</th><th>Condition</th><th>Method</th><th>Logic</th></tr>
+    <tr><th>Parent type</th><th>Method</th><th>Logic</th></tr>
     <tr>
-      <td>BONUS</td>
-      <td>collect > 0 && resourceRange > 0</td>
-      <td><code>getPosToCreateResBonus()</code></td>
-      <td>Uses <code>resNotInBonus</code> influence maps to find positions near unbonused resource nodes of matching type.</td>
+      <td>RESOURCE</td>
+      <td><code>Environment::getPosToCreateResBonus()</code></td>
+      <td>Uses the "resource not in bonus" influence maps to find positions near unbonused resource nodes of the matching type. Used for all resource buildings (bonus, source, storage, refine).</td>
     </tr>
     <tr>
-      <td>SPAWN</td>
-      <td>toResource >= 0 && spawnRange > 0</td>
-      <td><code>getPosToCreateSpawn()</code></td>
-      <td>Uses gather speed influence maps with equal weights across all 4 resource types. Places near active worker areas.</td>
-    </tr>
-    <tr>
-      <td>CONVERT</td>
-      <td>toResource >= 0 && spawnRange <= 0</td>
-      <td><code>getPosToCreateConvert()</code></td>
-      <td>Uses gather speed influence maps with 3x food emphasis (weights: food=3, wood=0.5, stone=0.5, gold=0.5). Places near food-gathering workers.</td>
-    </tr>
-    <tr>
-      <td>STORAGE / REFINE / other</td>
-      <td>fallback</td>
-      <td><code>getPosToCreateResBonus()</code></td>
-      <td>Falls back to bonus placement near resource nodes of matching type.</td>
+      <td>OTHER / DEFENCE / TECH / UNITS</td>
+      <td><code>BuildSpatialBrain</code> &rarr; <code>Environment::getPosToCreate()</code></td>
+      <td>BuildSpatialBrain outputs 10 influence-map weights (buildings, units, attackSpeed, 4x gatherSpeed, 3x enemy); the weighted maps are combined and the best visible cell is chosen.</td>
     </tr>
   </table>
 
-  <div class="file-ref">ActionMaker.cpp: findPosToBuild() | Environment.cpp: getPosToCreateSpawn(), getPosToCreateConvert()</div>
+  <div class="file-ref">WantExecutor.cpp: findPosToBuild() | Environment.cpp: getPosToCreateResBonus(), getPosToCreate()</div>
 </div>
 
 <!-- ============================================ -->
@@ -682,14 +616,15 @@ REFINE  = stoneRefineCapacity + goldRefineCapacity   (if > 0)</pre>
 
   <table>
     <tr><th>File</th><th>What it contains</th></tr>
-    <tr><td><code>ActionMaker.h/.cpp</code></td><td>AI building creation. <code>ResCapability</code> enum (BONUS/SPAWN/CONVERT/STORAGE/REFINE). <code>whichResNeed</code> brain. <code>chooseBuildingResource()</code> with dot-product scoring. <code>computeCapabilityVector()</code>. <code>findPosToBuild()</code> with capability dispatch.</td></tr>
-    <tr><td><code>MetricDefinitions.h</code></td><td><code>ResourceEconomyMetricIdx</code> enum (27 metrics). <code>aiResourceEconomyMetric</code> array. <code>writeResourceEconomy()</code>.</td></tr>
-    <tr><td><code>AiInputProvider.h/.cpp</code></td><td><code>forResourceEconomy()</code> composing economy metrics for the whichResNeed brain.</td></tr>
-    <tr><td><code>Resources.h/.cpp</code></td><td>Resource storage, gather speeds, decay, refinement, interest. Getters: <code>getFoodExcess()</code>, <code>getFoodStorageRatio()</code>, <code>getGoldStorageRatio()</code>, <code>getStoneRefineGap()</code>, <code>getGoldRefineGap()</code>, <code>getStoneRefineUtilization()</code>, <code>getGoldRefineUtilization()</code>.</td></tr>
-    <tr><td><code>Possession.h/.cpp</code></td><td>Building economy counts computed in <code>ensureReady()</code>: <code>spawnerCount</code>, <code>storageBuildingCount</code>, <code>refineBuildingCount</code>, <code>convertBuildingCount</code>, <code>bonusBuildingCount</code>, <code>resourceBuildingCounts[4]</code>.</td></tr>
-    <tr><td><code>Environment.h/.cpp</code></td><td>Placement methods: <code>getPosToCreateResBonus()</code>, <code>getPosToCreateSpawn()</code>, <code>getPosToCreateConvert()</code>.</td></tr>
+    <tr><td><code>EconomyBrain.h/.cpp</code></td><td>Unified economy brain. <code>EconomyOutputIdx</code> with the 10 NEED_* building outputs (BONUS/SOURCE/STORAGE/REFINE per resource) + worker/resource upgrade urgencies.</td></tr>
+    <tr><td><code>AiOrchestrator.cpp</code></td><td><code>createResBuilding()</code>: per-building max over matching NEED_* outputs, submit top 3 (need &gt; 0.1) as BUILDING wants. <code>resolveResBuildingUpgrade()</code>: weighted upgrade choice.</td></tr>
+    <tr><td><code>WantExecutor.cpp</code></td><td><code>findPosToBuild()</code>: dispatches RESOURCE buildings to <code>getPosToCreateResBonus()</code> and other types to <code>BuildSpatialBrain</code> + <code>getPosToCreate()</code>.</td></tr>
+    <tr><td><code>MetricDefinitions.h</code></td><td><code>ResourceEconomyMetricIdx</code> enum (resource-economy metric set) used to compose the economy brain's resource inputs.</td></tr>
+    <tr><td><code>Resources.h/.cpp</code></td><td>Resource storage, gather speeds, decay, refinement, interest. Getters: <code>getFoodStorage()</code>, <code>getGoldStorage()</code>, <code>getStoneRefineCapacity()</code>, <code>getGoldRefineCapacity()</code>.</td></tr>
+    <tr><td><code>Possession.h/.cpp</code></td><td>Building economy counts (resource-building count, res-without-bonus sum, bonus coverage) used as brain inputs.</td></tr>
+    <tr><td><code>Environment.h/.cpp</code></td><td>Placement: <code>getPosToCreateResBonus()</code> (resource buildings), <code>getPosToCreate()</code> (spatial-brain-weighted placement).</td></tr>
     <tr><td><code>db_struct.h</code></td><td>Database structs: <code>db_building</code> (toResource, ruinable, resourceType, parentType), <code>db_building_level</code> (collect, resourceRange, foodStorage, goldStorage, stoneRefineCapacity, goldRefineCapacity, spawnResourceTime, spawnResourceRange).</td></tr>
-    <tr><td><code>Data/ai/whichResNeed.csv</code></td><td>Brain weights: 27 inputs, 5 outputs (BONUS/SPAWN/CONVERT/STORAGE/REFINE). Placeholder weights, needs training.</td></tr>
+    <tr><td><code>Data/ai/economy.csv</code></td><td>EconomyBrain weights: 38 inputs, 19 outputs. (Untrained placeholder weights unless evolved externally.)</td></tr>
   </table>
 </div>
 

@@ -118,8 +118,8 @@
   <!-- Unit Brain -->
   <rect x="350" y="270" width="190" height="100" rx="8" fill="#BF360C" fill-opacity="0.25" stroke="#FF5722" stroke-width="2"/>
   <text x="445" y="295" text-anchor="middle" fill="#FF5722" font-size="14" font-weight="bold">Unit Brain</text>
-  <text x="445" y="315" text-anchor="middle" fill="#FF8A65" font-size="11">14 inputs -> 23-dim profile</text>
-  <text x="445" y="330" text-anchor="middle" fill="#FF8A65" font-size="11">Ideal unit description</text>
+  <text x="445" y="315" text-anchor="middle" fill="#FF8A65" font-size="11">21 inputs -> 23-dim profile</text>
+  <text x="445" y="330" text-anchor="middle" fill="#FF8A65" font-size="11">Ideal unit description + upgrades</text>
   <text x="445" y="345" text-anchor="middle" fill="#FF8A65" font-size="11">Count from urgency</text>
 
   <!-- Military Brain -->
@@ -132,8 +132,8 @@
   <!-- Spatial Brains -->
   <rect x="850" y="270" width="190" height="100" rx="8" fill="#006064" fill-opacity="0.25" stroke="#00BCD4" stroke-width="2"/>
   <text x="945" y="295" text-anchor="middle" fill="#00BCD4" font-size="14" font-weight="bold">Spatial Brains</text>
-  <text x="945" y="315" text-anchor="middle" fill="#80DEEA" font-size="11">Build placement weights</text>
-  <text x="945" y="330" text-anchor="middle" fill="#80DEEA" font-size="11">Attack target weights</text>
+  <text x="945" y="315" text-anchor="middle" fill="#80DEEA" font-size="11">BuildSpatial: placement weights</text>
+  <text x="945" y="330" text-anchor="middle" fill="#80DEEA" font-size="11">AttackSpatial: army target weights</text>
   <text x="945" y="345" text-anchor="middle" fill="#80DEEA" font-size="11">Influence map areas</text>
 
   <!-- Arrows: Master -> Sub-brains -->
@@ -155,8 +155,8 @@
   <!-- Want List -->
   <rect x="200" y="540" width="350" height="110" rx="8" fill="#0D47A1" fill-opacity="0.25" stroke="#2196F3" stroke-width="2"/>
   <text x="375" y="565" text-anchor="middle" fill="#2196F3" font-size="15" font-weight="bold">Want List</text>
-  <text x="375" y="585" text-anchor="middle" fill="#90CAF9" font-size="11">Priority queue: WORKER | UNIT | BUILDING | TECH</text>
-  <text x="375" y="602" text-anchor="middle" fill="#90CAF9" font-size="11">Boost active items (x1.15/age), decay inactive (x0.85)</text>
+  <text x="375" y="585" text-anchor="middle" fill="#90CAF9" font-size="11">Priority queue: WORKER | UNIT | BUILDING | UNIT_UPGRADE | BUILDING_UPGRADE</text>
+  <text x="375" y="602" text-anchor="middle" fill="#90CAF9" font-size="11">Boost active items (age, diminishing to x3), decay inactive (x0.85)</text>
   <text x="375" y="619" text-anchor="middle" fill="#90CAF9" font-size="11">Sort by priority, execute if affordable</text>
   <text x="375" y="636" text-anchor="middle" fill="#90CAF9" font-size="11">Max 32 items, drop below 0.05 threshold</text>
 
@@ -245,7 +245,7 @@
 <tr><td>Spatial</td><td>4 army-to-building distances</td><td>influence map</td></tr>
 <tr><td>Feedback</td><td>TOTAL_LACKING</td><td>/2000</td></tr>
 <tr><td>Deltas</td><td>DELTA_SCORE, DELTA_ENEMY_SCORE, DELTA_UNITS, DELTA_RES, DELTA_GATHER_SPEED</td><td>/1000, /1000, /200, /1000, /20</td></tr>
-<tr><td>Combat</td><td>GAME_TIME, KD_RATIO, IN_COMBAT_RATIO, TECH_LEVEL</td><td>/1800, ratio, ratio, TODO</td></tr>
+<tr><td>Combat</td><td>GAME_TIME, KD_RATIO, IN_COMBAT_RATIO, TECH_LEVEL</td><td>/1800, value-destroyed ratio, in-combat ratio, avg upgrade level [0,1]</td></tr>
 <tr><td>History</td><td>RECENT_BUILD_FAILURES, RECENT_UNIT_FAILURES, RECENT_ATTACK_ACTIVITY, RECENT_DEFEND_ACTIVITY</td><td>/10, /5, /10, /10</td></tr>
 </table>
 </div>
@@ -257,12 +257,12 @@
 <tr><th>Output</th><th>Drives</th><th>Effect</th></tr>
 <tr><td>WORKER_URGENCY</td><td>Economy Brain</td><td>How many workers to produce</td></tr>
 <tr><td>ECONOMY_URGENCY</td><td>Economy Brain</td><td>Resource allocation intensity</td></tr>
-<tr><td>BUILDING_URGENCY</td><td>Want List</td><td>OTHER building construction priority</td></tr>
+<tr><td>BUILDING_URGENCY</td><td>Want List</td><td>OTHER building construction + upgrade priority</td></tr>
 <tr><td>UNIT_URGENCY</td><td>Unit Brain + Want List</td><td>Military unit production count + priority</td></tr>
-<tr><td>MILITARY_URGENCY</td><td>Military Brain</td><td>Overall combat engagement level</td></tr>
-<tr><td>EXPAND_URGENCY</td><td>Spatial Brains</td><td>Expand territory vs stay compact</td></tr>
-<tr><td>TECH_URGENCY</td><td>Want List</td><td>Tech building priority (not yet implemented)</td></tr>
-<tr><td>DEFENCE_BUILDING_URGENCY</td><td>Want List</td><td>Defensive structure priority</td></tr>
+<tr><td>MILITARY_URGENCY</td><td>Military + AttackSpatial Brain</td><td>Overall combat engagement level</td></tr>
+<tr><td>EXPAND_URGENCY</td><td>Economy + BuildSpatial Brain</td><td>Expand territory vs stay compact</td></tr>
+<tr><td>TECH_URGENCY</td><td>Economy + Unit Brain + Want List</td><td>Tech building + upgrade priority</td></tr>
+<tr><td>DEFENCE_BUILDING_URGENCY</td><td>Want List</td><td>Defensive structure + upgrade priority</td></tr>
 <tr><td>ATTACK_URGENCY</td><td>Unit + Military Brain</td><td>Aggression level</td></tr>
 </table>
 </div>
@@ -272,18 +272,20 @@
 <!-- ========================================== -->
 <hr class="divider">
 <div class="section-title" id="economy">3. Economy Brain — Resource Management</div>
-<div class="section-sub">Receives master urgencies + lacking feedback. Outputs worker counts, resource priorities, building needs, and worker reassignment signals.</div>
+<div class="section-sub">Receives master urgencies + lacking feedback. Outputs worker counts, resource priorities, building needs, worker reassignment, and upgrade urgencies. 38 inputs -> 19 outputs.</div>
 
 <div class="card">
-<h3>Key Outputs</h3>
+<h3>Key Outputs (19)</h3>
 <ul>
-  <li><span class="highlight">workerCount</span> — how many workers to add to want list</li>
+  <li><span class="highlight">workerAllocation</span> — drives workerCount = round(workerAllocation * 3), max 3 workers added to want list per tick (threshold 0.1)</li>
   <li><span class="highlight">foodPriority / woodPriority / stonePriority / goldPriority</span> — which resource to collect first</li>
-  <li><span class="highlight">needMill / needSawmill / needMineS / needMineG / needFarm / ...</span> — 10 building need scores for resource buildings</li>
+  <li><span class="highlight">expandPriority</span> — territorial expansion weight</li>
   <li><span class="highlight">reassignWorkers</span> — should we pull a worker off the lowest-priority resource (threshold: 0.5)</li>
+  <li><span class="highlight">10 building need scores</span> — NEED_BONUS_FOOD/WOOD/STONE/GOLD, NEED_FOOD_SOURCE, NEED_FOOD_STORAGE, NEED_GOLD_STORAGE, NEED_GOLD_REFINE, NEED_STONE_REFINE, NEED_WOOD_SOURCE. Matched to resource buildings via DB fields (top 3 needs &gt; 0.1 become BUILDING wants)</li>
+  <li><span class="highlight">workerUpgradeUrgency / resBuildingUpgradeUrgency</span> — drive UNIT_UPGRADE / BUILDING_UPGRADE wants (threshold 0.1)</li>
 </ul>
 <h3>Worker Collection Flow</h3>
-<p>Free workers are assigned to the highest-priority resource with a nearby source (search radii: 64, 128, 256). If reassignment is active, one worker is stolen from the worst resource and reassigned. Only one worker is reassigned per tick.</p>
+<p>Free workers are split across the 4 resource types proportionally to their (non-negative) priorities (largest-remainder rounding). Each worker takes the highest-priority resource that still needs workers and has a reachable node (expanding resource-query levels). If reassignment is active and the priority gap &gt; 0.3, one busy worker is stolen from the worst resource. Only one worker is reassigned per tick.</p>
 </div>
 
 <!-- ========================================== -->
@@ -291,34 +293,41 @@
 <!-- ========================================== -->
 <hr class="divider">
 <div class="section-title" id="unit">4. Unit Brain — Profile-Based Unit Selection</div>
-<div class="section-sub">Instead of picking a unit by ID, outputs a 23-dimensional "ideal unit profile" describing what the AI wants. Matched against real units by distance.</div>
+<div class="section-sub">Instead of picking a unit by ID, outputs a 23-dimensional "ideal unit profile" describing what the AI wants. Matched against real units by distance. 21 inputs -> 23-dim profile + 2 upgrade urgencies.</div>
 
 <svg viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1200px;">
   <rect width="1200" height="500" fill="#12122a" rx="12"/>
   <text x="600" y="30" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">Unit Brain Pipeline</text>
 
   <!-- Inputs -->
-  <rect x="30" y="60" width="200" height="280" rx="8" fill="#263238" stroke="#546E7A" stroke-width="1.5"/>
-  <text x="130" y="85" text-anchor="middle" fill="#B0BEC5" font-size="13" font-weight="bold">14 Inputs</text>
-  <text x="130" y="108" text-anchor="middle" fill="#78909C" font-size="10">OUR_INFANTRY_RATIO</text>
-  <text x="130" y="123" text-anchor="middle" fill="#78909C" font-size="10">OUR_CAVALRY_RATIO</text>
-  <text x="130" y="138" text-anchor="middle" fill="#78909C" font-size="10">OUR_RANGE_RATIO</text>
-  <text x="130" y="158" text-anchor="middle" fill="#78909C" font-size="10">ENEMY_INFANTRY_RATIO</text>
-  <text x="130" y="173" text-anchor="middle" fill="#78909C" font-size="10">ENEMY_CAVALRY_RATIO</text>
-  <text x="130" y="188" text-anchor="middle" fill="#78909C" font-size="10">ENEMY_RANGE_RATIO</text>
-  <text x="130" y="210" text-anchor="middle" fill="#78909C" font-size="10">ARMY_COUNT</text>
-  <text x="130" y="225" text-anchor="middle" fill="#78909C" font-size="10">ENEMY_ARMY_COUNT</text>
-  <text x="130" y="245" text-anchor="middle" fill="#78909C" font-size="10">ATTACK_SUM</text>
-  <text x="130" y="260" text-anchor="middle" fill="#78909C" font-size="10">DEFENCE_ATTACK_SUM</text>
-  <text x="130" y="280" text-anchor="middle" fill="#78909C" font-size="10">ENEMY_SCORE</text>
-  <text x="130" y="295" text-anchor="middle" fill="#78909C" font-size="10">WORKERS_COUNT</text>
-  <text x="130" y="315" text-anchor="middle" fill="#FFB74D" font-size="10">UNIT_URGENCY</text>
-  <text x="130" y="330" text-anchor="middle" fill="#FFB74D" font-size="10">ATTACK_URGENCY</text>
+  <rect x="30" y="60" width="200" height="350" rx="8" fill="#263238" stroke="#546E7A" stroke-width="1.5"/>
+  <text x="130" y="85" text-anchor="middle" fill="#B0BEC5" font-size="13" font-weight="bold">21 Inputs</text>
+  <text x="130" y="106" text-anchor="middle" fill="#78909C" font-size="10">OUR_INFANTRY_RATIO</text>
+  <text x="130" y="120" text-anchor="middle" fill="#78909C" font-size="10">OUR_CAVALRY_RATIO</text>
+  <text x="130" y="134" text-anchor="middle" fill="#78909C" font-size="10">OUR_RANGE_RATIO</text>
+  <text x="130" y="148" text-anchor="middle" fill="#78909C" font-size="10">ENEMY_INFANTRY_RATIO</text>
+  <text x="130" y="162" text-anchor="middle" fill="#78909C" font-size="10">ENEMY_CAVALRY_RATIO</text>
+  <text x="130" y="176" text-anchor="middle" fill="#78909C" font-size="10">ENEMY_RANGE_RATIO</text>
+  <text x="130" y="190" text-anchor="middle" fill="#78909C" font-size="10">ARMY_COUNT</text>
+  <text x="130" y="204" text-anchor="middle" fill="#78909C" font-size="10">ENEMY_ARMY_COUNT</text>
+  <text x="130" y="218" text-anchor="middle" fill="#78909C" font-size="10">ATTACK_SUM</text>
+  <text x="130" y="232" text-anchor="middle" fill="#78909C" font-size="10">DEFENCE_ATTACK_SUM</text>
+  <text x="130" y="246" text-anchor="middle" fill="#78909C" font-size="10">ENEMY_SCORE</text>
+  <text x="130" y="260" text-anchor="middle" fill="#78909C" font-size="10">WORKERS_COUNT</text>
+  <text x="130" y="274" text-anchor="middle" fill="#FFB74D" font-size="10">UNIT_URGENCY</text>
+  <text x="130" y="288" text-anchor="middle" fill="#FFB74D" font-size="10">ATTACK_URGENCY</text>
+  <text x="130" y="302" text-anchor="middle" fill="#CE93D8" font-size="10">PREFER_INFANTRY (military)</text>
+  <text x="130" y="316" text-anchor="middle" fill="#CE93D8" font-size="10">PREFER_RANGE (military)</text>
+  <text x="130" y="330" text-anchor="middle" fill="#CE93D8" font-size="10">PREFER_CAVALRY (military)</text>
+  <text x="130" y="344" text-anchor="middle" fill="#FFB74D" font-size="10">TECH_URGENCY</text>
+  <text x="130" y="358" text-anchor="middle" fill="#78909C" font-size="10">AVG_UNIT_LEVEL</text>
+  <text x="130" y="372" text-anchor="middle" fill="#78909C" font-size="10">AVG_BUILDING_LEVEL</text>
+  <text x="130" y="386" text-anchor="middle" fill="#78909C" font-size="10">GAME_TIME</text>
 
   <!-- Neural Network -->
   <rect x="300" y="120" width="180" height="160" rx="8" fill="#BF360C" fill-opacity="0.25" stroke="#FF5722" stroke-width="2"/>
   <text x="390" y="155" text-anchor="middle" fill="#FF5722" font-size="14" font-weight="bold">Neural Network</text>
-  <text x="390" y="178" text-anchor="middle" fill="#FF8A65" font-size="11">14 -> hidden -> 23</text>
+  <text x="390" y="178" text-anchor="middle" fill="#FF8A65" font-size="11">21 -> hidden -> 25</text>
   <text x="390" y="198" text-anchor="middle" fill="#FF8A65" font-size="11">tanh activation</text>
   <text x="390" y="218" text-anchor="middle" fill="#FF8A65" font-size="11">output: [-1, +1]</text>
   <text x="390" y="245" text-anchor="middle" fill="#546E7A" font-size="10">Weights evolved by GA</text>
@@ -344,6 +353,7 @@
   <text x="650" y="355" text-anchor="middle" fill="#546E7A" font-size="10">Positive = "want this trait"</text>
   <text x="650" y="375" text-anchor="middle" fill="#546E7A" font-size="10">Example: TYPE_CAVALRY=-0.8</text>
   <text x="650" y="390" text-anchor="middle" fill="#546E7A" font-size="10">means "actively avoid cavalry"</text>
+  <text x="650" y="408" text-anchor="middle" fill="#FFB74D" font-size="10">+2 outputs: unit/building upgrade urgency</text>
 
   <line x1="480" y1="200" x2="550" y2="200" stroke="#9C27B0" stroke-width="1.5" marker-end="url(#arrow)"/>
 
@@ -493,9 +503,10 @@
   <!-- Phase 2 -->
   <rect x="270" y="60" width="200" height="100" rx="8" fill="#E65100" fill-opacity="0.2" stroke="#FF9800" stroke-width="1.5"/>
   <text x="370" y="85" text-anchor="middle" fill="#FF9800" font-size="12" font-weight="bold">2. Boost / Decay</text>
-  <text x="370" y="108" text-anchor="middle" fill="#FFB74D" font-size="10">Active: priority = base * (1 + 1.15 * age)</text>
-  <text x="370" y="125" text-anchor="middle" fill="#FFB74D" font-size="10">Inactive: priority *= 0.85</text>
-  <text x="370" y="142" text-anchor="middle" fill="#78909C" font-size="10">Persistent needs grow urgent</text>
+  <text x="370" y="105" text-anchor="middle" fill="#FFB74D" font-size="10">Active: priority = base * (1 + boost)</text>
+  <text x="370" y="120" text-anchor="middle" fill="#FFB74D" font-size="10">boost = 2.0 * age/(age+8) -> max +200%</text>
+  <text x="370" y="135" text-anchor="middle" fill="#FFB74D" font-size="10">Inactive: priority *= 0.85</text>
+  <text x="370" y="150" text-anchor="middle" fill="#78909C" font-size="10">Persistent needs grow (diminishing)</text>
 
   <!-- Phase 3 -->
   <rect x="510" y="60" width="200" height="100" rx="8" fill="#0D47A1" fill-opacity="0.2" stroke="#2196F3" stroke-width="1.5"/>
@@ -567,20 +578,25 @@
 <!-- ========================================== -->
 <hr class="divider">
 <div class="section-title" id="military">8. Military Brain — Combat Orders</div>
-<div class="section-sub">Separate from the want list. Issues direct army movement/attack orders. No resource cost.</div>
+<div class="section-sub">Runs in action() (feeds composition prefs to Unit Brain); army movement is issued in order(). Direct army orders, no resource cost. 27 inputs -> 24 outputs.</div>
 
 <div class="card">
-<h3>Decision Flow</h3>
+<h3>Outputs (24)</h3>
 <ul>
-  <li><span class="step">1. Attack vs Defend:</span> Compare attackWeight vs defendWeight from MilitaryBrain output</li>
-  <li><span class="step">2. Target type:</span> ECON (workers), BUILDING (structures), or ARMY (enemy units) — based on continuous output mapped to thirds</li>
-  <li><span class="step">3. Position:</span> AttackSpatialBrain computes influence map weights, getAreas() finds best area. Fallback: center of target type</li>
-  <li><span class="step">4. Execution:</span> Free army divided into sub-groups. If far from target: GO order. If close: find closest enemy entity and ATTACK</li>
+  <li><span class="highlight">21 center-pair pressures</span> — one signed value per unordered pair of the 7 "centers" (OUR_ARMY, OUR_ECON, OUR_BUILDING, ENEMY_ARMY, ENEMY_ECON, ENEMY_BUILDING, LAST_BATTLE). Sign encodes the pull direction between the two centers.</li>
+  <li><span class="highlight">preferInfantry / preferRange / preferCavalry</span> — army composition preferences fed into the Unit Brain as PREFER_* inputs.</li>
+</ul>
+<h3>Decision Flow (order())</h3>
+<ul>
+  <li><span class="step">1. Snapshot centers:</span> influence-map centers of mass for the 7 center types (own + enemy army/econ/building + last battle).</li>
+  <li><span class="step">2. Per-unit target:</span> MilitaryCommandCalculator scores each unit's position against the center-pair pressures and picks the highest-pressure target (attack/defend/move-to-center). Units below MIN_ARMY_ORDER_PRESSURE (0.1) hold.</li>
+  <li><span class="step">3. Position:</span> for attack buckets, AttackSpatialBrain weights (6 influence-map layers) pick the best visible area via getBestVisibleAreas(); fallback is the target center.</li>
+  <li><span class="step">4. Execution:</span> far units GO toward the target (carrying their pressure as command priority); units within ~30 ATTACK the closest enemy. Idle hold units only engage nearby enemies.</li>
 </ul>
 <h3>Limitations</h3>
 <ul>
   <li class="con">No retreat — army fights to the death, no health threshold check</li>
-  <li class="con">No regrouping — sub-armies attack independently</li>
+  <li class="con">Center-position fallback ignores fog of war (can advance toward stale/unseen centers)</li>
   <li class="con">Single enemy only — ignores other players in FFA</li>
 </ul>
 </div>
@@ -619,10 +635,10 @@
 <h3>Example 1: Early Game — Economy Focus</h3>
 <p class="sit">Tick 300. Score: 50. Army: 2 militia. Enemy: unknown (no contact). Resources: 200F, 150W, 50S, 0G. 5 workers.</p>
 <p><span class="step">Master Brain:</span> Low enemy threat -> low MILITARY_URGENCY (-0.3). Few buildings -> BUILDING_URGENCY = 0.6. Low resources -> ECONOMY_URGENCY = 0.8. WORKER_URGENCY = 0.7.</p>
-<p><span class="step">Economy Brain:</span> workerCount = 3, foodPriority = 0.8, woodPriority = 0.6, stonePriority = 0.1, goldPriority = 0.0. needMill = 0.7 (need food bonus building).</p>
+<p><span class="step">Economy Brain:</span> workerAllocation = 0.7 -> workerCount = round(0.7 * 3) = 2. foodPriority = 0.8, woodPriority = 0.6, stonePriority = 0.1, goldPriority = 0.0. NEED_FOOD_SOURCE = 0.7 (need a food bonus building).</p>
 <p><span class="step">Unit Brain:</span> unitUrgency = 0.1 -> count = round(0.1 * 5) = 1. Profile outputs weak preference for cheap infantry. One unit added to want list.</p>
-<p><span class="step">Want List:</span> Workers (priority 0.7 x3) > Mill building (0.7) > Infantry unit (0.1). Workers execute first — 3 villagers queued. Mill building queued. Infantry may not have enough resources left.</p>
-<p><span class="result">Result:</span> 3 workers produced, 1 mill built, 0-1 military units. Economy grows.</p>
+<p><span class="step">Want List:</span> Workers (priority 0.7 x2) vs food building (0.7) vs Infantry unit (0.1), sorted by priority and executed top-down while affordable. Workers and the resource building queue first; the infantry may not have enough resources left.</p>
+<p><span class="result">Result:</span> ~2 workers produced, 1 resource building built, 0-1 military units. Economy grows.</p>
 </div>
 
 <div class="example">
@@ -632,7 +648,7 @@
 <p><span class="step">Unit Brain:</span> count = round(0.9 * 5) = 5. Sees enemy cavalry ratio is high.</p>
 <p>Brain outputs: TYPE_INFANTRY = 0.8, TYPE_HEAVY = 0.3, BONUS_CAVALRY = 0.9, TYPE_CAVALRY = -0.7 (avoid cavalry).</p>
 <p><span class="step">Profile Matching:</span> lowestWithRand runs 5 times. Spearman (anti-cavalry infantry) has lowest distance. Results: 4x Spearman, 1x Pikeman (similar but slightly different roll).</p>
-<p><span class="step">Military Brain:</span> defendWeight > attackWeight. Target: BUILDING (protect base). Army sent to defend near own buildings.</p>
+<p><span class="step">Military Brain:</span> Center-pair pressures pull the army toward OUR_BUILDING (defend the base) over enemy centers. Per-unit, MilitaryCommandCalculator routes units to defend near own buildings.</p>
 <p><span class="result">Result:</span> 5 anti-cavalry units queued (if affordable). Army defends base. Counter-composition evolves naturally.</p>
 </div>
 
@@ -673,6 +689,7 @@
   <li><span class="pro">GA-evolvable</span> — All brains are neural networks with weights from CSV files. No hand-tuning needed for strategy. Evolution discovers good play.</li>
   <li><span class="pro">Stochastic variety</span> — lowestWithRand prevents perfectly predictable play. Multiple rolls per tick produce army variety.</li>
   <li><span class="pro">Priority-based resource allocation</span> — Want list naturally balances economy vs military vs tech. Persistent needs escalate via age boost.</li>
+  <li><span class="pro">Unit &amp; building upgrades</span> — Unit Brain and Economy Brain emit upgrade urgencies; UNIT_UPGRADE / BUILDING_UPGRADE wants compete in the same queue. Tech level (avg upgrade level) feeds back into Master/Unit/Military brains.</li>
   <li><span class="pro">Feedback loops</span> — Lacking resources feed back to Master Brain. Building failures feed back to unit production. History informs future decisions.</li>
   <li><span class="pro">Metric validation</span> — Assert at DB load ensures all metrics stay in [0, 1]. New units that violate this are caught immediately.</li>
   <li><span class="pro">Negative outputs as repulsion</span> — tanh [-1, 1] gives the brain 3x stronger "avoid" signals vs [0, 1] range, enabling active trait avoidance.</li>
@@ -684,14 +701,13 @@
 <h3 class="con">Weaknesses</h3>
 <ul>
   <li><span class="con">No retreat logic</span> — Army fights to death. No health threshold, no "pull back and regroup." Armies are wasted in losing engagements.</li>
-  <li><span class="con">Tech system unimplemented</span> — TECH_LEVEL = 0, WantItemType::TECH never used. AI never researches upgrades.</li>
-  <li><span class="con">Non-resource building selection is a stub</span> — resolveBuilding() for DEFENCE/TECH/UNITS/OTHER returns buildings.at(0). No NN-driven selection.</li>
+  <li><span class="con">Non-resource building selection is a stub</span> — resolveBuilding() for DEFENCE/TECH/UNITS/OTHER returns buildings.at(0). No NN-driven selection (TODO in code).</li>
   <li><span class="con">No scouting</span> — AI cannot explore fog of war. Plays blind until enemy contact. Disadvantaged on large maps.</li>
   <li><span class="con">Single enemy</span> — getEnemyFor() returns one enemy. FFA/multiplayer ignored.</li>
   <li><span class="con">No attack outcome tracking</span> — History records "order sent" as success, not whether the battle was won.</li>
   <li><span class="con">Worker reassignment is slow</span> — Only 1 worker per tick, only if priority gap > 0.3. Slow to adapt economy.</li>
   <li><span class="con">Save/load breaks deltas</span> — MasterBrain prev* fields not serialized. First tick after load produces false delta spikes.</li>
-  <li><span class="con">No training pipeline in repo</span> — No GA implementation, no fitness functions, no weight export. Brains must be evolved externally.</li>
+  <li><span class="con">No training pipeline in repo</span> — No GA implementation, no fitness functions, no weight export. Brains must be evolved externally (see tools/gen_brain_csv.ps1 for untrained weight generation only).</li>
   <li><span class="con">lowestWithRand samples with replacement</span> — Can return the same unit type multiple times when variety might be better.</li>
 </ul>
 </div>
@@ -706,15 +722,16 @@
 <div class="card">
 <table class="spec">
 <tr><th>Priority</th><th>Gap</th><th>Impact</th><th>Location</th></tr>
-<tr><td style="color:#EF5350;font-weight:bold;">P1</td><td>Tech/upgrade system</td><td>AI never upgrades — falls behind in late game</td><td>MasterBrain.cpp:88, AiOrchestrator.cpp:124</td></tr>
-<tr><td style="color:#EF5350;font-weight:bold;">P2</td><td>No retreat logic</td><td>Army wasted in losing fights</td><td>AiOrchestrator.cpp:154-246</td></tr>
-<tr><td style="color:#FF9800;font-weight:bold;">P3</td><td>Building selection stub</td><td>Wrong buildings chosen for non-resource types</td><td>AiOrchestrator.cpp:497-498</td></tr>
-<tr><td style="color:#FF9800;font-weight:bold;">P4</td><td>No scouting</td><td>Blind until contact</td><td>(not implemented)</td></tr>
-<tr><td style="color:#FFB74D;">P5</td><td>Save/load delta spike</td><td>One-tick false urgency after load</td><td>MasterBrain.h:85-90</td></tr>
-<tr><td style="color:#FFB74D;">P6</td><td>Single enemy limitation</td><td>Ignores FFA opponents</td><td>AiOrchestrator.cpp:46</td></tr>
-<tr><td style="color:#78909C;">P7</td><td>Attack outcome tracking</td><td>Can't learn from lost battles</td><td>AiOrchestrator.cpp:245</td></tr>
-<tr><td style="color:#78909C;">P8</td><td>Worker reassignment speed</td><td>Slow economy adaptation</td><td>AiOrchestrator.cpp:568-582</td></tr>
+<tr><td style="color:#EF5350;font-weight:bold;">P1</td><td>No retreat logic</td><td>Army wasted in losing fights</td><td>AiOrchestrator.cpp order() / issueAdvancePerUnit()</td></tr>
+<tr><td style="color:#EF5350;font-weight:bold;">P2</td><td>Building selection stub</td><td>Wrong buildings chosen for non-resource types (returns buildings.at(0))</td><td>AiOrchestrator.cpp:564-571 resolveBuilding()</td></tr>
+<tr><td style="color:#FF9800;font-weight:bold;">P3</td><td>No scouting</td><td>Blind until contact</td><td>(not implemented)</td></tr>
+<tr><td style="color:#FF9800;font-weight:bold;">P4</td><td>FOW-blind attack fallback</td><td>Units advance toward stale/unseen influence centers</td><td>AiOrchestrator.cpp order() (TODO in code)</td></tr>
+<tr><td style="color:#FFB74D;">P5</td><td>Save/load delta spike</td><td>One-tick false urgency after load</td><td>MasterBrain.h:88-92 (prev* not serialized)</td></tr>
+<tr><td style="color:#FFB74D;">P6</td><td>Single enemy limitation</td><td>Ignores FFA opponents</td><td>AiOrchestrator.cpp (getEnemyFor)</td></tr>
+<tr><td style="color:#78909C;">P7</td><td>Attack outcome tracking</td><td>Records "order sent" as success, can't learn from lost battles</td><td>AiOrchestrator.cpp order() history->addOrder(...SUCCESS)</td></tr>
+<tr><td style="color:#78909C;">P8</td><td>Worker reassignment speed</td><td>1 worker/tick, gap &gt; 0.3 — slow economy adaptation</td><td>AiOrchestrator.cpp findReassignableWorker()</td></tr>
 </table>
+<p style="color:#66BB6A;font-size:12px;">Resolved since earlier drafts: the tech/upgrade system is now implemented (UNIT_UPGRADE / BUILDING_UPGRADE wants, TECH_LEVEL input wired to avgTechLevel); GAME_TIME, KD_RATIO and IN_COMBAT_RATIO are now real game-state values.</p>
 </div>
 
 </body>
