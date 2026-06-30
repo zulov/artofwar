@@ -92,10 +92,6 @@ void InfluenceMap::update(const Urho3D::Vector2& pos, float value) {
 	update(calculator->indexFromPosition(pos), value);
 }
 
-void InfluenceMap::updateInt(unsigned index, unsigned char value) {
-	update(index, static_cast<float>(value));
-}
-
 void InfluenceMap::updateFromTemp() { ensureKernel(); }
 
 void InfluenceMap::reset() {

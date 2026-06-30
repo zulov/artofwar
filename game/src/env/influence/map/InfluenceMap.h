@@ -26,7 +26,6 @@ public:
 
 	void update(unsigned index, float value = 1.f);
 	void update(const Urho3D::Vector2& pos, float value = 1.f);
-	void updateInt(unsigned index, unsigned char value = 1);
 	void updateFromTemp();
 
 	void reset();

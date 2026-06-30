@@ -179,9 +179,7 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 void InfluenceManager::updateBuildings(const std::vector<Building*>* buildings) const {
 	MapsUtils::resetMaps(buildingsInfluencePerPlayer);
 	for (const auto building : (*buildings)) {
-		const auto player = building->getPlayer();
-		const auto index = building->getIndexInInfluence();
-		buildingsInfluencePerPlayer[player]->update(index);
+		buildingsInfluencePerPlayer[building->getPlayer()]->update(building->getIndexInInfluence());
 	}
 	// TODO perf to tutaj chyba niepotrzebne i tak bedzie zrobione lazy
 	//MapsUtils::finalize(buildingsInfluencePerPlayer);
