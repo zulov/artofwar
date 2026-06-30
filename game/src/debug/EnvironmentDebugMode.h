@@ -16,7 +16,7 @@ enum class EnvironmentDebugMode : char {
 
 	// INF_ECON_QUAD,
 	// INF_BUILDINGS_QUAD,
-	// INF_UNITS_QUAD,
+	// INF_ARMY_QUAD,
 	
 	VISIBILITY,
 };

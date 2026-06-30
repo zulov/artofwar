@@ -7,7 +7,6 @@
 #include <Urho3D/Math/Vector2.h>
 
 #include "MilitaryBrain.h"
-#include "utils/OtherUtils.h"
 
 struct MilitaryCenterSnapshot {
 	bool available = false;
@@ -50,14 +49,12 @@ public:
 			}
 		}
 
+		bool hasBest = false;
 		for (size_t i = 0; i < MILITARY_CENTER_COUNT; ++i) {
 			if (!centers[i].available) { continue; }
-			if (result.best.score == 0.f && result.best.center == MilitaryCenterIdx::OUR_ARMY && i != 0) {
+			if (!hasBest || result.scores[i] > result.best.score) {
 				result.best = {static_cast<MilitaryCenterIdx>(i), result.scores[i]};
-				continue;
-			}
-			if (result.scores[i] > result.best.score || !centers[castC(result.best.center)].available) {
-				result.best = {static_cast<MilitaryCenterIdx>(i), result.scores[i]};
+				hasBest = true;
 			}
 		}
 

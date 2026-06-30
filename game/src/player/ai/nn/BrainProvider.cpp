@@ -22,8 +22,11 @@ Brain* BrainProvider::get(const std::string name) {
 		}
 	}
 	if (!loadBrainFile(name, tempLayers, fileBuffer) || tempLayers.empty()) {
+		// Always-on diagnostic: a missing or unparseable brain file is fatal to the
+		// AI, so report it in Release builds too (not just behind assert).
+		Game::getLog()->WriteRaw("[Brain] FAILED to load brain file '"
+			+ Urho3D::String(name.c_str()) + "' (missing or empty)\n", true);
 		assert(false);
-		Game::getLog()->WriteRaw("No brain Found " + Urho3D::String(name.c_str()) + "\n", true);
 		return nullptr;
 	}
 	auto* const brain = new Brain(name, tempLayers);

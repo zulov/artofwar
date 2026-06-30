@@ -3,6 +3,7 @@
 #include <array>
 #include <optional>
 #include <span>
+#include <utility>
 #include <valarray>
 #include <vector>
 
@@ -37,6 +38,7 @@ namespace Urho3D {
 }
 
 enum class ParentBuildingType : char;
+enum class CenterType : char;
 
 class AiOrchestrator {
 public:
@@ -58,14 +60,13 @@ private:
 	void submitBuildingUpgradeRequest(float urgency, ParentBuildingType type);
 
 	// Army control (used by order())
-	std::optional<Urho3D::Vector2> resolveAttackPos(Player* enemy, const AttackSpatialOutput& spatialOut);
-	static void sortByDistanceTo(std::vector<Unit*>& group, const Urho3D::Vector2& target);
+	std::optional<Urho3D::Vector2> resolveAttackPos(unsigned char owner, CenterType fallbackType,
+	                                               const AttackSpatialOutput& spatialOut);
 	static constexpr float COMMAND_PRIORITY_DECAY = 0.25f;
-	std::vector<Unit*> filterUnitsByPriority(const std::vector<Unit*>& units, float priority) const;
 	bool trySubmitUnitOrder(const std::vector<Unit*>& units, float priority, UnitOrder* order) const;
 	bool trySubmitUnitOrder(Unit* unit, float priority, UnitOrder* order) const;
 	void decayUnitOrderPriorities() const;
-	void issueAdvance(std::vector<Unit*>& group, const Urho3D::Vector2& target, float priority);
+	void issueAdvancePerUnit(const std::vector<std::pair<Unit*, float>>& units, const Urho3D::Vector2& target);
 	void issueHold(std::vector<Unit*>& group, float priority);
 
 	// Unit resolution

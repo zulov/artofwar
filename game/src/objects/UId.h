@@ -24,8 +24,9 @@ struct UId {
 
 	static unsigned create(ObjectType type, char player = 0) {
 		assert(type != ObjectType::NONE);
+		const char effectivePlayer = (type == ObjectType::RESOURCE || player < 0) ? 0 : player;
 		unsigned v = static_cast<char>(type);
-		return (((player < 0 ? 0 : player) << 2) + v) << 27;
+		return ((effectivePlayer << 2) + v) << 27;
 	}
 };
 

@@ -144,34 +144,19 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 		MapsUtils::resetMaps(vec);
 	}
 
-	if (SIM_GLOBALS.HEADLESS) {
-		for (const auto unit : (*units)) {
-			const auto pId = unit->getPlayer();
-			const auto index = getIndexInInfluence(unit);
-			unitsInfluencePerPlayer[pId]->update(index);
-			if (!unit->getDb()->typeWorker) {
-				armyInfluence[pId]->update(index);
-			} else if (unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
-				auto res = static_cast<ResourceEntity*>(unit->getThingToInteract());
-				// TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
-				mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getResourceId()]->update(res->getIndexInInfluence());
-			}
+	for (const auto unit : (*units)) {
+		const auto pId = unit->getPlayer();
+		const auto index = getIndexInInfluence(unit);
+		unitsInfluencePerPlayer[pId]->update(index);
+		if (!unit->getDb()->typeWorker) {
+			armyInfluence[pId]->update(index);
+		} else if (unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
+			auto res = static_cast<ResourceEntity*>(unit->getThingToInteract());
+			// TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
+			mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getResourceId()]->update(res->getIndexInInfluence());
 		}
-	} else {
-		for (const auto unit : (*units)) {
-			const auto pId = unit->getPlayer();
-			const auto index = getIndexInInfluence(unit);
-			unitsInfluencePerPlayer[pId]->update(index);
-			if (!unit->getDb()->typeWorker) {
-				armyInfluence[pId]->update(index);
-			} else if (unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
-				auto res = static_cast<ResourceEntity*>(unit->getThingToInteract());
-				// TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
-				mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getResourceId()]->update(res->getIndexInInfluence());
-			}
-
-		}
-	}	
+	}
+	
 	//TODO perf to tutaj chyba niepotrzebne i tak bedzie zrobione lazy
 	//MapsUtils::finalize(unitsInfluencePerPlayer);
 }
@@ -248,7 +233,7 @@ void InfluenceManager::draw(InfluenceDataType type, unsigned char index) {
 	case InfluenceDataType::BUILDINGS_QUAD:
 		MapsUtils::drawMapRaw(currentDebugBatch, index, buildingsInfluencePerPlayer);
 		break;
-	case InfluenceDataType::UNITS_QUAD:
+	case InfluenceDataType::ARMY_QUAD:
 		MapsUtils::drawMapRaw(currentDebugBatch, index, armyInfluence);
 		break;
 	case InfluenceDataType::VISIBILITY:

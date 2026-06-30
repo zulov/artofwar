@@ -143,6 +143,7 @@ TEST_F(CumulateErrorsFixture, ZeroPercentIgnoresMap) {
 TEST_F(CumulateErrorsFixture, LargerWeightProducesLargerErrors) {
 	std::vector<float> vals(ARRAY_SIZE, 0.f);
 	vals[0] = 0.f; // worst cell for seek-high
+	vals[1] = 1.f; // best cell -> makes the map non-uniform (max>min) so errors are computed
 	setupMap(vals);
 
 	resetIntersection();
@@ -206,8 +207,11 @@ TEST_F(CumulateErrorsFixture, UnseenSentinelStaysLargest) {
 
 	map->cumulateErrors(0.8f, intersection);
 
-	// Cell 0 remains huge -> still effectively excluded from selection.
-	EXPECT_GT(intersection[0], maxVal);
+	// Cell 0 remains huge -> still effectively excluded from selection. Because
+	// maxVal is so close to FLT_MAX that (maxVal + 1.f) == FLT_MAX and adding a
+	// small squared error saturates, the value stays at the maximum rather than
+	// growing. Assert it stays maximal (>=) instead of strictly greater.
+	EXPECT_GE(intersection[0], maxVal);
 }
 
 // --- Uniform map returns false ---
