@@ -80,7 +80,11 @@ TEST(MilitaryCommandCalculatorTest, DistanceScalesInfluence) {
 	EXPECT_GT(result.scores[castC(MilitaryCenterIdx::ENEMY_ECON)], result.scores[castC(MilitaryCenterIdx::ENEMY_BUILDING)]);
 }
 
-TEST(MilitaryCommandCalculatorTest, DistanceRadiusCreatesZeroClosenessOutsideRange) {
+TEST(MilitaryCommandCalculatorTest, PressureIsWeightedBySourceClosenessNotTargetDistance) {
+	// The calculator weights each pressure pair by how close the *source* center is
+	// to the unit, not by the target's distance. OUR_ARMY sits on the unit (distance 0),
+	// so its closeness is 1 and the pressure toward the far-away ENEMY_ARMY is preserved
+	// at full strength regardless of how distant the enemy is.
 	MilitaryCommandCalculator calc(10.f);
 	MilitaryOutput output;
 	output.centerPairPressure.fill(0.f);
@@ -91,7 +95,8 @@ TEST(MilitaryCommandCalculatorTest, DistanceRadiusCreatesZeroClosenessOutsideRan
 	centers[castC(MilitaryCenterIdx::ENEMY_ARMY)] = makeCenter({100.f, 0.f});
 
 	auto result = calc.calculate({0.f, 0.f}, centers, output);
-	EXPECT_FLOAT_EQ(result.scores[castC(MilitaryCenterIdx::ENEMY_ARMY)], 0.f);
+	EXPECT_FLOAT_EQ(result.scores[castC(MilitaryCenterIdx::ENEMY_ARMY)], 1.f);
+	EXPECT_EQ(result.best.center, MilitaryCenterIdx::ENEMY_ARMY);
 }
 
 TEST(MilitaryCommandCalculatorTest, ReturnsFirstAvailableWhenAllScoresZero) {
@@ -105,4 +110,21 @@ TEST(MilitaryCommandCalculatorTest, ReturnsFirstAvailableWhenAllScoresZero) {
 	auto result = calc.calculate({0.f, 0.f}, centers, output);
 	EXPECT_EQ(result.best.center, MilitaryCenterIdx::ENEMY_ARMY);
 	EXPECT_FLOAT_EQ(result.best.score, 0.f);
+}
+
+TEST(MilitaryCommandCalculatorTest, SourceOutsideRadiusContributesZeroPressure) {
+	// When the pressure source center is beyond the radius, its closeness clamps to 0,
+	// so it contributes nothing to any target score even if the pressure value is high.
+	MilitaryCommandCalculator calc(10.f);
+	MilitaryOutput output;
+	output.centerPairPressure.fill(0.f);
+	output.centerPairPressure[militaryCenterPairIndex(MilitaryCenterIdx::OUR_ECON, MilitaryCenterIdx::ENEMY_ARMY)] = 1.f;
+
+	std::array<MilitaryCenterSnapshot, MILITARY_CENTER_COUNT> centers{};
+	// Source (OUR_ECON) is 100 units from the unit at origin -> outside radius 10.
+	centers[castC(MilitaryCenterIdx::OUR_ECON)] = makeCenter({100.f, 0.f});
+	centers[castC(MilitaryCenterIdx::ENEMY_ARMY)] = makeCenter({5.f, 0.f});
+
+	auto result = calc.calculate({0.f, 0.f}, centers, output);
+	EXPECT_FLOAT_EQ(result.scores[castC(MilitaryCenterIdx::ENEMY_ARMY)], 0.f);
 }

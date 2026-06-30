@@ -17,11 +17,12 @@ MilitaryBrain::MilitaryBrain(db_nation* nation)
 	: brain(BrainProvider::get(nation->orderPrefix[0] + "military.csv")) {
 	assert(brain->getInputSize() == inputData.size());
 	assert(brain->getInputSize() == magic_enum::enum_count<MilitaryInputIdx>());
-	assert(brain->getOutputSize() == magic_enum::enum_count<MilitaryOutputIdx>());
+	assert(brain->getOutputSize() == MILITARY_OUTPUT_COUNT);
 }
 
 MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
                                       float militaryUrgency, float attackUrgency,
+                                      float techLevel,
                                       const AiHistory* history) {
 	using I = MilitaryInputIdx;
 
@@ -77,9 +78,15 @@ MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::RECENT_ATTACK_ACTIVITY)] = norm(history->attackActivityScore(LOOKBACK), NormScale::ACTIVITY);
 	inputData[idx(I::RECENT_DEFEND_ACTIVITY)] = norm(history->defendActivityScore(LOOKBACK), NormScale::ACTIVITY);
 
+	// Overall tech progress ([0,1]) — lets the brain weight aggression by tech lead/deficit
+	inputData[idx(I::TECH_LEVEL)] = techLevel;
+
 	auto result = brain->decide(inputData);
 
 	MilitaryOutput output;
 	std::copy_n(result.begin(), output.centerPairPressure.size(), output.centerPairPressure.begin());
+	output.preferInfantry = result[idx(MilitaryPreferIdx::INFANTRY)];
+	output.preferRange = result[idx(MilitaryPreferIdx::RANGE)];
+	output.preferCavalry = result[idx(MilitaryPreferIdx::CAVALRY)];
 	return output;
 }

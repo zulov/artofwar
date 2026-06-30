@@ -136,7 +136,8 @@ TEST_F(MathUtilsFixture, SqDistVector2) {
 TEST_F(MathUtilsFixture, SqDistVector3) {
 	Urho3D::Vector3 a(0.f, 0.f, 0.f);
 	Urho3D::Vector3 b(1.f, 2.f, 2.f);
-	EXPECT_FLOAT_EQ(a.SqDistXZ(b), 9.f);
+	// SqDistXZ ignores the Y axis: (1-0)^2 + (2-0)^2 = 5
+	EXPECT_FLOAT_EQ(a.SqDistXZ(b), 5.f);
 }
 
 TEST_F(MathUtilsFixture, SqDistVector3As2D) {
@@ -153,8 +154,8 @@ TEST_F(MathUtilsFixture, FixValueExactlyZero) {
 }
 
 TEST_F(MathUtilsFixture, FixValueNegativeMax) {
-	// value=-1 < 0 -> returns 0
-	EXPECT_FLOAT_EQ(fixValue(-1.f, -5.f), 0.f);
+	// maxValue is negative: value(-1) > maxValue(-5) -> clamped to maxValue (-5)
+	EXPECT_FLOAT_EQ(fixValue(-1.f, -5.f), -5.f);
 }
 
 TEST_F(MathUtilsFixture, SqRootSumErrorSingleElement) {
@@ -215,7 +216,8 @@ TEST_F(MathUtilsFixture, SqDistVector3ToVector2) {
 TEST_F(MathUtilsFixture, SqDistVector3Ptr) {
 	Urho3D::Vector3 a(0.f, 0.f, 0.f);
 	Urho3D::Vector3 b(1.f, 1.f, 1.f);
-	EXPECT_FLOAT_EQ(a.SqDistXZ(b), 3.f);
+	// SqDistXZ ignores the Y axis: (1-0)^2 + (1-0)^2 = 2
+	EXPECT_FLOAT_EQ(a.SqDistXZ(b), 2.f);
 }
 
 TEST_F(MathUtilsFixture, DirToVector3PointerAndVector2) {

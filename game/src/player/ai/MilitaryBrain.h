@@ -36,6 +36,7 @@ enum class MilitaryInputIdx : unsigned char {
 	RECENT_DEFEND_FAILURES,
 	RECENT_ATTACK_ACTIVITY,
 	RECENT_DEFEND_ACTIVITY,
+	TECH_LEVEL,
 };
 
 enum class MilitaryCenterIdx : unsigned char {
@@ -80,6 +81,18 @@ enum class MilitaryOutputIdx : unsigned char {
 static_assert(magic_enum::enum_count<MilitaryOutputIdx>() == MILITARY_CENTER_PAIR_COUNT,
               "MilitaryOutputIdx must contain every unordered pair of MilitaryCenterIdx values");
 
+// The network output vector is laid out as the center-pair pressures (indices
+// [0 .. MILITARY_CENTER_PAIR_COUNT-1]) followed by the army-composition
+// preferences below. Keep MILITARY_OUTPUT_COUNT in sync with the brain file width.
+static constexpr size_t MILITARY_PREFER_COUNT = 3;
+static constexpr size_t MILITARY_OUTPUT_COUNT = MILITARY_CENTER_PAIR_COUNT + MILITARY_PREFER_COUNT;
+
+enum class MilitaryPreferIdx : unsigned char {
+	INFANTRY = MILITARY_CENTER_PAIR_COUNT,
+	RANGE,
+	CAVALRY,
+};
+
 constexpr size_t militaryCenterPairIndex(MilitaryCenterIdx first, MilitaryCenterIdx second) {
 	const int a = static_cast<int>(first);
 	const int b = static_cast<int>(second);
@@ -112,6 +125,7 @@ public:
 
 	MilitaryOutput decide(Player* player, Player* enemy,
 	                       float militaryUrgency, float attackUrgency,
+	                       float techLevel,
 	                       const AiHistory* history);
 
 private:
