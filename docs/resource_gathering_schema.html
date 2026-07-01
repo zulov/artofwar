@@ -70,6 +70,89 @@
 
   .illust { display: flex; justify-content: center; margin: 20px 0; }
   .illust svg { border-radius: 10px; background: #0d1b2a; border: 1px solid #2a2a4a; }
+
+  @page { size: A4 portrait; margin: 14mm; }
+
+  @media print {
+    body {
+      background: #fff !important;
+      color: #111 !important;
+      padding: 0 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    a { color: #111 !important; text-decoration: underline; }
+    h1, h2, h3, .subtitle { color: #111 !important; }
+    h1 {
+      font-size: 1.6em !important;
+      margin: 0 0 4px 0 !important;
+    }
+    .subtitle {
+      margin-bottom: 8px !important;
+    }
+    .resources-bar {
+      margin-bottom: 8px !important;
+      gap: 12px !important;
+    }
+    .res-icon {
+      padding: 6px 12px !important;
+    }
+    .mechanism, .example, .illust {
+      background: #fff !important;
+      color: #111 !important;
+      border-color: #bbb !important;
+      box-shadow: none !important;
+    }
+
+    table, thead, tbody, tr, th, td {
+      background: #fff !important;
+      color: #111 !important;
+    }
+    table { width: 100% !important; }
+    th { background: #eee !important; }
+    td, th {
+      border-color: #999 !important;
+      padding: 6px 8px !important;
+    }
+    table tr:hover td { background: #fff !important; }
+
+    svg {
+      background: #fff !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      height: auto !important;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    svg text { fill: #111 !important; }
+    svg rect:first-of-type { fill: #fff !important; stroke: #bbb !important; }
+    *[style*="background"] { background: #fff !important; color: #111 !important; }
+
+    h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+    h2 {
+      margin: 6px 0 4px 0 !important;
+      font-size: 1.15em !important;
+    }
+    .resources-bar { margin-bottom: 18px !important; }
+    .mechanism {
+      padding: 8px 12px !important;
+      margin-bottom: 12px !important;
+      break-inside: auto;
+      page-break-inside: auto;
+    }
+    .example, .illust {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .formula-box, pre {
+      white-space: pre-wrap !important;
+      overflow: visible !important;
+      word-break: break-word !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -198,9 +281,19 @@
       <text x="240" y="115" text-anchor="middle" fill="#e6c44d" font-size="11" font-weight="bold">Mill</text>
       <!-- resource nodes inside range (boosted) -->
       <circle cx="180" cy="80" r="12" fill="#1a3a1a" stroke="#4caf50" stroke-width="1.5"/>
-      <text x="180" y="84" text-anchor="middle" fill="#4caf50" font-size="8">🫐</text>
+      <g transform="translate(180 84)">
+        <circle cx="0" cy="0" r="5" fill="#6a1b9a" opacity="0.9"/>
+        <circle cx="-2.4" cy="1.6" r="2.1" fill="#8e24aa"/>
+        <circle cx="2.2" cy="1.4" r="2.1" fill="#ab47bc"/>
+        <path d="M -1.2 -4.5 L 0 -6.2 L 1.2 -4.5" fill="none" stroke="#2e7d32" stroke-width="0.9" stroke-linecap="round"/>
+      </g>
       <circle cx="290" cy="140" r="12" fill="#1a3a1a" stroke="#4caf50" stroke-width="1.5"/>
-      <text x="290" y="144" text-anchor="middle" fill="#4caf50" font-size="8">🫐</text>
+      <g transform="translate(290 144)">
+        <circle cx="0" cy="0" r="5" fill="#6a1b9a" opacity="0.9"/>
+        <circle cx="-2.4" cy="1.6" r="2.1" fill="#8e24aa"/>
+        <circle cx="2.2" cy="1.4" r="2.1" fill="#ab47bc"/>
+        <path d="M -1.2 -4.5 L 0 -6.2 L 1.2 -4.5" fill="none" stroke="#2e7d32" stroke-width="0.9" stroke-linecap="round"/>
+      </g>
       <!-- worker at boosted node -->
       <circle cx="170" cy="100" r="6" fill="#90caf9"/>
       <text x="170" y="103" text-anchor="middle" fill="#fff" font-size="6">W</text>
@@ -209,7 +302,12 @@
       <text x="180" y="102" text-anchor="middle" fill="#7fdbff" font-size="9">×1.25</text>
       <!-- resource node outside range (normal) -->
       <circle cx="380" cy="160" r="12" fill="#1a3a1a" stroke="#4caf50" stroke-width="1.5"/>
-      <text x="380" y="164" text-anchor="middle" fill="#4caf50" font-size="8">🫐</text>
+      <g transform="translate(380 164)">
+        <circle cx="0" cy="0" r="5" fill="#6a1b9a" opacity="0.9"/>
+        <circle cx="-2.4" cy="1.6" r="2.1" fill="#8e24aa"/>
+        <circle cx="2.2" cy="1.4" r="2.1" fill="#ab47bc"/>
+        <path d="M -1.2 -4.5 L 0 -6.2 L 1.2 -4.5" fill="none" stroke="#2e7d32" stroke-width="0.9" stroke-linecap="round"/>
+      </g>
       <text x="380" y="182" text-anchor="middle" fill="#666" font-size="9">×1.0</text>
       <!-- legend -->
       <rect x="20" y="180" width="10" height="10" rx="2" fill="#2c2c1a" stroke="#e6c44d" stroke-width="1"/>
@@ -247,7 +345,10 @@
     <svg width="480" height="160" viewBox="0 0 480 160">
       <!-- workers gathering -->
       <circle cx="60" cy="60" r="14" fill="#1a3a1a" stroke="#9e9e9e" stroke-width="1.5"/>
-      <text x="60" y="64" text-anchor="middle" fill="#9e9e9e" font-size="9">⛏</text>
+      <g transform="translate(60 60) rotate(-35)">
+        <rect x="-0.9" y="-7" width="1.8" height="14" rx="0.9" fill="#6d4c41"/>
+        <path d="M -5 -2.5 L 0 -5 L 5 -2.5 L 2 1 L -2 1 Z" fill="#cfd8dc" stroke="#90a4ae" stroke-width="0.5"/>
+      </g>
       <text x="60" y="84" text-anchor="middle" fill="#888" font-size="9">Stone</text>
       <!-- arrow: gathered per sec -->
       <line x1="85" y1="60" x2="160" y2="60" stroke="#9e9e9e" stroke-width="1.5" marker-end="url(#arrowGrey)"/>
@@ -344,7 +445,10 @@
       <text x="75" y="50" text-anchor="middle" fill="#e6c44d" font-size="10">Sawmill</text>
       <text x="75" y="64" text-anchor="middle" fill="#888" font-size="8">50w 50s</text>
       <!-- explosion -->
-      <text x="145" y="55" text-anchor="middle" fill="#e74c3c" font-size="18">💥</text>
+      <g transform="translate(145 55)">
+        <path d="M 0 -8 L 2.2 -3.2 L 7 -5.5 L 4 0 L 7 5.5 L 2.2 3.2 L 0 8 L -2.2 3.2 L -7 5.5 L -4 0 L -7 -5.5 L -2.2 -3.2 Z" fill="#ff7043" stroke="#e74c3c" stroke-width="1"/>
+        <circle cx="0" cy="0" r="1.3" fill="#fff3e0"/>
+      </g>
       <text x="145" y="75" text-anchor="middle" fill="#e74c3c" font-size="8">HP → 0</text>
       <!-- arrow -->
       <line x1="170" y1="52" x2="230" y2="52" stroke="#e74c3c" stroke-width="1.5" marker-end="url(#arrowRed)"/>
@@ -393,13 +497,33 @@
       <text x="240" y="110" text-anchor="middle" fill="#8d6e4e" font-size="9" font-weight="bold">Nursery</text>
       <!-- spawned young trees at various positions -->
       <circle cx="180" cy="60" r="8" fill="#1a3a1a" stroke="#4caf50" stroke-width="1.5"/>
-      <text x="180" y="63" text-anchor="middle" fill="#4caf50" font-size="7">🌱</text>
+      <g transform="translate(180 63)">
+        <path d="M 0 4 L 0 -2" stroke="#6d4c41" stroke-width="1.2" stroke-linecap="round"/>
+        <ellipse cx="-2.1" cy="-1.7" rx="2.2" ry="1.4" fill="#66bb6a" transform="rotate(-28 -2.1 -1.7)"/>
+        <ellipse cx="2.1" cy="-1.7" rx="2.2" ry="1.4" fill="#43a047" transform="rotate(28 2.1 -1.7)"/>
+        <rect x="-0.6" y="1.4" width="1.2" height="2.6" rx="0.6" fill="#6d4c41"/>
+      </g>
       <circle cx="300" cy="70" r="8" fill="#1a3a1a" stroke="#4caf50" stroke-width="1.5"/>
-      <text x="300" y="73" text-anchor="middle" fill="#4caf50" font-size="7">🌱</text>
+      <g transform="translate(300 73)">
+        <path d="M 0 4 L 0 -2" stroke="#6d4c41" stroke-width="1.2" stroke-linecap="round"/>
+        <ellipse cx="-2.1" cy="-1.7" rx="2.2" ry="1.4" fill="#66bb6a" transform="rotate(-28 -2.1 -1.7)"/>
+        <ellipse cx="2.1" cy="-1.7" rx="2.2" ry="1.4" fill="#43a047" transform="rotate(28 2.1 -1.7)"/>
+        <rect x="-0.6" y="1.4" width="1.2" height="2.6" rx="0.6" fill="#6d4c41"/>
+      </g>
       <circle cx="170" cy="130" r="8" fill="#1a3a1a" stroke="#4caf50" stroke-width="1.5"/>
-      <text x="170" y="133" text-anchor="middle" fill="#4caf50" font-size="7">🌱</text>
+      <g transform="translate(170 133)">
+        <path d="M 0 4 L 0 -2" stroke="#6d4c41" stroke-width="1.2" stroke-linecap="round"/>
+        <ellipse cx="-2.1" cy="-1.7" rx="2.2" ry="1.4" fill="#66bb6a" transform="rotate(-28 -2.1 -1.7)"/>
+        <ellipse cx="2.1" cy="-1.7" rx="2.2" ry="1.4" fill="#43a047" transform="rotate(28 2.1 -1.7)"/>
+        <rect x="-0.6" y="1.4" width="1.2" height="2.6" rx="0.6" fill="#6d4c41"/>
+      </g>
       <circle cx="310" cy="140" r="8" fill="#1a3a1a" stroke="#4caf50" stroke-width="1.5" stroke-dasharray="3,2"/>
-      <text x="310" y="143" text-anchor="middle" fill="#4caf50" font-size="7" opacity="0.5">🌱</text>
+      <g transform="translate(310 143)" opacity="0.5">
+        <path d="M 0 4 L 0 -2" stroke="#6d4c41" stroke-width="1.2" stroke-linecap="round"/>
+        <ellipse cx="-2.1" cy="-1.7" rx="2.2" ry="1.4" fill="#66bb6a" transform="rotate(-28 -2.1 -1.7)"/>
+        <ellipse cx="2.1" cy="-1.7" rx="2.2" ry="1.4" fill="#43a047" transform="rotate(28 2.1 -1.7)"/>
+        <rect x="-0.6" y="1.4" width="1.2" height="2.6" rx="0.6" fill="#6d4c41"/>
+      </g>
       <text x="310" y="158" text-anchor="middle" fill="#888" font-size="8">next spawn</text>
       <!-- timeline at bottom -->
       <text x="240" y="190" text-anchor="middle" fill="#7fdbff" font-size="10">Every 900 frames (~30s) → young_tree (50HP wood)</text>
@@ -428,7 +552,9 @@
       <text x="75" y="48" text-anchor="middle" fill="#e6c44d" font-size="10">Farm</text>
       <text x="75" y="62" text-anchor="middle" fill="#888" font-size="8">building...</text>
       <!-- completion flash -->
-      <text x="140" y="55" text-anchor="middle" fill="#4caf50" font-size="14">✓</text>
+      <g transform="translate(140 55)">
+        <polyline points="-5,0 -1,4 6,-4" fill="none" stroke="#4caf50" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
       <text x="140" y="72" text-anchor="middle" fill="#4caf50" font-size="8">complete</text>
       <!-- arrow -->
       <line x1="160" y1="52" x2="220" y2="52" stroke="#4caf50" stroke-width="1.5" marker-end="url(#arrowGreen2)"/>

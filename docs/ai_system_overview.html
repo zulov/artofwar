@@ -38,6 +38,61 @@
   .toc a:hover { text-decoration: underline; }
   .toc ol { padding-left: 20px; }
   .toc li { margin: 6px 0; }
+
+  @page { size: A4 portrait; margin: 14mm; }
+
+  @media print {
+    body {
+      background: #fff !important;
+      color: #111 !important;
+      padding: 0 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    a { color: #111 !important; text-decoration: underline; }
+    h1, h2, h3, h4, .section-title, .section-sub, .page-sub, .subtitle { color: #111 !important; }
+    .card, .mechanism, .example, .scenario, .toc, .proscons > div, .change-note, .formula-box, .todo-item, .illust {
+      background: #fff !important;
+      color: #111 !important;
+      border-color: #bbb !important;
+      box-shadow: none !important;
+    }
+
+    table, thead, tbody, tr, th, td {
+      background: #fff !important;
+      color: #111 !important;
+    }
+    table { width: 100% !important; }
+    th { background: #eee !important; }
+    td, th { border-color: #999 !important; }
+    table.spec tr:hover td { background: #fff !important; }
+
+    svg {
+      background: #fff !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      height: auto !important;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    svg text { fill: #111 !important; }
+    svg rect:first-of-type { fill: #fff !important; stroke: #bbb !important; }
+    *[style*="background"] { background: #fff !important; color: #111 !important; }
+
+    h1, h2, h3, h4 { break-after: avoid; page-break-after: avoid; }
+    .card, .mechanism, .example, .scenario, .toc, .proscons > div, .change-note, .formula-box, .todo-item {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .code, pre {
+      white-space: pre-wrap !important;
+      overflow: visible !important;
+      word-break: break-word !important;
+    }
+  }
 </style>
 </head>
 <body>

@@ -55,6 +55,61 @@
   .change-note { background: #2c2c1a; border: 1px solid #e6c44d; border-radius: 8px; padding: 16px 20px; margin: 15px 0; }
   .change-note .label { color: #e6c44d; font-weight: bold; font-size: 0.9em; margin-bottom: 8px; }
   .change-note ul { padding-left: 18px; color: #bbb; font-size: 0.85em; line-height: 1.8; }
+
+  @page { size: A4 portrait; margin: 14mm; }
+
+  @media print {
+    body {
+      background: #fff !important;
+      color: #111 !important;
+      padding: 0 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    a { color: #111 !important; text-decoration: underline; }
+    h1, h2, h3, .subtitle { color: #111 !important; }
+    .mechanism, .example, .change-note, .pro-con .pro, .pro-con .con, .illust {
+      background: #fff !important;
+      color: #111 !important;
+      border-color: #bbb !important;
+      box-shadow: none !important;
+    }
+
+    table, thead, tbody, tr, th, td {
+      background: #fff !important;
+      color: #111 !important;
+    }
+    table { width: 100% !important; }
+    th { background: #eee !important; }
+    td, th { border-color: #999 !important; }
+    table tr:hover td { background: #fff !important; }
+
+    svg {
+      background: #fff !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      height: auto !important;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    svg text { fill: #111 !important; }
+    svg rect:first-of-type { fill: #fff !important; stroke: #bbb !important; }
+    *[style*="background"] { background: #fff !important; color: #111 !important; }
+
+    h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+    .mechanism, .example, .change-note, .pro-con .pro, .pro-con .con, .illust {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .formula-box, pre {
+      white-space: pre-wrap !important;
+      overflow: visible !important;
+      word-break: break-word !important;
+    }
+  }
 </style>
 </head>
 <body>

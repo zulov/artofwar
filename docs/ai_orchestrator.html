@@ -52,6 +52,80 @@
   .todo-item.done { border-left-color: #66BB6A; opacity: 0.6; }
   .todo-item h4 { margin: 0 0 4px; font-size: 14px; color: #fff; }
   .todo-item p { margin: 0; font-size: 12px; color: #999; }
+  .print-only { display: none; }
+
+  @page { size: A4 portrait; margin: 14mm; }
+
+  @media print {
+    body {
+      background: #fff !important;
+      color: #111 !important;
+      padding: 0 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    a { color: #111 !important; text-decoration: underline; }
+    h1, h2, h3, h4, .section-title, .section-sub, .page-sub, .subtitle { color: #111 !important; }
+    .card, .mechanism, .scenario, .todo-item, .illust, .formula-box, .print-only {
+      background: #fff !important;
+      color: #111 !important;
+      border-color: #bbb !important;
+      box-shadow: none !important;
+    }
+
+    table, thead, tbody, tr, th, td {
+      background: #fff !important;
+      color: #111 !important;
+    }
+    table { width: 100% !important; }
+    th { background: #eee !important; }
+    td, th { border-color: #999 !important; }
+    table.spec tr:hover td { background: #fff !important; }
+
+    svg {
+      background: #fff !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      height: auto !important;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    svg text { fill: #111 !important; }
+    svg rect:first-of-type { fill: #fff !important; stroke: #bbb !important; }
+    *[style*="background"] { background: #fff !important; color: #111 !important; }
+
+    h1, h2, h3, h4 { break-after: avoid; page-break-after: avoid; }
+    .card, .mechanism, .scenario, .todo-item, .formula-box, .illust, .print-only {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .code, pre {
+      white-space: pre-wrap !important;
+      overflow: visible !important;
+      word-break: break-word !important;
+    }
+
+    .tooltip, .hint { display: none !important; }
+    .print-only { display: block !important; break-before: page; page-break-before: always; }
+    .print-only h2 { margin: 0 0 12px 0; color: #111 !important; }
+    .print-only .print-item {
+      margin: 0 0 12px 0;
+      padding: 10px 12px;
+      border: 1px solid #bbb;
+      background: #fff;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .print-only .print-item h3 { margin: 0 0 6px 0; color: #111 !important; }
+    .print-only .tt-input { color: #0b63b6 !important; }
+    .print-only .tt-output { color: #8a5b00 !important; }
+    .print-only .tt-logic { color: #1b5e20 !important; }
+    .print-only .tt-warn { color: #b71c1c !important; }
+    .print-only .tt-ok { color: #1b5e20 !important; }
+  }
 </style>
 </head>
 <body>
@@ -393,6 +467,10 @@
   </div>
 </div>
 
+<div class="print-only" id="print-tooltips">
+  <h2>Diagram Details</h2>
+</div>
+
 <!-- ===== FILE REFERENCE ===== -->
 <hr class="divider"/>
 <div class="section-title">File Reference</div>
@@ -420,6 +498,7 @@
 <div class="tooltip" id="tooltip"></div>
 <script>
 const tt = document.getElementById('tooltip');
+const printSection = document.getElementById('print-tooltips');
 document.querySelectorAll('g[data-tt-title]').forEach(g => {
   g.addEventListener('mouseenter', e => {
     tt.innerHTML = '<div class="tt-title">' + g.dataset.ttTitle + '</div>' + g.dataset.ttBody;
@@ -433,6 +512,23 @@ document.querySelectorAll('g[data-tt-title]').forEach(g => {
   });
   g.addEventListener('mouseleave', () => { tt.style.display = 'none'; });
 });
+
+if (printSection) {
+  document.querySelectorAll('g[data-tt-title]').forEach(g => {
+    const item = document.createElement('div');
+    item.className = 'print-item';
+
+    const title = document.createElement('h3');
+    title.textContent = g.dataset.ttTitle;
+
+    const body = document.createElement('div');
+    body.innerHTML = g.dataset.ttBody;
+
+    item.appendChild(title);
+    item.appendChild(body);
+    printSection.appendChild(item);
+  });
+}
 </script>
 
 </body>

@@ -1,5 +1,5 @@
 2. Replace the multi-network architecture with a hierarchical policy network
-Instead of 18 separate NNs with manually-designed decision trees connecting them:
+Instead of 6 separate NNs with manually-designed decision trees connecting them:
 - Train a single hierarchical model with shared feature extraction and multiple output heads.
 - Use attention mechanisms to let the model focus on relevant parts of the game state.
 - This reduces the brittleness of manually routing between networks and allows cross-decision learning.
