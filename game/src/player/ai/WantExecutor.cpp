@@ -5,6 +5,7 @@
 #include <span>
 
 #include "AiHistory.h"
+#include "AiUtils.h"
 #include "Game.h"
 #include "MasterBrain.h"
 #include "commands/action/GeneralActionCommand.h"
@@ -12,10 +13,12 @@
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
 #include "database/DatabaseCache.h"
+#include "database/db_struct.h"
 #include "env/Environment.h"
 #include "env/influence/CenterType.h"
 #include "math/MathUtils.h"
 #include "objects/building/Building.h"
+#include "objects/building/BuildPlacementClass.h"
 #include "objects/building/ParentBuildingType.h"
 #include "objects/queue/QueueActionType.h"
 #include "player/Player.h"
@@ -199,14 +202,15 @@ short WantExecutor::findBuildingTypeToDeploy(short unitId) const {
 }
 
 std::optional<Urho3D::Vector2> WantExecutor::findPosToBuild(db_building* building) {
-	if (building->parentType[static_cast<unsigned char>(ParentBuildingType::RESOURCE)]) {
-		return Game::getEnvironment()->getPosToCreateResBonus(building, playerId);
-	}
-	// Use BuildSpatialBrain to compute influence map weights
+	// One brain places every building type; the placement class (incl. resource
+	// subtypes) is fed as an input so it can aim each kind at a different area.
+	const auto* level = player->getLevelForBuilding(building->id);
+	const BuildPlacementClass placementClass = classifyPlacement(building, level);
 
 	auto spatialOut = buildSpatialBrain.decide(player, Game::getPlayersMan()->getEnemyFor(playerId),
-			masterOut->buildingUrgency, masterOut->expandUrgency, masterOut->defenceBuildingUrgency
+			masterOut->buildingUrgency, masterOut->expandUrgency, masterOut->defenceBuildingUrgency,
+			placementClass
 			);
 	return Game::getEnvironment()->getPosToCreate(
-			std::span<const float>(spatialOut.weights), type, building, playerId);
+			std::span<const float>(spatialOut.weights), building, playerId);
 }

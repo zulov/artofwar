@@ -7,6 +7,7 @@
 class Brain;
 class Player;
 struct db_nation;
+enum class BuildPlacementClass : unsigned char;
 
 enum class BuildSpatialInputIdx : unsigned char {
 	BUILDING_URGENCY,
@@ -22,6 +23,16 @@ enum class BuildSpatialInputIdx : unsigned char {
 	RES_WOOD,
 	RES_STONE,
 	RES_GOLD,
+	// One-hot of BuildPlacementClass (must stay in the same order as the enum).
+	CLASS_OTHER,
+	CLASS_DEFENCE,
+	CLASS_TECH,
+	CLASS_UNITS,
+	CLASS_RES_BONUS,
+	CLASS_RES_CONVERT,
+	CLASS_RES_SPAWNER,
+	CLASS_RES_STORAGE,
+	CLASS_RES_REFINE,
 };
 
 enum class BuildSpatialOutputIdx : unsigned char {
@@ -35,6 +46,11 @@ enum class BuildSpatialOutputIdx : unsigned char {
 	W_ENEMY_BUILDINGS_INFLUENCE,
 	W_ENEMY_UNITS_INFLUENCE,
 	W_ENEMY_ATTACK_SPEED,
+	W_RES_FOOD_NOT_BONUS,
+	W_RES_WOOD_NOT_BONUS,
+	W_RES_STONE_NOT_BONUS,
+	W_RES_GOLD_NOT_BONUS,
+	W_ECONOMY,
 };
 
 struct BuildSpatialOutput {
@@ -51,7 +67,8 @@ public:
 	BuildSpatialBrain(const BuildSpatialBrain&) = delete;
 
 	BuildSpatialOutput decide(Player* player, Player* enemy,
-	                          float buildingUrgency, float expandUrgency, float defenceBuildingUrgency);
+	                          float buildingUrgency, float expandUrgency, float defenceBuildingUrgency,
+	                          BuildPlacementClass placementClass);
 
 private:
 	Brain* brain;

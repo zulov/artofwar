@@ -126,7 +126,7 @@ public:
 	std::optional<Urho3D::Vector2> getPosFromIndexes(db_building* building, unsigned char player,
 	                                                 const std::vector<unsigned>& indexes);
 
-	std::optional<Urho3D::Vector2> getPosToCreate(std::span<const float> result, ParentBuildingType type,
+	std::optional<Urho3D::Vector2> getPosToCreate(std::span<const float> result,
 	                                              db_building* building, unsigned char player);
 	std::optional<Urho3D::Vector2> getPosToCreateResBonus(db_building* building, unsigned char player);
 	// Candidate area centers (world positions), best-first. Influence-map cell indexes are

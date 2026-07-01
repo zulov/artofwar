@@ -24,7 +24,7 @@ namespace Urho3D {
 	class Terrain;
 }
 
-inline constexpr int AI_MAP_COUNT = 10;
+inline constexpr int AI_MAP_COUNT = 15;
 inline constexpr int AI_ARMY_MAP_COUNT = 6;
 inline constexpr int CENTER_TYPE_COUNT = 4;
 
@@ -49,7 +49,7 @@ public:
 
 	// --- AI queries ---
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, unsigned char player) const;
-	const std::vector<unsigned>& getAreas(std::span<const float> result, ParentBuildingType type, unsigned char player) const;
+	const std::vector<unsigned>& getAreas(std::span<const float> result, unsigned char player) const;
 	std::vector<unsigned> getAreasResBonus(unsigned char resId, unsigned char player) const;
 	// Returns candidate area centers (world positions) ordered best-first. Influence-map
 	// cell indexes are intentionally NOT exposed; the reference is valid until the next

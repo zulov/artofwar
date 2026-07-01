@@ -82,6 +82,11 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 			                                buildingsInfluencePerPlayer[enemy],
 			                                unitsInfluencePerPlayer[enemy],
 			                                attackSpeed[enemy],
+			                                resNotInBonusView[cast(ResourceType::FOOD)],
+			                                resNotInBonusView[cast(ResourceType::WOOD)],
+			                                resNotInBonusView[cast(ResourceType::STONE)],
+			                                resNotInBonusView[cast(ResourceType::GOLD)],
+			                                economyInfluence[player],
 		                                });
 		mapsForAiArmyPerPlayer.emplace_back(std::array<InfluenceMap*, AI_ARMY_MAP_COUNT>{
 			                                    buildingsInfluencePerPlayer[player],
@@ -315,11 +320,7 @@ InfluenceManager::getBestVisibleAreas(std::span<const float> result, unsigned ch
 }
 
 const std::vector<unsigned>&
-InfluenceManager::getAreas(std::span<const float> result, ParentBuildingType type, unsigned char player) const {
-	if (type == ParentBuildingType::RESOURCE) {
-		std::array<InfluenceMap*, RESOURCES_SIZE> maps = mapsGatherSpeedPerPlayer[player];
-		return getBestVisibleIndexes(maps, result, player);
-	}
+InfluenceManager::getAreas(std::span<const float> result, unsigned char player) const {
 	std::array<InfluenceMap*, AI_MAP_COUNT> maps = mapsForAiPerPlayer[player];
 	return getBestVisibleIndexes(maps, result, player);
 }

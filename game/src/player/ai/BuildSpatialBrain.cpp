@@ -7,6 +7,7 @@
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
 #include "database/db_struct.h"
+#include "objects/building/BuildPlacementClass.h"
 #include "player/Player.h"
 #include "player/Possession.h"
 #include "player/Resources.h"
@@ -20,7 +21,8 @@ BuildSpatialBrain::BuildSpatialBrain(db_nation* nation)
 }
 
 BuildSpatialOutput BuildSpatialBrain::decide(Player* player, Player* enemy,
-                                              float buildingUrgency, float expandUrgency, float defenceBuildingUrgency) {
+                                              float buildingUrgency, float expandUrgency, float defenceBuildingUrgency,
+                                              BuildPlacementClass placementClass) {
 	using I = BuildSpatialInputIdx;
 
 	auto* possession = player->getPossession();
@@ -46,6 +48,12 @@ BuildSpatialOutput BuildSpatialBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::RES_WOOD)] = norm(res->getValue(ResourceType::WOOD), NormScale::RES);
 	inputData[idx(I::RES_STONE)] = norm(res->getValue(ResourceType::STONE), NormScale::RES);
 	inputData[idx(I::RES_GOLD)] = norm(res->getValue(ResourceType::GOLD), NormScale::RES);
+
+	// Placement class one-hot (BUILD_PLACEMENT_CLASS_COUNT slots starting at CLASS_OTHER).
+	for (unsigned char c = 0; c < BUILD_PLACEMENT_CLASS_COUNT; ++c) {
+		inputData[idx(I::CLASS_OTHER) + c] = 0.f;
+	}
+	inputData[idx(I::CLASS_OTHER) + static_cast<unsigned char>(placementClass)] = 1.f;
 
 	auto result = brain->decide(inputData);
 
