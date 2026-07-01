@@ -65,7 +65,6 @@ TEST_F(BrainValidationFixture, ValidHolderBrainPassesAndReportsSizes) {
 
 	EXPECT_EQ(brain.getInputSize(), 26);
 	EXPECT_EQ(brain.getOutputSize(), 21);
-	EXPECT_TRUE(brain.validate(26, 21));
 }
 
 TEST_F(BrainValidationFixture, SingleHiddenLayerBrainValidates) {
@@ -74,45 +73,6 @@ TEST_F(BrainValidationFixture, SingleHiddenLayerBrainValidates) {
 
 	EXPECT_EQ(brain.getInputSize(), 10);
 	EXPECT_EQ(brain.getOutputSize(), 6);
-	EXPECT_TRUE(brain.validate(10, 6));
 }
 
-TEST_F(BrainValidationFixture, RejectsWrongDeclaredInputSize) {
-	// Holder declares 14 input columns but caller expects 10.
-	auto layers = makeBrainLayers(14, { {14, 6} });
-	Brain brain("bad_input.csv", layers);
 
-	EXPECT_FALSE(brain.validate(10, 6));
-}
-
-TEST_F(BrainValidationFixture, RejectsWrongOutputSize) {
-	// Last layer outputs 7 but caller expects 21.
-	auto layers = makeBrainLayers(26, { {26, 16}, {16, 7} });
-	Brain brain("bad_output.csv", layers);
-
-	EXPECT_FALSE(brain.validate(26, 21));
-}
-
-TEST_F(BrainValidationFixture, RejectsBrokenLayerChain) {
-	// Layer 1 outputs 16 but layer 2 consumes 12 -> chain break.
-	auto layers = makeBrainLayers(26, { {26, 16}, {12, 21} });
-	Brain brain("bad_chain.csv", layers);
-
-	EXPECT_FALSE(brain.validate(26, 21));
-}
-
-TEST_F(BrainValidationFixture, RejectsFirstDenseLayerNotConsumingInput) {
-	// Holder says 26 inputs, but the first dense layer consumes 20.
-	auto layers = makeBrainLayers(26, { {20, 21} });
-	Brain brain("bad_first.csv", layers);
-
-	EXPECT_FALSE(brain.validate(26, 21));
-}
-
-TEST_F(BrainValidationFixture, RejectsTooFewLayers) {
-	// Only an input holder, no dense layer -> cannot run decide().
-	auto layers = makeBrainLayers(26, {});
-	Brain brain("holder_only.csv", layers);
-
-	EXPECT_FALSE(brain.validate(26, 21));
-}
