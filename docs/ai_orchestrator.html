@@ -67,6 +67,11 @@
 
     a { color: #111 !important; text-decoration: underline; }
     h1, h2, h3, h4, .section-title, .section-sub, .page-sub, .subtitle { color: #111 !important; }
+    h1 { font-size: 1.5em !important; margin: 0 0 4px 0 !important; }
+    h2 { font-size: 1.08em !important; margin: 8px 0 4px 0 !important; }
+    h3 { font-size: 0.98em !important; margin: 6px 0 3px 0 !important; }
+    .page-sub, .section-sub { font-size: 0.78em !important; line-height: 1.35 !important; }
+    .section-title { font-size: 1.03em !important; margin: 10px 0 4px 0 !important; }
     .card, .mechanism, .scenario, .todo-item, .illust, .formula-box, .print-only {
       background: #fff !important;
       color: #111 !important;
@@ -78,8 +83,9 @@
       background: #fff !important;
       color: #111 !important;
     }
-    table { width: 100% !important; }
+    table { width: 100% !important; font-size: 0.75em !important; }
     th { background: #eee !important; }
+    th, td { padding: 4px 6px !important; }
     td, th { border-color: #999 !important; }
     table.spec tr:hover td { background: #fff !important; }
 
@@ -103,6 +109,7 @@
     }
 
     .code, pre {
+      font-size: 0.72em !important;
       white-space: pre-wrap !important;
       overflow: visible !important;
       word-break: break-word !important;
@@ -110,7 +117,7 @@
 
     .tooltip, .hint { display: none !important; }
     .print-only { display: block !important; break-before: page; page-break-before: always; }
-    .print-only h2 { margin: 0 0 12px 0; color: #111 !important; }
+    .print-only h2 { margin: 0 0 8px 0; color: #111 !important; font-size: 1.0em !important; }
     .print-only .print-item {
       margin: 0 0 12px 0;
       padding: 10px 12px;
@@ -119,7 +126,7 @@
       break-inside: avoid;
       page-break-inside: avoid;
     }
-    .print-only .print-item h3 { margin: 0 0 6px 0; color: #111 !important; }
+    .print-only .print-item h3 { margin: 0 0 4px 0; color: #111 !important; font-size: 0.95em !important; }
     .print-only .tt-input { color: #0b63b6 !important; }
     .print-only .tt-output { color: #8a5b00 !important; }
     .print-only .tt-logic { color: #1b5e20 !important; }
