@@ -445,7 +445,7 @@ std::optional<Urho3D::Vector2> Environment::getPosFromIndexes(db_building* build
 
 std::optional<Urho3D::Vector2> Environment::getPosToCreate(std::span<const float> result, ParentBuildingType type,
                                                            db_building* building,
-                                                           char player) {
+                                                           unsigned char player) {
 	auto &indexes = influenceManager.getAreas(result, type, player);
 
 	return getPosFromIndexes(building, player, indexes);

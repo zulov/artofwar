@@ -127,7 +127,7 @@ public:
 	                                                 const std::vector<unsigned>& indexes);
 
 	std::optional<Urho3D::Vector2> getPosToCreate(std::span<const float> result, ParentBuildingType type,
-	                                              db_building* building, char player);
+	                                              db_building* building, unsigned char player);
 	std::optional<Urho3D::Vector2> getPosToCreateResBonus(db_building* building, unsigned char player);
 	// Candidate area centers (world positions), best-first. Influence-map cell indexes are
 	// not exposed. Reference valid until the next influence query.

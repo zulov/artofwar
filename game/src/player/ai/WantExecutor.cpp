@@ -101,55 +101,17 @@ bool WantExecutor::executeUnit(short unitId) {
 bool WantExecutor::executeBuilding(short buildingId) {
 	if (buildingId < 0) { return false; }
 	auto* building = Game::getDatabase()->getBuilding(buildingId);
-
-	// Find which ParentBuildingType this building belongs to
-	ParentBuildingType type = ParentBuildingType::OTHER;
-	for (int i = 0; i < 5; ++i) {
-		if (building->parentType[i]) {
-			type = static_cast<ParentBuildingType>(i);
-			break;
-		}
-	}
-
-	AiActionType actionType;
-	switch (type) {
-	case ParentBuildingType::OTHER:
-		actionType = AiActionType::CREATE_BUILDING_OTHER;
-		break;
-	case ParentBuildingType::DEFENCE:
-		actionType = AiActionType::CREATE_BUILDING_DEFENCE;
-		break;
-	case ParentBuildingType::RESOURCE:
-		actionType = AiActionType::CREATE_BUILDING_RESOURCE;
-		break;
-	case ParentBuildingType::TECH:
-		actionType = AiActionType::CREATE_BUILDING_TECH;
-		break;
-	case ParentBuildingType::UNITS:
-		actionType = AiActionType::CREATE_BUILDING_UNITS;
-		break;
-	default:
-		actionType = AiActionType::NONE;
-		break;
-	}
-
-	if (type == ParentBuildingType::RESOURCE) {
-		if (sumSpan(possession->getResWithOutBonus()) < 0.5f) {
-			history->addAction(actionType, AiActionResult::NO_RESOURCE_BONUS);
-			return false;
-		}
-	}
-
-	auto pos = findPosToBuild(building, type);
+	
+	auto pos = findPosToBuild(building);
 	if (pos.has_value()) {
 		if (!Game::getActionCenter()->addBuilding(building->id, pos.value(), playerId, false)) {
-			history->addAction(actionType, AiActionResult::NO_POSITION_TO_BUILD);
+			history->addAction(AiActionType::CREATE_BUILDING, AiActionResult::NO_POSITION_TO_BUILD);
 			return false;
 		}
-		history->addAction(actionType, AiActionResult::SUCCESS);
+		history->addAction(AiActionType::CREATE_BUILDING, AiActionResult::SUCCESS);
 		return true;
 	}
-	history->addAction(actionType, AiActionResult::NO_POSITION_TO_BUILD);
+	history->addAction(AiActionType::CREATE_BUILDING, AiActionResult::NO_POSITION_TO_BUILD);
 	return false;
 }
 
@@ -236,14 +198,13 @@ short WantExecutor::findBuildingTypeToDeploy(short unitId) const {
 	return -1;
 }
 
-std::optional<Urho3D::Vector2> WantExecutor::findPosToBuild(db_building* building, ParentBuildingType type) {
-	if (type == ParentBuildingType::RESOURCE) {
+std::optional<Urho3D::Vector2> WantExecutor::findPosToBuild(db_building* building) {
+	if (building->parentType[static_cast<unsigned char>(ParentBuildingType::RESOURCE)]) {
 		return Game::getEnvironment()->getPosToCreateResBonus(building, playerId);
 	}
 	// Use BuildSpatialBrain to compute influence map weights
-	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
-	auto spatialOut = buildSpatialBrain.decide(
-			player, enemy,
+
+	auto spatialOut = buildSpatialBrain.decide(player, Game::getPlayersMan()->getEnemyFor(playerId),
 			masterOut->buildingUrgency, masterOut->expandUrgency, masterOut->defenceBuildingUrgency
 			);
 	return Game::getEnvironment()->getPosToCreate(
