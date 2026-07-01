@@ -25,31 +25,27 @@ const OrderHistoryEntry& AiHistory::getOrder(int index) const {
 }
 
 std::vector<const ActionHistoryEntry*> AiHistory::getActionsInLastTicks(unsigned int ticks,
-	std::optional<AiActionType> typeFilter) const {
+                                                                        std::optional<AiActionType> typeFilter) const {
 	const unsigned int now = Game::getFrameInfo()->getTotalTicks();
 	const unsigned int minTick = now > ticks ? now - ticks : 0;
 	std::vector<const ActionHistoryEntry*> result;
 	for (int i = actionCount - 1; i >= 0; --i) {
 		const auto& entry = getAction(i);
 		if (entry.tick < minTick) { break; }
-		if (!typeFilter.has_value() || entry.actionType == typeFilter.value()) {
-			result.push_back(&entry);
-		}
+		if (!typeFilter.has_value() || entry.actionType == typeFilter.value()) { result.push_back(&entry); }
 	}
 	return result;
 }
 
 std::vector<const OrderHistoryEntry*> AiHistory::getOrdersInLastTicks(unsigned int ticks,
-	std::optional<AiOrderType> typeFilter) const {
+                                                                      std::optional<AiOrderType> typeFilter) const {
 	const unsigned int now = Game::getFrameInfo()->getTotalTicks();
 	const unsigned int minTick = now > ticks ? now - ticks : 0;
 	std::vector<const OrderHistoryEntry*> result;
 	for (int i = orderCount - 1; i >= 0; --i) {
 		const auto& entry = getOrder(i);
 		if (entry.tick < minTick) { break; }
-		if (!typeFilter.has_value() || entry.orderType == typeFilter.value()) {
-			result.push_back(&entry);
-		}
+		if (!typeFilter.has_value() || entry.orderType == typeFilter.value()) { result.push_back(&entry); }
 	}
 	return result;
 }
@@ -70,33 +66,25 @@ float AiHistory::recencyScore(AiActionType type, unsigned int lookbackTicks) con
 
 float AiHistory::recencyScore(std::initializer_list<AiActionType> types, unsigned int lookbackTicks) const {
 	float score = 0.f;
-	for (auto type : types) {
-		score += recencyScore(type, lookbackTicks);
-	}
+	for (auto type : types) { score += recencyScore(type, lookbackTicks); }
 	return score;
 }
 
 float AiHistory::recencyScore(std::initializer_list<AiOrderType> types, unsigned int lookbackTicks) const {
 	float score = 0.f;
-	for (auto type : types) {
-		score += recencyScore(type, lookbackTicks);
-	}
+	for (auto type : types) { score += recencyScore(type, lookbackTicks); }
 	return score;
 }
 
 float AiHistory::failureScore(std::initializer_list<AiActionType> types, unsigned int lookbackTicks) const {
 	float score = 0.f;
-	for (auto type : types) {
-		score += failureScore(type, lookbackTicks);
-	}
+	for (auto type : types) { score += failureScore(type, lookbackTicks); }
 	return score;
 }
 
 float AiHistory::failureScore(std::initializer_list<AiOrderType> types, unsigned int lookbackTicks) const {
 	float score = 0.f;
-	for (auto type : types) {
-		score += failureScore(type, lookbackTicks);
-	}
+	for (auto type : types) { score += failureScore(type, lookbackTicks); }
 	return score;
 }
 
@@ -143,11 +131,7 @@ float AiHistory::failureScore(AiOrderType type, unsigned int lookbackTicks) cons
 }
 
 float AiHistory::buildingFailureScore(unsigned int lookbackTicks) const {
-	return failureScore({
-		AiActionType::CREATE_BUILDING_OTHER, AiActionType::CREATE_BUILDING_DEFENCE,
-		AiActionType::CREATE_BUILDING_RESOURCE, AiActionType::CREATE_BUILDING_TECH,
-		AiActionType::CREATE_BUILDING_UNITS
-	}, lookbackTicks);
+	return failureScore({AiActionType::CREATE_BUILDING}, lookbackTicks);
 }
 
 float AiHistory::unitFailureScore(unsigned int lookbackTicks) const {
@@ -156,31 +140,31 @@ float AiHistory::unitFailureScore(unsigned int lookbackTicks) const {
 
 float AiHistory::collectFailureScore(unsigned int lookbackTicks) const {
 	return failureScore({
-		AiOrderType::COLLECT_RESOURCE_0, AiOrderType::COLLECT_RESOURCE_1,
-		AiOrderType::COLLECT_RESOURCE_2, AiOrderType::COLLECT_RESOURCE_3
-	}, lookbackTicks);
+			                    AiOrderType::COLLECT_RESOURCE_0, AiOrderType::COLLECT_RESOURCE_1,
+			                    AiOrderType::COLLECT_RESOURCE_2, AiOrderType::COLLECT_RESOURCE_3
+	                    }, lookbackTicks);
 }
 
 float AiHistory::attackFailureScore(unsigned int lookbackTicks) const {
 	return failureScore({
-		AiOrderType::ATTACK_ECON, AiOrderType::ATTACK_BUILDING, AiOrderType::ATTACK_ARMY
-	}, lookbackTicks);
+			                    AiOrderType::ATTACK_ECON, AiOrderType::ATTACK_BUILDING, AiOrderType::ATTACK_ARMY
+	                    }, lookbackTicks);
 }
 
 float AiHistory::defendFailureScore(unsigned int lookbackTicks) const {
 	return failureScore({
-		AiOrderType::DEFEND_ECON, AiOrderType::DEFEND_BUILDING, AiOrderType::DEFEND_ARMY
-	}, lookbackTicks);
+			                    AiOrderType::DEFEND_ECON, AiOrderType::DEFEND_BUILDING, AiOrderType::DEFEND_ARMY
+	                    }, lookbackTicks);
 }
 
 float AiHistory::attackActivityScore(unsigned int lookbackTicks) const {
 	return recencyScore({
-		AiOrderType::ATTACK_ECON, AiOrderType::ATTACK_BUILDING, AiOrderType::ATTACK_ARMY
-	}, lookbackTicks);
+			                    AiOrderType::ATTACK_ECON, AiOrderType::ATTACK_BUILDING, AiOrderType::ATTACK_ARMY
+	                    }, lookbackTicks);
 }
 
 float AiHistory::defendActivityScore(unsigned int lookbackTicks) const {
 	return recencyScore({
-		AiOrderType::DEFEND_ECON, AiOrderType::DEFEND_BUILDING, AiOrderType::DEFEND_ARMY
-	}, lookbackTicks);
+			                    AiOrderType::DEFEND_ECON, AiOrderType::DEFEND_BUILDING, AiOrderType::DEFEND_ARMY
+	                    }, lookbackTicks);
 }

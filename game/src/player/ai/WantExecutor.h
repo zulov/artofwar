@@ -53,7 +53,7 @@ private:
 	bool buildingProducesUnit(db_building* building, unsigned short unitId) const;
 	std::vector<Building*> getBuildingsCanDeploy(unsigned short unitId) const;
 	short findBuildingTypeToDeploy(short unitId) const;
-	std::optional<Urho3D::Vector2> findPosToBuild(db_building* building, ParentBuildingType type);
+	std::optional<Urho3D::Vector2> findPosToBuild(db_building* building);
 
 	Player* player;
 	unsigned char playerId;
