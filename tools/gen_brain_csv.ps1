@@ -22,6 +22,7 @@
     Dimensions are derived from the C++ enum contract:
       military.csv   : MilitaryInputIdx=26  -> MilitaryOutputIdx=21 (center-pair count)
       attack_spatial : AttackSpatialInputIdx=10 -> AttackSpatialOutputIdx=6 (AI_ARMY_MAP_COUNT)
+      build_spatial  : BuildSpatialInputIdx=16 -> BuildSpatialOutputIdx=12 (AI_MAP_COUNT)
 
 .PARAMETER Check
     Print intended topologies only; write nothing.
@@ -54,7 +55,8 @@ if (-not $OutDir) {
 # name, inputSize, hidden sizes (array), outputSize
 $brains = @(
     @{ Name = 'military.csv';       Input = 26; Hidden = @(16); Output = 21 },
-    @{ Name = 'attack_spatial.csv'; Input = 10; Hidden = @(10); Output = 6  }
+    @{ Name = 'attack_spatial.csv'; Input = 10; Hidden = @(10); Output = 6  },
+    @{ Name = 'build_spatial.csv';   Input = 16; Hidden = @(12); Output = 12 }
 )
 
 $rng = [System.Random]::new($Seed)

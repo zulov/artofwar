@@ -724,17 +724,17 @@ keep top 3 by need (need > 0.1) -> wantList.addRequest(BUILDING, need, building.
     <tr><th>Parent type</th><th>Method</th><th>Logic</th></tr>
     <tr>
       <td>RESOURCE</td>
-      <td><code>Environment::getPosToCreateResBonus()</code></td>
-      <td>Uses the "resource not in bonus" influence maps to find positions near unbonused resource nodes of the matching type. Used for all resource buildings (bonus, source, storage, refine).</td>
+      <td><code>BuildSpatialBrain</code> &rarr; <code>Environment::getPosToCreate()</code></td>
+      <td>BuildSpatialBrain now carries a merged resource-not-bonus output, so resource-bonus buildings can still be placed through the brain without a separate resource-routing path.</td>
     </tr>
     <tr>
       <td>OTHER / DEFENCE / TECH / UNITS</td>
       <td><code>BuildSpatialBrain</code> &rarr; <code>Environment::getPosToCreate()</code></td>
-      <td>BuildSpatialBrain outputs 10 influence-map weights (buildings, units, attackSpeed, 4x gatherSpeed, 3x enemy); the weighted maps are combined and the best visible cell is chosen.</td>
+      <td>BuildSpatialBrain outputs 12 influence-map weights (buildings, units, attackSpeed, 4x gatherSpeed, 3x enemy, res-not-bonus, economy); the weighted maps are combined and the best visible cell is chosen.</td>
     </tr>
   </table>
 
-  <div class="file-ref">WantExecutor.cpp: findPosToBuild() | Environment.cpp: getPosToCreateResBonus(), getPosToCreate()</div>
+  <div class="file-ref">WantExecutor.cpp: findPosToBuild() | Environment.cpp: getPosToCreate()</div>
 </div>
 
 <!-- ============================================ -->
@@ -747,11 +747,11 @@ keep top 3 by need (need > 0.1) -> wantList.addRequest(BUILDING, need, building.
     <tr><th>File</th><th>What it contains</th></tr>
     <tr><td><code>EconomyBrain.h/.cpp</code></td><td>Unified economy brain. <code>EconomyOutputIdx</code> with the 10 NEED_* building outputs (BONUS/SOURCE/STORAGE/REFINE per resource) + worker/resource upgrade urgencies.</td></tr>
     <tr><td><code>AiOrchestrator.cpp</code></td><td><code>createResBuilding()</code>: per-building max over matching NEED_* outputs, submit top 3 (need &gt; 0.1) as BUILDING wants. <code>resolveResBuildingUpgrade()</code>: weighted upgrade choice.</td></tr>
-    <tr><td><code>WantExecutor.cpp</code></td><td><code>findPosToBuild()</code>: dispatches RESOURCE buildings to <code>getPosToCreateResBonus()</code> and other types to <code>BuildSpatialBrain</code> + <code>getPosToCreate()</code>.</td></tr>
+    <tr><td><code>WantExecutor.cpp</code></td><td><code>findPosToBuild()</code>: sends every building through <code>BuildSpatialBrain</code> + <code>getPosToCreate()</code>.</td></tr>
     <tr><td><code>MetricDefinitions.h</code></td><td><code>ResourceEconomyMetricIdx</code> enum (resource-economy metric set) used to compose the economy brain's resource inputs.</td></tr>
     <tr><td><code>Resources.h/.cpp</code></td><td>Resource storage, gather speeds, decay, refinement, interest. Getters: <code>getFoodStorage()</code>, <code>getGoldStorage()</code>, <code>getStoneRefineCapacity()</code>, <code>getGoldRefineCapacity()</code>.</td></tr>
     <tr><td><code>Possession.h/.cpp</code></td><td>Building economy counts (resource-building count, res-without-bonus sum, bonus coverage) used as brain inputs.</td></tr>
-    <tr><td><code>Environment.h/.cpp</code></td><td>Placement: <code>getPosToCreateResBonus()</code> (resource buildings), <code>getPosToCreate()</code> (spatial-brain-weighted placement).</td></tr>
+    <tr><td><code>Environment.h/.cpp</code></td><td>Placement: <code>getPosToCreate()</code> (all building placement is brain-driven).</td></tr>
     <tr><td><code>db_struct.h</code></td><td>Database structs: <code>db_building</code> (toResource, ruinable, resourceType, parentType), <code>db_building_level</code> (collect, resourceRange, foodStorage, goldStorage, stoneRefineCapacity, goldRefineCapacity, spawnResourceTime, spawnResourceRange).</td></tr>
     <tr><td><code>Data/ai/economy.csv</code></td><td>EconomyBrain weights: 38 inputs, 19 outputs. (Untrained placeholder weights unless evolved externally.)</td></tr>
   </table>

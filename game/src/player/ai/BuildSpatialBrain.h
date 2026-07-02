@@ -1,28 +1,22 @@
 #pragma once
 #include <array>
-#include <span>
 #include <magic_enum.hpp>
 #include "env/influence/InfluenceManager.h"
 
 class Brain;
 class Player;
+struct db_building;
+struct db_building_level;
 struct db_nation;
-enum class BuildPlacementClass : unsigned char;
 
 enum class BuildSpatialInputIdx : unsigned char {
-	BUILDING_URGENCY,
 	EXPAND_URGENCY,
-	DEFENCE_BUILDING_URGENCY,
 	BUILDINGS_COUNT,
 	WORKERS_COUNT,
 	ARMY_COUNT,
 	GAME_TIME,
 	PLAYER_SCORE,
 	ENEMY_SCORE,
-	RES_FOOD,
-	RES_WOOD,
-	RES_STONE,
-	RES_GOLD,
 	// One-hot of BuildPlacementClass (must stay in the same order as the enum).
 	CLASS_OTHER,
 	CLASS_DEFENCE,
@@ -46,10 +40,7 @@ enum class BuildSpatialOutputIdx : unsigned char {
 	W_ENEMY_BUILDINGS_INFLUENCE,
 	W_ENEMY_UNITS_INFLUENCE,
 	W_ENEMY_ATTACK_SPEED,
-	W_RES_FOOD_NOT_BONUS,
-	W_RES_WOOD_NOT_BONUS,
-	W_RES_STONE_NOT_BONUS,
-	W_RES_GOLD_NOT_BONUS,
+	W_RES_NOT_BONUS,
 	W_ECONOMY,
 };
 
@@ -67,8 +58,8 @@ public:
 	BuildSpatialBrain(const BuildSpatialBrain&) = delete;
 
 	BuildSpatialOutput decide(Player* player, Player* enemy,
-	                          float buildingUrgency, float expandUrgency, float defenceBuildingUrgency,
-	                          BuildPlacementClass placementClass);
+	                          float expandUrgency,
+	                          const db_building* building, const db_building_level* level);
 
 private:
 	Brain* brain;

@@ -33,6 +33,7 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 	for (auto& resNotInBonus : resNotInBonus) {
 		resNotInBonus.reserve(numberOfPlayers);
 	}
+	resNotInBonusAny.reserve(numberOfPlayers);
 
 	attackSpeed.reserve(numberOfPlayers);
 	armyInfluence.reserve(numberOfPlayers);
@@ -70,6 +71,7 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 			gatherSpeedView[r] = gatherSpeed[r][player];
 			resNotInBonusView[r] = resNotInBonus[r][player];
 		}
+		resNotInBonusAny.emplace_back(new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 5, sharedTemplateV, false));
 
 		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMap*, AI_MAP_COUNT>{
 			                                buildingsInfluencePerPlayer[player],
@@ -82,12 +84,9 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 			                                buildingsInfluencePerPlayer[enemy],
 			                                unitsInfluencePerPlayer[enemy],
 			                                attackSpeed[enemy],
-			                                resNotInBonusView[cast(ResourceType::FOOD)],
-			                                resNotInBonusView[cast(ResourceType::WOOD)],
-			                                resNotInBonusView[cast(ResourceType::STONE)],
-			                                resNotInBonusView[cast(ResourceType::GOLD)],
+			                                resNotInBonusAny[player],
 			                                economyInfluence[player],
-		                                });
+			                        });
 		mapsForAiArmyPerPlayer.emplace_back(std::array<InfluenceMap*, AI_ARMY_MAP_COUNT>{
 			                                    buildingsInfluencePerPlayer[player],
 			                                    unitsInfluencePerPlayer[player],
@@ -129,6 +128,7 @@ InfluenceManager::~InfluenceManager() {
 	for (auto& vec : resNotInBonus) {
 		clear_vector(vec);
 	}
+	clear_vector(resNotInBonusAny);
 
 	clear_vector(attackSpeed);
 
@@ -148,6 +148,7 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 	for (auto& vec : resNotInBonus) {
 		MapsUtils::resetMaps(vec);
 	}
+	MapsUtils::resetMaps(resNotInBonusAny);
 
 	for (const auto unit : (*units)) {
 		const auto pId = unit->getPlayer();
@@ -159,6 +160,7 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 			auto res = static_cast<ResourceEntity*>(unit->getThingToInteract());
 			// TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
 			mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getResourceId()]->update(res->getIndexInInfluence());
+			resNotInBonusAny[unit->getPlayer()]->update(res->getIndexInInfluence());
 		}
 	}
 	
