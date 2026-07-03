@@ -14,7 +14,7 @@ enum class AiActionType : unsigned char {
 
 enum class AiActionResult : unsigned char {
 	SUCCESS,
-	NO_RESOURCES_SPECIFIC,
+	NO_ENOUGH_RESOURCES,
 	NO_BUILDING_TO_DEPLOY,
 	NO_POSITION_TO_BUILD,
 	NO_BUILDINGS_OF_TYPE,

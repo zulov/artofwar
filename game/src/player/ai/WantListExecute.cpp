@@ -32,7 +32,11 @@ WantList::LackingResult WantList::execute(Player* player, IWantExecutor& executo
 		const auto* cost = executor.cost(item);
 
 		for (unsigned char i = 0; i < item.count; ++i) {
-			if (!cost || !resources->hasEnough(cost)) {
+			if (!cost) {
+				break;
+			}
+			if (!resources->hasEnough(cost)) {
+				executor.onNotEnoughResources(item);
 				addLacking(cost, resources, lacking);
 				break;
 			}

@@ -17,6 +17,8 @@ public:
 	virtual ~IWantExecutor() = default;
 	// Returns the cost of the item (nullptr if it can't be resolved).
 	virtual const db_with_cost* cost(const WantItem& item) const = 0;
+	// Called when the item is otherwise valid but unaffordable.
+	virtual void onNotEnoughResources(const WantItem& item) = 0;
 	// Executes the item once it is known affordable; returns false to stop repeating it.
 	virtual bool execute(WantItem& item) = 0;
 };

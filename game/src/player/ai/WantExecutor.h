@@ -39,6 +39,7 @@ public:
 	short getLackingBuilding() const { return pendingLackingBuilding; }
 
 	const db_with_cost* cost(const WantItem& item) const override;
+	void onNotEnoughResources(const WantItem& item) override;
 	bool execute(WantItem& item) override;
 
 private:

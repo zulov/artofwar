@@ -24,6 +24,24 @@
 #include "player/Possession.h"
 #include "player/ai/ActionCenter.h"
 
+namespace {
+	AiActionType actionTypeFor(const WantItem& item) {
+		switch (item.type) {
+		case WantItemType::WORKER:
+			return AiActionType::CREATE_WORKER;
+		case WantItemType::UNIT:
+			return AiActionType::CREATE_UNIT;
+		case WantItemType::BUILDING:
+			return AiActionType::CREATE_BUILDING;
+		case WantItemType::UNIT_UPGRADE:
+			return AiActionType::UPGRADE_UNIT;
+		case WantItemType::BUILDING_UPGRADE:
+			return AiActionType::UPGRADE_BUILDING;
+		}
+		return AiActionType::NONE;
+	}
+}
+
 WantExecutor::WantExecutor(Player* player, db_nation* nation, AiHistory* history) :
 	player(player), playerId(player->getId()), possession(player->getPossession()),
 	nation(nation), history(history), buildSpatialBrain(nation) {}
@@ -67,6 +85,14 @@ const db_with_cost* WantExecutor::cost(const WantItem& item) const {
 		return nullptr;
 	}
 	return nullptr;
+}
+
+void WantExecutor::onNotEnoughResources(const WantItem& item) {
+	const auto actionType = actionTypeFor(item);
+	if (actionType == AiActionType::NONE) { return; }
+
+	const auto chosenId = item.specificId < 0 ? 0 : static_cast<uint8_t>(item.specificId);
+	history->addAction(actionType, AiActionResult::NO_ENOUGH_RESOURCES, chosenId);
 }
 
 // --- Execution ---
