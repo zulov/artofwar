@@ -14,7 +14,7 @@
 #include "env/influence/CenterType.h"
 
 MilitaryBrain::MilitaryBrain(db_nation* nation)
-	: brain(BrainProvider::get(nation->orderPrefix[0] + "military.csv")) {
+	: brain(BrainProvider::get(nation->brainPrefix[4] + "military.csv")) {
 	assert(brain->getInputSize() == inputData.size());
 	assert(brain->getInputSize() == magic_enum::enum_count<MilitaryInputIdx>());
 	assert(brain->getOutputSize() == MILITARY_OUTPUT_COUNT);

@@ -11,7 +11,7 @@
 #include "player/Possession.h"
 
 AttackSpatialBrain::AttackSpatialBrain(db_nation* nation)
-	: brain(BrainProvider::get(nation->orderPrefix[1] + "attack_spatial.csv")) {
+	: brain(BrainProvider::get(nation->brainPrefix[5] + "attack_spatial.csv")) {
 	assert(brain->getInputSize() == inputData.size());
 	assert(brain->getInputSize() == magic_enum::enum_count<AttackSpatialInputIdx>());
 	assert(brain->getOutputSize() == magic_enum::enum_count<AttackSpatialOutputIdx>());

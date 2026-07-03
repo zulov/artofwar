@@ -703,17 +703,11 @@ void Main::readParameters() {
 			} else if (argument == "y" && !value.Empty()) {
 				engineParameters_[Urho3D::EP_WINDOW_HEIGHT] = ToInt(value);
 				++i;
-			} else if (argument == "actionaipath1" && !value.Empty()) {
-				SimGlobals::ACTION_AI_PATH[0] = value.CString();
+			} else if (argument == "brainpath1" && !value.Empty()) {
+				SimGlobals::BRAIN_AI_PATH[0] = value.CString();
 				++i;
-			} else if (argument == "actionaipath2" && !value.Empty()) {
-				SimGlobals::ACTION_AI_PATH[1] = value.CString();
-				++i;
-			} else if (argument == "orderaipath1" && !value.Empty()) {
-				SimGlobals::ORDER_AI_PATH[0] = value.CString();
-				++i;
-			} else if (argument == "orderaipath2" && !value.Empty()) {
-				SimGlobals::ORDER_AI_PATH[1] = value.CString();
+			} else if (argument == "brainpath2" && !value.Empty()) {
+				SimGlobals::BRAIN_AI_PATH[1] = value.CString();
 				++i;
 			} else if (argument == "random") {
 				SimGlobals::RANDOM = true;

@@ -16,7 +16,7 @@
 #include "env/influence/CenterType.h"
 
 MasterBrain::MasterBrain(db_nation* nation)
-	: brain(BrainProvider::get(nation->actionPrefix[0] + "master.csv")), nation(nation) {
+	: brain(BrainProvider::get(nation->brainPrefix[0] + "master.csv")), nation(nation) {
 	assert(brain->getInputSize() == inputData.size());
 	assert(brain->getInputSize() == magic_enum::enum_count<MasterInputIdx>());
 	assert(brain->getOutputSize() == magic_enum::enum_count<MasterOutputIdx>());

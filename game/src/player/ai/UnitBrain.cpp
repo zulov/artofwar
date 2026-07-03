@@ -12,7 +12,7 @@
 #include <cmath>
 
 UnitBrain::UnitBrain(db_nation* nation)
-	: brain(BrainProvider::get(nation->actionPrefix[3] + "unit.csv")),
+	: brain(BrainProvider::get(nation->brainPrefix[3] + "unit.csv")),
 	  nation(nation) {
 	assert(brain->getInputSize() == inputData.size());
 	assert(brain->getInputSize() == magic_enum::enum_count<UnitInputIdx>());

@@ -459,25 +459,20 @@ struct db_nation : db_with_name {
 	std::vector<db_unit*> workers;
 	std::vector<db_building*> buildings;
 
-	std::vector<std::string> actionPrefix;
-	std::vector<std::string> orderPrefix;
+	std::vector<std::string> brainPrefix;
 
 	db_nation(sqlite3_stmt* stmt) :
 		db_with_name(asUShort(stmt, DbNationCol::id), asText(stmt, DbNationCol::name)),
-		  actionPrefix(split(asText(stmt, DbNationCol::action_prefix), SPLIT_SIGN)),
-		  orderPrefix(split(asText(stmt, DbNationCol::order_prefix), SPLIT_SIGN)) {}
+		  brainPrefix(split(asText(stmt, DbNationCol::brain_prefix), SPLIT_SIGN)) {}
 
-	std::vector<std::string> splitAi(std::string* param) const {
+	std::vector<std::string> splitBrain(std::string* param) const {
 		return split(split(param[id], SPLIT_SIGN_AI)[SimGlobals::CURRENT_RUN], SPLIT_SIGN);
 	}
 
 	void refresh() {
 		assert(id<MAX_PLAYERS); //TODO BUG to sa troszke inne rzeczy
-		if (!SimGlobals::ACTION_AI_PATH[id].empty()) {
-			actionPrefix = splitAi(SimGlobals::ACTION_AI_PATH);
-		}
-		if (!SimGlobals::ORDER_AI_PATH[id].empty()) {
-			orderPrefix = splitAi(SimGlobals::ORDER_AI_PATH);
+		if (!SimGlobals::BRAIN_AI_PATH[id].empty()) {
+			brainPrefix = splitBrain(SimGlobals::BRAIN_AI_PATH);
 		}
 	}
 };

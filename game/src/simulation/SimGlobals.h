@@ -27,8 +27,7 @@ inline struct SimGlobals {
 	inline static bool FAKE_TERRAIN = false;
 	inline static bool RANDOM = false;
 
-	inline static std::string ACTION_AI_PATH[MAX_PLAYERS] = {"", ""};
-	inline static std::string ORDER_AI_PATH[MAX_PLAYERS] = {"", ""};
+	inline static std::string BRAIN_AI_PATH[MAX_PLAYERS] = {"", ""};
 
 	inline static std::vector<std::string> OUTPUT_NAMES;
 

@@ -69,7 +69,7 @@ enum class DbBuildingLevelCol : unsigned char {
 };
 
 enum class DbNationCol : unsigned char {
-	id, name, action_prefix, order_prefix
+	id, name, brain_prefix
 };
 
 enum class DbResourceCol : unsigned char {

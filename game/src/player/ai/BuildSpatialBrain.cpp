@@ -13,7 +13,7 @@
 #include "Game.h"
 
 BuildSpatialBrain::BuildSpatialBrain(db_nation* nation)
-	: brain(BrainProvider::get(nation->actionPrefix[2] + "build_spatial.csv")) {
+	: brain(BrainProvider::get(nation->brainPrefix[2] + "build_spatial.csv")) {
 	assert(brain->getInputSize() == inputData.size());
 	assert(brain->getInputSize() == magic_enum::enum_count<BuildSpatialInputIdx>());
 	assert(brain->getOutputSize() == magic_enum::enum_count<BuildSpatialOutputIdx>() ||
