@@ -16,6 +16,7 @@
 #include "objects/unit/Unit.h"
 #include "utils/AssertUtils.h"
 #include "utils/OtherUtils.h"
+#include "utils/PrintUtils.h"
 
 // mapsForCentersPerPlayer is sized CENTER_TYPE_COUNT and indexed by CenterType.
 static_assert(magic_enum::enum_count<CenterType>() == CENTER_TYPE_COUNT,
@@ -343,8 +344,8 @@ InfluenceManager::getBestVisibleIndexes(std::span<InfluenceMap*> maps, std::span
 	}
 
 	const int size = Urho3D::Min(noOfVisible, arraySize / 8);
-
-	collectSortedBelow(tempIndexes, std::span<float>(errorsSum), 0.1f * numberOfNotEmptyMap, size);
+	
+	collectSortedBelow(tempIndexes, std::span<float>(errorsSum), 10.f * numberOfNotEmptyMap, size);
 	return tempIndexes;
 }
 
