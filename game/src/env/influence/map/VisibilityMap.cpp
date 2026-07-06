@@ -41,6 +41,7 @@ VisibilityMap::VisibilityMap(unsigned short resolution, float size, float valueT
 	std::fill_n(valuesForInfluence, influenceArraySize, false);
 	ranges = new float[arraySize];
 	std::fill_n(ranges, arraySize, 0.f);
+	unseenIntersection.resize(influenceArraySize, 0.f);
 }
 
 VisibilityMap::~VisibilityMap() {
@@ -51,8 +52,7 @@ VisibilityMap::~VisibilityMap() {
 
 void VisibilityMap::update(const Urho3D::Vector2& pos, float sRadius) {
 	if (sRadius < 0) { return; }
-	valuesForInfluenceReady = false;
-	percentReady = false;
+	invalidateCaches();
 	const auto centerIdx = calculator->indexFromPosition(pos);
 	if (ranges[centerIdx] < sRadius) {
 		if (ranges[centerIdx] == 0.f && changedIndexes.size() < CHANGED_INDEXES_MAX_SIZE) {
@@ -71,6 +71,7 @@ void VisibilityMap::finishAtIndex(unsigned i) const {
 	}
 
 	ranges[i] = 0.f;
+	invalidateCaches();
 }
 
 void VisibilityMap::finish() {
@@ -82,8 +83,7 @@ void VisibilityMap::finish() {
 }
 
 void VisibilityMap::reset() {
-	valuesForInfluenceReady = false;
-	percentReady = false;
+	invalidateCaches();
 	char* end = (char*)values + arraySize;
 	for (char* i = (char*)values; i < end; i++) { *i &= 1; }
 }
@@ -102,18 +102,11 @@ float VisibilityMap::getValueAt(unsigned index) const {
 	return castC(values[index]);
 }
 
-int VisibilityMap::removeUnseen(float* intersection) {
-	ensureReady();
-	int notSeen = 0;
-	const auto end = valuesForInfluence + influenceArraySize;
-
-	for (auto ptrI = valuesForInfluence; ptrI < end; ++ptrI, ++intersection) {
-		if (!(*ptrI)) {
-			++notSeen;
-			*intersection = std::numeric_limits<float>::max();
-		} else { *intersection = 0.f; }
-	}
-	return influenceArraySize - notSeen;
+int VisibilityMap::removeUnseen(std::span<float> intersection) {
+	ensureUnseenIntersectionReady();
+	assert(intersection.size() == unseenIntersection.size());
+	std::copy_n(unseenIntersection.begin(), unseenIntersection.size(), intersection.begin());
+	return visibleCount;
 }
 
 float VisibilityMap::getPercent() {
@@ -144,6 +137,29 @@ void VisibilityMap::ensureReady() {
 		}
 		valuesForInfluenceReady = true;
 	}
+}
+
+void VisibilityMap::ensureUnseenIntersectionReady() {
+	ensureReady();
+	if (unseenIntersectionReady) {
+		return;
+	}
+
+	visibleCount = 0;
+	for (int i = 0; i < influenceArraySize; ++i) {
+		const bool visible = valuesForInfluence[i];
+		unseenIntersection[i] = visible ? 0.f : std::numeric_limits<float>::max();
+		if (visible) {
+			++visibleCount;
+		}
+	}
+	unseenIntersectionReady = true;
+}
+
+void VisibilityMap::invalidateCaches() const {
+	valuesForInfluenceReady = false;
+	unseenIntersectionReady = false;
+	percentReady = false;
 }
 
 Urho3D::Vector3 VisibilityMap::getVertex(const Urho3D::Vector2& center, Urho3D::Vector2 vertex) const {

@@ -25,12 +25,14 @@ public:
 	VisibilityType getValueAt(float x, float z) const;
 
 	float getValueAt(unsigned index) const;
-	int removeUnseen(float* intersection);
+	int removeUnseen(std::span<float> intersection);
 	float getPercent();
 	unsigned short getResolution() const { return calculator->getResolution(); }
 
 private:
 	void ensureReady();
+	void ensureUnseenIntersectionReady();
+	void invalidateCaches() const;
 
 	GridCalculator* calculator;
 	unsigned int arraySize;
@@ -43,8 +45,11 @@ private:
 	float* ranges;
 	std::vector<int> changedIndexes;
 	bool* valuesForInfluence;
+	std::vector<float> unseenIntersection;
+	int visibleCount = 0;
 	LevelCache* levelCache;
 	float percent = -1.f;
-	bool percentReady = false;
-	bool valuesForInfluenceReady = false;
+	mutable bool percentReady = false;
+	mutable bool valuesForInfluenceReady = false;
+	mutable bool unseenIntersectionReady = false;
 };
