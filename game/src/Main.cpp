@@ -405,6 +405,7 @@ void Main::load(const Urho3D::String& saveName, NewGameForm* form) {
 		case 3:
 			delete form; //TODO trzeba ustawic na null
 			loader.end();
+			Game::reset();
 			changeState(GameState::RUNNING);
 			inited = true;
 			break;
