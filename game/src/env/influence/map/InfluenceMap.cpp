@@ -308,7 +308,7 @@ std::vector<int> InfluenceMap::getIndexesWithByValue(float percent, float tolera
 	return indexes;
 }
 
-bool InfluenceMap::cumulateErrors(float percent, float* intersection) {
+bool InfluenceMap::cumulateErrors(float percent, std::span<float> intersection) {
 	ensureKernel();
 	computeMinMax();
 	assert(minMaxInited);
@@ -316,17 +316,17 @@ bool InfluenceMap::cumulateErrors(float percent, float* intersection) {
 	if (diff == 0.f) {
 		return false;
 	}
+	assert(intersection.size() == arraySize);
 	const auto coef1 = 1.f / diff * percent;
-	const auto endV = values + arraySize;
 	if (percent < 0.f) {
-		for (auto ptrV = values; ptrV < endV; ++ptrV, ++intersection) {
-			float val = (*ptrV - min) * coef1;
-			*intersection += val * val;
+		for (unsigned i = 0; i < arraySize; ++i) {
+			float val = (values[i] - min) * coef1;
+			intersection[i] += val * val;
 		}
 	} else {
-		for (auto ptrV = values; ptrV < endV; ++ptrV, ++intersection) {
-			float val = (max - *ptrV) * coef1;
-			*intersection += val * val;
+		for (unsigned i = 0; i < arraySize; ++i) {
+			float val = (max - values[i]) * coef1;
+			intersection[i] += val * val;
 		}
 	}
 	return true;

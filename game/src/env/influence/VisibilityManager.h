@@ -1,4 +1,5 @@
 #pragma once
+#include <span>
 #include <vector>
 #include <Urho3D/Container/Ptr.h>
 
@@ -33,7 +34,7 @@ public:
 	void drawMaps(short currentDebugBatch, char index) const;
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;
 	float getVisibilityScore(char player) const;
-	int removeUnseen(unsigned char player, float* intersection) const;
+	int removeUnseen(unsigned char player, std::span<float> intersection) const;
 	void nextVisibilityType();
 private:
 	std::vector<VisibilityMap*> visibilityPerPlayer;

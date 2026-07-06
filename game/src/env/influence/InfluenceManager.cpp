@@ -114,7 +114,7 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 
 	arraySize = calculator->getResolution() * calculator->getResolution();
 	assert(arraySize <= std::numeric_limits<unsigned short>::max());
-	errorsSum = new float[arraySize];
+	errorsSum.resize(arraySize);
 
 	assert(calculator->getResolution() == unitsInfluencePerPlayer[0]->getResolution());
 }
@@ -138,7 +138,6 @@ InfluenceManager::~InfluenceManager() {
 	delete visibilityManager;
 	delete ci;
 
-	delete[]errorsSum;
 	delete[] sharedTemplateV;
 }
 
@@ -336,16 +335,16 @@ InfluenceManager::getBestVisibleIndexes(std::span<InfluenceMap*> maps, std::span
 	assert(result.size() == maps.size());
 
 	//unseen means max float max error
-	const int noOfVisible = visibilityManager->removeUnseen(player, errorsSum);
+	const int noOfVisible = visibilityManager->removeUnseen(player, std::span<float>(errorsSum));
 
 	char numberOfNotEmptyMap = 0;
 	for (auto&& [map, value] : std::views::zip(maps, result)) {
-		numberOfNotEmptyMap += map->cumulateErrors(value, errorsSum);
+		numberOfNotEmptyMap += map->cumulateErrors(value, std::span<float>(errorsSum));
 	}
 
 	const int size = Urho3D::Min(noOfVisible, arraySize / 8);
 
-	collectSortedBelow(tempIndexes, std::span(errorsSum, arraySize), 0.1f * numberOfNotEmptyMap, size);
+	collectSortedBelow(tempIndexes, std::span<float>(errorsSum), 0.1f * numberOfNotEmptyMap, size);
 	return tempIndexes;
 }
 

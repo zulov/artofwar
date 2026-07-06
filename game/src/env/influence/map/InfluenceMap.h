@@ -42,7 +42,7 @@ public:
 	unsigned short getResolution() const { return calculator->getResolution(); }
 
 	std::vector<int> getIndexesWithByValue(float percent, float tolerance);
-	bool cumulateErrors(float percent, float* intersection);
+	bool cumulateErrors(float percent, std::span<float> intersection);
 
 	void ensureReady();
 

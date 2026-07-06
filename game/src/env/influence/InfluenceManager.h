@@ -103,7 +103,7 @@ private:
 	// --- Scratch buffers ---
 	mutable content_info* ci;
 	mutable unsigned int arraySize;
-	mutable float* errorsSum; // [arraySize]
+	mutable std::vector<float> errorsSum; // [arraySize]
 	mutable std::vector<unsigned> tempIndexes;
 	mutable std::vector<Urho3D::Vector2> tempCenters;
 
