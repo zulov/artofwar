@@ -146,11 +146,16 @@ void VisibilityMap::ensureUnseenIntersectionReady() {
 	}
 
 	visibleCount = 0;
-	for (int i = 0; i < influenceArraySize; ++i) {
-		const bool visible = valuesForInfluence[i];
-		unseenIntersection[i] = visible ? 0.f : std::numeric_limits<float>::max();
+	auto* src = valuesForInfluence;
+	auto* dst = unseenIntersection.data();
+	const auto* const srcEnd = valuesForInfluence + influenceArraySize;
+	for (; src < srcEnd; ++src, ++dst) {
+		const bool visible = *src;
 		if (visible) {
+			*dst = 0.f;
 			++visibleCount;
+		} else {
+			*dst = std::numeric_limits<float>::max();
 		}
 	}
 	unseenIntersectionReady = true;
