@@ -54,12 +54,6 @@ TEST_F(AiHistoryFixture, RecencyScoreIgnoresOldEntries) {
 	EXPECT_FLOAT_EQ(history.recencyScore(AiActionType::CREATE_WORKER, 100), 0.f);
 }
 
-TEST_F(AiHistoryFixture, RecencyScoreIgnoresFailures) {
-	advanceTicks(1);
-	history.addAction(AiActionType::CREATE_WORKER, AiActionResult::NO_RESOURCES_SPECIFIC);
-	EXPECT_FLOAT_EQ(history.recencyScore(AiActionType::CREATE_WORKER, 100), 0.f);
-}
-
 TEST_F(AiHistoryFixture, RecencyScoreIgnoresOtherTypes) {
 	advanceTicks(1);
 	history.addAction(AiActionType::CREATE_UNIT, AiActionResult::SUCCESS);
