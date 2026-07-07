@@ -142,7 +142,7 @@
   <div class="change-note">
     <div class="label">Current: Unified (Single Brain)</div>
     <ul>
-      <li>EconomyBrain (38 inputs, 19 outputs) does everything, including upgrade urgencies</li>
+      <li>EconomyBrain (38 inputs, 18 outputs) does everything, including upgrade urgencies</li>
       <li>ResourceBrain removed entirely</li>
       <li>10 direct building-type need outputs (e.g. NEED_BONUS_FOOD, NEED_FOOD_SOURCE, NEED_FOOD_STORAGE)</li>
       <li>Orchestrator scores resource buildings against these needs via DB fields</li>
@@ -160,7 +160,7 @@
   <span class="tag brain">Main Brain</span>
   <span class="tag new">Unified</span>
 
-  <p>EconomyBrain is a single neural network that handles all economy decisions: worker training, resource allocation, worker reassignment, resource building selection, and worker/resource-building upgrades. It receives 38 inputs covering scores, resources, gather speeds, workers, storage/refine state, bonus coverage, nearby supply, building counts, lacking feedback, urgencies from MasterBrain, collection-failure history, average levels, and game time. It outputs 19 values.</p>
+  <p>EconomyBrain is a single neural network that handles all economy decisions: worker training, resource allocation, resource building selection, and worker/resource-building upgrades. It receives 38 inputs covering scores, resources, gather speeds, workers, storage/refine state, bonus coverage, nearby supply, building counts, lacking feedback, urgencies from MasterBrain, collection-failure history, average levels, and game time. It outputs 18 values.</p>
 
   <div class="illust">
     <svg width="800" height="500" viewBox="0 0 800 500">
@@ -174,7 +174,7 @@
 
       <!-- EconomyBrain - large box -->
       <rect x="100" y="85" width="600" height="260" rx="12" fill="#16213e" stroke="#0d47a1" stroke-width="2.5"/>
-      <text x="400" y="108" text-anchor="middle" fill="#90caf9" font-size="14" font-weight="bold">EconomyBrain (38 inputs, 19 outputs)</text>
+      <text x="400" y="108" text-anchor="middle" fill="#90caf9" font-size="14" font-weight="bold">EconomyBrain (38 inputs, 18 outputs)</text>
 
       <!-- Input column -->
       <rect x="120" y="118" width="200" height="215" rx="6" fill="#0d1b2a" stroke="#333" stroke-width="1"/>
@@ -213,29 +213,27 @@
       <text x="490" y="151" fill="#90caf9" font-size="9">WORKER_ALLOCATION</text>
       <text x="490" y="164" fill="#4caf50" font-size="9">FOOD/WOOD/STONE/GOLD_PRIORITY</text>
       <text x="490" y="177" fill="#e6c44d" font-size="9">EXPAND_PRIORITY</text>
-      <text x="490" y="190" fill="#ce93d8" font-size="9">REASSIGN_WORKERS</text>
-
       <!-- Separator -->
-      <line x1="490" y1="197" x2="670" y2="197" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>
-      <text x="580" y="209" text-anchor="middle" fill="#888" font-size="8">Building Needs (10)</text>
+      <line x1="490" y1="190" x2="670" y2="190" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="580" y="202" text-anchor="middle" fill="#888" font-size="8">Building Needs (10)</text>
 
       <!-- Building need outputs -->
-      <text x="490" y="223" fill="#4caf50" font-size="8">NEED_BONUS_FOOD</text>
-      <text x="490" y="234" fill="#8d6e4e" font-size="8">NEED_BONUS_WOOD</text>
-      <text x="490" y="245" fill="#9e9e9e" font-size="8">NEED_BONUS_STONE</text>
-      <text x="490" y="256" fill="#ffd700" font-size="8">NEED_BONUS_GOLD</text>
-      <text x="490" y="267" fill="#4caf50" font-size="8">NEED_FOOD_SOURCE</text>
-      <text x="620" y="223" fill="#4caf50" font-size="8">NEED_FOOD_STORAGE</text>
-      <text x="620" y="234" fill="#ffd700" font-size="8">NEED_GOLD_STORAGE</text>
-      <text x="620" y="245" fill="#ffd700" font-size="8">NEED_GOLD_REFINE</text>
-      <text x="620" y="256" fill="#9e9e9e" font-size="8">NEED_STONE_REFINE</text>
-      <text x="620" y="267" fill="#8d6e4e" font-size="8">NEED_WOOD_SOURCE</text>
+      <text x="490" y="216" fill="#4caf50" font-size="8">NEED_BONUS_FOOD</text>
+      <text x="490" y="227" fill="#8d6e4e" font-size="8">NEED_BONUS_WOOD</text>
+      <text x="490" y="238" fill="#9e9e9e" font-size="8">NEED_BONUS_STONE</text>
+      <text x="490" y="249" fill="#ffd700" font-size="8">NEED_BONUS_GOLD</text>
+      <text x="490" y="260" fill="#4caf50" font-size="8">NEED_FOOD_SOURCE</text>
+      <text x="620" y="216" fill="#4caf50" font-size="8">NEED_FOOD_STORAGE</text>
+      <text x="620" y="227" fill="#ffd700" font-size="8">NEED_GOLD_STORAGE</text>
+      <text x="620" y="238" fill="#ffd700" font-size="8">NEED_GOLD_REFINE</text>
+      <text x="620" y="249" fill="#9e9e9e" font-size="8">NEED_STONE_REFINE</text>
+      <text x="620" y="260" fill="#8d6e4e" font-size="8">NEED_WOOD_SOURCE</text>
 
       <!-- Separator -->
-      <line x1="490" y1="274" x2="670" y2="274" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>
-      <text x="580" y="286" text-anchor="middle" fill="#888" font-size="8">Upgrades (2)</text>
-      <text x="490" y="300" fill="#a5d6a7" font-size="8">WORKER_UPGRADE_URGENCY</text>
-      <text x="620" y="300" fill="#a5d6a7" font-size="8">RES_BUILDING_UPGRADE_URGENCY</text>
+      <line x1="490" y1="271" x2="670" y2="271" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="580" y="283" text-anchor="middle" fill="#888" font-size="8">Upgrades (2)</text>
+      <text x="490" y="297" fill="#a5d6a7" font-size="8">WORKER_UPGRADE_URGENCY</text>
+      <text x="620" y="297" fill="#a5d6a7" font-size="8">RES_BUILDING_UPGRADE_URGENCY</text>
 
       <!-- Arrows input -> NN -> output -->
       <line x1="320" y1="215" x2="340" y2="215" stroke="#555" stroke-width="1.5" marker-end="url(#arrowG)"/>
@@ -335,7 +333,6 @@
     <tr><td>0</td><td>WORKER_ALLOCATION</td><td>How urgently to train workers. workerCount = round(x * 3) if x &gt; 0.1</td><td>WantList: addRequest(WORKER)</td></tr>
     <tr><td>1-4</td><td>FOOD/WOOD/STONE/GOLD_PRIORITY</td><td>Resource gathering priority weights</td><td>manageWorkers(): split workers across resources by priority</td></tr>
     <tr><td>5</td><td>EXPAND_PRIORITY</td><td>Priority for territorial expansion</td><td>(currently informational)</td></tr>
-    <tr><td>6</td><td>REASSIGN_WORKERS</td><td>Signal to reassign workers between resources (threshold 0.5)</td><td>manageWorkers(): pull from lowest, push to highest priority</td></tr>
   </table>
 
   <h3>Building Need Outputs (10)</h3>
@@ -343,43 +340,43 @@
   <table>
     <tr><th>#</th><th>Name</th><th>Capability</th><th>Resource</th><th>DB Match Criteria</th></tr>
     <tr style="color:#4caf50;">
-      <td>7</td><td>NEED_BONUS_FOOD</td><td>BONUS</td><td>FOOD</td>
+      <td>6</td><td>NEED_BONUS_FOOD</td><td>BONUS</td><td>FOOD</td>
       <td>collect &gt; 0, resourceRange &gt; 0, resourceType == FOOD</td>
     </tr>
     <tr style="color:#8d6e4e;">
-      <td>8</td><td>NEED_BONUS_WOOD</td><td>BONUS</td><td>WOOD</td>
+      <td>7</td><td>NEED_BONUS_WOOD</td><td>BONUS</td><td>WOOD</td>
       <td>collect &gt; 0, resourceRange &gt; 0, resourceType == WOOD</td>
     </tr>
     <tr style="color:#9e9e9e;">
-      <td>9</td><td>NEED_BONUS_STONE</td><td>BONUS</td><td>STONE</td>
+      <td>8</td><td>NEED_BONUS_STONE</td><td>BONUS</td><td>STONE</td>
       <td>collect &gt; 0, resourceRange &gt; 0, resourceType == STONE</td>
     </tr>
     <tr style="color:#ffd700;">
-      <td>10</td><td>NEED_BONUS_GOLD</td><td>BONUS</td><td>GOLD</td>
+      <td>9</td><td>NEED_BONUS_GOLD</td><td>BONUS</td><td>GOLD</td>
       <td>collect &gt; 0, resourceRange &gt; 0, resourceType == GOLD</td>
     </tr>
     <tr style="color:#4caf50;">
-      <td>11</td><td>NEED_FOOD_SOURCE</td><td>CONVERT/SOURCE</td><td>FOOD</td>
+      <td>10</td><td>NEED_FOOD_SOURCE</td><td>CONVERT/SOURCE</td><td>FOOD</td>
       <td>toResource &gt;= 0, spawnResourceRange &lt;= 0</td>
     </tr>
     <tr>
-      <td>12</td><td>NEED_FOOD_STORAGE</td><td>STORAGE</td><td>FOOD</td>
+      <td>11</td><td>NEED_FOOD_STORAGE</td><td>STORAGE</td><td>FOOD</td>
       <td>foodStorage &gt; 0</td>
     </tr>
     <tr style="color:#ffd700;">
-      <td>13</td><td>NEED_GOLD_STORAGE</td><td>STORAGE</td><td>GOLD</td>
+      <td>12</td><td>NEED_GOLD_STORAGE</td><td>STORAGE</td><td>GOLD</td>
       <td>goldStorage &gt; 0</td>
     </tr>
     <tr style="color:#ffd700;">
-      <td>14</td><td>NEED_GOLD_REFINE</td><td>REFINE</td><td>GOLD</td>
+      <td>13</td><td>NEED_GOLD_REFINE</td><td>REFINE</td><td>GOLD</td>
       <td>goldRefineCapacity &gt; 0</td>
     </tr>
     <tr style="color:#9e9e9e;">
-      <td>15</td><td>NEED_STONE_REFINE</td><td>REFINE</td><td>STONE</td>
+      <td>14</td><td>NEED_STONE_REFINE</td><td>REFINE</td><td>STONE</td>
       <td>stoneRefineCapacity &gt; 0</td>
     </tr>
     <tr style="color:#8d6e4e;">
-      <td>16</td><td>NEED_WOOD_SOURCE</td><td>SPAWN/SOURCE</td><td>WOOD</td>
+      <td>15</td><td>NEED_WOOD_SOURCE</td><td>SPAWN/SOURCE</td><td>WOOD</td>
       <td>toResource &gt;= 0, spawnResourceRange &gt; 0</td>
     </tr>
   </table>
@@ -387,8 +384,8 @@
   <h3>Upgrade Outputs (2)</h3>
   <table>
     <tr><th>#</th><th>Name</th><th>Meaning</th><th>Consumer</th></tr>
-    <tr style="color:#a5d6a7;"><td>17</td><td>WORKER_UPGRADE_URGENCY</td><td>How much to upgrade a worker unit (threshold 0.1)</td><td>WantList: addRequest(UNIT_UPGRADE)</td></tr>
-    <tr style="color:#a5d6a7;"><td>18</td><td>RES_BUILDING_UPGRADE_URGENCY</td><td>How much to upgrade a resource building (threshold 0.1)</td><td>WantList: addRequest(BUILDING_UPGRADE); building chosen by weighted resource priority</td></tr>
+    <tr style="color:#a5d6a7;"><td>16</td><td>WORKER_UPGRADE_URGENCY</td><td>How much to upgrade a worker unit (threshold 0.1)</td><td>WantList: addRequest(UNIT_UPGRADE)</td></tr>
+    <tr style="color:#a5d6a7;"><td>17</td><td>RES_BUILDING_UPGRADE_URGENCY</td><td>How much to upgrade a resource building (threshold 0.1)</td><td>WantList: addRequest(BUILDING_UPGRADE); building chosen by weighted resource priority</td></tr>
   </table>
 </div>
 
@@ -638,7 +635,7 @@
     <div class="con">
       <h4>Cons</h4>
       <ul>
-        <li><strong>Larger brain:</strong> 38 inputs x 19 outputs vs 24x8 + 20x9. More weights to train, slightly slower inference.</li>
+        <li><strong>Larger brain:</strong> 38 inputs x 18 outputs vs 24x8 + 20x9. More weights to train, slightly slower inference.</li>
         <li><strong>Not extensible to new combos:</strong> Adding a new building type (e.g. STORAGE_STONE) requires adding a new output to the enum and retraining. Two-tier approach would handle it automatically via capability + resource combination.</li>
         <li><strong>Building-type coupling:</strong> Output names reference specific building types. If game design changes significantly (e.g. removing farms), the enum needs updating.</li>
         <li><strong>No separation of concerns:</strong> Economy macro decisions and building micro decisions are mixed in one brain. May be harder to debug if the brain makes bad economy decisions AND bad building decisions simultaneously.</li>
@@ -687,7 +684,7 @@
       <!-- EconomyBrain -->
       <rect x="225" y="10" width="200" height="70" rx="8" fill="#16213e" stroke="#0d47a1" stroke-width="2.5"/>
       <text x="325" y="35" text-anchor="middle" fill="#90caf9" font-size="12" font-weight="bold">EconomyBrain</text>
-      <text x="325" y="52" text-anchor="middle" fill="#888" font-size="9">38 inputs, 19 outputs</text>
+      <text x="325" y="52" text-anchor="middle" fill="#888" font-size="9">38 inputs, 18 outputs</text>
       <text x="325" y="66" text-anchor="middle" fill="#666" font-size="8">economy.csv</text>
 
       <!-- Three output arrows -->
@@ -707,7 +704,7 @@
       <rect x="225" y="125" width="200" height="50" rx="8" fill="#0d1b2a" stroke="#4caf50" stroke-width="1.5"/>
       <text x="325" y="142" text-anchor="middle" fill="#4caf50" font-size="10">Worker Collection</text>
       <text x="325" y="159" text-anchor="middle" fill="#888" font-size="8">FOOD/WOOD/STONE/GOLD_PRIORITY</text>
-      <text x="325" y="170" text-anchor="middle" fill="#888" font-size="7">+ REASSIGN_WORKERS signal</text>
+      <text x="325" y="170" text-anchor="middle" fill="#888" font-size="7">no reassignment signal</text>
 
       <!-- Building selection box -->
       <rect x="490" y="125" width="240" height="50" rx="8" fill="#0d1b2a" stroke="#a5d6a7" stroke-width="1.5"/>
@@ -750,7 +747,7 @@
 
   <table>
     <tr><th>File</th><th>What it contains</th></tr>
-    <tr><td><code>EconomyBrain.h</code></td><td><code>EconomyInputIdx</code> (38 entries), <code>EconomyOutputIdx</code> (19 entries), <code>EconomyOutput</code> struct, <code>EconomyBrain</code> class</td></tr>
+    <tr><td><code>EconomyBrain.h</code></td><td><code>EconomyInputIdx</code> (38 entries), <code>EconomyOutputIdx</code> (18 entries), <code>EconomyOutput</code> struct, <code>EconomyBrain</code> class</td></tr>
     <tr><td><code>EconomyBrain.cpp</code></td><td>Input population (scores, resources, gather speeds, workers, storage/refine ratios &amp; gaps, bonus coverage, nearby supply, building counts, lacking, urgencies, collect-failure history, avg levels, game time). Output mapping with named enum indices.</td></tr>
     <tr><td><code>AiOrchestrator.cpp</code></td><td><code>createResBuilding()</code>: per-building max over matching NEED_* outputs, submit top 3 as wants. <code>resolveResBuildingUpgrade()</code>: weighted choice for resource-building upgrades.</td></tr>
     <tr><td><code>AiOrchestrator.h</code></td><td>EconomyBrain member, <code>lastEconOut</code> cached output.</td></tr>

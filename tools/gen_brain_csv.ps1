@@ -4,8 +4,15 @@
 
 .DESCRIPTION
     Emits a feed-forward brain weight file in the exact on-disk format the C++
-    loader (game/src/utils/FileUtils.h + nn/Layer.cpp) expects, matching the
-    already-working files (master.csv, economy.csv, ...):
+    loader (game/src/utils/FileUtils.h + nn/Layer.cpp) expects.
+
+    Brain definitions are passed in with -Brains using this format:
+
+      Name|Input|Hidden1,Hidden2,...|Output
+
+    Example:
+
+      -Brains 'master.csv|34|22|9','economy.csv|38|28|18'
 
       Line 1 (input holder): <inputSize weights> ;; <1 bias>
           Its weights/bias are ignored at runtime (Brain::decide only calls
@@ -19,10 +26,8 @@
     they make the AI run with valid dimensions, not play well (real strength
     needs the external genetic algorithm).
 
-    Dimensions are derived from the C++ enum contract:
-      military.csv   : MilitaryInputIdx=27  -> MilitaryOutputIdx=24 (center-pair count)
-      attack_spatial : AttackSpatialInputIdx=10 -> AttackSpatialOutputIdx=6 (AI_ARMY_MAP_COUNT)
-      build_spatial  : BuildSpatialInputIdx=16 -> BuildSpatialOutputIdx=12 (AI_MAP_COUNT)
+.PARAMETER Brains
+    Brain definitions in the form Name|Input|Hidden1,Hidden2,...|Output.
 
 .PARAMETER Check
     Print intended topologies only; write nothing.
@@ -34,12 +39,15 @@
     Output directory (default: game/Data/ai relative to repo root).
 
 .EXAMPLE
-    powershell -ExecutionPolicy Bypass -File tools\gen_brain_csv.ps1
+    powershell -ExecutionPolicy Bypass -File tools\gen_brain_csv.ps1 -Brains 'military.csv|27|16|24','attack_spatial.csv|10|10|6','build_spatial.csv|16|12|12'
 .EXAMPLE
-    powershell -ExecutionPolicy Bypass -File tools\gen_brain_csv.ps1 -Check
+    powershell -ExecutionPolicy Bypass -File tools\gen_brain_csv.ps1 -Check -Brains 'military.csv|27|16|24','attack_spatial.csv|10|10|6','build_spatial.csv|16|12|12'
 #>
 [CmdletBinding()]
 param(
+    [Parameter(Mandatory = $true)]
+    [string[]]$Brains,
+
     [switch]$Check,
     [int]$Seed = 1337,
     [string]$OutDir
@@ -52,13 +60,6 @@ if (-not $OutDir) {
     $OutDir = Join-Path $repoRoot 'game\Data\ai'
 }
 
-# name, inputSize, hidden sizes (array), outputSize
-$brains = @(
-    @{ Name = 'military.csv';       Input = 27; Hidden = @(16); Output = 24 },
-    @{ Name = 'attack_spatial.csv'; Input = 10; Hidden = @(10); Output = 6  },
-    @{ Name = 'build_spatial.csv';   Input = 16; Hidden = @(12); Output = 12 }
-)
-
 $rng = [System.Random]::new($Seed)
 
 function New-Rand {
@@ -68,6 +69,31 @@ function New-Rand {
 
 function Format-Values([double[]]$values) {
     return ($values | ForEach-Object { $_.ToString('F6', [System.Globalization.CultureInfo]::InvariantCulture) }) -join ';'
+}
+
+function Parse-BrainSpec([string]$spec) {
+    $parts = $spec -split '\|', 4
+    if ($parts.Count -ne 4) {
+        throw "Invalid brain spec '$spec'. Expected format: Name|Input|Hidden1,Hidden2,...|Output"
+    }
+
+    $hidden = @()
+    if (-not [string]::IsNullOrWhiteSpace($parts[2])) {
+        $hidden = @($parts[2].Split(',') | ForEach-Object {
+            $value = $_.Trim()
+            if ($value.Length -eq 0) {
+                return
+            }
+            [int]$value
+        } | Where-Object { $null -ne $_ })
+    }
+
+    return [pscustomobject]@{
+        Name = $parts[0].Trim()
+        Input = [int]$parts[1]
+        Hidden = $hidden
+        Output = [int]$parts[3]
+    }
 }
 
 function Build-File([int]$inputSize, [int[]]$hidden, [int]$outputSize) {
@@ -90,7 +116,7 @@ function Build-File([int]$inputSize, [int[]]$hidden, [int]$outputSize) {
     return ($lines -join "`n") + "`n"
 }
 
-foreach ($b in $brains) {
+foreach ($b in ($Brains | ForEach-Object { Parse-BrainSpec $_ })) {
     $topo = (@($b.Input) + $b.Hidden + @($b.Output)) -join ' -> '
     if ($Check) {
         Write-Output ("{0,-22} input-holder({1}) + {2}" -f $b.Name, $b.Input, $topo)

@@ -40,6 +40,16 @@ TEST_F(AiUtilsFixture, SampleWeightedReturnsValidIndex) {
 	}
 }
 
+// --- priorityWeight ---
+
+TEST_F(AiUtilsFixture, PriorityWeightKeepsNegativesButLighter) {
+	EXPECT_NEAR(priorityWeight(-1.f), std::exp2(-1.001f), 1e-6f);
+	EXPECT_NEAR(priorityWeight(0.f), 1.f, 1e-6f);
+	EXPECT_NEAR(priorityWeight(1.f), std::exp2(1.001f), 1e-6f);
+	EXPECT_LT(priorityWeight(-0.5f), priorityWeight(0.f));
+	EXPECT_LT(priorityWeight(0.f), priorityWeight(0.5f));
+}
+
 // --- biggestWithRand ---
 
 TEST_F(AiUtilsFixture, BiggestWithRandSingleElement) {

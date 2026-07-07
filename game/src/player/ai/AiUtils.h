@@ -45,6 +45,10 @@ inline bool randFromTwo(float val) {
 	return val + 1.f > RandGen::nextRand(RandFloatType::AI, 2.f);
 }
 
+inline float priorityWeight(float pref) {
+	return (pref * 1.001f)* (pref * 1.001f)
+}
+
 inline int sampleWeighted(std::span<const float> weights, float totalWeight) {
 	return weighted::sample(weights, totalWeight);
 }

@@ -334,20 +334,19 @@
 <!-- ========================================== -->
 <hr class="divider">
 <div class="section-title" id="economy">3. Economy Brain — Resource Management</div>
-<div class="section-sub">Receives master urgencies + lacking feedback. Outputs worker counts, resource priorities, building needs, worker reassignment, and upgrade urgencies. 38 inputs -> 19 outputs.</div>
+<div class="section-sub">Receives master urgencies + lacking feedback. Outputs worker counts, resource priorities, building needs, and upgrade urgencies. 38 inputs -> 18 outputs.</div>
 
 <div class="card">
-<h3>Key Outputs (19)</h3>
+<h3>Key Outputs (18)</h3>
 <ul>
   <li><span class="highlight">workerAllocation</span> — drives workerCount = round(workerAllocation * 3), max 3 workers added to want list per tick (threshold 0.1)</li>
   <li><span class="highlight">foodPriority / woodPriority / stonePriority / goldPriority</span> — which resource to collect first</li>
   <li><span class="highlight">expandPriority</span> — territorial expansion weight</li>
-  <li><span class="highlight">reassignWorkers</span> — should we pull a worker off the lowest-priority resource (threshold: 0.5)</li>
   <li><span class="highlight">10 building need scores</span> — NEED_BONUS_FOOD/WOOD/STONE/GOLD, NEED_FOOD_SOURCE, NEED_FOOD_STORAGE, NEED_GOLD_STORAGE, NEED_GOLD_REFINE, NEED_STONE_REFINE, NEED_WOOD_SOURCE. Matched to resource buildings via DB fields (top 3 needs &gt; 0.1 become BUILDING wants)</li>
   <li><span class="highlight">workerUpgradeUrgency / resBuildingUpgradeUrgency</span> — drive UNIT_UPGRADE / BUILDING_UPGRADE wants (threshold 0.1)</li>
 </ul>
 <h3>Worker Collection Flow</h3>
-<p>Free workers are split across the 4 resource types proportionally to their (non-negative) priorities (largest-remainder rounding). Each worker takes the highest-priority resource that still needs workers and has a reachable node (expanding resource-query levels). If reassignment is active and the priority gap &gt; 0.3, one busy worker is stolen from the worst resource. Only one worker is reassigned per tick.</p>
+<p>Free workers are split across the 4 resource types proportionally to their (non-negative) priorities (largest-remainder rounding). Each worker takes the highest-priority resource that still needs workers and has a reachable node (expanding resource-query levels). If the worst-priority resource is very negative, one busy worker is stolen from that resource. Only one worker is reassigned per tick.</p>
 </div>
 
 <!-- ========================================== -->

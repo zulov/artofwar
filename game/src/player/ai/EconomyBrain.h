@@ -57,7 +57,6 @@ enum class EconomyOutputIdx : unsigned char {
 	STONE_PRIORITY,
 	GOLD_PRIORITY,
 	EXPAND_PRIORITY,
-	REASSIGN_WORKERS,
 	NEED_BONUS_FOOD,
 	NEED_BONUS_WOOD,
 	NEED_BONUS_STONE,
@@ -83,7 +82,6 @@ struct EconomyOutput {
 	float goldPriority;
 
 	float expandPriority;
-	float reassignWorkers;
 	float needBonusFood;
 	float needBonusWood;
 	float needBonusStone;

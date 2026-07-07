@@ -598,11 +598,9 @@ void AiOrchestrator::manageWorkers() {
 	std::array order = {0, 1, 2, 3};
 	std::ranges::sort(order, [&](int a, int b) { return prefs[a] > prefs[b]; });
 
-	// Reassign one busy worker from lowest-priority resource to highest
-	if (lastEconOut.reassignWorkers > 0.5f) {
-		if (auto* worker = findReassignableWorker(order, prefs)) {
-			freeWorkers.push_back(worker);
-		}
+	// Reassign one busy worker away from the most negative resource.
+	if (auto* worker = findReassignableWorker(order, prefs)) {
+		freeWorkers.push_back(worker);
 	}
 
 	if (freeWorkers.empty()) { return; }
@@ -639,19 +637,25 @@ void AiOrchestrator::manageWorkers() {
 }
 
 // Distributes workerCount workers across the 4 resource types proportionally to their
-// (non-negative) needs, using largest-remainder rounding so the targets sum to workerCount.
+// remapped priorities, using largest-remainder rounding so the targets sum to workerCount.
 std::array<int, 4> AiOrchestrator::computeWorkerTargets(const float (&prefs)[4], int workerCount) const {
 	std::array target = {0, 0, 0, 0};
+	const std::array<float, 4> weights = {
+		priorityWeight(prefs[0]),
+		priorityWeight(prefs[1]),
+		priorityWeight(prefs[2]),
+		priorityWeight(prefs[3]),
+	};
 
 	float total = 0.f;
-	for (float pref : prefs) { total += std::max(0.f, pref); }
+	for (float weight : weights) { total += weight; }
 	if (total <= 0.f || workerCount <= 0) { return target; }
 
 	// Floor each share, remembering the fractional remainder for the tie-break below.
 	float frac[4];
 	int leftover = workerCount;
 	for (int i = 0; i < 4; ++i) {
-		const float raw = std::max(0.f, prefs[i]) / total * static_cast<float>(workerCount);
+		const float raw = weights[i] / total * static_cast<float>(workerCount);
 		target[i] = static_cast<int>(std::floor(raw));
 		frac[i] = raw - static_cast<float>(target[i]);
 		leftover -= target[i];
@@ -677,10 +681,10 @@ bool AiOrchestrator::tryAssignCollect(Unit* worker, int resId) {
 	return true;
 }
 
-// Returns a busy worker collecting the lowest-priority resource that should move to a higher-priority one.
+// Returns a busy worker collecting the most negative resource when reassignment is forced.
 Unit* AiOrchestrator::findReassignableWorker(const std::array<int, 4>& order, const float (&prefs)[4]) const {
 	int worstResId = order[3];
-	if (prefs[order[0]] - prefs[worstResId] < 0.3f) { return nullptr; }
+	if (prefs[worstResId] >= -0.5f) { return nullptr; }
 	for (auto* worker : possession->getWorkers()) {
 		if (worker->getState() != UnitState::COLLECT) { continue; }
 		auto* res = dynamic_cast<ResourceEntity*>(worker->getThingToInteract());
