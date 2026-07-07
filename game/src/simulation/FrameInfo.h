@@ -68,6 +68,15 @@ struct FrameInfo {
 		return force || shouldRun(type);
 	}
 
+	void reset() {
+		seconds = 0;
+		totalTicks = 0;
+		currentFrame = 0;
+		realFrame = false;
+		wallTime = 0;
+		accumulateTime = 0;
+	}
+
 	static bool get(PerFrameAction type, unsigned char frameNum, unsigned int second = 0) {
 		const auto val = data[castC(type)][frameNum];
 		return val != 0 && (second+1) % val == 0;

@@ -18,6 +18,7 @@
 #include "utils/OtherUtils.h"
 #include "utils/SpanUtils.h"
 #include "env/bucket/levels/LevelCache.h"
+#include "utils/CountUtils.h"
 
 void VisibilityMap::draw(short batch, short maxParts) {
 	auto size = arraySize / maxParts;
@@ -150,8 +151,7 @@ void VisibilityMap::ensureUnseenIntersectionReady() {
 	auto* dst = unseenIntersection.data();
 	const auto* const srcEnd = valuesForInfluence + influenceArraySize;
 	for (; src < srcEnd; ++src, ++dst) {
-		const bool visible = *src;
-		if (visible) {
+		if (*src) {
 			*dst = 0.f;
 			++visibleCount;
 		} else {

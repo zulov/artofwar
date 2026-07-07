@@ -14,6 +14,8 @@ void Game::dispose() {
 	instance = nullptr;
 }
 
+void Game::reset() { instance->frameInfo.reset(); }
+
 Game* Game::setCache(Urho3D::ResourceCache* _cache) {
 	instance->cache = _cache;
 	return instance;

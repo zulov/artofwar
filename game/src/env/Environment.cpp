@@ -435,7 +435,8 @@ std::optional<Urho3D::Vector2> Environment::getPosFromIndexes(db_building* build
 		for (const auto index : mainGrid.getCloseCenters(center, ratio)) {
 			//ten index jest widoczny
 			auto gridCenter = calculator->getCenter(index);
-			if (validateStatic(building->size, gridCenter, true) && influenceManager.isVisible(player, gridCenter)) {
+			if (validateStatic(building->size, gridCenter, true) &&
+				influenceManager.isVisible(player, gridCenter)) {
 				return gridCenter;
 			}
 		}
