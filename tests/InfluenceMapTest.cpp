@@ -384,17 +384,17 @@ TEST_F(CumulateErrorsFixture, PositiveAndNegativeAreSymmetric) {
 	EXPECT_NEAR(posErr2, negErr0, 1e-5f);
 }
 
-TEST(InfluenceMapRegression, GetKernelMaxIdxsHandlesSingleCellMap) {
-	TestableInfluenceMap map(1, 8.f, 1.f, 1);
+TEST(InfluenceMapRegression, GetKernelMaxIdxsHandlesSmallMap) {
+	TestableInfluenceMap map(2, 8.f, 1.f, 1);
 	map.update(0, 1.f);
 
 	const auto indexes = map.getKernelMaxIdxs();
-	ASSERT_EQ(indexes.size(), 1u);
+	ASSERT_EQ(indexes.size(), 4u);
 	EXPECT_EQ(indexes[0], 0u);
 }
 
 TEST(InfluenceMapRegression, ResetDecaysRawAndRebuildsKernelCache) {
-	InfluenceMap map(1, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
+	InfluenceMap map(2, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
 	map.update(0, 2.f);
 
 	EXPECT_FLOAT_EQ(map.getKernel(0), 2.f);
@@ -405,7 +405,7 @@ TEST(InfluenceMapRegression, ResetDecaysRawAndRebuildsKernelCache) {
 }
 
 TEST(InfluenceMapRegression, ResetToZeroDropsValuesBelowThreshold) {
-	InfluenceMap map(1, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
+	InfluenceMap map(2, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
 	map.update(0, 0.25f);
 
 	EXPECT_FLOAT_EQ(map.getKernel(0), 0.25f);
@@ -416,7 +416,7 @@ TEST(InfluenceMapRegression, ResetToZeroDropsValuesBelowThreshold) {
 }
 
 TEST(InfluenceMapRegression, HistoryResetDecaysRawAndInvalidatesKernel) {
-	InfluenceMap map(1, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
+	InfluenceMap map(2, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
 	map.update(0, 4.f);
 
 	EXPECT_FLOAT_EQ(map.getRaw(0), 4.f);
@@ -426,4 +426,16 @@ TEST(InfluenceMapRegression, HistoryResetDecaysRawAndInvalidatesKernel) {
 
 	EXPECT_FLOAT_EQ(map.getRaw(0), 2.f);
 	EXPECT_FLOAT_EQ(map.getKernel(0), 2.f);
+}
+
+TEST(InfluenceMapRegression, GetCenterUsesRawTerminalLayer) {
+	TestableInfluenceMap map(4, 8.f, 1.f, 1);
+	map.update(4, 1.f);
+	map.update(5, 2.f);
+
+	const auto center = map.getCenter();
+	ASSERT_TRUE(center.has_value());
+
+	GridCalculator calculator(4, 8.f);
+	EXPECT_EQ(*center, calculator.getCenter(5));
 }

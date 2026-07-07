@@ -21,6 +21,10 @@ inline float norm(int value, float scale) { return static_cast<float>(value) / s
 inline float norm(unsigned value, float scale) { return static_cast<float>(value) / scale; }
 inline float norm(float value, float scale) { return value / scale; }
 
+inline float normPositive(int value, float scale) { return value <= 0 ? 0.f : static_cast<float>(value) / scale; }
+inline float normPositive(unsigned value, float scale) { return value == 0 ? 0.f : static_cast<float>(value) / scale; }
+inline float normPositive(float value, float scale) { return value <= 0.f ? 0.f : value / scale; }
+
 inline int roundToInt(float value) { return static_cast<int>(std::round(value)); }
 
 // Average level of units matching a filter, normalized per-type by max level. Returns [0, 1].
@@ -46,7 +50,7 @@ inline bool randFromTwo(float val) {
 }
 
 inline float priorityWeight(float pref) {
-	return (pref * 1.001f)* (pref * 1.001f)
+	return (pref + 1.001f) * (pref + 1.001f);
 }
 
 inline int sampleWeighted(std::span<const float> weights, float totalWeight) {

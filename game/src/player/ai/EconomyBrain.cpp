@@ -88,8 +88,8 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::GOLD_REFINE_RATIO)] = goldCap > 0.f ? norm(goldGather, goldCap) : 0.f;
 
 	// Refine gaps (2) — from Resources
-	inputData[idx(I::STONE_REFINE_GAP)] = norm(std::max(0.f, stoneGather - stoneCap), NormScale::REFINE_GAP);
-	inputData[idx(I::GOLD_REFINE_GAP)] = norm(std::max(0.f, goldGather - goldCap), NormScale::REFINE_GAP);
+	inputData[idx(I::STONE_REFINE_GAP)] = normPositive(stoneGather - stoneCap, NormScale::REFINE_GAP);
+	inputData[idx(I::GOLD_REFINE_GAP)] = normPositive(goldGather - goldCap, NormScale::REFINE_GAP);
 
 	// Bonus coverage (4) — from Possession
 	inputData[idx(I::BONUS_COVERAGE_FOOD)] = possession->getBonusCoverage(ResourceType::FOOD);

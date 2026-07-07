@@ -30,19 +30,22 @@ InfluenceMap::InfluenceMap(unsigned short resolution, float size, float coef, ch
 	quadArraySize = 0;
 	auto currentRes = resolution;
 	while (currentRes % 2 == 0 && currentRes != 1) {
-		quadArraySize += currentRes * currentRes;
 		currentRes /= 2;
 	}
 	currentRes *= 2;
+	for (int i = currentRes; i < resolution; i *= 2) {
+		quadArraySize += i * i;
+	}
 	quadValues = new float[quadArraySize];
 	std::fill_n(quadValues, quadArraySize, 0.f);
 	float* ptr = quadValues;
-	for (int i = currentRes; i <= resolution; i *= 2) {
+	for (int i = currentRes; i < resolution; i *= 2) {
 		const auto size1 = i * i;
 		quadLayers.emplace_back(ptr, size1);
 		quadResolutions.push_back(i);
 		ptr += size1;
 	}
+	centerDirty = true;
 }
 
 InfluenceMap::InfluenceMap(unsigned short resolution, float size, float coef, char level, float minimalThreshold,
@@ -84,6 +87,7 @@ float* InfluenceMap::createTemplateV(float coef, char level) {
 void InfluenceMap::update(unsigned index, float value) {
 	rawValues[index] += value;
 	valuesCalculateNeeded = true;
+	centerDirty = true;
 	quadDirty = true;
 	minMaxInited = false;
 }
@@ -107,6 +111,8 @@ void InfluenceMap::reset() {
 	std::fill_n(values, arraySize, 0.f);
 	std::fill_n(quadValues, quadArraySize, 0.f);
 	valuesCalculateNeeded = false;
+	center.reset();
+	centerDirty = false;
 	quadDirty = true;
 	minMaxInited = false;
 }
@@ -121,6 +127,7 @@ void InfluenceMap::resetToZero() {
 
 void InfluenceMap::invalidateCaches() {
 	valuesCalculateNeeded = true;
+	centerDirty = true;
 	quadDirty = true;
 	minMaxInited = false;
 }
@@ -143,19 +150,8 @@ float InfluenceMap::getKernel(const Urho3D::Vector2& pos) const {
 }
 
 std::optional<Urho3D::Vector2> InfluenceMap::getCenter() const {
-	ensureQuad();
-	if (quadLayers.empty() || !anyGreaterThanZero(quadLayers[0])) {
-		return {};
-	}
-
-	int index = std::distance(quadLayers[0].begin(), std::ranges::max_element(quadLayers[0]));
-	unsigned short res = quadResolutions[0];
-	for (int i = 1; i < static_cast<int>(quadLayers.size()); ++i) {
-		std::array<int, 4> indexes = getCordsInHigher(res, index);
-		index = getMaxElement(indexes, quadLayers[i]);
-		res *= 2;
-	}
-	return calculator->getCenter(index);
+	ensureCenter();
+	return center;
 }
 
 std::vector<unsigned> InfluenceMap::getRawMaxIdxs() const {
@@ -246,31 +242,63 @@ void InfluenceMap::rebuildKernel() const {
 	valuesCalculateNeeded = false;
 }
 
-int InfluenceMap::getMaxElement(const std::array<int, 4>& indexes, std::span<float> vals) const {
+int InfluenceMap::getMaxElement(const std::array<int, 4>& indexes, std::span<const float> vals) const {
 	float values1[4] = {vals[indexes[0]], vals[indexes[1]], vals[indexes[2]], vals[indexes[3]]};
 	int i = std::distance(values1, std::max_element(values1, values1 + 4));
 	return indexes[i];
 }
 
+void InfluenceMap::ensureCenter() const {
+	if (!centerDirty) {
+		return;
+	}
+
+	ensureQuad();
+	assert(!quadLayers.empty());
+	auto rawSpan = std::span<const float>(rawValues, arraySize);
+
+	if (!anyGreaterThanZero(quadLayers[0])) {
+		center.reset();
+		centerDirty = false;
+		return;
+	}
+
+	int index = std::distance(quadLayers[0].begin(), std::ranges::max_element(quadLayers[0]));
+	unsigned short res = quadResolutions[0];
+	for (int i = 1; i < static_cast<int>(quadLayers.size()); ++i) {
+		std::array<int, 4> indexes = getCordsInHigher(res, index);
+		index = getMaxElement(indexes, quadLayers[i]);
+		res *= 2;
+	}
+	std::array<int, 4> indexes = getCordsInHigher(res, index);
+	index = getMaxElement(indexes, rawSpan);
+	center = calculator->getCenter(index);
+	centerDirty = false;
+}
+
 void InfluenceMap::rebuildQuad() const {
 	std::fill_n(quadValues, quadArraySize, 0.f);
-	if (!quadLayers.empty()) {
-		std::copy_n(rawValues, arraySize, quadLayers.back().begin());
-		for (int i = static_cast<int>(quadLayers.size()) - 2; i >= 0; --i) {
-			auto parent = quadLayers[i + 1];
-			auto current = quadLayers[i];
-			unsigned short parentRes = quadResolutions[i + 1];
-			unsigned short currentRes = quadResolutions[i];
-			int j = 0;
-			for (float parent1 : parent) {
-				if (parent1 > 0.f) {
-					const int newIndex = getCordsInLower(currentRes, parentRes, j);
-					assert(newIndex < currentRes * currentRes);
-					current[newIndex] += parent1;
-				}
-				++j;
+	if (quadLayers.empty()) {
+		quadDirty = false;
+		return;
+	}
+
+	std::span<const float> parent(rawValues, arraySize);
+	unsigned short parentRes = calculator->getResolution();
+	for (int i = static_cast<int>(quadLayers.size()) - 1; i >= 0; --i) {
+		auto current = quadLayers[i];
+		unsigned short currentRes = quadResolutions[i];
+		int j = 0;
+		for (float parent1 : parent) {
+			if (parent1 > 0.f) {
+				const int newIndex = getCordsInLower(currentRes, parentRes, j);
+				assert(newIndex < currentRes * currentRes);
+				current[newIndex] += parent1;
 			}
+			++j;
 		}
+		parent = std::span<const float>(current.data(), current.size());
+		parentRes = currentRes;
 	}
 	quadDirty = false;
 }

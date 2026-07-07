@@ -10,6 +10,26 @@ protected:
 	}
 };
 
+// --- normPositive ---
+
+TEST_F(AiUtilsFixture, NormPositiveClampsNegativeIntToZero) {
+	EXPECT_FLOAT_EQ(normPositive(-3, 10.f), 0.f);
+	EXPECT_FLOAT_EQ(normPositive(0, 10.f), 0.f);
+	EXPECT_FLOAT_EQ(normPositive(7, 10.f), 0.7f);
+}
+
+TEST_F(AiUtilsFixture, NormPositiveClampsZeroUnsignedToZero) {
+	EXPECT_FLOAT_EQ(normPositive(0u, 10.f), 0.f);
+	EXPECT_FLOAT_EQ(normPositive(5u, 10.f), 0.5f);
+	EXPECT_FLOAT_EQ(normPositive(7u, 10.f), 0.7f);
+}
+
+TEST_F(AiUtilsFixture, NormPositiveClampsNegativeFloatToZero) {
+	EXPECT_FLOAT_EQ(normPositive(-3.f, 10.f), 0.f);
+	EXPECT_FLOAT_EQ(normPositive(0.f, 10.f), 0.f);
+	EXPECT_FLOAT_EQ(normPositive(7.f, 10.f), 0.7f);
+}
+
 // --- sampleWeighted ---
 
 TEST_F(AiUtilsFixture, SampleWeightedZeroTotalReturnsZero) {
@@ -42,10 +62,10 @@ TEST_F(AiUtilsFixture, SampleWeightedReturnsValidIndex) {
 
 // --- priorityWeight ---
 
-TEST_F(AiUtilsFixture, PriorityWeightKeepsNegativesButLighter) {
-	EXPECT_NEAR(priorityWeight(-1.f), std::exp2(-1.001f), 1e-6f);
-	EXPECT_NEAR(priorityWeight(0.f), 1.f, 1e-6f);
-	EXPECT_NEAR(priorityWeight(1.f), std::exp2(1.001f), 1e-6f);
+TEST_F(AiUtilsFixture, PriorityWeightMakesStrongNegativesNearZero) {
+	EXPECT_NEAR(priorityWeight(-1.f), 0.000001f, 1e-6f);
+	EXPECT_NEAR(priorityWeight(0.f), 1.002001f, 1e-6f);
+	EXPECT_NEAR(priorityWeight(1.f), 4.004001f, 1e-6f);
 	EXPECT_LT(priorityWeight(-0.5f), priorityWeight(0.f));
 	EXPECT_LT(priorityWeight(0.f), priorityWeight(0.5f));
 }
