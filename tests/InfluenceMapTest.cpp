@@ -385,7 +385,7 @@ TEST_F(CumulateErrorsFixture, PositiveAndNegativeAreSymmetric) {
 }
 
 TEST(InfluenceMapRegression, GetKernelMaxIdxsHandlesSmallMap) {
-	TestableInfluenceMap map(2, 8.f, 1.f, 1);
+	TestableInfluenceMap map(4, 8.f, 1.f, 1);
 	map.update(0, 1.f);
 
 	const auto indexes = map.getKernelMaxIdxs();
@@ -394,7 +394,7 @@ TEST(InfluenceMapRegression, GetKernelMaxIdxsHandlesSmallMap) {
 }
 
 TEST(InfluenceMapRegression, ResetDecaysRawAndRebuildsKernelCache) {
-	InfluenceMap map(2, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
+	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
 	map.update(0, 2.f);
 
 	EXPECT_FLOAT_EQ(map.getKernel(0), 2.f);
@@ -405,7 +405,7 @@ TEST(InfluenceMapRegression, ResetDecaysRawAndRebuildsKernelCache) {
 }
 
 TEST(InfluenceMapRegression, ResetToZeroDropsValuesBelowThreshold) {
-	InfluenceMap map(2, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
+	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
 	map.update(0, 0.25f);
 
 	EXPECT_FLOAT_EQ(map.getKernel(0), 0.25f);
@@ -416,7 +416,7 @@ TEST(InfluenceMapRegression, ResetToZeroDropsValuesBelowThreshold) {
 }
 
 TEST(InfluenceMapRegression, HistoryResetDecaysRawAndInvalidatesKernel) {
-	InfluenceMap map(2, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
+	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
 	map.update(0, 4.f);
 
 	EXPECT_FLOAT_EQ(map.getRaw(0), 4.f);

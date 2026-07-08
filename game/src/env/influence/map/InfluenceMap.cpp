@@ -45,6 +45,7 @@ InfluenceMap::InfluenceMap(unsigned short resolution, float size, float coef, ch
 		quadResolutions.push_back(i);
 		ptr += size1;
 	}
+	assert(!quadLayers.empty());
 	centerDirty = true;
 }
 
@@ -254,7 +255,6 @@ void InfluenceMap::ensureCenter() const {
 	}
 
 	ensureQuad();
-	assert(!quadLayers.empty());
 	auto rawSpan = std::span<const float>(rawValues, arraySize);
 
 	if (!anyGreaterThanZero(quadLayers[0])) {
@@ -278,10 +278,6 @@ void InfluenceMap::ensureCenter() const {
 
 void InfluenceMap::rebuildQuad() const {
 	std::fill_n(quadValues, quadArraySize, 0.f);
-	if (quadLayers.empty()) {
-		quadDirty = false;
-		return;
-	}
 
 	std::span<const float> parent(rawValues, arraySize);
 	unsigned short parentRes = calculator->getResolution();
