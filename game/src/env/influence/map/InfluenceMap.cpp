@@ -10,6 +10,16 @@
 #include "math/MathUtils.h"
 #include "utils/SpanUtils.h"
 
+namespace {
+enum class QuadRebuildVariant {
+	A,
+	B,
+};
+
+// Flip this to B to benchmark the block-based reduction.
+constexpr QuadRebuildVariant kQuadRebuildVariant = QuadRebuildVariant::A;
+}
+
 InfluenceMap::InfluenceMap(unsigned short resolution, float size, float coef, char level,
 	                         float valueThresholdDebug, float* sharedTemplateV, bool ownsTemplateV)
 	: coef(coef),
@@ -278,25 +288,60 @@ void InfluenceMap::ensureCenter() const {
 
 void InfluenceMap::rebuildQuad() const {
 	std::fill_n(quadValues, quadArraySize, 0.f);
+	if constexpr (kQuadRebuildVariant == QuadRebuildVariant::A) {
+		rebuildQuadVersionA();
+	} else {
+		rebuildQuadVersionB();
+	}
+	quadDirty = false;
+}
 
+
+void InfluenceMap::rebuildQuadVersionA() const {
 	std::span<const float> parent(rawValues, arraySize);
 	unsigned short parentRes = calculator->getResolution();
 	for (int i = static_cast<int>(quadLayers.size()) - 1; i >= 0; --i) {
 		auto current = quadLayers[i];
-		unsigned short currentRes = quadResolutions[i];
-		int j = 0;
-		for (float parent1 : parent) {
-			if (parent1 > 0.f) {
+		const unsigned short currentRes = quadResolutions[i];
+		assert(parentRes == currentRes * 2);
+
+		const int parentSize = static_cast<int>(parent.size());
+		for (int j = 0; j < parentSize; j += 2) {
+			const float sum = parent[j] + parent[j + 1];
+			if (sum > 0.f) {
 				const int newIndex = getCordsInLower(currentRes, parentRes, j);
 				assert(newIndex < currentRes * currentRes);
-				current[newIndex] += parent1;
+				current[newIndex] += sum;
 			}
-			++j;
 		}
+
 		parent = std::span<const float>(current.data(), current.size());
 		parentRes = currentRes;
 	}
-	quadDirty = false;
+}
+
+void InfluenceMap::rebuildQuadVersionB() const {
+	std::span<const float> parent(rawValues, arraySize);
+	unsigned short parentRes = calculator->getResolution();
+	for (int i = static_cast<int>(quadLayers.size()) - 1; i >= 0; --i) {
+		auto current = quadLayers[i];
+		const unsigned short currentRes = quadResolutions[i];
+		assert(parentRes == currentRes * 2);
+
+		for (int prow = 0; prow < parentRes; prow += 2) {
+			const int row0 = prow * parentRes;
+			const int row1 = row0 + parentRes;
+			int child = (prow >> 1) * currentRes;
+
+			for (int pcol = 0; pcol < parentRes; pcol += 2, ++child) {
+				const int j = row0 + pcol;
+				current[child] = parent[j] + parent[j + 1] + parent[row1 + pcol] + parent[row1 + pcol + 1];
+			}
+		}
+
+		parent = std::span<const float>(current.data(), current.size());
+		parentRes = currentRes;
+	}
 }
 
 void InfluenceMap::ensureReady() {

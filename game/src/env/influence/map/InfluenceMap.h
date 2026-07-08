@@ -74,6 +74,8 @@ private:
 	void ensureQuad() const;
 	void rebuildKernel() const;
 	void rebuildQuad() const;
+	void rebuildQuadVersionA() const;
+	void rebuildQuadVersionB() const;
 	int getMaxElement(const std::array<int, 4>& indexes, std::span<const float> vals) const;
 	void computeMinMax() const;
 	Urho3D::Vector3 getVertex(const Urho3D::Vector2& center, Urho3D::Vector2 vertex) const;
