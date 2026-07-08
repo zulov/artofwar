@@ -3,6 +3,7 @@
 #include <vector>
 #include <numeric>
 
+#include "env/influence/map/VisibilityType.h"
 #include "math/MathUtils.h"
 
 // These tests lock down the index math used by VisibilityMap::ensureReady, which
@@ -47,6 +48,56 @@ std::vector<bool> downsampleNested(int visibilityRes, const std::vector<bool>& v
 	return mask;
 }
 
+// Block downsampling: mirrors the proposed 2x2 -> 1 reduction.
+std::vector<bool> downsampleBlocks(int visibilityRes, const std::vector<bool>& visible) {
+	const int influenceRes = visibilityRes / 2;
+	std::vector<bool> mask(influenceRes * influenceRes, false);
+	for (int prow = 0; prow < visibilityRes; prow += 2) {
+		const int row0 = prow * visibilityRes;
+		const int row1 = row0 + visibilityRes;
+		for (int pcol = 0; pcol < visibilityRes; pcol += 2) {
+			mask[(prow / 2) * influenceRes + (pcol / 2)] =
+				visible[row0 + pcol] ||
+				visible[row0 + pcol + 1] ||
+				visible[row1 + pcol] ||
+				visible[row1 + pcol + 1];
+		}
+	}
+	return mask;
+}
+
+std::vector<bool> downsampleNestedValues(int visibilityRes, const std::vector<VisibilityType>& visible) {
+	const int influenceRes = visibilityRes / 2;
+	std::vector<bool> mask(influenceRes * influenceRes, false);
+	int j = 0;
+	for (int prow = 0; prow < visibilityRes; ++prow) {
+		const int rowBase = (prow / 2) * influenceRes;
+		for (int pcol = 0; pcol < visibilityRes; ++pcol, ++j) {
+			if (visible[j] == VisibilityType::VISIBLE) {
+				mask[rowBase + (pcol / 2)] = true;
+			}
+		}
+	}
+	return mask;
+}
+
+std::vector<bool> downsampleBlockValues(int visibilityRes, const std::vector<VisibilityType>& visible) {
+	const int influenceRes = visibilityRes / 2;
+	std::vector<bool> mask(influenceRes * influenceRes, false);
+	for (int prow = 0; prow < visibilityRes; prow += 2) {
+		const int row0 = prow * visibilityRes;
+		const int row1 = row0 + visibilityRes;
+		for (int pcol = 0; pcol < visibilityRes; pcol += 2) {
+			mask[(prow / 2) * influenceRes + (pcol / 2)] =
+				visible[row0 + pcol] == VisibilityType::VISIBLE ||
+				visible[row0 + pcol + 1] == VisibilityType::VISIBLE ||
+				visible[row1 + pcol] == VisibilityType::VISIBLE ||
+				visible[row1 + pcol + 1] == VisibilityType::VISIBLE;
+		}
+	}
+	return mask;
+}
+
 } // namespace
 
 class VisibilityDownsampleFixture : public ::testing::Test {};
@@ -59,6 +110,8 @@ TEST_F(VisibilityDownsampleFixture, SingleCellEquivalentExhaustive) {
 			std::vector<bool> visible(n, false);
 			visible[j] = true;
 			EXPECT_EQ(downsampleNested(res, visible), downsampleReference(res, visible))
+				<< "res=" << res << " visibleIndex=" << j;
+			EXPECT_EQ(downsampleBlocks(res, visible), downsampleReference(res, visible))
 				<< "res=" << res << " visibleIndex=" << j;
 		}
 	}
@@ -73,10 +126,13 @@ TEST_F(VisibilityDownsampleFixture, SingleCellMatchesGetCordsInLower) {
 		std::vector<bool> visible(n, false);
 		visible[j] = true;
 		const auto mask = downsampleNested(RES, visible);
+		const auto blockMask = downsampleBlocks(RES, visible);
 
 		const int expectedIdx = getCordsInLower(influenceRes, RES, j);
 		for (int k = 0; k < influenceRes * influenceRes; ++k) {
 			EXPECT_EQ(mask[k], k == expectedIdx)
+				<< "res=" << RES << " parentIndex=" << j << " influenceCell=" << k;
+			EXPECT_EQ(blockMask[k], k == expectedIdx)
 				<< "res=" << RES << " parentIndex=" << j << " influenceCell=" << k;
 		}
 	}
@@ -88,11 +144,13 @@ TEST_F(VisibilityDownsampleFixture, EmptyProducesAllFalse) {
 	std::vector<bool> visible(RES * RES, false);
 
 	const auto mask = downsampleNested(RES, visible);
+	const auto blockMask = downsampleBlocks(RES, visible);
 	ASSERT_EQ(mask.size(), static_cast<size_t>((RES / 2) * (RES / 2)));
 	for (bool b : mask) {
 		EXPECT_FALSE(b);
 	}
 	EXPECT_EQ(mask, downsampleReference(RES, visible));
+	EXPECT_EQ(blockMask, downsampleReference(RES, visible));
 }
 
 // All cells visible -> every influence cell true (each maps from a 2x2 parent block).
@@ -101,10 +159,12 @@ TEST_F(VisibilityDownsampleFixture, AllVisibleProducesAllTrue) {
 	std::vector<bool> visible(RES * RES, true);
 
 	const auto mask = downsampleNested(RES, visible);
+	const auto blockMask = downsampleBlocks(RES, visible);
 	for (bool b : mask) {
 		EXPECT_TRUE(b);
 	}
 	EXPECT_EQ(mask, downsampleReference(RES, visible));
+	EXPECT_EQ(blockMask, downsampleReference(RES, visible));
 }
 
 // Scattered cells (including all four corners and interior) agree with the reference.
@@ -117,6 +177,7 @@ TEST_F(VisibilityDownsampleFixture, ScatteredCellsEquivalent) {
 	}
 
 	EXPECT_EQ(downsampleNested(RES, visible), downsampleReference(RES, visible));
+	EXPECT_EQ(downsampleBlocks(RES, visible), downsampleReference(RES, visible));
 }
 
 // Each 2x2 parent block maps to a single influence cell: any one of the four parent
@@ -136,11 +197,31 @@ TEST_F(VisibilityDownsampleFixture, EachParentBlockMapsToOneInfluenceCell) {
 				std::vector<bool> visible(n, false);
 				visible[corner] = true;
 				const auto mask = downsampleNested(RES, visible);
+				const auto blockMask = downsampleBlocks(RES, visible);
 				for (int k = 0; k < influenceRes * influenceRes; ++k) {
 					EXPECT_EQ(mask[k], k == expectedIdx)
+						<< "block(" << br << "," << bc << ") parent=" << corner << " cell=" << k;
+					EXPECT_EQ(blockMask[k], k == expectedIdx)
 						<< "block(" << br << "," << bc << ") parent=" << corner << " cell=" << k;
 				}
 			}
 		}
+	}
+}
+
+TEST_F(VisibilityDownsampleFixture, SeenOnlyCellsDoNotMarkInfluenceVisible) {
+	constexpr int RES = 8;
+	std::vector<VisibilityType> visible(RES * RES, VisibilityType::NONE);
+	visible[0] = VisibilityType::SEEN;
+	visible[1] = VisibilityType::SEEN;
+	visible[RES] = VisibilityType::SEEN;
+	visible[RES + 1] = VisibilityType::SEEN;
+
+	const auto nestedMask = downsampleNestedValues(RES, visible);
+	const auto blockMask = downsampleBlockValues(RES, visible);
+
+	EXPECT_EQ(nestedMask, blockMask);
+	for (bool b : nestedMask) {
+		EXPECT_FALSE(b);
 	}
 }

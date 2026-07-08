@@ -31,6 +31,8 @@ public:
 
 private:
 	void ensureReady();
+	void ensureReadyVersionA();
+	void ensureReadyVersionB();
 	void ensureUnseenIntersectionReady();
 	void invalidateCaches() const;
 

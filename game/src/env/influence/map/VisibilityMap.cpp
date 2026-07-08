@@ -20,6 +20,16 @@
 #include "env/bucket/levels/LevelCache.h"
 #include "utils/CountUtils.h"
 
+namespace {
+enum class VisibilityDownsampleVariant {
+	A,
+	B,
+};
+
+// Flip this to B to benchmark the 2x2 block downsample.
+constexpr VisibilityDownsampleVariant kVisibilityDownsampleVariant = VisibilityDownsampleVariant::A;
+}
+
 void VisibilityMap::draw(short batch, short maxParts) {
 	auto size = arraySize / maxParts;
 	ensureReady();
@@ -121,22 +131,49 @@ float VisibilityMap::getPercent() {
 
 void VisibilityMap::ensureReady() {
 	if (valuesForInfluenceReady == false) {
-		std::fill_n(valuesForInfluence, influenceArraySize, false);
-		const auto parent = values;
-		const auto current = valuesForInfluence;
-		int j = 0;
-		auto res = getResolution();
-		for (int prow = 0; prow < res; ++prow) {
-			const int rowBase = (prow / 2) * influenceRes;
-			for (int pcol = 0; pcol < res; ++pcol, ++j) {
-				if (parent[j] == VisibilityType::VISIBLE) {
-					const int newIndex = rowBase + (pcol / 2);
-					assert(newIndex < influenceRes * influenceRes);
-					current[newIndex] = true;
-				}
-			}
+		if constexpr (kVisibilityDownsampleVariant == VisibilityDownsampleVariant::A) {
+			ensureReadyVersionA();
+		} else {
+			ensureReadyVersionB();
 		}
 		valuesForInfluenceReady = true;
+	}
+}
+
+void VisibilityMap::ensureReadyVersionA() {
+	std::fill_n(valuesForInfluence, influenceArraySize, false);
+	const auto parent = values;
+	const auto current = valuesForInfluence;
+	int j = 0;
+	auto res = getResolution();
+	for (int prow = 0; prow < res; ++prow) {
+		const int rowBase = (prow / 2) * influenceRes;
+		for (int pcol = 0; pcol < res; ++pcol, ++j) {
+			if (parent[j] == VisibilityType::VISIBLE) {
+				const int newIndex = rowBase + (pcol / 2);
+				assert(newIndex < influenceRes * influenceRes);
+				current[newIndex] = true;
+			}
+		}
+	}
+}
+
+void VisibilityMap::ensureReadyVersionB() {
+	const auto* parent = values;
+	auto* current = valuesForInfluence;
+	const int res = getResolution();
+	for (int prow = 0; prow < res; prow += 2) {
+		const auto* row0 = parent + prow * res;
+		const auto* row1 = row0 + res;
+		auto* dst = current + (prow >> 1) * influenceRes;
+
+		for (int pcol = 0; pcol < res; pcol += 2, ++dst) {
+			*dst =
+				row0[pcol] == VisibilityType::VISIBLE ||
+				row0[pcol + 1] == VisibilityType::VISIBLE ||
+				row1[pcol] == VisibilityType::VISIBLE ||
+				row1[pcol + 1] == VisibilityType::VISIBLE;
+		}
 	}
 }
 
