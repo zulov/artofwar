@@ -117,6 +117,22 @@ void AiOrchestrator::upgradeWorkers() {
 	}
 }
 
+void AiOrchestrator::upgradeUnitBuilding(const UnitOutput& unitOut) {
+	if (unitOut.buildingUpgradeUrgency > 0.1f) {
+		if (auto* buildingToUpgrade = resolveBuildingUpgrade(unitOut)) {
+			wantList.addRequest(WantItemType::BUILDING_UPGRADE, unitOut.buildingUpgradeUrgency, buildingToUpgrade->id);
+		}
+	}
+}
+
+void AiOrchestrator::upgradeResBuilding() {
+	if (lastEconOut.resBuildingUpgradeUrgency > 0.1f) {
+		if (auto* resBuildingToUpgrade = resolveResBuildingUpgrade(lastEconOut)) {
+			wantList.addRequest(WantItemType::BUILDING_UPGRADE, lastEconOut.resBuildingUpgradeUrgency, resBuildingToUpgrade->id);
+		}
+	}
+}
+
 
 void AiOrchestrator::createResBuilding() {
 	struct Candidate {
@@ -203,19 +219,10 @@ void AiOrchestrator::action() {
 	upgradeUnits(unitOut);
 
 	// Unit-producing building upgrade request (barracks, archery range, stable)
-	if (unitOut.buildingUpgradeUrgency > 0.1f) {
-		if (auto* buildingToUpgrade = resolveBuildingUpgrade(unitOut)) {
-			wantList.addRequest(WantItemType::BUILDING_UPGRADE, unitOut.buildingUpgradeUrgency, buildingToUpgrade->id);
-		}
-	}
-
+	upgradeUnitBuilding(unitOut);
 
 	// Resource building upgrade request (farms, mills, mines, refineries, etc.)
-	if (lastEconOut.resBuildingUpgradeUrgency > 0.1f) {
-		if (auto* resBuildingToUpgrade = resolveResBuildingUpgrade(lastEconOut)) {
-			wantList.addRequest(WantItemType::BUILDING_UPGRADE, lastEconOut.resBuildingUpgradeUrgency, resBuildingToUpgrade->id);
-		}
-	}
+	upgradeResBuilding();
 
 	// Defence building upgrade request (tower)
 	submitBuildingUpgradeRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
@@ -235,7 +242,7 @@ void AiOrchestrator::action() {
 
 	// 6. Execute WantList
 	wantExecutor.prepare(lastMasterOut);
-	lastLacking = wantList.execute(player, wantExecutor);
+	lastLacking = wantList.execute(player->getResources()->getValues(), wantExecutor);
 	lastLacking.lackingBuildingForUnit = wantExecutor.getLackingBuilding();
 }
 

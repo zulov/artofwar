@@ -2,9 +2,12 @@
 
 #include <array>
 #include <cmath>
+#include <map>
 
+#include "database/db_struct.h"
 #include "player/ai/WantList.h"
 #include "player/ai/WantList.cpp"
+#include "player/ai/WantListExecute.cpp"
 #include "player/ai/UnitBrain.h"
 
 // ==========================================
@@ -15,6 +18,57 @@ class WantListFixture : public ::testing::Test {
 protected:
 	WantList wl;
 };
+
+namespace {
+	class TestWantExecutor : public IWantExecutor {
+	public:
+		void setCost(short id, unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold) {
+			costs.erase(id);
+			costs.emplace(std::piecewise_construct,
+			              std::forward_as_tuple(id),
+			              std::forward_as_tuple(food, wood, stone, gold));
+		}
+
+		void setExecuteResult(short id, bool result) {
+			executeResults[id] = result;
+		}
+
+		const db_with_cost* cost(const WantItem& item) const override {
+			const auto it = costs.find(item.specificId);
+			return it == costs.end() ? nullptr : &it->second;
+		}
+
+		void onNotEnoughResources(const WantItem& item) override {
+			notEnoughIds.push_back(item.specificId);
+		}
+
+		bool execute(WantItem& item) override {
+			executedIds.push_back(item.specificId);
+			const auto it = executeResults.find(item.specificId);
+			return it == executeResults.end() ? true : it->second;
+		}
+
+		std::vector<short> executedIds;
+		std::vector<short> notEnoughIds;
+
+	private:
+		std::map<short, db_with_cost> costs;
+		std::map<short, bool> executeResults;
+	};
+
+	std::array<float, RESOURCES_SIZE> resourcesWithWood(float wood) {
+		std::array<float, RESOURCES_SIZE> resources{};
+		resources[cast(ResourceType::WOOD)] = wood;
+		return resources;
+	}
+
+	void runTick(WantList& wl, IWantExecutor& executor, std::span<const float> resources,
+	             WantItemType type, float priority, short id, unsigned char count = 1) {
+		wl.resetRequests();
+		wl.addRequest(type, priority, id, count);
+		wl.execute(resources, executor);
+	}
+}
 
 // --- addRequest / resetRequests basics ---
 
@@ -34,6 +88,7 @@ TEST_F(WantListFixture, AddRequestCreatesItem) {
 	EXPECT_EQ(item.count, 1);
 	EXPECT_EQ(item.specificId, -1);
 	EXPECT_EQ(item.age, 0);
+	EXPECT_EQ(item.reserveTicks, 0);
 	EXPECT_TRUE(item.active);
 }
 
@@ -141,6 +196,89 @@ TEST_F(WantListFixture, MultipleTickCyclesAccumulateItems) {
 	EXPECT_TRUE(workerActive);
 	EXPECT_TRUE(unitInactive);
 	EXPECT_TRUE(buildingActive);
+}
+
+TEST_F(WantListFixture, ExecuteBlockedItemGrowsSoftReserveByOnePercentPerTick) {
+	TestWantExecutor executor;
+	executor.setCost(7, 0, 100, 0, 0);
+	const auto resources = resourcesWithWood(60.f);
+
+	runTick(wl, executor, resources, WantItemType::BUILDING, 0.9f, 7);
+	ASSERT_EQ(wl.getItemCount(), 1);
+	EXPECT_EQ(wl.getItems()[0].reserveTicks, 1);
+
+	runTick(wl, executor, resources, WantItemType::BUILDING, 0.9f, 7);
+	EXPECT_EQ(wl.getItems()[0].reserveTicks, 2);
+}
+
+TEST_F(WantListFixture, ExecuteBlockedItemSoftReserveCapsAtThirtyThreePercent) {
+	TestWantExecutor executor;
+	executor.setCost(7, 0, 100, 0, 0);
+	const auto resources = resourcesWithWood(60.f);
+
+	for (int tick = 0; tick < 40; ++tick) {
+		runTick(wl, executor, resources, WantItemType::BUILDING, 0.9f, 7);
+	}
+
+	ASSERT_EQ(wl.getItemCount(), 1);
+	EXPECT_EQ(wl.getItems()[0].reserveTicks, WantList::SOFT_RESERVE_MAX_PERCENT);
+}
+
+TEST_F(WantListFixture, ExecuteSuccessResetsSoftReserveTicks) {
+	TestWantExecutor executor;
+	executor.setCost(7, 0, 100, 0, 0);
+
+	runTick(wl, executor, resourcesWithWood(60.f), WantItemType::BUILDING, 0.9f, 7);
+	ASSERT_EQ(wl.getItems()[0].reserveTicks, 1);
+
+	runTick(wl, executor, resourcesWithWood(120.f), WantItemType::BUILDING, 0.9f, 7);
+	EXPECT_EQ(wl.getItems()[0].reserveTicks, 0);
+	ASSERT_EQ(executor.executedIds.size(), 1);
+	EXPECT_EQ(executor.executedIds[0], 7);
+}
+
+TEST_F(WantListFixture, ExecuteFailureAfterAffordableCheckResetsSoftReserveTicks) {
+	TestWantExecutor executor;
+	executor.setCost(7, 0, 100, 0, 0);
+	executor.setExecuteResult(7, false);
+
+	runTick(wl, executor, resourcesWithWood(60.f), WantItemType::BUILDING, 0.9f, 7);
+	ASSERT_EQ(wl.getItems()[0].reserveTicks, 1);
+
+	runTick(wl, executor, resourcesWithWood(120.f), WantItemType::BUILDING, 0.9f, 7);
+	EXPECT_EQ(wl.getItems()[0].reserveTicks, 0);
+	ASSERT_EQ(executor.executedIds.size(), 1);
+	EXPECT_EQ(executor.executedIds[0], 7);
+}
+
+TEST_F(WantListFixture, SoftReserveCanBlockLowerPriorityItem) {
+	TestWantExecutor executor;
+	executor.setCost(1, 0, 100, 0, 0);
+	executor.setCost(2, 0, 10, 0, 0);
+
+	wl.addRequest(WantItemType::BUILDING, 0.9f, 1);
+	wl.addRequest(WantItemType::BUILDING, 0.4f, 2);
+	wl.execute(resourcesWithWood(10.f), executor);
+
+	EXPECT_TRUE(executor.executedIds.empty());
+	ASSERT_EQ(executor.notEnoughIds.size(), 2);
+	EXPECT_EQ(executor.notEnoughIds[0], 1);
+	EXPECT_EQ(executor.notEnoughIds[1], 2);
+}
+
+TEST_F(WantListFixture, BlockedMultiCountItemAppliesSingleSoftReserve) {
+	TestWantExecutor executor;
+	executor.setCost(1, 0, 60, 0, 0);
+	executor.setCost(2, 0, 49, 0, 0);
+
+	wl.addRequest(WantItemType::UNIT, 0.9f, 1, 3);
+	wl.addRequest(WantItemType::BUILDING, 0.4f, 2);
+	wl.execute(resourcesWithWood(50.5f), executor);
+
+	ASSERT_EQ(executor.executedIds.size(), 1);
+	EXPECT_EQ(executor.executedIds[0], 2);
+	ASSERT_EQ(wl.getItems().size(), 2);
+	EXPECT_EQ(wl.getItems()[0].reserveTicks, 1);
 }
 
 // ==========================================

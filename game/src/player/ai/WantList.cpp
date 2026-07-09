@@ -33,6 +33,7 @@ void WantList::boostOrDecay() {
 			if (item.age < 1000) { item.age++; }
 		} else {
 			item.priority *= DECAY_FACTOR;
+			item.reserveTicks = 0;
 		}
 	}
 }
@@ -44,7 +45,7 @@ void WantList::dropDead() {
 }
 
 void WantList::sortByPriority() {
-	std::ranges::sort(items, [](const WantItem& a, const WantItem& b) {
+	std::ranges::stable_sort(items, [](const WantItem& a, const WantItem& b) {
 		return a.priority > b.priority;
 	});
 	if (static_cast<int>(items.size()) > MAX_ITEMS) {

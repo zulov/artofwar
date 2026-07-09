@@ -47,6 +47,8 @@ public:
 	void createUnits(const UnitOutput& unitOut);
 	void upgradeUnits(const UnitOutput& unitOut);
 	void upgradeWorkers();
+	void upgradeUnitBuilding(const UnitOutput& unitOut);
+	void upgradeResBuilding();
 	void createResBuilding();
 	void createLackingUnitBuilding();
 	AiOrchestrator(const AiOrchestrator&) = delete;
