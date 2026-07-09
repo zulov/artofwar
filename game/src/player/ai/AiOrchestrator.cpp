@@ -62,7 +62,7 @@ namespace {
 		{MilitaryCenterIdx::ENEMY_ARMY, CenterType::ARMY, true, AiOrderType::ATTACK_ARMY, false},
 		{MilitaryCenterIdx::ENEMY_ECON, CenterType::ECON, true, AiOrderType::ATTACK_ECON, false},
 		{MilitaryCenterIdx::ENEMY_BUILDING, CenterType::BUILDING, true, AiOrderType::ATTACK_BUILDING, false},
-		{MilitaryCenterIdx::LAST_BATTLE, CenterType::BETTLE, false, AiOrderType::MOVE_LAST_BATTLE, true},
+		{MilitaryCenterIdx::BATTLE, CenterType::BATTLE, false, AiOrderType::MOVE_BATTLE, true},
 	};
 	constexpr size_t ARMY_TARGET_SPEC_COUNT = sizeof(ARMY_TARGET_SPECS) / sizeof(ARMY_TARGET_SPECS[0]);
 
@@ -267,18 +267,11 @@ void AiOrchestrator::order() {
 
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
 	const auto enemyId = enemy->getId();
-	auto armyCenter = Game::getEnvironment()->getCenterOf(CenterType::ARMY, playerId);
-	if (!armyCenter.has_value()) {
-		history->addOrder(AiOrderType::NONE, AiOrderResult::NO_CENTER_POSITION);
-		issueHold(allArmy, MIN_ARMY_ORDER_PRESSURE);
-		return;
-	}
-	std::array<MilitaryCenterSnapshot, MILITARY_CENTER_COUNT> centers{};
-	centers[castC(MilitaryCenterIdx::OUR_ARMY)] = {true, armyCenter.value()};
+	std::array<std::optional<Urho3D::Vector2>, MILITARY_CENTER_COUNT> centers{};
 	for (const auto& spec : ARMY_TARGET_SPECS) {
 		const unsigned char owner = spec.enemyOwner ? enemyId : playerId;
 		if (auto target = Game::getEnvironment()->getCenterOf(spec.centerType, owner)) {
-			centers[castC(spec.center)] = {true, *target};
+			centers[castC(spec.center)] = *target;
 		}
 	}
 
@@ -309,13 +302,10 @@ void AiOrchestrator::order() {
 		if (buckets[i].empty()) { continue; }
 		const auto& spec = ARMY_TARGET_SPECS[i];
 		const unsigned char owner = spec.enemyOwner ? enemyId : playerId;
-		// Snapshot center position is FOW-independent (influence-map based), so it
-		// is used as the fallback whenever a more precise target is unavailable.
-		const auto& centerSnapshot = centers[castC(spec.center)];
-		const std::optional<Urho3D::Vector2> centerPos = centerSnapshot.available
-			? std::optional{centerSnapshot.position}
-			: std::nullopt;
-		// Move-to-center targets (e.g. OUR_ARMY, LAST_BATTLE) go straight to the
+		// Center position is FOW-independent (influence-map based), so it is
+		// used as the fallback whenever a more precise target is unavailable.
+		const auto& centerPos = centers[castC(spec.center)];
+		// Move-to-center targets (e.g. OUR_ARMY, BATTLE) go straight to the
 		// center position. Attack targets prefer an enemy-facing visible area, but
 		// when that area is hidden by fog of war we still advance toward the
 		// center position instead of holding.

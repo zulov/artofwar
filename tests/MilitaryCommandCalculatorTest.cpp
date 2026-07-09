@@ -4,19 +4,16 @@
 #include "utils/OtherUtils.h"
 
 namespace {
-	MilitaryCenterSnapshot makeCenter(const Urho3D::Vector2& pos) {
-		MilitaryCenterSnapshot s;
-		s.available = true;
-		s.position = pos;
-		return s;
+	std::optional<Urho3D::Vector2> makeCenter(const Urho3D::Vector2& pos) {
+		return pos;
 	}
 }
 
 TEST(MilitaryCommandCalculatorTest, MilitaryCenterPairOrderMatchesPressureEncoding) {
 	EXPECT_EQ(militaryCenterPairIndex(MilitaryCenterIdx::OUR_ARMY, MilitaryCenterIdx::OUR_ECON), 0u);
-	EXPECT_EQ(militaryCenterPairIndex(MilitaryCenterIdx::OUR_ARMY, MilitaryCenterIdx::LAST_BATTLE), 5u);
-	EXPECT_EQ(militaryCenterPairIndex(MilitaryCenterIdx::OUR_ECON, MilitaryCenterIdx::LAST_BATTLE), 10u);
-	EXPECT_EQ(militaryCenterPairIndex(MilitaryCenterIdx::ENEMY_BUILDING, MilitaryCenterIdx::LAST_BATTLE), 20u);
+	EXPECT_EQ(militaryCenterPairIndex(MilitaryCenterIdx::OUR_ARMY, MilitaryCenterIdx::BATTLE), 5u);
+	EXPECT_EQ(militaryCenterPairIndex(MilitaryCenterIdx::OUR_ECON, MilitaryCenterIdx::BATTLE), 10u);
+	EXPECT_EQ(militaryCenterPairIndex(MilitaryCenterIdx::ENEMY_BUILDING, MilitaryCenterIdx::BATTLE), 20u);
 
 	MilitaryOutput output;
 	output.centerPairPressure.fill(0.f);
@@ -36,7 +33,7 @@ TEST(MilitaryCommandCalculatorTest, ChoosesEnemyArmyForExamplePressures) {
 	output.centerPairPressure[militaryCenterPairIndex(MilitaryCenterIdx::OUR_ARMY, MilitaryCenterIdx::ENEMY_ECON)] = 0.1f;
 	output.centerPairPressure[militaryCenterPairIndex(MilitaryCenterIdx::OUR_ARMY, MilitaryCenterIdx::ENEMY_ARMY)] = 0.05f;
 
-	std::array<MilitaryCenterSnapshot, MILITARY_CENTER_COUNT> centers{};
+	std::array<std::optional<Urho3D::Vector2>, MILITARY_CENTER_COUNT> centers{};
 	centers[castC(MilitaryCenterIdx::OUR_ARMY)] = makeCenter({0.f, 0.f});
 	centers[castC(MilitaryCenterIdx::OUR_BUILDING)] = makeCenter({0.f, 0.f});
 	centers[castC(MilitaryCenterIdx::ENEMY_ARMY)] = makeCenter({10.f, 0.f});
@@ -53,7 +50,7 @@ TEST(MilitaryCommandCalculatorTest, IgnoresUnavailableCenters) {
 	output.centerPairPressure.fill(0.f);
 	output.centerPairPressure[militaryCenterPairIndex(MilitaryCenterIdx::OUR_ARMY, MilitaryCenterIdx::ENEMY_ARMY)] = 1.f;
 
-	std::array<MilitaryCenterSnapshot, MILITARY_CENTER_COUNT> centers{};
+	std::array<std::optional<Urho3D::Vector2>, MILITARY_CENTER_COUNT> centers{};
 	centers[castC(MilitaryCenterIdx::OUR_ARMY)] = makeCenter({0.f, 0.f});
 	centers[castC(MilitaryCenterIdx::ENEMY_ARMY)] = {};
 
@@ -69,7 +66,7 @@ TEST(MilitaryCommandCalculatorTest, DistanceScalesInfluence) {
 	output.centerPairPressure[militaryCenterPairIndex(MilitaryCenterIdx::OUR_ARMY, MilitaryCenterIdx::ENEMY_ECON)] = 1.f;
 	output.centerPairPressure[militaryCenterPairIndex(MilitaryCenterIdx::OUR_BUILDING, MilitaryCenterIdx::ENEMY_BUILDING)] = 0.2f;
 
-	std::array<MilitaryCenterSnapshot, MILITARY_CENTER_COUNT> centers{};
+	std::array<std::optional<Urho3D::Vector2>, MILITARY_CENTER_COUNT> centers{};
 	centers[castC(MilitaryCenterIdx::OUR_ARMY)] = makeCenter({0.f, 0.f});
 	centers[castC(MilitaryCenterIdx::OUR_BUILDING)] = makeCenter({0.f, 0.f});
 	centers[castC(MilitaryCenterIdx::ENEMY_ECON)] = makeCenter({10.f, 0.f});
@@ -90,7 +87,7 @@ TEST(MilitaryCommandCalculatorTest, PressureIsWeightedBySourceClosenessNotTarget
 	output.centerPairPressure.fill(0.f);
 	output.centerPairPressure[militaryCenterPairIndex(MilitaryCenterIdx::OUR_ARMY, MilitaryCenterIdx::ENEMY_ARMY)] = 1.f;
 
-	std::array<MilitaryCenterSnapshot, MILITARY_CENTER_COUNT> centers{};
+	std::array<std::optional<Urho3D::Vector2>, MILITARY_CENTER_COUNT> centers{};
 	centers[castC(MilitaryCenterIdx::OUR_ARMY)] = makeCenter({0.f, 0.f});
 	centers[castC(MilitaryCenterIdx::ENEMY_ARMY)] = makeCenter({100.f, 0.f});
 
@@ -104,7 +101,7 @@ TEST(MilitaryCommandCalculatorTest, ReturnsFirstAvailableWhenAllScoresZero) {
 	MilitaryOutput output;
 	output.centerPairPressure.fill(0.f);
 
-	std::array<MilitaryCenterSnapshot, MILITARY_CENTER_COUNT> centers{};
+	std::array<std::optional<Urho3D::Vector2>, MILITARY_CENTER_COUNT> centers{};
 	centers[castC(MilitaryCenterIdx::ENEMY_ARMY)] = makeCenter({100.f, 0.f});
 
 	auto result = calc.calculate({0.f, 0.f}, centers, output);
@@ -120,7 +117,7 @@ TEST(MilitaryCommandCalculatorTest, SourceOutsideRadiusContributesZeroPressure) 
 	output.centerPairPressure.fill(0.f);
 	output.centerPairPressure[militaryCenterPairIndex(MilitaryCenterIdx::OUR_ECON, MilitaryCenterIdx::ENEMY_ARMY)] = 1.f;
 
-	std::array<MilitaryCenterSnapshot, MILITARY_CENTER_COUNT> centers{};
+	std::array<std::optional<Urho3D::Vector2>, MILITARY_CENTER_COUNT> centers{};
 	// Source (OUR_ECON) is 100 units from the unit at origin -> outside radius 10.
 	centers[castC(MilitaryCenterIdx::OUR_ECON)] = makeCenter({100.f, 0.f});
 	centers[castC(MilitaryCenterIdx::ENEMY_ARMY)] = makeCenter({5.f, 0.f});

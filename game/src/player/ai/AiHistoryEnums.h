@@ -32,7 +32,7 @@ enum class AiOrderType : unsigned char {
 	DEFEND_ECON,
 	DEFEND_BUILDING,
 	DEFEND_ARMY,
-	MOVE_LAST_BATTLE,
+	MOVE_BATTLE,
 	NONE
 };
 
