@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <ranges>
 
+#include "utils/PrintUtils.h"
+
 void WantList::resetRequests() {
 	for (auto& item : items) {
 		item.active = false;
@@ -18,13 +20,14 @@ void WantList::addRequest(WantItemType type, float priority, short specificId, u
 			return;
 		}
 	}
+	PRINT(magic_enum::enum_name(type), specificId);
 	items.emplace_back(priority, type, count, specificId);
 }
 
 void WantList::boostOrDecay() {
 	for (auto& item : items) {
 		if (item.active) {
-			const float age = static_cast<float>(item.age);
+			const float age = item.age;
 			const float boost = BOOST_MAX * age / (age + BOOST_HALF_AGE);
 			item.priority = item.basePriority * (1.f + boost);
 			if (item.age < 1000) { item.age++; }

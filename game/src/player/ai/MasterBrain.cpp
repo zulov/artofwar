@@ -102,15 +102,15 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 
 	using O = MasterOutputIdx;
 	return MasterOutput{
-		result[idx(O::WORKER_URGENCY)],
-		result[idx(O::ECONOMY_URGENCY)],
-		result[idx(O::BUILDING_URGENCY)],
-		result[idx(O::UNIT_URGENCY)],
-		result[idx(O::MILITARY_URGENCY)],
-		result[idx(O::EXPAND_URGENCY)],
-		result[idx(O::TECH_URGENCY)],
-		result[idx(O::DEFENCE_BUILDING_URGENCY)],
-		result[idx(O::ATTACK_URGENCY)]
+			.workerUrgency = result[idx(O::WORKER_URGENCY)],
+			.economyUrgency = result[idx(O::ECONOMY_URGENCY)],
+			.buildingUrgency = result[idx(O::BUILDING_URGENCY)],
+			.unitUrgency = result[idx(O::UNIT_URGENCY)],
+			.militaryUrgency = result[idx(O::MILITARY_URGENCY)],
+			.expandUrgency = result[idx(O::EXPAND_URGENCY)],
+			.techUrgency = result[idx(O::TECH_URGENCY)],
+			.defenceBuildingUrgency = result[idx(O::DEFENCE_BUILDING_URGENCY)],
+			.attackUrgency = result[idx(O::ATTACK_URGENCY)]
 	};
 }
 
