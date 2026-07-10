@@ -3,8 +3,6 @@
 #include <algorithm>
 #include <ranges>
 
-#include "utils/PrintUtils.h"
-
 void WantList::resetRequests() {
 	for (auto& item : items) {
 		item.active = false;
@@ -20,7 +18,6 @@ void WantList::addRequest(WantItemType type, float priority, short specificId, u
 			return;
 		}
 	}
-	PRINT(magic_enum::enum_name(type), specificId);
 	items.emplace_back(priority, type, count, specificId);
 }
 

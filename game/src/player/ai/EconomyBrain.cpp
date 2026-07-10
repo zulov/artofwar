@@ -15,15 +15,12 @@
 #include "env/Environment.h"
 #include "env/EnvConsts.h"
 #include "objects/resource/ResourceEntity.h"
-#include "utils/PrintUtils.h"
 #include "utils/OtherUtils.h"
 
 #include <algorithm>
 #include <cmath>
 
 namespace {
-constexpr unsigned int ECON_DEBUG_SECONDS = 20;
-
 std::pair<float, float> getNearbySupply(char playerId) {
 	// Resources within the level-1 query radius of the economy center.
 	constexpr ResourceQueryLevel SEARCH_LEVEL = ResourceQueryLevel::R128;
@@ -141,28 +138,6 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	if (workerAlloc > 0.1f) {
 		int raw = roundToInt(workerAlloc * MAX_WORKERS_PER_TICK);
 		workerCount = static_cast<unsigned char>(std::max(1, raw));
-	}
-
-	if (Game::getFrameInfo()->getSeconds() <= ECON_DEBUG_SECONDS) {
-		PRINT("[ECON]",
-		      "sec", Game::getFrameInfo()->getSeconds(),
-		      "player", player->getId(),
-		      "res", res->getValue(ResourceType::FOOD), res->getValue(ResourceType::WOOD),
-		      res->getValue(ResourceType::STONE), res->getValue(ResourceType::GOLD),
-		      "gather", res->getGatherSpeed(ResourceType::FOOD), res->getGatherSpeed(ResourceType::WOOD),
-		      res->getGatherSpeed(ResourceType::STONE), res->getGatherSpeed(ResourceType::GOLD),
-		      "freeWorkers", possession->getFreeWorkersNumber(),
-		      "workers", possession->getWorkersNumber(),
-		      "lacking", lackingPerResource[0], lackingPerResource[1], lackingPerResource[2], lackingPerResource[3],
-		      "prio", result[idx(O::FOOD_PRIORITY)], result[idx(O::WOOD_PRIORITY)],
-		      result[idx(O::STONE_PRIORITY)], result[idx(O::GOLD_PRIORITY)],
-		      "workerAlloc", workerAlloc,
-		      "workerCount", static_cast<int>(workerCount),
-		      "needs", result[idx(O::NEED_BONUS_FOOD)], result[idx(O::NEED_BONUS_WOOD)],
-		      result[idx(O::NEED_BONUS_STONE)], result[idx(O::NEED_BONUS_GOLD)],
-		      result[idx(O::NEED_FOOD_SOURCE)], result[idx(O::NEED_FOOD_STORAGE)],
-		      result[idx(O::NEED_GOLD_STORAGE)], result[idx(O::NEED_GOLD_REFINE)],
-		      result[idx(O::NEED_STONE_REFINE)], result[idx(O::NEED_WOOD_SOURCE)]);
 	}
 
 	return EconomyOutput{

@@ -47,6 +47,11 @@ BuildSpatialOutput BuildSpatialBrain::decide(Player* player, Player* enemy,
 		inputData[idx(I::CLASS_OTHER) + c] = c == placementIndex ? 1.f : 0.f;
 	}
 
+	inputData[idx(I::RES_TYPE_FOOD)] = building->typeResourceFood ? 1.f : 0.f;
+	inputData[idx(I::RES_TYPE_WOOD)] = building->typeResourceWood ? 1.f : 0.f;
+	inputData[idx(I::RES_TYPE_STONE)] = building->typeResourceStone ? 1.f : 0.f;
+	inputData[idx(I::RES_TYPE_GOLD)] = building->typeResourceGold ? 1.f : 0.f;
+
 	auto result = brain->decide(inputData);
 
 	BuildSpatialOutput output;

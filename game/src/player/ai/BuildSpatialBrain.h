@@ -27,6 +27,10 @@ enum class BuildSpatialInputIdx : unsigned char {
 	CLASS_RES_SPAWNER,
 	CLASS_RES_STORAGE,
 	CLASS_RES_REFINE,
+	RES_TYPE_FOOD,
+	RES_TYPE_WOOD,
+	RES_TYPE_STONE,
+	RES_TYPE_GOLD,
 };
 
 enum class BuildSpatialOutputIdx : unsigned char {
