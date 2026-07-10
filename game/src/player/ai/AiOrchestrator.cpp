@@ -33,8 +33,11 @@
 #include "objects/unit/state/UnitState.h"
 #include "env/influence/CenterType.h"
 #include "database/DatabaseCache.h"
+#include "utils/PrintUtils.h"
 
 namespace {
+	constexpr unsigned int ECON_DEBUG_SECONDS = 20;
+
 	bool isResBonus(db_building* b, db_building_level* l, ResourceType res) {
 		return b->resourceType == cast(res) && l->collect > 0.f && l->resourceRange > 0.f;
 	}
@@ -88,6 +91,14 @@ AiOrchestrator::AiOrchestrator(Player* player, db_nation* nation, AiHistory* his
 
 void AiOrchestrator::createWorkers() {
 	if (lastEconOut.workerCount > 0) {
+		if (Game::getFrameInfo()->getSeconds() <= ECON_DEBUG_SECONDS) {
+			PRINT("[ECON_WORKER_WANT]",
+			      "sec", Game::getFrameInfo()->getSeconds(),
+			      "player", playerId,
+			      "priority", lastEconOut.workerAllocation,
+			      "count", static_cast<int>(lastEconOut.workerCount),
+			      "workerId", resolveWorkerId());
+		}
 		wantList.addRequest(WantItemType::WORKER, lastEconOut.workerAllocation, resolveWorkerId(),
 		                    lastEconOut.workerCount);
 	}
@@ -161,6 +172,13 @@ void AiOrchestrator::createResBuilding() {
 	std::ranges::partial_sort(candidates, candidates.begin() + keep,
 	                          [](const Candidate& a, const Candidate& b) { return a.need > b.need; });
 	for (size_t i = 0; i < keep; ++i) {
+		if (Game::getFrameInfo()->getSeconds() <= ECON_DEBUG_SECONDS) {
+			PRINT("[ECON_BUILD_WANT]",
+			      "sec", Game::getFrameInfo()->getSeconds(),
+			      "player", playerId,
+			      "buildingId", candidates[i].id,
+			      "need", candidates[i].need);
+		}
 		wantList.addRequest(WantItemType::BUILDING, candidates[i].need, candidates[i].id);
 	}
 }
@@ -595,8 +613,26 @@ void AiOrchestrator::manageWorkers() {
 	std::array order = {0, 1, 2, 3};
 	std::ranges::sort(order, [&](int a, int b) { return prefs[a] > prefs[b]; });
 
+	if (Game::getFrameInfo()->getSeconds() <= ECON_DEBUG_SECONDS) {
+		PRINT("[ECON_ASSIGN]",
+		      "sec", Game::getFrameInfo()->getSeconds(),
+		      "player", playerId,
+		      "prefs", prefs[0], prefs[1], prefs[2], prefs[3],
+		      "order", order[0], order[1], order[2], order[3],
+		      "freeWorkers", static_cast<int>(freeWorkers.size()));
+	}
+
 	// Reassign one busy worker away from the most negative resource.
 	if (auto* worker = findReassignableWorker(order, prefs)) {
+		if (Game::getFrameInfo()->getSeconds() <= ECON_DEBUG_SECONDS) {
+			auto* res = dynamic_cast<ResourceEntity*>(worker->getThingToInteract());
+			PRINT("[ECON_REASSIGN]",
+			      "sec", Game::getFrameInfo()->getSeconds(),
+			      "player", playerId,
+			      "worker", worker->getSecondaryId(),
+			      "fromRes", res ? static_cast<int>(res->getResourceId()) : -1,
+			      "worstPref", prefs[order[3]]);
+		}
 		freeWorkers.push_back(worker);
 	}
 
@@ -604,6 +640,12 @@ void AiOrchestrator::manageWorkers() {
 
 	// Split workers across resources proportionally to their needs.
 	std::array<int, RESOURCES_SIZE> remaining = computeWorkerTargets(prefs, freeWorkers.size());
+	if (Game::getFrameInfo()->getSeconds() <= ECON_DEBUG_SECONDS) {
+		PRINT("[ECON_TARGETS]",
+		      "sec", Game::getFrameInfo()->getSeconds(),
+		      "player", playerId,
+		      "targets", remaining[0], remaining[1], remaining[2], remaining[3]);
+	}
 
 	for (auto* worker : freeWorkers) {
 		bool assigned = false;
@@ -673,6 +715,14 @@ bool AiOrchestrator::tryAssignCollect(Unit* worker, int resId) {
 	auto* closest = closestInRange(worker, resId);
 	if (!closest) { return false; }
 	auto orderType = static_cast<AiOrderType>(static_cast<uint8_t>(AiOrderType::COLLECT_RESOURCE_0) + resId);
+	if (Game::getFrameInfo()->getSeconds() <= ECON_DEBUG_SECONDS) {
+		PRINT("[ECON_COLLECT]",
+		      "sec", Game::getFrameInfo()->getSeconds(),
+		      "player", playerId,
+		      "worker", worker->getSecondaryId(),
+		      "res", resId,
+		      "target", closest->getSecondaryId());
+	}
 	Game::getActionCenter()->addUnitAction(new IndividualOrder(worker, UnitAction::COLLECT, closest));
 	history->addOrder(orderType, AiOrderResult::SUCCESS, 1);
 	return true;

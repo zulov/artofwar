@@ -3,12 +3,16 @@
 #include <algorithm>
 
 #include "database/db_struct.h"
+#include "Game.h"
+#include "utils/PrintUtils.h"
 
 // The execution half of WantList. Kept in its own translation unit because it
 // depends on Player/Resources (and their heavy transitive headers), whereas the
 // scheduler half (WantList.cpp) is dependency-light and unit-testable on its own.
 
 namespace {
+	constexpr unsigned int ECON_DEBUG_SECONDS = 20;
+
 	bool hasEnough(std::span<const float> resourceValues, const db_with_cost* cost) {
 		for (int i = 0; i < RESOURCES_SIZE; ++i) {
 			if (resourceValues[i] < cost->values[i]) {
@@ -81,5 +85,11 @@ WantList::LackingResult WantList::execute(std::span<const float> resourceValues,
 	}
 
 	dropDead();
+	if (Game::getFrameInfo()->getSeconds() <= ECON_DEBUG_SECONDS) {
+		PRINT("[ECON_LACKING]",
+		      "sec", Game::getFrameInfo()->getSeconds(),
+		      "lacking", lacking.perResource[0], lacking.perResource[1], lacking.perResource[2], lacking.perResource[3],
+		      "total", lacking.totalSum);
+	}
 	return lacking;
 }
