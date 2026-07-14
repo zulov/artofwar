@@ -248,13 +248,6 @@ float Possession::getBonusCoverage(ResourceType rt) {
 	return bonusCoverage[cast(rt)];
 }
 
-float Possession::getResWithoutBonusSum() {
-	ensureResWithoutBonus();
-	float sum = 0.f;
-	for (const auto v : metric->resWithoutBonus) { sum += v; }
-	return sum;
-}
-
 void Possession::add(Building* building) {
 	buildings.push_back(building);
 	buildingsPerId[building->getDbId()]->push_back(building);

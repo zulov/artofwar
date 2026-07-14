@@ -17,7 +17,7 @@ namespace NormScale {
 	inline constexpr float LACKING_PER_RES = 500.f;  // per-resource deficit
 	inline constexpr float REFINE_GAP      = 10.f;   // gather speed beyond refine capacity
 	inline constexpr float NEARBY_SUPPLY   = 5000.f; // pooled HP of nearby food/wood nodes
-	inline constexpr float RES_BUILDINGS   = 20.f;   // resource-building counts / res-without-bonus sum
+	inline constexpr float RES_BUILDINGS   = 20.f;   // resource-building counts
 
 	// History scores (time-weighted recency over a lookback window).
 	inline constexpr float ACTIVITY    = 10.f;   // attack/defend activity scores

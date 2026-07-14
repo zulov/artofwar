@@ -142,7 +142,7 @@
   <div class="change-note">
     <div class="label">Current: Unified (Single Brain)</div>
     <ul>
-      <li>EconomyBrain (38 inputs, 18 outputs) does everything, including upgrade urgencies</li>
+      <li>EconomyBrain (41 inputs, 18 outputs) does everything, including upgrade urgencies</li>
       <li>ResourceBrain removed entirely</li>
       <li>10 direct building-type need outputs (e.g. NEED_BONUS_FOOD, NEED_FOOD_SOURCE, NEED_FOOD_STORAGE)</li>
       <li>Orchestrator scores resource buildings against these needs via DB fields</li>
@@ -160,7 +160,7 @@
   <span class="tag brain">Main Brain</span>
   <span class="tag new">Unified</span>
 
-  <p>EconomyBrain is a single neural network that handles all economy decisions: worker training, resource allocation, resource building selection, and worker/resource-building upgrades. It receives 38 inputs covering scores, resources, gather speeds, workers, storage/refine state, bonus coverage, nearby supply, building counts, lacking feedback, urgencies from MasterBrain, collection-failure history, average levels, and game time. It outputs 18 values.</p>
+  <p>EconomyBrain is a single neural network that handles all economy decisions: worker training, resource allocation, resource building selection, and worker/resource-building upgrades. It receives 41 inputs covering scores, resources, gather speeds, workers, storage/refine state, bonus coverage, nearby supply, building counts, per-resource no-bonus worker counts, lacking feedback, urgencies from MasterBrain, collection-failure history, average levels, and game time. It outputs 18 values.</p>
 
   <div class="illust">
     <svg width="800" height="500" viewBox="0 0 800 500">
@@ -174,11 +174,11 @@
 
       <!-- EconomyBrain - large box -->
       <rect x="100" y="85" width="600" height="260" rx="12" fill="#16213e" stroke="#0d47a1" stroke-width="2.5"/>
-      <text x="400" y="108" text-anchor="middle" fill="#90caf9" font-size="14" font-weight="bold">EconomyBrain (38 inputs, 18 outputs)</text>
+      <text x="400" y="108" text-anchor="middle" fill="#90caf9" font-size="14" font-weight="bold">EconomyBrain (41 inputs, 18 outputs)</text>
 
       <!-- Input column -->
       <rect x="120" y="118" width="200" height="215" rx="6" fill="#0d1b2a" stroke="#333" stroke-width="1"/>
-      <text x="220" y="135" text-anchor="middle" fill="#e6c44d" font-size="10" font-weight="bold">INPUTS (38)</text>
+      <text x="220" y="135" text-anchor="middle" fill="#e6c44d" font-size="10" font-weight="bold">INPUTS (41)</text>
 
       <text x="130" y="151" fill="#4caf50" font-size="9">Scores (2)</text>
       <text x="130" y="164" fill="#8d6e4e" font-size="9">Resources (4)</text>
@@ -188,7 +188,7 @@
       <text x="130" y="216" fill="#ce93d8" font-size="9">Refine ratios (2)</text>
       <text x="130" y="229" fill="#a5d6a7" font-size="9">Refine gaps (2)</text>
       <text x="130" y="242" fill="#a5d6a7" font-size="9">Bonus coverage (4)</text>
-      <text x="130" y="255" fill="#ffd700" font-size="9">Nearby supply + counts (4)</text>
+      <text x="130" y="255" fill="#ffd700" font-size="9">Nearby supply + counts (7)</text>
       <text x="130" y="268" fill="#ef9a9a" font-size="9">Lacking (4)</text>
       <text x="130" y="281" fill="#e6c44d" font-size="9">Urgencies (3)</text>
       <text x="130" y="294" fill="#888" font-size="9">Collect failures (1)</text>
@@ -284,7 +284,7 @@
 <!-- INPUTS TABLE -->
 <!-- ============================================ -->
 <div class="mechanism">
-  <h2>EconomyBrain Inputs (38)</h2>
+  <h2>EconomyBrain Inputs (41)</h2>
   <span class="tag brain">EconomyInputIdx</span>
 
   <table>
@@ -305,19 +305,19 @@
     <tr><td>22</td><td>NEARBY_FOOD_SUPPLY</td><td>Environment::sumFoodWoodWithin() (econ center, R128)</td><td>/5000</td></tr>
     <tr><td>23</td><td>NEARBY_WOOD_SUPPLY</td><td>Environment::sumFoodWoodWithin() (econ center, R128)</td><td>/5000</td></tr>
     <tr><td>24</td><td>TOTAL_RES_BUILDINGS</td><td>Possession::getResourceBuildingCount()</td><td>/20</td></tr>
-    <tr><td>25</td><td>RES_WO_BONUS</td><td>Possession::getResWithoutBonusSum()</td><td>/20</td></tr>
-    <tr><td>26-29</td><td>LACKING_FOOD/WOOD/STONE/GOLD</td><td>WantList::LackingResult (prev tick)</td><td>/500</td></tr>
-    <tr><td>30</td><td>ECONOMY_URGENCY</td><td>MasterBrain output</td><td>raw [-1..1]</td></tr>
-    <tr><td>31</td><td>WORKER_URGENCY</td><td>MasterBrain output</td><td>raw [-1..1]</td></tr>
-    <tr><td>32</td><td>EXPAND_URGENCY</td><td>MasterBrain output</td><td>raw [-1..1]</td></tr>
-    <tr><td>33</td><td>RECENT_COLLECT_FAILURES</td><td>AiHistory::collectFailureScore(1800)</td><td>/10</td></tr>
-    <tr style="color:#a5d6a7;"><td>34</td><td>TECH_URGENCY</td><td>MasterBrain output</td><td>raw [-1..1]</td></tr>
-    <tr style="color:#a5d6a7;"><td>35</td><td>AVG_WORKER_LEVEL</td><td>avgUnitLevel(nation workers)</td><td>raw [0..1]</td></tr>
-    <tr style="color:#a5d6a7;"><td>36</td><td>AVG_RES_BUILDING_LEVEL</td><td>avgBuildingLevel(RESOURCE)</td><td>raw [0..1]</td></tr>
-    <tr style="color:#a5d6a7;"><td>37</td><td>GAME_TIME</td><td>FrameInfo::getSeconds()</td><td>/600 (GAME_TIME_SHORT)</td></tr>
+    <tr><td>25-28</td><td>RES_WO_BONUS_FOOD/WOOD/STONE/GOLD</td><td>Possession::getResWithOutBonus()</td><td>/100</td></tr>
+    <tr><td>29-32</td><td>LACKING_FOOD/WOOD/STONE/GOLD</td><td>WantList::LackingResult (prev tick)</td><td>/500</td></tr>
+    <tr><td>33</td><td>ECONOMY_URGENCY</td><td>MasterBrain output</td><td>raw [-1..1]</td></tr>
+    <tr><td>34</td><td>WORKER_URGENCY</td><td>MasterBrain output</td><td>raw [-1..1]</td></tr>
+    <tr><td>35</td><td>EXPAND_URGENCY</td><td>MasterBrain output</td><td>raw [-1..1]</td></tr>
+    <tr><td>36</td><td>RECENT_COLLECT_FAILURES</td><td>AiHistory::collectFailureScore(1800)</td><td>/10</td></tr>
+    <tr style="color:#a5d6a7;"><td>37</td><td>TECH_URGENCY</td><td>MasterBrain output</td><td>raw [-1..1]</td></tr>
+    <tr style="color:#a5d6a7;"><td>38</td><td>AVG_WORKER_LEVEL</td><td>avgUnitLevel(nation workers)</td><td>raw [0..1]</td></tr>
+    <tr style="color:#a5d6a7;"><td>39</td><td>AVG_RES_BUILDING_LEVEL</td><td>avgBuildingLevel(RESOURCE)</td><td>raw [0..1]</td></tr>
+    <tr style="color:#a5d6a7;"><td>40</td><td>GAME_TIME</td><td>FrameInfo::getSeconds()</td><td>/600 (GAME_TIME_SHORT)</td></tr>
   </table>
 
-  <p>Inputs 34-37 (green) drive the upgrade outputs. Inputs 12-25 provide the detailed resource-economy state that the removed ResourceBrain used to own.</p>
+  <p>Inputs 37-40 (green) drive the upgrade outputs. Inputs 12-28 provide the detailed resource-economy state that the removed ResourceBrain used to own.</p>
 </div>
 
 <!-- ============================================ -->
@@ -520,7 +520,7 @@
   <div class="example">
     <div class="ex-title">Example 1: Workers gathering wood without bonus</div>
     <p><span class="step">State:</span> 5 workers on wood, no bonus building, BONUS_COVERAGE_WOOD = <span class="num">0.0</span>, GATHER_WOOD = <span class="num">4.2/s</span></p>
-    <p><span class="step">Brain sees:</span> High wood gathering but zero bonus coverage. RES_WO_BONUS is high.</p>
+    <p><span class="step">Brain sees:</span> High wood gathering but zero bonus coverage. RES_WO_BONUS_WOOD is high.</p>
     <p><span class="step">Brain outputs:</span> NEED_BONUS_WOOD = <span class="num">0.85</span> (highest)</p>
     <p><span class="step">Orchestrator:</span> The wood bonus building scores need 0.85 (&gt; 0.1) and lands in the top 3, so it is submitted as a BUILDING want and placed near unbonused wood nodes.</p>
   </div>
@@ -635,7 +635,7 @@
     <div class="con">
       <h4>Cons</h4>
       <ul>
-        <li><strong>Larger brain:</strong> 38 inputs x 18 outputs vs 24x8 + 20x9. More weights to train, slightly slower inference.</li>
+        <li><strong>Larger brain:</strong> 41 inputs x 18 outputs vs 24x8 + 20x9. More weights to train, slightly slower inference.</li>
         <li><strong>Not extensible to new combos:</strong> Adding a new building type (e.g. STORAGE_STONE) requires adding a new output to the enum and retraining. Two-tier approach would handle it automatically via capability + resource combination.</li>
         <li><strong>Building-type coupling:</strong> Output names reference specific building types. If game design changes significantly (e.g. removing farms), the enum needs updating.</li>
         <li><strong>No separation of concerns:</strong> Economy macro decisions and building micro decisions are mixed in one brain. May be harder to debug if the brain makes bad economy decisions AND bad building decisions simultaneously.</li>
@@ -684,7 +684,7 @@
       <!-- EconomyBrain -->
       <rect x="225" y="10" width="200" height="70" rx="8" fill="#16213e" stroke="#0d47a1" stroke-width="2.5"/>
       <text x="325" y="35" text-anchor="middle" fill="#90caf9" font-size="12" font-weight="bold">EconomyBrain</text>
-      <text x="325" y="52" text-anchor="middle" fill="#888" font-size="9">38 inputs, 18 outputs</text>
+      <text x="325" y="52" text-anchor="middle" fill="#888" font-size="9">41 inputs, 18 outputs</text>
       <text x="325" y="66" text-anchor="middle" fill="#666" font-size="8">economy.csv</text>
 
       <!-- Three output arrows -->
@@ -747,8 +747,8 @@
 
   <table>
     <tr><th>File</th><th>What it contains</th></tr>
-    <tr><td><code>EconomyBrain.h</code></td><td><code>EconomyInputIdx</code> (38 entries), <code>EconomyOutputIdx</code> (18 entries), <code>EconomyOutput</code> struct, <code>EconomyBrain</code> class</td></tr>
-    <tr><td><code>EconomyBrain.cpp</code></td><td>Input population (scores, resources, gather speeds, workers, storage/refine ratios &amp; gaps, bonus coverage, nearby supply, building counts, lacking, urgencies, collect-failure history, avg levels, game time). Output mapping with named enum indices.</td></tr>
+    <tr><td><code>EconomyBrain.h</code></td><td><code>EconomyInputIdx</code> (41 entries), <code>EconomyOutputIdx</code> (18 entries), <code>EconomyOutput</code> struct, <code>EconomyBrain</code> class</td></tr>
+    <tr><td><code>EconomyBrain.cpp</code></td><td>Input population (scores, resources, gather speeds, workers, storage/refine ratios &amp; gaps, bonus coverage, nearby supply, building counts, per-resource no-bonus worker counts, lacking, urgencies, collect-failure history, avg levels, game time). Output mapping with named enum indices.</td></tr>
     <tr><td><code>AiOrchestrator.cpp</code></td><td><code>createResBuilding()</code>: per-building max over matching NEED_* outputs, submit top 3 as wants. <code>resolveResBuildingUpgrade()</code>: weighted choice for resource-building upgrades.</td></tr>
     <tr><td><code>AiOrchestrator.h</code></td><td>EconomyBrain member, <code>lastEconOut</code> cached output.</td></tr>
     <tr style="color:#ef9a9a;">

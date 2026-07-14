@@ -102,7 +102,11 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::NEARBY_FOOD_SUPPLY)] = norm(foodSupply, NormScale::NEARBY_SUPPLY);
 	inputData[idx(I::NEARBY_WOOD_SUPPLY)] = norm(woodSupply, NormScale::NEARBY_SUPPLY);
 	inputData[idx(I::TOTAL_RES_BUILDINGS)] = norm(possession->getResourceBuildingCount(), NormScale::RES_BUILDINGS);
-	inputData[idx(I::RES_WO_BONUS)] = norm(possession->getResWithoutBonusSum(), NormScale::RES_BUILDINGS);
+	const auto resWithoutBonus = possession->getResWithOutBonus();
+	inputData[idx(I::RES_WO_BONUS_FOOD)] = norm(resWithoutBonus[cast(ResourceType::FOOD)], NormScale::WORKERS);
+	inputData[idx(I::RES_WO_BONUS_WOOD)] = norm(resWithoutBonus[cast(ResourceType::WOOD)], NormScale::WORKERS);
+	inputData[idx(I::RES_WO_BONUS_STONE)] = norm(resWithoutBonus[cast(ResourceType::STONE)], NormScale::WORKERS);
+	inputData[idx(I::RES_WO_BONUS_GOLD)] = norm(resWithoutBonus[cast(ResourceType::GOLD)], NormScale::WORKERS);
 
 	// Lacking per resource (4)
 	inputData[idx(I::LACKING_FOOD)] = norm(lackingPerResource[0], NormScale::LACKING_PER_RES);

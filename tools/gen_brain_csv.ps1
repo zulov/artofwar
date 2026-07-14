@@ -12,7 +12,7 @@
 
     Example:
 
-      -Brains 'master.csv|34|22|9','economy.csv|38|28|18'
+      -Brains 'master.csv|34|22|9','economy.csv|41|28|18'
 
       Line 1 (input holder): <inputSize weights> ;; <1 bias>
           Its weights/bias are ignored at runtime (Brain::decide only calls

@@ -75,7 +75,6 @@ public:
 
 	float getInCombatRatio();
 	float getBonusCoverage(ResourceType rt);
-	float getResWithoutBonusSum();
 	float getValueDestroyed() const { return valueDestroyed; }
 private:
 	std::vector<Building*> buildings;
