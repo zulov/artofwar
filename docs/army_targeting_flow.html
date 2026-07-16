@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art of War - Army Center Targeting</title>
+<style>
+  :root { --page:#111827; --panel:#182235; --panel2:#111b2d; --line:#34445f; --text:#dbe7f5; --muted:#9bacbf; --cyan:#63d7ff; --green:#68d391; --amber:#f6c85f; --red:#ff7b7b; --violet:#b794f4; }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:0 18px 40px; background:var(--page); color:var(--text); font-family:"Segoe UI",Arial,sans-serif; }
+  h1 { max-width:1180px; margin:26px auto 4px; color:#fff; font-size:30px; text-align:center; }
+  h2 { max-width:1180px; margin:30px auto 10px; color:var(--cyan); font-size:21px; }
+  h3 { margin:0 0 8px; color:#fff; font-size:16px; }
+  p, li { color:var(--muted); font-size:14px; line-height:1.58; }
+  a { color:var(--cyan); }
+  code { padding:1px 5px; background:#0d1422; border-radius:4px; color:var(--amber); font-family:Consolas,"Courier New",monospace; font-size:.92em; }
+  .subtitle { max-width:960px; margin:0 auto 22px; color:var(--muted); font-size:14px; line-height:1.55; text-align:center; }
+  .toc, .card, .diagram, .notice, .example { max-width:1180px; margin:14px auto; border:1px solid var(--line); border-radius:10px; }
+  .toc, .card, .example { padding:16px 20px; background:var(--panel); }
+  .toc ol { margin:8px 0 0; padding-left:22px; }
+  .toc li { margin:5px 0; }
+  .diagram { padding:12px; background:var(--panel2); overflow-x:auto; }
+  .notice { padding:14px 18px; background:#1d2a3d; border-left:4px solid var(--amber); }
+  .notice p { margin:0; color:#d8e5f3; }
+  .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; max-width:1180px; margin:14px auto; }
+  .badge { display:inline-block; margin-right:6px; padding:3px 8px; border-radius:999px; color:#08121e; font-size:11px; font-weight:700; }
+  .badge.position { background:var(--green); } .badge.center { background:var(--cyan); } .badge.hold { background:var(--red); }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th, td { padding:9px 10px; border:1px solid var(--line); text-align:left; vertical-align:top; }
+  th { background:#20314b; color:var(--cyan); } td { color:#c8d5e4; }
+  .good { color:var(--green); font-weight:700; } .warn { color:var(--amber); font-weight:700; }
+  svg { display:block; width:100%; min-width:760px; height:auto; } svg text { font-family:"Segoe UI",Arial,sans-serif; }
+  .source { max-width:1180px; margin:16px auto; color:#8294aa; font-size:12px; }
+  @media (max-width:780px) { body { padding:0 10px 28px; } h1 { font-size:24px; } .grid { grid-template-columns:1fr; } }
+  @media print { body { background:#fff; color:#111; padding:0; } h1,h2,h3 { color:#111; } .subtitle,p,li,td { color:#333; } .toc,.card,.diagram,.notice,.example { background:#fff; border-color:#999; break-inside:avoid; page-break-inside:avoid; } th { background:#eee; color:#111; } svg { min-width:0; } }
+</style>
+</head>
+<body>
+<h1>Army Center Targeting: Current Execution Flow</h1>
+<p class="subtitle">How <code>AiOrchestrator::order()</code> uses MilitaryBrain center-pair pressures and unit positions to issue army commands directly toward selected influence-map centers.</p>
+
+<nav class="toc">
+  <h3>Contents</h3>
+  <ol>
+    <li><a href="#summary">Two decisions</a></li>
+    <li><a href="#flow">Data flow</a></li>
+    <li><a href="#example">Three-unit example</a></li>
+    <li><a href="#commands">Commands and edge cases</a></li>
+  </ol>
+</nav>
+
+<section id="summary">
+  <h2>Two Decisions</h2>
+  <div class="grid">
+    <article class="card">
+      <h3><span class="badge position">POSITIONAL</span>Which objective wins for this unit?</h3>
+      <p>Every army unit is evaluated independently. Its distance to the current influence-map centers determines how strongly it receives each directional MilitaryBrain pressure. The highest score selects the unit's objective bucket.</p>
+    </article>
+    <article class="card">
+      <h3><span class="badge center">DIRECT CENTER</span>Where does the selected bucket go?</h3>
+      <p>The bucket goes directly to the center it selected. There is no second brain, weighted map aggregation, candidate list, or shared <code>areas[0]</code> target.</p>
+    </article>
+  </div>
+  <div class="notice"><p><strong>Fog of war is intentionally ignored:</strong> enemy and battle centers remain valid targets even when stale or hidden. If a center does not exist, units assigned to it enter the hold path.</p></div>
+  <div class="card">
+    <h3>Center Bucket Schema</h3>
+    <table>
+      <thead><tr><th>Military center</th><th>Influence center</th><th>Order type</th><th>Exact destination</th></tr></thead>
+      <tbody>
+        <tr><td><code>OUR_ARMY</code></td><td>Own non-worker army mass</td><td>Defend army</td><td>Own army center</td></tr>
+        <tr><td><code>OUR_ECON</code></td><td>Own recent collection activity</td><td>Defend economy</td><td>Own economy center</td></tr>
+        <tr><td><code>OUR_BUILDING</code></td><td>Own building footprint</td><td>Defend buildings</td><td>Own building center</td></tr>
+        <tr><td><code>ENEMY_ARMY</code></td><td>Enemy non-worker army mass</td><td>Attack army</td><td>Enemy army center</td></tr>
+        <tr><td><code>ENEMY_ECON</code></td><td>Enemy recent collection activity</td><td>Attack economy</td><td>Enemy economy center</td></tr>
+        <tr><td><code>ENEMY_BUILDING</code></td><td>Enemy building footprint</td><td>Attack buildings</td><td>Enemy building center</td></tr>
+        <tr><td><code>BATTLE</code></td><td>Own recent attack-speed hotspot</td><td>Move to battle</td><td>Own battle center</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="flow">
+  <h2>Data Flow</h2>
+  <div class="diagram">
+    <svg viewBox="0 0 1160 430" role="img" aria-label="Military center targeting flow from center snapshots and MilitaryBrain pressures to direct unit commands">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#7691b0"/></marker>
+        <marker id="green-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#68d391"/></marker>
+      </defs>
+      <rect x="0" y="0" width="1160" height="430" rx="8" fill="#111b2d"/>
+      <text x="130" y="34" text-anchor="middle" fill="#9bacbf" font-size="13">Snapshots</text>
+      <text x="423" y="34" text-anchor="middle" fill="#9bacbf" font-size="13">Per-unit scoring</text>
+      <text x="740" y="34" text-anchor="middle" fill="#9bacbf" font-size="13">Direct destination</text>
+      <text x="1030" y="34" text-anchor="middle" fill="#9bacbf" font-size="13">Command</text>
+
+      <rect x="34" y="62" width="195" height="112" rx="9" fill="#1e3d36" stroke="#68d391"/>
+      <text x="131" y="91" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">7 center snapshots</text>
+      <text x="131" y="116" text-anchor="middle" fill="#d5f5e3" font-size="12">own/enemy army, economy, base</text>
+      <text x="131" y="137" text-anchor="middle" fill="#d5f5e3" font-size="12">plus own battle hotspot</text>
+      <text x="131" y="158" text-anchor="middle" fill="#f6c85f" font-size="12">visibility is not checked</text>
+
+      <rect x="34" y="240" width="195" height="94" rx="9" fill="#2d284b" stroke="#b794f4"/>
+      <text x="131" y="269" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">MilitaryBrain output</text>
+      <text x="131" y="293" text-anchor="middle" fill="#e5ddff" font-size="12">21 directional center-pair</text>
+      <text x="131" y="314" text-anchor="middle" fill="#e5ddff" font-size="12">pressures</text>
+
+      <rect x="325" y="88" width="230" height="172" rx="9" fill="#273a2d" stroke="#68d391"/>
+      <text x="440" y="118" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">For each army unit</text>
+      <text x="440" y="145" text-anchor="middle" fill="#d5f5e3" font-size="12">measure distance to each center</text>
+      <text x="440" y="167" text-anchor="middle" fill="#d5f5e3" font-size="12">closeness = clamp(1 - d / 120)</text>
+      <text x="440" y="189" text-anchor="middle" fill="#d5f5e3" font-size="12">add closeness x directional pressure</text>
+      <text x="440" y="211" text-anchor="middle" fill="#d5f5e3" font-size="12">select the highest target score</text>
+      <text x="440" y="237" text-anchor="middle" fill="#f6c85f" font-size="12">score &lt;= 0.1: HOLD</text>
+
+      <rect x="652" y="112" width="180" height="122" rx="9" fill="#1e3544" stroke="#63d7ff"/>
+      <text x="742" y="142" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Selected center</text>
+      <text x="742" y="168" text-anchor="middle" fill="#d8f7ff" font-size="12">bucket identity is the target</text>
+      <text x="742" y="190" text-anchor="middle" fill="#d8f7ff" font-size="12">for example: ENEMY_ARMY</text>
+      <text x="742" y="214" text-anchor="middle" fill="#f6c85f" font-size="12">no heatmap replacement</text>
+
+      <rect x="939" y="112" width="180" height="122" rx="9" fill="#2b3b2c" stroke="#68d391"/>
+      <text x="1029" y="142" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Unit order</text>
+      <text x="1029" y="168" text-anchor="middle" fill="#d5f5e3" font-size="12">farther than 30: GO</text>
+      <text x="1029" y="190" text-anchor="middle" fill="#d5f5e3" font-size="12">within 30: attack nearby enemy</text>
+      <text x="1029" y="212" text-anchor="middle" fill="#d5f5e3" font-size="12">priority = pressure score</text>
+
+      <path d="M229 118 H290 V150 H325" fill="none" stroke="#7691b0" stroke-width="2" marker-end="url(#arrow)"/>
+      <path d="M229 287 H290 V199 H325" fill="none" stroke="#7691b0" stroke-width="2" marker-end="url(#arrow)"/>
+      <path d="M555 174 H652" stroke="#68d391" stroke-width="2" marker-end="url(#green-arrow)"/>
+      <path d="M832 174 H939" stroke="#68d391" stroke-width="2" marker-end="url(#green-arrow)"/>
+      <text x="576" y="159" fill="#9bacbf" font-size="11">center and score</text>
+    </svg>
+  </div>
+</section>
+
+<section id="example">
+  <h2>Worked Example: Three Units</h2>
+  <div class="card"><p>Assume the current center snapshots are own economy <code>(100, 100)</code>, own building <code>(110, 100)</code>, and enemy army <code>(800, 750)</code>. The MilitaryBrain pressures cause the three units to select different centers. Each unit moves to that selected center, not to a common candidate cell.</p></div>
+  <div class="diagram">
+    <svg viewBox="0 0 1160 470" role="img" aria-label="Three units selecting and moving to three different MilitaryBrain centers">
+      <defs><marker id="route" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#63d7ff"/></marker></defs>
+      <rect x="0" y="0" width="1160" height="470" rx="8" fill="#111b2d"/>
+      <text x="42" y="34" fill="#dbe7f5" font-size="16" font-weight="700">Different MilitaryBrain buckets retain different destinations</text>
+
+      <rect x="62" y="72" width="270" height="92" rx="9" fill="#2d284b" stroke="#b794f4"/>
+      <text x="197" y="101" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Unit A at (105, 95)</text>
+      <text x="197" y="126" text-anchor="middle" fill="#e5ddff" font-size="13">highest pressure: DEFEND ECON</text>
+      <text x="197" y="147" text-anchor="middle" fill="#e5ddff" font-size="12">destination: own economy center</text>
+
+      <rect x="62" y="190" width="270" height="92" rx="9" fill="#2d284b" stroke="#b794f4"/>
+      <text x="197" y="219" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Unit B at (125, 105)</text>
+      <text x="197" y="244" text-anchor="middle" fill="#e5ddff" font-size="13">highest pressure: DEFEND BUILDING</text>
+      <text x="197" y="265" text-anchor="middle" fill="#e5ddff" font-size="12">destination: own building center</text>
+
+      <rect x="62" y="308" width="270" height="92" rx="9" fill="#2d284b" stroke="#b794f4"/>
+      <text x="197" y="337" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Unit C at (790, 740)</text>
+      <text x="197" y="362" text-anchor="middle" fill="#e5ddff" font-size="13">highest pressure: ATTACK ARMY</text>
+      <text x="197" y="383" text-anchor="middle" fill="#e5ddff" font-size="12">destination: enemy army center</text>
+
+      <rect x="505" y="72" width="245" height="92" rx="9" fill="#1e3d36" stroke="#68d391"/>
+      <text x="627" y="102" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Own economy center</text>
+      <text x="627" y="129" text-anchor="middle" fill="#d5f5e3" font-size="14">(100, 100)</text>
+      <text x="627" y="149" text-anchor="middle" fill="#d5f5e3" font-size="12">Unit A target</text>
+
+      <rect x="505" y="190" width="245" height="92" rx="9" fill="#1e3d36" stroke="#68d391"/>
+      <text x="627" y="220" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Own building center</text>
+      <text x="627" y="247" text-anchor="middle" fill="#d5f5e3" font-size="14">(110, 100)</text>
+      <text x="627" y="267" text-anchor="middle" fill="#d5f5e3" font-size="12">Unit B target</text>
+
+      <rect x="505" y="308" width="245" height="92" rx="9" fill="#3e2428" stroke="#ff7b7b"/>
+      <text x="627" y="338" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Enemy army center</text>
+      <text x="627" y="365" text-anchor="middle" fill="#ffd8d8" font-size="14">(800, 750)</text>
+      <text x="627" y="385" text-anchor="middle" fill="#ffd8d8" font-size="12">Unit C target</text>
+
+      <rect x="862" y="137" width="238" height="195" rx="10" fill="#1e3544" stroke="#63d7ff"/>
+      <text x="981" y="171" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Result</text>
+      <text x="981" y="206" text-anchor="middle" fill="#d8f7ff" font-size="13">A goes to economy</text>
+      <text x="981" y="232" text-anchor="middle" fill="#d8f7ff" font-size="13">B goes to buildings</text>
+      <text x="981" y="258" text-anchor="middle" fill="#d8f7ff" font-size="13">C goes to enemy army</text>
+      <text x="981" y="296" text-anchor="middle" fill="#f6c85f" font-size="12">There is no shared target cell.</text>
+
+      <path d="M332 118 H505" stroke="#63d7ff" stroke-width="2" marker-end="url(#route)"/>
+      <path d="M332 236 H505" stroke="#63d7ff" stroke-width="2" marker-end="url(#route)"/>
+      <path d="M332 354 H505" stroke="#63d7ff" stroke-width="2" marker-end="url(#route)"/>
+      <path d="M750 118 H815 V182 H862" fill="none" stroke="#68d391" stroke-width="2" marker-end="url(#route)"/>
+      <path d="M750 236 H862" stroke="#68d391" stroke-width="2" marker-end="url(#route)"/>
+      <path d="M750 354 H815 V286 H862" fill="none" stroke="#ff7b7b" stroke-width="2" marker-end="url(#route)"/>
+    </svg>
+  </div>
+</section>
+
+<section id="commands">
+  <h2>Commands and Edge Cases</h2>
+  <div class="grid">
+    <article class="example"><h3><span class="badge center">FAR</span>Go to the center</h3><p>If squared distance to the selected center exceeds <code>30 * 30</code>, the unit receives <code>GO(targetCenter)</code>. Its calculated pressure becomes the command priority.</p></article>
+    <article class="example"><h3><span class="badge center">CLOSE</span>Attack locally</h3><p>When within 30 units of the selected center, the unit does not queue a new move. It attacks the closest nearby enemy if one exists.</p></article>
+    <article class="example"><h3><span class="badge hold">LOW PRESSURE</span>Hold</h3><p>If the best calculated score is <code>&lt;= 0.1</code>, the unit enters the hold group. Free hold units can still attack a nearby enemy.</p></article>
+    <article class="example"><h3><span class="badge hold">MISSING CENTER</span>Hold</h3><p>If the selected influence center is unavailable, every unit in that bucket enters the hold group. There is no alternate heatmap target or center fallback.</p></article>
+  </div>
+  <div class="card"><h3>Command priority guard</h3><p>A new command is only queued when its pressure exceeds the unit's current command priority. At the start of each <code>order()</code>, priority decreases by <code>0.25</code>. This prevents weaker new objectives from replacing a stronger current command.</p></div>
+</section>
+
+<p class="source">Source references: <code>game/src/player/ai/AiOrchestrator.cpp</code> (<code>order</code>, <code>issueAdvancePerUnit</code>); <code>game/src/player/ai/MilitaryCommandCalculator.h</code>; <code>game/src/player/ai/MilitaryBrain.h</code>; and <code>game/src/env/influence/InfluenceManager.cpp</code>.</p>
+</body>
+</html>

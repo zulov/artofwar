@@ -39,9 +39,9 @@
     Output directory (default: game/Data/ai relative to repo root).
 
 .EXAMPLE
-    powershell -ExecutionPolicy Bypass -File tools\gen_brain_csv.ps1 -Brains 'military.csv|27|16|24','attack_spatial.csv|10|10|6','build_spatial.csv|16|12|12'
+    powershell -ExecutionPolicy Bypass -File tools\gen_brain_csv.ps1 -Brains 'military.csv|27|16|24','build_spatial.csv|16|12|12'
 .EXAMPLE
-    powershell -ExecutionPolicy Bypass -File tools\gen_brain_csv.ps1 -Check -Brains 'military.csv|27|16|24','attack_spatial.csv|10|10|6','build_spatial.csv|16|12|12'
+    powershell -ExecutionPolicy Bypass -File tools\gen_brain_csv.ps1 -Check -Brains 'military.csv|27|16|24','build_spatial.csv|16|12|12'
 #>
 [CmdletBinding()]
 param(

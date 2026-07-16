@@ -195,7 +195,7 @@
   <rect x="850" y="270" width="190" height="100" rx="8" fill="#006064" fill-opacity="0.25" stroke="#00BCD4" stroke-width="2"/>
   <text x="945" y="295" text-anchor="middle" fill="#00BCD4" font-size="14" font-weight="bold">Spatial Brains</text>
   <text x="945" y="315" text-anchor="middle" fill="#80DEEA" font-size="11">BuildSpatial: placement weights</text>
-  <text x="945" y="330" text-anchor="middle" fill="#80DEEA" font-size="11">AttackSpatial: army target weights</text>
+  <text x="945" y="330" text-anchor="middle" fill="#EF9A9A" font-size="11">Military: center-pair pressures</text>
   <text x="945" y="345" text-anchor="middle" fill="#80DEEA" font-size="11">Influence map areas</text>
 
   <!-- Arrows: Master -> Sub-brains -->
@@ -321,7 +321,7 @@
 <tr><td>ECONOMY_URGENCY</td><td>Economy Brain</td><td>Resource allocation intensity</td></tr>
 <tr><td>BUILDING_URGENCY</td><td>Want List</td><td>OTHER building construction + upgrade priority</td></tr>
 <tr><td>UNIT_URGENCY</td><td>Unit Brain + Want List</td><td>Military unit production count + priority</td></tr>
-<tr><td>MILITARY_URGENCY</td><td>Military + AttackSpatial Brain</td><td>Overall combat engagement level</td></tr>
+<tr><td>MILITARY_URGENCY</td><td>Military Brain</td><td>Overall combat engagement level</td></tr>
 <tr><td>EXPAND_URGENCY</td><td>Economy + BuildSpatial Brain</td><td>Expand territory vs stay compact</td></tr>
 <tr><td>TECH_URGENCY</td><td>Economy + Unit Brain + Want List</td><td>Tech building + upgrade priority</td></tr>
 <tr><td>DEFENCE_BUILDING_URGENCY</td><td>Want List</td><td>Defensive structure + upgrade priority</td></tr>
@@ -651,7 +651,7 @@
 <ul>
   <li><span class="step">1. Snapshot centers:</span> influence-map centers of mass for the 7 center types (own + enemy army/econ/building + last battle).</li>
   <li><span class="step">2. Per-unit target:</span> MilitaryCommandCalculator scores each unit's position against the center-pair pressures and picks the highest-pressure target (attack/defend/move-to-center). Units below MIN_ARMY_ORDER_PRESSURE (0.1) hold.</li>
-  <li><span class="step">3. Position:</span> for attack buckets, AttackSpatialBrain weights (6 influence-map layers) pick the best visible area via getBestVisibleAreas(); fallback is the target center.</li>
+  <li><span class="step">3. Position:</span> each non-empty bucket moves directly to its MilitaryBrain-selected influence-map center. Fog of war is currently ignored for these center targets.</li>
   <li><span class="step">4. Execution:</span> far units GO toward the target (carrying their pressure as command priority); units within ~30 ATTACK the closest enemy. Idle hold units only engage nearby enemies.</li>
 </ul>
 <h3>Limitations</h3>

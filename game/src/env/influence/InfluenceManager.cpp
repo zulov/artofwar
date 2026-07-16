@@ -40,7 +40,6 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 	armyInfluence.reserve(numberOfPlayers);
 	economyInfluence.reserve(numberOfPlayers);
 
-	mapsForAiArmyPerPlayer.reserve(numberOfPlayers);
 	mapsForAiPerPlayer.reserve(numberOfPlayers);
 	mapsForCentersPerPlayer.reserve(numberOfPlayers);
 	unsigned short resolution = mapSize / INF_GRID_FIELD_SIZE;
@@ -89,14 +88,6 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 			                                resNotInBonusAny[player],
 			                                economyInfluence[player],
 			                        });
-		mapsForAiArmyPerPlayer.emplace_back(std::array<InfluenceMap*, AI_ARMY_MAP_COUNT>{
-			                                    buildingsInfluencePerPlayer[player],
-			                                    unitsInfluencePerPlayer[player],
-			                                    attackSpeed[player],
-			                                    buildingsInfluencePerPlayer[enemy],
-			                                    unitsInfluencePerPlayer[enemy],
-			                                    attackSpeed[enemy],
-		                                    });
 		mapsForCentersPerPlayer.emplace_back(std::array<InfluenceMap*, CENTER_TYPE_COUNT>{
 				                             economyInfluence[player],
 				                             buildingsInfluencePerPlayer[player],
@@ -309,19 +300,6 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 
 
 
-const std::vector<Urho3D::Vector2>&
-InfluenceManager::getBestVisibleAreas(std::span<const float> result, unsigned char player) {
-	if (result.size() == AI_MAP_COUNT) {
-		return centersFromIndexes(getBestVisibleIndexes(mapsForAiPerPlayer[player], result, player));
-	}
-	if (result.size() == AI_ARMY_MAP_COUNT) {
-		return centersFromIndexes(getBestVisibleIndexes(mapsForAiArmyPerPlayer[player], result, player));
-	}
-	assert(false);
-	tempCenters.clear();
-	return tempCenters; // unreachable in debug; avoids UB on unexpected span size in release
-}
-
 const std::vector<unsigned>&
 InfluenceManager::getAreas(std::span<const float> result, unsigned char player) const {
 	std::array<InfluenceMap*, AI_MAP_COUNT> maps = mapsForAiPerPlayer[player];
@@ -394,16 +372,6 @@ int InfluenceManager::getIndex(const Urho3D::Vector2& position) const {
 
 void InfluenceManager::nextVisibilityType() const {
 	visibilityManager->nextVisibilityType();
-}
-
-const std::vector<Urho3D::Vector2>&
-InfluenceManager::centersFromIndexes(const std::vector<unsigned>& indexes) const {
-	tempCenters.clear();
-	tempCenters.reserve(indexes.size());
-	for (const auto value : indexes) {
-		tempCenters.emplace_back(calculator->getCenter(value));
-	}
-	return tempCenters;
 }
 
 float InfluenceManager::getFieldSize() const {

@@ -25,7 +25,6 @@ namespace Urho3D {
 }
 
 inline constexpr int AI_MAP_COUNT = 12;
-inline constexpr int AI_ARMY_MAP_COUNT = 6;
 inline constexpr int CENTER_TYPE_COUNT = 4;
 
 class InfluenceManager {
@@ -51,11 +50,6 @@ public:
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, unsigned char player) const;
 	const std::vector<unsigned>& getAreas(std::span<const float> result, unsigned char player) const;
 	std::vector<unsigned> getAreasResBonus(unsigned char resId, unsigned char player) const;
-	// Returns candidate area centers (world positions) ordered best-first. Influence-map
-	// cell indexes are intentionally NOT exposed; the reference is valid until the next
-	// getArea* call (reuses an internal buffer).
-	const std::vector<Urho3D::Vector2>& getBestVisibleAreas(std::span<const float> result, unsigned char player);
-
 	// --- Utility ---
 	bool isVisible(unsigned char player, const Urho3D::Vector2& pos) const;
 	float getVisibilityScore(unsigned char player) const;
@@ -75,7 +69,6 @@ private:
 	const std::vector<unsigned>& getBestVisibleIndexes(std::span<InfluenceMap*> maps, std::span<const float> result,
 	                                unsigned char player) const;
 
-	const std::vector<Urho3D::Vector2>& centersFromIndexes(const std::vector<unsigned>& indexes) const;
 	int getIndexInInfluence(Unit* unit) const;
 
 	// --- Per-player influence maps ---
@@ -90,7 +83,6 @@ private:
 
 	// --- AI map views (non-owning, per player) ---
 	std::vector<std::array<InfluenceMap*, AI_MAP_COUNT>> mapsForAiPerPlayer;
-	std::vector<std::array<InfluenceMap*, AI_ARMY_MAP_COUNT>> mapsForAiArmyPerPlayer;
 	std::vector<std::array<InfluenceMap*, RESOURCES_SIZE>> mapsGatherSpeedPerPlayer;
 	std::vector<std::array<InfluenceMap*, RESOURCES_SIZE>> mapsResNotInBonusPerPlayer;
 	std::vector<std::array<InfluenceMap*, CENTER_TYPE_COUNT>> mapsForCentersPerPlayer;
@@ -105,7 +97,6 @@ private:
 	mutable unsigned int arraySize;
 	mutable std::vector<float> errorsSum; // [arraySize]
 	mutable std::vector<unsigned> tempIndexes;
-	mutable std::vector<Urho3D::Vector2> tempCenters;
 
 	// --- Debug state ---
 	short currentDebugBatch = 0;

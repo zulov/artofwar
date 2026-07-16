@@ -1341,7 +1341,7 @@ if weight == 0 or max == min:
   <p><code>reset()</code> demotes <code>VISIBLE</code> to <code>SEEN</code> by applying a bit-mask; it does not wipe exploration history. For influence selection, the map downsamples 2x2 visibility cells into one influence cell, and only <code>VISIBLE</code> counts.</p>
   <p>Main consumers:</p>
   <ul>
-    <li><code>removeUnseen()</code> seeds the error array for <code>getAreas()</code> and <code>getBestVisibleAreas()</code></li>
+    <li><code>removeUnseen()</code> seeds the error array for <code>getAreas()</code></li>
     <li><code>getVisibilityScore()</code> for AI metrics</li>
     <li>runtime hide/show of units, buildings, and resources</li>
   </ul>
@@ -1378,25 +1378,6 @@ if weight == 0 or max == min:
 
 <table class="spec">
   <tr>
-    <th colspan="5">AttackSpatialOutput - 6 weight schema</th>
-  </tr>
-  <tr>
-    <th>Index</th>
-    <th>Enum</th>
-    <th>Underlying map</th>
-    <th>Positive weight means</th>
-    <th>Negative weight means</th>
-  </tr>
-  <tr><td>0</td><td><code>W_BUILDINGS_INFLUENCE</code></td><td>our <code>buildingsInfluencePerPlayer</code></td><td>defend our base</td><td>move away from our base</td></tr>
-  <tr><td>1</td><td><code>W_UNITS_INFLUENCE</code></td><td>our <code>unitsInfluencePerPlayer</code></td><td>stick to our forces</td><td>spread away from our forces</td></tr>
-  <tr><td>2</td><td><code>W_ATTACK_SPEED</code></td><td>our <code>attackSpeed</code></td><td>reinforce our ongoing fights</td><td>avoid our current fights</td></tr>
-  <tr><td>3</td><td><code>W_ENEMY_BUILDINGS_INFLUENCE</code></td><td>enemy <code>buildingsInfluencePerPlayer</code></td><td>push toward enemy structures</td><td>avoid enemy structures</td></tr>
-  <tr><td>4</td><td><code>W_ENEMY_UNITS_INFLUENCE</code></td><td>enemy <code>unitsInfluencePerPlayer</code></td><td>seek enemy armies</td><td>avoid enemy armies</td></tr>
-  <tr><td>5</td><td><code>W_ENEMY_ATTACK_SPEED</code></td><td>enemy <code>attackSpeed</code></td><td>seek enemy battle hotspots</td><td>avoid enemy battle hotspots</td></tr>
-</table>
-
-<table class="spec">
-  <tr>
     <th colspan="4">CenterType schema</th>
   </tr>
   <tr>
@@ -1426,9 +1407,9 @@ if weight == 0 or max == min:
 </div>
 
 <div class="card">
-  <h3>How Attack Targeting Uses the Ordered Candidate List</h3>
-  <p><code>AiOrchestrator::resolveAttackPos()</code> passes the 6 attack-spatial weights to <code>Environment::getBestVisibleAreas()</code>. That returns world positions, already ordered best-first and already visibility-filtered.</p>
-  <p>The current code only uses the first candidate. If the candidate list is empty, it falls back to a higher-level center such as <code>ARMY</code>, <code>ECON</code>, <code>BUILDING</code>, or <code>BATTLE</code>.</p>
+  <h3>How Army Targeting Uses Centers</h3>
+  <p><code>MilitaryBrain</code> produces directional pressure between <code>ARMY</code>, <code>ECON</code>, <code>BUILDING</code>, and <code>BATTLE</code> centers. <code>MilitaryCommandCalculator</code> combines those pressures with each unit's proximity to select a target center.</p>
+  <p>Each selected bucket moves directly to that center. Fog of war is intentionally ignored for army center targets, so an enemy center may be stale or hidden.</p>
 </div>
 
 <hr class="divider">
@@ -1604,7 +1585,6 @@ if weight == 0 or max == min:
     <li><code>game/src/env/influence/map/VisibilityMap.h</code> and <code>.cpp</code></li>
     <li><code>game/src/env/influence/VisibilityManager.h</code> and <code>.cpp</code></li>
     <li><code>game/src/player/ai/BuildSpatialBrain.h</code> and <code>.cpp</code></li>
-    <li><code>game/src/player/ai/AttackSpatialBrain.h</code> and <code>.cpp</code></li>
     <li><code>tests/InfluenceMapTest.cpp</code> and <code>tests/VisibilityMapTest.cpp</code></li>
   </ul>
 </div>

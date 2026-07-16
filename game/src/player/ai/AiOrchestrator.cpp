@@ -50,19 +50,16 @@ namespace {
 		CenterType centerType;
 		bool enemyOwner;
 		AiOrderType orderType;
-		// When true the target position is the center itself (taken from the
-		// snapshot), not an enemy-facing attack area resolved via resolveAttackPos.
-		bool moveToCenter;
 	};
 
 	constexpr ArmyTargetSpec ARMY_TARGET_SPECS[] = {
-		{MilitaryCenterIdx::OUR_ARMY, CenterType::ARMY, false, AiOrderType::DEFEND_ARMY, true},
-		{MilitaryCenterIdx::OUR_ECON, CenterType::ECON, false, AiOrderType::DEFEND_ECON, false},
-		{MilitaryCenterIdx::OUR_BUILDING, CenterType::BUILDING, false, AiOrderType::DEFEND_BUILDING, false},
-		{MilitaryCenterIdx::ENEMY_ARMY, CenterType::ARMY, true, AiOrderType::ATTACK_ARMY, false},
-		{MilitaryCenterIdx::ENEMY_ECON, CenterType::ECON, true, AiOrderType::ATTACK_ECON, false},
-		{MilitaryCenterIdx::ENEMY_BUILDING, CenterType::BUILDING, true, AiOrderType::ATTACK_BUILDING, false},
-		{MilitaryCenterIdx::BATTLE, CenterType::BATTLE, false, AiOrderType::MOVE_BATTLE, true},
+		{MilitaryCenterIdx::OUR_ARMY, CenterType::ARMY, false, AiOrderType::DEFEND_ARMY},
+		{MilitaryCenterIdx::OUR_ECON, CenterType::ECON, false, AiOrderType::DEFEND_ECON},
+		{MilitaryCenterIdx::OUR_BUILDING, CenterType::BUILDING, false, AiOrderType::DEFEND_BUILDING},
+		{MilitaryCenterIdx::ENEMY_ARMY, CenterType::ARMY, true, AiOrderType::ATTACK_ARMY},
+		{MilitaryCenterIdx::ENEMY_ECON, CenterType::ECON, true, AiOrderType::ATTACK_ECON},
+		{MilitaryCenterIdx::ENEMY_BUILDING, CenterType::BUILDING, true, AiOrderType::ATTACK_BUILDING},
+		{MilitaryCenterIdx::BATTLE, CenterType::BATTLE, false, AiOrderType::MOVE_BATTLE},
 	};
 	constexpr size_t ARMY_TARGET_SPEC_COUNT = sizeof(ARMY_TARGET_SPECS) / sizeof(ARMY_TARGET_SPECS[0]);
 
@@ -82,7 +79,6 @@ AiOrchestrator::AiOrchestrator(Player* player, db_nation* nation, AiHistory* his
 	economyBrain(nation),
 	unitBrain(nation),
 	militaryBrain(nation),
-	attackSpatialBrain(nation),
 	militaryCommandCalculator(MILITARY_COMMAND_RADIUS),
 	wantExecutor(player, nation, history) { lastLacking.reset(); }
 
@@ -282,12 +278,6 @@ void AiOrchestrator::order() {
 		}
 	}
 
-	// Spatial brain output is target-independent, so compute it once and reuse it
-	// for every target bucket below.
-	const auto spatialOut = attackSpatialBrain.decide(
-			player, enemy,
-			lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency);
-
 	// Per-unit decision: each unit picks the highest-pressure target at its own
 	// position. Units that fall below the pressure threshold (or pick a center
 	// whose snapshot is unavailable) are routed to hold.
@@ -303,30 +293,11 @@ void AiOrchestrator::order() {
 		buckets[specIndex].push_back({unit, unitResult.best.score});
 	}
 
-	// Resolve each non-empty bucket to a concrete target position (one resolve per
-	// bucket, reusing the single spatialOut) and issue per-unit orders.
+	// Each bucket goes directly to the center selected by MilitaryBrain pressure.
 	for (size_t i = 0; i < ARMY_TARGET_SPEC_COUNT; ++i) {
 		if (buckets[i].empty()) { continue; }
 		const auto& spec = ARMY_TARGET_SPECS[i];
-		const unsigned char owner = spec.enemyOwner ? enemyId : playerId;
-		// Center position is FOW-independent (influence-map based), so it is
-		// used as the fallback whenever a more precise target is unavailable.
-		const auto& centerPos = centers[castC(spec.center)];
-		// Move-to-center targets (e.g. OUR_ARMY, BATTLE) go straight to the
-		// center position. Attack targets prefer an enemy-facing visible area, but
-		// when that area is hidden by fog of war we still advance toward the
-		// center position instead of holding.
-		std::optional<Urho3D::Vector2> bestTarget;
-		if (spec.moveToCenter) {
-			bestTarget = centerPos;
-		} else {
-			bestTarget = resolveAttackPos(owner, spec.centerType, spatialOut);
-			// TODO: the center-position fallback ignores fog of war — it sends units
-			// toward an influence-map center that may be stale or unseen. Consider
-			// factoring visibility back in here (e.g. only commit when the target is
-			// visible/recently seen, or scout first) instead of advancing blindly.
-			if (!bestTarget.has_value()) { bestTarget = centerPos; }
-		}
+		const auto& bestTarget = centers[castC(spec.center)];
 		if (!bestTarget.has_value()) {
 			for (const auto& entry : buckets[i]) { holdUnits.push_back(entry.first); }
 			continue;
@@ -334,7 +305,7 @@ void AiOrchestrator::order() {
 		std::ranges::sort(buckets[i], [&](const auto& a, const auto& b) {
 			return a.first->getPosition().SqDistXZ(*bestTarget) < b.first->getPosition().SqDistXZ(*bestTarget);
 		});
-		issueAdvancePerUnit(buckets[i], bestTarget.value());
+		issueAdvancePerUnit(buckets[i], *bestTarget);
 		history->addOrder(spec.orderType, AiOrderResult::SUCCESS, static_cast<uint8_t>(buckets[i].size()));
 	}
 
@@ -367,19 +338,6 @@ bool AiOrchestrator::trySubmitUnitOrder(const std::vector<Unit*>& units, float p
 
 bool AiOrchestrator::trySubmitUnitOrder(Unit* unit, float priority, UnitOrder* order) const {
 	return trySubmitUnitOrder(std::vector<Unit*>{unit}, priority, order);
-}
-
-std::optional<Urho3D::Vector2> AiOrchestrator::resolveAttackPos(unsigned char owner, CenterType fallbackType,
-	                                                               const AttackSpatialOutput& spatialOut) {
-	auto* env = Game::getEnvironment();
-	const auto& areas = env->getBestVisibleAreas(playerId, std::span<const float>(spatialOut.weights));
-	if (!areas.empty()) {
-		// Only the best candidate is needed to position the army.
-		// TODO consider using the remaining areas (e.g. fallback positions or
-		// spreading sub-armies) instead of discarding them.
-		return areas[0];
-	}
-	return env->getCenterOf(fallbackType, owner);
 }
 
 // Advance toward target per unit; each unit carries its own pressure score as its

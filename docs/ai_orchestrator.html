@@ -252,7 +252,7 @@
 <!-- ===== PHASE 2 DIAGRAM ===== -->
 <hr class="divider"/>
 <div class="section-title">Phase 2: order() &mdash; Where to Move</div>
-<div class="section-sub">Called once per tick after action(). Handles worker collection and army movement. MilitaryBrain already ran in action() (its center-pair pressures and composition prefs are cached); order() consumes those plus AttackSpatialBrain. Army movement does NOT consume resources.</div>
+<div class="section-sub">Called after action(). Handles worker collection and army movement. MilitaryBrain already ran in action() (its center-pair pressures and composition prefs are cached); order() uses those pressures to send units directly to selected influence-map centers. Army movement does NOT consume resources.</div>
 
 <svg viewBox="0 0 1400 550" width="100%" style="max-width:1400px;display:block;margin:auto;">
   <defs>
@@ -277,16 +277,7 @@
     <text x="700" y="100" text-anchor="middle" fill="#FFCDD2" font-size="10">27 inputs &rarr; 21 center-pair pressures + 3 composition prefs</text>
   </g>
 
-  <line x1="700" y1="120" x2="700" y2="155" stroke="#f44336" stroke-width="2" marker-end="url(#am)"/>
-
-  <!-- AttackSpatialBrain -->
-  <g data-tt-title="AttackSpatialBrain (10 inputs &rarr; 6 outputs)" data-tt-body="<span class='tt-logic'>Decides WHERE to move the army using influence maps. Computed once per tick and reused for every target bucket.</span><br><br><span class='tt-input'>Inputs (10):</span> army counts (own, free, enemy), scores, attack/defence sums, in-combat ratio, military/attack urgencies<br><br><span class='tt-output'>Outputs (6 weights = AI_ARMY_MAP_COUNT):</span> buildings, units, attackSpeed, enemy buildings, enemy units, enemy attackSpeed<br><br>Weights go to getBestVisibleAreas() which combines maps and returns candidate positions. Falls back to the target center if no visible area is found.">
-    <rect x="475" y="160" width="450" height="55" rx="8" fill="#006064" stroke="#00BCD4" stroke-width="2"/>
-    <text x="700" y="182" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">AttackSpatialBrain</text>
-    <text x="700" y="200" text-anchor="middle" fill="#80DEEA" font-size="10">10 inputs &rarr; 6 influence map weights &rarr; target position</text>
-  </g>
-
-  <line x1="700" y1="215" x2="700" y2="250" stroke="#aaa" stroke-width="1.5" marker-end="url(#ar2)"/>
+  <line x1="700" y1="120" x2="700" y2="250" stroke="#f44336" stroke-width="2" marker-end="url(#am)"/>
 
   <!-- Decision: per-unit highest-pressure target -->
   <g data-tt-title="Per-unit target selection" data-tt-body="No single attack/defend switch. For EACH army unit, MilitaryCommandCalculator scores the unit's position against the 7 center snapshots using the center-pair pressures, and picks the highest-pressure target:<br><br>&bull; Defend OUR_ARMY / OUR_ECON / OUR_BUILDING<br>&bull; Attack ENEMY_ARMY / ENEMY_ECON / ENEMY_BUILDING<br>&bull; Move to LAST_BATTLE<br><br>Units whose best score &le; MIN_ARMY_ORDER_PRESSURE (0.1) are routed to HOLD. Units are grouped into per-target buckets.">
@@ -303,7 +294,7 @@
   <!-- Sub-army loop -->
   <line x1="700" y1="325" x2="700" y2="365" stroke="#aaa" stroke-width="1.5" marker-end="url(#ar2)"/>
 
-  <g data-tt-title="Per-unit advance / attack" data-tt-body="Each non-empty target bucket resolves to one concrete position (AttackSpatial best visible area, else the target center), then issues per-unit orders:<br><br><b>If FAR from target</b> (sqDist &gt; ~30^2):<br>&nbsp;&nbsp;IndividualOrder(GO, targetPos), unit carries its pressure as command priority<br><br><b>If CLOSE to target</b> (within ~30):<br>&nbsp;&nbsp;Find nearby enemies (not on our team), ATTACK the closest<br><br>Units below the pressure threshold HOLD &mdash; only free hold units engage nearby enemies. Command priorities decay each tick (x0.25 retained).">
+  <g data-tt-title="Per-unit advance / attack" data-tt-body="Each non-empty target bucket moves directly to the center selected by MilitaryBrain pressure, then issues per-unit orders:<br><br><b>If FAR from target</b> (sqDist &gt; ~30^2):<br>&nbsp;&nbsp;IndividualOrder(GO, targetPos), unit carries its pressure as command priority<br><br><b>If CLOSE to target</b> (within ~30):<br>&nbsp;&nbsp;Find nearby enemies (not on our team), ATTACK the closest<br><br>Units below the pressure threshold HOLD &mdash; only free hold units engage nearby enemies. Command priorities decay by 0.25 per order().">
     <rect x="400" y="370" width="600" height="80" rx="8" fill="#263238" stroke="#78909C" stroke-width="1.5"/>
     <text x="700" y="395" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">Per-unit orders (issueAdvancePerUnit)</text>
     <text x="700" y="415" text-anchor="middle" fill="#90A4AE" font-size="11">FAR &rarr; GO order toward target (priority = pressure)</text>
@@ -318,7 +309,7 @@
 
 <!-- ===== BRAIN SUMMARY TABLE ===== -->
 <hr class="divider"/>
-<div class="section-title">All 6 Brains at a Glance</div>
+<div class="section-title">All 5 Brains at a Glance</div>
 
 <table class="spec">
   <tr>
@@ -338,9 +329,6 @@
   </tr>
   <tr>
     <td class="brain">BuildSpatialBrain</td><td>action</td><td>16</td><td>12 influence map weights</td><td>build_spatial.csv</td><td>On demand (when placing building)</td>
-  </tr>
-  <tr>
-    <td class="brain">AttackSpatialBrain</td><td>order</td><td>10</td><td>6 influence map weights</td><td>attack_spatial.csv</td><td>Once per tick (if free army)</td>
   </tr>
 </table>
 
@@ -372,14 +360,13 @@
 </div>
 
 <div class="card">
-  <h3 style="color:#00BCD4">Influence Maps &amp; Spatial Brains</h3>
+  <h3 style="color:#00BCD4">Influence Maps and Spatial Brains</h3>
   <p>The game maintains per-player influence maps at grid resolution. Spatial brains output <b>weights</b> for these maps, not positions directly.</p>
   <ul>
     <li><b>12 maps</b> for general/building use (<code>AI_MAP_COUNT</code>): buildings, units, attackSpeed, 4x gatherSpeed, enemy buildings, enemy units, enemy attackSpeed, res-not-bonus, economy</li>
-    <li><b>6 maps</b> for army use (<code>AI_ARMY_MAP_COUNT</code>): buildings, units, attackSpeed, enemy buildings, enemy units, enemy attackSpeed</li>
-    <li>Weights are combined with maps to score map cells</li>
-    <li>Result is filtered by visibility (fog of war) and sorted to find best cells (<code>getBestVisibleAreas</code>)</li>
-    <li>Quadtree-based center finding provides the fallback target for army movement</li>
+	<li>Weights are combined with maps to score map cells</li>
+	<li>BuildSpatial uses the ordered visible cells to find a valid building position</li>
+	<li>MilitaryBrain uses quadtree-based influence centers directly for army movement</li>
   </ul>
 </div>
 
@@ -417,7 +404,6 @@
     <tr><th>Brain</th><th>Key Output</th><th>Effect</th></tr>
     <tr><td>MasterBrain</td><td>militaryUrgency=0.9, defenceBuildingUrgency=0.7, unitUrgency=0.8</td><td>Defend! Build army and defences</td></tr>
     <tr><td>MilitaryBrain</td><td>center-pair pressures pull toward OUR_BUILDING / OUR_ECON</td><td>Per-unit defend orders near base</td></tr>
-    <tr><td>AttackSpatial</td><td>6 weights, high enemy-units weight</td><td>Move toward enemy unit concentration</td></tr>
     <tr><td>Per-unit orders</td><td>CLOSE to target</td><td>Find nearest enemy units, issue ATTACK orders</td></tr>
   </table>
 </div>
@@ -430,7 +416,6 @@
     <tr><td>MasterBrain</td><td>attackUrgency=0.9, unitUrgency=0.6, economyUrgency=0.3</td><td>Aggressive posture</td></tr>
     <tr><td>UnitBrain</td><td>profile=[heavy cavalry bias], count=3</td><td>Train 3 cavalry for assault</td></tr>
     <tr><td>MilitaryBrain</td><td>center-pair pressures pull toward ENEMY_ECON / ENEMY_BUILDING</td><td>Per-unit attack orders into enemy territory</td></tr>
-    <tr><td>AttackSpatial</td><td>6 weights, high enemy-buildings weight</td><td>Target area with highest enemy building density</td></tr>
     <tr><td>Per-unit orders</td><td>FAR from target</td><td>All units march toward enemy base, GO orders</td></tr>
   </table>
 </div>
@@ -458,7 +443,7 @@
   </div>
   <div class="todo-item">
     <h4>Retreat &amp; FOW-aware advance</h4>
-    <p>Army has no health-threshold retreat, and the attack-position fallback can send units toward stale/unseen influence centers (TODO in <code>order()</code>). Factor visibility back into target commitment.</p>
+    <p>Army has no health-threshold retreat. Military centers can be stale or unseen; factor visibility back into target commitment when fog-of-war-aware movement is needed.</p>
   </div>
   <div class="todo-item">
     <h4>Attack outcome tracking</h4>
@@ -491,13 +476,12 @@
   <tr><td class="brain">MilitaryBrain.h/.cpp</td><td>Center-pair pressures + composition prefs (27&rarr;24)</td></tr>
   <tr><td class="brain">MilitaryCommandCalculator.h</td><td>Per-unit target scoring from center-pair pressures</td></tr>
   <tr><td class="brain">BuildSpatialBrain.h/.cpp</td><td>Building placement via influence maps (16&rarr;12)</td></tr>
-  <tr><td class="brain">AttackSpatialBrain.h/.cpp</td><td>Army movement via influence maps (10&rarr;6)</td></tr>
   <tr><td>WantList.h/.cpp + WantExecutor.h/.cpp</td><td>Priority queue + execution of resource-spending actions</td></tr>
   <tr><td>nn/Brain.h/.cpp</td><td>Neural network wrapper (layers, feedforward)</td></tr>
   <tr><td>nn/BrainProvider.h/.cpp</td><td>Brain CSV loader and cache</td></tr>
   <tr><td>AiHistory.h/.cpp</td><td>Action/order history logging (128-entry buffers)</td></tr>
   <tr><td>AiUtils.h</td><td>Utility: biggestWithRand, lowestWithRand, norm, avg level helpers</td></tr>
-  <tr><td>InfluenceManager.h/.cpp</td><td>Per-player influence maps (10 general + 6 army layers), spatial queries</td></tr>
+  <tr><td>InfluenceManager.h/.cpp</td><td>Per-player influence maps, center queries, and building-placement spatial queries</td></tr>
   <tr><td>Player.h/.cpp</td><td>Owns AiOrchestrator, calls aiAction()/aiOrder()</td></tr>
 </table>
 

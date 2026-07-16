@@ -14,7 +14,6 @@
 #include "UnitBrain.h"
 #include "MilitaryBrain.h"
 #include "MilitaryCommandCalculator.h"
-#include "AttackSpatialBrain.h"
 
 class Physical;
 class Player;
@@ -62,8 +61,6 @@ private:
 	void submitBuildingUpgradeRequest(float urgency, ParentBuildingType type);
 
 	// Army control (used by order())
-	std::optional<Urho3D::Vector2> resolveAttackPos(unsigned char owner, CenterType fallbackType,
-	                                               const AttackSpatialOutput& spatialOut);
 	static constexpr float COMMAND_PRIORITY_DECAY = 0.25f;
 	bool trySubmitUnitOrder(const std::vector<Unit*>& units, float priority, UnitOrder* order) const;
 	bool trySubmitUnitOrder(Unit* unit, float priority, UnitOrder* order) const;
@@ -107,8 +104,6 @@ private:
 	UnitBrain unitBrain;
 	MilitaryBrain militaryBrain;
 	MilitaryCommandCalculator militaryCommandCalculator;
-	AttackSpatialBrain attackSpatialBrain;
-
 	WantList wantList;
 	WantExecutor wantExecutor;
 
