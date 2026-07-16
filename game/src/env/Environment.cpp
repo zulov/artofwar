@@ -481,7 +481,7 @@ bool Environment::cellIsAttackable(int index) const {
 	return mainGrid.cellIsAttackable(index);
 }
 
-std::optional<Urho3D::Vector2> Environment::getCenterOf(CenterType type, char player) {
+std::optional<Urho3D::Vector2> Environment::getCenterOf(CenterType type, unsigned char player) {
 	return influenceManager.getCenterOf(type, player);
 }
 
