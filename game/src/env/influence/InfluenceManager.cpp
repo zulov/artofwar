@@ -61,7 +61,8 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 
 		attackSpeed.emplace_back(new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV));
 		armyInfluence.emplace_back(new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, false));
-		economyInfluence.emplace_back(new InfluenceMap(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, false));
+		economyInfluence.emplace_back(new InfluenceMap(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40,
+		                                             sharedTemplateV, false));
 	}
 
 	for (int player = 0; player < numberOfPlayers; ++player) {

@@ -22,7 +22,7 @@ public:
 
 	void setValues(const std::vector<float>& vals) {
 		assert(vals.size() == arraySize);
-		std::copy(vals.begin(), vals.end(), values);
+		std::copy(vals.begin(), vals.end(), kernelValues);
 		valuesCalculateNeeded = false;
 	}
 
@@ -393,10 +393,28 @@ TEST(InfluenceMapRegression, GetKernelMaxIdxsHandlesSmallMap) {
 	EXPECT_EQ(indexes[0], 0u);
 }
 
+TEST(InfluenceMapRegression, ImmediateModeUpdatesRawAndResetClearsMap) {
+	InfluenceMap map(4, 8.f, 1.f, 1, 0.f, InfluenceMap::createTemplateV(1.f, 1), true);
+	map.update(0, 3.f);
+
+	EXPECT_FLOAT_EQ(map.getRaw(0), 3.f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 3.f);
+
+	map.reset();
+
+	EXPECT_FLOAT_EQ(map.getRaw(0), 0.f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 0.f);
+}
+
 TEST(InfluenceMapRegression, ResetDecaysRawAndRebuildsKernelCache) {
-	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
+	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1), true);
 	map.update(0, 2.f);
 
+	EXPECT_FLOAT_EQ(map.getRaw(0), 0.f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 0.f);
+	map.reset();
+
+	EXPECT_FLOAT_EQ(map.getRaw(0), 2.f);
 	EXPECT_FLOAT_EQ(map.getKernel(0), 2.f);
 	map.reset();
 
@@ -405,8 +423,11 @@ TEST(InfluenceMapRegression, ResetDecaysRawAndRebuildsKernelCache) {
 }
 
 TEST(InfluenceMapRegression, ResetToZeroDropsValuesBelowThreshold) {
-	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
+	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1), true);
 	map.update(0, 0.25f);
+
+	EXPECT_FLOAT_EQ(map.getKernel(0), 0.f);
+	map.reset();
 
 	EXPECT_FLOAT_EQ(map.getKernel(0), 0.25f);
 	map.resetToZero();
@@ -416,8 +437,13 @@ TEST(InfluenceMapRegression, ResetToZeroDropsValuesBelowThreshold) {
 }
 
 TEST(InfluenceMapRegression, HistoryResetDecaysRawAndInvalidatesKernel) {
-	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1));
+	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1), true);
 	map.update(0, 4.f);
+
+	EXPECT_FLOAT_EQ(map.getRaw(0), 0.f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 0.f);
+
+	map.reset();
 
 	EXPECT_FLOAT_EQ(map.getRaw(0), 4.f);
 	EXPECT_FLOAT_EQ(map.getKernel(0), 4.f);
@@ -426,6 +452,53 @@ TEST(InfluenceMapRegression, HistoryResetDecaysRawAndInvalidatesKernel) {
 
 	EXPECT_FLOAT_EQ(map.getRaw(0), 2.f);
 	EXPECT_FLOAT_EQ(map.getKernel(0), 2.f);
+}
+
+TEST(InfluenceMapRegression, BufferedHistoryResetMovesPendingIntoRawAndRebuildsKernel) {
+	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1), true);
+	map.update(0, 4.f);
+
+	EXPECT_FLOAT_EQ(map.getRaw(0), 0.f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 0.f);
+
+	map.reset();
+
+	EXPECT_FLOAT_EQ(map.getRaw(0), 4.f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 4.f);
+
+	map.reset();
+
+	EXPECT_FLOAT_EQ(map.getRaw(0), 2.f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 2.f);
+}
+
+TEST(InfluenceMapRegression, BufferedHistoryResetAddsPendingOnTopOfDecayedRaw) {
+	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1), true);
+	map.update(0, 4.f);
+	map.reset();
+	map.update(0, 6.f);
+
+	map.reset();
+
+	EXPECT_FLOAT_EQ(map.getRaw(0), 8.f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 8.f);
+}
+
+TEST(InfluenceMapRegression, BufferedHistoryResetToZeroKeepsPendingAndDropsSmallRawValues) {
+	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1), true);
+	map.update(0, 0.25f);
+	map.reset();
+	map.update(0, 5.f);
+
+	map.resetToZero();
+
+	EXPECT_FLOAT_EQ(map.getRaw(0), 0.f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 0.f);
+
+	map.reset();
+
+	EXPECT_FLOAT_EQ(map.getRaw(0), 5.f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 5.f);
 }
 
 TEST(InfluenceMapRegression, GetCenterUsesRawTerminalLayer) {
