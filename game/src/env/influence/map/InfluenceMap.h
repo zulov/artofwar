@@ -54,7 +54,8 @@ protected:
 	const float valueThresholdDebug;
 
 	float* rawValues;
-	float* values;
+	float* pendingValues = nullptr;
+	float* kernelValues;
 	float coef;
 	mutable bool valuesCalculateNeeded = false;
 	void invalidateCaches();
@@ -65,6 +66,7 @@ protected:
 
 	unsigned short counter = 0;
 	mutable bool minMaxInited = false;
+	bool hasPendingValues() const { return pendingValues != nullptr; }
 
 private:
 	std::vector<unsigned> getMaxIdxsRaw() const;

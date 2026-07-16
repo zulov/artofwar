@@ -23,9 +23,9 @@ InfluenceMap::InfluenceMap(unsigned short resolution, float size, float coef, ch
 	levelRes = level * 2 + 1;
 
 	rawValues = new float[arraySize];
-	values = new float[arraySize];
+	kernelValues = new float[arraySize];
 	std::fill_n(rawValues, arraySize, 0.f);
-	std::fill_n(values, arraySize, 0.f);
+	std::fill_n(kernelValues, arraySize, 0.f);
 
 	quadArraySize = 0;
 	auto currentRes = resolution;
@@ -54,6 +54,8 @@ InfluenceMap::InfluenceMap(unsigned short resolution, float size, float coef, ch
 	: InfluenceMap(resolution, size, coef, level, valueThresholdDebug, sharedTemplateV, ownsTemplateV) {
 	this->minimalThreshold = minimalThreshold;
 	this->vanishCoef = vanishCoef;
+	pendingValues = new float[arraySize];
+	std::fill_n(pendingValues, arraySize, 0.f);
 }
 
 InfluenceMap::InfluenceMap(unsigned short resolution, float size, float valueThresholdDebug)
@@ -64,7 +66,8 @@ InfluenceMap::InfluenceMap(unsigned short resolution, float size)
 
 InfluenceMap::~InfluenceMap() {
 	delete[] rawValues;
-	delete[] values;
+	delete[] pendingValues;
+	delete[] kernelValues;
 	delete[] quadValues;
 	if (ownsTemplateV) {
 		delete[] templateV;
@@ -86,7 +89,11 @@ float* InfluenceMap::createTemplateV(float coef, char level) {
 }
 
 void InfluenceMap::update(unsigned index, float value) {
-	rawValues[index] += value;
+	if (hasPendingValues()) {
+		pendingValues[index] += value;
+	} else {
+		rawValues[index] += value;
+	}
 	valuesCalculateNeeded = true;
 	centerDirty = true;
 	quadDirty = true;
@@ -100,6 +107,16 @@ void InfluenceMap::update(const Urho3D::Vector2& pos, float value) {
 void InfluenceMap::updateFromTemp() { ensureKernel(); }
 
 void InfluenceMap::reset() {
+	if (hasPendingValues()) {
+		const auto rawEnd = rawValues + arraySize;
+		auto* pending = pendingValues;
+		for (auto raw = rawValues; raw < rawEnd; ++raw, ++pending) {
+			*raw = *raw * vanishCoef + *pending;
+			*pending = 0.f;
+		}
+		invalidateCaches();
+		return;
+	}
 	if (vanishCoef != 1.f || minimalThreshold != 0.f) {
 		const auto end = rawValues + arraySize;
 		for (auto i = rawValues; i < end; ++i) {
@@ -109,7 +126,10 @@ void InfluenceMap::reset() {
 		return;
 	}
 	std::fill_n(rawValues, arraySize, 0.f);
-	std::fill_n(values, arraySize, 0.f);
+	if (pendingValues) {
+		std::fill_n(pendingValues, arraySize, 0.f);
+	}
+	std::fill_n(kernelValues, arraySize, 0.f);
 	std::fill_n(quadValues, quadArraySize, 0.f);
 	valuesCalculateNeeded = false;
 	center.reset();
@@ -143,7 +163,7 @@ float InfluenceMap::getRaw(const Urho3D::Vector2& pos) const {
 
 float InfluenceMap::getKernel(unsigned index) const {
 	ensureKernel();
-	return values[index];
+	return kernelValues[index];
 }
 
 float InfluenceMap::getKernel(const Urho3D::Vector2& pos) const {
@@ -186,7 +206,7 @@ std::vector<unsigned> InfluenceMap::getMaxIdxsRaw() const {
 }
 
 std::vector<unsigned> InfluenceMap::getMaxIdxsKernel() const {
-	const auto data = std::span<const float>(values, arraySize);
+	const auto data = std::span<const float>(kernelValues, arraySize);
 	if (data.empty()) {
 		return {};
 	}
@@ -219,7 +239,7 @@ void InfluenceMap::ensureQuad() const {
 }
 
 void InfluenceMap::rebuildKernel() const {
-	std::fill_n(values, arraySize, 0.f);
+	std::fill_n(kernelValues, arraySize, 0.f);
 	for (unsigned i = 0; i < arraySize; ++i) {
 		const auto value = rawValues[i];
 		if (value == 0.f) {
@@ -232,7 +252,7 @@ void InfluenceMap::rebuildKernel() const {
 		const auto maxJ = calculator->getValidHigh(centerZ + level);
 		const auto jStart = (minJ - centerZ + level);
 		for (auto x = minI; x <= maxI; ++x) {
-			auto* t = &values[calculator->getNotSafeIndex(x, minJ)];
+			auto* t = &kernelValues[calculator->getNotSafeIndex(x, minJ)];
 			auto idx = (x - centerX + level) * levelRes + jStart;
 			auto ptr = templateV + idx;
 			for (short y = minJ; y <= maxJ; ++y) {
@@ -311,7 +331,7 @@ void InfluenceMap::ensureReady() {
 void InfluenceMap::computeMinMax() const {
 	if (!minMaxInited) {
 		ensureKernel();
-		const auto [minPtr, maxPtr] = std::minmax_element(values, values + arraySize);
+		const auto [minPtr, maxPtr] = std::minmax_element(kernelValues, kernelValues + arraySize);
 		min = *minPtr;
 		max = *maxPtr;
 		minMaxInited = true;
@@ -324,12 +344,12 @@ std::vector<int> InfluenceMap::getIndexesWithByValue(float percent, float tolera
 	const float diff = max - min;
 	auto minV = diff * (percent - tolerance) + min;
 	auto maxV = diff * (percent + tolerance) + min;
-	float* i = values;
+	float* i = kernelValues;
 	std::vector<int> indexes;
 	indexes.reserve(16);
 	auto pred = [minV, maxV](float v) { return v >= minV && v <= maxV; };
-	while ((i = std::find_if(i, values + arraySize, pred)) != values + arraySize) {
-		indexes.push_back(i - values);
+	while ((i = std::find_if(i, kernelValues + arraySize, pred)) != kernelValues + arraySize) {
+		indexes.push_back(i - kernelValues);
 		++i;
 	}
 	return indexes;
@@ -347,12 +367,12 @@ bool InfluenceMap::cumulateErrors(float percent, std::span<float> intersection) 
 	const auto coef1 = 1.f / diff * percent;
 	if (percent < 0.f) {
 		for (unsigned i = 0; i < arraySize; ++i) {
-			float val = (values[i] - min) * coef1;
+			float val = (kernelValues[i] - min) * coef1;
 			intersection[i] += val * val;
 		}
 	} else {
 		for (unsigned i = 0; i < arraySize; ++i) {
-			float val = (max - values[i]) * coef1;
+			float val = (max - kernelValues[i]) * coef1;
 			intersection[i] += val * val;
 		}
 	}

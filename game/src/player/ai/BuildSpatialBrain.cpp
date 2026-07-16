@@ -16,8 +16,7 @@ BuildSpatialBrain::BuildSpatialBrain(db_nation* nation)
 	: brain(BrainProvider::get(nation->brainPrefix[2] + "build_spatial.csv")) {
 	assert(brain->getInputSize() == inputData.size());
 	assert(brain->getInputSize() == magic_enum::enum_count<BuildSpatialInputIdx>());
-	assert(brain->getOutputSize() == magic_enum::enum_count<BuildSpatialOutputIdx>() ||
-	       brain->getOutputSize() == 15);
+	assert(brain->getOutputSize() == magic_enum::enum_count<BuildSpatialOutputIdx>());
 }
 
 BuildSpatialOutput BuildSpatialBrain::decide(Player* player, Player* enemy,
@@ -55,13 +54,6 @@ BuildSpatialOutput BuildSpatialBrain::decide(Player* player, Player* enemy,
 	auto result = brain->decide(inputData);
 
 	BuildSpatialOutput output;
-	if (result.size() == magic_enum::enum_count<BuildSpatialOutputIdx>()) {
-		std::copy_n(result.begin(), AI_MAP_COUNT, output.weights.begin());
-	} else {
-		std::copy_n(result.begin(), 10, output.weights.begin());
-		output.weights[idx(BuildSpatialOutputIdx::W_RES_NOT_BONUS)] =
-				(result[10] + result[11] + result[12] + result[13]) * 0.25f;
-		output.weights[idx(BuildSpatialOutputIdx::W_ECONOMY)] = result[14];
-	}
+	std::copy_n(result.begin(), AI_MAP_COUNT, output.weights.begin());
 	return output;
 }

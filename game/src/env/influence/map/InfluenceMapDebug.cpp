@@ -75,7 +75,7 @@ void InfluenceMap::printMap(std::span<const float> map, const Urho3D::String& na
 void InfluenceMap::print(Urho3D::String name) {
 	ensureReady();
 	printMap(std::span<const float>(rawValues, arraySize), name + "_raw");
-	printMap(std::span<const float>(values, arraySize), name + "_kernel");
+	printMap(std::span<const float>(kernelValues, arraySize), name + "_kernel");
 	for (int i = 0; i < static_cast<int>(quadLayers.size()); ++i) {
 		printMap(quadLayers[i], name + "_quad_" + Urho3D::String(i));
 	}

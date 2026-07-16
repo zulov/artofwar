@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art of War - Influence Maps Deep Dive</title>
+<style>
+  body { margin: 0; background: #1a1a2e; font-family: 'Segoe UI', sans-serif; color: #e0e0e0; }
+  h1 { text-align: center; margin: 20px 0 5px; font-size: 28px; color: #fff; }
+  h2.page-sub { text-align: center; margin: 0 0 10px; font-size: 14px; color: #888; font-weight: normal; max-width: 1120px; margin-left: auto; margin-right: auto; }
+  .section-title { text-align: center; font-size: 22px; color: #4fc3f7; margin: 35px 0 5px; font-weight: bold; }
+  .section-sub { text-align: center; font-size: 13px; color: #888; margin: 0 0 15px; max-width: 1120px; margin-left: auto; margin-right: auto; }
+  .divider { border: none; border-top: 1px solid #37474F; max-width: 1350px; margin: 35px auto; }
+  .toc { max-width: 1300px; margin: 20px auto; background: #151530; border-radius: 10px; padding: 16px 24px; border: 1px solid #37474F; }
+  .toc h3 { margin: 0 0 8px; color: #fff; }
+  .toc a { color: #4fc3f7; text-decoration: none; font-size: 14px; }
+  .toc a:hover { text-decoration: underline; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin: 6px 0; }
+  .card { max-width: 1300px; margin: 15px auto; background: #151530; border-radius: 10px; padding: 16px 24px; border: 1px solid #37474F; }
+  .card h3 { margin: 0 0 8px; font-size: 17px; color: #fff; }
+  .card h4 { margin: 12px 0 6px; font-size: 15px; color: #FFB74D; }
+  .card p, .card li { margin: 4px 0; font-size: 13px; color: #aaa; line-height: 1.6; }
+  .card ul { padding-left: 20px; }
+  .card code, .inline-code { color: #FFB74D; font-family: 'Consolas', monospace; font-size: 12px; background: #0d1117; padding: 1px 5px; border-radius: 3px; }
+  .schema-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 18px; max-width: 1300px; margin: 15px auto; }
+  .schema-card { background: #151530; border-radius: 10px; padding: 16px 20px; border: 1px solid #37474F; }
+  .schema-card h3 { margin: 0 0 8px; font-size: 16px; color: #fff; }
+  .schema-card p, .schema-card li { margin: 4px 0; font-size: 13px; color: #aaa; line-height: 1.6; }
+  .schema-card ul { padding-left: 18px; }
+  .tag { display: inline-block; margin-right: 8px; margin-bottom: 8px; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: bold; letter-spacing: 0.2px; }
+  .tag.snapshot { background: #1B5E20; color: #A5D6A7; }
+  .tag.history { background: #4A148C; color: #CE93D8; }
+  .tag.visibility { background: #0D47A1; color: #90CAF9; }
+  .tag.center { background: #6A1B9A; color: #E1BEE7; }
+  .tag.raw { background: #263238; color: #B0BEC5; }
+  .tag.kernel { background: #004D40; color: #80CBC4; }
+  .tag.special { background: #BF360C; color: #FFCCBC; }
+  .formula-box { max-width: 1300px; margin: 15px auto; background: #0f3460; border: 1px solid #1a5276; border-radius: 10px; padding: 16px 20px; }
+  .formula-box .label { color: #90CAF9; font-size: 12px; margin-bottom: 6px; }
+  .formula-box pre { margin: 0; color: #E3F2FD; font-family: 'Consolas', monospace; font-size: 13px; white-space: pre-wrap; }
+  table.spec { border-collapse: collapse; margin: 10px auto; font-size: 12px; background: #151530; max-width: 1300px; width: 100%; }
+  table.spec th { background: #0f3460; color: #4fc3f7; padding: 6px 12px; border: 1px solid #37474F; text-align: left; vertical-align: top; }
+  table.spec td { padding: 6px 12px; border: 1px solid #37474F; color: #ccc; vertical-align: top; line-height: 1.5; }
+  table.spec tr:hover td { background: #1a2744; }
+  .example { max-width: 1300px; margin: 15px auto; background: #1a2744; border-radius: 10px; padding: 16px 24px; border: 1px solid #37474F; }
+  .example h3 { margin: 0 0 8px; font-size: 16px; color: #FFB74D; }
+  .example p, .example li { font-size: 13px; color: #bbb; line-height: 1.6; margin: 4px 0; }
+  .example ul { padding-left: 20px; }
+  .callout { max-width: 1300px; margin: 15px auto; background: #20233d; border-left: 4px solid #FF9800; border-radius: 8px; padding: 14px 20px; }
+  .callout p { margin: 0; color: #c7c7d0; font-size: 13px; line-height: 1.6; }
+  .legend { display: flex; justify-content: center; gap: 16px; margin: 10px auto 0; flex-wrap: wrap; max-width: 1300px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #aaa; }
+  .legend-color { width: 16px; height: 16px; border-radius: 4px; }
+  .small-note { color: #888; font-size: 12px; }
+  .history-stage-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; max-width: 1300px; margin: 15px auto; }
+  .history-stage { background: #131d33; border: 1px solid #37474F; border-radius: 10px; padding: 14px 16px; }
+  .history-stage h4 { margin: 0 0 6px; font-size: 14px; color: #FFB74D; }
+  .history-stage .stage-sub { margin: 0 0 10px; color: #90A4AE; font-size: 12px; line-height: 1.5; }
+  .history-stage .center-note { margin: 8px 0 0; color: #A5D6A7; font-size: 12px; line-height: 1.5; }
+  .mini-grid-wrap { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+  .mini-grid-label { width: 58px; color: #90A4AE; font-size: 12px; flex: 0 0 auto; }
+  table.mini-grid { border-collapse: collapse; width: auto; margin: 0; }
+  table.mini-grid td { width: 24px; height: 24px; padding: 0; text-align: center; border: 1px solid #455A64; color: #E0E0E0; font-size: 10px; background: #102038; }
+  table.mini-grid td.empty { color: #607D8B; }
+  table.mini-grid td.raw-hot { background: #1B5E20; color: #fff; font-weight: bold; }
+  table.mini-grid td.pending-hot { background: #8E24AA; color: #fff; font-weight: bold; }
+  table.mini-grid td.k-vlow { background: #1565C0; }
+  table.mini-grid td.k-low { background: #00ACC1; }
+  table.mini-grid td.k-mid { background: #43A047; }
+  table.mini-grid td.k-midhigh { background: #FDD835; color: #222; }
+  table.mini-grid td.k-high { background: #FB8C00; }
+  table.mini-grid td.k-max { background: #E53935; font-weight: bold; }
+  .history-legend { max-width: 1300px; margin: 10px auto 0; display: flex; gap: 14px; flex-wrap: wrap; color: #90A4AE; font-size: 12px; }
+  .history-legend .swatch { width: 14px; height: 14px; border-radius: 3px; display: inline-block; margin-right: 6px; vertical-align: middle; }
+  svg text { font-family: 'Segoe UI', sans-serif; pointer-events: none; }
+
+  @page { size: A4 portrait; margin: 8mm; }
+
+  @media print {
+    body {
+      background: #fff !important;
+      color: #111 !important;
+      padding: 0 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    a { color: #111 !important; text-decoration: underline; }
+    h1, h2, h3, h4, .section-title, .section-sub, .page-sub { color: #111 !important; }
+    h1 { font-size: 1.5em !important; margin: 0 0 4px 0 !important; }
+    h2 { font-size: 1.08em !important; margin: 8px 0 4px 0 !important; }
+    h3 { font-size: 0.98em !important; margin: 6px 0 3px 0 !important; }
+    .page-sub, .section-sub { font-size: 0.78em !important; line-height: 1.35 !important; }
+    .section-title { font-size: 1.03em !important; margin: 10px 0 4px 0 !important; }
+    .card, .schema-card, .example, .toc, .formula-box, .callout {
+      background: #fff !important;
+      color: #111 !important;
+      border-color: #bbb !important;
+      box-shadow: none !important;
+    }
+
+    table, thead, tbody, tr, th, td {
+      background: #fff !important;
+      color: #111 !important;
+    }
+    table { width: 100% !important; font-size: 0.74em !important; }
+    th { background: #eee !important; }
+    th, td { padding: 4px 6px !important; }
+    td, th { border-color: #999 !important; }
+    table.spec tr:hover td { background: #fff !important; }
+    table.mini-grid { width: auto !important; }
+
+    svg {
+      background: #fff !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      height: auto !important;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    svg text { fill: #111 !important; }
+    svg rect:first-of-type { fill: #fff !important; stroke: #bbb !important; }
+    *[style*="background"] { background: #fff !important; color: #111 !important; }
+
+    h1, h2, h3, h4 { break-after: avoid; page-break-after: avoid; }
+    .card, .schema-card, .example, .toc, .formula-box, .callout {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    pre {
+      font-size: 0.72em !important;
+      white-space: pre-wrap !important;
+      overflow: visible !important;
+      word-break: break-word !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Art of War - Influence Maps Deep Dive</h1>
+<h2 class="page-sub">Reference for every influence and visibility map type: how raw, kernel, quad, and center layers work; where each map is updated; how build and attack brains consume them; and what the selection math actually does.</h2>
+
+<div class="toc">
+  <h3>Contents</h3>
+  <ol>
+    <li><a href="#quick-schema">Quick Schema</a></li>
+    <li><a href="#mechanics">Core Mechanics</a></li>
+    <li><a href="#inventory">Map Inventory</a></li>
+    <li><a href="#ai-schemas">AI Schemas</a></li>
+    <li><a href="#examples">Worked Examples</a></li>
+    <li><a href="#debug">Debug Views and Gotchas</a></li>
+  </ol>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-color" style="background:#1B5E20"></div>Snapshot maps</div>
+  <div class="legend-item"><div class="legend-color" style="background:#4A148C"></div>Buffered history maps</div>
+  <div class="legend-item"><div class="legend-color" style="background:#0D47A1"></div>Visibility</div>
+  <div class="legend-item"><div class="legend-color" style="background:#6A1B9A"></div>Center aliases</div>
+  <div class="legend-item"><div class="legend-color" style="background:#BF360C"></div>Special placement maps</div>
+</div>
+
+<hr class="divider">
+<div class="section-title" id="quick-schema">1. Quick Schema</div>
+<div class="section-sub">Per player the runtime owns 14 <code>InfluenceMap</code> objects and 1 <code>VisibilityMap</code>. AI views are just ordered subsets of those objects.</div>
+
+<svg viewBox="0 0 1400 760" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1400px;">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="760" fill="#12122a" rx="12"/>
+  <text x="700" y="34" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">Influence Data Flow</text>
+
+  <rect x="40" y="70" width="220" height="110" rx="8" fill="#263238" stroke="#546E7A" stroke-width="1.5"/>
+  <text x="150" y="98" text-anchor="middle" fill="#ECEFF1" font-size="14" font-weight="bold">Live World Scans</text>
+  <text x="150" y="118" text-anchor="middle" fill="#B0BEC5" font-size="11">buildings list</text>
+  <text x="150" y="134" text-anchor="middle" fill="#B0BEC5" font-size="11">units list</text>
+  <text x="150" y="150" text-anchor="middle" fill="#B0BEC5" font-size="11">worker states and targets</text>
+  <text x="150" y="166" text-anchor="middle" fill="#78909C" font-size="10">rebuilt snapshots</text>
+
+  <rect x="40" y="220" width="220" height="110" rx="8" fill="#2C1A4A" stroke="#7E57C2" stroke-width="1.5"/>
+  <text x="150" y="248" text-anchor="middle" fill="#F3E5F5" font-size="14" font-weight="bold">Event Feeds</text>
+  <text x="150" y="268" text-anchor="middle" fill="#D1C4E9" font-size="11">addCollect(unit, resId, value)</text>
+  <text x="150" y="284" text-anchor="middle" fill="#D1C4E9" font-size="11">addAttack(player, pos, value)</text>
+  <text x="150" y="300" text-anchor="middle" fill="#D1C4E9" font-size="11">sight radius updates</text>
+  <text x="150" y="316" text-anchor="middle" fill="#B39DDB" font-size="10">history and fog-of-war</text>
+
+  <rect x="330" y="65" width="290" height="145" rx="8" fill="#1B5E20" fill-opacity="0.28" stroke="#4CAF50" stroke-width="2"/>
+  <text x="475" y="94" text-anchor="middle" fill="#C8E6C9" font-size="15" font-weight="bold">Snapshot Influence Maps</text>
+  <text x="475" y="117" text-anchor="middle" fill="#A5D6A7" font-size="11">buildingsInfluencePerPlayer</text>
+  <text x="475" y="133" text-anchor="middle" fill="#A5D6A7" font-size="11">unitsInfluencePerPlayer</text>
+  <text x="475" y="149" text-anchor="middle" fill="#A5D6A7" font-size="11">armyInfluence</text>
+  <text x="475" y="165" text-anchor="middle" fill="#A5D6A7" font-size="11">resNotInBonus[4] and resNotInBonusAny</text>
+  <text x="475" y="184" text-anchor="middle" fill="#81C784" font-size="10">reset each scan, then refilled directly</text>
+
+  <rect x="330" y="235" width="290" height="135" rx="8" fill="#4A148C" fill-opacity="0.28" stroke="#AB47BC" stroke-width="2"/>
+  <text x="475" y="264" text-anchor="middle" fill="#F3E5F5" font-size="15" font-weight="bold">Buffered History Maps</text>
+  <text x="475" y="287" text-anchor="middle" fill="#E1BEE7" font-size="11">gatherSpeed[FOOD, WOOD, STONE, GOLD]</text>
+  <text x="475" y="303" text-anchor="middle" fill="#E1BEE7" font-size="11">attackSpeed</text>
+  <text x="475" y="319" text-anchor="middle" fill="#E1BEE7" font-size="11">pending -> raw * 0.5 + pending on reset()</text>
+  <text x="475" y="338" text-anchor="middle" fill="#CE93D8" font-size="10">periodic threshold cleanup below 0.0001</text>
+
+  <rect x="330" y="395" width="290" height="95" rx="8" fill="#BF360C" fill-opacity="0.22" stroke="#FF7043" stroke-width="2"/>
+  <text x="475" y="424" text-anchor="middle" fill="#FFCCBC" font-size="15" font-weight="bold">Activity Accumulator</text>
+  <text x="475" y="447" text-anchor="middle" fill="#FFCCBC" font-size="11">economyInfluence</text>
+  <text x="475" y="463" text-anchor="middle" fill="#FFCCBC" font-size="11">collect events written directly, cleared later</text>
+
+  <rect x="330" y="515" width="290" height="120" rx="8" fill="#0D47A1" fill-opacity="0.28" stroke="#42A5F5" stroke-width="2"/>
+  <text x="475" y="544" text-anchor="middle" fill="#E3F2FD" font-size="15" font-weight="bold">VisibilityMap</text>
+  <text x="475" y="567" text-anchor="middle" fill="#BBDEFB" font-size="11">resolution = influence resolution * 2</text>
+  <text x="475" y="583" text-anchor="middle" fill="#BBDEFB" font-size="11">VISIBLE / SEEN / NONE states</text>
+  <text x="475" y="599" text-anchor="middle" fill="#BBDEFB" font-size="11">2x2 downsample -> visible influence cells</text>
+  <text x="475" y="618" text-anchor="middle" fill="#90CAF9" font-size="10">unseen cells pre-seeded with max float error</text>
+
+  <rect x="730" y="85" width="270" height="145" rx="8" fill="#006064" fill-opacity="0.28" stroke="#26C6DA" stroke-width="2"/>
+  <text x="865" y="114" text-anchor="middle" fill="#E0F7FA" font-size="15" font-weight="bold">Build Spatial View</text>
+  <text x="865" y="137" text-anchor="middle" fill="#B2EBF2" font-size="11">12 ordered weights</text>
+  <text x="865" y="153" text-anchor="middle" fill="#B2EBF2" font-size="11">our building, our units, our attack</text>
+  <text x="865" y="169" text-anchor="middle" fill="#B2EBF2" font-size="11">4 gather maps</text>
+  <text x="865" y="185" text-anchor="middle" fill="#B2EBF2" font-size="11">enemy building, enemy units, enemy attack</text>
+  <text x="865" y="201" text-anchor="middle" fill="#B2EBF2" font-size="11">resNotInBonusAny, economy</text>
+
+  <rect x="730" y="275" width="270" height="105" rx="8" fill="#8E24AA" fill-opacity="0.28" stroke="#BA68C8" stroke-width="2"/>
+  <text x="865" y="304" text-anchor="middle" fill="#F3E5F5" font-size="15" font-weight="bold">Attack Spatial View</text>
+  <text x="865" y="327" text-anchor="middle" fill="#E1BEE7" font-size="11">6 ordered weights</text>
+  <text x="865" y="343" text-anchor="middle" fill="#E1BEE7" font-size="11">our building, our units, our attack</text>
+  <text x="865" y="359" text-anchor="middle" fill="#E1BEE7" font-size="11">enemy building, enemy units, enemy attack</text>
+
+  <rect x="730" y="420" width="270" height="110" rx="8" fill="#6A1B9A" fill-opacity="0.26" stroke="#AB47BC" stroke-width="2"/>
+  <text x="865" y="449" text-anchor="middle" fill="#F3E5F5" font-size="15" font-weight="bold">Center View</text>
+  <text x="865" y="472" text-anchor="middle" fill="#E1BEE7" font-size="11">ECON -> economyInfluence</text>
+  <text x="865" y="488" text-anchor="middle" fill="#E1BEE7" font-size="11">BUILDING -> buildingsInfluencePerPlayer</text>
+  <text x="865" y="504" text-anchor="middle" fill="#E1BEE7" font-size="11">ARMY -> armyInfluence</text>
+  <text x="865" y="520" text-anchor="middle" fill="#E1BEE7" font-size="11">BATTLE -> attackSpeed</text>
+
+  <rect x="1090" y="220" width="250" height="160" rx="8" fill="#21213a" stroke="#90A4AE" stroke-width="1.5"/>
+  <text x="1215" y="248" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">Selection</text>
+  <text x="1215" y="271" text-anchor="middle" fill="#B0BEC5" font-size="11">visibility seeds unseen cells</text>
+  <text x="1215" y="287" text-anchor="middle" fill="#B0BEC5" font-size="11">each map adds squared error</text>
+  <text x="1215" y="303" text-anchor="middle" fill="#B0BEC5" font-size="11">positive weight = seek high values</text>
+  <text x="1215" y="319" text-anchor="middle" fill="#B0BEC5" font-size="11">negative weight = seek low values</text>
+  <text x="1215" y="335" text-anchor="middle" fill="#B0BEC5" font-size="11">sort lowest error first</text>
+  <text x="1215" y="351" text-anchor="middle" fill="#78909C" font-size="10">building placement and army targeting read here</text>
+
+  <line x1="260" y1="125" x2="330" y2="125" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="260" y1="275" x2="330" y2="295" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="260" y1="275" x2="330" y2="440" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="260" y1="275" x2="330" y2="575" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="620" y1="140" x2="730" y2="155" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="620" y1="300" x2="730" y2="325" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="620" y1="445" x2="730" y2="475" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="620" y1="575" x2="1090" y2="300" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="6,4"/>
+  <line x1="1000" y1="165" x2="1090" y2="260" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1000" y1="325" x2="1090" y2="300" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1000" y1="475" x2="1090" y2="340" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+</svg>
+
+<table class="spec">
+  <tr>
+    <th>Family</th>
+    <th>Per player</th>
+    <th>Temporal model</th>
+    <th>Main update path</th>
+    <th>Main consumers</th>
+  </tr>
+  <tr>
+    <td><code>buildingsInfluencePerPlayer</code></td>
+    <td>1</td>
+    <td>snapshot</td>
+    <td><code>updateBuildings()</code> scans all buildings after reset</td>
+    <td>build spatial, attack spatial, <code>CenterType::BUILDING</code>, debug</td>
+  </tr>
+  <tr>
+    <td><code>unitsInfluencePerPlayer</code></td>
+    <td>1</td>
+    <td>snapshot</td>
+    <td><code>updateUnits()</code> scans all units after reset</td>
+    <td>build spatial, attack spatial, debug</td>
+  </tr>
+  <tr>
+    <td><code>armyInfluence</code></td>
+    <td>1</td>
+    <td>snapshot</td>
+    <td><code>updateUnits()</code>, non-workers only</td>
+    <td><code>CenterType::ARMY</code>, center-distance metrics, debug</td>
+  </tr>
+  <tr>
+    <td><code>gatherSpeed[4]</code></td>
+    <td>4</td>
+    <td>buffered history</td>
+    <td><code>addCollect()</code> -> pending, then decay/merge on <code>updateWithHistory()</code></td>
+    <td>build spatial, debug</td>
+  </tr>
+  <tr>
+    <td><code>attackSpeed</code></td>
+    <td>1</td>
+    <td>buffered history</td>
+    <td><code>addAttack()</code> -> pending, then decay/merge on <code>updateWithHistory()</code></td>
+    <td>build spatial, attack spatial, <code>CenterType::BATTLE</code>, debug</td>
+  </tr>
+  <tr>
+    <td><code>resNotInBonus[4]</code></td>
+    <td>4</td>
+    <td>snapshot</td>
+    <td><code>updateUnits()</code> marks resource nodes worked by bonus-less workers</td>
+    <td><code>getAreasResBonus()</code> special placement path</td>
+  </tr>
+  <tr>
+    <td><code>resNotInBonusAny</code></td>
+    <td>1</td>
+    <td>snapshot</td>
+    <td><code>updateUnits()</code> aggregates all resource types</td>
+    <td>build spatial slot 10</td>
+  </tr>
+  <tr>
+    <td><code>economyInfluence</code></td>
+    <td>1</td>
+    <td>event accumulator</td>
+    <td><code>addCollect()</code> writes raw directly, <code>updateQuadOther()</code> clears it</td>
+    <td>build spatial slot 11, <code>CenterType::ECON</code>, debug</td>
+  </tr>
+  <tr>
+    <td><code>VisibilityMap</code></td>
+    <td>1</td>
+    <td>fog-of-war state</td>
+    <td><code>updateVisibility()</code> from unit/building sight radii</td>
+    <td>candidate masking, visibility percent, debug</td>
+  </tr>
+</table>
+
+<div class="callout">
+  <p><strong>Inventory count:</strong> 1 building + 1 units + 1 army + 4 gather + 4 resNotInBonus + 1 resNotInBonusAny + 1 attack + 1 economy = <strong>14 InfluenceMap objects per player</strong>, plus 1 <code>VisibilityMap</code>.</p>
+</div>
+
+<hr class="divider">
+<div class="section-title" id="mechanics">2. Core Mechanics</div>
+<div class="section-sub">Every <code>InfluenceMap</code> has the same spatial math even when the game uses it for different meanings.</div>
+
+<div class="schema-grid">
+  <div class="schema-card">
+    <h3>Grid and Kernel Constants</h3>
+    <ul>
+      <li>Influence cell size: <code>INF_GRID_FIELD_SIZE = 8</code> world units.</li>
+      <li>Visibility cell size: <code>VISIBILITY_GRID_FIELD_SIZE = 4</code> world units.</li>
+      <li>Kernel radius: <code>INF_LEVEL = 4</code> cells, so the stencil is <code>9 x 9</code>.</li>
+      <li>Kernel template coefficient: <code>coef = 0.5</code> for all maps created by <code>InfluenceManager</code>.</li>
+      <li>The 9 x 9 template is allocated once with <code>createTemplateV()</code> and shared by all <code>InfluenceMap</code> instances.</li>
+    </ul>
+  </div>
+  <div class="schema-card">
+    <h3>Stored Layers Inside One InfluenceMap</h3>
+    <ul>
+      <li><strong>rawValues</strong>: direct counts or accumulated event strength per influence cell.</li>
+      <li><strong>pendingValues</strong>: optional buffer for history maps only.</li>
+      <li><strong>values</strong>: kernel-smoothed values used by AI scoring and influence debug view.</li>
+      <li><strong>quadLayers</strong>: a 2x2 sum pyramid built from raw values, used only for center finding.</li>
+      <li><strong>center</strong>: cached world position of the most representative raw hotspot.</li>
+    </ul>
+  </div>
+  <div class="schema-card">
+    <h3>Two Constructor Modes</h3>
+    <ul>
+      <li><strong>Immediate/snapshot mode</strong>: <code>update()</code> adds straight into <code>rawValues</code>.</li>
+      <li><strong>Buffered/history mode</strong>: <code>update()</code> adds into <code>pendingValues</code>; <code>reset()</code> applies <code>raw = raw * vanishCoef + pending</code>.</li>
+      <li>History maps in this repo use <code>minimalThreshold = 0.0001</code> and <code>vanishCoef = 0.5</code>.</li>
+      <li><code>resetToZero()</code> later drops raw values below the threshold so old noise does not live forever.</li>
+    </ul>
+  </div>
+  <div class="schema-card">
+    <h3>Visibility Interaction</h3>
+    <ul>
+      <li><code>VisibilityMap</code> runs at double resolution and then downscales by 2x2 blocks.</li>
+      <li>If any cell in a 2x2 visibility block is <code>VISIBLE</code>, the corresponding influence cell is visible.</li>
+      <li><code>SEEN</code> does not count as visible for influence selection.</li>
+      <li>Unseen influence cells are initialized with <code>FLT_MAX</code>-like error so they sort last automatically.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="formula-box">
+  <div class="label">Kernel template used by every InfluenceMap</div>
+  <pre>template(dx, dy) = 1 / (((dx * dx + dy * dy) * coef) + 1)
+
+kernel[cell] = sum over all raw source cells:
+               raw[source] * template(offset from source to cell)</pre>
+</div>
+
+<div class="card" id="kernel-schema">
+  <h3>Kernel Spread Schema</h3>
+  <p>The real runtime stencil is <code>9 x 9</code> because <code>INF_LEVEL = 4</code>. To make overlap easier to see, the diagram below uses a <strong>smaller illustrative kernel</strong> with radius 1 on a larger <code>7 x 7</code> raw grid and two non-zero source cells.</p>
+  <svg viewBox="0 0 1360 660" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:12px auto;max-width:1360px;">
+    <defs>
+      <marker id="kernelArrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#90A4AE"/>
+      </marker>
+    </defs>
+
+    <rect width="1360" height="660" fill="#0f1728" rx="12"/>
+    <text x="680" y="34" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">Two raw sources -> overlapping kernel field</text>
+    <text x="680" y="56" text-anchor="middle" fill="#90A4AE" font-size="11">Illustrative example only: raw resolution 7x7, kernel radius 1, coefficient still 0.5. Real runtime uses a larger 9x9 stencil.</text>
+
+    <rect x="35" y="85" width="430" height="495" rx="10" fill="#131d33" stroke="#37474F"/>
+    <rect x="495" y="85" width="320" height="495" rx="10" fill="#131d33" stroke="#37474F"/>
+    <rect x="845" y="85" width="480" height="495" rx="10" fill="#131d33" stroke="#37474F"/>
+
+    <text x="250" y="115" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Raw 7x7</text>
+    <text x="655" y="115" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Illustrative 3x3 kernel</text>
+    <text x="1085" y="115" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Kernel 7x7 after overlap</text>
+
+    <rect x="85" y="150" width="280" height="280" fill="#102038" stroke="#607D8B"/>
+    <line x1="125" y1="150" x2="125" y2="430" stroke="#455A64"/>
+    <line x1="165" y1="150" x2="165" y2="430" stroke="#455A64"/>
+    <line x1="205" y1="150" x2="205" y2="430" stroke="#455A64"/>
+    <line x1="245" y1="150" x2="245" y2="430" stroke="#455A64"/>
+    <line x1="285" y1="150" x2="285" y2="430" stroke="#455A64"/>
+    <line x1="325" y1="150" x2="325" y2="430" stroke="#455A64"/>
+    <line x1="85" y1="190" x2="365" y2="190" stroke="#455A64"/>
+    <line x1="85" y1="230" x2="365" y2="230" stroke="#455A64"/>
+    <line x1="85" y1="270" x2="365" y2="270" stroke="#455A64"/>
+    <line x1="85" y1="310" x2="365" y2="310" stroke="#455A64"/>
+    <line x1="85" y1="350" x2="365" y2="350" stroke="#455A64"/>
+    <line x1="85" y1="390" x2="365" y2="390" stroke="#455A64"/>
+    <rect x="165" y="230" width="40" height="40" fill="#E65100" fill-opacity="0.45" stroke="#FFB74D" stroke-width="2"/>
+    <rect x="245" y="270" width="40" height="40" fill="#8E24AA" fill-opacity="0.45" stroke="#CE93D8" stroke-width="2"/>
+    <text x="185" y="255" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">6</text>
+    <text x="265" y="295" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">4</text>
+    <text x="225" y="458" text-anchor="middle" fill="#90A4AE" font-size="11">orange source at (row 2, col 2) = 6</text>
+    <text x="225" y="476" text-anchor="middle" fill="#90A4AE" font-size="11">violet source at (row 3, col 4) = 4</text>
+    <text x="225" y="494" text-anchor="middle" fill="#90A4AE" font-size="11">blank cells = raw 0</text>
+
+    <rect x="575" y="190" width="160" height="160" fill="#102038" stroke="#607D8B"/>
+    <line x1="628" y1="190" x2="628" y2="350" stroke="#455A64"/>
+    <line x1="681" y1="190" x2="681" y2="350" stroke="#455A64"/>
+    <line x1="575" y1="243" x2="735" y2="243" stroke="#455A64"/>
+    <line x1="575" y1="296" x2="735" y2="296" stroke="#455A64"/>
+    <rect x="628" y="243" width="53" height="53" fill="#00695C" fill-opacity="0.45" stroke="#80CBC4" stroke-width="2"/>
+    <text x="601" y="221" text-anchor="middle" fill="#CFD8DC" font-size="14">0.50</text>
+    <text x="654" y="221" text-anchor="middle" fill="#CFD8DC" font-size="14">0.67</text>
+    <text x="707" y="221" text-anchor="middle" fill="#CFD8DC" font-size="14">0.50</text>
+    <text x="601" y="274" text-anchor="middle" fill="#CFD8DC" font-size="14">0.67</text>
+    <text x="654" y="274" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">1.00</text>
+    <text x="707" y="274" text-anchor="middle" fill="#CFD8DC" font-size="14">0.67</text>
+    <text x="601" y="327" text-anchor="middle" fill="#CFD8DC" font-size="14">0.50</text>
+    <text x="654" y="327" text-anchor="middle" fill="#CFD8DC" font-size="14">0.67</text>
+    <text x="707" y="327" text-anchor="middle" fill="#CFD8DC" font-size="14">0.50</text>
+    <text x="655" y="392" text-anchor="middle" fill="#90A4AE" font-size="11">illustrative radius-1 template</text>
+    <text x="655" y="410" text-anchor="middle" fill="#90A4AE" font-size="11">with coef = 0.5</text>
+
+    <rect x="900" y="150" width="280" height="280" fill="#102038" stroke="#607D8B"/>
+    <line x1="940" y1="150" x2="940" y2="430" stroke="#455A64"/>
+    <line x1="980" y1="150" x2="980" y2="430" stroke="#455A64"/>
+    <line x1="1020" y1="150" x2="1020" y2="430" stroke="#455A64"/>
+    <line x1="1060" y1="150" x2="1060" y2="430" stroke="#455A64"/>
+    <line x1="1100" y1="150" x2="1100" y2="430" stroke="#455A64"/>
+    <line x1="1140" y1="150" x2="1140" y2="430" stroke="#455A64"/>
+    <line x1="900" y1="190" x2="1180" y2="190" stroke="#455A64"/>
+    <line x1="900" y1="230" x2="1180" y2="230" stroke="#455A64"/>
+    <line x1="900" y1="270" x2="1180" y2="270" stroke="#455A64"/>
+    <line x1="900" y1="310" x2="1180" y2="310" stroke="#455A64"/>
+    <line x1="900" y1="350" x2="1180" y2="350" stroke="#455A64"/>
+    <line x1="900" y1="390" x2="1180" y2="390" stroke="#455A64"/>
+    <rect x="940" y="190" width="40" height="40" fill="#43A047" fill-opacity="0.46" stroke="#A5D6A7"/>
+    <rect x="980" y="190" width="40" height="40" fill="#FDD835" fill-opacity="0.46" stroke="#FFF59D"/>
+    <rect x="1020" y="190" width="40" height="40" fill="#43A047" fill-opacity="0.46" stroke="#A5D6A7"/>
+    <rect x="940" y="230" width="40" height="40" fill="#FDD835" fill-opacity="0.46" stroke="#FFF59D"/>
+    <rect x="980" y="230" width="40" height="40" fill="#E53935" fill-opacity="0.52" stroke="#FFCDD2" stroke-width="2"/>
+    <rect x="1020" y="230" width="40" height="40" fill="#FB8C00" fill-opacity="0.50" stroke="#FFCC80" stroke-width="2"/>
+    <rect x="1060" y="230" width="40" height="40" fill="#00ACC1" fill-opacity="0.44" stroke="#80DEEA"/>
+    <rect x="980" y="270" width="40" height="40" fill="#43A047" fill-opacity="0.46" stroke="#A5D6A7"/>
+    <rect x="1020" y="270" width="40" height="40" fill="#FB8C00" fill-opacity="0.50" stroke="#FFCC80" stroke-width="2"/>
+    <rect x="1060" y="270" width="40" height="40" fill="#FDD835" fill-opacity="0.46" stroke="#FFF59D"/>
+    <rect x="1100" y="270" width="40" height="40" fill="#00ACC1" fill-opacity="0.44" stroke="#80DEEA"/>
+    <rect x="1020" y="310" width="40" height="40" fill="#1565C0" fill-opacity="0.42" stroke="#90CAF9"/>
+    <rect x="1060" y="310" width="40" height="40" fill="#00ACC1" fill-opacity="0.44" stroke="#80DEEA"/>
+    <rect x="1100" y="310" width="40" height="40" fill="#1565C0" fill-opacity="0.42" stroke="#90CAF9"/>
+    <text x="965" y="215" text-anchor="middle" fill="#CFD8DC" font-size="13">3.00</text>
+    <text x="1005" y="215" text-anchor="middle" fill="#CFD8DC" font-size="13">4.00</text>
+    <text x="1045" y="215" text-anchor="middle" fill="#CFD8DC" font-size="13">3.00</text>
+    <text x="965" y="255" text-anchor="middle" fill="#CFD8DC" font-size="13">4.00</text>
+    <text x="1005" y="255" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">6.00</text>
+    <text x="1045" y="255" text-anchor="middle" fill="#CFD8DC" font-size="13">4.67</text>
+    <text x="1085" y="255" text-anchor="middle" fill="#CFD8DC" font-size="13">2.67</text>
+    <text x="1005" y="295" text-anchor="middle" fill="#CFD8DC" font-size="13">3.00</text>
+    <text x="1045" y="295" text-anchor="middle" fill="#CFD8DC" font-size="13">4.67</text>
+    <text x="1085" y="295" text-anchor="middle" fill="#CFD8DC" font-size="13">4.00</text>
+    <text x="1125" y="295" text-anchor="middle" fill="#CFD8DC" font-size="13">2.67</text>
+    <text x="1045" y="335" text-anchor="middle" fill="#CFD8DC" font-size="13">2.00</text>
+    <text x="1085" y="335" text-anchor="middle" fill="#CFD8DC" font-size="13">2.67</text>
+    <text x="1125" y="335" text-anchor="middle" fill="#CFD8DC" font-size="13">2.00</text>
+    <text x="1040" y="458" text-anchor="middle" fill="#90A4AE" font-size="11">middle cells are higher because both raw sources overlap there</text>
+    <text x="1040" y="476" text-anchor="middle" fill="#90A4AE" font-size="11">for example: 4.67 = 4.00 from source 6 + 0.67 from source 4</text>
+    <text x="1040" y="494" text-anchor="middle" fill="#90A4AE" font-size="11">and 2.67 = 2.00 from source 6 + 0.67 from source 4</text>
+    <text x="1040" y="518" text-anchor="middle" fill="#90A4AE" font-size="11">kernel colors encode only final magnitude, not which source produced the value</text>
+    <text x="1040" y="536" text-anchor="middle" fill="#90A4AE" font-size="11">raw source identity is shown only in the left grid using orange and violet</text>
+
+    <text x="1040" y="566" text-anchor="middle" fill="#CFD8DC" font-size="12" font-weight="bold">Heat legend: low -> high</text>
+    <rect x="900" y="582" width="34" height="18" fill="#1565C0" fill-opacity="0.42" stroke="#90CAF9"/>
+    <rect x="938" y="582" width="34" height="18" fill="#00ACC1" fill-opacity="0.44" stroke="#80DEEA"/>
+    <rect x="976" y="582" width="34" height="18" fill="#43A047" fill-opacity="0.46" stroke="#A5D6A7"/>
+    <rect x="1014" y="582" width="34" height="18" fill="#FDD835" fill-opacity="0.46" stroke="#FFF59D"/>
+    <rect x="1052" y="582" width="34" height="18" fill="#FB8C00" fill-opacity="0.50" stroke="#FFCC80"/>
+    <rect x="1090" y="582" width="34" height="18" fill="#E53935" fill-opacity="0.52" stroke="#FFCDD2"/>
+    <text x="917" y="618" text-anchor="middle" fill="#90A4AE" font-size="10">2.00</text>
+    <text x="955" y="618" text-anchor="middle" fill="#90A4AE" font-size="10">2.67</text>
+    <text x="993" y="618" text-anchor="middle" fill="#90A4AE" font-size="10">3.00</text>
+    <text x="1031" y="618" text-anchor="middle" fill="#90A4AE" font-size="10">4.00</text>
+    <text x="1069" y="618" text-anchor="middle" fill="#90A4AE" font-size="10">4.67</text>
+    <text x="1107" y="618" text-anchor="middle" fill="#90A4AE" font-size="10">6.00</text>
+    <text x="1010" y="642" text-anchor="middle" fill="#90A4AE" font-size="10">values between these examples use shades between neighboring legend boxes</text>
+
+    <line x1="380" y1="290" x2="555" y2="290" stroke="#90A4AE" stroke-width="2" marker-end="url(#kernelArrow)"/>
+    <line x1="755" y1="290" x2="880" y2="290" stroke="#90A4AE" stroke-width="2" marker-end="url(#kernelArrow)"/>
+    <text x="468" y="272" text-anchor="middle" fill="#B0BEC5" font-size="12">each source stamps this local shape</text>
+    <text x="818" y="272" text-anchor="middle" fill="#B0BEC5" font-size="12">all stamped patches are summed into values[]</text>
+  </svg>
+  <table class="spec">
+    <tr>
+      <th>Offset from source</th>
+      <th>Template weight</th>
+      <th>Contribution from raw 6</th>
+      <th>Contribution from raw 4</th>
+    </tr>
+    <tr><td><code>(0, 0)</code></td><td>1.00</td><td>6.00</td><td>4.00</td></tr>
+    <tr><td><code>(1, 0)</code> or <code>(0, 1)</code></td><td>0.67</td><td>4.00</td><td>2.67</td></tr>
+    <tr><td><code>(1, 1)</code></td><td>0.50</td><td>3.00</td><td>2.00</td></tr>
+  </table>
+  <h4>How To Read The Kernel Schema</h4>
+  <ol>
+    <li>Start from the two raw cells: one source with value <code>6</code>, one source with value <code>4</code>.</li>
+    <li>The raw-grid colors only distinguish source identity. They do <strong>not</strong> encode strength ranking.</li>
+    <li>Each source stamps the same local kernel shape around itself.</li>
+    <li>For every touched kernel cell, multiply the source value by the template weight for that offset.</li>
+    <li>If two stamped patches overlap, add both contributions. That is why some cells in the final kernel grid are larger than either source would create alone at that offset.</li>
+    <li>In the final kernel heatmap, colors are monotonic: blue is lowest, then cyan, green, yellow, orange, and red as values increase.</li>
+  </ol>
+  <p><strong>Example takeaway:</strong> the kernel layer is not a separate game event. It is a derived density field built entirely from <code>rawValues</code>. Multiple nearby raw cells create overlapping hills, and the overlap itself can become the most attractive place in the kernel field.</p>
+</div>
+
+<div class="card" id="quad-build-schema">
+  <h3>Quad Layer Construction Schema</h3>
+  <p>Before the engine can ask for a center, it first builds the quad pyramid from the raw grid. Each layer is produced by summing 2x2 blocks from the previous layer.</p>
+  <svg viewBox="0 0 1360 520" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:12px auto;max-width:1360px;">
+    <defs>
+      <marker id="quadBuildArrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#90A4AE"/>
+      </marker>
+    </defs>
+
+    <rect width="1360" height="520" fill="#0f1728" rx="12"/>
+    <text x="680" y="34" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">Building the quad pyramid from raw values</text>
+    <text x="680" y="56" text-anchor="middle" fill="#90A4AE" font-size="11">Readable example: raw 8x8 -> quad 4x4 -> quad 2x2. Each parent cell stores the sum of one 2x2 child block.</text>
+
+    <rect x="30" y="100" width="390" height="380" rx="10" fill="#131d33" stroke="#37474F"/>
+    <rect x="485" y="130" width="315" height="320" rx="10" fill="#131d33" stroke="#37474F"/>
+    <rect x="865" y="165" width="250" height="250" rx="10" fill="#131d33" stroke="#37474F"/>
+
+    <text x="225" y="128" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Raw 8x8</text>
+    <text x="642" y="158" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Quad layer 4x4</text>
+    <text x="990" y="193" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Top quad 2x2</text>
+
+    <rect x="90" y="170" width="240" height="240" fill="#102038" stroke="#607D8B"/>
+    <line x1="120" y1="170" x2="120" y2="410" stroke="#455A64"/>
+    <line x1="150" y1="170" x2="150" y2="410" stroke="#455A64"/>
+    <line x1="180" y1="170" x2="180" y2="410" stroke="#455A64"/>
+    <line x1="210" y1="170" x2="210" y2="410" stroke="#455A64"/>
+    <line x1="240" y1="170" x2="240" y2="410" stroke="#455A64"/>
+    <line x1="270" y1="170" x2="270" y2="410" stroke="#455A64"/>
+    <line x1="300" y1="170" x2="300" y2="410" stroke="#455A64"/>
+    <line x1="90" y1="200" x2="330" y2="200" stroke="#455A64"/>
+    <line x1="90" y1="230" x2="330" y2="230" stroke="#455A64"/>
+    <line x1="90" y1="260" x2="330" y2="260" stroke="#455A64"/>
+    <line x1="90" y1="290" x2="330" y2="290" stroke="#455A64"/>
+    <line x1="90" y1="320" x2="330" y2="320" stroke="#455A64"/>
+    <line x1="90" y1="350" x2="330" y2="350" stroke="#455A64"/>
+    <line x1="90" y1="380" x2="330" y2="380" stroke="#455A64"/>
+    <rect x="210" y="290" width="120" height="120" fill="#0D47A1" fill-opacity="0.10" stroke="#42A5F5" stroke-width="2"/>
+    <rect x="210" y="290" width="60" height="60" fill="#E65100" fill-opacity="0.15" stroke="#FFB74D" stroke-width="2"/>
+    <text x="225" y="308" text-anchor="middle" fill="#CFD8DC" font-size="12">1</text>
+    <text x="255" y="308" text-anchor="middle" fill="#CFD8DC" font-size="12">2</text>
+    <text x="285" y="308" text-anchor="middle" fill="#CFD8DC" font-size="12">1</text>
+    <text x="225" y="338" text-anchor="middle" fill="#CFD8DC" font-size="12">3</text>
+    <text x="255" y="338" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">5</text>
+    <text x="315" y="338" text-anchor="middle" fill="#CFD8DC" font-size="12">1</text>
+    <text x="225" y="368" text-anchor="middle" fill="#CFD8DC" font-size="12">1</text>
+    <text x="255" y="368" text-anchor="middle" fill="#CFD8DC" font-size="12">1</text>
+    <text x="255" y="398" text-anchor="middle" fill="#CFD8DC" font-size="12">1</text>
+    <text x="210" y="438" text-anchor="middle" fill="#90A4AE" font-size="11">blue 4x4 region totals to 16</text>
+    <text x="210" y="456" text-anchor="middle" fill="#90A4AE" font-size="11">orange 2x2 block totals to 11</text>
+
+    <rect x="546" y="200" width="192" height="192" fill="#102038" stroke="#607D8B"/>
+    <line x1="594" y1="200" x2="594" y2="392" stroke="#455A64"/>
+    <line x1="642" y1="200" x2="642" y2="392" stroke="#455A64"/>
+    <line x1="690" y1="200" x2="690" y2="392" stroke="#455A64"/>
+    <line x1="546" y1="248" x2="738" y2="248" stroke="#455A64"/>
+    <line x1="546" y1="296" x2="738" y2="296" stroke="#455A64"/>
+    <line x1="546" y1="344" x2="738" y2="344" stroke="#455A64"/>
+    <rect x="642" y="296" width="48" height="48" fill="#E65100" fill-opacity="0.40" stroke="#FFCC80" stroke-width="2"/>
+    <text x="666" y="326" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">11</text>
+    <text x="714" y="326" text-anchor="middle" fill="#CFD8DC" font-size="13">2</text>
+    <text x="666" y="374" text-anchor="middle" fill="#CFD8DC" font-size="13">3</text>
+    <text x="714" y="374" text-anchor="middle" fill="#CFD8DC" font-size="13">0</text>
+    <text x="642" y="420" text-anchor="middle" fill="#90A4AE" font-size="11">each cell here sums one raw 2x2 block</text>
+
+    <rect x="918" y="240" width="140" height="140" fill="#102038" stroke="#607D8B"/>
+    <line x1="988" y1="240" x2="988" y2="380" stroke="#455A64"/>
+    <line x1="918" y1="310" x2="1058" y2="310" stroke="#455A64"/>
+    <rect x="988" y="310" width="70" height="70" fill="#E65100" fill-opacity="0.40" stroke="#FFCC80" stroke-width="2"/>
+    <text x="953" y="282" text-anchor="middle" fill="#CFD8DC" font-size="14">0</text>
+    <text x="1023" y="282" text-anchor="middle" fill="#CFD8DC" font-size="14">0</text>
+    <text x="953" y="352" text-anchor="middle" fill="#CFD8DC" font-size="14">0</text>
+    <text x="1023" y="352" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">16</text>
+    <text x="988" y="408" text-anchor="middle" fill="#90A4AE" font-size="11">each cell here sums one 4x4 quadrant</text>
+
+    <line x1="345" y1="300" x2="535" y2="300" stroke="#90A4AE" stroke-width="2" marker-end="url(#quadBuildArrow)"/>
+    <line x1="753" y1="300" x2="898" y2="300" stroke="#90A4AE" stroke-width="2" marker-end="url(#quadBuildArrow)"/>
+    <text x="440" y="282" text-anchor="middle" fill="#B0BEC5" font-size="12">sum raw 2x2 blocks</text>
+    <text x="826" y="282" text-anchor="middle" fill="#B0BEC5" font-size="12">sum 4x4 quadrants</text>
+  </svg>
+  <table class="spec">
+    <tr>
+      <th>Layer</th>
+      <th>One parent cell represents</th>
+      <th>Example value</th>
+    </tr>
+    <tr><td>raw 8x8</td><td>exact original cell</td><td><code>5</code> at one hot raw cell</td></tr>
+    <tr><td>quad 4x4</td><td>sum of one raw 2x2 block</td><td><code>11 = 1 + 2 + 3 + 5</code></td></tr>
+    <tr><td>quad 2x2</td><td>sum of one raw 4x4 region</td><td><code>16</code> for the dominant quadrant</td></tr>
+  </table>
+  <h4>How To Read The Quad Build Schema</h4>
+  <ol>
+    <li>Start from the raw grid.</li>
+    <li>Collapse every raw 2x2 block into one summed parent value.</li>
+    <li>Repeat the same process on the new layer until the pyramid reaches its coarsest level.</li>
+    <li>The pyramid stores mass by region, so later center lookup can find the dominant area without scanning every raw cell at every step.</li>
+  </ol>
+  <p><strong>Example takeaway:</strong> quad layers do not invent new signal. They are just progressively coarser sums of the raw layer.</p>
+</div>
+
+<div class="card" id="center-from-quad-schema">
+  <h3>Center Computation Schema</h3>
+  <p>Once the quad pyramid already exists, <code>getCenter()</code> starts at the smallest stored quad layer, picks its best cell, then refines that choice through successively higher-resolution layers until it reaches the raw grid. This is a separate step from building the quad layers.</p>
+  <svg viewBox="0 0 1360 560" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:12px auto;max-width:1360px;">
+    <defs>
+      <marker id="centerWalkArrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#FFB74D"/>
+      </marker>
+    </defs>
+
+    <rect width="1360" height="560" fill="#0f1728" rx="12"/>
+    <text x="680" y="34" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">Walking the quad pyramid to compute center</text>
+    <text x="680" y="56" text-anchor="middle" fill="#90A4AE" font-size="11">The pyramid already exists. The algorithm starts from the smallest stored quad layer and refines upward in resolution until it reaches one final raw winner.</text>
+
+    <rect x="40" y="120" width="250" height="220" rx="10" fill="#131d33" stroke="#37474F"/>
+    <rect x="320" y="100" width="360" height="380" rx="10" fill="#131d33" stroke="#37474F"/>
+    <rect x="720" y="80" width="420" height="440" rx="10" fill="#131d33" stroke="#37474F"/>
+    <rect x="1180" y="190" width="140" height="140" rx="10" fill="#131d33" stroke="#37474F"/>
+
+    <text x="165" y="148" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Step 1: quad 2x2</text>
+    <text x="500" y="128" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Step 2: full quad 4x4 layer</text>
+    <text x="930" y="108" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Step 3: full raw 8x8 layer</text>
+    <text x="1250" y="218" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Step 4: world center</text>
+
+    <rect x="105" y="205" width="120" height="120" fill="#102038" stroke="#607D8B"/>
+    <line x1="165" y1="205" x2="165" y2="325" stroke="#455A64"/>
+    <line x1="105" y1="265" x2="225" y2="265" stroke="#455A64"/>
+    <rect x="165" y="265" width="60" height="60" fill="#E65100" fill-opacity="0.40" stroke="#FFCC80" stroke-width="2"/>
+    <text x="135" y="242" text-anchor="middle" fill="#CFD8DC" font-size="15">0</text>
+    <text x="195" y="242" text-anchor="middle" fill="#CFD8DC" font-size="15">0</text>
+    <text x="135" y="302" text-anchor="middle" fill="#CFD8DC" font-size="15">0</text>
+    <text x="195" y="302" text-anchor="middle" fill="#fff" font-size="19" font-weight="bold">16</text>
+    <text x="165" y="360" text-anchor="middle" fill="#90A4AE" font-size="11">quadLayers[0], the smallest stored layer</text>
+
+    <rect x="390" y="180" width="200" height="200" fill="#102038" stroke="#607D8B"/>
+    <line x1="440" y1="180" x2="440" y2="380" stroke="#455A64"/>
+    <line x1="490" y1="180" x2="490" y2="380" stroke="#455A64"/>
+    <line x1="540" y1="180" x2="540" y2="380" stroke="#455A64"/>
+    <line x1="390" y1="230" x2="590" y2="230" stroke="#455A64"/>
+    <line x1="390" y1="280" x2="590" y2="280" stroke="#455A64"/>
+    <line x1="390" y1="330" x2="590" y2="330" stroke="#455A64"/>
+    <rect x="490" y="280" width="100" height="100" fill="#0D47A1" fill-opacity="0.10" stroke="#42A5F5" stroke-width="2"/>
+    <rect x="490" y="280" width="50" height="50" fill="#E65100" fill-opacity="0.28" stroke="#FFB74D" stroke-width="2"/>
+    <text x="515" y="313" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">11</text>
+    <text x="565" y="313" text-anchor="middle" fill="#CFD8DC" font-size="14">2</text>
+    <text x="515" y="363" text-anchor="middle" fill="#CFD8DC" font-size="14">3</text>
+    <text x="565" y="363" text-anchor="middle" fill="#CFD8DC" font-size="14">0</text>
+    <text x="490" y="412" text-anchor="start" fill="#90A4AE" font-size="11">blue box: 2x2 region selected from the 2x2 layer</text>
+    <text x="490" y="430" text-anchor="start" fill="#90A4AE" font-size="11">orange cell: best child on the full 4x4 layer</text>
+    <text x="490" y="448" text-anchor="start" fill="#90A4AE" font-size="11">resolution increases here: 2x2 -> 4x4</text>
+
+    <rect x="800" y="160" width="240" height="240" fill="#102038" stroke="#607D8B"/>
+    <line x1="830" y1="160" x2="830" y2="400" stroke="#455A64"/>
+    <line x1="860" y1="160" x2="860" y2="400" stroke="#455A64"/>
+    <line x1="890" y1="160" x2="890" y2="400" stroke="#455A64"/>
+    <line x1="920" y1="160" x2="920" y2="400" stroke="#455A64"/>
+    <line x1="950" y1="160" x2="950" y2="400" stroke="#455A64"/>
+    <line x1="980" y1="160" x2="980" y2="400" stroke="#455A64"/>
+    <line x1="1010" y1="160" x2="1010" y2="400" stroke="#455A64"/>
+    <line x1="800" y1="190" x2="1040" y2="190" stroke="#455A64"/>
+    <line x1="800" y1="220" x2="1040" y2="220" stroke="#455A64"/>
+    <line x1="800" y1="250" x2="1040" y2="250" stroke="#455A64"/>
+    <line x1="800" y1="280" x2="1040" y2="280" stroke="#455A64"/>
+    <line x1="800" y1="310" x2="1040" y2="310" stroke="#455A64"/>
+    <line x1="800" y1="340" x2="1040" y2="340" stroke="#455A64"/>
+    <line x1="800" y1="370" x2="1040" y2="370" stroke="#455A64"/>
+    <rect x="920" y="280" width="120" height="120" fill="#0D47A1" fill-opacity="0.10" stroke="#42A5F5" stroke-width="2"/>
+    <rect x="920" y="280" width="60" height="60" fill="#E65100" fill-opacity="0.18" stroke="#FFB74D" stroke-width="2"/>
+    <rect x="950" y="310" width="30" height="30" fill="#C62828" fill-opacity="0.42" stroke="#FF8A80" stroke-width="2"/>
+    <text x="935" y="300" text-anchor="middle" fill="#CFD8DC" font-size="14">1</text>
+    <text x="965" y="300" text-anchor="middle" fill="#CFD8DC" font-size="14">2</text>
+    <text x="935" y="330" text-anchor="middle" fill="#CFD8DC" font-size="14">3</text>
+    <text x="965" y="330" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">5</text>
+    <text x="920" y="432" text-anchor="start" fill="#90A4AE" font-size="11">blue box: 4x4 raw region selected from the 2x2 layer</text>
+    <text x="920" y="450" text-anchor="start" fill="#90A4AE" font-size="11">orange box: 2x2 raw candidates selected from the 4x4 layer</text>
+    <text x="920" y="468" text-anchor="start" fill="#90A4AE" font-size="11">red cell: final raw winner</text>
+    <text x="920" y="486" text-anchor="start" fill="#90A4AE" font-size="11">resolution increases again: 4x4 -> raw 8x8</text>
+
+    <circle cx="1250" cy="260" r="34" fill="#1B5E20" fill-opacity="0.28" stroke="#81C784" stroke-width="2"/>
+    <line x1="1222" y1="260" x2="1278" y2="260" stroke="#C8E6C9" stroke-width="2"/>
+    <line x1="1250" y1="232" x2="1250" y2="288" stroke="#C8E6C9" stroke-width="2"/>
+    <text x="1250" y="310" text-anchor="middle" fill="#E8F5E9" font-size="13">returned center of raw cell 5</text>
+
+    <line x1="225" y1="265" x2="390" y2="265" stroke="#FFB74D" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#centerWalkArrow)"/>
+    <line x1="590" y1="265" x2="800" y2="265" stroke="#FFB74D" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#centerWalkArrow)"/>
+    <line x1="1040" y1="325" x2="1208" y2="275" stroke="#FFB74D" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#centerWalkArrow)"/>
+    <text x="308" y="247" text-anchor="middle" fill="#FFCC80" font-size="12">increase resolution to 4x4</text>
+    <text x="695" y="247" text-anchor="middle" fill="#FFCC80" font-size="12">increase resolution to raw 8x8</text>
+    <text x="1126" y="302" text-anchor="middle" fill="#FFCC80" font-size="12">return center of final raw winner</text>
+  </svg>
+  <table class="spec">
+    <tr>
+      <th>Step</th>
+      <th>Compared values</th>
+      <th>Winner</th>
+    </tr>
+    <tr><td>quad 2x2</td><td><code>0, 0, 0, 16</code></td><td>bottom-right region</td></tr>
+    <tr><td>full quad 4x4 layer</td><td>selected 2x2 block contains <code>11, 2, 3, 0</code></td><td>child block sum <code>11</code></td></tr>
+    <tr><td>full raw 8x8 layer</td><td>selected raw 2x2 contains <code>1, 2, 3, 5</code></td><td>raw cell <code>5</code></td></tr>
+    <tr><td>return value</td><td>world-space location of raw cell <code>5</code></td><td><code>getCenter()</code> result</td></tr>
+  </table>
+  <h4>How To Read The Center Schema</h4>
+  <ol>
+    <li>Start at the smallest stored quad layer, which is <code>quadLayers[0]</code> in the implementation. In this example that layer has resolution <code>2x2</code>.</li>
+    <li>Pick the best cell there, then convert that cell index into the four corresponding children on the next higher-resolution layer, here <code>4x4</code>.</li>
+    <li>Repeat that refinement step once more to reach the raw grid, here <code>8x8</code>.</li>
+    <li>Once the search reaches the raw grid, compare the final four raw cells directly.</li>
+    <li>Return the world-space center of the best raw cell, not the average position of the whole winning region.</li>
+  </ol>
+  <p><strong>Example takeaway:</strong> quad construction and center selection are separate operations. First the pyramid is built from sums; later the center algorithm starts from the smallest stored quad layer and refines upward in resolution until it reaches a final raw-cell winner.</p>
+</div>
+
+<div class="card" id="history-schema">
+  <h3>History Map Schema</h3>
+  <p>History maps add one more layer: <code>pendingValues</code>. Fresh events land there first. Only <code>reset()</code> moves them into <code>rawValues</code>. Until that happens, kernel, quad, and center still read the old raw state.</p>
+  <p>In this codebase, <code>gatherSpeed[...]</code> and <code>attackSpeed</code> are the two history-map families. Both use <code>vanishCoef = 0.5</code> and <code>minimalThreshold = 0.0001</code>, so the runtime treats them as fading heatmaps rather than permanent counters.</p>
+  <div class="history-stage-grid">
+    <div class="history-stage">
+      <h4>A. Startup / Forced Pass</h4>
+      <p class="stage-sub">No history has been written yet. The map exists, but raw and pending are both empty. This stage happens once during initialization when <code>updateInfluenceMaps(true)</code> forces all influence updates before normal gameplay starts.</p>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">pending</div>
+        <table class="mini-grid">
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty">0</td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </table>
+      </div>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">raw</div>
+        <table class="mini-grid">
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty">0</td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </table>
+      </div>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">kernel</div>
+        <table class="mini-grid">
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty">0</td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </table>
+      </div>
+      <p class="center-note">Center: none. Kernel, quad, and center are all empty because raw is still zero.</p>
+    </div>
+
+    <div class="history-stage">
+      <h4>B. First Event Buffered</h4>
+      <p class="stage-sub">Call <code>update(A, 4)</code>. History writes to <code>pending</code>, not to raw. This stage can happen at any moment between scheduled history updates, whenever gameplay emits a collect or attack event.</p>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">pending</div>
+        <table class="mini-grid">
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="pending-hot">4</td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </table>
+      </div>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">raw</div>
+        <table class="mini-grid">
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty">0</td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </table>
+      </div>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">kernel</div>
+        <table class="mini-grid">
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty">0</td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </table>
+      </div>
+      <p class="center-note">Center: still none. Fresh pending data is buffered, but raw is unchanged so kernel and center still see the old state.</p>
+    </div>
+
+    <div class="history-stage">
+      <h4>C. First Merge Pass</h4>
+      <p class="stage-sub">Scheduled history update runs <code>reset()</code>: <code>0 * 0.5 + 4 = 4</code>. Pending is consumed into raw. In the default scheduler this happens once per second, on frame slot 3 of the 30-frame period, when <code>INFLUENCE_OTHER</code> fires.</p>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">pending</div>
+        <table class="mini-grid">
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty">0</td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </table>
+      </div>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">raw</div>
+        <table class="mini-grid">
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="raw-hot">4</td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </table>
+      </div>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">kernel</div>
+        <table class="mini-grid">
+          <tr><td class="k-mid">2.0</td><td class="k-midhigh">2.7</td><td class="k-mid">2.0</td></tr>
+          <tr><td class="k-midhigh">2.7</td><td class="k-high">4.0</td><td class="k-midhigh">2.7</td></tr>
+          <tr><td class="k-mid">2.0</td><td class="k-midhigh">2.7</td><td class="k-mid">2.0</td></tr>
+        </table>
+      </div>
+      <p class="center-note">Center: kernel/quad/center are marked dirty by the merge. Raw is already updated, but kernel still needs the follow-up rebuild step to become visible.</p>
+    </div>
+
+    <div class="history-stage">
+      <h4>D. Kernel Rebuilt After First Merge</h4>
+      <p class="stage-sub"><code>finalize()</code> calls <code>updateFromTemp()</code>, which rebuilds kernel immediately from the new raw value <code>4</code>. This happens in the same history-update call, right after the merge pass above.</p>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">pending</div>
+        <table class="mini-grid">
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty">0</td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </table>
+      </div>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">raw</div>
+        <table class="mini-grid">
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="raw-hot">4</td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </table>
+      </div>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">kernel</div>
+        <table class="mini-grid">
+          <tr><td class="k-mid">2.0</td><td class="k-midhigh">2.7</td><td class="k-mid">2.0</td></tr>
+          <tr><td class="k-midhigh">2.7</td><td class="k-high">4.0</td><td class="k-midhigh">2.7</td></tr>
+          <tr><td class="k-mid">2.0</td><td class="k-midhigh">2.7</td><td class="k-mid">2.0</td></tr>
+        </table>
+      </div>
+      <p class="center-note">Center: valid. Kernel is now visible immediately; quad and center rebuild lazily from the same raw state.</p>
+    </div>
+
+    <div class="history-stage">
+      <h4>E. Next Scheduled Pass, Decay Only</h4>
+      <p class="stage-sub">No new event arrives before the next scheduled history pass, so <code>reset()</code> performs pure decay: <code>4 * 0.5 + 0 = 2</code>. This is the same once-per-second history pass as stage C, just on a later second with empty pending.</p>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">pending</div>
+        <table class="mini-grid">
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty">0</td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </table>
+      </div>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">raw</div>
+        <table class="mini-grid">
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="raw-hot">2</td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </table>
+      </div>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">kernel</div>
+        <table class="mini-grid">
+          <tr><td class="k-vlow">1.0</td><td class="k-low">1.3</td><td class="k-vlow">1.0</td></tr>
+          <tr><td class="k-low">1.3</td><td class="k-mid">2.0</td><td class="k-low">1.3</td></tr>
+          <tr><td class="k-vlow">1.0</td><td class="k-low">1.3</td><td class="k-vlow">1.0</td></tr>
+        </table>
+      </div>
+      <p class="center-note">Center: still valid, but weaker. This is the pure decay-only step shown separately in the timeline.</p>
+    </div>
+
+    <div class="history-stage">
+      <h4>F. Later Event Buffered On Decayed State</h4>
+      <p class="stage-sub">A new event now arrives after decay: <code>update(A, 6)</code>. Raw stays at <code>2</code>; pending becomes <code>6</code>. Like stage B, this can happen at any time between scheduled history passes.</p>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">pending</div>
+        <table class="mini-grid">
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="pending-hot">6</td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </table>
+      </div>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">raw</div>
+        <table class="mini-grid">
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="raw-hot">2</td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </table>
+      </div>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">kernel</div>
+        <table class="mini-grid">
+          <tr><td class="k-vlow">1.0</td><td class="k-low">1.3</td><td class="k-vlow">1.0</td></tr>
+          <tr><td class="k-low">1.3</td><td class="k-mid">2.0</td><td class="k-low">1.3</td></tr>
+          <tr><td class="k-vlow">1.0</td><td class="k-low">1.3</td><td class="k-vlow">1.0</td></tr>
+        </table>
+      </div>
+      <p class="center-note">Center: still the decayed hotspot. Pending has changed again, but visible history is still driven by raw until the next merge.</p>
+    </div>
+
+    <div class="history-stage">
+      <h4>G. Merge After Later Event</h4>
+      <p class="stage-sub">The following history pass merges the fresh event with decay: <code>2 * 0.5 + 6 = 7</code>. This is again the once-per-second <code>updateWithHistory()</code> pass, now operating on non-zero pending after a decayed raw state.</p>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">pending</div>
+        <table class="mini-grid">
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty">0</td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </table>
+      </div>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">raw</div>
+        <table class="mini-grid">
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="raw-hot">7</td><td class="empty"></td></tr>
+          <tr><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </table>
+      </div>
+      <div class="mini-grid-wrap">
+        <div class="mini-grid-label">kernel</div>
+        <table class="mini-grid">
+          <tr><td class="k-high">3.5</td><td class="k-max">4.7</td><td class="k-high">3.5</td></tr>
+          <tr><td class="k-max">4.7</td><td class="k-max">7.0</td><td class="k-max">4.7</td></tr>
+          <tr><td class="k-high">3.5</td><td class="k-max">4.7</td><td class="k-high">3.5</td></tr>
+        </table>
+      </div>
+      <p class="center-note">Center: valid again and stronger. Fresh history now dominates the old decayed signal.</p>
+    </div>
+  </div>
+  <div class="history-legend">
+    <span><span class="swatch" style="background:#1B5E20"></span><code>raw</code> merged history</span>
+    <span><span class="swatch" style="background:#8E24AA"></span><code>pending</code> buffered history</span>
+    <span><span class="swatch" style="background:#1565C0"></span><span class="swatch" style="background:#00ACC1"></span><span class="swatch" style="background:#43A047"></span><span class="swatch" style="background:#FDD835"></span><span class="swatch" style="background:#FB8C00"></span><span class="swatch" style="background:#E53935"></span>kernel magnitude low -> high</span>
+  </div>
+  <table class="spec">
+    <tr>
+      <th>Stage</th>
+      <th>raw cell A</th>
+      <th>pending cell A</th>
+      <th>What kernel / quad / center see</th>
+    </tr>
+    <tr><td>constructed or forced startup pass with no events</td><td>0</td><td>0</td><td>all zero, no center</td></tr>
+    <tr><td>after first <code>update(A, 4)</code></td><td>0</td><td>4</td><td>still old raw state, still no center</td></tr>
+    <tr><td>after first <code>reset()</code>, before visible kernel use</td><td>4</td><td>0</td><td>raw already changed; caches are dirty and will rebuild on access</td></tr>
+    <tr><td>after first <code>finalize()</code> / kernel rebuild</td><td>4</td><td>0</td><td>kernel becomes non-zero, center can rebuild from the same raw</td></tr>
+    <tr><td>after next scheduled pass with no event</td><td>2</td><td>0</td><td>same hotspot, but weaker because this pass is pure decay</td></tr>
+    <tr><td>after later <code>update(A, 6)</code>, before its merge</td><td>2</td><td>6</td><td>still the old decayed hotspot, because pending is not visible yet</td></tr>
+    <tr><td>after the next <code>reset()</code> after that later event</td><td>7</td><td>0</td><td>decayed old value plus fresh event, stronger hotspot again</td></tr>
+  </table>
+  <table class="spec">
+    <tr>
+      <th>History step</th>
+      <th>Where it runs</th>
+      <th>How often</th>
+      <th>When in the tick flow</th>
+    </tr>
+    <tr>
+      <td>event buffered into <code>pending</code></td>
+      <td>gameplay code calling <code>addCollect()</code> or <code>addAttack()</code></td>
+      <td>whenever the underlying gameplay event happens</td>
+      <td>during simulation actions and state execution, before the next scheduled influence-history pass</td>
+    </tr>
+    <tr>
+      <td><code>reset()</code> merge / decay</td>
+      <td><code>InfluenceManager::updateWithHistory()</code></td>
+      <td>once every second on frame slot 3 of the 30-frame period</td>
+      <td>inside <code>Simulation::updateInfluenceMaps()</code>, during the <code>INFLUENCE_OTHER</code> branch after <code>updateBuildings()</code></td>
+    </tr>
+    <tr>
+      <td><code>finalize()</code> / kernel rebuild</td>
+      <td><code>InfluenceManager::updateWithHistory()</code></td>
+      <td>same moment as the merge / decay pass</td>
+      <td>immediately after <code>reset()</code> in the same history-update call</td>
+    </tr>
+    <tr>
+      <td>threshold cleanup via <code>resetToZero()</code></td>
+      <td><code>InfluenceManager::resetHistoryThresholds()</code></td>
+      <td>once every second on frame slot 3 of the 30-frame period</td>
+      <td>later in <code>Simulation::updateInfluenceMaps()</code> as the separate <code>INFLUENCE_HISTORY_RESET</code> action</td>
+    </tr>
+    <tr>
+      <td>forced startup history pass</td>
+      <td><code>Main.cpp -> simulation->updateInfluenceMaps(true)</code></td>
+      <td>once during initialization</td>
+      <td>after scene init, before the game enters normal running state</td>
+    </tr>
+  </table>
+  <h4>When And How Often</h4>
+  <ul>
+    <li><strong>Buffered event writes:</strong> irregular. They happen whenever gameplay causes collection or attack history to be recorded.</li>
+    <li><strong>Merge/decay pass:</strong> regular. It runs once per second in the default 30-FPS simulation schedule.</li>
+    <li><strong>Kernel rebuild after merge:</strong> immediate relative to the merge pass. It happens in the same scheduled history update via <code>finalize()</code>.</li>
+    <li><strong>Threshold cleanup:</strong> also regular. It is scheduled once per second as a separate history-reset action.</li>
+    <li><strong>Startup forced pass:</strong> one-shot. It runs before the first normal game tick so the map system starts from a known state.</li>
+  </ul>
+  <table class="spec">
+    <tr>
+      <th>Operation</th>
+      <th>Writes to</th>
+      <th>Immediate visible effect</th>
+      <th>Why</th>
+    </tr>
+    <tr>
+      <td><code>update(index, value)</code> on a history map</td>
+      <td><code>pendingValues[index]</code></td>
+      <td>none yet in kernel / quad / center</td>
+      <td>fresh events are buffered first</td>
+    </tr>
+    <tr>
+      <td><code>reset()</code></td>
+      <td><code>rawValues[index] = raw * vanishCoef + pending</code></td>
+      <td>kernel / quad / center become stale and must rebuild on demand</td>
+      <td>merge and decay happen together</td>
+    </tr>
+    <tr>
+      <td><code>updateFromTemp()</code></td>
+      <td>no direct write to raw</td>
+      <td>forces kernel rebuild only</td>
+      <td><code>finalize()</code> calls it so scoring sees merged history immediately</td>
+    </tr>
+    <tr>
+      <td><code>resetToZero()</code></td>
+      <td><code>rawValues</code></td>
+      <td>tiny residual history disappears next time caches are read</td>
+      <td>threshold cleanup removes values below <code>minimalThreshold</code></td>
+    </tr>
+  </table>
+  <h4>How To Read The History Schema</h4>
+  <ol>
+    <li>Stage A is the startup case: the map exists, but there is no history yet, so raw, pending, kernel, and center are all empty.</li>
+    <li>Stage B shows the key timing rule: <code>update()</code> writes into <code>pendingValues</code>, so the map has new information internally, but kernel and quad still cannot see it.</li>
+    <li>Stage C is the first merge: <code>reset()</code> moves pending into raw using <code>raw = raw * vanishCoef + pending</code>.</li>
+    <li>Stage D isolates the kernel rebuild after the first merge, because the visible kernel change is a distinct moment in the runtime sequence.</li>
+    <li>Stage E isolates the pure decay case: no new event arrives, so the existing hotspot simply fades.</li>
+    <li>Stages F and G then show the same buffering-and-merge sequence again, but now starting from an already decayed raw state.</li>
+  </ol>
+  <h4>Detailed Runtime Timeline</h4>
+  <ol>
+    <li>A gameplay event happens. For attack history this is typically <code>addAttack()</code>; for economy history it is <code>addCollect()</code>. Those manager functions call <code>InfluenceMap::update()</code> on a history map.</li>
+    <li>Because the map owns <code>pendingValues</code>, the new value is accumulated into the pending buffer instead of raw.</li>
+    <li><code>update()</code> also marks all caches dirty: kernel, quad, center, and min/max. That is important because even though raw did not change yet, the logical state of the map has changed.</li>
+    <li>Later, on the scheduled history update, <code>InfluenceManager::updateWithHistory()</code> calls <code>reset()</code> on each history map. In the default schedule this happens once per second when the <code>INFLUENCE_OTHER</code> action fires on frame slot 3 of the 30-frame period.</li>
+    <li>That <code>reset()</code> call is the exact moment when pending is merged into raw and old raw is decayed by <code>0.5</code>.</li>
+    <li>At that exact moment raw has changed, pending has been cleared, and all caches are dirty, but kernel is not yet materialized unless someone reads it.</li>
+    <li>Immediately after that, <code>updateWithHistory()</code> calls <code>finalize()</code>, which triggers <code>updateFromTemp()</code> and therefore forces the kernel cache to rebuild immediately from the new raw state.</li>
+    <li>Quad and center still rebuild lazily, but they now rebuild from the already-merged raw history, so they can finally see the new hotspot.</li>
+    <li>If no new event happens before the next scheduled history update one second later, the exact same <code>reset()</code> call still changes the map: pending contributes <code>0</code>, so raw simply decays by half.</li>
+    <li>If a later event happens after that decay step, pending fills again, but kernel and center still show the decayed raw state until the following merge.</li>
+    <li>On a separate scheduled action in the same once-per-second slot, <code>resetHistoryThresholds()</code> calls <code>resetToZero()</code>. Any raw cell below <code>0.0001</code> is dropped to zero so stale noise does not linger forever.</li>
+  </ol>
+  <h4>What Is Visible At Each Moment</h4>
+  <table class="spec">
+    <tr>
+      <th>Moment</th>
+      <th>raw</th>
+      <th>pending</th>
+      <th>kernel query</th>
+      <th>center query</th>
+    </tr>
+    <tr>
+      <td>just after startup, before any events</td>
+      <td>0</td>
+      <td>0</td>
+      <td>zero everywhere</td>
+      <td>no center</td>
+    </tr>
+    <tr>
+      <td>after one or more event writes, before the scheduled merge</td>
+      <td>old value</td>
+      <td>new accumulated history</td>
+      <td>still based on old raw</td>
+      <td>still based on old raw</td>
+    </tr>
+    <tr>
+      <td>right after <code>reset()</code> and <code>finalize()</code></td>
+      <td>decayed old raw + fresh pending</td>
+      <td>0</td>
+      <td>updated immediately</td>
+      <td>updated on next center access</td>
+    </tr>
+    <tr>
+      <td>after <code>reset()</code> but before kernel rebuild</td>
+      <td>already merged and decayed</td>
+      <td>0</td>
+      <td>still old visible kernel until rebuilt</td>
+      <td>still old visible center until rebuilt</td>
+    </tr>
+    <tr>
+      <td>after a later reset with no new pending</td>
+      <td>old raw * 0.5</td>
+      <td>0</td>
+      <td>weaker but still based on raw</td>
+      <td>same center if still positive, but weaker mass</td>
+    </tr>
+    <tr>
+      <td>after a later fresh event but before its merge</td>
+      <td>decayed raw from the last pass</td>
+      <td>new buffered value</td>
+      <td>still based on the decayed raw</td>
+      <td>still based on the decayed raw</td>
+    </tr>
+    <tr>
+      <td>after threshold cleanup</td>
+      <td>very small cells clamped to 0</td>
+      <td>unchanged</td>
+      <td>rebuilt from cleaned raw on demand</td>
+      <td>rebuilt from cleaned raw on demand</td>
+    </tr>
+  </table>
+  <p><strong>Important distinction:</strong> <code>finalize()</code> does not merge pending into raw. The merge is done by <code>reset()</code>. <code>finalize()</code> only ensures the kernel cache is rebuilt from whatever raw now contains.</p>
+  <p><strong>Example takeaway:</strong> history maps warm up one merge later, then continue through a repeating cycle: buffer fresh events, merge them into raw, rebuild visible kernel from raw, decay when no events happen, buffer again, merge again. At every point, kernel/quad/center are driven by raw, not by pending.</p>
+</div>
+
+<div class="card">
+  <h3>Why Raw, Kernel, and Quad All Exist</h3>
+  <p><span class="tag raw">raw</span> keeps the exact counts and exact event locations. This is what special placement APIs such as <code>getAreasResBonus()</code> use, and it is also what the center-finding pyramid is built from.</p>
+  <p><span class="tag kernel">kernel</span> spreads local signal into neighboring cells, which makes AI placement and target choice less brittle than picking only exact occupied cells.</p>
+  <p><span class="tag center">quad + center</span> builds a coarse-to-fine sum pyramid from the raw layer, starts center search from the smallest stored quad layer, refines that choice through higher-resolution layers, and finally returns the winning raw cell's world-space center. The current implementation does <strong>not</strong> use the kernel layer for center selection.</p>
+  <p><span class="tag history">pending</span> exists only on history maps. It is a transient write buffer for fresh collect and attack events. Until <code>reset()</code> merges it into raw, the kernel, quad, and center caches still reflect the previous raw state.</p>
+  <p class="small-note">That last point matters: a recent cluster of activity can influence placement through the kernel, while <code>getCenter()</code> still points at the strongest raw cell inside the dominant raw cluster.</p>
+  <h4>Influence update cadence in the main loop</h4>
+  <table class="spec">
+    <tr>
+      <th>Stage</th>
+      <th>Function</th>
+      <th>Effect</th>
+    </tr>
+    <tr>
+      <td>unit influence update</td>
+      <td><code>Environment::updateInfluenceUnits()</code></td>
+      <td>rebuilds <code>unitsInfluencePerPlayer</code>, <code>armyInfluence</code>, <code>resNotInBonus[4]</code>, and <code>resNotInBonusAny</code></td>
+    </tr>
+    <tr>
+      <td>other influence update</td>
+      <td><code>Environment::updateInfluenceBuildings()</code></td>
+      <td>rebuilds <code>buildingsInfluencePerPlayer</code>, then calls <code>updateWithHistory()</code> to decay and merge <code>gatherSpeed[4]</code> and <code>attackSpeed</code></td>
+    </tr>
+    <tr>
+      <td>history threshold cleanup</td>
+      <td><code>Environment::updateInfluenceHistoryReset()</code></td>
+      <td>drops tiny residual values from <code>gatherSpeed[4]</code> and <code>attackSpeed</code></td>
+    </tr>
+    <tr>
+      <td>economy reset</td>
+      <td><code>Environment::updateQuadOther()</code></td>
+      <td>clears <code>economyInfluence</code>; this map accumulates recent collection activity between these resets</td>
+    </tr>
+    <tr>
+      <td>visibility update</td>
+      <td><code>Environment::updateVisibility()</code></td>
+      <td>rebuilds per-player visibility state and the downsampled visibility mask used by area selection</td>
+    </tr>
+  </table>
+  <p><strong>Important:</strong> history maps are the only ones with a pending buffer. Snapshot maps are fully recomputed from current world state; event accumulators such as <code>economyInfluence</code> are written directly and then cleared later.</p>
+</div>
+
+<div class="formula-box">
+  <div class="label">How a weight turns one map into AI error</div>
+  <pre>if weight &gt; 0:
+    error += (((max - value) / (max - min)) * weight) ^ 2
+
+if weight &lt; 0:
+    error += (((value - min) / (max - min)) * weight) ^ 2
+
+if weight == 0 or max == min:
+    this map contributes nothing</pre>
+</div>
+
+<div class="card">
+  <h3>Interpretation of Weight Sign and Magnitude</h3>
+  <ul>
+    <li>Positive weight means <strong>seek high values</strong> in that map.</li>
+    <li>Negative weight means <strong>seek low values</strong> in that map.</li>
+    <li>Larger absolute value means the map matters more because the squared error gets larger.</li>
+    <li>Uniform maps are ignored entirely because <code>max == min</code> and they cannot help discriminate between cells.</li>
+    <li>After visibility masking and error accumulation, the manager keeps only cells whose error is below <code>10 * numberOfNonUniformMaps</code>, sorts them best-first, and caps the result count at <code>arraySize / 8</code>.</li>
+  </ul>
+</div>
+
+<hr class="divider">
+<div class="section-title" id="inventory">3. Map Inventory</div>
+<div class="section-sub">This section describes every concrete map family created by <code>InfluenceManager</code>, not just the AI-facing aliases.</div>
+
+<div class="card">
+  <h3><code>buildingsInfluencePerPlayer</code></h3>
+  <div><span class="tag snapshot">snapshot</span><span class="tag kernel">kernel-consumed</span><span class="tag center">BUILDING center</span></div>
+  <p>Raw meaning: number of buildings owned by that player in each influence cell. Updated by <code>updateBuildings()</code> after a full reset.</p>
+  <p>Kernel meaning: blurred building presence. This is what the build and attack spatial brains actually score.</p>
+  <p>Center meaning: <code>CenterType::BUILDING</code> resolves to this map's raw hotspot, not the kernel hotspot.</p>
+  <p>AI consumption:</p>
+  <ul>
+    <li>Build spatial slot 0 = our buildings, slot 7 = enemy buildings.</li>
+    <li>Attack spatial slot 0 = our buildings, slot 3 = enemy buildings.</li>
+  </ul>
+  <p>Typical use: positive for placing support buildings near an existing base; negative for expanding away from a crowded footprint; positive on the enemy view for aggressive forward placement or target bias.</p>
+</div>
+
+<div class="card">
+  <h3><code>unitsInfluencePerPlayer</code></h3>
+  <div><span class="tag snapshot">snapshot</span><span class="tag kernel">kernel-consumed</span></div>
+  <p>Raw meaning: number of all units in each cell, workers included. Updated by <code>updateUnits()</code> after a full reset.</p>
+  <p>Kernel meaning: general unit density around each cell.</p>
+  <p>AI consumption:</p>
+  <ul>
+    <li>Build spatial slot 1 = our units, slot 8 = enemy units.</li>
+    <li>Attack spatial slot 1 = our units, slot 4 = enemy units.</li>
+  </ul>
+  <p>Typical use: positive on our map keeps production and defense near population; positive on the enemy map pulls attacks toward likely contact zones; negative can search for open space.</p>
+  <p class="small-note">Debug mode <code>UNITS_NUMBER_PER_PLAYER</code> shows the raw map, while <code>UNITS_INFLUENCE_PER_PLAYER</code> shows the kernel-smoothed version.</p>
+</div>
+
+<div class="card">
+  <h3><code>armyInfluence</code></h3>
+  <div><span class="tag snapshot">snapshot</span><span class="tag raw">raw-centered</span><span class="tag center">ARMY center</span></div>
+  <p>Raw meaning: number of <strong>non-worker</strong> units in each cell. It is updated inside <code>updateUnits()</code> and ignores workers.</p>
+  <p>This family is not part of the 12-slot build schema or the 6-slot attack schema. Its main job is providing a stable army center for higher-level distance metrics and military planning.</p>
+  <p>Primary consumers:</p>
+  <ul>
+    <li><code>CenterType::ARMY</code></li>
+    <li>distance inputs in <code>MasterBrain</code> and <code>MilitaryBrain</code></li>
+    <li>debug view <code>ARMY_QUAD</code> (raw)</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3><code>gatherSpeed[FOOD, WOOD, STONE, GOLD]</code></h3>
+  <div><span class="tag history">buffered history</span><span class="tag kernel">kernel-consumed</span></div>
+  <p>Raw meaning: decayed recent collection intensity for one resource type. Updates arrive through <code>addCollect()</code>, which writes to <code>pendingValues</code> at the worker's influence cell.</p>
+  <p>On <code>updateWithHistory()</code>, each cell performs <code>raw = raw * 0.5 + pending</code>; then pending is cleared and the kernel cache is rebuilt lazily.</p>
+  <p>Threshold cleanup later removes raw values below <code>0.0001</code> so old collection trails disappear completely.</p>
+  <p>AI consumption:</p>
+  <ul>
+    <li>Build spatial slots 3, 4, 5, 6 map to food, wood, stone, gold respectively.</li>
+  </ul>
+  <p>Typical use: positive means "place near active gathering for that resource"; negative means "avoid the currently busy gather lanes".</p>
+</div>
+
+<div class="card">
+  <h3><code>attackSpeed</code></h3>
+  <div><span class="tag history">buffered history</span><span class="tag kernel">kernel-consumed</span><span class="tag center">BATTLE center</span></div>
+  <p>Raw meaning: decayed recent combat activity for a player. Updates arrive through <code>addAttack()</code>, which is called by attack and projectile code paths.</p>
+  <p>Like gather maps, it uses <code>pendingValues</code>, <code>vanishCoef = 0.5</code>, and threshold pruning. This makes it a battle heatmap, not a direct unit count.</p>
+  <p>AI consumption:</p>
+  <ul>
+    <li>Build spatial slot 2 = our attack history, slot 9 = enemy attack history.</li>
+    <li>Attack spatial slot 2 = our attack history, slot 5 = enemy attack history.</li>
+    <li><code>CenterType::BATTLE</code> resolves to this map for the current player.</li>
+  </ul>
+  <p class="small-note">The code comment is accurate: <code>BATTLE</code> is only an alias to the player's <code>attackSpeed</code> map. It is not a shared cross-player battle center.</p>
+</div>
+
+<div class="card">
+  <h3><code>economyInfluence</code></h3>
+  <div><span class="tag special">event accumulator</span><span class="tag center">ECON center</span></div>
+  <p>Raw meaning: recent collection activity written directly by <code>addCollect()</code> at the worker's cell. Unlike gather maps, this family has no pending buffer and no decay coefficient.</p>
+  <p>Instead, it accumulates until <code>updateQuadOther()</code> resets it. In practice this makes it a short-window "where collection recently happened" map.</p>
+  <p>AI consumption:</p>
+  <ul>
+    <li>Build spatial slot 11.</li>
+    <li><code>CenterType::ECON</code>.</li>
+    <li>debug mode <code>ECON_QUAD</code> (raw).</li>
+  </ul>
+  <p>Typical use: positive weight attracts storage, refine, or defense toward the current economy core; negative weight pushes buildings away from the economy if the placement class wants empty space.</p>
+</div>
+
+<div class="card">
+  <h3><code>resNotInBonus[RESOURCE]</code></h3>
+  <div><span class="tag snapshot">snapshot</span><span class="tag raw">raw maxima API</span><span class="tag special">special placement</span></div>
+  <p>Raw meaning in the current implementation: resource nodes currently being worked by this player's workers, for one specific resource type.</p>
+  <p>How it is built: during <code>updateUnits()</code>, if a worker is in <code>COLLECT</code> state and still has a live target, the code marks the resource entity's own influence index. So the peaks are on the resource cells, not on the worker cells.</p>
+  <p class="small-note">Important naming note: despite the member name, this map does <strong>not</strong> currently check whether the resource has a bonus. It records active collection at resource nodes. The "without bonus" concept does exist elsewhere in the codebase, for example in <code>Possession::ensureResWithoutBonus()</code>, but that check is not used when filling this map family.</p>
+  <p>Primary consumer: <code>getAreasResBonus(resourceId, player)</code>, which returns <code>getRawMaxIdxs()</code> from this map. That means the special path deliberately uses the exact raw peaks rather than the kernel-smoothed field.</p>
+  <p class="small-note">There is an <code>Environment::getPosToCreateResBonus()</code> helper for this path, but the current generic build flow uses the 12-weight build-spatial output instead of calling that helper directly.</p>
+</div>
+
+<div class="card">
+  <h3><code>resNotInBonusAny</code></h3>
+  <div><span class="tag snapshot">snapshot</span><span class="tag special">build-spatial only</span></div>
+  <p>Raw meaning: the union of all four <code>resNotInBonus[RESOURCE]</code> families. If any worker is collecting from any resource node, this map gets a mark at that resource's influence cell.</p>
+  <p>This family exists because the build-spatial brain only has one general slot for this resource-activity signal rather than four separate slots.</p>
+  <p>AI consumption:</p>
+  <ul>
+    <li>Build spatial slot 10 only.</li>
+  </ul>
+  <p>Typical use: positive weight is a broad "place my resource-support building near current resource activity" signal, independent of resource type.</p>
+</div>
+
+<div class="card">
+  <h3><code>VisibilityMap</code></h3>
+  <div><span class="tag visibility">visibility</span><span class="tag special">selection mask</span></div>
+  <p>Resolution is double the influence-grid resolution. Every unit and building contributes its sight radius through <code>update(position, sightRadius)</code>. After all updates, <code>finish()</code> expands those radii into per-cell visibility states.</p>
+  <p>Cell states are:</p>
+  <ul>
+    <li><code>NONE = 0</code> - never seen / currently hidden</li>
+    <li><code>SEEN = 1</code> - explored before, not currently visible</li>
+    <li><code>VISIBLE = 3</code> - currently visible</li>
+  </ul>
+  <p><code>reset()</code> demotes <code>VISIBLE</code> to <code>SEEN</code> by applying a bit-mask; it does not wipe exploration history. For influence selection, the map downsamples 2x2 visibility cells into one influence cell, and only <code>VISIBLE</code> counts.</p>
+  <p>Main consumers:</p>
+  <ul>
+    <li><code>removeUnseen()</code> seeds the error array for <code>getAreas()</code> and <code>getBestVisibleAreas()</code></li>
+    <li><code>getVisibilityScore()</code> for AI metrics</li>
+    <li>runtime hide/show of units, buildings, and resources</li>
+  </ul>
+</div>
+
+<hr class="divider">
+<div class="section-title" id="ai-schemas">4. AI Schemas</div>
+<div class="section-sub">These are the exact ordered views exposed to the neural-network spatial brains and to center lookups.</div>
+
+<table class="spec">
+  <tr>
+    <th colspan="5">BuildSpatialOutput - 12 weight schema</th>
+  </tr>
+  <tr>
+    <th>Index</th>
+    <th>Enum</th>
+    <th>Underlying map</th>
+    <th>Positive weight means</th>
+    <th>Negative weight means</th>
+  </tr>
+  <tr><td>0</td><td><code>W_BUILDINGS_INFLUENCE</code></td><td>our <code>buildingsInfluencePerPlayer</code></td><td>seek our building clusters</td><td>avoid our building clusters</td></tr>
+  <tr><td>1</td><td><code>W_UNITS_INFLUENCE</code></td><td>our <code>unitsInfluencePerPlayer</code></td><td>seek our unit density</td><td>avoid our unit density</td></tr>
+  <tr><td>2</td><td><code>W_ATTACK_SPEED</code></td><td>our <code>attackSpeed</code></td><td>seek our recent battles</td><td>avoid our recent battles</td></tr>
+  <tr><td>3</td><td><code>W_GATHER_FOOD</code></td><td>our <code>gatherSpeed[FOOD]</code></td><td>seek active food lanes</td><td>avoid active food lanes</td></tr>
+  <tr><td>4</td><td><code>W_GATHER_WOOD</code></td><td>our <code>gatherSpeed[WOOD]</code></td><td>seek active wood lanes</td><td>avoid active wood lanes</td></tr>
+  <tr><td>5</td><td><code>W_GATHER_STONE</code></td><td>our <code>gatherSpeed[STONE]</code></td><td>seek active stone lanes</td><td>avoid active stone lanes</td></tr>
+  <tr><td>6</td><td><code>W_GATHER_GOLD</code></td><td>our <code>gatherSpeed[GOLD]</code></td><td>seek active gold lanes</td><td>avoid active gold lanes</td></tr>
+  <tr><td>7</td><td><code>W_ENEMY_BUILDINGS_INFLUENCE</code></td><td>enemy <code>buildingsInfluencePerPlayer</code></td><td>seek enemy structures</td><td>avoid enemy structures</td></tr>
+  <tr><td>8</td><td><code>W_ENEMY_UNITS_INFLUENCE</code></td><td>enemy <code>unitsInfluencePerPlayer</code></td><td>seek enemy presence</td><td>avoid enemy presence</td></tr>
+  <tr><td>9</td><td><code>W_ENEMY_ATTACK_SPEED</code></td><td>enemy <code>attackSpeed</code></td><td>seek enemy battle heat</td><td>avoid enemy battle heat</td></tr>
+  <tr><td>10</td><td><code>W_RES_NOT_BONUS</code></td><td>our <code>resNotInBonusAny</code></td><td>seek current resource activity</td><td>avoid current resource activity</td></tr>
+  <tr><td>11</td><td><code>W_ECONOMY</code></td><td>our <code>economyInfluence</code></td><td>seek recent economy core</td><td>avoid recent economy core</td></tr>
+</table>
+
+<table class="spec">
+  <tr>
+    <th colspan="5">AttackSpatialOutput - 6 weight schema</th>
+  </tr>
+  <tr>
+    <th>Index</th>
+    <th>Enum</th>
+    <th>Underlying map</th>
+    <th>Positive weight means</th>
+    <th>Negative weight means</th>
+  </tr>
+  <tr><td>0</td><td><code>W_BUILDINGS_INFLUENCE</code></td><td>our <code>buildingsInfluencePerPlayer</code></td><td>defend our base</td><td>move away from our base</td></tr>
+  <tr><td>1</td><td><code>W_UNITS_INFLUENCE</code></td><td>our <code>unitsInfluencePerPlayer</code></td><td>stick to our forces</td><td>spread away from our forces</td></tr>
+  <tr><td>2</td><td><code>W_ATTACK_SPEED</code></td><td>our <code>attackSpeed</code></td><td>reinforce our ongoing fights</td><td>avoid our current fights</td></tr>
+  <tr><td>3</td><td><code>W_ENEMY_BUILDINGS_INFLUENCE</code></td><td>enemy <code>buildingsInfluencePerPlayer</code></td><td>push toward enemy structures</td><td>avoid enemy structures</td></tr>
+  <tr><td>4</td><td><code>W_ENEMY_UNITS_INFLUENCE</code></td><td>enemy <code>unitsInfluencePerPlayer</code></td><td>seek enemy armies</td><td>avoid enemy armies</td></tr>
+  <tr><td>5</td><td><code>W_ENEMY_ATTACK_SPEED</code></td><td>enemy <code>attackSpeed</code></td><td>seek enemy battle hotspots</td><td>avoid enemy battle hotspots</td></tr>
+</table>
+
+<table class="spec">
+  <tr>
+    <th colspan="4">CenterType schema</th>
+  </tr>
+  <tr>
+    <th>CenterType</th>
+    <th>Map family</th>
+    <th>Meaning of the center</th>
+    <th>Typical consumers</th>
+  </tr>
+  <tr><td><code>ECON</code></td><td><code>economyInfluence</code></td><td>recent collection activity core</td><td><code>EconomyBrain</code>, deployment choice</td></tr>
+  <tr><td><code>BUILDING</code></td><td><code>buildingsInfluencePerPlayer</code></td><td>raw center of the base footprint</td><td>deployment, strategic distances, debug</td></tr>
+  <tr><td><code>ARMY</code></td><td><code>armyInfluence</code></td><td>raw center of army mass (non-workers only)</td><td><code>MasterBrain</code>, <code>MilitaryBrain</code>, army orders</td></tr>
+  <tr><td><code>BATTLE</code></td><td><code>attackSpeed</code></td><td>recent fight hotspot for that player</td><td>military movement fallback</td></tr>
+</table>
+
+<div class="card">
+  <h3>How Build Placement Uses the Ordered Candidate List</h3>
+  <p><code>WantExecutor::findPosToBuild()</code> calls the build-spatial brain, passes its 12 weights to <code>Environment::getPosToCreate()</code>, and receives an ordered list of influence cell indexes from <code>InfluenceManager::getAreas()</code>.</p>
+  <p>The environment does not place the building directly on the influence cell center. Instead it:</p>
+  <ul>
+    <li>converts each influence index to a world-space center,</li>
+    <li>searches nearby main-grid centers around that influence area,</li>
+    <li>checks <code>validateStatic()</code> for footprint fit,</li>
+    <li>checks current visibility,</li>
+    <li>returns the first valid build position.</li>
+  </ul>
+  <p>This is why influence maps choose promising areas, not exact tile placements.</p>
+</div>
+
+<div class="card">
+  <h3>How Attack Targeting Uses the Ordered Candidate List</h3>
+  <p><code>AiOrchestrator::resolveAttackPos()</code> passes the 6 attack-spatial weights to <code>Environment::getBestVisibleAreas()</code>. That returns world positions, already ordered best-first and already visibility-filtered.</p>
+  <p>The current code only uses the first candidate. If the candidate list is empty, it falls back to a higher-level center such as <code>ARMY</code>, <code>ECON</code>, <code>BUILDING</code>, or <code>BATTLE</code>.</p>
+</div>
+
+<hr class="divider">
+<div class="section-title" id="examples">5. Worked Examples</div>
+<div class="section-sub">These examples are aligned with the current implementation and test cases. The three schema cards above cover the low-level data flow; the examples below show how those mechanics change ranking and AI behavior.</div>
+
+<div class="example">
+  <h3>Example 1 - Positive and Negative Weights Combined</h3>
+  <p>This mirrors the regression test that combines "seek high buildings" with "seek low gathering". The real test map is larger than the four cells shown here, so the building map's minimum is <code>0</code> because the untouched cells are empty.</p>
+  <table class="spec">
+    <tr>
+      <th>Cell</th>
+      <th>Buildings value</th>
+      <th>Gather value</th>
+      <th>Building error with weight +0.9</th>
+      <th>Gather error with weight -0.6</th>
+      <th>Total</th>
+    </tr>
+    <tr><td>0</td><td>0.9</td><td>0.0</td><td>0.00</td><td>0.00</td><td><strong>0.00</strong></td></tr>
+    <tr><td>1</td><td>0.9</td><td>0.8</td><td>0.00</td><td>0.2844</td><td>0.2844</td></tr>
+    <tr><td>2</td><td>0.1</td><td>0.0</td><td>0.64</td><td>0.00</td><td>0.64</td></tr>
+    <tr><td>3</td><td>0.1</td><td>0.9</td><td>0.64</td><td>0.36</td><td>1.00</td></tr>
+  </table>
+  <p>Step by step:</p>
+  <ol>
+    <li>The buildings map is scored with a positive weight, so high building values get low error. Because <code>min = 0</code>, cells with building value <code>0.1</code> are penalized more than they would be in a four-cell-only toy example.</li>
+    <li>The gather map is scored with a negative weight, so high gather values get high error. Cell 1 is hurt by gather congestion even though its building support is perfect.</li>
+    <li>The two errors are added cell by cell. No map "wins" on its own; the final ranking comes from the sum.</li>
+    <li>Cell 0 wins because it has the best building value and zero gather congestion. Cell 3 loses because it is weak on the building map and crowded on the gather map at the same time.</li>
+  </ol>
+  <p class="small-note">Other untouched cells in the real test map sit at building value <code>0</code>, so their building error is <code>0.81</code>. That keeps the intentionally bad empty cells behind the shown candidates.</p>
+</div>
+
+<div class="example">
+  <h3>Example 2 - History Decay in <code>attackSpeed</code> or <code>gatherSpeed</code></h3>
+  <p>Suppose one cell currently has raw value 6 from previous fights, and this tick it receives 4 more attack value in the pending buffer.</p>
+  <table class="spec">
+    <tr>
+      <th>Before reset()</th>
+      <th>Formula</th>
+      <th>After reset()</th>
+    </tr>
+    <tr>
+      <td>raw = 6, pending = 4</td>
+      <td><code>raw = raw * 0.5 + pending</code></td>
+      <td>raw = 7</td>
+    </tr>
+  </table>
+  <p>Step by step:</p>
+  <ol>
+    <li>Before the merge, the map's visible state is still based on raw value <code>6</code>. The fresh <code>4</code> lives only in pending.</li>
+    <li>When <code>reset()</code> runs, half of the old history survives and the fresh event is added on top: <code>6 * 0.5 + 4 = 7</code>.</li>
+    <li>Kernel rebuild now uses raw value <code>7</code>, so the local history hill becomes stronger than it was one tick earlier.</li>
+    <li>If the following tick has no fresh event, the same cell decays to <code>7 * 0.5 = 3.5</code>. The hotspot fades, but it does not disappear instantly.</li>
+  </ol>
+  <p>This is exactly why attack and gather maps behave like fading heatmaps instead of permanent counters.</p>
+</div>
+
+<div class="example">
+  <h3>Example 3 - Visibility Downsample Rules</h3>
+  <p>The visibility grid is twice as fine as the influence grid. One influence cell corresponds to one 2x2 visibility block.</p>
+  <table class="spec">
+    <tr>
+      <th>2x2 visibility block</th>
+      <th>Influence cell visible?</th>
+      <th>Reason</th>
+    </tr>
+    <tr><td><code>VISIBLE, NONE, NONE, NONE</code></td><td>yes</td><td>any visible child makes the parent visible</td></tr>
+    <tr><td><code>SEEN, SEEN, SEEN, SEEN</code></td><td>no</td><td>seen-only does not count as currently visible</td></tr>
+    <tr><td><code>NONE, NONE, NONE, NONE</code></td><td>no</td><td>the parent cell is unseen and gets max-float error</td></tr>
+  </table>
+  <p>Step by step:</p>
+  <ol>
+    <li>The visibility system first decides visibility at the finer fog-of-war resolution.</li>
+    <li>Then every 2x2 visibility block is collapsed into one influence-cell visibility flag.</li>
+    <li>If any child is <code>VISIBLE</code>, the influence cell is eligible for map scoring.</li>
+    <li>If all children are only <code>SEEN</code> or <code>NONE</code>, the influence cell is treated as unavailable for current area selection.</li>
+  </ol>
+  <p>This behavior is locked down by <code>VisibilityMapTest.cpp</code>. For area selection, only current visibility matters.</p>
+</div>
+
+<div class="example">
+  <h3>Example 4 - Why <code>getCenter()</code> Can Differ from Kernel Intuition</h3>
+  <p>A test case sets raw cell 4 to 1 and raw cell 5 to 2. <code>getCenter()</code> returns the world center of cell 5.</p>
+  <p>Step by step:</p>
+  <ol>
+    <li>The quad pyramid sums raw mass into larger and larger blocks, so the search begins with regional dominance rather than exact-cell dominance.</li>
+    <li>Once the best cell on the smallest stored quad layer is known, the search refines that choice into the corresponding child block on the next higher-resolution layer.</li>
+    <li>At the last step, only the final four raw candidates are compared directly, and raw cell <code>5</code> wins because its raw value is larger than raw cell <code>4</code>.</li>
+    <li>Even if kernel smoothing would make neighboring cells look equally attractive, the returned center is still anchored to the strongest raw winner.</li>
+  </ol>
+</div>
+
+<div class="example">
+  <h3>Example 5 - Specialized Bonus Placement vs Generic Build Spatial</h3>
+  <p>If three workers collect wood from three separate trees, <code>resNotInBonus[WOOD]</code> gets three raw peaks on those resource cells.</p>
+  <p>Step by step:</p>
+  <ol>
+    <li>During <code>updateUnits()</code>, each collecting worker marks the resource entity's influence index, not the worker's own current position.</li>
+    <li>The specialized helper <code>getAreasResBonus(WOOD)</code> reads the raw peaks directly, so it answers a very narrow question: "where are active wood collection nodes right now?"</li>
+    <li>The generic build-spatial path uses the broader <code>resNotInBonusAny</code> map, but combines it with 11 other weighted maps.</li>
+    <li>That broader path can choose to sacrifice the strongest resource-activity hotspot if economy, danger, congestion, or enemy pressure make another visible area a better overall build location.</li>
+  </ol>
+</div>
+
+<div class="example">
+  <h3>Example 6 - Startup History Map With Fresh Pending Data</h3>
+  <p>This is the exact case that often feels surprising when reading the code for the first time.</p>
+  <table class="spec">
+    <tr>
+      <th>Moment</th>
+      <th>raw</th>
+      <th>pending</th>
+      <th>What <code>getKernel()</code> sees</th>
+      <th>What <code>getCenter()</code> sees</th>
+    </tr>
+    <tr><td>after construction / forced startup update, no events yet</td><td>0</td><td>0</td><td>all zeros</td><td>no center</td></tr>
+    <tr><td>after first <code>addAttack()</code> or <code>addCollect()</code></td><td>0</td><td>non-zero</td><td>still all zeros</td><td>still no center</td></tr>
+    <tr><td>after the next history <code>reset()</code></td><td>non-zero</td><td>0</td><td>non-zero kernel hill</td><td>valid center</td></tr>
+  </table>
+  <p>Step by step:</p>
+  <ol>
+    <li>The forced startup influence pass does run, but it only merges whatever is already in pending. At true startup that is nothing, so raw stays zero.</li>
+    <li>The first real collect or attack event writes into pending only.</li>
+    <li>If some AI query asks for kernel or center before the next history merge, it still reads the old raw state, which is empty.</li>
+    <li>After the next scheduled merge, the map becomes "live" for kernel scoring, quad search, and center lookup.</li>
+  </ol>
+</div>
+
+<hr class="divider">
+<div class="section-title" id="debug">6. Debug Views and Gotchas</div>
+<div class="section-sub">Names in the UI and names in the implementation are not always the same thing.</div>
+
+<table class="spec">
+  <tr>
+    <th colspan="4">InfluenceDataType debug mapping</th>
+  </tr>
+  <tr>
+    <th>Debug enum</th>
+    <th>Draws</th>
+    <th>Layer shown</th>
+    <th>Notes</th>
+  </tr>
+  <tr><td><code>UNITS_NUMBER_PER_PLAYER</code></td><td><code>unitsInfluencePerPlayer</code></td><td>raw</td><td>exact per-cell unit count</td></tr>
+  <tr><td><code>UNITS_INFLUENCE_PER_PLAYER</code></td><td><code>unitsInfluencePerPlayer</code></td><td>kernel</td><td>smoothed density</td></tr>
+  <tr><td><code>BUILDING_INFLUENCE_PER_PLAYER</code></td><td><code>buildingsInfluencePerPlayer</code></td><td>kernel</td><td>smoothed building presence</td></tr>
+  <tr><td><code>FOOD_SPEED</code></td><td><code>gatherSpeed[FOOD]</code></td><td>kernel</td><td>decayed recent food collection</td></tr>
+  <tr><td><code>WOOD_SPEED</code></td><td><code>gatherSpeed[WOOD]</code></td><td>kernel</td><td>decayed recent wood collection</td></tr>
+  <tr><td><code>STONE_SPEED</code></td><td><code>gatherSpeed[STONE]</code></td><td>kernel</td><td>decayed recent stone collection</td></tr>
+  <tr><td><code>GOLD_SPEED</code></td><td><code>gatherSpeed[GOLD]</code></td><td>kernel</td><td>decayed recent gold collection</td></tr>
+  <tr><td><code>ATTACK_SPEED</code></td><td><code>attackSpeed</code></td><td>kernel</td><td>recent combat heat</td></tr>
+  <tr><td><code>ECON_QUAD</code></td><td><code>economyInfluence</code></td><td>raw</td><td>recent collection activity accumulator</td></tr>
+  <tr><td><code>BUILDINGS_QUAD</code></td><td><code>buildingsInfluencePerPlayer</code></td><td>raw</td><td>exact building occupancy, not the kernel</td></tr>
+  <tr><td><code>ARMY_QUAD</code></td><td><code>armyInfluence</code></td><td>raw</td><td>non-worker army mass</td></tr>
+  <tr><td><code>VISIBILITY</code></td><td><code>VisibilityMap</code></td><td>state grid</td><td>NONE / SEEN / VISIBLE</td></tr>
+</table>
+
+<div class="card">
+  <h3>Common Gotchas</h3>
+  <ul>
+    <li><strong><code>valueThresholdDebug</code> is only for rendering.</strong> The thresholds like 2, 5, and 40 do not change simulation logic.</li>
+    <li><strong><code>BATTLE</code> is a per-player battle-history alias.</strong> It is not a shared global battlefield center.</li>
+    <li><strong>Uniform maps do not help placement.</strong> If every cell in a map has the same kernel value, <code>cumulateErrors()</code> returns false and that map contributes nothing.</li>
+    <li><strong>Visibility filtering happens before map scoring.</strong> Unseen cells start with huge error, so even a perfect influence score elsewhere cannot normally beat them.</li>
+    <li><strong><code>getRawMaxIdxs()</code> and <code>getKernelMaxIdxs()</code> are top-10 helpers.</strong> They sort descending and return nothing if the maximum value is not above 0.5.</li>
+    <li><strong>Center queries use raw data.</strong> If you expect the center of a blurred region, that is not what <code>getCenter()</code> currently computes.</li>
+    <li><strong>Generic building placement and specialized bonus placement are separate paths.</strong> The generic path uses the 12-weight view; the special path uses raw maxima from <code>resNotInBonus[RESOURCE]</code>.</li>
+  </ul>
+  <h4>Source files behind this page</h4>
+  <ul>
+    <li><code>game/src/env/influence/InfluenceManager.h</code> and <code>.cpp</code></li>
+    <li><code>game/src/env/influence/map/InfluenceMap.h</code>, <code>.cpp</code>, and <code>InfluenceMapDebug.cpp</code></li>
+    <li><code>game/src/env/influence/map/VisibilityMap.h</code> and <code>.cpp</code></li>
+    <li><code>game/src/env/influence/VisibilityManager.h</code> and <code>.cpp</code></li>
+    <li><code>game/src/player/ai/BuildSpatialBrain.h</code> and <code>.cpp</code></li>
+    <li><code>game/src/player/ai/AttackSpatialBrain.h</code> and <code>.cpp</code></li>
+    <li><code>tests/InfluenceMapTest.cpp</code> and <code>tests/VisibilityMapTest.cpp</code></li>
+  </ul>
+</div>
+
+</body>
+</html>
