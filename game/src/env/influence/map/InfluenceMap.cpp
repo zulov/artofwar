@@ -37,7 +37,6 @@ InfluenceMap::InfluenceMap(unsigned short resolution, float size, float coef, ch
 		quadArraySize += i * i;
 	}
 	quadValues = new float[quadArraySize];
-	std::fill_n(quadValues, quadArraySize, 0.f);
 	float* ptr = quadValues;
 	for (int i = currentRes; i < resolution; i *= 2) {
 		const auto size1 = i * i;
@@ -130,7 +129,6 @@ void InfluenceMap::reset() {
 		std::fill_n(pendingValues, arraySize, 0.f);
 	}
 	std::fill_n(kernelValues, arraySize, 0.f);
-	std::fill_n(quadValues, quadArraySize, 0.f);
 	valuesCalculateNeeded = false;
 	center.reset();
 	centerDirty = false;
@@ -297,7 +295,6 @@ void InfluenceMap::ensureCenter() const {
 }
 
 void InfluenceMap::rebuildQuad() const {
-	std::fill_n(quadValues, quadArraySize, 0.f);
 	std::span<const float> parent(rawValues, arraySize);
 	unsigned short parentRes = calculator->getResolution();
 	for (int i = static_cast<int>(quadLayers.size()) - 1; i >= 0; --i) {

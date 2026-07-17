@@ -512,3 +512,15 @@ TEST(InfluenceMapRegression, GetCenterUsesRawTerminalLayer) {
 	GridCalculator calculator(4, 8.f);
 	EXPECT_EQ(*center, calculator.getCenter(5));
 }
+
+TEST(InfluenceMapRegression, GetCenterRebuildsQuadAfterReset) {
+	TestableInfluenceMap map(4, 8.f, 1.f, 1);
+	GridCalculator calculator(4, 8.f);
+
+	map.update(0, 1.f);
+	ASSERT_EQ(map.getCenter(), calculator.getCenter(0));
+
+	map.reset();
+	map.update(15, 1.f);
+	EXPECT_EQ(map.getCenter(), calculator.getCenter(15));
+}
