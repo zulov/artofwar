@@ -650,9 +650,9 @@
 <h3>Decision Flow (order())</h3>
 <ul>
   <li><span class="step">1. Snapshot centers:</span> influence-map centers of mass for the 7 center types (own + enemy army/econ/building + last battle).</li>
-  <li><span class="step">2. Per-unit target:</span> MilitaryCommandCalculator scores each unit's position against the center-pair pressures and picks the highest-pressure target (attack/defend/move-to-center). Units below MIN_ARMY_ORDER_PRESSURE (0.1) hold.</li>
+  <li><span class="step">2. Per-unit target:</span> MilitaryCommandCalculator weights each directional center-pair pressure by the unit's proximity to that pressure's source center, normalizes the accumulated target scores to [0, 1], then picks the highest-pressure target (attack/defend/move-to-center). Target-center distance does not reduce the score. Units below MIN_ARMY_ORDER_PRESSURE (0.1), including units beyond every source radius, hold.</li>
   <li><span class="step">3. Position:</span> each non-empty bucket moves directly to its MilitaryBrain-selected influence-map center. Fog of war is currently ignored for these center targets.</li>
-  <li><span class="step">4. Execution:</span> far units GO toward the target (carrying their pressure as command priority); units within ~30 ATTACK the closest enemy. Idle hold units only engage nearby enemies.</li>
+  <li><span class="step">4. Execution:</span> far units GO toward the target (using normalized pressure to set a command-priority lock); units within ~30 ATTACK the closest enemy. Idle hold units only engage nearby enemies.</li>
 </ul>
 <h3>Limitations</h3>
 <ul>

@@ -37,13 +37,14 @@
 </head>
 <body>
 <h1>Army Center Targeting: Current Execution Flow</h1>
-<p class="subtitle">How <code>AiOrchestrator::order()</code> uses MilitaryBrain center-pair pressures and unit positions to issue army commands directly toward selected influence-map centers.</p>
+<p class="subtitle">How <code>AiOrchestrator::order()</code> weights MilitaryBrain center-pair pressures by nearby source centers, then issues army commands directly toward the selected influence-map center.</p>
 
 <nav class="toc">
   <h3>Contents</h3>
   <ol>
     <li><a href="#summary">Two decisions</a></li>
     <li><a href="#flow">Data flow</a></li>
+    <li><a href="#map-schema">Center-pressure map schema</a></li>
     <li><a href="#example">Three-unit example</a></li>
     <li><a href="#commands">Commands and edge cases</a></li>
   </ol>
@@ -54,7 +55,7 @@
   <div class="grid">
     <article class="card">
       <h3><span class="badge position">POSITIONAL</span>Which objective wins for this unit?</h3>
-      <p>Every army unit is evaluated independently. Its distance to the current influence-map centers determines how strongly it receives each directional MilitaryBrain pressure. The highest score selects the unit's objective bucket.</p>
+      <p>Every army unit is evaluated independently. A pressure only contributes when its source center is nearby. The highest accumulated target score selects the unit's objective bucket.</p>
     </article>
     <article class="card">
       <h3><span class="badge center">DIRECT CENTER</span>Where does the selected bucket go?</h3>
@@ -62,6 +63,11 @@
     </article>
   </div>
   <div class="notice"><p><strong>Fog of war is intentionally ignored:</strong> enemy and battle centers remain valid targets even when stale or hidden. If a center does not exist, units assigned to it enter the hold path.</p></div>
+  <div class="card">
+    <h3>Reading a Center-Pair Pressure</h3>
+    <p>For every directional pair <code>source -&gt; target</code>, the calculator measures only the unit's distance to <code>source</code>. It multiplies that pair's pressure by <code>clamp(1 - distanceToSource / 120, 0, 1)</code> and adds the result to the target's score. It then divides each target score by the six possible source contributions, normalizing it to <code>[0, 1]</code>. The distance to <code>target</code> does not reduce the score.</p>
+    <p>Consequently, a unit at its own army center can receive full <code>OUR_ARMY -&gt; ENEMY_ARMY</code> pressure even when the enemy army center is far away. Conversely, a unit farther than 120 units from every available source center receives no pressure and follows the low-pressure hold path.</p>
+  </div>
   <div class="card">
     <h3>Center Bucket Schema</h3>
     <table>
@@ -106,29 +112,148 @@
 
       <rect x="325" y="88" width="230" height="172" rx="9" fill="#273a2d" stroke="#68d391"/>
       <text x="440" y="118" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">For each army unit</text>
-      <text x="440" y="145" text-anchor="middle" fill="#d5f5e3" font-size="12">measure distance to each center</text>
-      <text x="440" y="167" text-anchor="middle" fill="#d5f5e3" font-size="12">closeness = clamp(1 - d / 120)</text>
-      <text x="440" y="189" text-anchor="middle" fill="#d5f5e3" font-size="12">add closeness x directional pressure</text>
-      <text x="440" y="211" text-anchor="middle" fill="#d5f5e3" font-size="12">select the highest target score</text>
+      <text x="440" y="145" text-anchor="middle" fill="#d5f5e3" font-size="12">measure distance to each pressure source</text>
+      <text x="440" y="167" text-anchor="middle" fill="#d5f5e3" font-size="12">source closeness = clamp(1 - d / 120)</text>
+      <text x="440" y="189" text-anchor="middle" fill="#d5f5e3" font-size="12">add source closeness x source -&gt; target pressure</text>
+      <text x="440" y="211" text-anchor="middle" fill="#d5f5e3" font-size="12">select the highest normalized target score</text>
       <text x="440" y="237" text-anchor="middle" fill="#f6c85f" font-size="12">score &lt;= 0.1: HOLD</text>
 
       <rect x="652" y="112" width="180" height="122" rx="9" fill="#1e3544" stroke="#63d7ff"/>
       <text x="742" y="142" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Selected center</text>
       <text x="742" y="168" text-anchor="middle" fill="#d8f7ff" font-size="12">bucket identity is the target</text>
       <text x="742" y="190" text-anchor="middle" fill="#d8f7ff" font-size="12">for example: ENEMY_ARMY</text>
-      <text x="742" y="214" text-anchor="middle" fill="#f6c85f" font-size="12">no heatmap replacement</text>
+      <text x="742" y="214" text-anchor="middle" fill="#f6c85f" font-size="12">target distance is not weighted</text>
 
       <rect x="939" y="112" width="180" height="122" rx="9" fill="#2b3b2c" stroke="#68d391"/>
       <text x="1029" y="142" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Unit order</text>
       <text x="1029" y="168" text-anchor="middle" fill="#d5f5e3" font-size="12">farther than 30: GO</text>
       <text x="1029" y="190" text-anchor="middle" fill="#d5f5e3" font-size="12">within 30: attack nearby enemy</text>
-      <text x="1029" y="212" text-anchor="middle" fill="#d5f5e3" font-size="12">priority = pressure score</text>
+      <text x="1029" y="212" text-anchor="middle" fill="#d5f5e3" font-size="12">priority lock = pressure x 4.5</text>
 
       <path d="M229 118 H290 V150 H325" fill="none" stroke="#7691b0" stroke-width="2" marker-end="url(#arrow)"/>
       <path d="M229 287 H290 V199 H325" fill="none" stroke="#7691b0" stroke-width="2" marker-end="url(#arrow)"/>
       <path d="M555 174 H652" stroke="#68d391" stroke-width="2" marker-end="url(#green-arrow)"/>
       <path d="M832 174 H939" stroke="#68d391" stroke-width="2" marker-end="url(#green-arrow)"/>
       <text x="576" y="159" fill="#9bacbf" font-size="11">center and score</text>
+    </svg>
+  </div>
+</section>
+
+<section id="map-schema">
+  <h2>Center-Pressure Map Schema</h2>
+  <div class="card"><p>This schematic shows one unit's calculation. Purple arrows are MilitaryBrain pressure values between centers, not movement paths. The unit measures only the pressure sources inside their 120-unit radius, normalizes the accumulated target scores to [0, 1], then applies the order threshold.</p></div>
+  <div class="diagram">
+    <svg viewBox="0 0 1160 575" role="img" aria-label="Map schema showing own and enemy centers, center-pair pressures, source distance weighting, and a selected enemy army target">
+      <defs>
+        <marker id="map-pressure-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#b794f4"/></marker>
+        <marker id="map-command-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#63d7ff"/></marker>
+        <marker id="map-measure-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#f6c85f"/></marker>
+      </defs>
+
+      <rect x="0" y="0" width="1160" height="575" rx="8" fill="#111b2d"/>
+      <text x="348" y="35" text-anchor="middle" fill="#dbe7f5" font-size="16" font-weight="700">World map: current center snapshot</text>
+      <text x="924" y="35" text-anchor="middle" fill="#dbe7f5" font-size="16" font-weight="700">One unit's score ledger</text>
+      <text x="348" y="55" text-anchor="middle" fill="#9bacbf" font-size="11">Illustrative distances in world units. Center markers are positions, not persistent objects.</text>
+
+      <rect x="26" y="75" width="644" height="454" rx="9" fill="#0d1422" stroke="#34445f"/>
+      <path d="M106 75 V529 M186 75 V529 M266 75 V529 M346 75 V529 M426 75 V529 M506 75 V529 M586 75 V529 M26 135 H670 M26 195 H670 M26 255 H670 M26 315 H670 M26 375 H670 M26 435 H670 M26 495 H670" stroke="#25354d" stroke-width="1"/>
+
+      <text x="52" y="102" fill="#9bacbf" font-size="11">own territory</text>
+      <text x="568" y="102" fill="#9bacbf" font-size="11">enemy territory</text>
+      <path d="M447 76 V528" stroke="#34445f" stroke-width="2" stroke-dasharray="6 5"/>
+
+      <!-- Source-radius circles: only the unit-to-source relation uses these. -->
+      <circle cx="200" cy="255" r="120" fill="#68d391" fill-opacity="0.05" stroke="#68d391" stroke-opacity="0.6" stroke-width="1.5" stroke-dasharray="6 5"/>
+      <circle cx="200" cy="380" r="120" fill="#68d391" fill-opacity="0.035" stroke="#68d391" stroke-opacity="0.42" stroke-width="1.5" stroke-dasharray="6 5"/>
+      <text x="92" y="174" fill="#68d391" font-size="11">120-unit source radius</text>
+
+      <!-- Center-pair pressures come from MilitaryBrain, before this unit is scored. -->
+      <path d="M227 248 C340 176 464 165 544 189" fill="none" stroke="#b794f4" stroke-width="3" marker-end="url(#map-pressure-arrow)"/>
+      <rect x="345" y="146" width="142" height="31" rx="6" fill="#2d284b" stroke="#b794f4"/>
+      <text x="416" y="166" text-anchor="middle" fill="#e5ddff" font-size="12" font-weight="700">OUR_ARMY -&gt; ENEMY_ARMY</text>
+      <text x="416" y="191" text-anchor="middle" fill="#e5ddff" font-size="12">pressure +0.80</text>
+
+      <path d="M224 383 C358 449 467 441 548 401" fill="none" stroke="#b794f4" stroke-width="3" marker-end="url(#map-pressure-arrow)"/>
+      <rect x="357" y="446" width="142" height="31" rx="6" fill="#2d284b" stroke="#b794f4"/>
+      <text x="428" y="466" text-anchor="middle" fill="#e5ddff" font-size="12" font-weight="700">OUR_ECON -&gt; ENEMY_ECON</text>
+      <text x="428" y="491" text-anchor="middle" fill="#e5ddff" font-size="12">pressure +0.60</text>
+
+      <!-- The unit measures only source centers. -->
+      <path d="M142 300 L200 255" fill="none" stroke="#f6c85f" stroke-width="2" stroke-dasharray="5 4" marker-start="url(#map-measure-arrow)" marker-end="url(#map-measure-arrow)"/>
+      <rect x="135" y="258" width="66" height="23" rx="5" fill="#3c3422"/>
+      <text x="168" y="274" text-anchor="middle" fill="#ffe3a0" font-size="11">d = 75</text>
+      <path d="M142 300 L200 380" fill="none" stroke="#f6c85f" stroke-width="2" stroke-dasharray="5 4" marker-start="url(#map-measure-arrow)" marker-end="url(#map-measure-arrow)"/>
+      <rect x="159" y="343" width="72" height="23" rx="5" fill="#3c3422"/>
+      <text x="195" y="359" text-anchor="middle" fill="#ffe3a0" font-size="11">d = 100</text>
+
+      <!-- Command is emitted only after the target scores are compared. -->
+      <path d="M146 292 C275 235 417 215 540 202" fill="none" stroke="#63d7ff" stroke-width="3" stroke-dasharray="9 5" marker-end="url(#map-command-arrow)"/>
+      <rect x="312" y="220" width="111" height="24" rx="5" fill="#1e3544"/>
+      <text x="367" y="236" text-anchor="middle" fill="#d8f7ff" font-size="11" font-weight="700">selected objective</text>
+
+      <!-- Unit marker -->
+      <circle cx="140" cy="300" r="15" fill="#f6c85f" stroke="#fff1be" stroke-width="2"/>
+      <path d="M140 291 V309 M131 300 H149" stroke="#182235" stroke-width="2"/>
+      <rect x="60" y="316" width="117" height="42" rx="7" fill="#3c3422" stroke="#f6c85f"/>
+      <text x="118" y="334" text-anchor="middle" fill="#fff1be" font-size="12" font-weight="700">THIS UNIT</text>
+      <text x="118" y="350" text-anchor="middle" fill="#ffe3a0" font-size="11">at (120, 260)</text>
+
+      <!-- Own center markers -->
+      <circle cx="200" cy="255" r="13" fill="#68d391" stroke="#d5f5e3" stroke-width="2"/>
+      <circle cx="200" cy="255" r="4" fill="#0d1422"/>
+      <rect x="214" y="216" width="119" height="42" rx="7" fill="#1e3d36" stroke="#68d391"/>
+      <text x="274" y="234" text-anchor="middle" fill="#d5f5e3" font-size="12" font-weight="700">OUR_ARMY</text>
+      <text x="274" y="250" text-anchor="middle" fill="#a6dcbf" font-size="11">pressure source</text>
+
+      <circle cx="200" cy="380" r="13" fill="#68d391" stroke="#d5f5e3" stroke-width="2"/>
+      <circle cx="200" cy="380" r="4" fill="#0d1422"/>
+      <rect x="215" y="376" width="119" height="42" rx="7" fill="#1e3d36" stroke="#68d391"/>
+      <text x="275" y="394" text-anchor="middle" fill="#d5f5e3" font-size="12" font-weight="700">OUR_ECON</text>
+      <text x="275" y="410" text-anchor="middle" fill="#a6dcbf" font-size="11">pressure source</text>
+
+      <!-- Enemy center markers -->
+      <circle cx="555" cy="197" r="15" fill="#ff7b7b" stroke="#ffd8d8" stroke-width="2.5"/>
+      <circle cx="555" cy="197" r="5" fill="#3e2428"/>
+      <rect x="570" y="174" width="84" height="42" rx="7" fill="#3e2428" stroke="#ff7b7b"/>
+      <text x="612" y="192" text-anchor="middle" fill="#ffd8d8" font-size="12" font-weight="700">ENEMY</text>
+      <text x="612" y="208" text-anchor="middle" fill="#ffd8d8" font-size="12" font-weight="700">ARMY</text>
+
+      <circle cx="555" cy="397" r="13" fill="#ff7b7b" stroke="#ffd8d8" stroke-width="2"/>
+      <circle cx="555" cy="397" r="4" fill="#3e2428"/>
+      <rect x="570" y="380" width="84" height="42" rx="7" fill="#3e2428" stroke="#ff7b7b"/>
+      <text x="612" y="398" text-anchor="middle" fill="#ffd8d8" font-size="12" font-weight="700">ENEMY</text>
+      <text x="612" y="414" text-anchor="middle" fill="#ffd8d8" font-size="12" font-weight="700">ECON</text>
+
+      <!-- Score ledger -->
+      <rect x="704" y="75" width="430" height="454" rx="9" fill="#182235" stroke="#34445f"/>
+      <text x="730" y="111" fill="#9bacbf" font-size="12" font-weight="700">1. Weight each available pressure by its source distance</text>
+
+      <rect x="728" y="129" width="382" height="79" rx="8" fill="#1e3d36" stroke="#68d391"/>
+      <text x="746" y="153" fill="#d5f5e3" font-size="13" font-weight="700">OUR_ARMY -&gt; ENEMY_ARMY</text>
+      <text x="746" y="176" fill="#a6dcbf" font-size="12">source distance 75: weight = 1 - 75 / 120 = 0.375</text>
+      <text x="746" y="196" fill="#d5f5e3" font-size="12">ENEMY_ARMY score += 0.375 x 0.80 = <tspan font-weight="700">0.300</tspan></text>
+
+      <rect x="728" y="222" width="382" height="79" rx="8" fill="#1e3d36" stroke="#68d391"/>
+      <text x="746" y="246" fill="#d5f5e3" font-size="13" font-weight="700">OUR_ECON -&gt; ENEMY_ECON</text>
+      <text x="746" y="269" fill="#a6dcbf" font-size="12">source distance 100: weight = 1 - 100 / 120 = 0.167</text>
+      <text x="746" y="289" fill="#d5f5e3" font-size="12">ENEMY_ECON score += 0.167 x 0.60 = <tspan font-weight="700">0.100</tspan></text>
+
+      <line x1="728" y1="323" x2="1110" y2="323" stroke="#34445f"/>
+      <text x="730" y="350" fill="#9bacbf" font-size="12" font-weight="700">2. Normalize accumulated target scores by 6</text>
+      <rect x="728" y="367" width="184" height="59" rx="8" fill="#1e3544" stroke="#63d7ff"/>
+      <text x="746" y="390" fill="#d8f7ff" font-size="12" font-weight="700">ENEMY_ARMY</text>
+      <text x="746" y="412" fill="#d8f7ff" font-size="17" font-weight="700">0.050</text>
+      <rect x="926" y="367" width="184" height="59" rx="8" fill="#2b2735" stroke="#b794f4"/>
+      <text x="944" y="390" fill="#e5ddff" font-size="12" font-weight="700">ENEMY_ECON</text>
+      <text x="944" y="412" fill="#e5ddff" font-size="17" font-weight="700">0.017</text>
+
+      <rect x="728" y="446" width="382" height="59" rx="8" fill="#1e3544" stroke="#63d7ff" stroke-width="2"/>
+      <text x="746" y="470" fill="#d8f7ff" font-size="13" font-weight="700">3. Select ENEMY_ARMY, then HOLD</text>
+      <text x="746" y="490" fill="#9eddf2" font-size="11">0.050 is at or below 0.1; target distance is not used.</text>
+
+      <rect x="28" y="544" width="16" height="5" rx="2" fill="#b794f4"/><text x="51" y="550" fill="#9bacbf" font-size="11">center-pair pressure</text>
+      <rect x="192" y="544" width="16" height="5" rx="2" fill="#f6c85f"/><text x="215" y="550" fill="#9bacbf" font-size="11">source-distance measurement</text>
+      <rect x="428" y="544" width="16" height="5" rx="2" fill="#63d7ff"/><text x="451" y="550" fill="#9bacbf" font-size="11">resulting unit decision</text>
     </svg>
   </div>
 </section>
@@ -192,12 +317,12 @@
 <section id="commands">
   <h2>Commands and Edge Cases</h2>
   <div class="grid">
-    <article class="example"><h3><span class="badge center">FAR</span>Go to the center</h3><p>If squared distance to the selected center exceeds <code>30 * 30</code>, the unit receives <code>GO(targetCenter)</code>. Its calculated pressure becomes the command priority.</p></article>
+    <article class="example"><h3><span class="badge center">FAR</span>Go to the center</h3><p>If squared distance to the selected center exceeds <code>30 * 30</code>, the unit receives <code>GO(targetCenter)</code>. Its normalized pressure sets a command-priority lock at <code>pressure * 4.5</code>.</p></article>
     <article class="example"><h3><span class="badge center">CLOSE</span>Attack locally</h3><p>When within 30 units of the selected center, the unit does not queue a new move. It attacks the closest nearby enemy if one exists.</p></article>
-    <article class="example"><h3><span class="badge hold">LOW PRESSURE</span>Hold</h3><p>If the best calculated score is <code>&lt;= 0.1</code>, the unit enters the hold group. Free hold units can still attack a nearby enemy.</p></article>
+    <article class="example"><h3><span class="badge hold">LOW PRESSURE</span>Hold</h3><p>If the best calculated score is <code>&lt;= 0.1</code>, including when every pressure source is more than 120 units away, the unit enters the hold group. Free hold units can still attack a nearby enemy.</p></article>
     <article class="example"><h3><span class="badge hold">MISSING CENTER</span>Hold</h3><p>If the selected influence center is unavailable, every unit in that bucket enters the hold group. There is no alternate heatmap target or center fallback.</p></article>
   </div>
-  <div class="card"><h3>Command priority guard</h3><p>A new command is only queued when its pressure exceeds the unit's current command priority. At the start of each <code>order()</code>, priority decreases by <code>0.25</code>. This prevents weaker new objectives from replacing a stronger current command.</p></div>
+  <div class="card"><h3>Command priority guard</h3><p>A new command is only queued when its normalized pressure exceeds the unit's current command priority. Submitted commands set priority to <code>pressure * 4.5</code>; at the start of each <code>order()</code>, it is multiplied by <code>0.9</code>. This prevents weaker new objectives from replacing a stronger current command.</p></div>
 </section>
 
 <p class="source">Source references: <code>game/src/player/ai/AiOrchestrator.cpp</code> (<code>order</code>, <code>issueAdvancePerUnit</code>); <code>game/src/player/ai/MilitaryCommandCalculator.h</code>; <code>game/src/player/ai/MilitaryBrain.h</code>; and <code>game/src/env/influence/InfluenceManager.cpp</code>.</p>

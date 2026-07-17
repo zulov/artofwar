@@ -260,8 +260,8 @@ void Unit::removeCurrentAim() {
 	aims.removeCurrentAim();
 }
 
-void Unit::decayCommandPriority(float step) {
-	commandPriority = std::max(0.f, commandPriority - step);
+void Unit::decayCommandPriority(float multiplier) {
+	commandPriority = std::max(0.f, commandPriority * multiplier);
 }
 
 void Unit::setIndexToInteract(int index) {

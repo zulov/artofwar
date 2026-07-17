@@ -280,7 +280,7 @@
   <line x1="700" y1="120" x2="700" y2="250" stroke="#f44336" stroke-width="2" marker-end="url(#am)"/>
 
   <!-- Decision: per-unit highest-pressure target -->
-  <g data-tt-title="Per-unit target selection" data-tt-body="No single attack/defend switch. For EACH army unit, MilitaryCommandCalculator scores the unit's position against the 7 center snapshots using the center-pair pressures, and picks the highest-pressure target:<br><br>&bull; Defend OUR_ARMY / OUR_ECON / OUR_BUILDING<br>&bull; Attack ENEMY_ARMY / ENEMY_ECON / ENEMY_BUILDING<br>&bull; Move to LAST_BATTLE<br><br>Units whose best score &le; MIN_ARMY_ORDER_PRESSURE (0.1) are routed to HOLD. Units are grouped into per-target buckets.">
+  <g data-tt-title="Per-unit target selection" data-tt-body="No single attack/defend switch. For EACH army unit, MilitaryCommandCalculator weights each directional center-pair pressure by proximity to its source center, then picks the highest-pressure target. Target-center distance does not reduce a pressure:<br><br>&bull; Defend OUR_ARMY / OUR_ECON / OUR_BUILDING<br>&bull; Attack ENEMY_ARMY / ENEMY_ECON / ENEMY_BUILDING<br>&bull; Move to LAST_BATTLE<br><br>Units whose best score &le; MIN_ARMY_ORDER_PRESSURE (0.1), including those farther than 120 units from every pressure source, are routed to HOLD. Units are grouped into per-target buckets.">
     <polygon points="700,255 820,290 700,325 580,290" fill="#37474F" stroke="#FF9800" stroke-width="2"/>
     <text x="700" y="287" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">Per-unit target?</text>
     <text x="700" y="303" text-anchor="middle" fill="#90A4AE" font-size="9">highest center-pair pressure</text>
@@ -294,7 +294,7 @@
   <!-- Sub-army loop -->
   <line x1="700" y1="325" x2="700" y2="365" stroke="#aaa" stroke-width="1.5" marker-end="url(#ar2)"/>
 
-  <g data-tt-title="Per-unit advance / attack" data-tt-body="Each non-empty target bucket moves directly to the center selected by MilitaryBrain pressure, then issues per-unit orders:<br><br><b>If FAR from target</b> (sqDist &gt; ~30^2):<br>&nbsp;&nbsp;IndividualOrder(GO, targetPos), unit carries its pressure as command priority<br><br><b>If CLOSE to target</b> (within ~30):<br>&nbsp;&nbsp;Find nearby enemies (not on our team), ATTACK the closest<br><br>Units below the pressure threshold HOLD &mdash; only free hold units engage nearby enemies. Command priorities decay by 0.25 per order().">
+  <g data-tt-title="Per-unit advance / attack" data-tt-body="Each non-empty target bucket moves directly to the center selected by MilitaryBrain pressure, then issues per-unit orders:<br><br><b>If FAR from target</b> (sqDist &gt; ~30^2):<br>&nbsp;&nbsp;IndividualOrder(GO, targetPos), normalized pressure sets a command-priority lock at pressure x 4.5<br><br><b>If CLOSE to target</b> (within ~30):<br>&nbsp;&nbsp;Find nearby enemies (not on our team), ATTACK the closest<br><br>Units below the pressure threshold HOLD &mdash; only free hold units engage nearby enemies. Command priorities decay by x0.9 per order().">
     <rect x="400" y="370" width="600" height="80" rx="8" fill="#263238" stroke="#78909C" stroke-width="1.5"/>
     <text x="700" y="395" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">Per-unit orders (issueAdvancePerUnit)</text>
     <text x="700" y="415" text-anchor="middle" fill="#90A4AE" font-size="11">FAR &rarr; GO order toward target (priority = pressure)</text>

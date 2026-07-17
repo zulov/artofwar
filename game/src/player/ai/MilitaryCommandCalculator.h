@@ -9,6 +9,8 @@
 
 #include "MilitaryBrain.h"
 
+static constexpr float MAX_MILITARY_UNIT_PRESSURE = 1.f;
+
 struct MilitaryCommandScore {
 	MilitaryCenterIdx center = MilitaryCenterIdx::OUR_ARMY;
 	float score = 0.f;
@@ -43,6 +45,12 @@ public:
 				result.scores[target] += sourceWeights[source] * output.pressure(
 					static_cast<MilitaryCenterIdx>(source), static_cast<MilitaryCenterIdx>(target));
 			}
+		}
+
+		// A target can receive one full contribution from every other center.
+		const float maxAccumulatedPressure = static_cast<float>(MILITARY_CENTER_COUNT - 1);
+		for (auto& score : result.scores) {
+			score = std::clamp(score / maxAccumulatedPressure, 0.f, MAX_MILITARY_UNIT_PRESSURE);
 		}
 
 		bool hasBest = false;

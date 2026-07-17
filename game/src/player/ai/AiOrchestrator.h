@@ -61,12 +61,16 @@ private:
 	void submitBuildingUpgradeRequest(float urgency, ParentBuildingType type);
 
 	// Army control (used by order())
-	static constexpr float COMMAND_PRIORITY_DECAY = 0.25f;
-	bool trySubmitUnitOrder(const std::vector<Unit*>& units, float priority, UnitOrder* order) const;
-	bool trySubmitUnitOrder(Unit* unit, float priority, UnitOrder* order) const;
+	static constexpr float COMMAND_PRIORITY_DECAY_MULTIPLIER = 0.9f;
+	static constexpr float COMMAND_PRIORITY_MULTIPLIER = 4.5f;
+	static constexpr float MAX_COMMAND_PRIORITY = MAX_MILITARY_UNIT_PRESSURE * COMMAND_PRIORITY_MULTIPLIER;
+	bool trySubmitUnitOrder(const std::vector<Unit*>& units, float priority, MilitaryCenterIdx center,
+	                        UnitOrder* order) const;
+	bool trySubmitUnitOrder(Unit* unit, float priority, MilitaryCenterIdx center, UnitOrder* order) const;
 	void decayUnitOrderPriorities() const;
-	void issueAdvancePerUnit(const std::vector<std::pair<Unit*, float>>& units, const Urho3D::Vector2& target);
-	void issueHold(std::vector<Unit*>& group, float priority);
+	void issueAdvancePerUnit(const std::vector<std::pair<Unit*, float>>& units, MilitaryCenterIdx center,
+	                         const Urho3D::Vector2& target);
+	void issueHold(std::vector<std::pair<Unit*, MilitaryCenterIdx>>& group, float priority);
 
 	// Unit resolution
 	std::vector<db_unit*> resolveUnit(const UnitOutput& unitOutput);

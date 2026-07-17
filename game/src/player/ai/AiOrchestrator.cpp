@@ -282,12 +282,13 @@ void AiOrchestrator::order() {
 	// position. Units that fall below the pressure threshold (or pick a center
 	// whose snapshot is unavailable) are routed to hold.
 	std::array<std::vector<std::pair<Unit*, float>>, ARMY_TARGET_SPEC_COUNT> buckets{};
-	std::vector<Unit*> holdUnits;
+	std::vector<std::pair<Unit*, MilitaryCenterIdx>> holdUnits;
 	for (auto* unit : allArmy) {
+		if (unit->getCommandPriority() >= MAX_COMMAND_PRIORITY) { continue; }
 		const auto unitResult = militaryCommandCalculator.calculate(unit->getPosition(), centers, lastMilOut);
 		const auto specIndex = armyTargetIndex(unitResult.best.center);
 		if (unitResult.best.score <= MIN_ARMY_ORDER_PRESSURE || specIndex == ARMY_TARGET_SPEC_COUNT) {
-			holdUnits.push_back(unit);
+			holdUnits.push_back({unit, unitResult.best.center});
 			continue;
 		}
 		buckets[specIndex].push_back({unit, unitResult.best.score});
@@ -299,13 +300,13 @@ void AiOrchestrator::order() {
 		const auto& spec = ARMY_TARGET_SPECS[i];
 		const auto& bestTarget = centers[castC(spec.center)];
 		if (!bestTarget.has_value()) {
-			for (const auto& entry : buckets[i]) { holdUnits.push_back(entry.first); }
+			for (const auto& entry : buckets[i]) { holdUnits.push_back({entry.first, spec.center}); }
 			continue;
 		}
 		std::ranges::sort(buckets[i], [&](const auto& a, const auto& b) {
 			return a.first->getPosition().SqDistXZ(*bestTarget) < b.first->getPosition().SqDistXZ(*bestTarget);
 		});
-		issueAdvancePerUnit(buckets[i], *bestTarget);
+		issueAdvancePerUnit(buckets[i], spec.center, *bestTarget);
 		history->addOrder(spec.orderType, AiOrderResult::SUCCESS, static_cast<uint8_t>(buckets[i].size()));
 	}
 
@@ -317,11 +318,13 @@ void AiOrchestrator::order() {
 
 void AiOrchestrator::decayUnitOrderPriorities() const {
 	for (auto* unit : possession->getAllArmy()) {
-		unit->decayCommandPriority(COMMAND_PRIORITY_DECAY);
+		unit->decayCommandPriority(COMMAND_PRIORITY_DECAY_MULTIPLIER);
 	}
 }
 
-bool AiOrchestrator::trySubmitUnitOrder(const std::vector<Unit*>& units, float priority, UnitOrder* order) const {
+bool AiOrchestrator::trySubmitUnitOrder(const std::vector<Unit*>& units, float priority, MilitaryCenterIdx center,
+                                        UnitOrder* order) const {
+	// TODO: Check later whether this remains necessary with caller-side priority checks.
 	for (auto* unit : units) {
 		if (priority <= unit->getCommandPriority()) {
 			delete order;
@@ -330,32 +333,36 @@ bool AiOrchestrator::trySubmitUnitOrder(const std::vector<Unit*>& units, float p
 	}
 
 	for (auto* unit : units) {
-		unit->setCommandPriority(priority);
+		unit->setCommandPriority(priority * COMMAND_PRIORITY_MULTIPLIER);
+		unit->setCommandCenter(center);
 	}
 	Game::getActionCenter()->addUnitAction(order);
 	return true;
 }
 
-bool AiOrchestrator::trySubmitUnitOrder(Unit* unit, float priority, UnitOrder* order) const {
-	return trySubmitUnitOrder(std::vector<Unit*>{unit}, priority, order);
+bool AiOrchestrator::trySubmitUnitOrder(Unit* unit, float priority, MilitaryCenterIdx center, UnitOrder* order) const {
+	return trySubmitUnitOrder(std::vector<Unit*>{unit}, priority, center, order);
 }
 
-// Advance toward target per unit; each unit carries its own pressure score as its
-// command priority. Far units march (GO); units already near the target attack the
-// closest enemy. Orders are individual so each keeps its own priority.
+// Advance toward target per unit. A matching center refreshes an active order;
+// a different center must exceed the remaining lock to replace it.
 void AiOrchestrator::issueAdvancePerUnit(const std::vector<std::pair<Unit*, float>>& units,
-                                         const Urho3D::Vector2& target) {
+	                                         MilitaryCenterIdx center, const Urho3D::Vector2& target) {
 	for (const auto& [unit, priority] : units) {
+		if (unit->hasAim() && unit->getCommandPriority() > 0.f && unit->getCommandCenter() == center) {
+			unit->setCommandPriority(priority * COMMAND_PRIORITY_MULTIPLIER);
+			continue;
+		}
 		if (priority <= unit->getCommandPriority()) { continue; }
 		if (unit->getPosition().SqDistXZ(target) > SQ_SEMI_CLOSE) {
-			trySubmitUnitOrder(unit, priority, new IndividualOrder(unit, UnitAction::GO, target));
+			trySubmitUnitOrder(unit, priority, center, new IndividualOrder(unit, UnitAction::GO, target));
 		} else {
 			auto& things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
 			if (!things.empty()) {
 				const auto closest = Game::getEnvironment()->closestPhysical(
-						unit->getMainGridIndex(), things, belowClose, true);
+					unit->getMainGridIndex(), things, belowClose, true);
 				if (closest) {
-					trySubmitUnitOrder(unit, priority, new IndividualOrder(unit, UnitAction::ATTACK, closest));
+					trySubmitUnitOrder(unit, priority, center, new IndividualOrder(unit, UnitAction::ATTACK, closest));
 				}
 			}
 		}
@@ -363,15 +370,16 @@ void AiOrchestrator::issueAdvancePerUnit(const std::vector<std::pair<Unit*, floa
 }
 
 // Hold — only free units engage nearby enemies
-void AiOrchestrator::issueHold(std::vector<Unit*>& group, float priority) {
-	for (auto* unit : group) {
+void AiOrchestrator::issueHold(std::vector<std::pair<Unit*, MilitaryCenterIdx>>& group, float priority) {
+	for (const auto& [unit, center] : group) {
+		if (priority <= unit->getCommandPriority()) { continue; }
 		if (!isFree(unit)) { continue; }
 		auto& things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
 		if (!things.empty()) {
 			const auto closest = Game::getEnvironment()->closestPhysical(
 					unit->getMainGridIndex(), things, belowClose, true);
 			if (closest) {
-				trySubmitUnitOrder(unit, priority, new IndividualOrder(unit, UnitAction::ATTACK, closest));
+				trySubmitUnitOrder(unit, priority, center, new IndividualOrder(unit, UnitAction::ATTACK, closest));
 			}
 		}
 	}

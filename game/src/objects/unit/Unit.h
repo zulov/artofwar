@@ -25,6 +25,7 @@ constexpr char USE_SOCKETS_NUMBER = 8;
 enum class UnitAction : char;
 enum class DebugUnitType : char;
 enum class SimColorMode : char;
+enum class MilitaryCenterIdx : unsigned char;
 struct ForceStats;
 struct db_unit_level;
 struct db_unit;
@@ -88,7 +89,9 @@ public:
 
 	float getCommandPriority() const { return commandPriority; }
 	void setCommandPriority(float priority) { commandPriority = priority; }
-	void decayCommandPriority(float step);
+	MilitaryCenterIdx getCommandCenter() const { return commandCenter; }
+	void setCommandCenter(MilitaryCenterIdx center) { commandCenter = center; }
+	void decayCommandPriority(float multiplier);
 	void resetCommandPriority() { commandPriority = 0.f; }
 
 	void setNextState(UnitState stateTo, const ActionParameter& actionParameter);
@@ -201,4 +204,5 @@ private:
 	ActionParameter nextActionParameter;
 	Urho3D::Vector2 inCellPos;
 	float commandPriority = 0.f;
+	MilitaryCenterIdx commandCenter{};
 };

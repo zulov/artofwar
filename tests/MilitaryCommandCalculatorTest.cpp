@@ -92,7 +92,8 @@ TEST(MilitaryCommandCalculatorTest, PressureIsWeightedBySourceClosenessNotTarget
 	centers[castC(MilitaryCenterIdx::ENEMY_ARMY)] = makeCenter({100.f, 0.f});
 
 	auto result = calc.calculate({0.f, 0.f}, centers, output);
-	EXPECT_FLOAT_EQ(result.scores[castC(MilitaryCenterIdx::ENEMY_ARMY)], 1.f);
+	EXPECT_FLOAT_EQ(result.scores[castC(MilitaryCenterIdx::ENEMY_ARMY)],
+	                1.f / static_cast<float>(MILITARY_CENTER_COUNT - 1));
 	EXPECT_EQ(result.best.center, MilitaryCenterIdx::ENEMY_ARMY);
 }
 
@@ -124,4 +125,19 @@ TEST(MilitaryCommandCalculatorTest, SourceOutsideRadiusContributesZeroPressure) 
 
 	auto result = calc.calculate({0.f, 0.f}, centers, output);
 	EXPECT_FLOAT_EQ(result.scores[castC(MilitaryCenterIdx::ENEMY_ARMY)], 0.f);
+}
+
+TEST(MilitaryCommandCalculatorTest, MaximumScoreIsNormalizedToOne) {
+	MilitaryCommandCalculator calc(100.f);
+	MilitaryOutput output;
+	output.centerPairPressure.fill(1.f);
+
+	std::array<std::optional<Urho3D::Vector2>, MILITARY_CENTER_COUNT> centers{};
+	for (size_t i = 0; i < MILITARY_CENTER_COUNT; ++i) {
+		centers[i] = makeCenter({0.f, 0.f});
+	}
+
+	auto result = calc.calculate({0.f, 0.f}, centers, output);
+	EXPECT_FLOAT_EQ(result.scores[castC(MilitaryCenterIdx::BATTLE)],
+	                MAX_MILITARY_UNIT_PRESSURE);
 }
