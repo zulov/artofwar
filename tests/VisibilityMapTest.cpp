@@ -4,6 +4,7 @@
 #include <numeric>
 
 #include "env/influence/map/VisibilityType.h"
+#include "env/influence/VisibilityManager.h"
 #include "math/MathUtils.h"
 
 // These tests lock down the index math used by VisibilityMap::ensureReady, which
@@ -72,7 +73,7 @@ class VisibilityDownsampleFixture : public ::testing::Test {};
 
 // Single visible cell: both formulations agree, exhaustively, for every parent index.
 TEST_F(VisibilityDownsampleFixture, SingleCellEquivalentExhaustive) {
-	for (int res : { 2, 4, 8, 16, 32 }) {
+	for (int res : { 2, 4, 6, 8, 10, 16, 32 }) {
 		const int n = res * res;
 		for (int j = 0; j < n; ++j) {
 			std::vector<bool> visible(n, false);
@@ -177,4 +178,13 @@ TEST_F(VisibilityDownsampleFixture, SeenOnlyCellsDoNotMarkInfluenceVisible) {
 	for (bool b : blockMask) {
 		EXPECT_FALSE(b);
 	}
+}
+
+TEST(VisibilityTextureUtilsTest, MapsTexturePixelsAcrossDifferentGridSizes) {
+	EXPECT_EQ(VisibilityTextureUtils::getVisibilityIndex(0, 0, 256, 256, 80), 0);
+	EXPECT_EQ(VisibilityTextureUtils::getVisibilityIndex(255, 255, 256, 256, 80), 79 * 80 + 79);
+	EXPECT_EQ(VisibilityTextureUtils::getVisibilityIndex(128, 64, 256, 256, 80), 40 * 80 + 20);
+
+	EXPECT_EQ(VisibilityTextureUtils::getVisibilityIndex(255, 255, 256, 256, 160), 159 * 160 + 159);
+	EXPECT_EQ(VisibilityTextureUtils::getVisibilityIndex(127, 255, 256, 256, 160), 79 * 160 + 159);
 }

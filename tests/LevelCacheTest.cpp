@@ -114,6 +114,19 @@ TEST_F(LevelCacheFixture, UShortVector2OverloadMatchesIntOverload) {
 	}
 }
 
+TEST(LevelCacheNonPowerOfTwo, ReturnsValidOffsets) {
+	constexpr unsigned short resolution = 40;
+	GridCalculator calculator(resolution, 80.f);
+	LevelCache cache(10.f, &calculator);
+	const int centerIndex = 20 * resolution + 20;
+
+	const auto* result = cache.get(5.f, centerIndex);
+	ASSERT_NE(result, nullptr);
+	for (const auto offset : *result) {
+		EXPECT_TRUE(calculator.isValidIndex(centerIndex + offset));
+	}
+}
+
 TEST_F(LevelCacheFixture, RadiusClampedToMax) {
 	const int centerIndex = 8 * RESOLUTION + 8;
 	// Radius beyond maxDistance should clamp

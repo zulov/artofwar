@@ -8,9 +8,7 @@ struct GridCalculator {
 		  fieldSize(size / static_cast<float>(resolution)), halfSize(size * 0.5f),
 		  firstCenter(0.5f * fieldSize - halfSize),
 		  invFieldSize(static_cast<float>(resolution) / size), sqFieldSize(fieldSize * fieldSize),
-		  shiftAmount(log2(resolution)), mask(resolution - 1), lastIndex(resolution - 1) {
-		assert(((resolution & (resolution - 1)) == 0));
-	}
+		  lastIndex(resolution - 1) {}
 
 	GridCalculator(const GridCalculator&) = delete;
 
@@ -50,8 +48,7 @@ struct GridCalculator {
 	}
 
 	Urho3D::UShortVector2 getCords(int i) const {
-		// return {i / resolution, i % resolution};
-		return {static_cast<unsigned short>(i >> shiftAmount), static_cast<unsigned short>(i & mask)};
+		return {static_cast<unsigned short>(i / resolution), static_cast<unsigned short>(i % resolution)};
 	}
 
 	Urho3D::UShortVector2 getCords(const Urho3D::Vector2& pos) const {
@@ -130,7 +127,5 @@ private:
 	float firstCenter;
 	float invFieldSize;
 	float sqFieldSize;
-	unsigned char shiftAmount;
-	unsigned short mask;
 	short lastIndex;
 };

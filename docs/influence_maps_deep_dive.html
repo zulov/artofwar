@@ -349,6 +349,7 @@
     <ul>
       <li>Influence cell size: <code>INF_GRID_FIELD_SIZE = 8</code> world units.</li>
       <li>Visibility cell size: <code>VISIBILITY_GRID_FIELD_SIZE = 4</code> world units.</li>
+      <li>Grid indexing supports the advertised map resolutions <code>160, 192, 256, 320, 384, 512</code>; it does not require a power-of-two side length.</li>
       <li>Kernel radius: <code>INF_LEVEL = 4</code> cells, so the stencil is <code>9 x 9</code>.</li>
       <li>Kernel template coefficient: <code>coef = 0.5</code> for all maps created by <code>InfluenceManager</code>.</li>
       <li>The 9 x 9 template is allocated once with <code>createTemplateV()</code> and shared by all <code>InfluenceMap</code> instances.</li>

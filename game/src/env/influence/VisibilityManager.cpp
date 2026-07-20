@@ -10,11 +10,9 @@
 #include "colors/ColorPaletteRepo.h"
 #include "map/VisibilityMap.h"
 #include "objects/unit/Unit.h"
-#include "math/MathUtils.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimGlobals.h"
 #include "env/Environment.h"
-#include "env/GridCalculatorProvider.h"
 #include "utils/OtherUtils.h"
 #include "objects/resource/ResourceEntity.h"
 #include "utils/DeleteUtils.h"
@@ -27,7 +25,6 @@ VisibilityManager::VisibilityManager(char numberOfPlayers, float mapSize, Urho3D
 	for (int player = 0; player < numberOfPlayers; ++player) {
 		visibilityPerPlayer.emplace_back(new VisibilityMap(resolution, mapSize, 3));
 	}
-	calculator = GridCalculatorProvider::get(resolution, mapSize);
 
 	if (terrain && !SIM_GLOBALS.HEADLESS) {
 		const auto name = terrain->GetMaterial()->GetTexture(Urho3D::TextureUnit::TU_DIFFUSE)->GetName();
@@ -44,29 +41,15 @@ VisibilityManager::~VisibilityManager() {
 	delete[] dataCopy;
 }
 
-void VisibilityManager::setToImage(unsigned* data, std::array<int, 4>& indexes, unsigned color, bool operatorA) {
-	for (const auto index : indexes) {
-		const auto prev = *(data + index);
-
-		if (operatorA) {
-			*(data + index) = color & (*(dataCopy + index));
-		} else {
-			*(data + index) = color | (*(dataCopy + index));
-		}
-
-		if (*(data + index) != prev) {
-			imageChanged = true;
-		}
-	}
+void VisibilityManager::setToImage(unsigned* data, int index, unsigned color, bool operatorA) {
+	const auto previous = data[index];
+	data[index] = operatorA ? color & dataCopy[index] : color | dataCopy[index];
+	imageChanged |= data[index] != previous;
 }
 
-void VisibilityManager::setToImage(unsigned* data, std::array<int, 4>& indexes, unsigned color) {
-	for (const auto index : indexes) {
-		if (*(data + index) != color) {
-			imageChanged = true;
-			*(data + index) = color;
-		}
-	}
+void VisibilityManager::setToImage(unsigned* data, int index, unsigned color) {
+	imageChanged |= data[index] != color;
+	data[index] = color;
 }
 
 void VisibilityManager::hideOrShow(VisibilityMap* current, Physical* physical) {
@@ -106,28 +89,33 @@ void VisibilityManager::updateVisibility(const std::vector<Building*>* buildings
 		auto current = visibilityPerPlayer[Game::getPlayersMan()->getActivePlayerID()];
 
 		auto* data = (unsigned*)image.Get()->GetData();
-		for (int i = 0; i < current->getResolution() * current->getResolution(); ++i) {
-			auto parentIndexes = getCordsInHigher(calculator->getResolution(), i);
-			assert(parentIndexes[3] < texture->GetHeight()* texture->GetWidth());
-			if (visibilityMode == VisibilityMode::ALL) {
-				setToImage(data, parentIndexes, 0x00FFFFFF, true);
-			} else {
-				char combineTime = castC(VisibilityType::NONE);
-				if (visibilityMode == VisibilityMode::ALL_PLAYERS) {
-					for (auto vis : visibilityPerPlayer) {
-						const char currentValue = vis->getValueAt(i);
-						combineTime |= currentValue;
+		const int textureHeight = texture->GetHeight();
+		const int textureWidth = texture->GetWidth();
+		for (int row = 0; row < textureHeight; ++row) {
+			for (int column = 0; column < textureWidth; ++column) {
+				const int textureIndex = row * textureWidth + column;
+				const int visibilityIndex = VisibilityTextureUtils::getVisibilityIndex(
+					row, column, textureHeight, textureWidth, current->getResolution());
+				if (visibilityMode == VisibilityMode::ALL) {
+					setToImage(data, textureIndex, 0x00FFFFFF, true);
+				} else {
+					char combineTime = castC(VisibilityType::NONE);
+					if (visibilityMode == VisibilityMode::ALL_PLAYERS) {
+						for (auto vis : visibilityPerPlayer) {
+							const char currentValue = vis->getValueAt(visibilityIndex);
+							combineTime |= currentValue;
+						}
+					} else {
+						combineTime = current->getValueAt(visibilityIndex);
 					}
-				} else {
-					combineTime = current->getValueAt(i);
-				}
-				VisibilityType currentValue = static_cast<VisibilityType>(combineTime);
-				if (currentValue == VisibilityType::VISIBLE) {
-					setToImage(data, parentIndexes, 0x00FFFFFF, true);
-				} else if (currentValue == VisibilityType::SEEN) {
-					setToImage(data, parentIndexes, 0xFF000000, false);
-				} else {
-					setToImage(data, parentIndexes, 0xFF000000);
+					VisibilityType currentValue = static_cast<VisibilityType>(combineTime);
+					if (currentValue == VisibilityType::VISIBLE) {
+						setToImage(data, textureIndex, 0x00FFFFFF, true);
+					} else if (currentValue == VisibilityType::SEEN) {
+						setToImage(data, textureIndex, 0xFF000000, false);
+					} else {
+						setToImage(data, textureIndex, 0xFF000000);
+					}
 				}
 			}
 		}

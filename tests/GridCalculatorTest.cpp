@@ -123,6 +123,19 @@ TEST_F(GridCalculatorFixture, GetCenterOverloadMatchesIndexCenter) {
 	EXPECT_EQ(gc->getCenter(2, 1), gc->getCenter(9));
 }
 
+TEST(GridCalculatorNonPowerOfTwo, DecodesAndRoundTripsCoordinates) {
+	GridCalculator calculator(40, 80.f);
+
+	EXPECT_EQ(calculator.getCords(0), Urho3D::UShortVector2(0, 0));
+	EXPECT_EQ(calculator.getCords(39), Urho3D::UShortVector2(0, 39));
+	EXPECT_EQ(calculator.getCords(40), Urho3D::UShortVector2(1, 0));
+	EXPECT_EQ(calculator.getCords(12 * 40 + 17), Urho3D::UShortVector2(12, 17));
+	EXPECT_EQ(calculator.getCords(40 * 40 - 1), Urho3D::UShortVector2(39, 39));
+
+	const auto center = calculator.getCenter(12 * 40 + 17);
+	EXPECT_EQ(calculator.indexFromPosition(center), 12 * 40 + 17);
+}
+
 TEST_F(GridCalculatorFixture, GetNotSafeIndexCloseSupportsSignedOffsets) {
 	EXPECT_EQ(gc->getNotSafeIndexClose(1, 1), 5);
 	EXPECT_EQ(gc->getNotSafeIndexClose(-1, 1), -3);

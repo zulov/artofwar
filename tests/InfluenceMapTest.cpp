@@ -553,3 +553,13 @@ TEST(InfluenceMapRegression, GetCenterRebuildsQuadAfterReset) {
 	map.update(15, 1.f);
 	EXPECT_EQ(map.getCenter(), calculator.getCenter(15));
 }
+
+TEST(InfluenceMapRegression, GetCenterSupportsNonPowerOfTwoResolution) {
+	GridCalculator calculator(40, 80.f);
+	TestableInfluenceMap map(&calculator);
+	constexpr unsigned targetIndex = 27 * 40 + 13;
+
+	map.update(targetIndex, 1.f);
+
+	EXPECT_EQ(map.getCenter(), calculator.getCenter(targetIndex));
+}

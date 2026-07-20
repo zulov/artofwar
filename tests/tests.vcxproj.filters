@@ -12,6 +12,7 @@
     <ClCompile Include="MilitaryCommandCalculatorTest.cpp" />
     <ClCompile Include="MetricComposeTest.cpp" />
     <ClCompile Include="InfluenceMapTest.cpp" />
+    <ClCompile Include="LevelCacheTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
