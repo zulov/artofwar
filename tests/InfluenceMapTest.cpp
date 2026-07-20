@@ -6,7 +6,9 @@
 #include "env/GridCalculator.h"
 #include "env/GridCalculatorProvider.h"
 #include "env/influence/map/InfluenceMap.h"
+#include "env/influence/map/InfluenceTemplateProvider.h"
 
+#include "../game/src/env/influence/map/InfluenceTemplateProvider.cpp"
 #include "../game/src/env/influence/map/InfluenceMap.cpp"
 
 
@@ -14,8 +16,8 @@
 // Testable subclass exposing internals for direct manipulation
 class TestableInfluenceMap : public InfluenceMap {
 public:
-	TestableInfluenceMap(unsigned short resolution, float size, float coef, char level)
-		: InfluenceMap(resolution, size, coef, level, 0.f, createTemplateV(coef, level), true) {
+	TestableInfluenceMap(GridCalculator* calculator)
+		: InfluenceMap(calculator, 0.f) {
 	}
 
 	~TestableInfluenceMap() override = default;
@@ -46,7 +48,7 @@ protected:
 	float intersection[ARRAY_SIZE];
 
 	void SetUp() override {
-		map = new TestableInfluenceMap(RES, SIZE, 1.f, 1);
+		map = new TestableInfluenceMap(GridCalculatorProvider::get(RES, SIZE));
 	}
 
 	void TearDown() override {
@@ -65,6 +67,33 @@ protected:
 		map->setMinMax(mn, mx);
 	}
 };
+
+TEST(InfluenceTemplateProviderTest, ReusesTemplateForMatchingParameters) {
+	const auto* first = InfluenceTemplateProvider::get(0.5f, 4);
+	const auto* second = InfluenceTemplateProvider::get(0.5f, 4);
+
+	EXPECT_EQ(first, second);
+}
+
+TEST(InfluenceTemplateProviderTest, SeparatesTemplatesWithDifferentParameters) {
+	const auto* originalTemplate = InfluenceTemplateProvider::get(0.25f, 2);
+	const auto originalCenterValue = originalTemplate[12];
+	const auto* coefficientTemplate = InfluenceTemplateProvider::get(1.f, 4);
+	const auto* levelTemplate = InfluenceTemplateProvider::get(0.5f, 1);
+
+	EXPECT_EQ(originalTemplate, InfluenceTemplateProvider::get(0.25f, 2));
+	EXPECT_FLOAT_EQ(originalTemplate[12], originalCenterValue);
+	EXPECT_NE(coefficientTemplate, levelTemplate);
+}
+
+TEST(InfluenceTemplateProviderTest, GeneratesExpectedKernelWeights) {
+	const auto* values = InfluenceTemplateProvider::get(0.5f, 1);
+
+	EXPECT_FLOAT_EQ(values[0], 0.5f);
+	EXPECT_FLOAT_EQ(values[1], 2.f / 3.f);
+	EXPECT_FLOAT_EQ(values[4], 1.f);
+	EXPECT_FLOAT_EQ(values[8], 0.5f);
+}
 
 // --- Positive percent: seek high values ---
 
@@ -385,16 +414,16 @@ TEST_F(CumulateErrorsFixture, PositiveAndNegativeAreSymmetric) {
 }
 
 TEST(InfluenceMapRegression, GetKernelMaxIdxsHandlesSmallMap) {
-	TestableInfluenceMap map(4, 8.f, 1.f, 1);
+	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
 	map.update(0, 1.f);
 
 	const auto indexes = map.getKernelMaxIdxs();
-	ASSERT_EQ(indexes.size(), 4u);
+	ASSERT_EQ(indexes.size(), 10u);
 	EXPECT_EQ(indexes[0], 0u);
 }
 
 TEST(InfluenceMapRegression, ImmediateModeUpdatesRawAndResetClearsMap) {
-	InfluenceMap map(4, 8.f, 1.f, 1, 0.f, InfluenceMap::createTemplateV(1.f, 1), true);
+	InfluenceMap map(GridCalculatorProvider::get(4, 8.f), 0.f);
 	map.update(0, 3.f);
 
 	EXPECT_FLOAT_EQ(map.getRaw(0), 3.f);
@@ -407,7 +436,7 @@ TEST(InfluenceMapRegression, ImmediateModeUpdatesRawAndResetClearsMap) {
 }
 
 TEST(InfluenceMapRegression, ResetDecaysRawAndRebuildsKernelCache) {
-	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1), true);
+	InfluenceMap map(GridCalculatorProvider::get(4, 8.f), 0.f, true);
 	map.update(0, 2.f);
 
 	EXPECT_FLOAT_EQ(map.getRaw(0), 0.f);
@@ -423,13 +452,13 @@ TEST(InfluenceMapRegression, ResetDecaysRawAndRebuildsKernelCache) {
 }
 
 TEST(InfluenceMapRegression, ResetToZeroDropsValuesBelowThreshold) {
-	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1), true);
-	map.update(0, 0.25f);
+	InfluenceMap map(GridCalculatorProvider::get(4, 8.f), 0.f, true);
+	map.update(0, 0.00005f);
 
 	EXPECT_FLOAT_EQ(map.getKernel(0), 0.f);
 	map.reset();
 
-	EXPECT_FLOAT_EQ(map.getKernel(0), 0.25f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 0.00005f);
 	map.resetToZero();
 
 	EXPECT_FLOAT_EQ(map.getRaw(0), 0.f);
@@ -437,7 +466,7 @@ TEST(InfluenceMapRegression, ResetToZeroDropsValuesBelowThreshold) {
 }
 
 TEST(InfluenceMapRegression, HistoryResetDecaysRawAndInvalidatesKernel) {
-	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1), true);
+	InfluenceMap map(GridCalculatorProvider::get(4, 8.f), 0.f, true);
 	map.update(0, 4.f);
 
 	EXPECT_FLOAT_EQ(map.getRaw(0), 0.f);
@@ -455,7 +484,7 @@ TEST(InfluenceMapRegression, HistoryResetDecaysRawAndInvalidatesKernel) {
 }
 
 TEST(InfluenceMapRegression, BufferedHistoryResetMovesPendingIntoRawAndRebuildsKernel) {
-	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1), true);
+	InfluenceMap map(GridCalculatorProvider::get(4, 8.f), 0.f, true);
 	map.update(0, 4.f);
 
 	EXPECT_FLOAT_EQ(map.getRaw(0), 0.f);
@@ -473,7 +502,7 @@ TEST(InfluenceMapRegression, BufferedHistoryResetMovesPendingIntoRawAndRebuildsK
 }
 
 TEST(InfluenceMapRegression, BufferedHistoryResetAddsPendingOnTopOfDecayedRaw) {
-	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1), true);
+	InfluenceMap map(GridCalculatorProvider::get(4, 8.f), 0.f, true);
 	map.update(0, 4.f);
 	map.reset();
 	map.update(0, 6.f);
@@ -485,8 +514,8 @@ TEST(InfluenceMapRegression, BufferedHistoryResetAddsPendingOnTopOfDecayedRaw) {
 }
 
 TEST(InfluenceMapRegression, BufferedHistoryResetToZeroKeepsPendingAndDropsSmallRawValues) {
-	InfluenceMap map(4, 8.f, 1.f, 1, 0.5f, 0.5f, 0.f, InfluenceMap::createTemplateV(1.f, 1), true);
-	map.update(0, 0.25f);
+	InfluenceMap map(GridCalculatorProvider::get(4, 8.f), 0.f, true);
+	map.update(0, 0.00005f);
 	map.reset();
 	map.update(0, 5.f);
 
@@ -502,7 +531,7 @@ TEST(InfluenceMapRegression, BufferedHistoryResetToZeroKeepsPendingAndDropsSmall
 }
 
 TEST(InfluenceMapRegression, GetCenterUsesRawTerminalLayer) {
-	TestableInfluenceMap map(4, 8.f, 1.f, 1);
+	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
 	map.update(4, 1.f);
 	map.update(5, 2.f);
 
@@ -514,7 +543,7 @@ TEST(InfluenceMapRegression, GetCenterUsesRawTerminalLayer) {
 }
 
 TEST(InfluenceMapRegression, GetCenterRebuildsQuadAfterReset) {
-	TestableInfluenceMap map(4, 8.f, 1.f, 1);
+	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
 	GridCalculator calculator(4, 8.f);
 
 	map.update(0, 1.f);

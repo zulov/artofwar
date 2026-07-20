@@ -302,6 +302,7 @@
     <ClCompile Include="src\hud\window\score\ScorePanel.cpp" />
     <ClCompile Include="src\player\Possession.cpp" />
     <ClCompile Include="src\env\influence\map\InfluenceMap.cpp" />
+    <ClCompile Include="src\env\influence\map\InfluenceTemplateProvider.cpp" />
     <ClCompile Include="src\env\path\PathFinder.cpp" />
     <ClCompile Include="src\objects\unit\order\FormationOrder.cpp" />
     <ClCompile Include="src\objects\unit\order\GroupOrder.cpp" />
@@ -494,6 +495,7 @@
     <ClInclude Include="src\env\GridCalculator.h" />
     <ClInclude Include="src\env\influence\InfluenceManager.h" />
     <ClInclude Include="src\env\influence\map\InfluenceMap.h" />
+    <ClInclude Include="src\env\influence\map\InfluenceTemplateProvider.h" />
     <ClInclude Include="src\simulation\force\ForceStats.h" />
     <ClInclude Include="src\simulation\formation\Formation.h" />
     <ClInclude Include="src\simulation\formation\FormationManager.h" />

@@ -6,39 +6,41 @@
 #include <ranges>
 #include <numeric>
 
-#include "env/GridCalculatorProvider.h"
+#include "env/influence/MapsUtils.h"
+#include "env/influence/map/InfluenceTemplateProvider.h"
 #include "math/MathUtils.h"
 #include "utils/SpanUtils.h"
 
-InfluenceMap::InfluenceMap(unsigned short resolution, float size, float coef, char level,
-	                         float valueThresholdDebug, float* sharedTemplateV, bool ownsTemplateV)
-	: coef(coef),
-	  level(level),
-	  templateV(sharedTemplateV),
-	  ownsTemplateV(ownsTemplateV),
-	  calculator(GridCalculatorProvider::get(resolution, size)),
-	  arraySize(resolution * resolution),
-	  valueThresholdDebug(valueThresholdDebug) {
-	assert(level > 0);
-	levelRes = level * 2 + 1;
+namespace {
+	constexpr float KERNEL_COEF = 0.5f;
+	constexpr float HISTORY_MINIMAL_THRESHOLD = 0.0001f;
+	constexpr float HISTORY_VANISH_COEF = 0.5f;
+}
 
+InfluenceMap::InfluenceMap(GridCalculator* calculator, float valueThresholdDebug, bool history)
+	: templateV(InfluenceTemplateProvider::get(KERNEL_COEF, INF_LEVEL)),
+	  calculator(calculator),
+	  arraySize(0),
+	  valueThresholdDebug(valueThresholdDebug) {
+	assert(calculator);
+	arraySize = calculator->getResolution() * calculator->getResolution();
 	rawValues = new float[arraySize];
 	kernelValues = new float[arraySize];
 	std::fill_n(rawValues, arraySize, 0.f);
 	std::fill_n(kernelValues, arraySize, 0.f);
 
 	quadArraySize = 0;
-	auto currentRes = resolution;
+	auto currentRes = calculator->getResolution();
 	while (currentRes % 2 == 0 && currentRes != 1) {
 		currentRes /= 2;
 	}
 	currentRes *= 2;
-	for (int i = currentRes; i < resolution; i *= 2) {
+	for (int i = currentRes; i < calculator->getResolution(); i *= 2) {
 		quadArraySize += i * i;
 	}
 	quadValues = new float[quadArraySize];
 	float* ptr = quadValues;
-	for (int i = currentRes; i < resolution; i *= 2) {
+	for (int i = currentRes; i < calculator->getResolution(); i *= 2) {
 		const auto size1 = i * i;
 		quadLayers.emplace_back(ptr, size1);
 		quadResolutions.push_back(i);
@@ -46,45 +48,19 @@ InfluenceMap::InfluenceMap(unsigned short resolution, float size, float coef, ch
 	}
 	assert(!quadLayers.empty());
 	centerDirty = true;
+	if (history) {
+		minimalThreshold = HISTORY_MINIMAL_THRESHOLD;
+		vanishCoef = HISTORY_VANISH_COEF;
+		pendingValues = new float[arraySize];
+		std::fill_n(pendingValues, arraySize, 0.f);
+	}
 }
-
-InfluenceMap::InfluenceMap(unsigned short resolution, float size, float coef, char level, float minimalThreshold,
-	                         float vanishCoef, float valueThresholdDebug, float* sharedTemplateV, bool ownsTemplateV)
-	: InfluenceMap(resolution, size, coef, level, valueThresholdDebug, sharedTemplateV, ownsTemplateV) {
-	this->minimalThreshold = minimalThreshold;
-	this->vanishCoef = vanishCoef;
-	pendingValues = new float[arraySize];
-	std::fill_n(pendingValues, arraySize, 0.f);
-}
-
-InfluenceMap::InfluenceMap(unsigned short resolution, float size, float valueThresholdDebug)
-	: InfluenceMap(resolution, size, 0.5f, 4, valueThresholdDebug, createTemplateV(0.5f, 4), true) {}
-
-InfluenceMap::InfluenceMap(unsigned short resolution, float size)
-	: InfluenceMap(resolution, size, 0.5f, 4, 0.f, createTemplateV(0.5f, 4), true) {}
 
 InfluenceMap::~InfluenceMap() {
 	delete[] rawValues;
 	delete[] pendingValues;
 	delete[] kernelValues;
 	delete[] quadValues;
-	if (ownsTemplateV) {
-		delete[] templateV;
-	}
-}
-
-float* InfluenceMap::createTemplateV(float coef, char level) {
-	const auto levelRes = level * 2 + 1;
-	auto* tv = new float[levelRes * levelRes];
-	auto* ptr = tv;
-	for (short i = -level; i <= level; ++i) {
-		const auto a = i * i;
-		for (short j = -level; j <= level; ++j) {
-			const auto b = j * j;
-			*(ptr++) = 1 / ((a + b) * coef + 1.f);
-		}
-	}
-	return tv;
 }
 
 void InfluenceMap::update(unsigned index, float value) {
@@ -244,14 +220,14 @@ void InfluenceMap::rebuildKernel() const {
 			continue;
 		}
 		auto [centerX, centerZ] = calculator->getCords(i);
-		const auto minI = calculator->getValidLow(centerX - level);
-		const auto maxI = calculator->getValidHigh(centerX + level);
-		const auto minJ = calculator->getValidLow(centerZ - level);
-		const auto maxJ = calculator->getValidHigh(centerZ + level);
-		const auto jStart = (minJ - centerZ + level);
+		const auto minI = calculator->getValidLow(centerX - INF_LEVEL);
+		const auto maxI = calculator->getValidHigh(centerX + INF_LEVEL);
+		const auto minJ = calculator->getValidLow(centerZ - INF_LEVEL);
+		const auto maxJ = calculator->getValidHigh(centerZ + INF_LEVEL);
+		const auto jStart = (minJ - centerZ + INF_LEVEL);
 		for (auto x = minI; x <= maxI; ++x) {
 			auto* t = &kernelValues[calculator->getNotSafeIndex(x, minJ)];
-			auto idx = (x - centerX + level) * levelRes + jStart;
+			auto idx = (x - centerX + INF_LEVEL) * (INF_LEVEL * 2 + 1) + jStart;
 			auto ptr = templateV + idx;
 			for (short y = minJ; y <= maxJ; ++y) {
 				*(t++) += value * *(ptr++);

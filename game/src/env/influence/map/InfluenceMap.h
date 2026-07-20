@@ -13,12 +13,7 @@
 
 class InfluenceMap {
 public:
-	InfluenceMap(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug,
-	             float* sharedTemplateV, bool ownsTemplateV = false);
-	InfluenceMap(unsigned short resolution, float size, float coef, char level, float minimalThreshold,
-	             float vanishCoef, float valueThresholdDebug, float* sharedTemplateV, bool ownsTemplateV = false);
-	InfluenceMap(unsigned short resolution, float size, float valueThresholdDebug);
-	InfluenceMap(unsigned short resolution, float size);
+	InfluenceMap(GridCalculator* calculator, float valueThresholdDebug = 40.f, bool history = false);
 	virtual ~InfluenceMap();
 
 	void drawRaw(short batch, short maxParts);
@@ -46,8 +41,6 @@ public:
 
 	void ensureReady();
 
-	static float* createTemplateV(float coef, char level);
-
 protected:
 	GridCalculator* calculator;
 	unsigned int arraySize;
@@ -56,7 +49,6 @@ protected:
 	float* rawValues;
 	float* pendingValues = nullptr;
 	float* kernelValues;
-	float coef;
 	mutable bool valuesCalculateNeeded = false;
 	void invalidateCaches();
 	void printMap(std::span<const float> map, const Urho3D::String& name);
@@ -81,10 +73,7 @@ private:
 	Urho3D::Vector3 getVertex(const Urho3D::Vector2& center, Urho3D::Vector2 vertex) const;
 	void drawCell(int index, short batch, bool useKernel) const;
 
-	unsigned char level;
-	unsigned char levelRes;
-	float* templateV;
-	bool ownsTemplateV = false;
+	const float* templateV;
 	float* quadValues;
 	unsigned int quadArraySize;
 	std::vector<std::span<float>> quadLayers;

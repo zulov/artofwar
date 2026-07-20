@@ -72,25 +72,23 @@ private:
 	int getIndexInInfluence(Unit* unit) const;
 
 	// --- Per-player influence maps ---
-	std::vector<InfluenceMap*> buildingsInfluencePerPlayer;
-	std::vector<InfluenceMap*> unitsInfluencePerPlayer;
-	std::vector<InfluenceMap*> attackSpeed;
-	std::vector<InfluenceMap*> gatherSpeed[RESOURCES_SIZE];
-	std::vector<InfluenceMap*> resNotInBonus[RESOURCES_SIZE];
-	std::vector<InfluenceMap*> resNotInBonusAny;
-	std::vector<InfluenceMap*> economyInfluence;
-	std::vector<InfluenceMap*> armyInfluence;
+	std::vector<InfluenceMap*> buildingPresence;
+	std::vector<InfluenceMap*> unitPresence;
+	std::vector<InfluenceMap*> armyPresence;
+	std::vector<InfluenceMap*> gatheringActivityByResource[RESOURCES_SIZE];
+	std::vector<InfluenceMap*> attackActivity;
+	std::vector<InfluenceMap*> unboostedResourceByResource[RESOURCES_SIZE];
+	std::vector<InfluenceMap*> unboostedResource;
+	std::vector<InfluenceMap*> economicActivity;
 
 	// --- AI map views (non-owning, per player) ---
-	std::vector<std::array<InfluenceMap*, AI_MAP_COUNT>> mapsForAiPerPlayer;
-	std::vector<std::array<InfluenceMap*, RESOURCES_SIZE>> mapsGatherSpeedPerPlayer;
-	std::vector<std::array<InfluenceMap*, RESOURCES_SIZE>> mapsResNotInBonusPerPlayer;
-	std::vector<std::array<InfluenceMap*, CENTER_TYPE_COUNT>> mapsForCentersPerPlayer;
+	std::vector<std::array<InfluenceMap*, AI_MAP_COUNT>> buildPlacementByPlayer;
+	std::vector<std::array<InfluenceMap*, RESOURCES_SIZE>> unboostedResourceByPlayer;
+	std::vector<std::array<InfluenceMap*, CENTER_TYPE_COUNT>> centerSourceByPlayer;
 
 	// --- Infrastructure ---
 	GridCalculator* calculator;
 	VisibilityManager* visibilityManager;
-	float* sharedTemplateV;
 
 	// --- Scratch buffers ---
 	mutable content_info* ci;

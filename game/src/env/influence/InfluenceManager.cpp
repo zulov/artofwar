@@ -18,90 +18,85 @@
 #include "utils/OtherUtils.h"
 #include "utils/PrintUtils.h"
 
-// mapsForCentersPerPlayer is sized CENTER_TYPE_COUNT and indexed by CenterType.
+// centerSourceByPlayer is sized CENTER_TYPE_COUNT and indexed by CenterType.
 static_assert(magic_enum::enum_count<CenterType>() == CENTER_TYPE_COUNT,
               "CENTER_TYPE_COUNT must equal the number of CenterType enumerators");
 
 
 InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain) {
-	buildingsInfluencePerPlayer.reserve(numberOfPlayers);
-	unitsInfluencePerPlayer.reserve(numberOfPlayers);
+	buildingPresence.reserve(numberOfPlayers);
+	unitPresence.reserve(numberOfPlayers);
 
-	for (auto& gs : gatherSpeed) {
+	for (auto& gs : gatheringActivityByResource) {
 		gs.reserve(numberOfPlayers);
 	}
 
-	for (auto& resNotInBonus : resNotInBonus) {
-		resNotInBonus.reserve(numberOfPlayers);
+	for (auto& mapsByResource : unboostedResourceByResource) {
+		mapsByResource.reserve(numberOfPlayers);
 	}
-	resNotInBonusAny.reserve(numberOfPlayers);
+	unboostedResource.reserve(numberOfPlayers);
 
-	attackSpeed.reserve(numberOfPlayers);
-	armyInfluence.reserve(numberOfPlayers);
-	economyInfluence.reserve(numberOfPlayers);
+	attackActivity.reserve(numberOfPlayers);
+	armyPresence.reserve(numberOfPlayers);
+	economicActivity.reserve(numberOfPlayers);
 
-	mapsForAiPerPlayer.reserve(numberOfPlayers);
-	mapsForCentersPerPlayer.reserve(numberOfPlayers);
+	buildPlacementByPlayer.reserve(numberOfPlayers);
+	centerSourceByPlayer.reserve(numberOfPlayers);
 	unsigned short resolution = mapSize / INF_GRID_FIELD_SIZE;
-  sharedTemplateV = InfluenceMap::createTemplateV(0.5f, INF_LEVEL);
+	calculator = GridCalculatorProvider::get(resolution, mapSize);
 	for (int player = 0; player < numberOfPlayers; ++player) {
-		buildingsInfluencePerPlayer.emplace_back(
-	                                         new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 2, sharedTemplateV));
-		unitsInfluencePerPlayer.emplace_back(
-	                                     new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV));
+		buildingPresence.emplace_back(new InfluenceMap(calculator, 2.f));
+		unitPresence.emplace_back(new InfluenceMap(calculator));
 
-		for (auto& gs : gatherSpeed) {
-			gs.emplace_back(new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV));
+		for (auto& gs : gatheringActivityByResource) {
+			gs.emplace_back(new InfluenceMap(calculator, 40.f, true));
 		}
 
-		for (auto& resNotInBonus : resNotInBonus) {
-			resNotInBonus.emplace_back(new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 5, sharedTemplateV, false));
+		for (auto& mapsByResource : unboostedResourceByResource) {
+			mapsByResource.emplace_back(new InfluenceMap(calculator, 5.f));
 		}
 
-		attackSpeed.emplace_back(new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40, sharedTemplateV));
-		armyInfluence.emplace_back(new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 40, sharedTemplateV, false));
-		economyInfluence.emplace_back(new InfluenceMap(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40,
-		                                             sharedTemplateV, false));
+		attackActivity.emplace_back(new InfluenceMap(calculator, 40.f, true));
+		armyPresence.emplace_back(new InfluenceMap(calculator));
+		economicActivity.emplace_back(new InfluenceMap(calculator));
 	}
 
 	for (int player = 0; player < numberOfPlayers; ++player) {
 		const int enemy = 1 - player;
-		std::array<InfluenceMap*, RESOURCES_SIZE> gatherSpeedView;
-		std::array<InfluenceMap*, RESOURCES_SIZE> resNotInBonusView;
+		std::array<InfluenceMap*, RESOURCES_SIZE> gatheringForPlayer;
+		std::array<InfluenceMap*, RESOURCES_SIZE> unboostedForPlayer;
 		for (int r = 0; r < RESOURCES_SIZE; ++r) {
-			gatherSpeedView[r] = gatherSpeed[r][player];
-			resNotInBonusView[r] = resNotInBonus[r][player];
+			gatheringForPlayer[r] = gatheringActivityByResource[r][player];
+			unboostedForPlayer[r] = unboostedResourceByResource[r][player];
 		}
-		resNotInBonusAny.emplace_back(new InfluenceMap(resolution, mapSize, 0.5f, INF_LEVEL, 5, sharedTemplateV, false));
+		unboostedResource.emplace_back(new InfluenceMap(calculator, 5.f));
 
-		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMap*, AI_MAP_COUNT>{
-			                                buildingsInfluencePerPlayer[player],
-			                                unitsInfluencePerPlayer[player],
-			                                attackSpeed[player],
-			                                gatherSpeedView[cast(ResourceType::FOOD)],
-			                                gatherSpeedView[cast(ResourceType::WOOD)],
-			                                gatherSpeedView[cast(ResourceType::STONE)],
-			                                gatherSpeedView[cast(ResourceType::GOLD)],
-			                                buildingsInfluencePerPlayer[enemy],
-			                                unitsInfluencePerPlayer[enemy],
-			                                attackSpeed[enemy],
-			                                resNotInBonusAny[player],
-			                                economyInfluence[player],
-			                        });
-		mapsForCentersPerPlayer.emplace_back(std::array<InfluenceMap*, CENTER_TYPE_COUNT>{
-				                             economyInfluence[player],
-				                             buildingsInfluencePerPlayer[player],
-				                             armyInfluence[player],
-				                             attackSpeed[player]
-			                             });
+		buildPlacementByPlayer.emplace_back(std::array<InfluenceMap*, AI_MAP_COUNT>{
+					                                buildingPresence[player],
+					                                unitPresence[player],
+					                                attackActivity[player],
+					                                gatheringForPlayer[cast(ResourceType::FOOD)],
+					                                gatheringForPlayer[cast(ResourceType::WOOD)],
+					                                gatheringForPlayer[cast(ResourceType::STONE)],
+					                                gatheringForPlayer[cast(ResourceType::GOLD)],
+					                                buildingPresence[enemy],
+					                                unitPresence[enemy],
+					                                attackActivity[enemy],
+					                                unboostedResource[player],
+					                                economicActivity[player],
+					                        });
+		centerSourceByPlayer.emplace_back(std::array<InfluenceMap*, CENTER_TYPE_COUNT>{
+					                             economicActivity[player],
+					                             buildingPresence[player],
+					                             armyPresence[player],
+					                             attackActivity[player]
+					                             });
 
-		mapsGatherSpeedPerPlayer.emplace_back(gatherSpeedView);
-		mapsResNotInBonusPerPlayer.emplace_back(resNotInBonusView);
-		assert(validSizes(mapsForAiPerPlayer.at(player)));
+		unboostedResourceByPlayer.emplace_back(unboostedForPlayer);
+		assert(validSizes(buildPlacementByPlayer.at(player)));
 	}
 	visibilityManager = new VisibilityManager(numberOfPlayers, mapSize, terrain);
 
-	calculator = GridCalculatorProvider::get(resolution, mapSize);
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUENCE, MAX_DEBUG_PARTS_INFLUENCE);
 
@@ -109,78 +104,76 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 	assert(arraySize <= std::numeric_limits<unsigned short>::max());
 	errorsSum.resize(arraySize);
 
-	assert(calculator->getResolution() == unitsInfluencePerPlayer[0]->getResolution());
+	assert(calculator->getResolution() == unitPresence[0]->getResolution());
 }
 
 InfluenceManager::~InfluenceManager() {
-	clear_vector(buildingsInfluencePerPlayer);
-	clear_vector(unitsInfluencePerPlayer);
-	for (auto& vec : gatherSpeed) {
+	clear_vector(buildingPresence);
+	clear_vector(unitPresence);
+	for (auto& vec : gatheringActivityByResource) {
 		clear_vector(vec);
 	}
-	for (auto& vec : resNotInBonus) {
+	for (auto& vec : unboostedResourceByResource) {
 		clear_vector(vec);
 	}
-	clear_vector(resNotInBonusAny);
+	clear_vector(unboostedResource);
 
-	clear_vector(attackSpeed);
+	clear_vector(attackActivity);
 
-	clear_vector(armyInfluence);
-	clear_vector(economyInfluence);
+	clear_vector(armyPresence);
+	clear_vector(economicActivity);
 
 	delete visibilityManager;
 	delete ci;
-
-	delete[] sharedTemplateV;
 }
 
 void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
-	MapsUtils::resetMaps(unitsInfluencePerPlayer);
-	MapsUtils::resetMaps(armyInfluence);
-	for (auto& vec : resNotInBonus) {
+	MapsUtils::resetMaps(unitPresence);
+	MapsUtils::resetMaps(armyPresence);
+	for (auto& vec : unboostedResourceByResource) {
 		MapsUtils::resetMaps(vec);
 	}
-	MapsUtils::resetMaps(resNotInBonusAny);
+	MapsUtils::resetMaps(unboostedResource);
 
 	for (const auto unit : (*units)) {
 		const auto pId = unit->getPlayer();
 		const auto index = getIndexInInfluence(unit);
-		unitsInfluencePerPlayer[pId]->update(index);
+		unitPresence[pId]->update(index);
 		if (!unit->getDb()->typeWorker) {
-			armyInfluence[pId]->update(index);
+			armyPresence[pId]->update(index);
 		} else if (unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
 			auto res = static_cast<ResourceEntity*>(unit->getThingToInteract());
 			// TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
-			mapsResNotInBonusPerPlayer[unit->getPlayer()][res->getResourceId()]->update(res->getIndexInInfluence());
-			resNotInBonusAny[unit->getPlayer()]->update(res->getIndexInInfluence());
+			unboostedResourceByPlayer[unit->getPlayer()][res->getResourceId()]->update(res->getIndexInInfluence());
+			unboostedResource[unit->getPlayer()]->update(res->getIndexInInfluence());
 		}
 	}
 	
 	//TODO perf to tutaj chyba niepotrzebne i tak bedzie zrobione lazy
-	//MapsUtils::finalize(unitsInfluencePerPlayer);
+	//MapsUtils::finalize(unitPresence);
 }
 
 void InfluenceManager::updateBuildings(const std::vector<Building*>* buildings) const {
-	MapsUtils::resetMaps(buildingsInfluencePerPlayer);
+	MapsUtils::resetMaps(buildingPresence);
 	for (const auto building : (*buildings)) {
-		buildingsInfluencePerPlayer[building->getPlayer()]->update(building->getIndexInInfluence());
+		buildingPresence[building->getPlayer()]->update(building->getIndexInInfluence());
 	}
 	// TODO perf to tutaj chyba niepotrzebne i tak bedzie zrobione lazy
-	//MapsUtils::finalize(buildingsInfluencePerPlayer);
+	//MapsUtils::finalize(buildingPresence);
 }
 
 void InfluenceManager::updateWithHistory() const {
-	for (auto& vec : gatherSpeed) {
+	for (auto& vec : gatheringActivityByResource) {
 		MapsUtils::resetMaps(vec);
 		MapsUtils::finalize(vec);
 	}
 
-	MapsUtils::resetMaps(attackSpeed);//obniza wartosci
-	MapsUtils::finalize(attackSpeed);//dopisuje nowe
+	MapsUtils::resetMaps(attackActivity);//obniza wartosci
+	MapsUtils::finalize(attackActivity);//dopisuje nowe
 }
 
 void InfluenceManager::updateQuadOther() const {
-	MapsUtils::resetMaps(economyInfluence);
+	MapsUtils::resetMaps(economicActivity);
 }
 
 void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
@@ -189,10 +182,10 @@ void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::
 }
 
 void InfluenceManager::resetHistoryThresholds() const {
-	for (auto& vec : gatherSpeed) {
+	for (auto& vec : gatheringActivityByResource) {
 		MapsUtils::resetToZeroMaps(vec);
 	}
-	MapsUtils::resetToZeroMaps(attackSpeed);
+	MapsUtils::resetToZeroMaps(attackActivity);
 }
 
 void InfluenceManager::draw(InfluenceDataType type, unsigned char index) {
@@ -203,37 +196,37 @@ void InfluenceManager::draw(InfluenceDataType type, unsigned char index) {
 	case InfluenceDataType::NONE:
 		break;
 	case InfluenceDataType::UNITS_NUMBER_PER_PLAYER:
-		MapsUtils::drawMapRaw(currentDebugBatch, index, unitsInfluencePerPlayer);
+		MapsUtils::drawMapRaw(currentDebugBatch, index, unitPresence);
 		break;
 	case InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER:
-		MapsUtils::drawMapKernel(currentDebugBatch, index, unitsInfluencePerPlayer);
+		MapsUtils::drawMapKernel(currentDebugBatch, index, unitPresence);
 		break;
 	case InfluenceDataType::BUILDING_INFLUENCE_PER_PLAYER:
-		MapsUtils::drawMapKernel(currentDebugBatch, index, buildingsInfluencePerPlayer);
+		MapsUtils::drawMapKernel(currentDebugBatch, index, buildingPresence);
 		break;
 	case InfluenceDataType::FOOD_SPEED:
-		MapsUtils::drawMapKernel(currentDebugBatch, index, gatherSpeed[cast(ResourceType::FOOD)]);
+		MapsUtils::drawMapKernel(currentDebugBatch, index, gatheringActivityByResource[cast(ResourceType::FOOD)]);
 		break;
 	case InfluenceDataType::WOOD_SPEED:
-		MapsUtils::drawMapKernel(currentDebugBatch, index, gatherSpeed[cast(ResourceType::WOOD)]);
+		MapsUtils::drawMapKernel(currentDebugBatch, index, gatheringActivityByResource[cast(ResourceType::WOOD)]);
 		break;
 	case InfluenceDataType::STONE_SPEED:
-		MapsUtils::drawMapKernel(currentDebugBatch, index, gatherSpeed[cast(ResourceType::STONE)]);
+		MapsUtils::drawMapKernel(currentDebugBatch, index, gatheringActivityByResource[cast(ResourceType::STONE)]);
 		break;
 	case InfluenceDataType::GOLD_SPEED:
-		MapsUtils::drawMapKernel(currentDebugBatch, index, gatherSpeed[cast(ResourceType::GOLD)]);
+		MapsUtils::drawMapKernel(currentDebugBatch, index, gatheringActivityByResource[cast(ResourceType::GOLD)]);
 		break;
 	case InfluenceDataType::ATTACK_SPEED:
-		MapsUtils::drawMapKernel(currentDebugBatch, index, attackSpeed);
+		MapsUtils::drawMapKernel(currentDebugBatch, index, attackActivity);
 		break;
 	case InfluenceDataType::ECON_QUAD:
-		MapsUtils::drawMapRaw(currentDebugBatch, index, economyInfluence);
+		MapsUtils::drawMapRaw(currentDebugBatch, index, economicActivity);
 		break;
 	case InfluenceDataType::BUILDINGS_QUAD:
-		MapsUtils::drawMapRaw(currentDebugBatch, index, buildingsInfluencePerPlayer);
+		MapsUtils::drawMapRaw(currentDebugBatch, index, buildingPresence);
 		break;
 	case InfluenceDataType::ARMY_QUAD:
-		MapsUtils::drawMapRaw(currentDebugBatch, index, armyInfluence);
+		MapsUtils::drawMapRaw(currentDebugBatch, index, armyPresence);
 		break;
 	case InfluenceDataType::VISIBILITY:
 		visibilityManager->drawMaps(currentDebugBatch, index);
@@ -249,17 +242,18 @@ void InfluenceManager::draw(InfluenceDataType type, unsigned char index) {
 }
 
 void InfluenceManager::drawAll() const {
-	MapsUtils::drawAll(buildingsInfluencePerPlayer, "buildingsInt");
-	MapsUtils::drawAll(unitsInfluencePerPlayer, "units");
+	MapsUtils::drawAll(buildingPresence, "buildingPresence");
+	MapsUtils::drawAll(unitPresence, "unitPresence");
 
-	constexpr const char* gatherNames[] = {"gatherFood", "gatherWood", "gatherStone", "gatherGold"};
+	constexpr const char* gatheringActivityNames[] = {
+		"gatheringActivityFood", "gatheringActivityWood", "gatheringActivityStone", "gatheringActivityGold"};
 	for (int r = 0; r < RESOURCES_SIZE; ++r) {
-		MapsUtils::drawAll(gatherSpeed[r], gatherNames[r]);
+		MapsUtils::drawAll(gatheringActivityByResource[r], gatheringActivityNames[r]);
 	}
-	MapsUtils::drawAll(attackSpeed, "attack");
+	MapsUtils::drawAll(attackActivity, "attackActivity");
 
-	MapsUtils::drawAll(armyInfluence, "armyInfluence");
-	MapsUtils::drawAll(economyInfluence, "economyInfluence");
+	MapsUtils::drawAll(armyPresence, "armyPresence");
+	MapsUtils::drawAll(economicActivity, "economicActivity");
 }
 
 content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfo,
@@ -271,8 +265,8 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 	case CellState::COLLECT:
 	case CellState::DEPLOY:
 		if (checks[3] || checks[4]) {
-			for (int i = 0; i < unitsInfluencePerPlayer.size(); ++i) {
-				const auto value = unitsInfluencePerPlayer[i]->getRaw(center);
+			for (int i = 0; i < unitPresence.size(); ++i) {
+				const auto value = unitPresence[i]->getRaw(center);
 				if ((checks[3] && i == activePlayer || checks[4] && i != activePlayer) && value > 0) {
 					ci->unitsNumberPerPlayer[i] = value;
 					ci->hasUnit = true;
@@ -302,12 +296,12 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 
 const std::vector<unsigned>&
 InfluenceManager::getAreas(std::span<const float> result, unsigned char player) const {
-	std::array<InfluenceMap*, AI_MAP_COUNT> maps = mapsForAiPerPlayer[player];
+	std::array<InfluenceMap*, AI_MAP_COUNT> maps = buildPlacementByPlayer[player];
 	return getBestVisibleIndexes(maps, result, player);
 }
 
 std::vector<unsigned> InfluenceManager::getAreasResBonus(unsigned char id, unsigned char player) const {
-	return mapsResNotInBonusPerPlayer[player][id]->getRawMaxIdxs();
+	return unboostedResourceByPlayer[player][id]->getRawMaxIdxs();
 }
 
 const std::vector<unsigned>&
@@ -339,19 +333,19 @@ int InfluenceManager::getIndexInInfluence(Unit* unit) const {
 void InfluenceManager::addCollect(Unit* unit, short resId, float value) const {
 	const auto playerId = unit->getPlayer();
 
-	assert(gatherSpeed[cast(ResourceType::FOOD)][playerId]->getResolution() == calculator->getResolution());
+	assert(gatheringActivityByResource[cast(ResourceType::FOOD)][playerId]->getResolution() == calculator->getResolution());
 	const auto index = getIndexInInfluence(unit);
-	gatherSpeed[resId][playerId]->update(index, value);
+	gatheringActivityByResource[resId][playerId]->update(index, value);
 
-	economyInfluence[playerId]->update(index, value);
+	economicActivity[playerId]->update(index, value);
 }
 
 void InfluenceManager::addAttack(unsigned char player, const Urho3D::Vector2& position, float value) const {
-	attackSpeed[player]->update(position, value);
+	attackActivity[player]->update(position, value);
 }
 
 std::optional<Urho3D::Vector2> InfluenceManager::getCenterOf(CenterType id, unsigned char player) const {
-	return mapsForCentersPerPlayer[player][castC(id)]->getCenter();
+	return centerSourceByPlayer[player][castC(id)]->getCenter();
 }
 
 bool InfluenceManager::isVisible(unsigned char player, const Urho3D::Vector2& pos) const {
