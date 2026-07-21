@@ -81,10 +81,9 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 					                                gatheringForPlayer[cast(ResourceType::GOLD)],
 					                                buildingPresence[enemy],
 					                                unitPresence[enemy],
-					                                attackActivity[enemy],
-					                                unboostedResource[player],
-					                                economicActivity[player],
-					                        });
+				                                attackActivity[enemy],
+				                                unboostedResource[player],
+				                        });
 		centerSourceByPlayer.emplace_back(std::array<InfluenceMap*, CENTER_TYPE_COUNT>{
 					                             economicActivity[player],
 					                             buildingPresence[player],

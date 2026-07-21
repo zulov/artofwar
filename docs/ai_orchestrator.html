@@ -235,10 +235,10 @@
 
   <!-- BuildSpatialBrain on the side -->
   <line x1="700" y1="545" x2="700" y2="580" stroke="#00BCD4" stroke-width="1.5" stroke-dasharray="4,3"/>
-  <g data-tt-title="BuildSpatialBrain (on demand)" data-tt-body="<span class='tt-logic'>Called by the want executor (executeBuilding) to decide WHERE to place a building.</span><br><br><span class='tt-input'>Inputs (16):</span> expand urgency, building/worker/army counts, game time, scores, and a 9-slot BuildPlacementClass one-hot<br><br><span class='tt-output'>Outputs (12 weights = AI_MAP_COUNT):</span> one weight per influence map layer (buildings, units, attackSpeed, 4x gatherSpeed, enemy buildings, enemy units, enemy attackSpeed, res not-bonus, economy)<br><br>Weights are passed to the influence manager which combines the maps, filters by visibility, and returns the best cell indexes for placement.">
+  <g data-tt-title="BuildSpatialBrain (on demand)" data-tt-body="<span class='tt-logic'>Called by the want executor (executeBuilding) to decide WHERE to place a building.</span><br><br><span class='tt-input'>Inputs (20):</span> expand urgency, building/worker/army counts, game time, scores, a 9-slot BuildPlacementClass one-hot, and four resource-type flags<br><br><span class='tt-output'>Outputs (11 weights = AI_MAP_COUNT):</span> one weight per placement influence map layer (buildings, units, attackSpeed, 4x gatherSpeed, enemy buildings, enemy units, enemy attackSpeed, res not-bonus)<br><br>Weights are passed to the influence manager which combines the maps, filters by visibility, and returns the best cell indexes for placement.">
     <rect x="475" y="585" width="450" height="55" rx="8" fill="#006064" stroke="#00BCD4" stroke-width="2"/>
     <text x="700" y="607" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">BuildSpatialBrain</text>
-    <text x="700" y="625" text-anchor="middle" fill="#80DEEA" font-size="10">16 inputs &rarr; 12 influence map weights &rarr; best placement cell</text>
+    <text x="700" y="625" text-anchor="middle" fill="#80DEEA" font-size="10">20 inputs &rarr; 11 influence map weights &rarr; best placement cell</text>
   </g>
 
   <!-- Lacking feedback arrow back to top -->
@@ -328,7 +328,7 @@
     <td class="brain">UnitBrain</td><td>action</td><td>21</td><td>25 (23-dim profile + 2 upgrades) + count</td><td>unit.csv</td><td>Every tick</td>
   </tr>
   <tr>
-    <td class="brain">BuildSpatialBrain</td><td>action</td><td>16</td><td>12 influence map weights</td><td>build_spatial.csv</td><td>On demand (when placing building)</td>
+    <td class="brain">BuildSpatialBrain</td><td>action</td><td>20</td><td>11 influence map weights</td><td>build_spatial.csv</td><td>On demand (when placing building)</td>
   </tr>
 </table>
 
@@ -363,7 +363,7 @@
   <h3 style="color:#00BCD4">Influence Maps and Spatial Brains</h3>
   <p>The game maintains per-player influence maps at grid resolution. Spatial brains output <b>weights</b> for these maps, not positions directly.</p>
   <ul>
-    <li><b>12 maps</b> for general/building use (<code>AI_MAP_COUNT</code>): buildings, units, attackSpeed, 4x gatherSpeed, enemy buildings, enemy units, enemy attackSpeed, res-not-bonus, economy</li>
+    <li><b>11 maps</b> for building placement (<code>AI_MAP_COUNT</code>): buildings, units, attackSpeed, 4x gatherSpeed, enemy buildings, enemy units, enemy attackSpeed, and res-not-bonus</li>
 	<li>Weights are combined with maps to score map cells</li>
 	<li>BuildSpatial uses the ordered visible cells to find a valid building position</li>
 	<li>MilitaryBrain uses quadtree-based influence centers directly for army movement</li>

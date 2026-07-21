@@ -1354,7 +1354,7 @@ if weight == 0 or max == min:
 
 <table class="spec">
   <tr>
-    <th colspan="5">BuildSpatialOutput - 12 weight schema</th>
+    <th colspan="5">BuildSpatialOutput - 11 weight schema</th>
   </tr>
   <tr>
     <th>Index</th>
@@ -1374,7 +1374,6 @@ if weight == 0 or max == min:
   <tr><td>8</td><td><code>W_ENEMY_UNITS_INFLUENCE</code></td><td>enemy <code>unitsInfluencePerPlayer</code></td><td>seek enemy presence</td><td>avoid enemy presence</td></tr>
   <tr><td>9</td><td><code>W_ENEMY_ATTACK_SPEED</code></td><td>enemy <code>attackSpeed</code></td><td>seek enemy battle heat</td><td>avoid enemy battle heat</td></tr>
   <tr><td>10</td><td><code>W_RES_NOT_BONUS</code></td><td>our <code>resNotInBonusAny</code></td><td>seek current resource activity</td><td>avoid current resource activity</td></tr>
-  <tr><td>11</td><td><code>W_ECONOMY</code></td><td>our <code>economyInfluence</code></td><td>seek recent economy core</td><td>avoid recent economy core</td></tr>
 </table>
 
 <table class="spec">
@@ -1395,7 +1394,7 @@ if weight == 0 or max == min:
 
 <div class="card">
   <h3>How Build Placement Uses the Ordered Candidate List</h3>
-  <p><code>WantExecutor::findPosToBuild()</code> calls the build-spatial brain, passes its 12 weights to <code>Environment::getPosToCreate()</code>, and receives an ordered list of influence cell indexes from <code>InfluenceManager::getAreas()</code>.</p>
+  <p><code>WantExecutor::findPosToBuild()</code> calls the build-spatial brain, passes its 11 weights to <code>Environment::getPosToCreate()</code>, and receives an ordered list of influence cell indexes from <code>InfluenceManager::getAreas()</code>.</p>
   <p>The environment does not place the building directly on the influence cell center. Instead it:</p>
   <ul>
     <li>converts each influence index to a world-space center,</li>

@@ -45,7 +45,6 @@ enum class BuildSpatialOutputIdx : unsigned char {
 	W_ENEMY_UNITS_INFLUENCE,
 	W_ENEMY_ATTACK_SPEED,
 	W_RES_NOT_BONUS,
-	W_ECONOMY,
 };
 
 struct BuildSpatialOutput {
