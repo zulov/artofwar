@@ -21,11 +21,12 @@ private:
 	char environmentIndex = 0;
 
 	EnvironmentDebugMode nextEnvMode[magic_enum::enum_count<EnvironmentDebugMode>()] = {
-		EnvironmentDebugMode::MAIN_GRID, EnvironmentDebugMode::INF_UNITS_NUMBER_PER_PLAYER,
-		EnvironmentDebugMode::INF_UNITS_INFLUENCE_PER_PLAYER, EnvironmentDebugMode::INF_BUILDING_INFLUENCE_PER_PLAYER,
-		EnvironmentDebugMode::INF_FOOD_SPEED, EnvironmentDebugMode::INF_WOOD_SPEED,
-		EnvironmentDebugMode::INF_STONE_SPEED, EnvironmentDebugMode::INF_GOLD_SPEED,
-		EnvironmentDebugMode::INF_ATTACK_SPEED, EnvironmentDebugMode::VISIBILITY, EnvironmentDebugMode::NONE
+		EnvironmentDebugMode::MAIN_GRID, EnvironmentDebugMode::UNITS_RAW,
+		EnvironmentDebugMode::UNITS_INFLUENCE, EnvironmentDebugMode::BUILDING_INFLUENCE,
+		EnvironmentDebugMode::FOOD_SPEED, EnvironmentDebugMode::WOOD_SPEED,
+		EnvironmentDebugMode::STONE_SPEED, EnvironmentDebugMode::GOLD_SPEED,
+		EnvironmentDebugMode::ATTACK_SPEED, EnvironmentDebugMode::ECONOMY,
+		EnvironmentDebugMode::VISIBILITY, EnvironmentDebugMode::NONE
 	};
 	SimColorMode nextColorMode[magic_enum::enum_count<SimColorMode>()] = {
 		SimColorMode::VELOCITY, SimColorMode::STATE, SimColorMode::FORMATION, SimColorMode::BASIC

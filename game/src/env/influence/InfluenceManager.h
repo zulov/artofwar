@@ -6,8 +6,8 @@
 #include <vector>
 #include <Urho3D/Math/Vector3.h>
 
+#include "debug/EnvironmentDebugMode.h"
 #include "objects/resource/ResourceType.h"
-#include "player/ai/InfluenceDataType.h"
 
 enum class ParentBuildingType : char;
 enum class CenterType : char;
@@ -58,7 +58,7 @@ public:
 	float getFieldSize() const;
 
 	// --- Debug / UI ---
-	void draw(InfluenceDataType type, unsigned char index);
+	void draw(EnvironmentDebugMode mode, unsigned char index);
 	void drawAll() const;
 	void nextVisibilityType() const;
 	content_info* getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfos, bool* checks,
@@ -98,5 +98,4 @@ private:
 
 	// --- Debug state ---
 	short currentDebugBatch = 0;
-	InfluenceDataType debugType = InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER;
 };

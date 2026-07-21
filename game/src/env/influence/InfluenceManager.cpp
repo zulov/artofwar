@@ -188,47 +188,42 @@ void InfluenceManager::resetHistoryThresholds() const {
 	MapsUtils::resetToZeroMaps(attackActivity);
 }
 
-void InfluenceManager::draw(InfluenceDataType type, unsigned char index) {
+void InfluenceManager::draw(EnvironmentDebugMode mode, unsigned char index) {
 	DebugLineRepo::clear(DebugLineType::INFLUENCE, currentDebugBatch);
 	DebugLineRepo::beginGeometry(DebugLineType::INFLUENCE, currentDebugBatch);
 
-	switch (type) {
-	case InfluenceDataType::NONE:
+	switch (mode) {
+	case EnvironmentDebugMode::NONE:
+	case EnvironmentDebugMode::MAIN_GRID:
 		break;
-	case InfluenceDataType::UNITS_NUMBER_PER_PLAYER:
+	case EnvironmentDebugMode::UNITS_RAW:
 		MapsUtils::drawMapRaw(currentDebugBatch, index, unitPresence);
 		break;
-	case InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER:
+	case EnvironmentDebugMode::UNITS_INFLUENCE:
 		MapsUtils::drawMapKernel(currentDebugBatch, index, unitPresence);
 		break;
-	case InfluenceDataType::BUILDING_INFLUENCE_PER_PLAYER:
+	case EnvironmentDebugMode::BUILDING_INFLUENCE:
 		MapsUtils::drawMapKernel(currentDebugBatch, index, buildingPresence);
 		break;
-	case InfluenceDataType::FOOD_SPEED:
+	case EnvironmentDebugMode::FOOD_SPEED:
 		MapsUtils::drawMapKernel(currentDebugBatch, index, gatheringActivityByResource[cast(ResourceType::FOOD)]);
 		break;
-	case InfluenceDataType::WOOD_SPEED:
+	case EnvironmentDebugMode::WOOD_SPEED:
 		MapsUtils::drawMapKernel(currentDebugBatch, index, gatheringActivityByResource[cast(ResourceType::WOOD)]);
 		break;
-	case InfluenceDataType::STONE_SPEED:
+	case EnvironmentDebugMode::STONE_SPEED:
 		MapsUtils::drawMapKernel(currentDebugBatch, index, gatheringActivityByResource[cast(ResourceType::STONE)]);
 		break;
-	case InfluenceDataType::GOLD_SPEED:
+	case EnvironmentDebugMode::GOLD_SPEED:
 		MapsUtils::drawMapKernel(currentDebugBatch, index, gatheringActivityByResource[cast(ResourceType::GOLD)]);
 		break;
-	case InfluenceDataType::ATTACK_SPEED:
+	case EnvironmentDebugMode::ATTACK_SPEED:
 		MapsUtils::drawMapKernel(currentDebugBatch, index, attackActivity);
 		break;
-	case InfluenceDataType::ECON_QUAD:
+	case EnvironmentDebugMode::ECONOMY:
 		MapsUtils::drawMapRaw(currentDebugBatch, index, economicActivity);
 		break;
-	case InfluenceDataType::BUILDINGS_QUAD:
-		MapsUtils::drawMapRaw(currentDebugBatch, index, buildingPresence);
-		break;
-	case InfluenceDataType::ARMY_QUAD:
-		MapsUtils::drawMapRaw(currentDebugBatch, index, armyPresence);
-		break;
-	case InfluenceDataType::VISIBILITY:
+	case EnvironmentDebugMode::VISIBILITY:
 		visibilityManager->drawMaps(currentDebugBatch, index);
 		break;
 	default: ;

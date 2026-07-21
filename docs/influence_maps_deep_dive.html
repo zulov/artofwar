@@ -1262,7 +1262,7 @@ if weight == 0 or max == min:
   <ul>
     <li><code>CenterType::ARMY</code></li>
     <li>distance inputs in <code>MasterBrain</code> and <code>MilitaryBrain</code></li>
-    <li>debug view <code>ARMY_QUAD</code> (raw)</li>
+    <li>raw values remain available for center calculation; no dedicated debug mode currently exposes this map</li>
   </ul>
 </div>
 
@@ -1302,7 +1302,7 @@ if weight == 0 or max == min:
   <ul>
     <li>Build spatial slot 11.</li>
     <li><code>CenterType::ECON</code>.</li>
-    <li>debug mode <code>ECON_QUAD</code> (raw).</li>
+    <li>debug mode <code>ECONOMY</code> (raw).</li>
   </ul>
   <p>Typical use: positive weight attracts storage, refine, or defense toward the current economy core; negative weight pushes buildings away from the economy if the placement class wants empty space.</p>
 </div>
@@ -1546,7 +1546,7 @@ if weight == 0 or max == min:
 
 <table class="spec">
   <tr>
-    <th colspan="4">InfluenceDataType debug mapping</th>
+    <th colspan="4">EnvironmentDebugMode debug mapping</th>
   </tr>
   <tr>
     <th>Debug enum</th>
@@ -1554,17 +1554,15 @@ if weight == 0 or max == min:
     <th>Layer shown</th>
     <th>Notes</th>
   </tr>
-  <tr><td><code>UNITS_NUMBER_PER_PLAYER</code></td><td><code>unitsInfluencePerPlayer</code></td><td>raw</td><td>exact per-cell unit count</td></tr>
-  <tr><td><code>UNITS_INFLUENCE_PER_PLAYER</code></td><td><code>unitsInfluencePerPlayer</code></td><td>kernel</td><td>smoothed density</td></tr>
-  <tr><td><code>BUILDING_INFLUENCE_PER_PLAYER</code></td><td><code>buildingsInfluencePerPlayer</code></td><td>kernel</td><td>smoothed building presence</td></tr>
+  <tr><td><code>UNITS_RAW</code></td><td><code>unitsInfluencePerPlayer</code></td><td>raw</td><td>exact per-cell unit count</td></tr>
+  <tr><td><code>UNITS_INFLUENCE</code></td><td><code>unitsInfluencePerPlayer</code></td><td>kernel</td><td>smoothed density</td></tr>
+  <tr><td><code>BUILDING_INFLUENCE</code></td><td><code>buildingsInfluencePerPlayer</code></td><td>kernel</td><td>smoothed building presence</td></tr>
   <tr><td><code>FOOD_SPEED</code></td><td><code>gatherSpeed[FOOD]</code></td><td>kernel</td><td>decayed recent food collection</td></tr>
   <tr><td><code>WOOD_SPEED</code></td><td><code>gatherSpeed[WOOD]</code></td><td>kernel</td><td>decayed recent wood collection</td></tr>
   <tr><td><code>STONE_SPEED</code></td><td><code>gatherSpeed[STONE]</code></td><td>kernel</td><td>decayed recent stone collection</td></tr>
   <tr><td><code>GOLD_SPEED</code></td><td><code>gatherSpeed[GOLD]</code></td><td>kernel</td><td>decayed recent gold collection</td></tr>
   <tr><td><code>ATTACK_SPEED</code></td><td><code>attackSpeed</code></td><td>kernel</td><td>recent combat heat</td></tr>
-  <tr><td><code>ECON_QUAD</code></td><td><code>economyInfluence</code></td><td>raw</td><td>recent collection activity accumulator</td></tr>
-  <tr><td><code>BUILDINGS_QUAD</code></td><td><code>buildingsInfluencePerPlayer</code></td><td>raw</td><td>exact building occupancy, not the kernel</td></tr>
-  <tr><td><code>ARMY_QUAD</code></td><td><code>armyInfluence</code></td><td>raw</td><td>non-worker army mass</td></tr>
+  <tr><td><code>ECONOMY</code></td><td><code>economyInfluence</code></td><td>raw</td><td>recent collection activity accumulator</td></tr>
   <tr><td><code>VISIBILITY</code></td><td><code>VisibilityMap</code></td><td>state grid</td><td>NONE / SEEN / VISIBLE</td></tr>
 </table>
 

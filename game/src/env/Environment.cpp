@@ -420,7 +420,7 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 	if (environmentDebugMode == EnvironmentDebugMode::MAIN_GRID) {
 		mainGrid.drawDebug(GridDebugType(index % magic_enum::enum_count<GridDebugType>()));
 	}
-	influenceManager.draw(ENV_TO_INF_MAP[castC(environmentDebugMode)], index);
+	influenceManager.draw(environmentDebugMode, index);
 }
 
 const std::vector<short>& Environment::getCloseIndexs(int center) const {
