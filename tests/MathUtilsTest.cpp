@@ -186,6 +186,15 @@ TEST_F(MathUtilsFixture, GetCordsInHigherRes4) {
 	EXPECT_EQ(result[3], 9);
 }
 
+TEST_F(MathUtilsFixture, GetCordsInHigherRes20) {
+	// A 20x20 quad cell maps to its four children in the 40x40 raw layer.
+	auto result = getCordsInHigher(20, 13 * 20 + 6);
+	EXPECT_EQ(result[0], 26 * 40 + 12);
+	EXPECT_EQ(result[1], 26 * 40 + 13);
+	EXPECT_EQ(result[2], 27 * 40 + 12);
+	EXPECT_EQ(result[3], 27 * 40 + 13);
+}
+
 TEST_F(MathUtilsFixture, GetCordsInLowerLargerGrid) {
 	// 8x8 child -> 4x4 parent
 	// child index 0 -> parent 0

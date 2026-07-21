@@ -4,6 +4,7 @@
 #include <array>
 #include <optional>
 #include <vector>
+#include <Urho3D/Container/Str.h>
 #include <Urho3D/Math/Vector3.h>
 
 #include "debug/EnvironmentDebugMode.h"
@@ -25,7 +26,6 @@ namespace Urho3D {
 }
 
 inline constexpr int AI_MAP_COUNT = 11;
-inline constexpr int CENTER_TYPE_COUNT = 4;
 
 class InfluenceManager {
 public:
@@ -36,7 +36,6 @@ public:
 	void updateUnits(std::vector<Unit*>* units) const;
 	void updateBuildings(const std::vector<Building*>* buildings) const;
 
-	void updateQuadOther() const;
 	void updateWithHistory() const;
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
 	                      std::vector<ResourceEntity*>* resources) const;
@@ -68,6 +67,12 @@ private:
 	// --- Private helpers ---
 	const std::vector<unsigned>& getBestVisibleIndexes(std::span<InfluenceMap*> maps, std::span<const float> result,
 	                                unsigned char player) const;
+	void rebuildEconomicRaw(unsigned char player) const;
+	std::optional<Urho3D::Vector2> getEconomicCenter(unsigned char player) const;
+	void ensureCenter(std::span<const float> rawValues, std::optional<Urho3D::Vector2>& center, bool& centerDirty) const;
+	void ensureCenter(InfluenceMap& map) const;
+	void printMapWithQuads(InfluenceMap& map, const Urho3D::String& name) const;
+	void printEconomicWithQuads(unsigned char player) const;
 
 	int getIndexInInfluence(Unit* unit) const;
 
@@ -79,14 +84,17 @@ private:
 	std::vector<InfluenceMap*> attackActivity;
 	std::vector<InfluenceMap*> unboostedResourceByResource[RESOURCES_SIZE];
 	std::vector<InfluenceMap*> unboostedResource;
-	std::vector<InfluenceMap*> economicActivity;
 
 	// --- AI map views (non-owning, per player) ---
 	std::vector<std::array<InfluenceMap*, AI_MAP_COUNT>> buildPlacementByPlayer;
 	std::vector<std::array<InfluenceMap*, RESOURCES_SIZE>> unboostedResourceByPlayer;
-	std::vector<std::array<InfluenceMap*, CENTER_TYPE_COUNT>> centerSourceByPlayer;
 
 	// --- Infrastructure ---
+	struct EconomicCenterCache {
+		std::optional<Urho3D::Vector2> center;
+		bool dirty = true;
+	};
+
 	GridCalculator* calculator;
 	VisibilityManager* visibilityManager;
 
@@ -95,6 +103,12 @@ private:
 	mutable unsigned int arraySize;
 	mutable std::vector<float> errorsSum; // [arraySize]
 	mutable std::vector<unsigned> tempIndexes;
+	mutable std::vector<float> quadValues;
+	mutable std::vector<std::span<float>> quadLayers;
+	std::vector<unsigned short> quadResolutions;
+	mutable std::vector<float> economicRawValues;
+	mutable std::vector<EconomicCenterCache> economicCenters;
+	mutable std::optional<unsigned char> economicRawPlayer;
 
 	// --- Debug state ---
 	short currentDebugBatch = 0;

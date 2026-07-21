@@ -17,6 +17,7 @@ public:
 	virtual ~InfluenceMap();
 
 	void drawRaw(short batch, short maxParts);
+	void drawRaw(std::span<const float> values, short batch, short maxParts);
 	void drawKernel(short batch, short maxParts);
 
 	void update(unsigned index, float value = 1.f);
@@ -30,7 +31,6 @@ public:
 	float getRaw(const Urho3D::Vector2& pos) const;
 	float getKernel(unsigned index) const;
 	float getKernel(const Urho3D::Vector2& pos) const;
-	std::optional<Urho3D::Vector2> getCenter() const;
 	std::vector<unsigned> getRawMaxIdxs() const;
 	std::vector<unsigned> getKernelMaxIdxs() const;
 	void print(Urho3D::String name);
@@ -61,26 +61,19 @@ protected:
 	bool hasPendingValues() const { return pendingValues != nullptr; }
 
 private:
+	friend class InfluenceManager;
+
 	std::vector<unsigned> getMaxIdxsRaw() const;
 	std::vector<unsigned> getMaxIdxsKernel() const;
-	void ensureCenter() const;
 	void ensureKernel() const;
-	void ensureQuad() const;
 	void rebuildKernel() const;
-	void rebuildQuad() const;
-	int getMaxElement(const std::array<int, 4>& indexes, std::span<const float> vals) const;
 	void computeMinMax() const;
 	Urho3D::Vector3 getVertex(const Urho3D::Vector2& center, Urho3D::Vector2 vertex) const;
-	void drawCell(int index, short batch, bool useKernel) const;
+	void drawCell(int index, short batch, float value) const;
 
 	const float* templateV;
-	float* quadValues;
-	unsigned int quadArraySize;
-	std::vector<std::span<float>> quadLayers;
-	std::vector<unsigned short> quadResolutions;
 	mutable std::optional<Urho3D::Vector2> center;
 	mutable bool centerDirty = true;
-	mutable bool quadDirty = true;
 	float minimalThreshold = 0.f;
 	float vanishCoef = 1.f;
 };

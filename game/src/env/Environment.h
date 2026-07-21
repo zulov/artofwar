@@ -51,7 +51,6 @@ public:
 	void updateInfluenceUnits(std::vector<Unit*>* units) const;
 
 	void updateInfluenceBuildings(const std::vector<Building*>* buildings) const;
-	void updateQuadOther() const;
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
 	                      std::vector<ResourceEntity*>* resources) const;
 	void updateInfluenceHistoryReset() const;

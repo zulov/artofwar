@@ -5,6 +5,8 @@
 
 #include "env/GridCalculator.h"
 #include "env/GridCalculatorProvider.h"
+#include "env/influence/EconomicCenterUtils.h"
+#include "env/influence/InfluenceCenterUtils.h"
 #include "env/influence/map/InfluenceMap.h"
 #include "env/influence/map/InfluenceTemplateProvider.h"
 
@@ -530,36 +532,76 @@ TEST(InfluenceMapRegression, BufferedHistoryResetToZeroKeepsPendingAndDropsSmall
 	EXPECT_FLOAT_EQ(map.getKernel(0), 5.f);
 }
 
-TEST(InfluenceMapRegression, GetCenterUsesRawTerminalLayer) {
-	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
-	map.update(4, 1.f);
-	map.update(5, 2.f);
+TEST(InfluenceMapRegression, EconomicRawIsCellWiseSumOfGatheringHistory) {
+	std::array<std::vector<float>, 4> gatherRaw = {
+		std::vector<float>(4, 0.f), std::vector<float>(4, 0.f),
+		std::vector<float>(4, 0.f), std::vector<float>(4, 0.f)};
+	gatherRaw[0][0] = 5.f;
+	gatherRaw[1][3] = 5.f;
+	gatherRaw[0][2] = 4.f;
+	gatherRaw[1][2] = 4.f;
+	std::vector<float> combined(4);
 
-	const auto center = map.getCenter();
-	ASSERT_TRUE(center.has_value());
+	EconomicCenterUtils::sumRawValues<4>(combined, {
+		std::span<const float>(gatherRaw[0]), std::span<const float>(gatherRaw[1]),
+		std::span<const float>(gatherRaw[2]), std::span<const float>(gatherRaw[3])});
 
-	GridCalculator calculator(4, 8.f);
-	EXPECT_EQ(*center, calculator.getCenter(5));
+	EXPECT_EQ(combined, std::vector<float>({5.f, 0.f, 8.f, 5.f}));
 }
 
-TEST(InfluenceMapRegression, GetCenterRebuildsQuadAfterReset) {
-	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
-	GridCalculator calculator(4, 8.f);
+TEST(InfluenceCenterUtilsTest, FindsRawPeakAtNonPowerOfTwoResolution) {
+	constexpr unsigned short resolution = 40;
+	constexpr unsigned targetIndex = 27 * resolution + 13;
+	std::vector<float> rawValues(resolution * resolution, 0.f);
+	std::vector<float> quadValues(10 * 10 + 20 * 20);
+	std::vector<std::span<float>> quadLayers = {
+		std::span<float>(quadValues.data(), 10 * 10),
+		std::span<float>(quadValues.data() + 10 * 10, 20 * 20),
+	};
+	const std::array<unsigned short, 2> quadResolutions = {10, 20};
 
-	map.update(0, 1.f);
-	ASSERT_EQ(map.getCenter(), calculator.getCenter(0));
+	rawValues[targetIndex] = 1.f;
+	InfluenceCenterUtils::rebuildQuad(rawValues, resolution, quadLayers, quadResolutions);
 
-	map.reset();
-	map.update(15, 1.f);
-	EXPECT_EQ(map.getCenter(), calculator.getCenter(15));
+	EXPECT_EQ(InfluenceCenterUtils::findCenterIndex(rawValues, quadLayers, quadResolutions), targetIndex);
 }
 
-TEST(InfluenceMapRegression, GetCenterSupportsNonPowerOfTwoResolution) {
-	GridCalculator calculator(40, 80.f);
-	TestableInfluenceMap map(&calculator);
-	constexpr unsigned targetIndex = 27 * 40 + 13;
+TEST(InfluenceCenterUtilsTest, FindsCombinedEconomicPeakAtNonPowerOfTwoResolution) {
+	constexpr unsigned short resolution = 40;
+	constexpr unsigned targetIndex = 18 * resolution + 31;
+	std::array<std::vector<float>, 4> gatherRaw = {
+		std::vector<float>(resolution * resolution, 0.f), std::vector<float>(resolution * resolution, 0.f),
+		std::vector<float>(resolution * resolution, 0.f), std::vector<float>(resolution * resolution, 0.f)};
+	std::vector<float> economicRaw(resolution * resolution);
+	std::vector<float> quadValues(10 * 10 + 20 * 20);
+	std::vector<std::span<float>> quadLayers = {
+		std::span<float>(quadValues.data(), 10 * 10),
+		std::span<float>(quadValues.data() + 10 * 10, 20 * 20),
+	};
+	const std::array<unsigned short, 2> quadResolutions = {10, 20};
 
-	map.update(targetIndex, 1.f);
+	gatherRaw[0][targetIndex] = 3.f;
+	gatherRaw[1][targetIndex] = 4.f;
+	gatherRaw[2][17 * resolution + 30] = 6.f;
+	EconomicCenterUtils::sumRawValues<4>(economicRaw, {
+		std::span<const float>(gatherRaw[0]), std::span<const float>(gatherRaw[1]),
+		std::span<const float>(gatherRaw[2]), std::span<const float>(gatherRaw[3])});
+	InfluenceCenterUtils::rebuildQuad(economicRaw, resolution, quadLayers, quadResolutions);
 
-	EXPECT_EQ(map.getCenter(), calculator.getCenter(targetIndex));
+	EXPECT_EQ(InfluenceCenterUtils::findCenterIndex(economicRaw, quadLayers, quadResolutions), targetIndex);
+}
+
+TEST(InfluenceCenterUtilsTest, ReturnsNoCenterForAnEmptyRawMap) {
+	constexpr unsigned short resolution = 40;
+	std::vector<float> rawValues(resolution * resolution, 0.f);
+	std::vector<float> quadValues(10 * 10 + 20 * 20);
+	std::vector<std::span<float>> quadLayers = {
+		std::span<float>(quadValues.data(), 10 * 10),
+		std::span<float>(quadValues.data() + 10 * 10, 20 * 20),
+	};
+	const std::array<unsigned short, 2> quadResolutions = {10, 20};
+
+	InfluenceCenterUtils::rebuildQuad(rawValues, resolution, quadLayers, quadResolutions);
+
+	EXPECT_FALSE(InfluenceCenterUtils::findCenterIndex(rawValues, quadLayers, quadResolutions).has_value());
 }

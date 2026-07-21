@@ -1,11 +1,13 @@
 #include "InfluenceManager.h"
 #include <exprtk/exprtk.hpp>
-#include <magic_enum.hpp>
 #include <ranges>
 
 #include "CenterType.h"
+#include "EconomicCenterUtils.h"
+#include "InfluenceCenterUtils.h"
 #include "MapsUtils.h"
 #include "VisibilityManager.h"
+#include "map/InfluenceMap.h"
 #include "debug/DebugLineRepo.h"
 #include "math/VectorUtils.h"
 #include "env/bucket/CellEnums.h"
@@ -17,11 +19,7 @@
 #include "utils/AssertUtils.h"
 #include "utils/OtherUtils.h"
 #include "utils/PrintUtils.h"
-
-// centerSourceByPlayer is sized CENTER_TYPE_COUNT and indexed by CenterType.
-static_assert(magic_enum::enum_count<CenterType>() == CENTER_TYPE_COUNT,
-              "CENTER_TYPE_COUNT must equal the number of CenterType enumerators");
-
+#include "utils/SpanUtils.h"
 
 InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain) {
 	buildingPresence.reserve(numberOfPlayers);
@@ -38,12 +36,30 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 
 	attackActivity.reserve(numberOfPlayers);
 	armyPresence.reserve(numberOfPlayers);
-	economicActivity.reserve(numberOfPlayers);
 
 	buildPlacementByPlayer.reserve(numberOfPlayers);
-	centerSourceByPlayer.reserve(numberOfPlayers);
 	unsigned short resolution = mapSize / INF_GRID_FIELD_SIZE;
 	calculator = GridCalculatorProvider::get(resolution, mapSize);
+	unsigned int quadArraySize = 0;
+	auto currentRes = resolution;
+	while (currentRes % 2 == 0 && currentRes != 1) {
+		currentRes /= 2;
+	}
+	currentRes *= 2;
+	for (int i = currentRes; i < resolution; i *= 2) {
+		quadArraySize += i * i;
+		quadResolutions.push_back(i);
+	}
+	quadValues.resize(quadArraySize);
+	economicRawValues.resize(resolution * resolution);
+	economicCenters.resize(numberOfPlayers);
+	auto offset = 0u;
+	for (const auto quadResolution : quadResolutions) {
+		const auto layerSize = quadResolution * quadResolution;
+		quadLayers.emplace_back(quadValues.data() + offset, layerSize);
+		offset += layerSize;
+	}
+	assert(!quadLayers.empty());
 	for (int player = 0; player < numberOfPlayers; ++player) {
 		buildingPresence.emplace_back(new InfluenceMap(calculator, 2.f));
 		unitPresence.emplace_back(new InfluenceMap(calculator));
@@ -58,7 +74,6 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 
 		attackActivity.emplace_back(new InfluenceMap(calculator, 40.f, true));
 		armyPresence.emplace_back(new InfluenceMap(calculator));
-		economicActivity.emplace_back(new InfluenceMap(calculator));
 	}
 
 	for (int player = 0; player < numberOfPlayers; ++player) {
@@ -84,13 +99,6 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 				                                attackActivity[enemy],
 				                                unboostedResource[player],
 				                        });
-		centerSourceByPlayer.emplace_back(std::array<InfluenceMap*, CENTER_TYPE_COUNT>{
-					                             economicActivity[player],
-					                             buildingPresence[player],
-					                             armyPresence[player],
-					                             attackActivity[player]
-					                             });
-
 		unboostedResourceByPlayer.emplace_back(unboostedForPlayer);
 		assert(validSizes(buildPlacementByPlayer.at(player)));
 	}
@@ -120,7 +128,6 @@ InfluenceManager::~InfluenceManager() {
 	clear_vector(attackActivity);
 
 	clear_vector(armyPresence);
-	clear_vector(economicActivity);
 
 	delete visibilityManager;
 	delete ci;
@@ -169,10 +176,10 @@ void InfluenceManager::updateWithHistory() const {
 
 	MapsUtils::resetMaps(attackActivity);//obniza wartosci
 	MapsUtils::finalize(attackActivity);//dopisuje nowe
-}
-
-void InfluenceManager::updateQuadOther() const {
-	MapsUtils::resetMaps(economicActivity);
+	for (auto& cache : economicCenters) {
+		cache.dirty = true;
+	}
+	economicRawPlayer.reset();
 }
 
 void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
@@ -185,6 +192,10 @@ void InfluenceManager::resetHistoryThresholds() const {
 		MapsUtils::resetToZeroMaps(vec);
 	}
 	MapsUtils::resetToZeroMaps(attackActivity);
+	for (auto& cache : economicCenters) {
+		cache.dirty = true;
+	}
+	economicRawPlayer.reset();
 }
 
 void InfluenceManager::draw(EnvironmentDebugMode mode, unsigned char index) {
@@ -220,7 +231,9 @@ void InfluenceManager::draw(EnvironmentDebugMode mode, unsigned char index) {
 		MapsUtils::drawMapKernel(currentDebugBatch, index, attackActivity);
 		break;
 	case EnvironmentDebugMode::ECONOMY:
-		MapsUtils::drawMapRaw(currentDebugBatch, index, economicActivity);
+		index %= gatheringActivityByResource[0].size();
+		rebuildEconomicRaw(index);
+		gatheringActivityByResource[0][index]->drawRaw(economicRawValues, currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 		break;
 	case EnvironmentDebugMode::VISIBILITY:
 		visibilityManager->drawMaps(currentDebugBatch, index);
@@ -236,18 +249,24 @@ void InfluenceManager::draw(EnvironmentDebugMode mode, unsigned char index) {
 }
 
 void InfluenceManager::drawAll() const {
-	MapsUtils::drawAll(buildingPresence, "buildingPresence");
-	MapsUtils::drawAll(unitPresence, "unitPresence");
+	for (int player = 0; player < buildingPresence.size(); ++player) {
+		printMapWithQuads(*buildingPresence[player], "buildingPresence_" + Urho3D::String(player) + "_");
+		printMapWithQuads(*unitPresence[player], "unitPresence_" + Urho3D::String(player) + "_");
+	}
 
 	constexpr const char* gatheringActivityNames[] = {
 		"gatheringActivityFood", "gatheringActivityWood", "gatheringActivityStone", "gatheringActivityGold"};
 	for (int r = 0; r < RESOURCES_SIZE; ++r) {
-		MapsUtils::drawAll(gatheringActivityByResource[r], gatheringActivityNames[r]);
+		for (int player = 0; player < gatheringActivityByResource[r].size(); ++player) {
+			printMapWithQuads(*gatheringActivityByResource[r][player],
+			                  Urho3D::String(gatheringActivityNames[r]) + "_" + Urho3D::String(player) + "_");
+		}
 	}
-	MapsUtils::drawAll(attackActivity, "attackActivity");
-
-	MapsUtils::drawAll(armyPresence, "armyPresence");
-	MapsUtils::drawAll(economicActivity, "economicActivity");
+	for (int player = 0; player < attackActivity.size(); ++player) {
+		printMapWithQuads(*attackActivity[player], "attackActivity_" + Urho3D::String(player) + "_");
+		printMapWithQuads(*armyPresence[player], "armyPresence_" + Urho3D::String(player) + "_");
+		printEconomicWithQuads(player);
+	}
 }
 
 content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfo,
@@ -331,7 +350,6 @@ void InfluenceManager::addCollect(Unit* unit, short resId, float value) const {
 	const auto index = getIndexInInfluence(unit);
 	gatheringActivityByResource[resId][playerId]->update(index, value);
 
-	economicActivity[playerId]->update(index, value);
 }
 
 void InfluenceManager::addAttack(unsigned char player, const Urho3D::Vector2& position, float value) const {
@@ -339,7 +357,89 @@ void InfluenceManager::addAttack(unsigned char player, const Urho3D::Vector2& po
 }
 
 std::optional<Urho3D::Vector2> InfluenceManager::getCenterOf(CenterType id, unsigned char player) const {
-	return centerSourceByPlayer[player][castC(id)]->getCenter();
+	switch (id) {
+	case CenterType::ECON:
+		return getEconomicCenter(player);
+	case CenterType::BUILDING:
+		ensureCenter(*buildingPresence[player]);
+		return buildingPresence[player]->center;
+	case CenterType::ARMY:
+		ensureCenter(*armyPresence[player]);
+		return armyPresence[player]->center;
+	case CenterType::BATTLE:
+		ensureCenter(*attackActivity[player]);
+		return attackActivity[player]->center;
+	}
+
+	assert(false);
+	return std::nullopt;
+}
+
+void InfluenceManager::rebuildEconomicRaw(unsigned char player) const {
+	if (economicRawPlayer == player && !economicCenters[player].dirty) {
+		return;
+	}
+
+	std::array<std::span<const float>, RESOURCES_SIZE> rawValues;
+	for (int resource = 0; resource < RESOURCES_SIZE; ++resource) {
+		const auto* map = gatheringActivityByResource[resource][player];
+		rawValues[resource] = std::span<const float>(map->rawValues, map->arraySize);
+	}
+	EconomicCenterUtils::sumRawValues(economicRawValues, rawValues);
+	economicRawPlayer = player;
+}
+
+std::optional<Urho3D::Vector2> InfluenceManager::getEconomicCenter(unsigned char player) const {
+	auto& cache = economicCenters[player];
+	if (!cache.dirty) {
+		return cache.center;
+	}
+
+	rebuildEconomicRaw(player);
+	ensureCenter(economicRawValues, cache.center, cache.dirty);
+	return cache.center;
+}
+
+void InfluenceManager::ensureCenter(std::span<const float> rawValues, std::optional<Urho3D::Vector2>& center,
+                                    bool& centerDirty) const {
+	if (!centerDirty) {
+		return;
+	}
+
+	InfluenceCenterUtils::rebuildQuad(rawValues, calculator->getResolution(), quadLayers, quadResolutions);
+	const auto index = InfluenceCenterUtils::findCenterIndex(rawValues, quadLayers, quadResolutions);
+	if (!index.has_value()) {
+		center.reset();
+		centerDirty = false;
+		return;
+	}
+
+	center = calculator->getCenter(*index);
+	centerDirty = false;
+}
+
+void InfluenceManager::ensureCenter(InfluenceMap& map) const {
+	ensureCenter(std::span<const float>(map.rawValues, map.arraySize), map.center, map.centerDirty);
+}
+
+void InfluenceManager::printMapWithQuads(InfluenceMap& map, const Urho3D::String& name) const {
+	map.print(name);
+	InfluenceCenterUtils::rebuildQuad(std::span<const float>(map.rawValues, map.arraySize), calculator->getResolution(),
+	                                  quadLayers, quadResolutions);
+	for (int i = 0; i < static_cast<int>(quadLayers.size()); ++i) {
+		map.printMap(quadLayers[i], name + "_quad_" + Urho3D::String(i));
+	}
+}
+
+void InfluenceManager::printEconomicWithQuads(unsigned char player) const {
+	rebuildEconomicRaw(player);
+	auto* map = gatheringActivityByResource[0][player];
+	const auto playerName = Urho3D::String(static_cast<int>(player));
+	map->printMap(economicRawValues, "gatherSpeedCombined_" + playerName + "_raw");
+	InfluenceCenterUtils::rebuildQuad(economicRawValues, calculator->getResolution(), quadLayers, quadResolutions);
+	for (int i = 0; i < static_cast<int>(quadLayers.size()); ++i) {
+		map->printMap(quadLayers[i], "gatherSpeedCombined_" + playerName + "_quad_" + Urho3D::String(i));
+	}
 }
 
 bool InfluenceManager::isVisible(unsigned char player, const Urho3D::Vector2& pos) const {

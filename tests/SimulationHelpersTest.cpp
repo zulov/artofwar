@@ -79,6 +79,8 @@ TEST_F(SimulationHelpersFixture, PerFrameActionFrameInfoOverloadMatchesDirectLoo
 TEST_F(SimulationHelpersFixture, PerFrameActionSpecificFramesMatchConfiguredSchedules) {
 	EXPECT_TRUE(FrameInfo::get(PerFrameAction::INFLUENCE_UNITS, 0, 1));
 	EXPECT_FALSE(FrameInfo::get(PerFrameAction::INFLUENCE_UNITS, 1, 1));
+	EXPECT_FALSE(FrameInfo::get(PerFrameAction::INFLUENCE_OTHER, 3, 3));
+	EXPECT_TRUE(FrameInfo::get(PerFrameAction::INFLUENCE_OTHER, 3, 4));
 	EXPECT_TRUE(FrameInfo::get(PerFrameAction::INFLUENCE_HISTORY_RESET, 3, 29));
 	EXPECT_TRUE(FrameInfo::get(PerFrameAction::VISIBILITY, 6, 0));
 	EXPECT_TRUE(FrameInfo::get(PerFrameAction::AI_ORDER, 14, 0));

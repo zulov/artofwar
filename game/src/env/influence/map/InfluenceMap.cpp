@@ -2,14 +2,11 @@
 
 #include <algorithm>
 #include <cassert>
-#include <iterator>
 #include <ranges>
 #include <numeric>
 
 #include "env/influence/MapsUtils.h"
 #include "env/influence/map/InfluenceTemplateProvider.h"
-#include "math/MathUtils.h"
-#include "utils/SpanUtils.h"
 
 namespace {
 	constexpr float KERNEL_COEF = 0.5f;
@@ -29,24 +26,6 @@ InfluenceMap::InfluenceMap(GridCalculator* calculator, float valueThresholdDebug
 	std::fill_n(rawValues, arraySize, 0.f);
 	std::fill_n(kernelValues, arraySize, 0.f);
 
-	quadArraySize = 0;
-	auto currentRes = calculator->getResolution();
-	while (currentRes % 2 == 0 && currentRes != 1) {
-		currentRes /= 2;
-	}
-	currentRes *= 2;
-	for (int i = currentRes; i < calculator->getResolution(); i *= 2) {
-		quadArraySize += i * i;
-	}
-	quadValues = new float[quadArraySize];
-	float* ptr = quadValues;
-	for (int i = currentRes; i < calculator->getResolution(); i *= 2) {
-		const auto size1 = i * i;
-		quadLayers.emplace_back(ptr, size1);
-		quadResolutions.push_back(i);
-		ptr += size1;
-	}
-	assert(!quadLayers.empty());
 	centerDirty = true;
 	if (history) {
 		minimalThreshold = HISTORY_MINIMAL_THRESHOLD;
@@ -60,7 +39,6 @@ InfluenceMap::~InfluenceMap() {
 	delete[] rawValues;
 	delete[] pendingValues;
 	delete[] kernelValues;
-	delete[] quadValues;
 }
 
 void InfluenceMap::update(unsigned index, float value) {
@@ -71,7 +49,6 @@ void InfluenceMap::update(unsigned index, float value) {
 	}
 	valuesCalculateNeeded = true;
 	centerDirty = true;
-	quadDirty = true;
 	minMaxInited = false;
 }
 
@@ -108,7 +85,6 @@ void InfluenceMap::reset() {
 	valuesCalculateNeeded = false;
 	center.reset();
 	centerDirty = false;
-	quadDirty = true;
 	minMaxInited = false;
 }
 
@@ -123,7 +99,6 @@ void InfluenceMap::resetToZero() {
 void InfluenceMap::invalidateCaches() {
 	valuesCalculateNeeded = true;
 	centerDirty = true;
-	quadDirty = true;
 	minMaxInited = false;
 }
 
@@ -142,11 +117,6 @@ float InfluenceMap::getKernel(unsigned index) const {
 
 float InfluenceMap::getKernel(const Urho3D::Vector2& pos) const {
 	return getKernel(calculator->indexFromPosition(pos));
-}
-
-std::optional<Urho3D::Vector2> InfluenceMap::getCenter() const {
-	ensureCenter();
-	return center;
 }
 
 std::vector<unsigned> InfluenceMap::getRawMaxIdxs() const {
@@ -206,12 +176,6 @@ void InfluenceMap::ensureKernel() const {
 	}
 }
 
-void InfluenceMap::ensureQuad() const {
-	if (quadDirty) {
-		rebuildQuad();
-	}
-}
-
 void InfluenceMap::rebuildKernel() const {
 	std::fill_n(kernelValues, arraySize, 0.f);
 	for (unsigned i = 0; i < arraySize; ++i) {
@@ -237,67 +201,8 @@ void InfluenceMap::rebuildKernel() const {
 	valuesCalculateNeeded = false;
 }
 
-int InfluenceMap::getMaxElement(const std::array<int, 4>& indexes, std::span<const float> vals) const {
-	float values1[4] = {vals[indexes[0]], vals[indexes[1]], vals[indexes[2]], vals[indexes[3]]};
-	int i = std::distance(values1, std::max_element(values1, values1 + 4));
-	return indexes[i];
-}
-
-void InfluenceMap::ensureCenter() const {
-	if (!centerDirty) {
-		return;
-	}
-
-	ensureQuad();
-	auto rawSpan = std::span<const float>(rawValues, arraySize);
-
-	if (!anyGreaterThanZero(quadLayers[0])) {
-		center.reset();
-		centerDirty = false;
-		return;
-	}
-
-	int index = std::distance(quadLayers[0].begin(), std::ranges::max_element(quadLayers[0]));
-	unsigned short res = quadResolutions[0];
-	for (int i = 1; i < static_cast<int>(quadLayers.size()); ++i) {
-		std::array<int, 4> indexes = getCordsInHigher(res, index);
-		index = getMaxElement(indexes, quadLayers[i]);
-		res *= 2;
-	}
-	std::array<int, 4> indexes = getCordsInHigher(res, index);
-	index = getMaxElement(indexes, rawSpan);
-	center = calculator->getCenter(index);
-	centerDirty = false;
-}
-
-void InfluenceMap::rebuildQuad() const {
-	std::span<const float> parent(rawValues, arraySize);
-	unsigned short parentRes = calculator->getResolution();
-	for (int i = static_cast<int>(quadLayers.size()) - 1; i >= 0; --i) {
-		auto current = quadLayers[i];
-		const unsigned short currentRes = quadResolutions[i];
-		assert(parentRes == currentRes * 2);
-
-		for (int prow = 0; prow < parentRes; prow += 2) {
-			const int row0 = prow * parentRes;
-			const int row1 = row0 + parentRes;
-			int child = (prow >> 1) * currentRes;
-
-			for (int pcol = 0; pcol < parentRes; pcol += 2, ++child) {
-				const int j = row0 + pcol;
-				current[child] = parent[j] + parent[j + 1] + parent[row1 + pcol] + parent[row1 + pcol + 1];
-			}
-		}
-
-		parent = std::span<const float>(current.data(), current.size());
-		parentRes = currentRes;
-	}
-	quadDirty = false;
-}
-
 void InfluenceMap::ensureReady() {
 	ensureKernel();
-	ensureQuad();
 	computeMinMax();
 }
 

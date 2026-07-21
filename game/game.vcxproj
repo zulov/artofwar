@@ -427,6 +427,8 @@
     <ClInclude Include="src\player\ai\MilitaryCommandCalculator.h" />
     <ClInclude Include="src\scene\save\SQLConsts.h" />
     <ClInclude Include="src\env\influence\MapsUtils.h" />
+	<ClInclude Include="src\env\influence\EconomicCenterUtils.h" />
+	<ClInclude Include="src\env\influence\InfluenceCenterUtils.h" />
     <ClInclude Include="src\env\influence\map\VisibilityType.h" />
     <ClInclude Include="src\env\influence\VisibilityMode.h" />
     <ClInclude Include="src\simulation\FrameInfo.h" />

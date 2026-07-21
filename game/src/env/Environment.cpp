@@ -231,10 +231,6 @@ void Environment::updateInfluenceBuildings(const std::vector<Building*>* buildin
 	influenceManager.updateWithHistory();
 }
 
-void Environment::updateQuadOther() const {
-	influenceManager.updateQuadOther();
-}
-
 void Environment::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
                                    std::vector<ResourceEntity*>* resources) const {
 	influenceManager.updateVisibility(buildings, units, resources);
