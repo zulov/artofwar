@@ -5,8 +5,6 @@
 
 #include "env/GridCalculator.h"
 #include "env/GridCalculatorProvider.h"
-#include "env/influence/EconomicCenterUtils.h"
-#include "env/influence/InfluenceCenterUtils.h"
 #include "env/influence/map/InfluenceMap.h"
 #include "env/influence/map/InfluenceTemplateProvider.h"
 
@@ -18,8 +16,8 @@
 // Testable subclass exposing internals for direct manipulation
 class TestableInfluenceMap : public InfluenceMap {
 public:
-	TestableInfluenceMap(GridCalculator* calculator)
-		: InfluenceMap(calculator, 0.f) {
+	TestableInfluenceMap(GridCalculator* calculator, bool history = false)
+		: InfluenceMap(calculator, 0.f, history) {
 	}
 
 	~TestableInfluenceMap() override = default;
@@ -37,6 +35,7 @@ public:
 	}
 
 	unsigned int getArraySize() const { return arraySize; }
+	bool isKernelDirty() const { return valuesCalculateNeeded; }
 };
 
 class CumulateErrorsFixture : public ::testing::Test {
@@ -424,6 +423,30 @@ TEST(InfluenceMapRegression, GetKernelMaxIdxsHandlesSmallMap) {
 	EXPECT_EQ(indexes[0], 0u);
 }
 
+TEST(InfluenceMapRegression, GetRawMaxIdxsReturnsTheTenLargestValues) {
+	TestableInfluenceMap map(GridCalculatorProvider::get(8, 16.f));
+	for (unsigned index = 0; index < 12; ++index) {
+		map.update(index, static_cast<float>(12 - index));
+	}
+
+	const auto indexes = map.getRawMaxIdxs();
+
+	ASSERT_EQ(indexes.size(), 10u);
+	for (unsigned index = 0; index < indexes.size(); ++index) {
+		EXPECT_EQ(indexes[index], index);
+	}
+}
+
+TEST(InfluenceMapRegression, ZeroWeightDoesNotRebuildKernel) {
+	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
+	std::array<float, 16> errors{};
+	map.update(0, 1.f);
+
+	EXPECT_TRUE(map.isKernelDirty());
+	EXPECT_FALSE(map.cumulateErrors(0.f, errors));
+	EXPECT_TRUE(map.isKernelDirty());
+}
+
 TEST(InfluenceMapRegression, ImmediateModeUpdatesRawAndResetClearsMap) {
 	InfluenceMap map(GridCalculatorProvider::get(4, 8.f), 0.f);
 	map.update(0, 3.f);
@@ -515,6 +538,23 @@ TEST(InfluenceMapRegression, BufferedHistoryResetAddsPendingOnTopOfDecayedRaw) {
 	EXPECT_FLOAT_EQ(map.getKernel(0), 8.f);
 }
 
+TEST(InfluenceMapRegression, BufferedHistoryWritesDoNotChangeVisibleRawStateBeforeReset) {
+	InfluenceMap map(GridCalculatorProvider::get(4, 8.f), 0.f, true);
+	GridCalculator calculator(4, 8.f);
+	map.update(0, 4.f);
+	map.reset();
+
+	EXPECT_FLOAT_EQ(map.getKernel(0), 4.f);
+	EXPECT_EQ(map.getCenter(), calculator.getCenter(0));
+
+	map.update(1, 6.f);
+
+	EXPECT_FLOAT_EQ(map.getRaw(1), 0.f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 4.f);
+	EXPECT_FLOAT_EQ(map.getKernel(1), 4.f / 1.5f);
+	EXPECT_EQ(map.getCenter(), calculator.getCenter(0));
+}
+
 TEST(InfluenceMapRegression, BufferedHistoryResetToZeroKeepsPendingAndDropsSmallRawValues) {
 	InfluenceMap map(GridCalculatorProvider::get(4, 8.f), 0.f, true);
 	map.update(0, 0.00005f);
@@ -532,76 +572,47 @@ TEST(InfluenceMapRegression, BufferedHistoryResetToZeroKeepsPendingAndDropsSmall
 	EXPECT_FLOAT_EQ(map.getKernel(0), 5.f);
 }
 
-TEST(InfluenceMapRegression, EconomicRawIsCellWiseSumOfGatheringHistory) {
-	std::array<std::vector<float>, 4> gatherRaw = {
-		std::vector<float>(4, 0.f), std::vector<float>(4, 0.f),
-		std::vector<float>(4, 0.f), std::vector<float>(4, 0.f)};
-	gatherRaw[0][0] = 5.f;
-	gatherRaw[1][3] = 5.f;
-	gatherRaw[0][2] = 4.f;
-	gatherRaw[1][2] = 4.f;
-	std::vector<float> combined(4);
+TEST(InfluenceMapRegression, GetCenterUsesRawTerminalLayer) {
+	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
+	map.update(4, 1.f);
+	map.update(5, 2.f);
 
-	EconomicCenterUtils::sumRawValues<4>(combined, {
-		std::span<const float>(gatherRaw[0]), std::span<const float>(gatherRaw[1]),
-		std::span<const float>(gatherRaw[2]), std::span<const float>(gatherRaw[3])});
+	const auto center = map.getCenter();
+	ASSERT_TRUE(center.has_value());
 
-	EXPECT_EQ(combined, std::vector<float>({5.f, 0.f, 8.f, 5.f}));
+	GridCalculator calculator(4, 8.f);
+	EXPECT_EQ(*center, calculator.getCenter(5));
 }
 
-TEST(InfluenceCenterUtilsTest, FindsRawPeakAtNonPowerOfTwoResolution) {
-	constexpr unsigned short resolution = 40;
-	constexpr unsigned targetIndex = 27 * resolution + 13;
-	std::vector<float> rawValues(resolution * resolution, 0.f);
-	std::vector<float> quadValues(10 * 10 + 20 * 20);
-	std::vector<std::span<float>> quadLayers = {
-		std::span<float>(quadValues.data(), 10 * 10),
-		std::span<float>(quadValues.data() + 10 * 10, 20 * 20),
-	};
-	const std::array<unsigned short, 2> quadResolutions = {10, 20};
+TEST(InfluenceMapRegression, GetCenterRebuildsQuadAfterReset) {
+	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
+	GridCalculator calculator(4, 8.f);
 
-	rawValues[targetIndex] = 1.f;
-	InfluenceCenterUtils::rebuildQuad(rawValues, resolution, quadLayers, quadResolutions);
+	map.update(0, 1.f);
+	ASSERT_EQ(map.getCenter(), calculator.getCenter(0));
 
-	EXPECT_EQ(InfluenceCenterUtils::findCenterIndex(rawValues, quadLayers, quadResolutions), targetIndex);
+	map.reset();
+	map.update(15, 1.f);
+	EXPECT_EQ(map.getCenter(), calculator.getCenter(15));
 }
 
-TEST(InfluenceCenterUtilsTest, FindsCombinedEconomicPeakAtNonPowerOfTwoResolution) {
-	constexpr unsigned short resolution = 40;
-	constexpr unsigned targetIndex = 18 * resolution + 31;
-	std::array<std::vector<float>, 4> gatherRaw = {
-		std::vector<float>(resolution * resolution, 0.f), std::vector<float>(resolution * resolution, 0.f),
-		std::vector<float>(resolution * resolution, 0.f), std::vector<float>(resolution * resolution, 0.f)};
-	std::vector<float> economicRaw(resolution * resolution);
-	std::vector<float> quadValues(10 * 10 + 20 * 20);
-	std::vector<std::span<float>> quadLayers = {
-		std::span<float>(quadValues.data(), 10 * 10),
-		std::span<float>(quadValues.data() + 10 * 10, 20 * 20),
-	};
-	const std::array<unsigned short, 2> quadResolutions = {10, 20};
+TEST(InfluenceMapRegression, HistoryCenterWaitsForPendingValuesToMerge) {
+	InfluenceMap map(GridCalculatorProvider::get(4, 8.f), 0.f, true);
+	GridCalculator calculator(4, 8.f);
+	map.update(5, 2.f);
 
-	gatherRaw[0][targetIndex] = 3.f;
-	gatherRaw[1][targetIndex] = 4.f;
-	gatherRaw[2][17 * resolution + 30] = 6.f;
-	EconomicCenterUtils::sumRawValues<4>(economicRaw, {
-		std::span<const float>(gatherRaw[0]), std::span<const float>(gatherRaw[1]),
-		std::span<const float>(gatherRaw[2]), std::span<const float>(gatherRaw[3])});
-	InfluenceCenterUtils::rebuildQuad(economicRaw, resolution, quadLayers, quadResolutions);
+	EXPECT_FALSE(map.getCenter().has_value());
 
-	EXPECT_EQ(InfluenceCenterUtils::findCenterIndex(economicRaw, quadLayers, quadResolutions), targetIndex);
+	map.reset();
+	EXPECT_EQ(map.getCenter(), calculator.getCenter(5));
 }
 
-TEST(InfluenceCenterUtilsTest, ReturnsNoCenterForAnEmptyRawMap) {
-	constexpr unsigned short resolution = 40;
-	std::vector<float> rawValues(resolution * resolution, 0.f);
-	std::vector<float> quadValues(10 * 10 + 20 * 20);
-	std::vector<std::span<float>> quadLayers = {
-		std::span<float>(quadValues.data(), 10 * 10),
-		std::span<float>(quadValues.data() + 10 * 10, 20 * 20),
-	};
-	const std::array<unsigned short, 2> quadResolutions = {10, 20};
+TEST(InfluenceMapRegression, GetCenterSupportsNonPowerOfTwoResolution) {
+	GridCalculator calculator(40, 80.f);
+	TestableInfluenceMap map(&calculator);
+	constexpr unsigned targetIndex = 27 * 40 + 13;
 
-	InfluenceCenterUtils::rebuildQuad(rawValues, resolution, quadLayers, quadResolutions);
+	map.update(targetIndex, 1.f);
 
-	EXPECT_FALSE(InfluenceCenterUtils::findCenterIndex(rawValues, quadLayers, quadResolutions).has_value());
+	EXPECT_EQ(map.getCenter(), calculator.getCenter(targetIndex));
 }

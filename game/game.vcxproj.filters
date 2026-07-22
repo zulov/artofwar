@@ -525,8 +525,6 @@
     <ClInclude Include="src\objects\projectile\ProjectileManager.h" />
     <ClInclude Include="src\env\influence\VisibilityManager.h" />
     <ClInclude Include="src\env\influence\MapsUtils.h" />
-	<ClInclude Include="src\env\influence\EconomicCenterUtils.h" />
-	<ClInclude Include="src\env\influence\InfluenceCenterUtils.h" />
     <ClInclude Include="src\env\influence\VisibilityMode.h" />
     <ClInclude Include="src\player\ai\AiMetric.h" />
     <ClInclude Include="src\objects\building\ParentBuildingType.h" />

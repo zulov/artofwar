@@ -11,14 +11,9 @@
 #include "env/Environment.h"
 
 void InfluenceMap::drawRaw(short batch, short maxParts) {
-	drawRaw(std::span<const float>(rawValues, arraySize), batch, maxParts);
-}
-
-void InfluenceMap::drawRaw(std::span<const float> values, short batch, short maxParts) {
-	assert(values.size() == arraySize);
 	auto size = arraySize / maxParts;
 	for (int i = batch * size; i < arraySize && i < (batch + 1) * size; ++i) {
-		drawCell(i, batch, values[i]);
+		drawCell(i, batch, false);
 	}
 }
 
@@ -26,7 +21,7 @@ void InfluenceMap::drawKernel(short batch, short maxParts) {
 	auto size = arraySize / maxParts;
 	ensureReady();
 	for (int i = batch * size; i < arraySize && i < (batch + 1) * size; ++i) {
-		drawCell(i, batch, kernelValues[i]);
+		drawCell(i, batch, true);
 	}
 }
 
@@ -36,14 +31,14 @@ Urho3D::Vector3 InfluenceMap::getVertex(const Urho3D::Vector2& center, Urho3D::V
 	return result;
 }
 
-void InfluenceMap::drawCell(int index, short batch, float value) const {
+void InfluenceMap::drawCell(int index, short batch, bool useKernel) const {
 	const auto center = calculator->getCenter(index);
 	const auto v = calculator->getFieldSize() / 2.3f;
 	const auto a = getVertex(center, Urho3D::Vector2(-v, v));
 	const auto b = getVertex(center, Urho3D::Vector2(v, -v));
 	const auto c = getVertex(center, Urho3D::Vector2(v, v));
 	const auto d = getVertex(center, Urho3D::Vector2(-v, -v));
-	const auto color = Game::getColorPaletteRepo()->getColor(value, valueThresholdDebug);
+	const auto color = Game::getColorPaletteRepo()->getColor(useKernel ? getKernel(index) : getRaw(index), valueThresholdDebug);
 	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, a, c, b, color, batch);
 	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, b, d, a, color, batch);
 }
@@ -81,4 +76,8 @@ void InfluenceMap::print(Urho3D::String name) {
 	ensureReady();
 	printMap(std::span<const float>(rawValues, arraySize), name + "_raw");
 	printMap(std::span<const float>(kernelValues, arraySize), name + "_kernel");
+	ensureQuad();
+	for (int i = 0; i < static_cast<int>(quadLayers.size()); ++i) {
+		printMap(quadLayers[i], name + "_quad_" + Urho3D::String(i));
+	}
 }

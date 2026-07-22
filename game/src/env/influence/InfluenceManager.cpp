@@ -1,10 +1,9 @@
 #include "InfluenceManager.h"
 #include <exprtk/exprtk.hpp>
+#include <magic_enum.hpp>
 #include <ranges>
 
 #include "CenterType.h"
-#include "EconomicCenterUtils.h"
-#include "InfluenceCenterUtils.h"
 #include "MapsUtils.h"
 #include "VisibilityManager.h"
 #include "map/InfluenceMap.h"
@@ -19,7 +18,9 @@
 #include "utils/AssertUtils.h"
 #include "utils/OtherUtils.h"
 #include "utils/PrintUtils.h"
-#include "utils/SpanUtils.h"
+
+static_assert(magic_enum::enum_count<CenterType>() == CENTER_TYPE_COUNT,
+              "CENTER_TYPE_COUNT must equal the number of CenterType enumerators");
 
 InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize, Urho3D::Terrain* terrain) {
 	buildingPresence.reserve(numberOfPlayers);
@@ -29,37 +30,19 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 		gs.reserve(numberOfPlayers);
 	}
 
-	for (auto& mapsByResource : unboostedResourceByResource) {
+	for (auto& mapsByResource : unboostedResourceActivityByTypeAndPlayer) {
 		mapsByResource.reserve(numberOfPlayers);
 	}
-	unboostedResource.reserve(numberOfPlayers);
+	unboostedResourceActivityByPlayer.reserve(numberOfPlayers);
 
 	attackActivity.reserve(numberOfPlayers);
 	armyPresence.reserve(numberOfPlayers);
+	economicActivity.reserve(numberOfPlayers);
 
 	buildPlacementByPlayer.reserve(numberOfPlayers);
+	centerSourceByPlayer.reserve(numberOfPlayers);
 	unsigned short resolution = mapSize / INF_GRID_FIELD_SIZE;
 	calculator = GridCalculatorProvider::get(resolution, mapSize);
-	unsigned int quadArraySize = 0;
-	auto currentRes = resolution;
-	while (currentRes % 2 == 0 && currentRes != 1) {
-		currentRes /= 2;
-	}
-	currentRes *= 2;
-	for (int i = currentRes; i < resolution; i *= 2) {
-		quadArraySize += i * i;
-		quadResolutions.push_back(i);
-	}
-	quadValues.resize(quadArraySize);
-	economicRawValues.resize(resolution * resolution);
-	economicCenters.resize(numberOfPlayers);
-	auto offset = 0u;
-	for (const auto quadResolution : quadResolutions) {
-		const auto layerSize = quadResolution * quadResolution;
-		quadLayers.emplace_back(quadValues.data() + offset, layerSize);
-		offset += layerSize;
-	}
-	assert(!quadLayers.empty());
 	for (int player = 0; player < numberOfPlayers; ++player) {
 		buildingPresence.emplace_back(new InfluenceMap(calculator, 2.f));
 		unitPresence.emplace_back(new InfluenceMap(calculator));
@@ -68,12 +51,13 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 			gs.emplace_back(new InfluenceMap(calculator, 40.f, true));
 		}
 
-		for (auto& mapsByResource : unboostedResourceByResource) {
+		for (auto& mapsByResource : unboostedResourceActivityByTypeAndPlayer) {
 			mapsByResource.emplace_back(new InfluenceMap(calculator, 5.f));
 		}
 
 		attackActivity.emplace_back(new InfluenceMap(calculator, 40.f, true));
 		armyPresence.emplace_back(new InfluenceMap(calculator));
+		economicActivity.emplace_back(new InfluenceMap(calculator, 40.f, true));
 	}
 
 	for (int player = 0; player < numberOfPlayers; ++player) {
@@ -82,9 +66,9 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 		std::array<InfluenceMap*, RESOURCES_SIZE> unboostedForPlayer;
 		for (int r = 0; r < RESOURCES_SIZE; ++r) {
 			gatheringForPlayer[r] = gatheringActivityByResource[r][player];
-			unboostedForPlayer[r] = unboostedResourceByResource[r][player];
+			unboostedForPlayer[r] = unboostedResourceActivityByTypeAndPlayer[r][player];
 		}
-		unboostedResource.emplace_back(new InfluenceMap(calculator, 5.f));
+		unboostedResourceActivityByPlayer.emplace_back(new InfluenceMap(calculator, 5.f));
 
 		buildPlacementByPlayer.emplace_back(std::array<InfluenceMap*, AI_MAP_COUNT>{
 					                                buildingPresence[player],
@@ -97,9 +81,15 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 					                                buildingPresence[enemy],
 					                                unitPresence[enemy],
 				                                attackActivity[enemy],
-				                                unboostedResource[player],
+				                                unboostedResourceActivityByPlayer[player],
 				                        });
-		unboostedResourceByPlayer.emplace_back(unboostedForPlayer);
+		centerSourceByPlayer.emplace_back(std::array<InfluenceMap*, CENTER_TYPE_COUNT>{
+			                             economicActivity[player],
+			                             buildingPresence[player],
+			                             armyPresence[player],
+			                             attackActivity[player]
+			                             });
+		unboostedResourceActivityByPlayerAndType.emplace_back(unboostedForPlayer);
 		assert(validSizes(buildPlacementByPlayer.at(player)));
 	}
 	visibilityManager = new VisibilityManager(numberOfPlayers, mapSize, terrain);
@@ -120,14 +110,15 @@ InfluenceManager::~InfluenceManager() {
 	for (auto& vec : gatheringActivityByResource) {
 		clear_vector(vec);
 	}
-	for (auto& vec : unboostedResourceByResource) {
+	for (auto& vec : unboostedResourceActivityByTypeAndPlayer) {
 		clear_vector(vec);
 	}
-	clear_vector(unboostedResource);
+	clear_vector(unboostedResourceActivityByPlayer);
 
 	clear_vector(attackActivity);
 
 	clear_vector(armyPresence);
+	clear_vector(economicActivity);
 
 	delete visibilityManager;
 	delete ci;
@@ -136,10 +127,10 @@ InfluenceManager::~InfluenceManager() {
 void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 	MapsUtils::resetMaps(unitPresence);
 	MapsUtils::resetMaps(armyPresence);
-	for (auto& vec : unboostedResourceByResource) {
+	for (auto& vec : unboostedResourceActivityByTypeAndPlayer) {
 		MapsUtils::resetMaps(vec);
 	}
-	MapsUtils::resetMaps(unboostedResource);
+	MapsUtils::resetMaps(unboostedResourceActivityByPlayer);
 
 	for (const auto unit : (*units)) {
 		const auto pId = unit->getPlayer();
@@ -149,9 +140,11 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 			armyPresence[pId]->update(index);
 		} else if (unit->getState() == UnitState::COLLECT && unit->isFirstThingAlive()) {
 			auto res = static_cast<ResourceEntity*>(unit->getThingToInteract());
-			// TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
-			unboostedResourceByPlayer[unit->getPlayer()][res->getResourceId()]->update(res->getIndexInInfluence());
-			unboostedResource[unit->getPlayer()]->update(res->getIndexInInfluence());
+			if (res->getBonus(pId) <= 1.f) {
+				// TODO albo uzyc occupied cell tylko trzeba jakos przeliczyc
+				unboostedResourceActivityByPlayerAndType[pId][res->getResourceId()]->update(res->getIndexInInfluence());
+				unboostedResourceActivityByPlayer[pId]->update(res->getIndexInInfluence());
+			}
 		}
 	}
 	
@@ -173,13 +166,10 @@ void InfluenceManager::updateWithHistory() const {
 		MapsUtils::resetMaps(vec);
 		MapsUtils::finalize(vec);
 	}
+	MapsUtils::resetMaps(economicActivity);
 
 	MapsUtils::resetMaps(attackActivity);//obniza wartosci
 	MapsUtils::finalize(attackActivity);//dopisuje nowe
-	for (auto& cache : economicCenters) {
-		cache.dirty = true;
-	}
-	economicRawPlayer.reset();
 }
 
 void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
@@ -191,11 +181,8 @@ void InfluenceManager::resetHistoryThresholds() const {
 	for (auto& vec : gatheringActivityByResource) {
 		MapsUtils::resetToZeroMaps(vec);
 	}
+	MapsUtils::resetToZeroMaps(economicActivity);
 	MapsUtils::resetToZeroMaps(attackActivity);
-	for (auto& cache : economicCenters) {
-		cache.dirty = true;
-	}
-	economicRawPlayer.reset();
 }
 
 void InfluenceManager::draw(EnvironmentDebugMode mode, unsigned char index) {
@@ -231,9 +218,7 @@ void InfluenceManager::draw(EnvironmentDebugMode mode, unsigned char index) {
 		MapsUtils::drawMapKernel(currentDebugBatch, index, attackActivity);
 		break;
 	case EnvironmentDebugMode::ECONOMY:
-		index %= gatheringActivityByResource[0].size();
-		rebuildEconomicRaw(index);
-		gatheringActivityByResource[0][index]->drawRaw(economicRawValues, currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+		MapsUtils::drawMapRaw(currentDebugBatch, index, economicActivity);
 		break;
 	case EnvironmentDebugMode::VISIBILITY:
 		visibilityManager->drawMaps(currentDebugBatch, index);
@@ -249,24 +234,17 @@ void InfluenceManager::draw(EnvironmentDebugMode mode, unsigned char index) {
 }
 
 void InfluenceManager::drawAll() const {
-	for (int player = 0; player < buildingPresence.size(); ++player) {
-		printMapWithQuads(*buildingPresence[player], "buildingPresence_" + Urho3D::String(player) + "_");
-		printMapWithQuads(*unitPresence[player], "unitPresence_" + Urho3D::String(player) + "_");
-	}
+	MapsUtils::drawAll(buildingPresence, "buildingPresence");
+	MapsUtils::drawAll(unitPresence, "unitPresence");
 
 	constexpr const char* gatheringActivityNames[] = {
 		"gatheringActivityFood", "gatheringActivityWood", "gatheringActivityStone", "gatheringActivityGold"};
 	for (int r = 0; r < RESOURCES_SIZE; ++r) {
-		for (int player = 0; player < gatheringActivityByResource[r].size(); ++player) {
-			printMapWithQuads(*gatheringActivityByResource[r][player],
-			                  Urho3D::String(gatheringActivityNames[r]) + "_" + Urho3D::String(player) + "_");
-		}
+		MapsUtils::drawAll(gatheringActivityByResource[r], gatheringActivityNames[r]);
 	}
-	for (int player = 0; player < attackActivity.size(); ++player) {
-		printMapWithQuads(*attackActivity[player], "attackActivity_" + Urho3D::String(player) + "_");
-		printMapWithQuads(*armyPresence[player], "armyPresence_" + Urho3D::String(player) + "_");
-		printEconomicWithQuads(player);
-	}
+	MapsUtils::drawAll(attackActivity, "attackActivity");
+	MapsUtils::drawAll(armyPresence, "armyPresence");
+	MapsUtils::drawAll(economicActivity, "economicActivity");
 }
 
 content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfo,
@@ -314,7 +292,7 @@ InfluenceManager::getAreas(std::span<const float> result, unsigned char player) 
 }
 
 std::vector<unsigned> InfluenceManager::getAreasResBonus(unsigned char id, unsigned char player) const {
-	return unboostedResourceByPlayer[player][id]->getRawMaxIdxs();
+	return unboostedResourceActivityByPlayerAndType[player][id]->getRawMaxIdxs();
 }
 
 const std::vector<unsigned>&
@@ -349,7 +327,7 @@ void InfluenceManager::addCollect(Unit* unit, short resId, float value) const {
 	assert(gatheringActivityByResource[cast(ResourceType::FOOD)][playerId]->getResolution() == calculator->getResolution());
 	const auto index = getIndexInInfluence(unit);
 	gatheringActivityByResource[resId][playerId]->update(index, value);
-
+	economicActivity[playerId]->update(index, value);
 }
 
 void InfluenceManager::addAttack(unsigned char player, const Urho3D::Vector2& position, float value) const {
@@ -357,89 +335,7 @@ void InfluenceManager::addAttack(unsigned char player, const Urho3D::Vector2& po
 }
 
 std::optional<Urho3D::Vector2> InfluenceManager::getCenterOf(CenterType id, unsigned char player) const {
-	switch (id) {
-	case CenterType::ECON:
-		return getEconomicCenter(player);
-	case CenterType::BUILDING:
-		ensureCenter(*buildingPresence[player]);
-		return buildingPresence[player]->center;
-	case CenterType::ARMY:
-		ensureCenter(*armyPresence[player]);
-		return armyPresence[player]->center;
-	case CenterType::BATTLE:
-		ensureCenter(*attackActivity[player]);
-		return attackActivity[player]->center;
-	}
-
-	assert(false);
-	return std::nullopt;
-}
-
-void InfluenceManager::rebuildEconomicRaw(unsigned char player) const {
-	if (economicRawPlayer == player && !economicCenters[player].dirty) {
-		return;
-	}
-
-	std::array<std::span<const float>, RESOURCES_SIZE> rawValues;
-	for (int resource = 0; resource < RESOURCES_SIZE; ++resource) {
-		const auto* map = gatheringActivityByResource[resource][player];
-		rawValues[resource] = std::span<const float>(map->rawValues, map->arraySize);
-	}
-	EconomicCenterUtils::sumRawValues(economicRawValues, rawValues);
-	economicRawPlayer = player;
-}
-
-std::optional<Urho3D::Vector2> InfluenceManager::getEconomicCenter(unsigned char player) const {
-	auto& cache = economicCenters[player];
-	if (!cache.dirty) {
-		return cache.center;
-	}
-
-	rebuildEconomicRaw(player);
-	ensureCenter(economicRawValues, cache.center, cache.dirty);
-	return cache.center;
-}
-
-void InfluenceManager::ensureCenter(std::span<const float> rawValues, std::optional<Urho3D::Vector2>& center,
-                                    bool& centerDirty) const {
-	if (!centerDirty) {
-		return;
-	}
-
-	InfluenceCenterUtils::rebuildQuad(rawValues, calculator->getResolution(), quadLayers, quadResolutions);
-	const auto index = InfluenceCenterUtils::findCenterIndex(rawValues, quadLayers, quadResolutions);
-	if (!index.has_value()) {
-		center.reset();
-		centerDirty = false;
-		return;
-	}
-
-	center = calculator->getCenter(*index);
-	centerDirty = false;
-}
-
-void InfluenceManager::ensureCenter(InfluenceMap& map) const {
-	ensureCenter(std::span<const float>(map.rawValues, map.arraySize), map.center, map.centerDirty);
-}
-
-void InfluenceManager::printMapWithQuads(InfluenceMap& map, const Urho3D::String& name) const {
-	map.print(name);
-	InfluenceCenterUtils::rebuildQuad(std::span<const float>(map.rawValues, map.arraySize), calculator->getResolution(),
-	                                  quadLayers, quadResolutions);
-	for (int i = 0; i < static_cast<int>(quadLayers.size()); ++i) {
-		map.printMap(quadLayers[i], name + "_quad_" + Urho3D::String(i));
-	}
-}
-
-void InfluenceManager::printEconomicWithQuads(unsigned char player) const {
-	rebuildEconomicRaw(player);
-	auto* map = gatheringActivityByResource[0][player];
-	const auto playerName = Urho3D::String(static_cast<int>(player));
-	map->printMap(economicRawValues, "gatherSpeedCombined_" + playerName + "_raw");
-	InfluenceCenterUtils::rebuildQuad(economicRawValues, calculator->getResolution(), quadLayers, quadResolutions);
-	for (int i = 0; i < static_cast<int>(quadLayers.size()); ++i) {
-		map->printMap(quadLayers[i], "gatherSpeedCombined_" + playerName + "_quad_" + Urho3D::String(i));
-	}
+	return centerSourceByPlayer[player][castC(id)]->getCenter();
 }
 
 bool InfluenceManager::isVisible(unsigned char player, const Urho3D::Vector2& pos) const {

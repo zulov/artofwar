@@ -86,6 +86,7 @@ FrameInfo* Simulation::update(float timeStep) {
 		performStateAction(); //tutaj moga umierac w tym zmiany stanu
 		executeStateTransition();
 		updateQueues();
+		// TODO: Snapshot maps run before disposal; verify the stale-entity window remains acceptable.
 		updateInfluenceMaps(false);
 
 		simObjectManager->removeFromGrids();
