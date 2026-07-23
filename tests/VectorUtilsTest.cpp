@@ -8,6 +8,22 @@
 
 class VectorUtilsFixture : public ::testing::Test {};
 
+TEST_F(VectorUtilsFixture, SortAndRemoveDuplicatesOrdersAndDeduplicatesValues) {
+	std::vector<int> values = { 4, 2, 1, 4, 3, 2, 1 };
+
+	sortAndRemoveDuplicates(values);
+
+	EXPECT_EQ(values, std::vector<int>({ 1, 2, 3, 4 }));
+}
+
+TEST_F(VectorUtilsFixture, SortAndRemoveDuplicatesHandlesEmptyVector) {
+	std::vector<int> values;
+
+	sortAndRemoveDuplicates(values);
+
+	EXPECT_TRUE(values.empty());
+}
+
 TEST_F(VectorUtilsFixture, SortIndexesOrdersValuesAscending) {
 	std::vector<int> values = { 40, 10, 30, 20 };
 	auto indexes = sort_indexes(std::span<int>(values), static_cast<int>(values.size()));

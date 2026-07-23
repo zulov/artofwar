@@ -75,6 +75,8 @@ public:
 
 	float getInCombatRatio();
 	float getBonusCoverage(ResourceType rt);
+	void updateNearbyResourceSupply();
+	const std::array<float, RESOURCES_SIZE>& getNearbyResourceSupply() const { return nearbyResourceSupply; }
 	float getValueDestroyed() const { return valueDestroyed; }
 private:
 	std::vector<Building*> buildings;
@@ -98,6 +100,7 @@ private:
 	unsigned spawnerCount = 0;
 
 	std::array<float, 4> bonusCoverage{};
+	std::array<float, RESOURCES_SIZE> nearbyResourceSupply{};
 
 	float resourcesSum = 0.f;
 	float freeArmyAttackSum = 0.f;

@@ -3,6 +3,7 @@
 #include <objects/unit/Unit.h>
 #include <Game.h>
 #include "env/Environment.h"
+#include "math/VectorUtils.h"
 #include <iostream>
 
 inline bool addToGroup(std::vector<std::vector<int>>& groupedIndexes, int current) {
@@ -25,8 +26,7 @@ inline std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units, b
 	for (const auto* unit : units) {
 		allIndexes.push_back(unit->getMainGridIndex());
 	}
-	std::ranges::sort(allIndexes);
-	allIndexes.erase(std::ranges::unique(allIndexes).begin(), allIndexes.end());
+	sortAndRemoveDuplicates(allIndexes);
 	std::vector<std::vector<int>> groupedIndexes;
 
 	for (int current : allIndexes) {

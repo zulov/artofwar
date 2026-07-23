@@ -8,6 +8,7 @@
 #include "control/MouseButton.h"
 #include "database/db_struct.h"
 #include "math/MathUtils.h"
+#include "math/VectorUtils.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
@@ -117,6 +118,20 @@ const std::vector<Physical*>& Environment::getResources(const Urho3D::Vector2& c
 	}
 
 	return neights;
+}
+
+std::vector<int> Environment::getUniqueResourceIndexesInRange(const std::unordered_set<int>& centerIndexes,
+                                                               float radius) const {
+	std::vector<int> indexes;
+	for (const auto centerIndex : centerIndexes) {
+		resourceStaticGrid.appendIndexesInRange(getCenter(centerIndex), radius, indexes);
+	}
+	sortAndRemoveDuplicates(indexes);
+	return indexes;
+}
+
+const std::vector<Physical*>& Environment::getResourcesAt(int index) const {
+	return resourceStaticGrid.getContentAt(index);
 }
 
 void Environment::addIfInRange(const Physical* physical, Physical* neight, const float sqRadius,

@@ -10,30 +10,10 @@
 #include "player/Player.h"
 #include "player/Possession.h"
 #include "player/Resources.h"
-#include "env/influence/CenterType.h"
-#include "Game.h"
-#include "env/Environment.h"
-#include "env/EnvConsts.h"
-#include "objects/resource/ResourceEntity.h"
 #include "utils/OtherUtils.h"
 
 #include <algorithm>
 #include <cmath>
-
-namespace {
-std::pair<float, float> getNearbySupply(char playerId) {
-	// Resources within the level-1 query radius of the economy center.
-	constexpr ResourceQueryLevel SEARCH_LEVEL = ResourceQueryLevel::R128;
-
-	auto* env = Game::getEnvironment();
-	auto center = env->getCenterOf(CenterType::ECON, playerId);
-	if (center.has_value()) {
-		return env->sumFoodWoodWithin(center.value(), castC(SEARCH_LEVEL));
-	}
-
-	return {0.f, 0.f};
-}
-}
 
 EconomyBrain::EconomyBrain(db_nation* nation)
 	: brain(BrainProvider::get(nation->brainPrefix[1] + "economy.csv")),
@@ -98,9 +78,9 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::BONUS_COVERAGE_GOLD)] = possession->getBonusCoverage(ResourceType::GOLD);
 
 	// Nearby resource supply (2)
-	auto [foodSupply, woodSupply] = getNearbySupply(player->getId());
-	inputData[idx(I::NEARBY_FOOD_SUPPLY)] = norm(foodSupply, NormScale::NEARBY_SUPPLY);
-	inputData[idx(I::NEARBY_WOOD_SUPPLY)] = norm(woodSupply, NormScale::NEARBY_SUPPLY);
+	const auto& nearbySupply = possession->getNearbyResourceSupply();
+	inputData[idx(I::NEARBY_FOOD_SUPPLY)] = norm(nearbySupply[cast(ResourceType::FOOD)], NormScale::NEARBY_SUPPLY);
+	inputData[idx(I::NEARBY_WOOD_SUPPLY)] = norm(nearbySupply[cast(ResourceType::WOOD)], NormScale::NEARBY_SUPPLY);
 	inputData[idx(I::TOTAL_RES_BUILDINGS)] = norm(possession->getResourceBuildingCount(), NormScale::RES_BUILDINGS);
 	const auto resWithoutBonus = possession->getResWithOutBonus();
 	inputData[idx(I::RES_WO_BONUS_FOOD)] = norm(resWithoutBonus[cast(ResourceType::FOOD)], NormScale::WORKERS);

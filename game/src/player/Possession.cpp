@@ -1,5 +1,9 @@
 #include "Possession.h"
+
+#include <unordered_set>
+
 #include "Game.h"
+#include "env/Environment.h"
 #include "Resources.h"
 #include "ai/PossessionMetric.h"
 #include "database/DatabaseCache.h"
@@ -12,6 +16,10 @@
 #include "ai/MetricDefinitions.h"
 #include "simulation/formation/Formation.h"
 #include "simulation/formation/FormationManager.h"
+
+namespace {
+constexpr float NEARBY_RESOURCE_SUPPLY_RADIUS = 32.f;
+}
 
 Possession::Possession(unsigned short nation) {
 	for (const auto building : Game::getDatabase()->getNation(nation)->buildings) {
@@ -246,6 +254,25 @@ float Possession::getInCombatRatio() {
 float Possession::getBonusCoverage(ResourceType rt) {
 	ensureResWithoutBonus();
 	return bonusCoverage[cast(rt)];
+}
+
+void Possession::updateNearbyResourceSupply() {
+	nearbyResourceSupply.fill(0.f);
+	std::unordered_set<int> workerCells;
+	for (const auto worker : workers) {
+		workerCells.insert(worker->getMainGridIndex());
+	}
+
+	auto* env = Game::getEnvironment();
+	const auto resourceCells = env->getUniqueResourceIndexesInRange(workerCells, NEARBY_RESOURCE_SUPPLY_RADIUS);
+
+	for (const auto resourceCell : resourceCells) {
+		for (const auto physical : env->getResourcesAt(resourceCell)) {
+			auto* resource = static_cast<const ResourceEntity*>(physical);
+			if (resource->getHp() <= 0.f) { continue; }
+			nearbyResourceSupply[resource->getResourceId()] += resource->getHp();
+		}
+	}
 }
 
 void Possession::add(Building* building) {

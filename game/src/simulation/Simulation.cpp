@@ -18,6 +18,7 @@
 #include "objects/unit/SimColorMode.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
+#include "player/Possession.h"
 #include "player/ai/ActionCenter.h"
 #include "scene/load/dbload_container.h"
 #include "scene/load/SceneLoader.h"
@@ -51,6 +52,9 @@ void Simulation::updateInfluenceMaps(bool force) const {
 	const auto* frameInfo = Game::getFrameInfo();
 	if (frameInfo->canUpdate(PerFrameAction::INFLUENCE_UNITS, force)) {
 		env->updateInfluenceUnits(units);
+		for (const auto player : Game::getPlayersMan()->getAllPlayers()) {
+			player->getPossession()->updateNearbyResourceSupply();
+		}
 	}
 	if (frameInfo->canUpdate(PerFrameAction::INFLUENCE_OTHER, force)) {
 		env->updateInfluenceBuildings(buildings);

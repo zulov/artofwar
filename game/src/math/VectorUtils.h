@@ -49,6 +49,12 @@ static void cleanDead(std::vector<T*>* vector, bool sthDead = true) {
 	}
 }
 
+template <typename T>
+static void sortAndRemoveDuplicates(std::vector<T>& values) {
+	std::ranges::sort(values);
+	values.erase(std::ranges::unique(values).begin(), values.end());
+}
+
 template <typename T, class _Pr>
 static std::vector<unsigned int> sort_indexes(std::span<T> v, _Pr pred, int size) {
 	std::vector<unsigned int> idx(v.size());

@@ -31,6 +31,7 @@ public:
 	virtual int updateNew(Physical* physical) const;
 
 	const std::vector<Physical*>& getContentAt(int index) const;
+	void appendIndexesInRange(const Urho3D::Vector2& center, float radius, std::vector<int>& indexes) const;
 
 	std::vector<Physical*>* getArrayNeight(MouseHeld& held, char player);
 	std::vector<Physical*>* getArrayNeightSimilarAs(Physical* clicked, float radius);

@@ -82,6 +82,13 @@ const std::vector<Physical*>& Grid::getContentAt(int index) const {
 	return buckets[index].getContent();
 }
 
+void Grid::appendIndexesInRange(const Urho3D::Vector2& center, float radius, std::vector<int>& indexes) const {
+	const int centerIndex = calculator->indexFromPosition(center);
+	for (const auto offset : *levelCache->get(radius, centerIndex)) {
+		indexes.push_back(centerIndex + offset);
+	}
+}
+
 const std::vector<Physical*>& Grid::getNotSafeContentAt(short x, short z) const {
 	return getContentAt(calculator->getNotSafeIndex(x, z));
 }

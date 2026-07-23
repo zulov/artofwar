@@ -12,6 +12,7 @@
 #include "debug/DebugLineRepo.h"
 #include "levels/LevelCache.h"
 #include "math/MathUtils.h"
+#include "math/VectorUtils.h"
 #include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
 #include "env/CloseIndexes.h"
@@ -326,7 +327,7 @@ void MainGrid::addResBonuses(std::vector<Building*>& resBuildings) const {
 			withBonus.push_back(dynamic_cast<ResourceEntity*>(obj));
 		}
 	}
-	//withBonus usunac duplikwaty
+	sortAndRemoveDuplicates(withBonus);
 	for (auto withBonu : withBonus) {
 		for (char player = 0; player < MAX_PLAYERS; ++player) {
 			withBonu->setBonus(player, getBonuses(player, withBonu));
@@ -357,8 +358,7 @@ void MainGrid::addResourceBonuses(Building* building, std::vector<int>& changedI
 				indexesWithBonus.push_back(cell + idx);
 			}
 		}
-		std::ranges::sort(indexesWithBonus);
-		indexesWithBonus.erase(std::ranges::unique(indexesWithBonus).begin(), indexesWithBonus.end());
+		sortAndRemoveDuplicates(indexesWithBonus);
 		std::ranges::copy(indexesWithBonus, std::back_inserter(changedIndexes));
 
 		for (const int index : indexesWithBonus) {
@@ -640,8 +640,7 @@ std::vector<int> MainGrid::getPassableEnd(int endIdx) const {
 		result = result2;
 		result2.clear();
 	}
-	std::ranges::sort(result);
-	result.erase(std::ranges::unique(result).begin(), result.end());
+	sortAndRemoveDuplicates(result);
 	assert(validateAllPassable(result));
 
 	return result;
@@ -677,8 +676,7 @@ std::vector<int> MainGrid::getPassableIndexes(const std::vector<int>& endIdxs, b
 		}
 	}
 
-	std::ranges::sort(result);
-	result.erase(std::ranges::unique(result).begin(), result.end());
+	sortAndRemoveDuplicates(result);
 
 	return result;
 }
