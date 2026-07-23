@@ -220,6 +220,25 @@ void InfluenceManager::draw(EnvironmentDebugMode mode, unsigned char index) {
 	case EnvironmentDebugMode::ECONOMY:
 		MapsUtils::drawMapRaw(currentDebugBatch, index, economicActivity);
 		break;
+	case EnvironmentDebugMode::UNBOOSTED_RESOURCES:
+		MapsUtils::drawMapRaw(currentDebugBatch, index, unboostedResourceActivityByPlayer);
+		break;
+	case EnvironmentDebugMode::UNBOOSTED_FOOD:
+		MapsUtils::drawMapRaw(currentDebugBatch, index,
+		                      unboostedResourceActivityByTypeAndPlayer[cast(ResourceType::FOOD)]);
+		break;
+	case EnvironmentDebugMode::UNBOOSTED_WOOD:
+		MapsUtils::drawMapRaw(currentDebugBatch, index,
+		                      unboostedResourceActivityByTypeAndPlayer[cast(ResourceType::WOOD)]);
+		break;
+	case EnvironmentDebugMode::UNBOOSTED_STONE:
+		MapsUtils::drawMapRaw(currentDebugBatch, index,
+		                      unboostedResourceActivityByTypeAndPlayer[cast(ResourceType::STONE)]);
+		break;
+	case EnvironmentDebugMode::UNBOOSTED_GOLD:
+		MapsUtils::drawMapRaw(currentDebugBatch, index,
+		                      unboostedResourceActivityByTypeAndPlayer[cast(ResourceType::GOLD)]);
+		break;
 	case EnvironmentDebugMode::VISIBILITY:
 		visibilityManager->drawMaps(currentDebugBatch, index);
 		break;

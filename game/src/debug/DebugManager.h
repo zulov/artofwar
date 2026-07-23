@@ -26,6 +26,9 @@ private:
 		EnvironmentDebugMode::FOOD_SPEED, EnvironmentDebugMode::WOOD_SPEED,
 		EnvironmentDebugMode::STONE_SPEED, EnvironmentDebugMode::GOLD_SPEED,
 		EnvironmentDebugMode::ATTACK_SPEED, EnvironmentDebugMode::ECONOMY,
+		EnvironmentDebugMode::UNBOOSTED_RESOURCES, EnvironmentDebugMode::UNBOOSTED_FOOD,
+		EnvironmentDebugMode::UNBOOSTED_WOOD, EnvironmentDebugMode::UNBOOSTED_STONE,
+		EnvironmentDebugMode::UNBOOSTED_GOLD,
 		EnvironmentDebugMode::VISIBILITY, EnvironmentDebugMode::NONE
 	};
 	SimColorMode nextColorMode[magic_enum::enum_count<SimColorMode>()] = {
