@@ -123,6 +123,7 @@ const std::vector<Physical*>& Environment::getResources(const Urho3D::Vector2& c
 std::vector<int> Environment::getUniqueResourceIndexesInRange(const std::unordered_set<int>& centerIndexes,
                                                                float radius) const {
 	std::vector<int> indexes;
+	indexes.reserve(100);
 	for (const auto centerIndex : centerIndexes) {
 		resourceStaticGrid.appendIndexesInRange(getCenter(centerIndex), radius, indexes);
 	}

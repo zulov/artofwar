@@ -269,7 +269,6 @@ void Possession::updateNearbyResourceSupply() {
 	for (const auto resourceCell : resourceCells) {
 		for (const auto physical : env->getResourcesAt(resourceCell)) {
 			auto* resource = static_cast<const ResourceEntity*>(physical);
-			if (resource->getHp() <= 0.f) { continue; }
 			nearbyResourceSupply[resource->getResourceId()] += resource->getHp();
 		}
 	}
