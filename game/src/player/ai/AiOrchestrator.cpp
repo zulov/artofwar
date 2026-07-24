@@ -215,17 +215,17 @@ void AiOrchestrator::action() {
 	upgradeUnits(unitOut);
 
 	// Unit-producing building upgrade request (barracks, archery range, stable)
-	upgradeUnitBuilding(unitOut);
+	//upgradeUnitBuilding(unitOut);
 
 	// Resource building upgrade request (farms, mills, mines, refineries, etc.)
 	upgradeResBuilding();
 
 	// Defence building upgrade request (tower)
-	submitBuildingUpgradeRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
+	//submitBuildingUpgradeRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
 	// Other building upgrade request (center, house)
-	submitBuildingUpgradeRequest(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
+	//submitBuildingUpgradeRequest(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
 	// Tech building upgrade request (blacksmith, university)
-	submitBuildingUpgradeRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
+	//submitBuildingUpgradeRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
 
 	// Building requests — use MasterBrain urgencies directly
 	submitBuildingRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
