@@ -4,6 +4,7 @@
 #include <cmath>
 #include <limits>
 #include <optional>
+#include <ranges>
 #include <utility>
 #include "AiHistory.h"
 #include "AiUtils.h"
@@ -83,16 +84,16 @@ AiOrchestrator::AiOrchestrator(Player* player, db_nation* nation, AiHistory* his
 	wantExecutor(player, nation, history) { lastLacking.reset(); }
 
 void AiOrchestrator::createWorkers() {
-	if (lastEconOut.workerCount > 0) {
-		wantList.addRequest(WantItemType::WORKER, lastEconOut.workerAllocation, resolveWorkerId(),
-		                    lastEconOut.workerCount);
+	const short workerId = resolveWorkerId();
+	if (lastEconOut.workerCount > 0 && workerId >= 0) {
+		addUnitWantOrPrerequisite(WantItemType::WORKER, lastEconOut.workerAllocation, workerId, lastEconOut.workerCount);
 	}
 }
 
 void AiOrchestrator::createUnits(const UnitOutput& unitOut) {
 	if (unitOut.count > 0) {
 		for (auto* unit : resolveUnit(unitOut)) {
-			wantList.addRequest(WantItemType::UNIT, lastMasterOut.unitUrgency, unit->id);
+			addUnitWantOrPrerequisite(WantItemType::UNIT, lastMasterOut.unitUrgency, unit->id);
 		}
 	}
 }
@@ -100,7 +101,7 @@ void AiOrchestrator::createUnits(const UnitOutput& unitOut) {
 void AiOrchestrator::upgradeUnits(const UnitOutput& unitOut) {
 	if (unitOut.unitUpgradeUrgency > 0.1f) {
 		if (auto* unitToUpgrade = resolveUnitUpgrade(unitOut)) {
-			wantList.addRequest(WantItemType::UNIT_UPGRADE, unitOut.unitUpgradeUrgency, unitToUpgrade->id);
+			addUnitWantOrPrerequisite(WantItemType::UNIT_UPGRADE, unitOut.unitUpgradeUrgency, unitToUpgrade->id);
 		}
 	}
 }
@@ -108,7 +109,7 @@ void AiOrchestrator::upgradeUnits(const UnitOutput& unitOut) {
 void AiOrchestrator::upgradeWorkers() {
 	if (lastEconOut.workerUpgradeUrgency > 0.1f) {
 		if (auto* workerToUpgrade = resolveWorkerUpgrade()) {
-			wantList.addRequest(WantItemType::UNIT_UPGRADE, lastEconOut.workerUpgradeUrgency, workerToUpgrade->id);
+			addUnitWantOrPrerequisite(WantItemType::UNIT_UPGRADE, lastEconOut.workerUpgradeUrgency, workerToUpgrade->id);
 		}
 	}
 }
@@ -116,7 +117,12 @@ void AiOrchestrator::upgradeWorkers() {
 void AiOrchestrator::upgradeUnitBuilding(const UnitOutput& unitOut) {
 	if (unitOut.buildingUpgradeUrgency > 0.1f) {
 		if (auto* buildingToUpgrade = resolveBuildingUpgrade(unitOut)) {
-			wantList.addRequest(WantItemType::BUILDING_UPGRADE, unitOut.buildingUpgradeUrgency, buildingToUpgrade->id);
+			if (hasReadyBuildingInstance(buildingToUpgrade->id)
+				&& player->getNextLevelForBuilding(buildingToUpgrade->id).has_value()) {
+				wantList.addRequest(WantItemType::BUILDING_UPGRADE, unitOut.buildingUpgradeUrgency, buildingToUpgrade->id);
+			} else if (!hasOwnedBuildingInstance(buildingToUpgrade->id)) {
+				wantList.addRequest(WantItemType::BUILDING, unitOut.buildingUpgradeUrgency, buildingToUpgrade->id);
+			}
 		}
 	}
 }
@@ -124,7 +130,14 @@ void AiOrchestrator::upgradeUnitBuilding(const UnitOutput& unitOut) {
 void AiOrchestrator::upgradeResBuilding() {
 	if (lastEconOut.resBuildingUpgradeUrgency > 0.1f) {
 		if (auto* resBuildingToUpgrade = resolveResBuildingUpgrade(lastEconOut)) {
-			wantList.addRequest(WantItemType::BUILDING_UPGRADE, lastEconOut.resBuildingUpgradeUrgency, resBuildingToUpgrade->id);
+			if (hasReadyBuildingInstance(resBuildingToUpgrade->id)
+				&& player->getNextLevelForBuilding(resBuildingToUpgrade->id).has_value()) {
+				wantList.addRequest(WantItemType::BUILDING_UPGRADE, lastEconOut.resBuildingUpgradeUrgency,
+				                    resBuildingToUpgrade->id);
+			} else if (!hasOwnedBuildingInstance(resBuildingToUpgrade->id)) {
+				wantList.addRequest(WantItemType::BUILDING, lastEconOut.resBuildingUpgradeUrgency,
+				                    resBuildingToUpgrade->id);
+			}
 		}
 	}
 }
@@ -166,6 +179,39 @@ void AiOrchestrator::createLackingUnitBuilding() {
 		wantList.addRequest(WantItemType::BUILDING, std::max(lastMasterOut.unitUrgency, 0.5f),
 		                    lastLacking.lackingBuildingForUnit);
 	}
+}
+
+void AiOrchestrator::addUnitWantOrPrerequisite(WantItemType type, float priority, short unitId, unsigned char count) {
+	// One hop only: if the desired thing cannot run because its producer is missing,
+	// request that producer building and let the AI re-issue the original want next tick.
+	// TODO: if the producer exists but still needs an upgrade, route that upgrade too.
+	if (type == WantItemType::BUILDING || unitId < 0) {
+		wantList.addRequest(type, priority, unitId, count);
+		return;
+	}
+
+	const auto deployInfo = findBuildingTypeToDeploy(unitId);
+	if (deployInfo.hasReadyBuilding) {
+		wantList.addRequest(type, priority, unitId, count);
+		return;
+	}
+
+	if (!deployInfo.hasOwnedBuilding && deployInfo.buildingId >= 0) {
+		wantList.addRequest(WantItemType::BUILDING, priority, deployInfo.buildingId);
+	}
+}
+
+bool AiOrchestrator::hasOwnedBuildingInstance(short buildingId) const {
+	if (buildingId < 0) { return false; }
+	return !possession->getBuildings(buildingId)->empty();
+}
+
+bool AiOrchestrator::hasReadyBuildingInstance(short buildingId) const {
+	if (!hasOwnedBuildingInstance(buildingId)) { return false; }
+	for (auto* building : *possession->getBuildings(buildingId)) {
+		if (building->isReady()) { return true; }
+	}
+	return false;
 }
 
 void AiOrchestrator::action() {
@@ -520,6 +566,34 @@ db_building* AiOrchestrator::resolveResBuildingUpgrade(const EconomyOutput& econ
 	float totalWeight = 0.f;
 	for (float w : weights) { totalWeight += w; }
 	return candidates[sampleWeighted(weights, totalWeight)];
+}
+
+AiOrchestrator::DeployBuildingInfo AiOrchestrator::findBuildingTypeToDeploy(short unitId) const {
+	DeployBuildingInfo result{};
+	for (const auto building : nation->buildings) {
+		if (!building->parentType[static_cast<int>(ParentBuildingType::UNITS)]) { continue; }
+		bool canEverProduce = false;
+		for (const auto level : building->levels) {
+			const auto* unitIds = level->unitsPerNationIds[player->getNation()];
+			if (unitIds != nullptr
+				&& std::ranges::find(*unitIds, static_cast<unsigned char>(unitId)) != unitIds->end()) {
+				canEverProduce = true;
+				break;
+			}
+		}
+		if (canEverProduce) {
+			if (result.buildingId < 0) { result.buildingId = building->id; }
+			const auto* ownedBuildings = possession->getBuildings(building->id);
+			if (!ownedBuildings->empty()) { result.hasOwnedBuilding = true; }
+			if (std::ranges::any_of(*ownedBuildings, [](Building* owned) {
+				return owned->isReady();
+			})) {
+				result.hasReadyBuilding = true;
+				return result;
+			}
+		}
+	}
+	return result;
 }
 
 // --- Building resolution ---
