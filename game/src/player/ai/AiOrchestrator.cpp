@@ -84,8 +84,7 @@ AiOrchestrator::AiOrchestrator(Player* player, db_nation* nation, AiHistory* his
 
 void AiOrchestrator::createWorkers() {
 	if (lastEconOut.workerCount > 0) {
-		wantList.addRequest(WantItemType::WORKER, lastEconOut.workerAllocation, resolveWorkerId(),
-		                    lastEconOut.workerCount);
+		wantList.addRequest(WantItemType::WORKER, lastEconOut.workerAllocation, resolveWorkerId(), lastEconOut.workerCount);
 	}
 }
 
@@ -99,32 +98,32 @@ void AiOrchestrator::createUnits(const UnitOutput& unitOut) {
 
 void AiOrchestrator::upgradeUnits(const UnitOutput& unitOut) {
 	if (unitOut.unitUpgradeUrgency > 0.1f) {
-		if (auto* unitToUpgrade = resolveUnitUpgrade(unitOut)) {
-			wantList.addRequest(WantItemType::UNIT_UPGRADE, unitOut.unitUpgradeUrgency, unitToUpgrade->id);
+		if (auto* found = resolveUnitUpgrade(unitOut)) {
+			wantList.addRequest(WantItemType::UNIT_UPGRADE, unitOut.unitUpgradeUrgency, found->id);
 		}
 	}
 }
 
 void AiOrchestrator::upgradeWorkers() {
 	if (lastEconOut.workerUpgradeUrgency > 0.1f) {
-		if (auto* workerToUpgrade = resolveWorkerUpgrade()) {
-			wantList.addRequest(WantItemType::UNIT_UPGRADE, lastEconOut.workerUpgradeUrgency, workerToUpgrade->id);
+		if (auto* found = resolveWorkerUpgrade()) {
+			wantList.addRequest(WantItemType::UNIT_UPGRADE, lastEconOut.workerUpgradeUrgency, found->id);
 		}
 	}
 }
 
 void AiOrchestrator::upgradeUnitBuilding(const UnitOutput& unitOut) {
 	if (unitOut.buildingUpgradeUrgency > 0.1f) {
-		if (auto* buildingToUpgrade = resolveBuildingUpgrade(unitOut)) {
-			wantList.addRequest(WantItemType::BUILDING_UPGRADE, unitOut.buildingUpgradeUrgency, buildingToUpgrade->id);
+		if (auto* found = resolveBuildingUpgrade(unitOut)) {
+			wantList.addRequest(WantItemType::BUILDING_UPGRADE, unitOut.buildingUpgradeUrgency, found->id);
 		}
 	}
 }
 
 void AiOrchestrator::upgradeResBuilding() {
 	if (lastEconOut.resBuildingUpgradeUrgency > 0.1f) {
-		if (auto* resBuildingToUpgrade = resolveResBuildingUpgrade(lastEconOut)) {
-			wantList.addRequest(WantItemType::BUILDING_UPGRADE, lastEconOut.resBuildingUpgradeUrgency, resBuildingToUpgrade->id);
+		if (auto* found = resolveResBuildingUpgrade(lastEconOut)) {
+			wantList.addRequest(WantItemType::BUILDING_UPGRADE, lastEconOut.resBuildingUpgradeUrgency, found->id);
 		}
 	}
 }
@@ -163,22 +162,16 @@ void AiOrchestrator::createResBuilding() {
 
 void AiOrchestrator::createLackingUnitBuilding() {
 	if (lastLacking.lackingBuildingForUnit >= 0) {
-		wantList.addRequest(WantItemType::BUILDING, std::max(lastMasterOut.unitUrgency, 0.5f),
-		                    lastLacking.lackingBuildingForUnit);
+		wantList.addRequest(WantItemType::BUILDING, std::max(lastMasterOut.unitUrgency, 0.5f), lastLacking.lackingBuildingForUnit);
 	}
 }
 
 void AiOrchestrator::action() {
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
 
-	// 1. Master Brain decides urgencies
-	lastMasterOut = masterBrain.decide(
-			player, enemy,
-			lastLacking.totalSum,
-			history
-			);
+	lastMasterOut = masterBrain.decide(player, enemy,
+	                                   lastLacking.totalSum, history);
 
-	// 2. Economy Brain (gets lacking feedback)
 	float gameTime = norm(Game::getFrameInfo()->getSeconds(), NormScale::GAME_TIME_SHORT);
 	lastEconOut = economyBrain.decide(
 			player, enemy,

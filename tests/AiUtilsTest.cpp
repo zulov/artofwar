@@ -70,35 +70,6 @@ TEST_F(AiUtilsFixture, PriorityWeightMakesStrongNegativesNearZero) {
 	EXPECT_LT(priorityWeight(0.f), priorityWeight(0.5f));
 }
 
-// --- biggestWithRand ---
-
-TEST_F(AiUtilsFixture, BiggestWithRandSingleElement) {
-	std::vector<float> vals = {5.f};
-	EXPECT_EQ(biggestWithRand(vals), 0);
-}
-
-TEST_F(AiUtilsFixture, BiggestWithRandAllZeros) {
-	std::vector<float> vals = {0.f, 0.f, 0.f};
-	EXPECT_EQ(biggestWithRand(vals), 0);
-}
-
-TEST_F(AiUtilsFixture, BiggestWithRandNegativesClamped) {
-	// Only index 2 has positive weight after clamping
-	std::vector<float> vals = {-5.f, -3.f, 10.f};
-	for (int i = 0; i < 10; ++i) {
-		EXPECT_EQ(biggestWithRand(vals), 2);
-	}
-}
-
-TEST_F(AiUtilsFixture, BiggestWithRandReturnsValidIndex) {
-	std::vector<float> vals = {1.f, 2.f, 3.f};
-	for (int i = 0; i < 50; ++i) {
-		int idx = biggestWithRand(vals);
-		EXPECT_GE(idx, 0);
-		EXPECT_LT(idx, 3);
-	}
-}
-
 // --- lowestWithRand (single) ---
 
 TEST_F(AiUtilsFixture, LowestWithRandSingleElement) {

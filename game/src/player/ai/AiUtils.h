@@ -25,6 +25,12 @@ inline float normPositive(int value, float scale) { return value <= 0 ? 0.f : st
 inline float normPositive(unsigned value, float scale) { return value == 0 ? 0.f : static_cast<float>(value) / scale; }
 inline float normPositive(float value, float scale) { return value <= 0.f ? 0.f : value / scale; }
 
+//TODO moze tak lepiej
+// template <NormScale Scale>
+// constexpr float norm(float value);
+// using enum NormScale;
+// auto gameTime = norm<GAME_TIME_SHORT>(Game::getFrameInfo()->getSeconds());
+
 inline int roundToInt(float value) { return static_cast<int>(std::round(value)); }
 
 // Average level of units matching a filter, normalized per-type by max level. Returns [0, 1].
@@ -57,9 +63,9 @@ inline int sampleWeighted(std::span<const float> weights, float totalWeight) {
 	return weighted::sample(weights, totalWeight);
 }
 
-inline int biggestWithRand(std::span<const float> vals) {
-	return weighted::biggest(vals);
-}
+// inline int biggestWithRand(std::span<const float> vals) {
+// 	return weighted::biggest(vals);
+// }
 
 inline int lowestWithRand(std::span<const float> diffs) {
 	return weighted::lowest(diffs);
