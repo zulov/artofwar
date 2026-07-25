@@ -70,6 +70,14 @@ namespace {
 		}
 		return ARMY_TARGET_SPEC_COUNT;
 	}
+
+	template <typename Candidate, typename ScoreFn>
+	std::vector<float> scoreCandidates(const std::vector<Candidate*>& candidates, const ScoreFn& scoreFn) {
+		std::vector<float> scores;
+		scores.reserve(candidates.size());
+		for (auto* candidate : candidates) { scores.push_back(scoreFn(candidate)); }
+		return scores;
+	}
 }
 
 
@@ -86,14 +94,14 @@ AiOrchestrator::AiOrchestrator(Player* player, db_nation* nation, AiHistory* his
 void AiOrchestrator::createWorkers() {
 	const short workerId = resolveWorkerId();
 	if (lastEconOut.workerCount > 0 && workerId >= 0) {
-		addUnitWantOrPrerequisite(WantItemType::WORKER, lastEconOut.workerAllocation, workerId, lastEconOut.workerCount);
+		tryUnitWant(WantItemType::WORKER, lastEconOut.workerAllocation, workerId, lastEconOut.workerCount);
 	}
 }
 
 void AiOrchestrator::createUnits(const UnitOutput& unitOut) {
 	if (unitOut.count > 0) {
 		for (auto* unit : resolveUnit(unitOut)) {
-			addUnitWantOrPrerequisite(WantItemType::UNIT, lastMasterOut.unitUrgency, unit->id);
+			tryUnitWant(WantItemType::UNIT, lastMasterOut.unitUrgency, unit->id);
 		}
 	}
 }
@@ -101,7 +109,7 @@ void AiOrchestrator::createUnits(const UnitOutput& unitOut) {
 void AiOrchestrator::upgradeUnits(const UnitOutput& unitOut) {
 	if (unitOut.unitUpgradeUrgency > 0.1f) {
 		if (auto* unitToUpgrade = resolveUnitUpgrade(unitOut)) {
-			addUnitWantOrPrerequisite(WantItemType::UNIT_UPGRADE, unitOut.unitUpgradeUrgency, unitToUpgrade->id);
+			tryUnitWant(WantItemType::UNIT_UPGRADE, unitOut.unitUpgradeUrgency, unitToUpgrade->id);
 		}
 	}
 }
@@ -109,7 +117,7 @@ void AiOrchestrator::upgradeUnits(const UnitOutput& unitOut) {
 void AiOrchestrator::upgradeWorkers() {
 	if (lastEconOut.workerUpgradeUrgency > 0.1f) {
 		if (auto* workerToUpgrade = resolveWorkerUpgrade()) {
-			addUnitWantOrPrerequisite(WantItemType::UNIT_UPGRADE, lastEconOut.workerUpgradeUrgency, workerToUpgrade->id);
+			tryUnitWant(WantItemType::UNIT_UPGRADE, lastEconOut.workerUpgradeUrgency, workerToUpgrade->id);
 		}
 	}
 }
@@ -181,7 +189,7 @@ void AiOrchestrator::createLackingUnitBuilding() {
 	}
 }
 
-void AiOrchestrator::addUnitWantOrPrerequisite(WantItemType type, float priority, short unitId, unsigned char count) {
+void AiOrchestrator::tryUnitWant(WantItemType type, float priority, short unitId, unsigned char count) {
 	// One hop only: if the desired thing cannot run because its producer is missing,
 	// request that producer building and let the AI re-issue the original want next tick.
 	// TODO: if the producer exists but still needs an upgrade, route that upgrade too.
@@ -386,10 +394,6 @@ bool AiOrchestrator::trySubmitUnitOrder(const std::vector<Unit*>& units, float p
 	return true;
 }
 
-bool AiOrchestrator::trySubmitUnitOrder(Unit* unit, float priority, MilitaryCenterIdx center, UnitOrder* order) const {
-	return trySubmitUnitOrder(std::vector<Unit*>{unit}, priority, center, order);
-}
-
 // Advance toward target per unit. A matching center refreshes an active order;
 // a different center must exceed the remaining lock to replace it.
 void AiOrchestrator::issueAdvancePerUnit(const std::vector<std::pair<Unit*, float>>& units,
@@ -401,16 +405,9 @@ void AiOrchestrator::issueAdvancePerUnit(const std::vector<std::pair<Unit*, floa
 		}
 		if (priority <= unit->getCommandPriority()) { continue; }
 		if (unit->getPosition().SqDistXZ(target) > SQ_SEMI_CLOSE) {
-			trySubmitUnitOrder(unit, priority, center, new IndividualOrder(unit, UnitAction::GO, target));
-		} else {
-			auto& things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
-			if (!things.empty()) {
-				const auto closest = Game::getEnvironment()->closestPhysical(
-					unit->getMainGridIndex(), things, belowClose, true);
-				if (closest) {
-					trySubmitUnitOrder(unit, priority, center, new IndividualOrder(unit, UnitAction::ATTACK, closest));
-				}
-			}
+			trySubmitUnitOrder(std::vector<Unit*>{unit}, priority, center, new IndividualOrder(unit, UnitAction::GO, target));
+		} else if (tryIssueNearbyAttack(unit, priority, center)) {
+			continue;
 		}
 	}
 }
@@ -420,15 +417,17 @@ void AiOrchestrator::issueHold(std::vector<std::pair<Unit*, MilitaryCenterIdx>>&
 	for (const auto& [unit, center] : group) {
 		if (priority <= unit->getCommandPriority()) { continue; }
 		if (!isFree(unit)) { continue; }
-		auto& things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
-		if (!things.empty()) {
-			const auto closest = Game::getEnvironment()->closestPhysical(
-					unit->getMainGridIndex(), things, belowClose, true);
-			if (closest) {
-				trySubmitUnitOrder(unit, priority, center, new IndividualOrder(unit, UnitAction::ATTACK, closest));
-			}
-		}
+		tryIssueNearbyAttack(unit, priority, center);
 	}
+}
+
+bool AiOrchestrator::tryIssueNearbyAttack(Unit* unit, float priority, MilitaryCenterIdx center) const {
+	auto& things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+	if (things.empty()) { return false; }
+	const auto closest = Game::getEnvironment()->closestPhysical(unit->getMainGridIndex(), things, belowClose, true);
+	if (!closest) { return false; }
+	return trySubmitUnitOrder(std::vector<Unit*>{unit}, priority, center,
+	                         new IndividualOrder(unit, UnitAction::ATTACK, closest));
 }
 
 // --- Unit resolution ---
@@ -466,14 +465,11 @@ db_unit* AiOrchestrator::resolveUnitUpgrade(const UnitOutput& unitOutput) {
 	return candidates[lowestWithRand(diffs)];
 }
 
-std::vector<float> AiOrchestrator::unitsProfileMatch(const UnitOutput& unitOutput, std::vector<db_unit*> candidates) {
+std::vector<float> AiOrchestrator::unitsProfileMatch(const UnitOutput& unitOutput, const std::vector<db_unit*>& candidates) {
 	std::valarray center(unitOutput.unitProfile.data(), unitOutput.unitProfile.size());
-	std::vector<float> diffs;
-	diffs.reserve(candidates.size());
-	for (const auto unit : candidates) {
-		diffs.push_back(dist(center, player->getLevelForUnit(unit->id)->dbUnitMetric));
-	}
-	return diffs;
+	return scoreCandidates(candidates, [this, &center](db_unit* unit) {
+		return dist(center, player->getLevelForUnit(unit->id)->dbUnitMetric);
+	});
 }
 
 db_building* AiOrchestrator::resolveBuildingUpgrade(const UnitOutput& unitOutput) {
@@ -489,9 +485,7 @@ db_building* AiOrchestrator::resolveBuildingUpgrade(const UnitOutput& unitOutput
 	// Match building by which units it produces — find the building whose units
 	// are closest to the desired unit profile
 	std::valarray<float> center(unitOutput.unitProfile.data(), unitOutput.unitProfile.size());
-	std::vector<float> diffs;
-	diffs.reserve(candidates.size());
-	for (const auto building : candidates) {
+	auto diffs = scoreCandidates(candidates, [this, &center](db_building* building) {
 		// Average distance across all units this building can produce
 		auto* level = player->getLevelForBuilding(building->id);
 		float totalDist = 0.f;
@@ -502,8 +496,8 @@ db_building* AiOrchestrator::resolveBuildingUpgrade(const UnitOutput& unitOutput
 				++unitCount;
 			}
 		}
-		diffs.push_back(unitCount > 0 ? totalDist / static_cast<float>(unitCount) : std::numeric_limits<float>::max());
-	}
+		return unitCount > 0 ? totalDist / static_cast<float>(unitCount) : std::numeric_limits<float>::max();
+	});
 
 	return candidates[lowestWithRand(diffs)];
 }
@@ -530,9 +524,7 @@ db_building* AiOrchestrator::resolveResBuildingUpgrade(const EconomyOutput& econ
 	if (candidates.size() == 1) { return candidates[0]; }
 
 	// Weight by resource type priority + subtype need signals
-	std::vector<float> weights;
-	weights.reserve(candidates.size());
-	for (const auto* building : candidates) {
+	auto weights = scoreCandidates(candidates, [this, &econOutput](db_building* building) {
 		float weight = 0.1f; // base weight
 		auto* level = player->getLevelForBuilding(building->id);
 
@@ -560,8 +552,8 @@ db_building* AiOrchestrator::resolveResBuildingUpgrade(const EconomyOutput& econ
 			weight += std::max(0.f, econOutput.needWoodSource);
 		}
 
-		weights.push_back(weight);
-	}
+		return weight;
+	});
 
 	float totalWeight = 0.f;
 	for (float w : weights) { totalWeight += w; }
