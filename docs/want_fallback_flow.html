@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art of War - Want Fallback Flow</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px 18px 40px; background: #1a1a2e; color: #e0e0e0; font-family: "Segoe UI", Arial, sans-serif; }
+  h1 { text-align: center; margin: 0 0 6px; color: #fff; font-size: 30px; }
+  .subtitle { text-align: center; color: #8d98aa; margin: 0 auto 18px; max-width: 1100px; font-size: 14px; line-height: 1.5; }
+  h2 { color: #4fc3f7; margin: 28px auto 10px; max-width: 1180px; font-size: 21px; }
+  h3 { color: #fff; margin: 0 0 8px; font-size: 16px; }
+  p, li { color: #bbc6d6; font-size: 14px; line-height: 1.6; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 4px; color: #7fdbff; }
+  .toc, .card, .diagram, .example { max-width: 1180px; margin: 14px auto; border: 1px solid #37474f; border-radius: 10px; }
+  .toc, .card, .example { padding: 16px 20px; background: #151530; }
+  .toc ol { margin: 8px 0 0; padding-left: 20px; }
+  .toc li { margin: 5px 0; }
+  .diagram { padding: 12px; background: #111b2d; overflow-x: auto; }
+  .note { max-width: 1180px; margin: 14px auto; padding: 14px 18px; background: #2c2c1a; border: 1px solid #e6c44d; border-radius: 10px; color: #ece3b5; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  th, td { border: 1px solid #37474f; padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: #0f3460; color: #7fdbff; }
+  td { color: #c9d4e4; }
+  .tag { display: inline-block; margin-right: 6px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; color: #08121e; }
+  .tag.ok { background: #68d391; }
+  .tag.fallback { background: #f6c85f; }
+  .tag.drop { background: #ff7b7b; }
+  svg { display: block; width: 100%; min-width: 920px; height: auto; }
+  svg text { font-family: "Segoe UI", Arial, sans-serif; }
+  .source { max-width: 1180px; margin: 12px auto 0; color: #8090a7; font-size: 12px; }
+  @media (max-width: 780px) { body { padding: 18px 10px 28px; } h1 { font-size: 24px; } .toc, .card, .diagram, .example { margin-left: 0; margin-right: 0; } }
+  @media print { body { background: #fff; color: #111; padding: 0; } h1,h2,h3 { color: #111; } .subtitle,p,li,td { color: #333; } .toc,.card,.diagram,.example,.note { background: #fff; border-color: #999; break-inside: avoid; page-break-inside: avoid; } th { background: #eee; color: #111; } svg { min-width: 0; } }
+</style>
+</head>
+<body>
+<h1>Want Fallback Flow</h1>
+<p class="subtitle">The AI checks whether a request is executable before adding it to the WantList. If the request needs a missing producer building, it emits that building instead and retries the original want on the next AI tick. The rule is one hop only.</p>
+
+<div class="toc">
+  <h3>Contents</h3>
+  <ol>
+    <li><a href="#summary">Summary</a></li>
+    <li><a href="#flow">Flow</a></li>
+    <li><a href="#table">Dependency table</a></li>
+    <li><a href="#examples">SVG examples</a></li>
+  </ol>
+</div>
+
+<div class="note">
+  <strong>Rule:</strong> one hop only. If the prerequisite is still not there next tick, the AI re-evaluates and can emit the same fallback again. Do not recurse further inside one action pass.
+</div>
+
+<section id="summary" class="card">
+  <h3>Summary</h3>
+  <p>Requests that are directly executable keep their original priority. Requests that are impossible because the producer building does not exist are converted into a matching <code>BUILDING</code> want. Requests that are only blocked because the building exists but is not ready are dropped for this tick and can be re-issued next tick.</p>
+</section>
+
+<section id="flow" class="diagram">
+  <svg viewBox="0 0 1160 460" role="img" aria-label="Want fallback flow from brain outputs to executable want or prerequisite building">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#7ea3c7"/></marker>
+      <marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#68d391"/></marker>
+      <marker id="amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#f6c85f"/></marker>
+    </defs>
+    <rect x="0" y="0" width="1160" height="460" rx="8" fill="#111b2d"/>
+    <rect x="40" y="80" width="190" height="110" rx="10" fill="#1e3d36" stroke="#68d391"/>
+    <text x="135" y="112" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Brain outputs</text>
+    <text x="135" y="136" text-anchor="middle" fill="#d5f5e3" font-size="12">Master / Economy / Unit</text>
+    <text x="135" y="156" text-anchor="middle" fill="#d5f5e3" font-size="12">priority values</text>
+    <text x="135" y="176" text-anchor="middle" fill="#d5f5e3" font-size="12">unit counts</text>
+
+    <rect x="285" y="80" width="210" height="110" rx="10" fill="#2d284b" stroke="#b794f4"/>
+    <text x="390" y="112" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Feasibility check</text>
+    <text x="390" y="136" text-anchor="middle" fill="#e5ddff" font-size="12">Does a ready producer exist?</text>
+    <text x="390" y="156" text-anchor="middle" fill="#e5ddff" font-size="12">If not, is the producer missing?</text>
+    <text x="390" y="176" text-anchor="middle" fill="#e5ddff" font-size="12">One hop only</text>
+
+    <rect x="560" y="50" width="240" height="110" rx="10" fill="#1e3d36" stroke="#68d391"/>
+    <text x="680" y="84" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Executable want</text>
+    <text x="680" y="108" text-anchor="middle" fill="#d5f5e3" font-size="12">same type</text>
+    <text x="680" y="128" text-anchor="middle" fill="#d5f5e3" font-size="12">same priority</text>
+
+    <rect x="560" y="210" width="240" height="110" rx="10" fill="#3a331f" stroke="#f6c85f"/>
+    <text x="680" y="244" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Fallback building</text>
+    <text x="680" y="268" text-anchor="middle" fill="#fff1c2" font-size="12">producer building request</text>
+    <text x="680" y="288" text-anchor="middle" fill="#fff1c2" font-size="12">same priority</text>
+
+    <rect x="860" y="50" width="250" height="110" rx="10" fill="#18324a" stroke="#7ea3c7"/>
+    <text x="985" y="84" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">WantList</text>
+    <text x="985" y="108" text-anchor="middle" fill="#d9e7f5" font-size="12">sorted, aged, reserved</text>
+    <text x="985" y="128" text-anchor="middle" fill="#d9e7f5" font-size="12">executes affordable items</text>
+
+    <rect x="860" y="210" width="250" height="110" rx="10" fill="#4a1f1f" stroke="#ff7b7b"/>
+    <text x="985" y="244" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Drop this tick</text>
+    <text x="985" y="268" text-anchor="middle" fill="#ffd0d0" font-size="12">no owned building yet</text>
+    <text x="985" y="288" text-anchor="middle" fill="#ffd0d0" font-size="12">AI retries next tick</text>
+
+    <line x1="230" y1="135" x2="285" y2="135" stroke="#7ea3c7" stroke-width="3" marker-end="url(#arrow)"/>
+    <line x1="495" y1="102" x2="560" y2="102" stroke="#68d391" stroke-width="3" marker-end="url(#green)"/>
+    <line x1="495" y1="245" x2="560" y2="245" stroke="#f6c85f" stroke-width="3" marker-end="url(#amber)"/>
+    <line x1="800" y1="102" x2="860" y2="102" stroke="#7ea3c7" stroke-width="3" marker-end="url(#arrow)"/>
+    <line x1="800" y1="245" x2="860" y2="245" stroke="#7ea3c7" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <text x="510" y="58" text-anchor="middle" fill="#68d391" font-size="12">ready</text>
+    <text x="510" y="218" text-anchor="middle" fill="#f6c85f" font-size="12">missing producer</text>
+    <text x="840" y="58" text-anchor="middle" fill="#9bacbf" font-size="12">same original priority</text>
+  </svg>
+</section>
+
+<section id="table" class="card">
+  <h3>Dependency Table</h3>
+  <table>
+    <thead>
+      <tr><th>Want type</th><th>Executable?</th><th>Fallback if missing</th><th>Kept priority</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="tag ok">WORKER</span></td><td>Yes, if a worker-producing unit exists.</td><td>Producer <code>BUILDING</code> request.</td><td>Yes.</td><td>One hop only.</td></tr>
+      <tr><td><span class="tag ok">UNIT</span></td><td>Yes, if a ready unit-producing building exists.</td><td>Producer <code>BUILDING</code> request.</td><td>Yes.</td><td>Missing producer is the main fallback case.</td></tr>
+      <tr><td><span class="tag ok">UNIT_UPGRADE</span></td><td>Yes, if an upgradeable unit exists and can be handled.</td><td>Producer <code>BUILDING</code> request when no producer exists.</td><td>Yes.</td><td>If the producer exists but is not ready, drop and retry next tick.</td></tr>
+      <tr><td><span class="tag ok">BUILDING</span></td><td>Yes, if a valid placement exists.</td><td>None.</td><td>Yes.</td><td>Placement is handled by spatial search, not prerequisite logic.</td></tr>
+      <tr><td><span class="tag ok">BUILDING_UPGRADE</span></td><td>Yes, if a ready owned building instance exists.</td><td>Producer <code>BUILDING</code> request when no owned instance exists.</td><td>Yes.</td><td>If the building exists but is not ready, drop and retry next tick.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="examples" class="card">
+  <h3>SVG Examples</h3>
+  <div class="example">
+    <p><strong>Example 1:</strong> direct path. The request is executable, so the original priority enters the WantList unchanged.</p>
+  </div>
+  <div class="diagram">
+    <svg viewBox="0 0 1160 230" role="img" aria-label="Direct execution example">
+      <rect x="0" y="0" width="1160" height="230" rx="8" fill="#111b2d"/>
+      <rect x="60" y="62" width="220" height="100" rx="10" fill="#1e3d36" stroke="#68d391"/>
+      <text x="170" y="96" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">UNIT_UPGRADE want</text>
+      <text x="170" y="120" text-anchor="middle" fill="#d5f5e3" font-size="12">ready building exists</text>
+      <text x="170" y="140" text-anchor="middle" fill="#d5f5e3" font-size="12">priority = 0.84</text>
+
+      <rect x="450" y="62" width="220" height="100" rx="10" fill="#18324a" stroke="#7ea3c7"/>
+      <text x="560" y="96" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">WantList</text>
+      <text x="560" y="120" text-anchor="middle" fill="#d9e7f5" font-size="12">same item</text>
+      <text x="560" y="140" text-anchor="middle" fill="#d9e7f5" font-size="12">same priority</text>
+
+      <rect x="840" y="62" width="220" height="100" rx="10" fill="#1e3d36" stroke="#68d391"/>
+      <text x="950" y="96" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Executed</text>
+      <text x="950" y="120" text-anchor="middle" fill="#d5f5e3" font-size="12">no fallback needed</text>
+      <text x="950" y="140" text-anchor="middle" fill="#d5f5e3" font-size="12">AI learns from outcome</text>
+
+      <line x1="280" y1="112" x2="450" y2="112" stroke="#7ea3c7" stroke-width="3" marker-end="url(#arrow)"/>
+      <line x1="670" y1="112" x2="840" y2="112" stroke="#68d391" stroke-width="3" marker-end="url(#green)"/>
+    </svg>
+  </div>
+  <div class="example">
+    <p><strong>Example 2:</strong> missing producer. The AI emits the producer building with the same priority and stops there for this tick.</p>
+  </div>
+  <div class="diagram">
+    <svg viewBox="0 0 1160 250" role="img" aria-label="Fallback example">
+      <rect x="0" y="0" width="1160" height="250" rx="8" fill="#111b2d"/>
+      <rect x="40" y="70" width="230" height="100" rx="10" fill="#2d284b" stroke="#b794f4"/>
+      <text x="155" y="104" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">UNIT_UPGRADE want</text>
+      <text x="155" y="128" text-anchor="middle" fill="#e5ddff" font-size="12">no ready building</text>
+      <text x="155" y="148" text-anchor="middle" fill="#e5ddff" font-size="12">producer missing</text>
+
+      <rect x="450" y="70" width="230" height="100" rx="10" fill="#3a331f" stroke="#f6c85f"/>
+      <text x="565" y="104" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">BUILDING want</text>
+      <text x="565" y="128" text-anchor="middle" fill="#fff1c2" font-size="12">same priority</text>
+      <text x="565" y="148" text-anchor="middle" fill="#fff1c2" font-size="12">one hop only</text>
+
+      <rect x="860" y="70" width="230" height="100" rx="10" fill="#4a1f1f" stroke="#ff7b7b"/>
+      <text x="975" y="104" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Next tick retry</text>
+      <text x="975" y="128" text-anchor="middle" fill="#ffd0d0" font-size="12">if still missing</text>
+      <text x="975" y="148" text-anchor="middle" fill="#ffd0d0" font-size="12">AI re-evaluates</text>
+
+      <line x1="270" y1="120" x2="450" y2="120" stroke="#f6c85f" stroke-width="3" marker-end="url(#amber)"/>
+      <line x1="680" y1="120" x2="860" y2="120" stroke="#7ea3c7" stroke-width="3" marker-end="url(#arrow)"/>
+    </svg>
+  </div>
+</section>
+
+<div class="source">Relevant code: <code>game/src/player/ai/AiOrchestrator.cpp</code>, <code>game/src/player/ai/WantListExecute.cpp</code>, <code>game/src/player/ai/WantExecutor.cpp</code>, <code>game/src/player/ai/BuildSpatialBrain.cpp</code>.</div>
+</body>
+</html>

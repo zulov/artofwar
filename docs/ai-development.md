@@ -66,6 +66,8 @@ Do not update only the enum or only the CSV. Constructor assertions catch basic 
 - `tests/BrainValidationTest.cpp`: brain holder and dense-layer dimension validation.
 - `tests/LayerTest.cpp`: feed-forward layer behavior.
 - `tests/WantListTest.cpp`: request merging, priority aging, affordability, and reserve behavior.
+
+The want-building layer now also applies a one-hop feasibility fallback in `AiOrchestrator`: if a unit-like want cannot run because its producer building does not exist, the AI emits the missing producer building at the same priority and retries the original want next tick. If a building upgrade is not currently executable, it is dropped for that tick and can be re-evaluated on the next AI pass.
 - `tests/MilitaryCommandCalculatorTest.cpp`: per-unit military target selection.
 - `tests/AiHistoryTest.cpp` and `tests/AiUtilsTest.cpp`: feedback and AI utility logic.
 

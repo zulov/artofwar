@@ -56,9 +56,21 @@ public:
 	void order();
 
 private:
+	struct DeployBuildingInfo {
+		short buildingId = -1;
+		bool hasOwnedBuilding = false;
+		bool hasReadyBuilding = false;
+	};
+
 	// WantList request building (brain outputs -> wants)
+	// One hop only: if the unit-like want cannot run because its producer is missing,
+	// request that producer building and let the AI re-issue the original want next tick.
+	void tryUnitWant(WantItemType type, float priority, short unitId, unsigned char count = 1);
+	bool hasOwnedBuildingInstance(short buildingId) const;
+	bool hasReadyBuildingInstance(short buildingId) const;
 	void submitBuildingRequest(float urgency, ParentBuildingType type);
 	void submitBuildingUpgradeRequest(float urgency, ParentBuildingType type);
+	DeployBuildingInfo findBuildingTypeToDeploy(short unitId) const;
 
 	// Army control (used by order())
 	static constexpr float COMMAND_PRIORITY_DECAY_MULTIPLIER = 0.9f;
@@ -66,15 +78,15 @@ private:
 	static constexpr float MAX_COMMAND_PRIORITY = MAX_MILITARY_UNIT_PRESSURE * COMMAND_PRIORITY_MULTIPLIER;
 	bool trySubmitUnitOrder(const std::vector<Unit*>& units, float priority, MilitaryCenterIdx center,
 	                        UnitOrder* order) const;
-	bool trySubmitUnitOrder(Unit* unit, float priority, MilitaryCenterIdx center, UnitOrder* order) const;
 	void decayUnitOrderPriorities() const;
 	void issueAdvancePerUnit(const std::vector<std::pair<Unit*, float>>& units, MilitaryCenterIdx center,
 	                         const Urho3D::Vector2& target);
 	void issueHold(std::vector<std::pair<Unit*, MilitaryCenterIdx>>& group, float priority);
+	bool tryIssueNearbyAttack(Unit* unit, float priority, MilitaryCenterIdx center) const;
 
 	// Unit resolution
 	std::vector<db_unit*> resolveUnit(const UnitOutput& unitOutput);
-	std::vector<float> unitsProfileMatch(const UnitOutput& unitOutput, std::vector<db_unit*> candidates);
+	std::vector<float> unitsProfileMatch(const UnitOutput& unitOutput, const std::vector<db_unit*>& candidates);
 	db_unit* resolveUnitUpgrade(const UnitOutput& unitOutput);
 	db_building* resolveBuildingUpgrade(const UnitOutput& unitOutput);
 	db_unit* resolveWorkerUpgrade();
