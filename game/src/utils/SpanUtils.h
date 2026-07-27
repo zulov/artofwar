@@ -6,6 +6,7 @@
 #include <iostream>
 #include <functional>
 #include <type_traits>
+#include <assert.h>
 
 inline float minSpan(std::span<float> vec) {
 	return *std::ranges::min_element(vec);
