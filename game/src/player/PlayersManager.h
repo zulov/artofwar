@@ -23,6 +23,7 @@ public:
 	void changeActive(short i);
 	void update(FrameInfo* frameInfo);
 	char getActivePlayerID() const;
+	void activateNext();
 	static char getEnemyIdFor(unsigned char player);
 	Player* getEnemyFor(unsigned char player) const;
 

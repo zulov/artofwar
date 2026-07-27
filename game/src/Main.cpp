@@ -436,10 +436,12 @@ void Main::HandleKeyUp(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eve
 			engine_->Exit();
 		}
 	}
-	if (key == Urho3D::KEY_KP_0) {
+	if (key == Urho3D::KEY_KP_0 || key == Urho3D::KEY_MINUS) {
 		Game::getPlayersMan()->changeActive(0);
-	} else if (key == Urho3D::KEY_KP_1) {
+	} else if (key == Urho3D::KEY_KP_1 || key == Urho3D::KEY_PLUS) {
 		Game::getPlayersMan()->changeActive(1);
+	} else if (key == Urho3D::KEY_SEMICOLON) {
+		Game::getPlayersMan()->activateNext();
 	}
 	if (gameState == GameState::RUNNING || gameState == GameState::PAUSE) {
 		if (key == Urho3D::KEY_1) {

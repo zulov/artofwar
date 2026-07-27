@@ -84,6 +84,8 @@ char PlayersManager::getActivePlayerID() const {
 	return activePlayer->getId();
 }
 
+void PlayersManager::activateNext() { activePlayer = getEnemyFor(activePlayer->getId()); }
+
 char PlayersManager::getEnemyIdFor(unsigned char player) {
 	if (player == 0) {
 		//TODO bug do it better
