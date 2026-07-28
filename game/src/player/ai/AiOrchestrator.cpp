@@ -1,6 +1,7 @@
 #include "AiOrchestrator.h"
 
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <limits>
 #include <optional>
@@ -38,6 +39,17 @@
 namespace {
 	bool isResBonus(db_building* b, db_building_level* l, ResourceType res) {
 		return b->resourceType == cast(res) && l->collect > 0.f && l->resourceRange > 0.f;
+	}
+
+	bool canEverProduceUnit(const db_building* building, unsigned char nationId, short unitId) {
+		for (const auto level : building->levels) {
+			const auto* unitIds = level->unitsPerNationIds[nationId];
+			if (unitIds != nullptr
+				&& std::ranges::find(*unitIds, static_cast<unsigned char>(unitId)) != unitIds->end()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	constexpr float SEMI_CLOSE = 30.f;
@@ -192,10 +204,8 @@ void AiOrchestrator::tryUnitWant(WantItemType type, float priority, short unitId
 	// One hop only: if the desired thing cannot run because its producer is missing,
 	// request that producer building and let the AI re-issue the original want next tick.
 	// TODO: if the producer exists but still needs an upgrade, route that upgrade too.
-	if (type == WantItemType::BUILDING || unitId < 0) {
-		wantList.addRequest(type, priority, unitId, count);
-		return;
-	}
+	assert(type != WantItemType::BUILDING);
+	if (unitId < 0) { return; }
 
 	const auto deployInfo = findBuildingTypeToDeploy(unitId);
 	if (deployInfo.hasReadyBuilding) {
@@ -556,27 +566,28 @@ db_building* AiOrchestrator::resolveResBuildingUpgrade(const EconomyOutput& econ
 
 AiOrchestrator::DeployBuildingInfo AiOrchestrator::findBuildingTypeToDeploy(short unitId) const {
 	DeployBuildingInfo result{};
-	for (const auto building : nation->buildings) {
-		if (!building->parentType[static_cast<int>(ParentBuildingType::UNITS)]) { continue; }
-		bool canEverProduce = false;
-		for (const auto level : building->levels) {
-			const auto* unitIds = level->unitsPerNationIds[player->getNation()];
-			if (unitIds != nullptr
-				&& std::ranges::find(*unitIds, static_cast<unsigned char>(unitId)) != unitIds->end()) {
-				canEverProduce = true;
-				break;
-			}
+
+	short ownedBuildingId = -1;
+	for (const auto building : possession->getBuildings()) {
+		if (!canEverProduceUnit(building->getDb(), player->getNation(), unitId)) { continue; }
+		result.hasOwnedBuilding = true;
+		if (ownedBuildingId < 0) { ownedBuildingId = building->getDbId(); }
+		if (building->isReady()) {
+			result.buildingId = building->getDbId();
+			result.hasReadyBuilding = true;
+			return result;
 		}
-		if (canEverProduce) {
-			if (result.buildingId < 0) { result.buildingId = building->id; }
-			const auto* ownedBuildings = possession->getBuildings(building->id);
-			if (!ownedBuildings->empty()) { result.hasOwnedBuilding = true; }
-			if (std::ranges::any_of(*ownedBuildings, [](Building* owned) {
-				return owned->isReady();
-			})) {
-				result.hasReadyBuilding = true;
-				return result;
-			}
+	}
+
+	if (ownedBuildingId >= 0) {
+		result.buildingId = ownedBuildingId;
+		return result;
+	}
+
+	for (const auto building : nation->buildings) {
+		if (canEverProduceUnit(building, player->getNation(), unitId)) {
+			result.buildingId = building->id;
+			return result;
 		}
 	}
 	return result;
