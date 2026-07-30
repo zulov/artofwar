@@ -66,8 +66,7 @@ private:
 	// One hop only: if the unit-like want cannot run because its producer is missing,
 	// request that producer building and let the AI re-issue the original want next tick.
 	void tryUnitWant(WantItemType type, float priority, short unitId, unsigned char count = 1);
-	bool hasOwnedBuildingInstance(short buildingId) const;
-	bool hasReadyBuildingInstance(short buildingId) const;
+	bool hasOwnedBuildingInstance(unsigned short buildingId) const;
 	void submitBuildingRequest(float urgency, ParentBuildingType type);
 	void submitBuildingUpgradeRequest(float urgency, ParentBuildingType type);
 	DeployBuildingInfo findBuildingTypeToDeploy(short unitId) const;

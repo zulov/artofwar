@@ -83,7 +83,7 @@ public:
 	};
 
 	void resetRequests();
-	void addRequest(WantItemType type, float priority, short specificId = -1, unsigned char count = 1);
+	void addRequest(WantItemType type, float priority,unsigned short specificId, unsigned char count = 1);
 
 	// Callback: returns the db_with_cost* for the item (nullptr if can't resolve).
 	// If item is affordable, callback should execute it and return true.

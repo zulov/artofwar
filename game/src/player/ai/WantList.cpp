@@ -9,7 +9,7 @@ void WantList::resetRequests() {
 	}
 }
 
-void WantList::addRequest(WantItemType type, float priority, short specificId, unsigned char count) {
+void WantList::addRequest(WantItemType type, float priority,unsigned short specificId, unsigned char count) {
 	for (auto& item : items) {
 		if (item.type == type && item.specificId == specificId) {
 			item.active = true;
