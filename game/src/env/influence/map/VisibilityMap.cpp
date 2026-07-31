@@ -20,11 +20,10 @@
 #include "env/bucket/levels/LevelCache.h"
 #include "utils/CountUtils.h"
 
-void VisibilityMap::draw(unsigned short batch,unsigned short maxParts) {
-	auto size = arraySize / maxParts;
+void VisibilityMap::draw() {
 	ensureReady();
-	for (auto i = batch * size; i < arraySize && i < (batch + 1) * size; ++i) {
-		drawCell(i, batch);
+	for (auto i = 0; i < arraySize; ++i) {
+		drawCell(i);
 	}
 }
 
@@ -174,9 +173,8 @@ Urho3D::Vector3 VisibilityMap::getVertex(const Urho3D::Vector2& center, Urho3D::
 	return result;
 }
 
-void VisibilityMap::drawCell(unsigned int index, unsigned short batch) const {
+void VisibilityMap::drawCell(unsigned int index) const {
 	const auto& corners = Game::getEnvironment()->getDebugCellCorners(calculator->getResolution(), index);
 	const auto color = Game::getColorPaletteRepo()->getColor(getValueAt(index), valueThresholdDebug);
-	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, corners[0], corners[2], corners[1], color, batch);
-	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, corners[1], corners[3], corners[0], color, batch);
+	DebugLineRepo::drawQuad(DebugLineType::INFLUENCE, corners, color);
 }

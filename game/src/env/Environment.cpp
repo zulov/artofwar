@@ -33,7 +33,7 @@ Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolut
 
 Environment::~Environment() = default;
 
-const std::array<Urho3D::Vector3, 4>& Environment::getDebugCellCorners(unsigned short resolution, int index) const {
+const std::vector<std::array<Urho3D::Vector3, 4>>& Environment::getDebugCellsCorners(unsigned short resolution) const {
 	auto& cache = debugTerrainCornerCache[resolution];
 	if (cache.calculator == nullptr) {
 		cache.calculator = GridCalculatorProvider::get(resolution, mapSize);

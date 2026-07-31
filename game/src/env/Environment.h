@@ -146,7 +146,7 @@ public:
 	unsigned short getResolution() const { return calculator->getResolution(); }
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;
 	float getVisibilityScore(char player) const;
-	const std::array<Urho3D::Vector3, 4>& getDebugCellCorners(unsigned short resolution, int index) const;
+	const std::array<Urho3D::Vector3, 4>& getDebugCellsCorners(unsigned short resolution) const;
 
 	std::vector<int> getIndexesInRange(const Urho3D::Vector2& center, float range) const;
 	std::vector<int> getIndexesInRange(int index, float range) const;
@@ -163,18 +163,11 @@ public:
 	void refreshAllStatic(std::vector<ResourceEntity*>* resources, std::vector<Building*>* buildings);
 	short getOccupationLevel(int index) const;
 private:
-	struct DebugTerrainCellCorners {
-		bool ready = false;
-		std::array<Urho3D::Vector3, 4> corners{};
-	};
-
 	struct DebugTerrainCornerCache {
-		GridCalculator* calculator = nullptr;
-		std::vector<DebugTerrainCellCorners> cells;
+		std::vector<std::array<Urho3D::Vector3, 4>> cells;
 	};
 
-	const std::vector<Physical*>& collectResources(const Urho3D::Vector2& center, int id, int level,
-	                                                float innerRadius);
+	const std::vector<Physical*>& collectResources(const Urho3D::Vector2& center, int id, int level, float innerRadius);
 	const std::vector<Physical*>& getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
 	                                      const std::function<bool(Physical*)>& condition) const;
 	const std::vector<Physical*>& getNeighbours(Unit* unit, float radius);

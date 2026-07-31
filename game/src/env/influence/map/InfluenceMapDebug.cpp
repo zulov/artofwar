@@ -10,18 +10,16 @@
 #include "debug/DebugLineRepo.h"
 #include "env/Environment.h"
 
-void InfluenceMap::drawRaw(short batch, short maxParts) {
-	auto size = arraySize / maxParts;
-	for (auto i = batch * size; i < arraySize && i < (batch + 1) * size; ++i) {
-		drawCell(i, batch, false);
+void InfluenceMap::drawRaw() {
+	for (auto i = 0; i < arraySize; ++i) {
+		drawCell(i, false);
 	}
 }
 
-void InfluenceMap::drawKernel(short batch, short maxParts) {
-	auto size = arraySize / maxParts;
+void InfluenceMap::drawKernel() {
 	ensureReady();
-	for (auto i = batch * size; i < arraySize && i < (batch + 1) * size; ++i) {
-		drawCell(i, batch, true);
+	for (auto i = 0; i < arraySize; ++i) {
+		drawCell(i, true);
 	}
 }
 
@@ -31,11 +29,10 @@ Urho3D::Vector3 InfluenceMap::getVertex(const Urho3D::Vector2& center, Urho3D::V
 	return result;
 }
 
-void InfluenceMap::drawCell(int index, short batch, bool useKernel) const {
+void InfluenceMap::drawCell(int index, bool useKernel) const {
 	const auto& corners = Game::getEnvironment()->getDebugCellCorners(calculator->getResolution(), index);
 	const auto color = Game::getColorPaletteRepo()->getColor(useKernel ? getKernel(index) : getRaw(index), valueThresholdDebug);
-	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, corners[0], corners[2], corners[1], color, batch);
-	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, corners[1], corners[3], corners[0], color, batch);
+	DebugLineRepo::drawQuad(DebugLineType::INFLUENCE, corners, color);
 }
 
 void InfluenceMap::printMap(std::span<const float> map, const Urho3D::String& name) {

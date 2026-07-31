@@ -135,8 +135,8 @@ void VisibilityManager::updateVisibility(const std::vector<Building*>* buildings
 	}
 }
 
-void VisibilityManager::drawMaps(short currentDebugBatch, char index) const {
-	MapsUtils::drawMap(currentDebugBatch, index, visibilityPerPlayer);
+void VisibilityManager::drawMaps(char index) const {
+	MapsUtils::drawMap(index, visibilityPerPlayer);
 }
 
 bool VisibilityManager::isVisible(char player, const Urho3D::Vector2& pos) const {

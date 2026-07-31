@@ -95,7 +95,7 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 	visibilityManager = new VisibilityManager(numberOfPlayers, mapSize, terrain);
 
 	ci = new content_info();
-	DebugLineRepo::init(DebugLineType::INFLUENCE, MAX_DEBUG_PARTS_INFLUENCE);
+	DebugLineRepo::init(DebugLineType::INFLUENCE);
 
 	arraySize = calculator->getResolution() * calculator->getResolution();
 	assert(arraySize <= std::numeric_limits<unsigned short>::max());
@@ -186,70 +186,62 @@ void InfluenceManager::resetHistoryThresholds() const {
 }
 
 void InfluenceManager::draw(EnvironmentDebugMode mode, unsigned char index) {
-	DebugLineRepo::clear(DebugLineType::INFLUENCE, currentDebugBatch);
-	DebugLineRepo::beginGeometry(DebugLineType::INFLUENCE, currentDebugBatch);
+	DebugLineRepo::clear(DebugLineType::INFLUENCE);
+	DebugLineRepo::beginGeometry(DebugLineType::INFLUENCE);
 
 	switch (mode) {
 	case EnvironmentDebugMode::NONE:
 	case EnvironmentDebugMode::MAIN_GRID:
 		break;
 	case EnvironmentDebugMode::UNITS_RAW:
-		MapsUtils::drawMapRaw(currentDebugBatch, index, unitPresence);
+		MapsUtils::drawMapRaw(index, unitPresence);
 		break;
 	case EnvironmentDebugMode::UNITS_INFLUENCE:
-		MapsUtils::drawMapKernel(currentDebugBatch, index, unitPresence);
+		MapsUtils::drawMapKernel(index, unitPresence);
 		break;
 	case EnvironmentDebugMode::BUILDING_INFLUENCE:
-		MapsUtils::drawMapKernel(currentDebugBatch, index, buildingPresence);
+		MapsUtils::drawMapKernel(index, buildingPresence);
 		break;
 	case EnvironmentDebugMode::FOOD_SPEED:
-		MapsUtils::drawMapKernel(currentDebugBatch, index, gatheringActivityByResource[cast(ResourceType::FOOD)]);
+		MapsUtils::drawMapKernel(index, gatheringActivityByResource[cast(ResourceType::FOOD)]);
 		break;
 	case EnvironmentDebugMode::WOOD_SPEED:
-		MapsUtils::drawMapKernel(currentDebugBatch, index, gatheringActivityByResource[cast(ResourceType::WOOD)]);
+		MapsUtils::drawMapKernel(index, gatheringActivityByResource[cast(ResourceType::WOOD)]);
 		break;
 	case EnvironmentDebugMode::STONE_SPEED:
-		MapsUtils::drawMapKernel(currentDebugBatch, index, gatheringActivityByResource[cast(ResourceType::STONE)]);
+		MapsUtils::drawMapKernel(index, gatheringActivityByResource[cast(ResourceType::STONE)]);
 		break;
 	case EnvironmentDebugMode::GOLD_SPEED:
-		MapsUtils::drawMapKernel(currentDebugBatch, index, gatheringActivityByResource[cast(ResourceType::GOLD)]);
+		MapsUtils::drawMapKernel(index, gatheringActivityByResource[cast(ResourceType::GOLD)]);
 		break;
 	case EnvironmentDebugMode::ATTACK_SPEED:
-		MapsUtils::drawMapKernel(currentDebugBatch, index, attackActivity);
+		MapsUtils::drawMapKernel(index, attackActivity);
 		break;
 	case EnvironmentDebugMode::ECONOMY:
-		MapsUtils::drawMapRaw(currentDebugBatch, index, economicActivity);
+		MapsUtils::drawMapRaw(index, economicActivity);
 		break;
 	case EnvironmentDebugMode::UNBOOSTED_RESOURCES:
-		MapsUtils::drawMapRaw(currentDebugBatch, index, unboostedResourceActivityByPlayer);
+		MapsUtils::drawMapRaw(index, unboostedResourceActivityByPlayer);
 		break;
 	case EnvironmentDebugMode::UNBOOSTED_FOOD:
-		MapsUtils::drawMapRaw(currentDebugBatch, index,
-		                      unboostedResourceActivityByTypeAndPlayer[cast(ResourceType::FOOD)]);
+		MapsUtils::drawMapRaw(index, unboostedResourceActivityByTypeAndPlayer[cast(ResourceType::FOOD)]);
 		break;
 	case EnvironmentDebugMode::UNBOOSTED_WOOD:
-		MapsUtils::drawMapRaw(currentDebugBatch, index,
-		                      unboostedResourceActivityByTypeAndPlayer[cast(ResourceType::WOOD)]);
+		MapsUtils::drawMapRaw(index,  unboostedResourceActivityByTypeAndPlayer[cast(ResourceType::WOOD)]);
 		break;
 	case EnvironmentDebugMode::UNBOOSTED_STONE:
-		MapsUtils::drawMapRaw(currentDebugBatch, index,
-		                      unboostedResourceActivityByTypeAndPlayer[cast(ResourceType::STONE)]);
+		MapsUtils::drawMapRaw(index, unboostedResourceActivityByTypeAndPlayer[cast(ResourceType::STONE)]);
 		break;
 	case EnvironmentDebugMode::UNBOOSTED_GOLD:
-		MapsUtils::drawMapRaw(currentDebugBatch, index,
-		                      unboostedResourceActivityByTypeAndPlayer[cast(ResourceType::GOLD)]);
+		MapsUtils::drawMapRaw(index, unboostedResourceActivityByTypeAndPlayer[cast(ResourceType::GOLD)]);
 		break;
 	case EnvironmentDebugMode::VISIBILITY:
-		visibilityManager->drawMaps(currentDebugBatch, index);
+		visibilityManager->drawMaps(index);
 		break;
 	default: ;
 	}
 
-	DebugLineRepo::commit(DebugLineType::INFLUENCE, currentDebugBatch);
-	currentDebugBatch++;
-	if (currentDebugBatch >= MAX_DEBUG_PARTS_INFLUENCE) {
-		currentDebugBatch = 0;
-	}
+	DebugLineRepo::commit(DebugLineType::INFLUENCE);
 }
 
 void InfluenceManager::drawAll() const {

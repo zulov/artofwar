@@ -78,7 +78,7 @@ TEST_F(WantListFixture, EmptyByDefault) {
 }
 
 TEST_F(WantListFixture, AddRequestCreatesItem) {
-	wl.addRequest(WantItemType::WORKER, 0.5f);
+	wl.addRequest(WantItemType::WORKER, 0.5f, 0);
 
 	ASSERT_EQ(wl.getItemCount(), 1);
 	const auto& item = wl.getItems()[0];
@@ -136,7 +136,7 @@ TEST_F(WantListFixture, AddAlwaysAccepted) {
 }
 
 TEST_F(WantListFixture, BeginTickMarksAllInactive) {
-	wl.addRequest(WantItemType::WORKER, 0.5f);
+	wl.addRequest(WantItemType::WORKER, 0.5f, 0);
 	wl.addRequest(WantItemType::UNIT, 0.6f,  1);
 	wl.addRequest(WantItemType::BUILDING, 0.9f, 5);
 
@@ -150,9 +150,9 @@ TEST_F(WantListFixture, BeginTickMarksAllInactive) {
 // --- Matching logic ---
 
 TEST_F(WantListFixture, SameTypeDefaultIdReactivates) {
-	wl.addRequest(WantItemType::WORKER, 0.5f);
+	wl.addRequest(WantItemType::WORKER, 0.5f, 0);
 	wl.resetRequests();
-	wl.addRequest(WantItemType::WORKER, 0.7f);
+	wl.addRequest(WantItemType::WORKER, 0.7f, 0);
 
 	EXPECT_EQ(wl.getItemCount(), 1);
 	EXPECT_FLOAT_EQ(wl.getItems()[0].basePriority, 0.7f);
@@ -168,11 +168,11 @@ TEST_F(WantListFixture, DifferentSpecificIdCreatesNew) {
 
 TEST_F(WantListFixture, MultipleTickCyclesAccumulateItems) {
 	wl.resetRequests();
-	wl.addRequest(WantItemType::WORKER, 0.5f);
+	wl.addRequest(WantItemType::WORKER, 0.5f, 0);
 	wl.addRequest(WantItemType::UNIT, 0.6f,10,2);
 
 	wl.resetRequests();
-	wl.addRequest(WantItemType::WORKER, 0.7f);
+	wl.addRequest(WantItemType::WORKER, 0.7f, 0);
 	wl.addRequest(WantItemType::BUILDING, 0.8f, 5);
 
 	ASSERT_EQ(wl.getItemCount(), 3);

@@ -16,8 +16,8 @@ public:
 	InfluenceMap(GridCalculator* calculator, float valueThresholdDebug = 40.f, bool history = false);
 	virtual ~InfluenceMap();
 
-	void drawRaw(short batch, short maxParts);
-	void drawKernel(short batch, short maxParts);
+	void drawRaw();
+	void drawKernel();
 
 	void update(unsigned index, float value = 1.f);
 	void update(const Urho3D::Vector2& pos, float value = 1.f);
@@ -72,7 +72,7 @@ private:
 	int getMaxElement(const std::array<int, 4>& indexes, std::span<const float> vals) const;
 	void computeMinMax() const;
 	Urho3D::Vector3 getVertex(const Urho3D::Vector2& center, Urho3D::Vector2 vertex) const;
-	void drawCell(int index, short batch, bool useKernel) const;
+	void drawCell(int index, bool useKernel) const;
 
 	const float* templateV;
 	mutable float* quadValues = nullptr;

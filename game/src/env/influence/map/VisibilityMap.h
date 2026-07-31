@@ -16,7 +16,7 @@ public:
 	VisibilityMap(unsigned short resolution, float size, float valueThresholdDebug);
 	~VisibilityMap();
 
-	void draw(unsigned short batch,unsigned short maxParts);
+	void draw();
 	void update(const Urho3D::Vector2& pos, float sRadius);
 	void finishAtIndex(unsigned i) const;
 	void finish();
@@ -37,7 +37,7 @@ private:
 	GridCalculator* calculator;
 	unsigned int arraySize;
 	const float valueThresholdDebug;
-	void drawCell(unsigned int index,unsigned short batch) const;
+	void drawCell(unsigned int index) const;
 	Urho3D::Vector3 getVertex(const Urho3D::Vector2& center, Urho3D::Vector2 vertex) const;
 	const int influenceRes;
 	const int influenceArraySize;

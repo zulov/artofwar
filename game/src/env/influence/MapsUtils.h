@@ -2,7 +2,6 @@
 #include <vector>
 
 
-constexpr unsigned char MAX_DEBUG_PARTS_INFLUENCE = 2;
 constexpr char INF_LEVEL = 4;
 constexpr short INF_GRID_FIELD_SIZE = 8.f;
 constexpr short VISIBILITY_GRID_FIELD_SIZE = INF_GRID_FIELD_SIZE / 2;
@@ -36,20 +35,20 @@ namespace MapsUtils {
 	}
 
 	template <typename T>
-	void drawMap(unsigned short currentDebugBatch,unsigned char index, const std::vector<T*>& maps) {
+	void drawMap(unsigned char index, const std::vector<T*>& maps) {
 		index = index % maps.size();
-		maps[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+		maps[index]->draw();
 	}
 
 	template <typename T>
-	void drawMapRaw(unsigned short currentDebugBatch,unsigned char index, const std::vector<T*>& maps) {
+	void drawMapRaw(unsigned char index, const std::vector<T*>& maps) {
 		index = index % maps.size();
-		maps[index]->drawRaw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+		maps[index]->drawRaw();
 	}
 
 	template <typename T>
-	void drawMapKernel(unsigned short currentDebugBatch,unsigned char index, const std::vector<T*>& maps) {
+	void drawMapKernel(unsigned char index, const std::vector<T*>& maps) {
 		index = index % maps.size();
-		maps[index]->drawKernel(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+		maps[index]->drawKernel();
 	}
 }

@@ -93,7 +93,4 @@ private:
 	mutable unsigned int arraySize;
 	mutable std::vector<float> errorsSum; // [arraySize]
 	mutable std::vector<unsigned> tempIndexes;
-
-	// --- Debug state ---
-	unsigned short currentDebugBatch = 0;
 };

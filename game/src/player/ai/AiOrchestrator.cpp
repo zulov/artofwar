@@ -225,30 +225,22 @@ void AiOrchestrator::action() {
 	                                   lastLacking.totalSum, history);
 
 	float gameTime = norm(Game::getFrameInfo()->getSeconds(), NormScale::GAME_TIME_SHORT);
-	lastEconOut = economyBrain.decide(
-			player, enemy,
+	lastEconOut = economyBrain.decide(player, enemy,
 			lastLacking.perResource,
 			lastMasterOut.economyUrgency, lastMasterOut.workerUrgency, lastMasterOut.expandUrgency,
-			lastMasterOut.techUrgency, gameTime,
-			history
-			);
+			lastMasterOut.techUrgency, gameTime, history);
 
 	// 3. Military Brain (composition prefs feed into UnitBrain)
 	float techLevel = avgTechLevel(nation->units, nation->buildings, player);
-	lastMilOut = militaryBrain.decide(
-			player, enemy,
+	lastMilOut = militaryBrain.decide(player, enemy,
 			lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency,
-			techLevel,
-			history
-			);
+			techLevel, history);
 
 	// 4. Unit Brain
-	auto unitOut = unitBrain.decide(
-			player, enemy,
+	auto unitOut = unitBrain.decide(player, enemy,
 			lastMasterOut.unitUrgency, lastMasterOut.attackUrgency,
 			lastMilOut.preferInfantry, lastMilOut.preferRange, lastMilOut.preferCavalry,
-			lastMasterOut.techUrgency, gameTime
-			);
+			lastMasterOut.techUrgency, gameTime);
 
 	// 5. Submit requests to WantList
 	wantList.resetRequests();

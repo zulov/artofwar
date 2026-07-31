@@ -238,12 +238,7 @@ void MainGrid::drawDebug(GridDebugType type) const {
 
 				if (std::get<0>(info)) {
 					const auto& corners = Game::getEnvironment()->getDebugCellCorners(calculator->getResolution(), i);
-
-					// DebugLineRepo::drawTriangle(DebugLineType::MAIN_GRID, {center.x_, 10, center.y_},
-					//                         {center.x_, 20, center.y_}, std::get<1>(info));
-
-					DebugLineRepo::drawTriangle(DebugLineType::MAIN_GRID, corners[0], corners[2], corners[1], std::get<1>(info));
-					DebugLineRepo::drawTriangle(DebugLineType::MAIN_GRID, corners[1], corners[3], corners[0], std::get<1>(info));
+					DebugLineRepo::drawQuad(DebugLineType::INFLUENCE, corners, std::get<1>(info));
 				}
 			}
 		}
