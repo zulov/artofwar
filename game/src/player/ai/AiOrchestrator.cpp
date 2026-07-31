@@ -135,7 +135,8 @@ void AiOrchestrator::upgradeUnitBuilding(const UnitOutput& unitOut) {
 		if (auto* buildingToUpgrade = resolveBuildingUpgrade(unitOut)) {
 			if (hasOwnedBuildingInstance(buildingToUpgrade->id)) {
 				if (player->getNextLevelForBuilding(buildingToUpgrade->id).has_value()) {
-					wantList.addRequest(WantItemType::BUILDING_UPGRADE, unitOut.buildingUpgradeUrgency, buildingToUpgrade->id);
+					wantList.addRequest(WantItemType::BUILDING_UPGRADE, unitOut.buildingUpgradeUrgency,
+					                    buildingToUpgrade->id);
 				}
 			} else {
 				wantList.addRequest(WantItemType::BUILDING, unitOut.buildingUpgradeUrgency, buildingToUpgrade->id);
@@ -146,19 +147,16 @@ void AiOrchestrator::upgradeUnitBuilding(const UnitOutput& unitOut) {
 
 void AiOrchestrator::upgradeResBuilding() {
 	if (lastEconOut.resBuildingUpgradeUrgency > 0.1f) {
-		if (auto* resBuildingToUpgrade = resolveResBuildingUpgrade(lastEconOut)) {
-			if (hasReadyBuildingInstance(resBuildingToUpgrade->id)
-				&& player->getNextLevelForBuilding(resBuildingToUpgrade->id).has_value()) {
-				wantList.addRequest(WantItemType::BUILDING_UPGRADE, lastEconOut.resBuildingUpgradeUrgency,
-				                    resBuildingToUpgrade->id);
-			} else if (!hasOwnedBuildingInstance(resBuildingToUpgrade->id)) {
-				wantList.addRequest(WantItemType::BUILDING, lastEconOut.resBuildingUpgradeUrgency,
-				                    resBuildingToUpgrade->id);
-			}
+		if (auto* found = resolveResBuildingUpgrade(lastEconOut)) {
+			if (hasOwnedBuildingInstance(found->id)) {
+				if (player->getNextLevelForBuilding(found->id).has_value()) {
+					wantList.addRequest(WantItemType::BUILDING_UPGRADE, lastEconOut.resBuildingUpgradeUrgency,
+					                    found->id);
+				}
+			} else { wantList.addRequest(WantItemType::BUILDING, lastEconOut.resBuildingUpgradeUrgency, found->id); }
 		}
 	}
 }
-
 
 void AiOrchestrator::createResBuilding() {
 	struct Candidate {
@@ -398,7 +396,8 @@ void AiOrchestrator::issueAdvancePerUnit(const std::vector<std::pair<Unit*, floa
 		if (unit->getPosition().SqDistXZ(target) > SQ_SEMI_CLOSE) {
 			trySubmitUnitOrder(std::vector<Unit*>{unit}, priority, center,
 			                   new IndividualOrder(unit, UnitAction::GO, target));
-		} else if (tryIssueNearbyAttack(unit, priority, center)) { continue; }
+		} else
+			if (tryIssueNearbyAttack(unit, priority, center)) { continue; }
 	}
 }
 
@@ -414,7 +413,8 @@ void AiOrchestrator::issueHold(std::vector<std::pair<Unit*, MilitaryCenterIdx>>&
 bool AiOrchestrator::tryIssueNearbyAttack(Unit* unit, float priority, MilitaryCenterIdx center) const {
 	auto& things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
 	if (things.empty()) { return false; }
-	const auto closest = Game::getEnvironment()->closestPhysical(unit->getMainGridIndex(), things, belowClose, true);
+	const auto closest = Game::getEnvironment()->
+			closestPhysical(unit->getMainGridIndex(), things, belowClose, true);
 	if (!closest) { return false; }
 	return trySubmitUnitOrder(std::vector<Unit*>{unit}, priority, center,
 	                          new IndividualOrder(unit, UnitAction::ATTACK, closest));
