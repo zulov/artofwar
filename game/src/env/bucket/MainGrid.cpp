@@ -231,27 +231,22 @@ void MainGrid::drawDebug(GridDebugType type) const {
 	switch (type) {
 	case GridDebugType::NONE:
 		break;
-	case GridDebugType::CELLS_TYPE: {
-		for (int i = 0; i < sqResolution; ++i) {
-			std::tuple<bool, Urho3D::Color> info = Game::getColorPaletteRepo()->
-				getInfoForGrid(complexData[i].getType());
+		case GridDebugType::CELLS_TYPE: {
+			for (int i = 0; i < sqResolution; ++i) {
+				std::tuple<bool, Urho3D::Color> info = Game::getColorPaletteRepo()->
+					getInfoForGrid(complexData[i].getType());
 
-			if (std::get<0>(info)) {
-				auto center = calculator->getCenter(i);
-				const auto v = calculator->getFieldSize() / 2.3f;
-				const auto a = getVertex(center, Urho3D::Vector2(-v, v));
-				const auto b = getVertex(center, Urho3D::Vector2(v, -v));
-				const auto c = getVertex(center, Urho3D::Vector2(v, v));
-				const auto d = getVertex(center, Urho3D::Vector2(-v, -v));
+				if (std::get<0>(info)) {
+					const auto& corners = Game::getEnvironment()->getDebugCellCorners(calculator->getResolution(), i);
 
-				// DebugLineRepo::drawTriangle(DebugLineType::MAIN_GRID, {center.x_, 10, center.y_},
-				//                         {center.x_, 20, center.y_}, std::get<1>(info));
+					// DebugLineRepo::drawTriangle(DebugLineType::MAIN_GRID, {center.x_, 10, center.y_},
+					//                         {center.x_, 20, center.y_}, std::get<1>(info));
 
-				DebugLineRepo::drawTriangle(DebugLineType::MAIN_GRID, a, c, b, std::get<1>(info));
-				DebugLineRepo::drawTriangle(DebugLineType::MAIN_GRID, b, d, a, std::get<1>(info));
+					DebugLineRepo::drawTriangle(DebugLineType::MAIN_GRID, corners[0], corners[2], corners[1], std::get<1>(info));
+					DebugLineRepo::drawTriangle(DebugLineType::MAIN_GRID, corners[1], corners[3], corners[0], std::get<1>(info));
+				}
 			}
 		}
-	}
 	break;
 	default: ;
 	}

@@ -1,5 +1,6 @@
 #include "Environment.h"
 
+#include <cassert>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Terrain.h>
 #include "EnvConsts.h"
@@ -26,10 +27,40 @@ Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolut
 	calculator(GridCalculatorProvider::get(mainMapResolution, mapSize)) {
 	auto a = {160, 192, 256, 320, 384, 512};
 	assert(std::ranges::any_of(a, [mainMapResolution](int i) {return mainMapResolution == i; }));
+	debugTerrainCornerCache.reserve(2);
 }
 
 
 Environment::~Environment() = default;
+
+const std::array<Urho3D::Vector3, 4>& Environment::getDebugCellCorners(unsigned short resolution, int index) const {
+	auto& cache = debugTerrainCornerCache[resolution];
+	if (cache.calculator == nullptr) {
+		cache.calculator = GridCalculatorProvider::get(resolution, mapSize);
+	}
+
+	const unsigned cellCount = resolution * resolution;
+	if (cache.cells.size() != cellCount) {
+		cache.cells.resize(cellCount);
+	}
+
+	assert(index >= 0 && index < static_cast<int>(cache.cells.size()));
+	auto& cell = cache.cells[index];
+	if (!cell.ready) {
+		const auto center = cache.calculator->getCenter(index);
+		const auto v = cache.calculator->getFieldSize() / 2.3f;
+		cell.corners[0] = getPosWithHeightAt(center.x_ - v, center.y_ + v);
+		cell.corners[1] = getPosWithHeightAt(center.x_ + v, center.y_ - v);
+		cell.corners[2] = getPosWithHeightAt(center.x_ + v, center.y_ + v);
+		cell.corners[3] = getPosWithHeightAt(center.x_ - v, center.y_ - v);
+		for (auto& corner : cell.corners) {
+			corner.y_ += 1.f;
+		}
+		cell.ready = true;
+	}
+
+	return cell.corners;
+}
 
 const std::vector<Physical*>& Environment::getNeighboursFromSparseSamePlayer(Physical* physical, const float radius,
                                                                        char player) {

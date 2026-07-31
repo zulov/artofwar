@@ -175,13 +175,8 @@ Urho3D::Vector3 VisibilityMap::getVertex(const Urho3D::Vector2& center, Urho3D::
 }
 
 void VisibilityMap::drawCell(int index, short batch) const {
-	const auto center = calculator->getCenter(index);
-	const auto v = calculator->getFieldSize() / 2.3f;
-	const auto a = getVertex(center, Urho3D::Vector2(-v, v));
-	const auto b = getVertex(center, Urho3D::Vector2(v, -v));
-	const auto c = getVertex(center, Urho3D::Vector2(v, v));
-	const auto d = getVertex(center, Urho3D::Vector2(-v, -v));
+	const auto& corners = Game::getEnvironment()->getDebugCellCorners(calculator->getResolution(), index);
 	const auto color = Game::getColorPaletteRepo()->getColor(getValueAt(index), valueThresholdDebug);
-	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, a, c, b, color, batch);
-	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, b, d, a, color, batch);
+	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, corners[0], corners[2], corners[1], color, batch);
+	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE, corners[1], corners[3], corners[0], color, batch);
 }

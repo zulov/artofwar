@@ -1,9 +1,12 @@
 #pragma once
 
+#include <array>
 #include <functional>
 #include <optional>
+#include <unordered_map>
 #include <unordered_set>
 #include <utility>
+#include <vector>
 #include <Urho3D/Math/Vector2.h>
 #include <Urho3D/Math/Vector3.h>
 
@@ -143,6 +146,7 @@ public:
 	unsigned short getResolution() const { return calculator->getResolution(); }
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;
 	float getVisibilityScore(char player) const;
+	const std::array<Urho3D::Vector3, 4>& getDebugCellCorners(unsigned short resolution, int index) const;
 
 	std::vector<int> getIndexesInRange(const Urho3D::Vector2& center, float range) const;
 	std::vector<int> getIndexesInRange(int index, float range) const;
@@ -159,6 +163,16 @@ public:
 	void refreshAllStatic(std::vector<ResourceEntity*>* resources, std::vector<Building*>* buildings);
 	short getOccupationLevel(int index) const;
 private:
+	struct DebugTerrainCellCorners {
+		bool ready = false;
+		std::array<Urho3D::Vector3, 4> corners{};
+	};
+
+	struct DebugTerrainCornerCache {
+		GridCalculator* calculator = nullptr;
+		std::vector<DebugTerrainCellCorners> cells;
+	};
+
 	const std::vector<Physical*>& collectResources(const Urho3D::Vector2& center, int id, int level,
 	                                                float innerRadius);
 	const std::vector<Physical*>& getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
@@ -180,4 +194,5 @@ private:
 	GridCalculator* calculator;
 
 	mutable std::vector<Physical*> neights;
+	mutable std::unordered_map<unsigned short, DebugTerrainCornerCache> debugTerrainCornerCache;
 };
