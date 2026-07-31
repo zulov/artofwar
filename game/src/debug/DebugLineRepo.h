@@ -20,16 +20,18 @@ class DebugLineRepo {
 public:
 	~DebugLineRepo();
 
-	static void commit(DebugLineType type, short batch = 0);
-	static void beginGeometry(DebugLineType type, short batch = 0);
-	static void clear(DebugLineType type, short batch = 0);
+	static void commit(DebugLineType type, unsigned short batch = 0);
+	static void beginGeometry(DebugLineType type, unsigned short batch = 0);
+	static void clear(DebugLineType type, unsigned short batch = 0);
 	static void drawLine(DebugLineType type, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
-	                     const Urho3D::Color& color = Urho3D::Color::WHITE, short batch = 0);
+	                     const Urho3D::Color& color = Urho3D::Color::WHITE, unsigned short batch = 0);
 	static void drawTriangle(DebugLineType type, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
-	                         const Urho3D::Vector3& third, const Urho3D::Color& color = Urho3D::Color::WHITE, short batch =0);
+	                         const Urho3D::Vector3& third, const Urho3D::Color& color = Urho3D::Color::WHITE,
+	                         unsigned short batch = 0);
 	static void init(DebugLineType type);
-	static void init(DebugLineType type, short batches);
+	static void init(DebugLineType type, unsigned short batches);
 	static void dispose();
+
 private:
 	DebugLineRepo() = default;
 	static std::vector<Urho3D::CustomGeometry*> geometry[magic_enum::enum_count<DebugLineType>()];

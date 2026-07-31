@@ -12,7 +12,7 @@
 
 void InfluenceMap::drawRaw(short batch, short maxParts) {
 	auto size = arraySize / maxParts;
-	for (int i = batch * size; i < arraySize && i < (batch + 1) * size; ++i) {
+	for (auto i = batch * size; i < arraySize && i < (batch + 1) * size; ++i) {
 		drawCell(i, batch, false);
 	}
 }
@@ -20,7 +20,7 @@ void InfluenceMap::drawRaw(short batch, short maxParts) {
 void InfluenceMap::drawKernel(short batch, short maxParts) {
 	auto size = arraySize / maxParts;
 	ensureReady();
-	for (int i = batch * size; i < arraySize && i < (batch + 1) * size; ++i) {
+	for (auto i = batch * size; i < arraySize && i < (batch + 1) * size; ++i) {
 		drawCell(i, batch, true);
 	}
 }
@@ -39,7 +39,7 @@ void InfluenceMap::drawCell(int index, short batch, bool useKernel) const {
 }
 
 void InfluenceMap::printMap(std::span<const float> map, const Urho3D::String& name) {
-	auto [minIt, maxIt] = std::minmax_element(map.begin(), map.end());
+	auto [minIt, maxIt] = std::ranges::minmax_element(map);
 	const auto minV = *minIt;
 	const auto maxV = *maxIt;
 	const float diff = maxV - minV;

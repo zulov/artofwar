@@ -19,7 +19,7 @@ void DebugLineRepo::init(DebugLineType type) {
 	}
 }
 
-void DebugLineRepo::init(DebugLineType type, short batches) {
+void DebugLineRepo::init(DebugLineType type, unsigned short batches) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
 			auto& geom = geometry[castC(type)];
@@ -51,7 +51,7 @@ DebugLineRepo::~DebugLineRepo() {
 	}
 }
 
-void DebugLineRepo::commit(DebugLineType type, short batch) {
+void DebugLineRepo::commit(DebugLineType type, unsigned short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
 			auto* geom = geometry[castC(type)].at(batch);
@@ -68,7 +68,7 @@ void DebugLineRepo::commit(DebugLineType type, short batch) {
 	}
 }
 
-void DebugLineRepo::beginGeometry(DebugLineType type, short batch) {
+void DebugLineRepo::beginGeometry(DebugLineType type, unsigned short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
 			const auto primitiveType = (type == DebugLineType::INFLUENCE || type == DebugLineType::MAIN_GRID)
@@ -80,7 +80,7 @@ void DebugLineRepo::beginGeometry(DebugLineType type, short batch) {
 	}
 }
 
-void DebugLineRepo::clear(DebugLineType type, short batch) {
+void DebugLineRepo::clear(DebugLineType type, unsigned short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
 			auto* geom = geometry[castC(type)].at(batch);
@@ -91,7 +91,7 @@ void DebugLineRepo::clear(DebugLineType type, short batch) {
 }
 
 void DebugLineRepo::drawLine(DebugLineType type, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
-                             const Urho3D::Color& color, short batch) {
+                             const Urho3D::Color& color, unsigned short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
 			auto* geom = geometry[castC(type)].at(batch);
@@ -105,7 +105,7 @@ void DebugLineRepo::drawLine(DebugLineType type, const Urho3D::Vector3& first, c
 
 
 void DebugLineRepo::drawTriangle(DebugLineType type, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
-                                 const Urho3D::Vector3& third, const Urho3D::Color& color, short batch) {
+                                 const Urho3D::Vector3& third, const Urho3D::Color& color, unsigned short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
 			auto* geom = geometry[castC(type)].at(batch);

@@ -95,5 +95,5 @@ private:
 	mutable std::vector<unsigned> tempIndexes;
 
 	// --- Debug state ---
-	short currentDebugBatch = 0;
+	unsigned short currentDebugBatch = 0;
 };
