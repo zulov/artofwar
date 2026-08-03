@@ -23,7 +23,7 @@ public:
 	Urho3D::Color& getSolidColor(float value, float maxValue);
 	Urho3D::Material* getLineMaterial() const;
 	Urho3D::Material* getInfluenceMaterial() const;
-	std::tuple<bool, Urho3D::Color> getInfoForGrid(CellState state) const;
+	Urho3D::Color getInfoForGrid(CellState state) const;
 	Urho3D::Color getCircleColor(db_building* dbBuilding) const;
 	Urho3D::Color getColorForValidation(const db_building* building, Urho3D::Vector2& hitPos) const;
 private:

@@ -187,5 +187,4 @@ private:
 	GridCalculator* calculator;
 
 	mutable std::vector<Physical*> neights;
-	mutable std::unordered_map<unsigned short, DebugTerrainCornerCache> debugTerrainCornerCache;
 };

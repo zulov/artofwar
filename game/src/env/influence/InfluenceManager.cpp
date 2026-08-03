@@ -95,7 +95,7 @@ InfluenceManager::InfluenceManager(unsigned char numberOfPlayers, float mapSize,
 	visibilityManager = new VisibilityManager(numberOfPlayers, mapSize, terrain);
 
 	ci = new content_info();
-	DebugLineRepo::init(DebugLineType::INFLUENCE);
+	//DebugLineRepo::init(DebugLineType::INFLUENCE);
 
 	arraySize = calculator->getResolution() * calculator->getResolution();
 	assert(arraySize <= std::numeric_limits<unsigned short>::max());
@@ -186,8 +186,8 @@ void InfluenceManager::resetHistoryThresholds() const {
 }
 
 void InfluenceManager::draw(EnvironmentDebugMode mode, unsigned char index) {
-	DebugLineRepo::clear(DebugLineType::INFLUENCE);
-	DebugLineRepo::beginGeometry(DebugLineType::INFLUENCE);
+	DebugLineRepo::clear(DebugLineType::GRID);
+	DebugLineRepo::beginGeometry(DebugLineType::GRID);
 
 	switch (mode) {
 	case EnvironmentDebugMode::NONE:
@@ -241,18 +241,18 @@ void InfluenceManager::draw(EnvironmentDebugMode mode, unsigned char index) {
 	default: ;
 	}
 
-	DebugLineRepo::commit(DebugLineType::INFLUENCE);
+	DebugLineRepo::commit(DebugLineType::GRID);
 }
 
 void InfluenceManager::drawAll() const {
 	MapsUtils::drawAll(buildingPresence, "buildingPresence");
 	MapsUtils::drawAll(unitPresence, "unitPresence");
 
-	constexpr const char* gatheringActivityNames[] = {
-		"gatheringActivityFood", "gatheringActivityWood", "gatheringActivityStone", "gatheringActivityGold"};
-	for (int r = 0; r < RESOURCES_SIZE; ++r) {
-		MapsUtils::drawAll(gatheringActivityByResource[r], gatheringActivityNames[r]);
-	}
+	MapsUtils::drawAll(gatheringActivityByResource[cast(ResourceType::FOOD)], "gatheringActivityFood");
+	MapsUtils::drawAll(gatheringActivityByResource[cast(ResourceType::WOOD)], "gatheringActivityWood");
+	MapsUtils::drawAll(gatheringActivityByResource[cast(ResourceType::STONE)], "gatheringActivityStone");
+	MapsUtils::drawAll(gatheringActivityByResource[cast(ResourceType::GOLD)], "gatheringActivityGold");
+	
 	MapsUtils::drawAll(attackActivity, "attackActivity");
 	MapsUtils::drawAll(armyPresence, "armyPresence");
 	MapsUtils::drawAll(economicActivity, "economicActivity");

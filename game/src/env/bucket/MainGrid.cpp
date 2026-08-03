@@ -35,7 +35,7 @@ MainGrid::MainGrid(unsigned short resolution, float size, float maxQueryRadius):
 	}
 	fillCache();
 
-	DebugLineRepo::init(DebugLineType::MAIN_GRID);
+	DebugLineRepo::init(DebugLineType::GRID);
 }
 
 MainGrid::~MainGrid() {
@@ -225,20 +225,20 @@ int MainGrid::getAdditionalInfoAt(float x, float z) const {
 }
 
 void MainGrid::drawDebug(GridDebugType type) const {
-	DebugLineRepo::clear(DebugLineType::MAIN_GRID); //TODO perf draw only on change
-	DebugLineRepo::beginGeometry(DebugLineType::MAIN_GRID);
+	DebugLineRepo::clear(DebugLineType::GRID); //TODO perf draw only on change
+	DebugLineRepo::beginGeometry(DebugLineType::GRID);
 
 	switch (type) {
 	case GridDebugType::NONE:
 		break;
 		case GridDebugType::CELLS_TYPE: {
+		//const auto& corners = Game::getEnvironment()->getDebugCellCorners(calculator->getResolution(), i);
+			DebugLineRepo::drawQuads(DebugLineType::GRID, resolution,)
+			
 			for (int i = 0; i < sqResolution; ++i) {
-				std::tuple<bool, Urho3D::Color> info = Game::getColorPaletteRepo()->
-					getInfoForGrid(complexData[i].getType());
-
+				std::tuple<bool, Urho3D::Color> info = colors->getInfoForGrid(complexData[i].getType());
 				if (std::get<0>(info)) {
-					const auto& corners = Game::getEnvironment()->getDebugCellCorners(calculator->getResolution(), i);
-					DebugLineRepo::drawQuad(DebugLineType::INFLUENCE, corners, std::get<1>(info));
+					//DebugLineRepo::drawQuad(DebugLineType::GRID, corners, std::get<1>(info));
 				}
 			}
 		}
@@ -246,7 +246,7 @@ void MainGrid::drawDebug(GridDebugType type) const {
 	default: ;
 	}
 
-	DebugLineRepo::commit(DebugLineType::MAIN_GRID);
+	DebugLineRepo::commit(DebugLineType::GRID);
 }
 
 Urho3D::Vector3 MainGrid::getVertex(const Urho3D::Vector2 center, Urho3D::Vector2 vertex) const {

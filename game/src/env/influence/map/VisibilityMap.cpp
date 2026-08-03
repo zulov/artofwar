@@ -22,9 +22,7 @@
 
 void VisibilityMap::draw() {
 	ensureReady();
-	for (auto i = 0; i < arraySize; ++i) {
-		drawCell(i);
-	}
+	DebugLineRepo::drawQuads(DebugLineType::GRID, getResolution(), reinterpret_cast<unsigned char*>(values), valueThresholdDebug);
 }
 
 
@@ -174,7 +172,4 @@ Urho3D::Vector3 VisibilityMap::getVertex(const Urho3D::Vector2& center, Urho3D::
 }
 
 void VisibilityMap::drawCell(unsigned int index) const {
-	const auto& corners = Game::getEnvironment()->getDebugCellCorners(calculator->getResolution(), index);
-	const auto color = Game::getColorPaletteRepo()->getColor(getValueAt(index), valueThresholdDebug);
-	DebugLineRepo::drawQuad(DebugLineType::INFLUENCE, corners, color);
 }

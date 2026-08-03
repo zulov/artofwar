@@ -11,16 +11,12 @@
 #include "env/Environment.h"
 
 void InfluenceMap::drawRaw() {
-	for (auto i = 0; i < arraySize; ++i) {
-		drawCell(i, false);
-	}
+	DebugLineRepo::drawQuads(DebugLineType::GRID, getResolution(), rawValues, valueThresholdDebug);
 }
 
 void InfluenceMap::drawKernel() {
 	ensureReady();
-	for (auto i = 0; i < arraySize; ++i) {
-		drawCell(i, true);
-	}
+	DebugLineRepo::drawQuads(DebugLineType::GRID, getResolution(), kernelValues, valueThresholdDebug);
 }
 
 Urho3D::Vector3 InfluenceMap::getVertex(const Urho3D::Vector2& center, Urho3D::Vector2 vertex) const {
@@ -29,20 +25,14 @@ Urho3D::Vector3 InfluenceMap::getVertex(const Urho3D::Vector2& center, Urho3D::V
 	return result;
 }
 
-void InfluenceMap::drawCell(int index, bool useKernel) const {
-	const auto& corners = Game::getEnvironment()->getDebugCellCorners(calculator->getResolution(), index);
-	const auto color = Game::getColorPaletteRepo()->getColor(useKernel ? getKernel(index) : getRaw(index), valueThresholdDebug);
-	DebugLineRepo::drawQuad(DebugLineType::INFLUENCE, corners, color);
-}
+void InfluenceMap::drawCell(int index, bool useKernel) const {}
 
 void InfluenceMap::printMap(std::span<const float> map, const Urho3D::String& name) {
 	auto [minIt, maxIt] = std::ranges::minmax_element(map);
 	const auto minV = *minIt;
 	const auto maxV = *maxIt;
 	const float diff = maxV - minV;
-	if (diff == 0.f) {
-		return;
-	}
+	if (diff == 0.f) { return; }
 
 	auto* image = new Urho3D::Image(Game::getContext());
 	const int resolution = static_cast<int>(std::sqrt(map.size()));
@@ -58,7 +48,7 @@ void InfluenceMap::printMap(std::span<const float> map, const Urho3D::String& na
 
 	image->Resize(256, 256);
 	image->SavePNG("result/images/infl/" + name + "_" + Urho3D::String(resolution) + "x" + Urho3D::String(resolution)
-	               + "#" + Urho3D::String(counter) + ".png");
+			+ "#" + Urho3D::String(counter) + ".png");
 	++counter;
 
 	delete image;
