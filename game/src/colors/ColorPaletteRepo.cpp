@@ -54,6 +54,7 @@ Urho3D::Color ColorPaletteRepo::getInfoForGrid(CellState state) const {
 	case CellState::DEPLOY: return Urho3D::Color::CYAN;
 	default: ;
 	}
+	return Urho3D::Color(0, 0, 0, 0);
 }
 
 Urho3D::Color ColorPaletteRepo::getCircleColor(db_building* dbBuilding) const {

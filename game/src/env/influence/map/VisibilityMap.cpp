@@ -22,7 +22,8 @@
 
 void VisibilityMap::draw() {
 	ensureReady();
-	DebugLineRepo::drawQuads(DebugLineType::GRID, getResolution(), reinterpret_cast<unsigned char*>(values), valueThresholdDebug);
+	DebugLineRepo::drawQuads(DebugLineType::GRID, getResolution(), reinterpret_cast<const unsigned char*>(values),
+	                         valueThresholdDebug);
 }
 
 

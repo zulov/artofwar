@@ -432,6 +432,7 @@ unsigned char Environment::getRevertCloseIndex(int center, int gridIndex) const 
 void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char index) {
 	if (environmentDebugMode == EnvironmentDebugMode::MAIN_GRID) {
 		mainGrid.drawDebug(GridDebugType(index % magic_enum::enum_count<GridDebugType>()));
+		return;
 	}
 	influenceManager.draw(environmentDebugMode, index);
 }

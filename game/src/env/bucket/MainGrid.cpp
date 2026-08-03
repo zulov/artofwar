@@ -231,17 +231,17 @@ void MainGrid::drawDebug(GridDebugType type) const {
 	switch (type) {
 	case GridDebugType::NONE:
 		break;
-		case GridDebugType::CELLS_TYPE: {
-		//const auto& corners = Game::getEnvironment()->getDebugCellCorners(calculator->getResolution(), i);
-			DebugLineRepo::drawQuads(DebugLineType::GRID, resolution,)
-			
-			for (int i = 0; i < sqResolution; ++i) {
-				std::tuple<bool, Urho3D::Color> info = colors->getInfoForGrid(complexData[i].getType());
-				if (std::get<0>(info)) {
-					//DebugLineRepo::drawQuad(DebugLineType::GRID, corners, std::get<1>(info));
-				}
-			}
+	case GridDebugType::CELLS_TYPE: {
+		const auto resolution = calculator->getResolution();
+		const auto* colors = Game::getColorPaletteRepo();
+		std::vector<Urho3D::Color> quadColors;
+		quadColors.reserve(sqResolution);
+		for (int i = 0; i < sqResolution; ++i) {
+			quadColors.push_back(colors->getInfoForGrid(complexData[i].getType()));
 		}
+		DebugLineRepo::drawQuads(DebugLineType::GRID, resolution, quadColors);
+		break;
+	}
 	break;
 	default: ;
 	}
@@ -710,7 +710,7 @@ void MainGrid::drawComplex(Urho3D::Image* image, const Urho3D::String prefix) co
 	for (short x = 0; x != calculator->getResolution(); ++x) {
 		const int index = calculator->getIndex(x, 0);
 		for (short y = 0; y != calculator->getResolution(); ++y) {
-			image->SetPixel(x, y, std::get<1>(pelette->getInfoForGrid(complexData[index + y].getType())));
+			image->SetPixel(x, y, pelette->getInfoForGrid(complexData[index + y].getType()));
 		}
 	}
 	image->FlipVertical();
