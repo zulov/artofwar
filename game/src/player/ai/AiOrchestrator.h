@@ -59,7 +59,6 @@ private:
 	struct DeployBuildingInfo {
 		short buildingId = -1;
 		bool hasOwnedBuilding = false;
-		bool hasReadyBuilding = false;
 	};
 
 	// WantList request building (brain outputs -> wants)

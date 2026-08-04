@@ -55,5 +55,11 @@ struct db_container {
 		for (auto* level : buildingsLevels) {
 			level->finish(buildings[level->building]);
 		}
+
+		for (auto* building : buildings) {
+			if (building != nullptr) {
+				building->finish(units.size(), nations);
+			}
+		}
 	}
 };

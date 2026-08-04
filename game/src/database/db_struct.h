@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <magic_enum.hpp>
 #include <span>
 #include <vector>
@@ -363,6 +364,9 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 
 	std::vector<db_nation*> nations;
 
+	// Cached lookup: everCanProduceUnitByNation[nationId][unitId] == 1 if any level can produce it.
+	std::vector<std::vector<unsigned char>> everCanProduceUnitByNation;
+
 	using C = DbBuildingCol;
 	db_building(sqlite3_stmt* s)
 		: db_with_icon(asUShort(s, C::id), asText(s, C::name), asText(s, C::icon)),
@@ -399,6 +403,10 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 		}
 		return {};
 	}
+
+	void finish(size_t unitsCount, const std::vector<db_nation*>& allNations);
+
+	bool canEverProduceUnit(unsigned char nationId, unsigned short unitId) const;
 };
 
 struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_building_attack,
@@ -476,6 +484,33 @@ struct db_nation : db_with_name {
 		}
 	}
 };
+
+inline void db_building::finish(size_t unitsCount, const std::vector<db_nation*>& allNations) {
+	everCanProduceUnitByNation.assign(allNations.size(), std::vector<unsigned char>(unitsCount, 0));
+
+	for (const auto nation : allNations) {
+		if (nation == nullptr) { continue; }
+
+		auto& cachedUnitFlags = everCanProduceUnitByNation[nation->id];
+
+		for (const auto level : levels) {
+			const auto* unitIds = level->unitsPerNationIds[nation->id];
+			if (unitIds == nullptr) { continue; }
+
+			for (const auto unitId : *unitIds) {
+				if (unitId < cachedUnitFlags.size()) {
+					cachedUnitFlags[unitId] = 1;
+				}
+			}
+		}
+	}
+}
+
+inline bool db_building::canEverProduceUnit(unsigned char nationId, unsigned short unitId) const {
+	if (nationId >= everCanProduceUnitByNation.size()) { return false; }
+	const auto& unitFlags = everCanProduceUnitByNation[nationId];
+	return unitId < unitFlags.size() && unitFlags[unitId] != 0;
+}
 
 struct db_resource : db_with_icon, db_static, db_with_hp, db_with_model {
 	const unsigned char resourceId;

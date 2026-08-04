@@ -219,7 +219,9 @@ std::vector<Building*> WantExecutor::getBuildingsCanDeploy(unsigned short unitId
 
 short WantExecutor::findBuildingTypeToDeploy(short unitId) const {
 	for (const auto building : nation->buildings) {
-		if (buildingProducesUnit(building, static_cast<unsigned short>(unitId))) { return building->id; }
+		if (building->canEverProduceUnit(player->getNation(), static_cast<unsigned short>(unitId))) {
+			return building->id;
+		}
 	}
 	return -1;
 }

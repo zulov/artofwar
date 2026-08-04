@@ -41,15 +41,6 @@ namespace {
 		return b->resourceType == cast(res) && l->collect > 0.f && l->resourceRange > 0.f;
 	}
 
-	bool canEverProduceUnit(const db_building* building, unsigned char nationId, unsigned short unitId) {
-		for (const auto level : building->levels) {
-			const auto* unitIds = level->unitsPerNationIds[nationId];
-			if (unitIds != nullptr
-				&& std::ranges::find(*unitIds, static_cast<unsigned char>(unitId)) != unitIds->end()) { return true; }
-		}
-		return false;
-	}
-
 	constexpr float SEMI_CLOSE = 30.f;
 	constexpr float SQ_SEMI_CLOSE = SEMI_CLOSE * SEMI_CLOSE;
 	constexpr int MAX_RES_BUILDING_REQUESTS = 3;
@@ -203,7 +194,7 @@ void AiOrchestrator::tryUnitWant(WantItemType type, float priority, unsigned sho
 	assert(type != WantItemType::BUILDING);
 
 	const auto deployInfo = findBuildingTypeToDeploy(unitId);
-	if (deployInfo.hasReadyBuilding) {
+	if (deployInfo.hasOwnedBuilding) {
 		wantList.addRequest(type, priority, unitId, count);
 		return;
 	}
@@ -563,19 +554,16 @@ db_building* AiOrchestrator::resolveResBuildingUpgrade(const EconomyOutput& econ
 	for (float w : weights) { totalWeight += w; }
 	return candidates[sampleWeighted(weights, totalWeight)];
 }
-
-cos za skomplikowane to
 AiOrchestrator::DeployBuildingInfo AiOrchestrator::findBuildingTypeToDeploy(unsigned short unitId) const {
 	DeployBuildingInfo result{};
 
 	short ownedBuildingId = -1;
 	for (const auto building : possession->getBuildings()) {
-		if (!canEverProduceUnit(building->getDb(), player->getNation(), unitId)) { continue; }
+		if (!building->getDb()->canEverProduceUnit(player->getNation(), unitId)) { continue; }
 		result.hasOwnedBuilding = true;
 		if (ownedBuildingId < 0) { ownedBuildingId = building->getDbId(); }
 		if (building->isReady()) {
 			result.buildingId = building->getDbId();
-			result.hasReadyBuilding = true;
 			return result;
 		}
 	}
@@ -586,7 +574,7 @@ AiOrchestrator::DeployBuildingInfo AiOrchestrator::findBuildingTypeToDeploy(unsi
 	}
 
 	for (const auto building : nation->buildings) {
-		if (canEverProduceUnit(building, player->getNation(), unitId)) {
+		if (building->canEverProduceUnit(player->getNation(), unitId)) {
 			result.buildingId = building->id;
 			return result;
 		}
