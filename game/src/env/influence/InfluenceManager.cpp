@@ -186,12 +186,10 @@ void InfluenceManager::resetHistoryThresholds() const {
 }
 
 void InfluenceManager::draw(EnvironmentDebugMode mode, unsigned char index) {
-	DebugLineRepo::clear(DebugLineType::GRID);
-	DebugLineRepo::beginGeometry(DebugLineType::GRID);
-
 	switch (mode) {
 	case EnvironmentDebugMode::NONE:
 	case EnvironmentDebugMode::MAIN_GRID:
+		DebugLineRepo::clear(DebugLineType::GRID);
 		break;
 	case EnvironmentDebugMode::UNITS_RAW:
 		MapsUtils::drawMapRaw(index, unitPresence);

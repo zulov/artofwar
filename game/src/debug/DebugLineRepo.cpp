@@ -30,6 +30,17 @@ void DebugLineRepo::defineQuad(Urho3D::CustomGeometry* geom, const std::array<Ur
 	geom->DefineColor(color);
 }
 
+void DebugLineRepo::updateQuadColor(Urho3D::CustomGeometry* geom, size_t index, const Urho3D::Color& color) {
+	const auto baseVertex = static_cast<unsigned>(index) * 6;
+	const auto colorValue = color.ToUInt();
+
+	for (unsigned i = 0; i < 6; ++i) {
+		auto* vertex = geom->GetVertex(0, baseVertex + i);
+		assert(vertex);
+		vertex->color_ = colorValue;
+	}
+}
+
 std::vector<std::array<Urho3D::Vector3, 4>>& DebugLineRepo::getQuadCords(unsigned short resolution) {
 	auto& quads = quadCords[resolution];
 	const auto expectedSize = static_cast<size_t>(resolution) * resolution;
@@ -61,7 +72,10 @@ void DebugLineRepo::init(DebugLineType type) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
 			auto& geom = geometries[castC(type)];
-			if (!geom) { geom = Game::getScene()->CreateChild()->GetOrCreateComponent<Urho3D::CustomGeometry>(); }
+			if (!geom) {
+				geom = Game::getScene()->CreateChild()->GetOrCreateComponent<Urho3D::CustomGeometry>();
+				geom->SetDynamic(true);
+			}
 		}
 	}
 }
@@ -136,9 +150,15 @@ void DebugLineRepo::drawQuads(DebugLineType type, unsigned short resolution, con
 			auto& quads = getQuadCords(resolution);
 			auto* colors = Game::getColorPaletteRepo();
 			auto* geom = geometries[castC(type)];
-			for (size_t i = 0; i < quads.size(); ++i) {
-				const auto color = colors->getColor(values[i], maxValue);
-				defineQuad(geom, quads[i], color);
+			if (type == DebugLineType::GRID) {
+				ensureGridGeometry(geom, resolution);
+				for (size_t i = 0; i < quads.size(); ++i) {
+					updateQuadColor(geom, i, colors->getColor(values[i], maxValue));
+				}
+			} else {
+				for (size_t i = 0; i < quads.size(); ++i) {
+					defineQuad(geom, quads[i], colors->getColor(values[i], maxValue));
+				}
 			}
 		}
 	}
@@ -150,9 +170,15 @@ void DebugLineRepo::drawQuads(DebugLineType type, unsigned short resolution, con
 			auto& quads = getQuadCords(resolution);
 			auto* colors = Game::getColorPaletteRepo();
 			auto* geom = geometries[castC(type)];
-			for (size_t i = 0; i < quads.size(); ++i) {
-				const auto color = colors->getColor(values[i], maxValue);
-				defineQuad(geom, quads[i], color);
+			if (type == DebugLineType::GRID) {
+				ensureGridGeometry(geom, resolution);
+				for (size_t i = 0; i < quads.size(); ++i) {
+					updateQuadColor(geom, i, colors->getColor(values[i], maxValue));
+				}
+			} else {
+				for (size_t i = 0; i < quads.size(); ++i) {
+					defineQuad(geom, quads[i], colors->getColor(values[i], maxValue));
+				}
 			}
 		}
 	}
@@ -161,25 +187,42 @@ void DebugLineRepo::drawQuads(DebugLineType type, unsigned short resolution, con
 void DebugLineRepo::drawQuads(DebugLineType type, unsigned short resolution, const std::vector<Urho3D::Color>& colors) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (!SIM_GLOBALS.HEADLESS) {
+			auto* geom = geometries[castC(type)];
 			auto& quads = getQuadCords(resolution);
 			assert(colors.size() == quads.size());
-			auto* geom = geometries[castC(type)];
-			for (size_t i = 0; i < quads.size(); ++i) {
-				if (colors[i].a_ > 0.f) {
-					defineQuad(geom, quads[i], colors[i]);
+
+			if (type == DebugLineType::GRID) {
+				ensureGridGeometry(geom, resolution);
+				for (size_t i = 0; i < quads.size(); ++i) {
+					updateQuadColor(geom, i, colors[i]);
+				}
+			} else {
+				for (size_t i = 0; i < quads.size(); ++i) {
+					if (colors[i].a_ > 0.f) {
+						defineQuad(geom, quads[i], colors[i]);
+					}
 				}
 			}
 		}
 	}
 }
 
-void DebugLineRepo::drawQuad(DebugLineType type, unsigned short resolution, int index, const Urho3D::Color& color) {
-	if constexpr (DEBUG_LINES_ENABLED) {
-		if (!SIM_GLOBALS.HEADLESS) {
-			auto& quads = getQuadCords(resolution);
-			assert(index >= 0 && static_cast<size_t>(index) < quads.size());
-			defineQuad(geometries[castC(type)], quads[static_cast<size_t>(index)], color);
-		}
+void DebugLineRepo::ensureGridGeometry(Urho3D::CustomGeometry* geom, unsigned short resolution) {
+	if (!geom || resolution == 0) {
+		return;
+	}
+
+	const auto expectedVertices = static_cast<unsigned>(resolution) * resolution * 6u;
+	if (geom->GetNumVertices(0) == expectedVertices) {
+		return;
+	}
+
+	auto& quads = getQuadCords(resolution);
+	geom->Clear();
+	geom->SetNumGeometries(1);
+	geom->DefineGeometry(0, Urho3D::PrimitiveType::TRIANGLE_LIST, expectedVertices, false, true, false, false);
+
+	for (size_t i = 0; i < quads.size(); ++i) {
+		defineQuad(geom, quads[i], Urho3D::Color::WHITE);
 	}
 }
-

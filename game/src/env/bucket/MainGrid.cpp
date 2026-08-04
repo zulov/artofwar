@@ -225,11 +225,9 @@ int MainGrid::getAdditionalInfoAt(float x, float z) const {
 }
 
 void MainGrid::drawDebug(GridDebugType type) const {
-	DebugLineRepo::clear(DebugLineType::GRID); //TODO perf draw only on change
-	DebugLineRepo::beginGeometry(DebugLineType::GRID);
-
 	switch (type) {
 	case GridDebugType::NONE:
+		DebugLineRepo::clear(DebugLineType::GRID);
 		break;
 	case GridDebugType::CELLS_TYPE: {
 		const auto resolution = calculator->getResolution();
