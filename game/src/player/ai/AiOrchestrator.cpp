@@ -41,7 +41,7 @@ namespace {
 		return b->resourceType == cast(res) && l->collect > 0.f && l->resourceRange > 0.f;
 	}
 
-	bool canEverProduceUnit(const db_building* building, unsigned char nationId, short unitId) {
+	bool canEverProduceUnit(const db_building* building, unsigned char nationId, unsigned short unitId) {
 		for (const auto level : building->levels) {
 			const auto* unitIds = level->unitsPerNationIds[nationId];
 			if (unitIds != nullptr
@@ -109,7 +109,7 @@ void AiOrchestrator::createWorkers() {
 void AiOrchestrator::createUnits(const UnitOutput& unitOut) {
 	if (unitOut.count > 0) {
 		for (auto* unit : resolveUnit(unitOut)) {
-			tryUnitWant(WantItemType::UNIT, lastMasterOut.unitUrgency, unit->id);
+			tryUnitWant(WantItemType::UNIT, lastMasterOut.unitUrgency, unit->id, unitOut.count);
 		}
 	}
 }
@@ -196,12 +196,11 @@ void AiOrchestrator::createLackingUnitBuilding() {
 	}
 }
 
-void AiOrchestrator::tryUnitWant(WantItemType type, float priority, short unitId, unsigned char count) {
+void AiOrchestrator::tryUnitWant(WantItemType type, float priority, unsigned short unitId, unsigned char count) {
 	// One hop only: if the desired thing cannot run because its producer is missing,
 	// request that producer building and let the AI re-issue the original want next tick.
 	// TODO: if the producer exists but still needs an upgrade, route that upgrade too.
 	assert(type != WantItemType::BUILDING);
-	if (unitId < 0) { return; }
 
 	const auto deployInfo = findBuildingTypeToDeploy(unitId);
 	if (deployInfo.hasReadyBuilding) {
@@ -565,7 +564,8 @@ db_building* AiOrchestrator::resolveResBuildingUpgrade(const EconomyOutput& econ
 	return candidates[sampleWeighted(weights, totalWeight)];
 }
 
-AiOrchestrator::DeployBuildingInfo AiOrchestrator::findBuildingTypeToDeploy(short unitId) const {
+cos za skomplikowane to
+AiOrchestrator::DeployBuildingInfo AiOrchestrator::findBuildingTypeToDeploy(unsigned short unitId) const {
 	DeployBuildingInfo result{};
 
 	short ownedBuildingId = -1;
