@@ -30,15 +30,26 @@ void DebugLineRepo::defineQuad(Urho3D::CustomGeometry* geom, const std::array<Ur
 	geom->DefineColor(color);
 }
 
-void DebugLineRepo::updateQuadColor(Urho3D::CustomGeometry* geom, size_t index, const Urho3D::Color& color) {
+void DebugLineRepo::fillQuad(Urho3D::CustomGeometry* geom, size_t index, const std::array<Urho3D::Vector3, 4>& corners,
+	                     const Urho3D::Color& color) {
 	const auto baseVertex = static_cast<unsigned>(index) * 6;
 	const auto colorValue = color.ToUInt();
+	auto* vertex = geom->GetVertex(0, baseVertex);
+	assert(vertex);
 
-	for (unsigned i = 0; i < 6; ++i) {
-		auto* vertex = geom->GetVertex(0, baseVertex + i);
-		assert(vertex);
-		vertex->color_ = colorValue;
-	}
+	vertex[0].position_ = corners[0];
+	vertex[0].color_ = colorValue;
+	vertex[1].position_ = corners[2];
+	vertex[1].color_ = colorValue;
+	vertex[2].position_ = corners[1];
+	vertex[2].color_ = colorValue;
+
+	vertex[3].position_ = corners[1];
+	vertex[3].color_ = colorValue;
+	vertex[4].position_ = corners[3];
+	vertex[4].color_ = colorValue;
+	vertex[5].position_ = corners[0];
+	vertex[5].color_ = colorValue;
 }
 
 std::vector<std::array<Urho3D::Vector3, 4>>& DebugLineRepo::getQuadCords(unsigned short resolution) {
@@ -153,7 +164,7 @@ void DebugLineRepo::drawQuads(DebugLineType type, unsigned short resolution, con
 			if (type == DebugLineType::GRID) {
 				ensureGridGeometry(geom, resolution);
 				for (size_t i = 0; i < quads.size(); ++i) {
-					updateQuadColor(geom, i, colors->getColor(values[i], maxValue));
+					fillQuad(geom, i, quads[i], colors->getColor(values[i], maxValue));
 				}
 			} else {
 				for (size_t i = 0; i < quads.size(); ++i) {
@@ -173,7 +184,7 @@ void DebugLineRepo::drawQuads(DebugLineType type, unsigned short resolution, con
 			if (type == DebugLineType::GRID) {
 				ensureGridGeometry(geom, resolution);
 				for (size_t i = 0; i < quads.size(); ++i) {
-					updateQuadColor(geom, i, colors->getColor(values[i], maxValue));
+					fillQuad(geom, i, quads[i], colors->getColor(values[i], maxValue));
 				}
 			} else {
 				for (size_t i = 0; i < quads.size(); ++i) {
@@ -194,7 +205,7 @@ void DebugLineRepo::drawQuads(DebugLineType type, unsigned short resolution, con
 			if (type == DebugLineType::GRID) {
 				ensureGridGeometry(geom, resolution);
 				for (size_t i = 0; i < quads.size(); ++i) {
-					updateQuadColor(geom, i, colors[i]);
+					fillQuad(geom, i, quads[i], colors[i]);
 				}
 			} else {
 				for (size_t i = 0; i < quads.size(); ++i) {
@@ -223,6 +234,6 @@ void DebugLineRepo::ensureGridGeometry(Urho3D::CustomGeometry* geom, unsigned sh
 	geom->DefineGeometry(0, Urho3D::PrimitiveType::TRIANGLE_LIST, expectedVertices, false, true, false, false);
 
 	for (size_t i = 0; i < quads.size(); ++i) {
-		defineQuad(geom, quads[i], Urho3D::Color::WHITE);
+		fillQuad(geom, i, quads[i], Urho3D::Color::WHITE);
 	}
 }

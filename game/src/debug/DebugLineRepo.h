@@ -37,7 +37,8 @@ private:
 	DebugLineRepo() = default;
 	static void defineQuad(Urho3D::CustomGeometry* geom, const std::array<Urho3D::Vector3, 4>& corners,
 	                       const Urho3D::Color& color);
-	static void updateQuadColor(Urho3D::CustomGeometry* geom, size_t index, const Urho3D::Color& color);
+	static void fillQuad(Urho3D::CustomGeometry* geom, size_t index, const std::array<Urho3D::Vector3, 4>& corners,
+	                     const Urho3D::Color& color);
 	static std::vector<std::array<Urho3D::Vector3, 4>>& getQuadCords(unsigned short resolution);
 	static void ensureGridGeometry(Urho3D::CustomGeometry* geom, unsigned short resolution);
 	static std::array<Urho3D::CustomGeometry*, magic_enum::enum_count<DebugLineType>()> geometries;
