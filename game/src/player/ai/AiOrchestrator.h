@@ -65,11 +65,11 @@ private:
 	// WantList request building (brain outputs -> wants)
 	// One hop only: if the unit-like want cannot run because its producer is missing,
 	// request that producer building and let the AI re-issue the original want next tick.
-	void tryUnitWant(WantItemType type, float priority, short unitId, unsigned char count = 1);
+	void tryUnitWant(WantItemType type, float priority,unsigned short unitId, unsigned char count = 1);
 	bool hasOwnedBuildingInstance(unsigned short buildingId) const;
 	void submitBuildingRequest(float urgency, ParentBuildingType type);
 	void submitBuildingUpgradeRequest(float urgency, ParentBuildingType type);
-	DeployBuildingInfo findBuildingTypeToDeploy(short unitId) const;
+	DeployBuildingInfo findBuildingTypeToDeploy(unsigned short unitId) const;
 
 	// Army control (used by order())
 	static constexpr float COMMAND_PRIORITY_DECAY_MULTIPLIER = 0.9f;
