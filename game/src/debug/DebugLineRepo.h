@@ -30,7 +30,6 @@ public:
 	                     float maxValue);
 	static void drawQuads(DebugLineType type, unsigned short resolution, const float* values, float maxValue);
 	static void drawQuads(DebugLineType type, unsigned short resolution, const std::vector<Urho3D::Color>& colors);
-	static void drawQuad(DebugLineType type, unsigned short resolution, int index, const Urho3D::Color& color);
 
 	static void dispose();
 
@@ -38,7 +37,9 @@ private:
 	DebugLineRepo() = default;
 	static void defineQuad(Urho3D::CustomGeometry* geom, const std::array<Urho3D::Vector3, 4>& corners,
 	                       const Urho3D::Color& color);
+	static void updateQuadColor(Urho3D::CustomGeometry* geom, size_t index, const Urho3D::Color& color);
 	static std::vector<std::array<Urho3D::Vector3, 4>>& getQuadCords(unsigned short resolution);
+	static void ensureGridGeometry(Urho3D::CustomGeometry* geom, unsigned short resolution);
 	static std::array<Urho3D::CustomGeometry*, magic_enum::enum_count<DebugLineType>()> geometries;
 	static std::unordered_map<unsigned short, std::vector<std::array<Urho3D::Vector3, 4>>> quadCords;
 
