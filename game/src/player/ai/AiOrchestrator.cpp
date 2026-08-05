@@ -180,14 +180,7 @@ void AiOrchestrator::createResBuilding() {
 	}
 }
 
-//TODO AI two separete mechnism  that try to buildi lacking building
-void AiOrchestrator::createLackingUnitBuilding() {
-	if (lastLacking.lackingBuildingForUnit >= 0) {
-		wantList.addRequest(WantItemType::BUILDING, std::max(lastMasterOut.unitUrgency, 0.5f),
-		                    lastLacking.lackingBuildingForUnit);
-	}
-}
-
+// Missing-producer fallback: queue the building once, then retry the original want next tick.
 void AiOrchestrator::tryUnitWant(WantItemType type, float priority, unsigned short unitId, unsigned char count) {
 	// One hop only: if the desired thing cannot run because its producer is missing,
 	// request that producer building and let the AI re-issue the original want next tick.
@@ -260,12 +253,9 @@ void AiOrchestrator::action() {
 
 	createResBuilding();
 
-	createLackingUnitBuilding();
-
 	// 6. Execute WantList
 	wantExecutor.prepare(lastMasterOut);
 	lastLacking = wantList.execute(player->getResources()->getValues(), wantExecutor);
-	lastLacking.lackingBuildingForUnit = wantExecutor.getLackingBuilding();
 }
 
 //return first of its type

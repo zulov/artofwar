@@ -50,7 +50,6 @@ public:
 
 	void upgradeResBuilding();
 	void createResBuilding();
-	void createLackingUnitBuilding();
 	AiOrchestrator(const AiOrchestrator&) = delete;
 
 	void action();

@@ -31,12 +31,9 @@ public:
 	WantExecutor(Player* player, db_nation* nation, AiHistory* history);
 	WantExecutor(const WantExecutor&) = delete;
 
-	// Call once per tick before WantList::execute. Resets the lacking-building
-	// feedback and caches the master-brain output used for placement decisions.
+	// Call once per tick before WantList::execute. Caches the master-brain
+	// output used for placement decisions.
 	void prepare(const MasterOutput& masterOut);
-
-	// Building that was missing to produce/upgrade a wanted unit (-1 if none).
-	short getLackingBuilding() const { return pendingLackingBuilding; }
 
 	const db_with_cost* cost(const WantItem& item) const override;
 	void onNotEnoughResources(const WantItem& item) override;
@@ -53,7 +50,6 @@ private:
 	Building* pickDeployBuilding(db_unit* unit, CenterType center) const;
 	bool buildingProducesUnit(db_building* building, unsigned short unitId) const;
 	std::vector<Building*> getBuildingsCanDeploy(unsigned short unitId) const;
-	short findBuildingTypeToDeploy(short unitId) const;
 	std::optional<Urho3D::Vector2> findPosToBuild(db_building* building);
 
 	Player* player;
@@ -64,5 +60,4 @@ private:
 
 	BuildSpatialBrain buildSpatialBrain;
 	const MasterOutput* masterOut = nullptr;
-	short pendingLackingBuilding = -1;
 };

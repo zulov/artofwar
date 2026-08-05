@@ -48,7 +48,6 @@ WantExecutor::WantExecutor(Player* player, db_nation* nation, AiHistory* history
 
 void WantExecutor::prepare(const MasterOutput& masterOut) {
 	this->masterOut = &masterOut;
-	pendingLackingBuilding = -1;
 }
 
 bool WantExecutor::execute(WantItem& item) {
@@ -119,7 +118,6 @@ bool WantExecutor::executeUnit(short unitId) {
 		history->addAction(AiActionType::CREATE_UNIT, AiActionResult::SUCCESS);
 		return true;
 	}
-	pendingLackingBuilding = findBuildingTypeToDeploy(unitId);
 	history->addAction(AiActionType::CREATE_UNIT, AiActionResult::NO_BUILDING_TO_DEPLOY);
 	return false;
 }
@@ -158,8 +156,7 @@ bool WantExecutor::executeUnitUpgrade(short unitId) {
 		return true;
 	}
 
-	// No building available — signal to build one
-	pendingLackingBuilding = findBuildingTypeToDeploy(unitId);
+	// No building available this tick.
 	history->addAction(AiActionType::UPGRADE_UNIT, AiActionResult::NO_BUILDING_TO_DEPLOY);
 	return false;
 }
@@ -215,15 +212,6 @@ std::vector<Building*> WantExecutor::getBuildingsCanDeploy(unsigned short unitId
 		}
 	}
 	return allPossible;
-}
-
-short WantExecutor::findBuildingTypeToDeploy(short unitId) const {
-	for (const auto building : nation->buildings) {
-		if (building->canEverProduceUnit(player->getNation(), static_cast<unsigned short>(unitId))) {
-			return building->id;
-		}
-	}
-	return -1;
 }
 
 std::optional<Urho3D::Vector2> WantExecutor::findPosToBuild(db_building* building) {

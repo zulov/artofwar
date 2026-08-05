@@ -73,12 +73,10 @@ public:
 	struct LackingResult {
 		std::array<float, RESOURCES_SIZE> perResource;
 		float totalSum;
-		short lackingBuildingForUnit = -1;
 
 		void reset() {
 			perResource.fill(0.f);
 			totalSum = 0.f;
-			lackingBuildingForUnit = -1;
 		}
 	};
 
