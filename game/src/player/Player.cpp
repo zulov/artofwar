@@ -61,19 +61,19 @@ char Player::upgradeLevel(QueueActionType type, int id) const {
 
 unsigned char Player::getNation() const { return dbNation->id; }
 
-db_unit_level* Player::getLevelForUnit(unsigned short id) const {
+db_unit_level* Player::getUnitLevel(unsigned short id) const {
 	return Game::getDatabase()->getUnit(id)->getLevel(unitLevels[id]).value();
 }
 
-db_building_level* Player::getLevelForBuilding(unsigned short id) const {
+db_building_level* Player::getBuildingLevel(unsigned short id) const {
 	return Game::getDatabase()->getBuilding(id)->getLevel(buildingLevels[id]).value();
 }
 
-std::optional<db_unit_level*> Player::getNextLevelForUnit(unsigned short id) const {
+std::optional<db_unit_level*> Player::getNextUnitLevel(unsigned short id) const {
 	return Game::getDatabase()->getUnit(id)->getLevel(unitLevels[id] + 1);
 }
 
-std::optional<db_building_level*> Player::getNextLevelForBuilding(unsigned  short id) const {
+std::optional<db_building_level*> Player::getNextBuildingLevel(unsigned short id) const {
 	return Game::getDatabase()->getBuilding(id)->getLevel(buildingLevels[id] + 1);
 }
 

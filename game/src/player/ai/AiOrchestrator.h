@@ -47,6 +47,7 @@ public:
 	void upgradeUnits(const UnitOutput& unitOut);
 	void upgradeWorkers();
 	void upgradeUnitBuilding(const UnitOutput& unitOut);
+
 	void upgradeResBuilding();
 	void createResBuilding();
 	void createLackingUnitBuilding();
@@ -56,10 +57,6 @@ public:
 	void order();
 
 private:
-	struct DeployBuildingInfo {
-		short buildingId = -1;
-		bool hasOwnedBuilding = false;
-	};
 
 	// WantList request building (brain outputs -> wants)
 	// One hop only: if the unit-like want cannot run because its producer is missing,
@@ -68,7 +65,9 @@ private:
 	bool hasOwnedBuildingInstance(unsigned short buildingId) const;
 	void submitBuildingRequest(float urgency, ParentBuildingType type);
 	void submitBuildingUpgradeRequest(float urgency, ParentBuildingType type);
-	DeployBuildingInfo findBuildingTypeToDeploy(unsigned short unitId) const;
+	short findBuildingToBuild(unsigned short unitId) const;
+	bool hasAnyBuildingThatDeploy(unsigned short unitId) const;
+	void tryToUpgradeBuilding(unsigned short id, float priority);
 
 	// Army control (used by order())
 	static constexpr float COMMAND_PRIORITY_DECAY_MULTIPLIER = 0.9f;
@@ -93,7 +92,7 @@ private:
 
 	// Building resolution
 	db_building* resolveBuilding(ParentBuildingType type);
-	std::vector<db_building*> getBuildingsInType(ParentBuildingType type);
+	std::vector<db_building*> getPossibleBuildingsInType(ParentBuildingType type) const;
 
 	// Distance matching
 	float dist(std::valarray<float>& center, const db_basic_metric* metric);

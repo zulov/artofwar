@@ -13,7 +13,7 @@ float avgUnitLevel(const std::vector<db_unit*>& units, Player* player,
 		if (filter(unit) && !unit->levels.empty()) {
 			float maxLevel = static_cast<float>(unit->levels.size() - 1);
 			if (maxLevel > 0.f) {
-				sum += static_cast<float>(player->getLevelForUnit(unit->id)->level) / maxLevel;
+				sum += static_cast<float>(player->getUnitLevel(unit->id)->level) / maxLevel;
 				++count;
 			}
 		}
@@ -29,7 +29,7 @@ float avgBuildingLevel(const std::vector<db_building*>& buildings, Player* playe
 		if (building->parentType[static_cast<int>(type)] && !building->levels.empty()) {
 			float maxLevel = static_cast<float>(building->levels.size() - 1);
 			if (maxLevel > 0.f) {
-				sum += static_cast<float>(player->getLevelForBuilding(building->id)->level) / maxLevel;
+				sum += static_cast<float>(player->getBuildingLevel(building->id)->level) / maxLevel;
 				++count;
 			}
 		}
@@ -76,7 +76,7 @@ float avgTechLevel(const std::vector<db_unit*>& units, const std::vector<db_buil
 		if (!unit->levels.empty()) {
 			float maxLevel = static_cast<float>(unit->levels.size() - 1);
 			if (maxLevel > 0.f) {
-				sum += static_cast<float>(player->getLevelForUnit(unit->id)->level) / maxLevel;
+				sum += static_cast<float>(player->getUnitLevel(unit->id)->level) / maxLevel;
 				++count;
 			}
 		}
@@ -86,7 +86,7 @@ float avgTechLevel(const std::vector<db_unit*>& units, const std::vector<db_buil
 		if (!building->levels.empty()) {
 			float maxLevel = static_cast<float>(building->levels.size() - 1);
 			if (maxLevel > 0.f) {
-				sum += static_cast<float>(player->getLevelForBuilding(building->id)->level) / maxLevel;
+				sum += static_cast<float>(player->getBuildingLevel(building->id)->level) / maxLevel;
 				++count;
 			}
 		}

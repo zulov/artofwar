@@ -32,7 +32,6 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 	float deltaRes = norm(resSum - prevResSum, NormScale::RES);
 	float deltaGatherSpeed = norm(gatherSum - prevGatherSum, NormScale::GATHER_DELTA);
 
-	// Build input array
 	using I = MasterInputIdx;
 
 	auto* possession = player->getPossession();

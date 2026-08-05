@@ -102,7 +102,7 @@ void Building::action(BuildingActionType type, unsigned short id) {
 		break;
 	case BuildingActionType::UNIT_LEVEL: {
 		//TODO bug czy to dobre uzycie optionala
-		if (auto nextLevel = player->getNextLevelForUnit(id)) {
+		if (auto nextLevel = player->getNextUnitLevel(id)) {
 			if (resources->reduce(*nextLevel)) { queue.add(QueueActionType::UNIT_LEVEL, id, (*nextLevel)->id); }
 		}
 	}

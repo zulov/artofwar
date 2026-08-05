@@ -78,10 +78,10 @@ const db_with_cost* WantExecutor::cost(const WantItem& item) const {
 	case WantItemType::BUILDING:
 		return Game::getDatabase()->getBuilding(item.specificId);
 	case WantItemType::UNIT_UPGRADE:
-		if (auto nextLevel = player->getNextLevelForUnit(item.specificId)) { return *nextLevel; }
+		if (auto nextLevel = player->getNextUnitLevel(item.specificId)) { return *nextLevel; }
 		return nullptr;
 	case WantItemType::BUILDING_UPGRADE:
-		if (auto bNextLevel = player->getNextLevelForBuilding(item.specificId)) { return *bNextLevel; }
+		if (auto bNextLevel = player->getNextBuildingLevel(item.specificId)) { return *bNextLevel; }
 		return nullptr;
 	}
 	return nullptr;
@@ -143,7 +143,7 @@ bool WantExecutor::executeBuilding(short buildingId) {
 
 bool WantExecutor::executeUnitUpgrade(short unitId) {
 	if (unitId < 0) { return false; }
-	auto nextLevel = player->getNextLevelForUnit(unitId);
+	auto nextLevel = player->getNextUnitLevel(unitId);
 	if (!nextLevel.has_value()) {
 		history->addAction(AiActionType::UPGRADE_UNIT, AiActionResult::NO_UPGRADE_AVAILABLE);
 		return false;
@@ -166,7 +166,7 @@ bool WantExecutor::executeUnitUpgrade(short unitId) {
 
 bool WantExecutor::executeBuildingUpgrade(short buildingId) {
 	if (buildingId < 0) { return false; }
-	auto nextLevel = player->getNextLevelForBuilding(buildingId);
+	auto nextLevel = player->getNextBuildingLevel(buildingId);
 	if (!nextLevel.has_value()) {
 		history->addAction(AiActionType::UPGRADE_BUILDING, AiActionResult::NO_UPGRADE_AVAILABLE);
 		return false;
@@ -201,7 +201,7 @@ Building* WantExecutor::pickDeployBuilding(db_unit* unit, CenterType center) con
 }
 
 bool WantExecutor::buildingProducesUnit(db_building* building, unsigned short unitId) const {
-	const auto* unitIds = player->getLevelForBuilding(building->id)->unitsPerNationIds[player->getNation()];
+	const auto* unitIds = player->getBuildingLevel(building->id)->unitsPerNationIds[player->getNation()];
 	return std::ranges::find(*unitIds, unitId) != unitIds->end();
 }
 
@@ -229,7 +229,7 @@ short WantExecutor::findBuildingTypeToDeploy(short unitId) const {
 std::optional<Urho3D::Vector2> WantExecutor::findPosToBuild(db_building* building) {
 	// One brain places every building type; the placement class is derived from
 	// the building's DB data so it can aim each kind at a different area.
-	const auto* level = player->getLevelForBuilding(building->id);
+	const auto* level = player->getBuildingLevel(building->id);
 
 	auto spatialOut = buildSpatialBrain.decide(player, Game::getPlayersMan()->getEnemyFor(playerId),
 			masterOut->expandUrgency,

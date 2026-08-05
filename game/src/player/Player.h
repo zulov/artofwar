@@ -46,10 +46,10 @@ public:
 
 	QueueElement* updateQueue();
 	QueueManager& getQueue() { return queue; }
-	db_unit_level* getLevelForUnit(unsigned short id) const;
-	db_building_level* getLevelForBuilding(unsigned short id) const;
-	std::optional<db_unit_level*> getNextLevelForUnit(unsigned short id) const;
-	std::optional<db_building_level*> getNextLevelForBuilding(unsigned short id) const;
+	db_unit_level* getUnitLevel(unsigned short id) const;
+	db_building_level* getBuildingLevel(unsigned short id) const;
+	std::optional<db_unit_level*> getNextUnitLevel(unsigned short id) const;
+	std::optional<db_building_level*> getNextBuildingLevel(unsigned short id) const;
 	void addKilled(Physical* physical) const;
 	void resetScore();
 

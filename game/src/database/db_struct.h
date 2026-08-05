@@ -307,7 +307,7 @@ struct db_unit : db_with_icon, db_with_cost {
 		  typeHeavy(asBool(s, C::type_heavy)),
 		  typeLight(asBool(s, C::type_light)) {}
 
-	std::optional<db_unit_level*> getLevel(char level) {
+	std::optional<db_unit_level*> getLevel(unsigned char level) {
 		if (levels.size() > level) {
 			return levels.at(level);
 		}
@@ -397,7 +397,7 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 		parentType[castC(ParentBuildingType::UNITS)] = typeUnitBarracks || typeUnitRange || typeUnitCavalry;
 	}
 
-	std::optional<db_building_level*> getLevel(short level) {
+	std::optional<db_building_level*> getLevel(unsigned short level) {
 		if (levels.size() > level) {
 			return levels.at(level);
 		}

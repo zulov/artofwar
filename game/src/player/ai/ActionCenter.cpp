@@ -49,7 +49,7 @@ void ActionCenter::createAndUpgrade() {
 }
 
 bool ActionCenter::addUnits(unsigned number, short id, Urho3D::Vector2 position, char player) {
-	auto level = Game::getPlayersMan()->getPlayer(player)->getLevelForUnit(id)->level;
+	auto level = Game::getPlayersMan()->getPlayer(player)->getUnitLevel(id)->level;
 	return addUnits(number, id, position, player, level);
 }
 
@@ -63,7 +63,7 @@ bool ActionCenter::addUnits(unsigned number, short id, Urho3D::Vector2& position
 }
 
 bool ActionCenter::addBuilding(short id, Urho3D::Vector2& position, char player, bool force) {
-	auto level = Game::getPlayersMan()->getPlayer(player)->getLevelForBuilding(id)->level;
+	auto level = Game::getPlayersMan()->getPlayer(player)->getBuildingLevel(id)->level;
 	return addBuilding(id, position, player, level, force);
 }
 

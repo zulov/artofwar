@@ -171,7 +171,7 @@ void MenuPanel::levelBuilding() {
 	std::vector<db_building_level*> levels;
 	const auto player = Game::getPlayersMan()->getActivePlayer();
 	for (const auto building : Game::getDatabase()->getNation(nation)->buildings) {
-		auto opt = player->getNextLevelForBuilding(building->id);
+		auto opt = player->getNextBuildingLevel(building->id);
 		if (opt.has_value()) {
 			levels.push_back(opt.value());
 		}
@@ -194,7 +194,7 @@ std::vector<unsigned char> MenuPanel::getUnitInBuilding(SelectedInfo* selectedIn
 	std::vector<std::vector<unsigned char>*> ids;
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
-			ids.push_back(Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(i)->unitsPerNationIds[nation]);
+			ids.push_back(Game::getPlayersMan()->getActivePlayer()->getBuildingLevel(i)->unitsPerNationIds[nation]);
 		}
 	}
 	return intersection(ids);
@@ -215,7 +215,7 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 	std::vector<db_unit_level*> levels;
 	for (auto id : getUnitInBuilding(selectedInfo)) {
-		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextLevelForUnit(id);
+		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextUnitLevel(id);
 		if (opt.has_value()) {
 			levels.push_back(opt.value());
 		}

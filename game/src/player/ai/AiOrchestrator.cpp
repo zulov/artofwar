@@ -115,23 +115,16 @@ void AiOrchestrator::upgradeUnits(const UnitOutput& unitOut) {
 
 void AiOrchestrator::upgradeWorkers() {
 	if (lastEconOut.workerUpgradeUrgency > 0.1f) {
-		if (auto* workerToUpgrade = resolveWorkerUpgrade()) {
-			tryUnitWant(WantItemType::UNIT_UPGRADE, lastEconOut.workerUpgradeUrgency, workerToUpgrade->id);
+		if (auto* found = resolveWorkerUpgrade()) {
+			tryUnitWant(WantItemType::UNIT_UPGRADE, lastEconOut.workerUpgradeUrgency, found->id);
 		}
 	}
 }
 
 void AiOrchestrator::upgradeUnitBuilding(const UnitOutput& unitOut) {
 	if (unitOut.buildingUpgradeUrgency > 0.1f) {
-		if (auto* buildingToUpgrade = resolveBuildingUpgrade(unitOut)) {
-			if (hasOwnedBuildingInstance(buildingToUpgrade->id)) {
-				if (player->getNextLevelForBuilding(buildingToUpgrade->id).has_value()) {
-					wantList.addRequest(WantItemType::BUILDING_UPGRADE, unitOut.buildingUpgradeUrgency,
-					                    buildingToUpgrade->id);
-				}
-			} else {
-				wantList.addRequest(WantItemType::BUILDING, unitOut.buildingUpgradeUrgency, buildingToUpgrade->id);
-			}
+		if (auto* found = resolveBuildingUpgrade(unitOut)) {
+			tryToUpgradeBuilding(found->id, unitOut.buildingUpgradeUrgency);
 		}
 	}
 }
@@ -139,16 +132,23 @@ void AiOrchestrator::upgradeUnitBuilding(const UnitOutput& unitOut) {
 void AiOrchestrator::upgradeResBuilding() {
 	if (lastEconOut.resBuildingUpgradeUrgency > 0.1f) {
 		if (auto* found = resolveResBuildingUpgrade(lastEconOut)) {
-			if (hasOwnedBuildingInstance(found->id)) {
-				if (player->getNextLevelForBuilding(found->id).has_value()) {
-					wantList.addRequest(WantItemType::BUILDING_UPGRADE, lastEconOut.resBuildingUpgradeUrgency,
-					                    found->id);
-				}
-			} else { wantList.addRequest(WantItemType::BUILDING, lastEconOut.resBuildingUpgradeUrgency, found->id); }
+			tryToUpgradeBuilding(found->id, lastEconOut.resBuildingUpgradeUrgency);
 		}
 	}
 }
 
+void AiOrchestrator::tryToUpgradeBuilding(unsigned short id, float priority) {
+	if (hasOwnedBuildingInstance(id)) {
+		if (player->getNextBuildingLevel(id).has_value()) {
+			wantList.addRequest(WantItemType::BUILDING_UPGRADE, priority, id);
+		}
+	} else {
+		wantList.addRequest(WantItemType::BUILDING, priority, id);
+	}
+}
+
+//TODO AI name functions that determine resource type eg. isResBonus isFoodStarage and use it where posible put it in db_building and db_building_level
+//TODO AI better scoring if in more than ona category how to sum it
 void AiOrchestrator::createResBuilding() {
 	struct Candidate {
 		float need;
@@ -156,8 +156,8 @@ void AiOrchestrator::createResBuilding() {
 	};
 	std::vector<Candidate> candidates;
 
-	for (const auto b : getBuildingsInType(ParentBuildingType::RESOURCE)) {
-		auto* l = player->getLevelForBuilding(b->id);
+	for (const auto b : getPossibleBuildingsInType(ParentBuildingType::RESOURCE)) {
+		auto* l = player->getBuildingLevel(b->id);
 		float need = 0.f;
 		if (isResBonus(b, l, ResourceType::FOOD)) { need = std::max(need, lastEconOut.needBonusFood); }
 		if (isResBonus(b, l, ResourceType::WOOD)) { need = std::max(need, lastEconOut.needBonusWood); }
@@ -169,7 +169,7 @@ void AiOrchestrator::createResBuilding() {
 		if (l->goldStorage > 0) { need = std::max(need, lastEconOut.needGoldStorage); }
 		if (l->stoneRefineCapacity > 0.f) { need = std::max(need, lastEconOut.needStoneRefine); }
 		if (l->goldRefineCapacity > 0.f) { need = std::max(need, lastEconOut.needGoldRefine); }
-		if (need > 0.1f) { candidates.push_back({need, b->id}); }
+		if (need > 0.1f) { candidates.push_back({.need = need, .id = b->id}); }
 	}
 
 	const size_t keep = std::min<size_t>(candidates.size(), MAX_RES_BUILDING_REQUESTS);
@@ -180,6 +180,7 @@ void AiOrchestrator::createResBuilding() {
 	}
 }
 
+//TODO AI two separete mechnism  that try to buildi lacking building
 void AiOrchestrator::createLackingUnitBuilding() {
 	if (lastLacking.lackingBuildingForUnit >= 0) {
 		wantList.addRequest(WantItemType::BUILDING, std::max(lastMasterOut.unitUrgency, 0.5f),
@@ -193,14 +194,13 @@ void AiOrchestrator::tryUnitWant(WantItemType type, float priority, unsigned sho
 	// TODO: if the producer exists but still needs an upgrade, route that upgrade too.
 	assert(type != WantItemType::BUILDING);
 
-	const auto deployInfo = findBuildingTypeToDeploy(unitId);
-	if (deployInfo.hasOwnedBuilding) {
+	if (hasAnyBuildingThatDeploy(unitId)) {
 		wantList.addRequest(type, priority, unitId, count);
 		return;
 	}
-
-	if (!deployInfo.hasOwnedBuilding && deployInfo.buildingId >= 0) {
-		wantList.addRequest(WantItemType::BUILDING, priority, deployInfo.buildingId);
+	const auto buildingId = findBuildingToBuild(unitId);
+	if (buildingId >= 0) {
+		wantList.addRequest(WantItemType::BUILDING, priority, buildingId);
 	}
 }
 
@@ -211,8 +211,7 @@ bool AiOrchestrator::hasOwnedBuildingInstance(unsigned short buildingId) const {
 void AiOrchestrator::action() {
 	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
 
-	lastMasterOut = masterBrain.decide(player, enemy,
-	                                   lastLacking.totalSum, history);
+	lastMasterOut = masterBrain.decide(player, enemy, lastLacking.totalSum, history);
 
 	float gameTime = norm(Game::getFrameInfo()->getSeconds(), NormScale::GAME_TIME_SHORT);
 	lastEconOut = economyBrain.decide(player, enemy,
@@ -282,7 +281,7 @@ void AiOrchestrator::submitBuildingUpgradeRequest(float urgency, ParentBuildingT
 	if (urgency <= 0.1f) { return; }
 	for (auto* building : nation->buildings) {
 		if (building->parentType[static_cast<int>(type)]
-			&& player->getNextLevelForBuilding(building->id).has_value()) {
+			&& player->getNextBuildingLevel(building->id).has_value()) {
 			wantList.addRequest(WantItemType::BUILDING_UPGRADE, urgency, building->id);
 		}
 	}
@@ -428,7 +427,7 @@ db_unit* AiOrchestrator::resolveUnitUpgrade(const UnitOutput& unitOutput) {
 	std::vector<db_unit*> candidates;
 	candidates.reserve(units.size());
 	for (auto unit : units) {
-		if (!unit->typeWorker && player->getNextLevelForUnit(unit->id).has_value()) { candidates.push_back(unit); }
+		if (!unit->typeWorker && player->getNextUnitLevel(unit->id).has_value()) { candidates.push_back(unit); }
 	}
 	if (candidates.empty()) { return nullptr; }
 
@@ -441,7 +440,7 @@ std::vector<float> AiOrchestrator::unitsProfileMatch(const UnitOutput& unitOutpu
                                                      const std::vector<db_unit*>& candidates) {
 	std::valarray center(unitOutput.unitProfile.data(), unitOutput.unitProfile.size());
 	return scoreCandidates(candidates, [this, &center](db_unit* unit) {
-		return dist(center, player->getLevelForUnit(unit->id)->dbUnitMetric);
+		return dist(center, player->getUnitLevel(unit->id)->dbUnitMetric);
 	});
 }
 
@@ -451,7 +450,7 @@ db_building* AiOrchestrator::resolveBuildingUpgrade(const UnitOutput& unitOutput
 	candidates.reserve(buildings.size());
 	for (auto building : buildings) {
 		if (building->parentType[static_cast<int>(ParentBuildingType::UNITS)]
-			&& player->getNextLevelForBuilding(building->id).has_value()) { candidates.push_back(building); }
+			&& player->getNextBuildingLevel(building->id).has_value()) { candidates.push_back(building); }
 	}
 	if (candidates.empty()) { return nullptr; }
 
@@ -460,12 +459,12 @@ db_building* AiOrchestrator::resolveBuildingUpgrade(const UnitOutput& unitOutput
 	std::valarray<float> center(unitOutput.unitProfile.data(), unitOutput.unitProfile.size());
 	auto diffs = scoreCandidates(candidates, [this, &center](db_building* building) {
 		// Average distance across all units this building can produce
-		auto* level = player->getLevelForBuilding(building->id);
+		auto* level = player->getBuildingLevel(building->id);
 		float totalDist = 0.f;
 		int unitCount = 0;
 		for (auto* unit : level->allUnits) {
 			if (!unit->typeWorker) {
-				totalDist += dist(center, player->getLevelForUnit(unit->id)->dbUnitMetric);
+				totalDist += dist(center, player->getUnitLevel(unit->id)->dbUnitMetric);
 				++unitCount;
 			}
 		}
@@ -476,7 +475,7 @@ db_building* AiOrchestrator::resolveBuildingUpgrade(const UnitOutput& unitOutput
 }
 
 db_unit* AiOrchestrator::resolveWorkerUpgrade() {
-	for (auto* worker : nation->workers) { if (player->getNextLevelForUnit(worker->id).has_value()) { return worker; } }
+	for (auto* worker : nation->workers) { if (player->getNextUnitLevel(worker->id).has_value()) { return worker; } }
 	return nullptr;
 }
 
@@ -489,7 +488,7 @@ db_building* AiOrchestrator::resolveResBuildingUpgrade(const EconomyOutput& econ
 	candidates.reserve(buildings.size());
 	for (auto* building : buildings) {
 		if (building->parentType[static_cast<int>(ParentBuildingType::RESOURCE)]
-			&& player->getNextLevelForBuilding(building->id).has_value()) { candidates.push_back(building); }
+			&& player->getNextBuildingLevel(building->id).has_value()) { candidates.push_back(building); }
 	}
 	if (candidates.empty()) { return nullptr; }
 	if (candidates.size() == 1) { return candidates[0]; }
@@ -497,7 +496,7 @@ db_building* AiOrchestrator::resolveResBuildingUpgrade(const EconomyOutput& econ
 	// Weight by resource type priority + subtype need signals
 	auto weights = scoreCandidates(candidates, [this, &econOutput](db_building* building) {
 		float weight = 0.1f; // base weight
-		auto* level = player->getLevelForBuilding(building->id);
+		auto* level = player->getBuildingLevel(building->id);
 
 		// Resource type priority
 		if (building->typeResourceFood) {
@@ -554,38 +553,29 @@ db_building* AiOrchestrator::resolveResBuildingUpgrade(const EconomyOutput& econ
 	for (float w : weights) { totalWeight += w; }
 	return candidates[sampleWeighted(weights, totalWeight)];
 }
-AiOrchestrator::DeployBuildingInfo AiOrchestrator::findBuildingTypeToDeploy(unsigned short unitId) const {
-	DeployBuildingInfo result{};
-
-	short ownedBuildingId = -1;
-	for (const auto building : possession->getBuildings()) {
-		if (!building->getDb()->canEverProduceUnit(player->getNation(), unitId)) { continue; }
-		result.hasOwnedBuilding = true;
-		if (ownedBuildingId < 0) { ownedBuildingId = building->getDbId(); }
-		if (building->isReady()) {
-			result.buildingId = building->getDbId();
-			return result;
-		}
-	}
-
-	if (ownedBuildingId >= 0) {
-		result.buildingId = ownedBuildingId;
-		return result;
-	}
-
+short AiOrchestrator::findBuildingToBuild(unsigned short unitId) const {
+	//std::vector <canditeds>//TODO potencjalnie moze byc wiecej niz jeden
 	for (const auto building : nation->buildings) {
 		if (building->canEverProduceUnit(player->getNation(), unitId)) {
-			result.buildingId = building->id;
-			return result;
+			return building->id;
 		}
 	}
-	return result;
+	return false;
+}
+
+bool AiOrchestrator::hasAnyBuildingThatDeploy(unsigned short unitId) const {
+	for (const auto building : possession->getBuildings()) {
+		if (building->getDb()->canEverProduceUnit(player->getNation(), unitId)) {
+			return true;
+		}
+	}
+	return false;
 }
 
 // --- Building resolution ---
 
 db_building* AiOrchestrator::resolveBuilding(ParentBuildingType type) {
-	const auto buildings = getBuildingsInType(type);
+	const auto buildings = getPossibleBuildingsInType(type);
 	if (buildings.empty()) { return nullptr; }
 	if (buildings.size() == 1) { return buildings.at(0); }
 
@@ -593,7 +583,7 @@ db_building* AiOrchestrator::resolveBuilding(ParentBuildingType type) {
 	return buildings.at(0);
 }
 
-std::vector<db_building*> AiOrchestrator::getBuildingsInType(ParentBuildingType type) {
+std::vector<db_building*> AiOrchestrator::getPossibleBuildingsInType(ParentBuildingType type) const {
 	std::vector<db_building*> buildings;
 	buildings.reserve(nation->buildings.size());
 	for (auto dbBuilding : nation->buildings) {
