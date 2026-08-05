@@ -36,6 +36,10 @@ public:
 
 	unsigned int getArraySize() const { return arraySize; }
 	bool isKernelDirty() const { return valuesCalculateNeeded; }
+	void forceFullKernelRebuild() {
+		fullKernelRebuildNeeded = true;
+		valuesCalculateNeeded = true;
+	}
 };
 
 class CumulateErrorsFixture : public ::testing::Test {
@@ -536,6 +540,73 @@ TEST(InfluenceMapRegression, BufferedHistoryResetAddsPendingOnTopOfDecayedRaw) {
 
 	EXPECT_FLOAT_EQ(map.getRaw(0), 8.f);
 	EXPECT_FLOAT_EQ(map.getKernel(0), 8.f);
+}
+
+TEST(InfluenceMapRegression, SparseRebuildPreservesOverlappingKernelValues) {
+	GridCalculator calculator(8, 16.f);
+	TestableInfluenceMap map(&calculator);
+	TestableInfluenceMap expected(&calculator);
+
+	map.update(27, 2.f);
+	map.update(36, 3.f);
+	map.getKernel(0);
+	expected.update(27, 2.f);
+	expected.update(36, 3.f);
+	expected.getKernel(0);
+
+	map.update(27, -1.f);
+	expected.update(27, -1.f);
+	expected.forceFullKernelRebuild();
+	for (unsigned index = 0; index < 64; ++index) {
+		EXPECT_NEAR(map.getKernel(index), expected.getKernel(index), 1e-5f) << "cell " << index;
+	}
+}
+
+TEST(InfluenceMapRegression, SparseRebuildAggregatesRepeatedUpdatesAndHandlesEdgeSource) {
+	GridCalculator calculator(8, 16.f);
+	TestableInfluenceMap map(&calculator);
+	TestableInfluenceMap expected(&calculator);
+
+	map.update(0, 1.f);
+	map.update(0, 2.f);
+	map.getKernel(0);
+	expected.update(0, 3.f);
+	expected.getKernel(0);
+
+	map.update(0, -1.f);
+	expected.update(0, -1.f);
+	expected.forceFullKernelRebuild();
+	for (unsigned index = 0; index < 64; ++index) {
+		EXPECT_NEAR(map.getKernel(index), expected.getKernel(index), 1e-5f) << "cell " << index;
+	}
+}
+
+TEST(InfluenceMapRegression, SparseRebuildHandlesSourceReturningToZero) {
+	GridCalculator calculator(8, 16.f);
+	InfluenceMap map(&calculator, 0.f);
+
+	map.update(27, 4.f);
+	map.getKernel(0);
+	map.update(27, -4.f);
+
+	for (unsigned index = 0; index < 64; ++index) {
+		EXPECT_FLOAT_EQ(map.getKernel(index), 0.f) << "cell " << index;
+	}
+}
+
+TEST(InfluenceMapRegression, ChangedIndexLimitFallsBackToFullKernelRebuild) {
+	GridCalculator calculator(11, 22.f);
+	TestableInfluenceMap map(&calculator);
+	TestableInfluenceMap expected(&calculator);
+
+	for (unsigned index = 0; index < 101; ++index) {
+		map.update(index, static_cast<float>(index + 1));
+		expected.update(index, static_cast<float>(index + 1));
+	}
+	expected.forceFullKernelRebuild();
+	for (unsigned index = 0; index < 121; ++index) {
+		EXPECT_NEAR(map.getKernel(index), expected.getKernel(index), 1e-5f) << "cell " << index;
+	}
 }
 
 TEST(InfluenceMapRegression, BufferedHistoryWritesDoNotChangeVisibleRawStateBeforeReset) {

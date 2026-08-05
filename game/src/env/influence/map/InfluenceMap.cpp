@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cstddef>
 #include <ranges>
 #include <numeric>
 
@@ -14,6 +15,7 @@ namespace {
 	constexpr float KERNEL_COEF = 0.5f;
 	constexpr float HISTORY_MINIMAL_THRESHOLD = 0.0001f;
 	constexpr float HISTORY_VANISH_COEF = 0.5f;
+	constexpr std::size_t MAX_CHANGED_INDEXES = 100;
 }
 
 InfluenceMap::InfluenceMap(GridCalculator* calculator, float valueThresholdDebug, bool history)
@@ -27,6 +29,7 @@ InfluenceMap::InfluenceMap(GridCalculator* calculator, float valueThresholdDebug
 	kernelValues = new float[arraySize];
 	std::fill_n(rawValues, arraySize, 0.f);
 	std::fill_n(kernelValues, arraySize, 0.f);
+	changedIndexes.reserve(MAX_CHANGED_INDEXES);
 
 	centerDirty = true;
 	if (history) {
@@ -49,6 +52,7 @@ void InfluenceMap::update(unsigned index, float value) {
 		pendingValues[index] += value;
 		return;
 	}
+	trackChangedIndex(index);
 	rawValues[index] += value;
 	invalidateCaches();
 }
@@ -67,6 +71,8 @@ void InfluenceMap::reset() {
 			*raw = *raw * vanishCoef + *pending;
 			*pending = 0.f;
 		}
+		changedIndexes.clear();
+		fullKernelRebuildNeeded = true;
 		invalidateCaches();
 		return;
 	}
@@ -75,6 +81,8 @@ void InfluenceMap::reset() {
 		for (auto i = rawValues; i < end; ++i) {
 			*i *= vanishCoef;
 		}
+		changedIndexes.clear();
+		fullKernelRebuildNeeded = true;
 		invalidateCaches();
 		return;
 	}
@@ -83,6 +91,8 @@ void InfluenceMap::reset() {
 		std::fill_n(pendingValues, arraySize, 0.f);
 	}
 	std::fill_n(kernelValues, arraySize, 0.f);
+	changedIndexes.clear();
+	fullKernelRebuildNeeded = false;
 	valuesCalculateNeeded = false;
 	center.reset();
 	centerDirty = false;
@@ -95,7 +105,25 @@ void InfluenceMap::resetToZero() {
 	for (auto i = rawValues; i < end; ++i) {
 		*i = *i >= minimalThreshold ? *i : 0.f;
 	}
+	changedIndexes.clear();
+	fullKernelRebuildNeeded = true;
 	invalidateCaches();
+}
+
+void InfluenceMap::trackChangedIndex(unsigned index) {
+	if (fullKernelRebuildNeeded) {
+		return;
+	}
+	const auto changed = std::find_if(changedIndexes.begin(), changedIndexes.end(), [index](const ChangedIndex& item) {
+		return item.index == index;
+	});
+	if (changed != changedIndexes.end()) {
+		return;
+	}
+	changedIndexes.push_back({index, rawValues[index]});
+	if (changedIndexes.size() >= MAX_CHANGED_INDEXES) {
+		fullKernelRebuildNeeded = true;
+	}
 }
 
 void InfluenceMap::invalidateCaches() {
@@ -216,28 +244,39 @@ void InfluenceMap::initializeQuad() const {
 	assert(!quadLayers.empty());
 }
 
-void InfluenceMap::rebuildKernel() const {
-	std::fill_n(kernelValues, arraySize, 0.f);
-	for (unsigned i = 0; i < arraySize; ++i) {
-		const auto value = rawValues[i];
-		if (value == 0.f) {
-			continue;
-		}
-		auto [centerX, centerZ] = calculator->getCords(i);
-		const auto minI = calculator->getValidLow(centerX - INF_LEVEL);
-		const auto maxI = calculator->getValidHigh(centerX + INF_LEVEL);
-		const auto minJ = calculator->getValidLow(centerZ - INF_LEVEL);
-		const auto maxJ = calculator->getValidHigh(centerZ + INF_LEVEL);
-		const auto jStart = (minJ - centerZ + INF_LEVEL);
-		for (auto x = minI; x <= maxI; ++x) {
-			auto* t = &kernelValues[calculator->getNotSafeIndex(x, minJ)];
-			auto idx = (x - centerX + INF_LEVEL) * (INF_LEVEL * 2 + 1) + jStart;
-			auto ptr = templateV + idx;
-			for (short y = minJ; y <= maxJ; ++y) {
-				*(t++) += value * *(ptr++);
-			}
+void InfluenceMap::applyKernel(unsigned index, float value) const {
+	if (value == 0.f) {
+		return;
+	}
+	auto [centerX, centerZ] = calculator->getCords(index);
+	const auto minI = calculator->getValidLow(centerX - INF_LEVEL);
+	const auto maxI = calculator->getValidHigh(centerX + INF_LEVEL);
+	const auto minJ = calculator->getValidLow(centerZ - INF_LEVEL);
+	const auto maxJ = calculator->getValidHigh(centerZ + INF_LEVEL);
+	const auto jStart = (minJ - centerZ + INF_LEVEL);
+	for (auto x = minI; x <= maxI; ++x) {
+		auto* t = &kernelValues[calculator->getNotSafeIndex(x, minJ)];
+		auto idx = (x - centerX + INF_LEVEL) * (INF_LEVEL * 2 + 1) + jStart;
+		auto ptr = templateV + idx;
+		for (short y = minJ; y <= maxJ; ++y) {
+			*(t++) += value * *(ptr++);
 		}
 	}
+}
+
+void InfluenceMap::rebuildKernel() const {
+	if (fullKernelRebuildNeeded) {
+		std::fill_n(kernelValues, arraySize, 0.f);
+		for (unsigned i = 0; i < arraySize; ++i) {
+			applyKernel(i, rawValues[i]);
+		}
+	} else {
+		for (const auto& changed : changedIndexes) {
+			applyKernel(changed.index, rawValues[changed.index] - changed.oldValue);
+		}
+	}
+	changedIndexes.clear();
+	fullKernelRebuildNeeded = false;
 	valuesCalculateNeeded = false;
 }
 

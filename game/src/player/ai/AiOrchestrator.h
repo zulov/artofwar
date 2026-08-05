@@ -4,7 +4,6 @@
 #include <optional>
 #include <span>
 #include <utility>
-#include <valarray>
 #include <vector>
 
 #include "WantList.h"
@@ -28,8 +27,6 @@ struct db_unit;
 struct db_unit_level;
 struct db_building;
 struct db_building_level;
-struct db_building_metric;
-struct db_basic_metric;
 struct db_with_cost;
 
 namespace Urho3D {
@@ -43,10 +40,10 @@ class AiOrchestrator {
 public:
 	explicit AiOrchestrator(Player* player, db_nation* nation, AiHistory* history);
 	void createWorkers();
-	void createUnits(const UnitOutput& unitOut);
-	void upgradeUnits(const UnitOutput& unitOut);
+	void createUnits(const UnitOutput& unitOut, std::span<const float> unitProfileDiffs);
+	void upgradeUnits(const UnitOutput& unitOut, std::span<const float> unitProfileDiffs);
 	void upgradeWorkers();
-	void upgradeUnitBuilding(const UnitOutput& unitOut);
+	void upgradeUnitBuilding(const UnitOutput& unitOut, std::span<const float> unitProfileDiffs);
 
 	void upgradeResBuilding();
 	void createResBuilding();
@@ -81,10 +78,10 @@ private:
 	bool tryIssueNearbyAttack(Unit* unit, float priority, MilitaryCenterIdx center) const;
 
 	// Unit resolution
-	std::vector<db_unit*> resolveUnit(const UnitOutput& unitOutput);
-	std::vector<float> unitsProfileMatch(const UnitOutput& unitOutput, const std::vector<db_unit*>& candidates);
-	db_unit* resolveUnitUpgrade(const UnitOutput& unitOutput);
-	db_building* resolveBuildingUpgrade(const UnitOutput& unitOutput);
+	std::vector<float> calculateUnitProfileDiffs(std::span<const float> unitProfile) const;
+	std::vector<db_unit*> resolveUnit(const UnitOutput& unitOutput, std::span<const float> unitProfileDiffs);
+	db_unit* resolveUnitUpgrade(std::span<const float> unitProfileDiffs);
+	db_building* resolveBuildingUpgrade(std::span<const float> unitProfileDiffs);
 	db_unit* resolveWorkerUpgrade();
 	short resolveWorkerId() const;
 	db_building* resolveResBuildingUpgrade(const EconomyOutput& econOutput) const;
@@ -92,10 +89,6 @@ private:
 	// Building resolution
 	db_building* resolveBuilding(ParentBuildingType type);
 	std::vector<db_building*> getPossibleBuildingsInType(ParentBuildingType type) const;
-
-	// Distance matching
-	float dist(std::valarray<float>& center, const db_basic_metric* metric);
-	float dist(std::valarray<float>& center, const db_building_metric* metric, ParentBuildingType type);
 
 	// Worker collection
 	void manageWorkers();

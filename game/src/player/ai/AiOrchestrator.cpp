@@ -7,6 +7,7 @@
 #include <optional>
 #include <ranges>
 #include <utility>
+#include <valarray>
 #include "AiHistory.h"
 #include "AiUtils.h"
 #include "NormScale.h"
@@ -97,17 +98,17 @@ void AiOrchestrator::createWorkers() {
 	}
 }
 
-void AiOrchestrator::createUnits(const UnitOutput& unitOut) {
+void AiOrchestrator::createUnits(const UnitOutput& unitOut, std::span<const float> unitProfileDiffs) {
 	if (unitOut.count > 0) {
-		for (auto* unit : resolveUnit(unitOut)) {
+		for (auto* unit : resolveUnit(unitOut, unitProfileDiffs)) {
 			tryUnitWant(WantItemType::UNIT, lastMasterOut.unitUrgency, unit->id, unitOut.count);
 		}
 	}
 }
 
-void AiOrchestrator::upgradeUnits(const UnitOutput& unitOut) {
+void AiOrchestrator::upgradeUnits(const UnitOutput& unitOut, std::span<const float> unitProfileDiffs) {
 	if (unitOut.unitUpgradeUrgency > 0.1f) {
-		if (auto* unitToUpgrade = resolveUnitUpgrade(unitOut)) {
+		if (auto* unitToUpgrade = resolveUnitUpgrade(unitProfileDiffs)) {
 			tryUnitWant(WantItemType::UNIT_UPGRADE, unitOut.unitUpgradeUrgency, unitToUpgrade->id);
 		}
 	}
@@ -121,9 +122,9 @@ void AiOrchestrator::upgradeWorkers() {
 	}
 }
 
-void AiOrchestrator::upgradeUnitBuilding(const UnitOutput& unitOut) {
+void AiOrchestrator::upgradeUnitBuilding(const UnitOutput& unitOut, std::span<const float> unitProfileDiffs) {
 	if (unitOut.buildingUpgradeUrgency > 0.1f) {
-		if (auto* found = resolveBuildingUpgrade(unitOut)) {
+		if (auto* found = resolveBuildingUpgrade(unitProfileDiffs)) {
 			tryToUpgradeBuilding(found->id, unitOut.buildingUpgradeUrgency);
 		}
 	}
@@ -223,6 +224,7 @@ void AiOrchestrator::action() {
 			lastMasterOut.unitUrgency, lastMasterOut.attackUrgency,
 			lastMilOut.preferInfantry, lastMilOut.preferRange, lastMilOut.preferCavalry,
 			lastMasterOut.techUrgency, gameTime);
+	const auto unitProfileDiffs = calculateUnitProfileDiffs(unitOut.unitProfile);
 
 	// 5. Submit requests to WantList
 	wantList.resetRequests();
@@ -230,11 +232,11 @@ void AiOrchestrator::action() {
 	createWorkers();
 	upgradeWorkers();
 
-	createUnits(unitOut);
-	upgradeUnits(unitOut);
+	createUnits(unitOut, unitProfileDiffs);
+	upgradeUnits(unitOut, unitProfileDiffs);
 
 	// Unit-producing building upgrade request (barracks, archery range, stable)
-	upgradeUnitBuilding(unitOut);
+	upgradeUnitBuilding(unitOut, unitProfileDiffs);
 
 	// Resource building upgrade request (farms, mills, mines, refineries, etc.)
 	upgradeResBuilding();
@@ -397,14 +399,29 @@ bool AiOrchestrator::tryIssueNearbyAttack(Unit* unit, float priority, MilitaryCe
 // unit (no building), it could try the fallback before giving up. This avoids wasting a
 // tick when the ideal unit is unbuildable but a similar one is available.
 
-std::vector<db_unit*> AiOrchestrator::resolveUnit(const UnitOutput& unitOutput) {
+std::vector<float> AiOrchestrator::calculateUnitProfileDiffs(std::span<const float> unitProfile) const {
+	std::valarray center(unitProfile.data(), unitProfile.size());
+	std::vector<float> diffs(Game::getDatabase()->getUnits().size(), std::numeric_limits<float>::max());
+
+	for (auto* unit : Game::getDatabase()->getUnits()) {
+		if (unit) {
+			diffs[unit->id] = sumSquaredError(center, player->getUnitLevel(unit->id)->dbUnitMetric->getValuesNormAsVal());
+		}
+	}
+	return diffs;
+}
+
+std::vector<db_unit*> AiOrchestrator::resolveUnit(const UnitOutput& unitOutput,
+                                                  std::span<const float> unitProfileDiffs) {
 	auto& units = nation->units;
 	std::vector<db_unit*> candidates;
 	candidates.reserve(units.size());
 	for (auto unit : units) { if (!unit->typeWorker) { candidates.push_back(unit); } }
 	if (candidates.empty()) { return {}; }
 
-	std::vector<float> diffs = unitsProfileMatch(unitOutput, candidates);
+	const auto diffs = scoreCandidates(candidates, [&unitProfileDiffs](db_unit* unit) {
+		return unitProfileDiffs[unit->id];
+	});
 
 	std::vector<db_unit*> result;
 	result.reserve(unitOutput.count);
@@ -412,7 +429,7 @@ std::vector<db_unit*> AiOrchestrator::resolveUnit(const UnitOutput& unitOutput) 
 	return result;
 }
 
-db_unit* AiOrchestrator::resolveUnitUpgrade(const UnitOutput& unitOutput) {
+db_unit* AiOrchestrator::resolveUnitUpgrade(std::span<const float> unitProfileDiffs) {
 	auto& units = nation->units;
 	std::vector<db_unit*> candidates;
 	candidates.reserve(units.size());
@@ -421,20 +438,14 @@ db_unit* AiOrchestrator::resolveUnitUpgrade(const UnitOutput& unitOutput) {
 	}
 	if (candidates.empty()) { return nullptr; }
 
-	std::vector<float> diffs = unitsProfileMatch(unitOutput, candidates);
+	const auto diffs = scoreCandidates(candidates, [&unitProfileDiffs](db_unit* unit) {
+		return unitProfileDiffs[unit->id];
+	});
 
 	return candidates[lowestWithRand(diffs)];
 }
 
-std::vector<float> AiOrchestrator::unitsProfileMatch(const UnitOutput& unitOutput,
-                                                     const std::vector<db_unit*>& candidates) {
-	std::valarray center(unitOutput.unitProfile.data(), unitOutput.unitProfile.size());
-	return scoreCandidates(candidates, [this, &center](db_unit* unit) {
-		return dist(center, player->getUnitLevel(unit->id)->dbUnitMetric);
-	});
-}
-
-db_building* AiOrchestrator::resolveBuildingUpgrade(const UnitOutput& unitOutput) {
+db_building* AiOrchestrator::resolveBuildingUpgrade(std::span<const float> unitProfileDiffs) {
 	auto& buildings = nation->buildings;
 	std::vector<db_building*> candidates;
 	candidates.reserve(buildings.size());
@@ -446,15 +457,14 @@ db_building* AiOrchestrator::resolveBuildingUpgrade(const UnitOutput& unitOutput
 
 	// Match building by which units it produces — find the building whose units
 	// are closest to the desired unit profile
-	std::valarray<float> center(unitOutput.unitProfile.data(), unitOutput.unitProfile.size());
-	auto diffs = scoreCandidates(candidates, [this, &center](db_building* building) {
+	auto diffs = scoreCandidates(candidates, [&unitProfileDiffs, this](db_building* building) {
 		// Average distance across all units this building can produce
 		auto* level = player->getBuildingLevel(building->id);
 		float totalDist = 0.f;
 		int unitCount = 0;
 		for (auto* unit : level->allUnits) {
 			if (!unit->typeWorker) {
-				totalDist += dist(center, player->getUnitLevel(unit->id)->dbUnitMetric);
+				totalDist += unitProfileDiffs[unit->id];
 				++unitCount;
 			}
 		}
@@ -580,14 +590,6 @@ std::vector<db_building*> AiOrchestrator::getPossibleBuildingsInType(ParentBuild
 		if (dbBuilding->parentType[castC(type)]) { buildings.push_back(dbBuilding); }
 	}
 	return buildings;
-}
-
-float AiOrchestrator::dist(std::valarray<float>& center, const db_basic_metric* metric) {
-	return sumSquaredError(center, metric->getValuesNormAsVal());
-}
-
-float AiOrchestrator::dist(std::valarray<float>& center, const db_building_metric* metric, ParentBuildingType type) {
-	return sumSquaredError(center, metric->getValuesNormAsValForType(type));
 }
 
 // --- Worker collection ---
