@@ -23,7 +23,7 @@ namespace MapsUtils {
 	template <typename T>
 	void finalize(const std::vector<T*>& maps) {
 		for (auto map : maps) {
-			map->updateFromTemp();
+			map->ensureKernel();
 		}
 	}
 
