@@ -15,7 +15,7 @@ namespace {
 	constexpr float KERNEL_COEF = 0.5f;
 	constexpr float HISTORY_MINIMAL_THRESHOLD = 0.0001f;
 	constexpr float HISTORY_VANISH_COEF = 0.5f;
-	constexpr std::size_t MAX_CHANGED_INDEXES = 100;
+	constexpr std::size_t MAX_NON_ZERO_INDEXES = 100;
 }
 
 InfluenceMap::InfluenceMap(GridCalculator* calculator, float valueThresholdDebug, bool history)
@@ -29,7 +29,7 @@ InfluenceMap::InfluenceMap(GridCalculator* calculator, float valueThresholdDebug
 	kernelValues = new float[arraySize];
 	std::fill_n(rawValues, arraySize, 0.f);
 	std::fill_n(kernelValues, arraySize, 0.f);
-	changedIndexes.reserve(MAX_CHANGED_INDEXES);
+	nonZeroIndexes.reserve(MAX_NON_ZERO_INDEXES);
 
 	centerDirty = true;
 	if (history) {
@@ -48,11 +48,17 @@ InfluenceMap::~InfluenceMap() {
 }
 
 void InfluenceMap::update(unsigned index, float value) {
+	assert(value >= 0.f);
+	if (value == 0.f) {
+		return;
+	}
 	if (hasPendingValues()) {
 		pendingValues[index] += value;
 		return;
 	}
-	trackChangedIndex(index);
+	if (rawValues[index] == 0.f) {
+		nonZeroIndexes.push_back(index);
+	}
 	rawValues[index] += value;
 	invalidateCaches();
 }
@@ -64,15 +70,17 @@ void InfluenceMap::update(const Urho3D::Vector2& pos, float value) {
 void InfluenceMap::updateFromTemp() { ensureKernel(); }
 
 void InfluenceMap::reset() {
+	nonZeroIndexes.clear();
 	if (hasPendingValues()) {
 		const auto rawEnd = rawValues + arraySize;
 		auto* pending = pendingValues;
 		for (auto raw = rawValues; raw < rawEnd; ++raw, ++pending) {
 			*raw = *raw * vanishCoef + *pending;
 			*pending = 0.f;
+			if (*raw != 0.f) {
+				nonZeroIndexes.push_back(static_cast<unsigned>(raw - rawValues));
+			}
 		}
-		changedIndexes.clear();
-		fullKernelRebuildNeeded = true;
 		invalidateCaches();
 		return;
 	}
@@ -80,9 +88,10 @@ void InfluenceMap::reset() {
 		const auto end = rawValues + arraySize;
 		for (auto i = rawValues; i < end; ++i) {
 			*i *= vanishCoef;
+			if (*i != 0.f) {
+				nonZeroIndexes.push_back(static_cast<unsigned>(i - rawValues));
+			}
 		}
-		changedIndexes.clear();
-		fullKernelRebuildNeeded = true;
 		invalidateCaches();
 		return;
 	}
@@ -91,8 +100,6 @@ void InfluenceMap::reset() {
 		std::fill_n(pendingValues, arraySize, 0.f);
 	}
 	std::fill_n(kernelValues, arraySize, 0.f);
-	changedIndexes.clear();
-	fullKernelRebuildNeeded = false;
 	valuesCalculateNeeded = false;
 	center.reset();
 	centerDirty = false;
@@ -101,29 +108,15 @@ void InfluenceMap::reset() {
 }
 
 void InfluenceMap::resetToZero() {
+	nonZeroIndexes.clear();
 	const auto end = rawValues + arraySize;
 	for (auto i = rawValues; i < end; ++i) {
 		*i = *i >= minimalThreshold ? *i : 0.f;
+		if (*i != 0.f) {
+			nonZeroIndexes.push_back(static_cast<unsigned>(i - rawValues));
+		}
 	}
-	changedIndexes.clear();
-	fullKernelRebuildNeeded = true;
 	invalidateCaches();
-}
-
-void InfluenceMap::trackChangedIndex(unsigned index) {
-	if (fullKernelRebuildNeeded) {
-		return;
-	}
-	const auto changed = std::find_if(changedIndexes.begin(), changedIndexes.end(), [index](const ChangedIndex& item) {
-		return item.index == index;
-	});
-	if (changed != changedIndexes.end()) {
-		return;
-	}
-	changedIndexes.push_back({index, rawValues[index]});
-	if (changedIndexes.size() >= MAX_CHANGED_INDEXES) {
-		fullKernelRebuildNeeded = true;
-	}
 }
 
 void InfluenceMap::invalidateCaches() {
@@ -265,18 +258,18 @@ void InfluenceMap::applyKernel(unsigned index, float value) const {
 }
 
 void InfluenceMap::rebuildKernel() const {
-	if (fullKernelRebuildNeeded) {
-		std::fill_n(kernelValues, arraySize, 0.f);
-		for (unsigned i = 0; i < arraySize; ++i) {
-			applyKernel(i, rawValues[i]);
+	std::fill_n(kernelValues, arraySize, 0.f);
+	if (nonZeroIndexes.size() < MAX_NON_ZERO_INDEXES) {
+		for (const auto index : nonZeroIndexes) {
+			applyKernel(index, rawValues[index]);
 		}
 	} else {
-		for (const auto& changed : changedIndexes) {
-			applyKernel(changed.index, rawValues[changed.index] - changed.oldValue);
+		for (unsigned index = 0; index < arraySize; ++index) {
+			if (rawValues[index] != 0.f) {
+				applyKernel(index, rawValues[index]);
+			}
 		}
 	}
-	changedIndexes.clear();
-	fullKernelRebuildNeeded = false;
 	valuesCalculateNeeded = false;
 }
 

@@ -36,10 +36,7 @@ public:
 
 	unsigned int getArraySize() const { return arraySize; }
 	bool isKernelDirty() const { return valuesCalculateNeeded; }
-	void forceFullKernelRebuild() {
-		fullKernelRebuildNeeded = true;
-		valuesCalculateNeeded = true;
-	}
+	const std::vector<unsigned>& getNonZeroIndexes() const { return nonZeroIndexes; }
 };
 
 class CumulateErrorsFixture : public ::testing::Test {
@@ -554,9 +551,8 @@ TEST(InfluenceMapRegression, SparseRebuildPreservesOverlappingKernelValues) {
 	expected.update(36, 3.f);
 	expected.getKernel(0);
 
-	map.update(27, -1.f);
-	expected.update(27, -1.f);
-	expected.forceFullKernelRebuild();
+	map.update(27, 1.f);
+	expected.update(27, 1.f);
 	for (unsigned index = 0; index < 64; ++index) {
 		EXPECT_NEAR(map.getKernel(index), expected.getKernel(index), 1e-5f) << "cell " << index;
 	}
@@ -573,40 +569,80 @@ TEST(InfluenceMapRegression, SparseRebuildAggregatesRepeatedUpdatesAndHandlesEdg
 	expected.update(0, 3.f);
 	expected.getKernel(0);
 
-	map.update(0, -1.f);
-	expected.update(0, -1.f);
-	expected.forceFullKernelRebuild();
+	map.update(0, 1.f);
+	expected.update(0, 1.f);
 	for (unsigned index = 0; index < 64; ++index) {
 		EXPECT_NEAR(map.getKernel(index), expected.getKernel(index), 1e-5f) << "cell " << index;
 	}
 }
 
-TEST(InfluenceMapRegression, SparseRebuildHandlesSourceReturningToZero) {
+TEST(InfluenceMapRegression, SparseRebuildKeepsZeroValueSourcesOutOfKernel) {
 	GridCalculator calculator(8, 16.f);
-	InfluenceMap map(&calculator, 0.f);
+	TestableInfluenceMap map(&calculator);
 
-	map.update(27, 4.f);
+	map.update(27, 0.f);
+	EXPECT_TRUE(map.getNonZeroIndexes().empty());
 	map.getKernel(0);
-	map.update(27, -4.f);
 
+	EXPECT_TRUE(map.getNonZeroIndexes().empty());
 	for (unsigned index = 0; index < 64; ++index) {
 		EXPECT_FLOAT_EQ(map.getKernel(index), 0.f) << "cell " << index;
 	}
 }
 
-TEST(InfluenceMapRegression, ChangedIndexLimitFallsBackToFullKernelRebuild) {
+TEST(InfluenceMapRegression, NonZeroIndexesAreAppendOnlyUntilReset) {
+	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
+
+	map.update(1, 2.f);
+	map.update(1, 1.f);
+	map.update(2, 3.f);
+	map.update(1, 1.f);
+
+	EXPECT_EQ(map.getNonZeroIndexes(), std::vector<unsigned>({1u, 2u}));
+}
+
+TEST(InfluenceMapRegression, ZeroUpdateDoesNotDirtyKernelOrChangeIndexes) {
+	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
+
+	map.update(1, 0.f);
+
+	EXPECT_FALSE(map.isKernelDirty());
+	EXPECT_TRUE(map.getNonZeroIndexes().empty());
+}
+
+TEST(InfluenceMapRegression, NonZeroIndexLimitUsesFullRawScan) {
 	GridCalculator calculator(11, 22.f);
 	TestableInfluenceMap map(&calculator);
 	TestableInfluenceMap expected(&calculator);
 
-	for (unsigned index = 0; index < 101; ++index) {
+	for (unsigned index = 0; index < 100; ++index) {
 		map.update(index, static_cast<float>(index + 1));
 		expected.update(index, static_cast<float>(index + 1));
 	}
-	expected.forceFullKernelRebuild();
+	EXPECT_EQ(map.getNonZeroIndexes().size(), 100u);
+
+	map.update(100, 101.f);
+	expected.update(100, 101.f);
+	EXPECT_EQ(map.getNonZeroIndexes().size(), 101u);
+
+	map.update(0, 1.f);
+	expected.update(0, 1.f);
+	EXPECT_EQ(map.getNonZeroIndexes().size(), 101u);
+
 	for (unsigned index = 0; index < 121; ++index) {
 		EXPECT_NEAR(map.getKernel(index), expected.getKernel(index), 1e-5f) << "cell " << index;
 	}
+}
+
+TEST(InfluenceMapRegression, ResetClearsNonZeroIndexes) {
+	GridCalculator calculator(11, 22.f);
+	TestableInfluenceMap map(&calculator);
+
+	map.update(0, 1.f);
+	map.update(1, 1.f);
+	map.reset();
+
+	EXPECT_TRUE(map.getNonZeroIndexes().empty());
 }
 
 TEST(InfluenceMapRegression, BufferedHistoryWritesDoNotChangeVisibleRawStateBeforeReset) {

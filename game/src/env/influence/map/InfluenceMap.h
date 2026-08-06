@@ -42,11 +42,6 @@ public:
 	void ensureReady();
 
 protected:
-	struct ChangedIndex {
-		unsigned index;
-		float oldValue;
-	};
-
 	GridCalculator* calculator;
 	unsigned int arraySize;
 	const float valueThresholdDebug;
@@ -55,8 +50,7 @@ protected:
 	float* pendingValues = nullptr;
 	float* kernelValues;
 	mutable bool valuesCalculateNeeded = false;
-	mutable std::vector<ChangedIndex> changedIndexes;
-	mutable bool fullKernelRebuildNeeded = false;
+	std::vector<unsigned> nonZeroIndexes;
 	void invalidateCaches();
 	void printMap(std::span<const float> map, const Urho3D::String& name);
 
@@ -68,7 +62,6 @@ protected:
 	bool hasPendingValues() const { return pendingValues != nullptr; }
 
 private:
-	void trackChangedIndex(unsigned index);
 	void applyKernel(unsigned index, float value) const;
 	std::vector<unsigned> getMaxIdxsRaw() const;
 	std::vector<unsigned> getMaxIdxsKernel() const;
