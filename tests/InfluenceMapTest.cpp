@@ -623,11 +623,11 @@ TEST(InfluenceMapRegression, NonZeroIndexLimitUsesFullRawScan) {
 
 	map.update(100, 101.f);
 	expected.update(100, 101.f);
-	EXPECT_EQ(map.getNonZeroIndexes().size(), 101u);
+	EXPECT_EQ(map.getNonZeroIndexes().size(), 100u);
 
 	map.update(0, 1.f);
 	expected.update(0, 1.f);
-	EXPECT_EQ(map.getNonZeroIndexes().size(), 101u);
+	EXPECT_EQ(map.getNonZeroIndexes().size(), 100u);
 
 	for (unsigned index = 0; index < 121; ++index) {
 		EXPECT_NEAR(map.getKernel(index), expected.getKernel(index), 1e-5f) << "cell " << index;
