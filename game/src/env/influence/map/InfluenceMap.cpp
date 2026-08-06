@@ -16,6 +16,12 @@ namespace {
 	constexpr float HISTORY_MINIMAL_THRESHOLD = 0.0001f;
 	constexpr float HISTORY_VANISH_COEF = 0.5f;
 	constexpr std::size_t MAX_NON_ZERO_INDEXES = 100;
+
+	void addNonZeroIndex(std::vector<unsigned>& nonZeroIndexes, unsigned index) {
+		if (nonZeroIndexes.size() < MAX_NON_ZERO_INDEXES) {
+			nonZeroIndexes.push_back(index);
+		}
+	}
 }
 
 InfluenceMap::InfluenceMap(GridCalculator* calculator, float valueThresholdDebug, bool history)
@@ -57,7 +63,7 @@ void InfluenceMap::update(unsigned index, float value) {
 		return;
 	}
 	if (rawValues[index] == 0.f) {
-		nonZeroIndexes.push_back(index);
+		addNonZeroIndex(nonZeroIndexes, index);
 	}
 	rawValues[index] += value;
 	invalidateCaches();
@@ -76,7 +82,7 @@ void InfluenceMap::reset() {
 			*raw = *raw * vanishCoef + *pending;
 			*pending = 0.f;
 			if (*raw != 0.f) {
-				nonZeroIndexes.push_back(static_cast<unsigned>(raw - rawValues));
+				addNonZeroIndex(nonZeroIndexes, static_cast<unsigned>(raw - rawValues));
 			}
 		}
 		invalidateCaches();
@@ -87,7 +93,7 @@ void InfluenceMap::reset() {
 		for (auto i = rawValues; i < end; ++i) {
 			*i *= vanishCoef;
 			if (*i != 0.f) {
-				nonZeroIndexes.push_back(static_cast<unsigned>(i - rawValues));
+				addNonZeroIndex(nonZeroIndexes, static_cast<unsigned>(i - rawValues));
 			}
 		}
 		invalidateCaches();
@@ -111,7 +117,7 @@ void InfluenceMap::resetToZero() {
 	for (auto i = rawValues; i < end; ++i) {
 		*i = *i >= minimalThreshold ? *i : 0.f;
 		if (*i != 0.f) {
-			nonZeroIndexes.push_back(static_cast<unsigned>(i - rawValues));
+			addNonZeroIndex(nonZeroIndexes, static_cast<unsigned>(i - rawValues));
 		}
 	}
 	invalidateCaches();
