@@ -712,7 +712,21 @@ TEST(InfluenceMapRegression, SparseHistoryResetMergesPendingWithExistingRawValue
 	}
 }
 
-TEST(InfluenceMapRegression, HistoryResetFallsBackToFullScanAfterMoreThan75PendingIndexes) {
+TEST(InfluenceMapRegression, HistoryResetFallsBackToFullScanAtPendingIndexCapacity) {
+	GridCalculator calculator(11, 22.f);
+	InfluenceMap map(&calculator, 0.f, true);
+
+	for (unsigned index = 0; index < 75; ++index) {
+		map.update(index, 1.f);
+	}
+	map.reset();
+
+	for (unsigned index = 0; index < 75; ++index) {
+		EXPECT_FLOAT_EQ(map.getRaw(index), 1.f);
+	}
+}
+
+TEST(InfluenceMapRegression, HistoryResetFallsBackToFullScanAfterPendingIndexCapacity) {
 	GridCalculator calculator(11, 22.f);
 	InfluenceMap map(&calculator, 0.f, true);
 
@@ -724,6 +738,24 @@ TEST(InfluenceMapRegression, HistoryResetFallsBackToFullScanAfterMoreThan75Pendi
 	for (unsigned index = 0; index < 76; ++index) {
 		EXPECT_FLOAT_EQ(map.getRaw(index), 1.f);
 	}
+}
+
+TEST(InfluenceMapRegression, HistoryResetFallsBackToFullScanWhenRawIndexesReachCapacity) {
+	GridCalculator calculator(11, 22.f);
+	InfluenceMap map(&calculator, 0.f, true);
+
+	for (unsigned index = 0; index < 100; ++index) {
+		map.update(index, 1.f);
+	}
+	map.reset();
+
+	map.update(100, 2.f);
+	map.reset();
+
+	for (unsigned index = 0; index < 100; ++index) {
+		EXPECT_FLOAT_EQ(map.getRaw(index), 0.5f);
+	}
+	EXPECT_FLOAT_EQ(map.getRaw(100), 2.f);
 }
 
 TEST(InfluenceMapRegression, HistoryDecayOnlyResetPreservesSparseRawValues) {

@@ -51,7 +51,6 @@ protected:
 	mutable bool valuesCalculateNeeded = false;
 	std::vector<unsigned> nonZeroIndexes;
 	std::vector<unsigned> pendingNonZeroIndexes;
-	bool pendingIndexesOverflowed = false;
 	void invalidateCaches();
 	void printMap(std::span<const float> map, const Urho3D::String& name);
 

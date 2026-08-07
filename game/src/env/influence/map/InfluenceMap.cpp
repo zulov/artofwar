@@ -64,8 +64,6 @@ void InfluenceMap::update(unsigned index, float value) {
 		if (pendingValues[index] == 0.f) {
 			if (pendingNonZeroIndexes.size() < MAX_PENDING_NON_ZERO_INDEXES) {
 				pendingNonZeroIndexes.push_back(index);
-			} else {
-				pendingIndexesOverflowed = true;
 			}
 		}
 		pendingValues[index] += value;
@@ -84,8 +82,9 @@ void InfluenceMap::update(const Urho3D::Vector2& pos, float value) {
 
 void InfluenceMap::reset() {
 	if (hasPendingValues()) {
-		const bool rawIndexesOverflowed = nonZeroIndexes.size() >= MAX_NON_ZERO_INDEXES;
-		if (pendingIndexesOverflowed || rawIndexesOverflowed) {
+		const bool rawIndexesAtCapacity = nonZeroIndexes.size() >= MAX_NON_ZERO_INDEXES;
+		const bool pendingIndexesAtCapacity = pendingNonZeroIndexes.size() >= MAX_PENDING_NON_ZERO_INDEXES;
+		if (pendingIndexesAtCapacity || rawIndexesAtCapacity) {
 			nonZeroIndexes.clear();
 			const auto rawEnd = rawValues + arraySize;
 			auto* pending = pendingValues;
@@ -114,7 +113,6 @@ void InfluenceMap::reset() {
 			}
 		}
 		pendingNonZeroIndexes.clear();
-		pendingIndexesOverflowed = false;
 		invalidateCaches();
 		return;
 	}
