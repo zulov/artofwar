@@ -38,6 +38,7 @@ public:
 	unsigned short getResolution() const { return calculator->getResolution(); }
 
 	bool cumulateErrors(float percent, std::span<float> intersection);
+	void ensureKernel() const;
 
 protected:
 	GridCalculator* calculator;
@@ -65,7 +66,7 @@ private:
 	void applyKernel(unsigned index, float value) const;
 	std::vector<unsigned> getMaxIdxs(std::span<const float> values) const;
 	void ensureCenter() const;
-	void ensureKernel() const;
+
 	void initializeQuad() const;
 	void rebuildKernel() const;
 	void rebuildQuad() const;
