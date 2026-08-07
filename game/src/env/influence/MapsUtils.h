@@ -21,13 +21,6 @@ namespace MapsUtils {
 	}
 
 	template <typename T>
-	void finalize(const std::vector<T*>& maps) {
-		for (auto map : maps) {
-			map->ensureKernel();
-		}
-	}
-
-	template <typename T>
 	void drawAll(const std::vector<T*>& maps, Urho3D::String name) {
 		for (int i = 0; i < maps.size(); ++i) {
 			maps[i]->print(name + "_" + Urho3D::String(i) + "_");

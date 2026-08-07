@@ -16,6 +16,7 @@ namespace {
 	constexpr float HISTORY_MINIMAL_THRESHOLD = 0.0001f;
 	constexpr float HISTORY_VANISH_COEF = 0.5f;
 	constexpr std::size_t MAX_NON_ZERO_INDEXES = 100;
+	constexpr std::size_t MAX_PENDING_NON_ZERO_INDEXES = 75;
 
 	void addNonZeroIndex(std::vector<unsigned>& nonZeroIndexes, unsigned index) {
 		if (nonZeroIndexes.size() < MAX_NON_ZERO_INDEXES) {
@@ -43,6 +44,7 @@ InfluenceMap::InfluenceMap(GridCalculator* calculator, float valueThresholdDebug
 		vanishCoef = HISTORY_VANISH_COEF;
 		pendingValues = new float[arraySize];
 		std::fill_n(pendingValues, arraySize, 0.f);
+		pendingNonZeroIndexes.reserve(MAX_PENDING_NON_ZERO_INDEXES);
 	}
 }
 
@@ -59,6 +61,13 @@ void InfluenceMap::update(unsigned index, float value) {
 		return;
 	}
 	if (hasPendingValues()) {
+		if (pendingValues[index] == 0.f) {
+			if (pendingNonZeroIndexes.size() < MAX_PENDING_NON_ZERO_INDEXES) {
+				pendingNonZeroIndexes.push_back(index);
+			} else {
+				pendingIndexesOverflowed = true;
+			}
+		}
 		pendingValues[index] += value;
 		return;
 	}
@@ -74,21 +83,55 @@ void InfluenceMap::update(const Urho3D::Vector2& pos, float value) {
 }
 
 void InfluenceMap::reset() {
-	nonZeroIndexes.clear();
 	if (hasPendingValues()) {
-		const auto rawEnd = rawValues + arraySize;
-		auto* pending = pendingValues;
-		for (auto raw = rawValues; raw < rawEnd; ++raw, ++pending) {
-			*raw = *raw * vanishCoef + *pending;
-			*pending = 0.f;
-			if (*raw != 0.f) {
-				addNonZeroIndex(nonZeroIndexes, static_cast<unsigned>(raw - rawValues));
+		const bool rawIndexesOverflowed = nonZeroIndexes.size() >= MAX_NON_ZERO_INDEXES;
+		if (pendingIndexesOverflowed || rawIndexesOverflowed) {
+			nonZeroIndexes.clear();
+			const auto rawEnd = rawValues + arraySize;
+			auto* pending = pendingValues;
+			for (auto raw = rawValues; raw < rawEnd; ++raw, ++pending) {
+				*raw = *raw * vanishCoef + *pending;
+				*pending = 0.f;
+				if (*raw != 0.f) {
+					addNonZeroIndex(nonZeroIndexes, static_cast<unsigned>(raw - rawValues));
+				}
+			}
+		} else {
+			std::array<unsigned, MAX_NON_ZERO_INDEXES + MAX_PENDING_NON_ZERO_INDEXES> indexes;
+			auto indexesEnd = std::copy(nonZeroIndexes.begin(), nonZeroIndexes.end(), indexes.begin());
+			indexesEnd = std::copy(pendingNonZeroIndexes.begin(), pendingNonZeroIndexes.end(), indexesEnd);
+			std::sort(indexes.begin(), indexesEnd);
+			indexesEnd = std::unique(indexes.begin(), indexesEnd);
+
+			nonZeroIndexes.clear();
+			for (auto indexIt = indexes.begin(); indexIt != indexesEnd; ++indexIt) {
+				const auto index = *indexIt;
+				rawValues[index] = rawValues[index] * vanishCoef + pendingValues[index];
+				pendingValues[index] = 0.f;
+				if (rawValues[index] != 0.f) {
+					addNonZeroIndex(nonZeroIndexes, index);
+				}
 			}
 		}
+		pendingNonZeroIndexes.clear();
+		pendingIndexesOverflowed = false;
 		invalidateCaches();
 		return;
 	}
 	if (vanishCoef != 1.f || minimalThreshold != 0.f) {
+		if (nonZeroIndexes.size() < MAX_NON_ZERO_INDEXES) {
+			std::size_t writeIndex = 0;
+			for (const auto index : nonZeroIndexes) {
+				rawValues[index] *= vanishCoef;
+				if (rawValues[index] != 0.f) {
+					nonZeroIndexes[writeIndex++] = index;
+				}
+			}
+			nonZeroIndexes.resize(writeIndex);
+			invalidateCaches();
+			return;
+		}
+		nonZeroIndexes.clear();
 		const auto end = rawValues + arraySize;
 		for (auto i = rawValues; i < end; ++i) {
 			*i *= vanishCoef;
@@ -99,17 +142,7 @@ void InfluenceMap::reset() {
 		invalidateCaches();
 		return;
 	}
-	if (vanishCoef != 1.f || minimalThreshold != 0.f) {
-		const auto end = rawValues + arraySize;
-		for (auto i = rawValues; i < end; ++i) {
-			*i *= vanishCoef;
-			if (*i != 0.f) {
-				addNonZeroIndex(nonZeroIndexes, static_cast<unsigned>(i - rawValues));
-			}
-		}
-		invalidateCaches();
-		return;
-	}
+	nonZeroIndexes.clear();
 	std::fill_n(rawValues, arraySize, 0.f);
 	std::fill_n(kernelValues, arraySize, 0.f);
 	valuesCalculateNeeded = false;

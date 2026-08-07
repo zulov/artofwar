@@ -149,7 +149,6 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 	}
 	
 	//TODO perf to tutaj chyba niepotrzebne i tak bedzie zrobione lazy
-	//MapsUtils::finalize(unitPresence);
 }
 
 void InfluenceManager::updateBuildings(const std::vector<Building*>* buildings) const {
@@ -158,18 +157,15 @@ void InfluenceManager::updateBuildings(const std::vector<Building*>* buildings) 
 		buildingPresence[building->getPlayer()]->update(building->getIndexInInfluence());
 	}
 	// TODO perf to tutaj chyba niepotrzebne i tak bedzie zrobione lazy
-	//MapsUtils::finalize(buildingPresence);
 }
 
 void InfluenceManager::updateWithHistory() const {
 	for (auto& vec : gatheringActivityByResource) {
 		MapsUtils::resetMaps(vec);
-		MapsUtils::finalize(vec);
 	}
 	MapsUtils::resetMaps(economicActivity);
 
 	MapsUtils::resetMaps(attackActivity);//obniza wartosci
-	MapsUtils::finalize(attackActivity);//dopisuje nowe
 }
 
 void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,

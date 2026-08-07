@@ -694,6 +694,52 @@ TEST(InfluenceMapRegression, BufferedHistoryResetToZeroKeepsPendingAndDropsSmall
 	EXPECT_FLOAT_EQ(map.getKernel(0), 5.f);
 }
 
+TEST(InfluenceMapRegression, SparseHistoryResetMergesPendingWithExistingRawValues) {
+	GridCalculator calculator(16, 32.f);
+	InfluenceMap map(&calculator, 0.f, true);
+
+	map.update(100, 8.f);
+	map.reset();
+
+	for (unsigned index = 0; index < 75; ++index) {
+		map.update(index, 1.f);
+	}
+	map.reset();
+
+	EXPECT_FLOAT_EQ(map.getRaw(100), 4.f);
+	for (unsigned index = 0; index < 75; ++index) {
+		EXPECT_FLOAT_EQ(map.getRaw(index), 1.f);
+	}
+}
+
+TEST(InfluenceMapRegression, HistoryResetFallsBackToFullScanAfterMoreThan75PendingIndexes) {
+	GridCalculator calculator(11, 22.f);
+	InfluenceMap map(&calculator, 0.f, true);
+
+	for (unsigned index = 0; index < 76; ++index) {
+		map.update(index, 1.f);
+	}
+	map.reset();
+
+	for (unsigned index = 0; index < 76; ++index) {
+		EXPECT_FLOAT_EQ(map.getRaw(index), 1.f);
+	}
+}
+
+TEST(InfluenceMapRegression, HistoryDecayOnlyResetPreservesSparseRawValues) {
+	GridCalculator calculator(16, 32.f);
+	TestableInfluenceMap map(&calculator, true);
+
+	map.update(10, 8.f);
+	map.update(200, 4.f);
+	map.reset();
+	map.reset();
+
+	EXPECT_FLOAT_EQ(map.getRaw(10), 4.f);
+	EXPECT_FLOAT_EQ(map.getRaw(200), 2.f);
+	EXPECT_EQ(map.getNonZeroIndexes(), std::vector<unsigned>({10u, 200u}));
+}
+
 TEST(InfluenceMapRegression, GetCenterUsesRawTerminalLayer) {
 	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
 	map.update(4, 1.f);

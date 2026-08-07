@@ -846,8 +846,8 @@ kernel[cell] = sum over all raw source cells:
     </div>
 
     <div class="history-stage">
-      <h4>D. Kernel Rebuilt After First Merge</h4>
-      <p class="stage-sub"><code>finalize()</code> calls <code>updateFromTemp()</code>, which rebuilds kernel immediately from the new raw value <code>4</code>. This happens in the same history-update call, right after the merge pass above.</p>
+      <h4>D. First Kernel Access After Merge</h4>
+      <p class="stage-sub">The first kernel query after the merge rebuilds the kernel lazily from the new raw value <code>4</code>. No eager rebuild happens during the history-update call.</p>
       <div class="mini-grid-wrap">
         <div class="mini-grid-label">pending</div>
         <table class="mini-grid">
@@ -872,7 +872,7 @@ kernel[cell] = sum over all raw source cells:
           <tr><td class="k-mid">2.0</td><td class="k-midhigh">2.7</td><td class="k-mid">2.0</td></tr>
         </table>
       </div>
-      <p class="center-note">Center: valid. Kernel is now visible immediately; quad and center rebuild lazily from the same raw state.</p>
+      <p class="center-note">Center: valid. The kernel is now visible after its first query; quad and center also rebuild lazily from the same raw state.</p>
     </div>
 
     <div class="history-stage">
@@ -980,7 +980,7 @@ kernel[cell] = sum over all raw source cells:
     <tr><td>constructed or forced startup pass with no events</td><td>0</td><td>0</td><td>all zero, no center</td></tr>
     <tr><td>after first <code>update(A, 4)</code></td><td>0</td><td>4</td><td>still old raw state, still no center</td></tr>
     <tr><td>after first <code>reset()</code>, before visible kernel use</td><td>4</td><td>0</td><td>raw already changed; caches are dirty and will rebuild on access</td></tr>
-    <tr><td>after first <code>finalize()</code> / kernel rebuild</td><td>4</td><td>0</td><td>kernel becomes non-zero, center can rebuild from the same raw</td></tr>
+    <tr><td>after first kernel query</td><td>4</td><td>0</td><td>kernel becomes non-zero; center can rebuild from the same raw</td></tr>
     <tr><td>after next scheduled pass with no event</td><td>2</td><td>0</td><td>same hotspot, but weaker because this pass is pure decay</td></tr>
     <tr><td>after later <code>update(A, 6)</code>, before its merge</td><td>2</td><td>6</td><td>still the old decayed hotspot, because pending is not visible yet</td></tr>
     <tr><td>after the next <code>reset()</code> after that later event</td><td>7</td><td>0</td><td>decayed old value plus fresh event, stronger hotspot again</td></tr>
@@ -1005,10 +1005,10 @@ kernel[cell] = sum over all raw source cells:
       <td>inside <code>Simulation::updateInfluenceMaps()</code>, during the <code>INFLUENCE_OTHER</code> branch after <code>updateBuildings()</code></td>
     </tr>
     <tr>
-      <td><code>finalize()</code> / kernel rebuild for kernel-consumed history maps</td>
-      <td><code>InfluenceManager::updateWithHistory()</code></td>
-      <td>same moment as the merge / decay pass</td>
-      <td>immediately after <code>reset()</code> in the same history-update call</td>
+      <td>lazy kernel rebuild for kernel-consumed history maps</td>
+      <td>the first kernel query after <code>reset()</code></td>
+      <td>on demand</td>
+      <td>when a consumer reads the kernel, scores areas, or draws the map</td>
     </tr>
     <tr>
       <td>threshold cleanup via <code>resetToZero()</code></td>
@@ -1027,7 +1027,7 @@ kernel[cell] = sum over all raw source cells:
   <ul>
     <li><strong>Buffered event writes:</strong> irregular. They happen whenever gameplay causes collection or attack history to be recorded.</li>
     <li><strong>Merge/decay pass:</strong> regular. It runs every five seconds in the default 30-FPS simulation schedule.</li>
-    <li><strong>Kernel rebuild after merge:</strong> immediate for kernel-consumed gather and attack maps through <code>finalize()</code>. ECON uses only raw center data, so it keeps its kernel lazy.</li>
+    <li><strong>Kernel rebuild after merge:</strong> lazy for gather and attack maps. The first kernel consumer rebuilds the cache from the merged raw values; ECON also keeps its kernel lazy because it uses raw center data.</li>
     <li><strong>Threshold cleanup:</strong> also regular. It is scheduled every 30 seconds as a separate history-reset action.</li>
     <li><strong>Startup forced pass:</strong> one-shot. It runs before the first normal game tick so the map system starts from a known state.</li>
   </ul>
@@ -1051,12 +1051,6 @@ kernel[cell] = sum over all raw source cells:
       <td>merge and decay happen together</td>
     </tr>
     <tr>
-      <td><code>updateFromTemp()</code></td>
-      <td>no direct write to raw</td>
-      <td>forces kernel rebuild only</td>
-      <td><code>finalize()</code> calls it so scoring sees merged history immediately</td>
-    </tr>
-    <tr>
       <td><code>resetToZero()</code></td>
       <td><code>rawValues</code></td>
       <td>tiny residual history disappears next time caches are read</td>
@@ -1068,7 +1062,7 @@ kernel[cell] = sum over all raw source cells:
     <li>Stage A is the startup case: the map exists, but there is no history yet, so raw, pending, kernel, and center are all empty.</li>
     <li>Stage B shows the key timing rule: <code>update()</code> writes into <code>pendingValues</code>, so the map has new information internally, but kernel and quad still cannot see it.</li>
     <li>Stage C is the first merge: <code>reset()</code> moves pending into raw using <code>raw = raw * vanishCoef + pending</code>.</li>
-    <li>Stage D isolates the kernel rebuild after the first merge, because the visible kernel change is a distinct moment in the runtime sequence.</li>
+    <li>Stage D isolates the first lazy kernel rebuild after the first merge, because the visible kernel change happens on demand rather than during the merge itself.</li>
     <li>Stage E isolates the pure decay case: no new event arrives, so the existing hotspot simply fades.</li>
     <li>Stages F and G then show the same buffering-and-merge sequence again, but now starting from an already decayed raw state.</li>
   </ol>
@@ -1080,8 +1074,8 @@ kernel[cell] = sum over all raw source cells:
     <li>Later, on the scheduled history update, <code>InfluenceManager::updateWithHistory()</code> calls <code>reset()</code> on each history map. In the default schedule this happens every five seconds when the <code>INFLUENCE_OTHER</code> action fires on frame slot 3 of the 30-frame period.</li>
     <li>That <code>reset()</code> call is the exact moment when pending is merged into raw and old raw is decayed by <code>0.5</code>.</li>
     <li>At that exact moment raw has changed, pending has been cleared, and all caches are dirty, but kernel is not yet materialized unless someone reads it.</li>
-    <li>Immediately after that, <code>updateWithHistory()</code> calls <code>finalize()</code> for kernel-consumed gather and attack maps, which triggers <code>updateFromTemp()</code> and forces their kernel caches to rebuild from the new raw state. ECON uses only its raw center, so its kernel remains lazy.</li>
-    <li>Quad and center still rebuild lazily, but they now rebuild from the already-merged raw history, so they can finally see the new hotspot.</li>
+    <li>No kernel rebuild is forced at that point. The first kernel query for gather or attack history rebuilds its cache lazily from the already-merged raw state. ECON uses only its raw center, so its kernel also remains lazy.</li>
+    <li>Quad and center rebuild lazily as well, but they read the already-merged raw history, so they can finally see the new hotspot.</li>
     <li>If no new event happens before the next scheduled history update five seconds later, the exact same <code>reset()</code> call still changes the map: pending contributes <code>0</code>, so raw simply decays by half.</li>
     <li>If a later event happens after that decay step, pending fills again, but kernel and center still show the decayed raw state until the following merge.</li>
     <li>On a separate scheduled action in the same frame slot every 30 seconds, <code>resetHistoryThresholds()</code> calls <code>resetToZero()</code>. Any raw cell below <code>0.0001</code> is dropped to zero so stale noise does not linger forever.</li>
@@ -1110,7 +1104,7 @@ kernel[cell] = sum over all raw source cells:
       <td>still based on old raw</td>
     </tr>
     <tr>
-      <td>right after <code>reset()</code> and <code>finalize()</code></td>
+      <td>after <code>reset()</code> and the first kernel query</td>
       <td>decayed old raw + fresh pending</td>
       <td>0</td>
       <td>updated immediately</td>
@@ -1145,8 +1139,8 @@ kernel[cell] = sum over all raw source cells:
       <td>rebuilt from cleaned raw on demand</td>
     </tr>
   </table>
-  <p><strong>Important distinction:</strong> <code>finalize()</code> does not merge pending into raw. The merge is done by <code>reset()</code>. <code>finalize()</code> only ensures the kernel cache is rebuilt from whatever raw now contains.</p>
-  <p><strong>Example takeaway:</strong> history maps warm up one merge later, then continue through a repeating cycle: buffer fresh events, merge them into raw, rebuild visible kernel from raw, decay when no events happen, buffer again, merge again. At every point, kernel/quad/center are driven by raw, not by pending.</p>
+  <p><strong>Important distinction:</strong> the merge is done by <code>reset()</code>. Kernel, quad, and center caches are invalidated there and rebuild lazily from whatever raw now contains when a consumer next reads them.</p>
+  <p><strong>Example takeaway:</strong> history maps warm up one merge later, then continue through a repeating cycle: buffer fresh events, merge them into raw, rebuild caches on demand from raw, decay when no events happen, buffer again, merge again. At every point, kernel/quad/center are driven by raw, not by pending.</p>
 </div>
 
 <div class="card">
@@ -1259,7 +1253,7 @@ if weight == 0 or max == min:
   <h3><code>gatherSpeed[FOOD, WOOD, STONE, GOLD]</code></h3>
   <div><span class="tag history">buffered history</span><span class="tag kernel">kernel-consumed</span></div>
   <p>Raw meaning: decayed recent collection intensity for one resource type. Updates arrive through <code>addCollect()</code>, which writes to <code>pendingValues</code> at the worker's influence cell.</p>
-  <p>On <code>updateWithHistory()</code>, each cell performs <code>raw = raw * 0.5 + pending</code>; then pending is cleared and <code>finalize()</code> rebuilds the kernel cache immediately.</p>
+  <p>On <code>updateWithHistory()</code>, active cells perform <code>raw = raw * 0.5 + pending</code>; then pending is cleared and the kernel cache is rebuilt lazily on its next query.</p>
   <p>Threshold cleanup later removes raw values below <code>0.0001</code> so old collection trails disappear completely.</p>
   <p>AI consumption:</p>
   <ul>
@@ -1286,7 +1280,7 @@ if weight == 0 or max == min:
   <h3><code>economicActivity</code> / <code>ECON</code> Center</h3>
   <div><span class="tag history">gather history</span><span class="tag center">cached center</span></div>
   <p>One buffered history map per player aggregates all resource types. Each <code>addCollect()</code> writes the collected value to both the resource-type <code>gatherSpeed</code> map and <code>economicActivity</code>.</p>
-  <p>It merges pending collection into raw with the same decay and threshold-pruning cadence as gather history. Its normal raw quad-center selection caches the resulting world position, including an empty result; because ECON has no kernel consumer, its kernel is not eagerly rebuilt during the merge.</p>
+  <p>It merges pending collection into raw with the same decay and threshold-pruning cadence as gather history. Its normal raw quad-center selection caches the resulting world position, including an empty result; ECON uses raw center data and its kernel is rebuilt lazily if queried.</p>
   <p>Fresh collection events remain in <code>pendingValues</code>, so they do not change ECON until the next five-second <code>updateWithHistory()</code> merge.</p>
   <p>AI consumption: <code>CenterType::ECON</code> for economy nearby-supply queries, worker deployment choice, and economy military targets. The <code>ECONOMY</code> debug mode renders the map raw values.</p>
 </div>
