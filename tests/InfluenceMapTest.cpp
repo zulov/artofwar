@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <type_traits>
 
 #include "env/GridCalculator.h"
 #include "env/GridCalculatorProvider.h"
@@ -10,6 +11,11 @@
 
 #include "../game/src/env/influence/map/InfluenceTemplateProvider.cpp"
 #include "../game/src/env/influence/map/InfluenceMap.cpp"
+
+static_assert(!std::is_copy_constructible_v<InfluenceMap>);
+static_assert(!std::is_copy_assignable_v<InfluenceMap>);
+static_assert(!std::is_move_constructible_v<InfluenceMap>);
+static_assert(!std::is_move_assignable_v<InfluenceMap>);
 
 
 
@@ -415,15 +421,6 @@ TEST_F(CumulateErrorsFixture, PositiveAndNegativeAreSymmetric) {
 	EXPECT_NEAR(posErr2, negErr0, 1e-5f);
 }
 
-TEST(InfluenceMapRegression, GetKernelMaxIdxsHandlesSmallMap) {
-	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
-	map.update(0, 1.f);
-
-	const auto indexes = map.getKernelMaxIdxs();
-	ASSERT_EQ(indexes.size(), 10u);
-	EXPECT_EQ(indexes[0], 0u);
-}
-
 TEST(InfluenceMapRegression, GetRawMaxIdxsReturnsTheTenLargestValues) {
 	TestableInfluenceMap map(GridCalculatorProvider::get(8, 16.f));
 	for (unsigned index = 0; index < 12; ++index) {
@@ -436,6 +433,24 @@ TEST(InfluenceMapRegression, GetRawMaxIdxsReturnsTheTenLargestValues) {
 	for (unsigned index = 0; index < indexes.size(); ++index) {
 		EXPECT_EQ(indexes[index], index);
 	}
+}
+
+TEST(InfluenceMapRegression, GetRawMaxIdxsUsesMaximumThresholdAndTrimsZeroes) {
+	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
+	map.update(0, 0.5f);
+	map.update(1, 0.5001f);
+	map.update(2, 2.f);
+
+	const auto indexes = map.getRawMaxIdxs();
+
+	ASSERT_EQ(indexes.size(), 3u);
+	EXPECT_EQ(indexes[0], 2u);
+	EXPECT_EQ(indexes[1], 1u);
+	EXPECT_EQ(indexes[2], 0u);
+
+	TestableInfluenceMap atThreshold(GridCalculatorProvider::get(4, 8.f));
+	atThreshold.update(0, 0.5f);
+	EXPECT_TRUE(atThreshold.getRawMaxIdxs().empty());
 }
 
 TEST(InfluenceMapRegression, ZeroWeightDoesNotRebuildKernel) {

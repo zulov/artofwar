@@ -8,24 +8,15 @@
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"
 #include "debug/DebugLineRepo.h"
-#include "env/Environment.h"
 
 void InfluenceMap::drawRaw() {
 	DebugLineRepo::drawQuads(DebugLineType::GRID, getResolution(), rawValues, valueThresholdDebug);
 }
 
 void InfluenceMap::drawKernel() {
-	ensureReady();
+	ensureKernel();
 	DebugLineRepo::drawQuads(DebugLineType::GRID, getResolution(), kernelValues, valueThresholdDebug);
 }
-
-Urho3D::Vector3 InfluenceMap::getVertex(const Urho3D::Vector2& center, Urho3D::Vector2 vertex) const {
-	auto result = Game::getEnvironment()->getPosWithHeightAt(center.x_ + vertex.x_, center.y_ + vertex.y_);
-	result.y_ += 1.f;
-	return result;
-}
-
-void InfluenceMap::drawCell(int index, bool useKernel) const {}
 
 void InfluenceMap::printMap(std::span<const float> map, const Urho3D::String& name) {
 	auto [minIt, maxIt] = std::ranges::minmax_element(map);
@@ -55,10 +46,10 @@ void InfluenceMap::printMap(std::span<const float> map, const Urho3D::String& na
 }
 
 void InfluenceMap::print(Urho3D::String name) {
-	ensureReady();
+	ensureKernel();
 	printMap(std::span<const float>(rawValues, arraySize), name + "_raw");
 	printMap(std::span<const float>(kernelValues, arraySize), name + "_kernel");
-	ensureQuad();
+	ensureCenter();
 	for (int i = 0; i < static_cast<int>(quadLayers.size()); ++i) {
 		printMap(quadLayers[i], name + "_quad_" + Urho3D::String(i));
 	}

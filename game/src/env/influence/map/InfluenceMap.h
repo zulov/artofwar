@@ -7,7 +7,6 @@
 
 #include <Urho3D/Container/Str.h>
 #include <Urho3D/Math/Vector2.h>
-#include <Urho3D/Math/Vector3.h>
 
 #include "env/GridCalculator.h"
 
@@ -15,6 +14,10 @@ class InfluenceMap {
 public:
 	InfluenceMap(GridCalculator* calculator, float valueThresholdDebug = 40.f, bool history = false);
 	virtual ~InfluenceMap();
+	InfluenceMap(const InfluenceMap&) = delete;
+	InfluenceMap& operator=(const InfluenceMap&) = delete;
+	InfluenceMap(InfluenceMap&&) = delete;
+	InfluenceMap& operator=(InfluenceMap&&) = delete;
 
 	void drawRaw();
 	void drawKernel();
@@ -32,14 +35,10 @@ public:
 	float getKernel(const Urho3D::Vector2& pos) const;
 	std::optional<Urho3D::Vector2> getCenter() const;
 	std::vector<unsigned> getRawMaxIdxs() const;
-	std::vector<unsigned> getKernelMaxIdxs() const;
 	void print(Urho3D::String name);
 	unsigned short getResolution() const { return calculator->getResolution(); }
 
-	std::vector<int> getIndexesWithByValue(float percent, float tolerance);
 	bool cumulateErrors(float percent, std::span<float> intersection);
-
-	void ensureReady();
 
 protected:
 	GridCalculator* calculator;
@@ -63,18 +62,14 @@ protected:
 
 private:
 	void applyKernel(unsigned index, float value) const;
-	std::vector<unsigned> getMaxIdxsRaw() const;
-	std::vector<unsigned> getMaxIdxsKernel() const;
+	std::vector<unsigned> getMaxIdxs(std::span<const float> values) const;
 	void ensureCenter() const;
 	void ensureKernel() const;
-	void ensureQuad() const;
 	void initializeQuad() const;
 	void rebuildKernel() const;
 	void rebuildQuad() const;
 	int getMaxElement(const std::array<int, 4>& indexes, std::span<const float> vals) const;
 	void computeMinMax() const;
-	Urho3D::Vector3 getVertex(const Urho3D::Vector2& center, Urho3D::Vector2 vertex) const;
-	void drawCell(int index, bool useKernel) const;
 
 	const float* templateV;
 	mutable float* quadValues = nullptr;
@@ -82,7 +77,6 @@ private:
 	mutable std::vector<unsigned short> quadResolutions;
 	mutable std::optional<Urho3D::Vector2> center;
 	mutable bool centerDirty = true;
-	mutable bool quadDirty = true;
 	float minimalThreshold = 0.f;
 	float vanishCoef = 1.f;
 };

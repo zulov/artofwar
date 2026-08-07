@@ -101,15 +101,22 @@ void InfluenceMap::reset() {
 		invalidateCaches();
 		return;
 	}
-	std::fill_n(rawValues, arraySize, 0.f);
-	if (pendingValues) {
-		std::fill_n(pendingValues, arraySize, 0.f);
+	if (vanishCoef != 1.f || minimalThreshold != 0.f) {
+		const auto end = rawValues + arraySize;
+		for (auto i = rawValues; i < end; ++i) {
+			*i *= vanishCoef;
+			if (*i != 0.f) {
+				addNonZeroIndex(nonZeroIndexes, static_cast<unsigned>(i - rawValues));
+			}
+		}
+		invalidateCaches();
+		return;
 	}
+	std::fill_n(rawValues, arraySize, 0.f);
 	std::fill_n(kernelValues, arraySize, 0.f);
 	valuesCalculateNeeded = false;
 	center.reset();
-	centerDirty = false;
-	quadDirty = true;
+	centerDirty = true;
 	minMaxInited = false;
 }
 
@@ -128,7 +135,6 @@ void InfluenceMap::resetToZero() {
 void InfluenceMap::invalidateCaches() {
 	valuesCalculateNeeded = true;
 	centerDirty = true;
-	quadDirty = true;
 	minMaxInited = false;
 }
 
@@ -155,16 +161,10 @@ std::optional<Urho3D::Vector2> InfluenceMap::getCenter() const {
 }
 
 std::vector<unsigned> InfluenceMap::getRawMaxIdxs() const {
-	return getMaxIdxsRaw();
+	return getMaxIdxs(std::span<const float>(rawValues, arraySize));
 }
 
-std::vector<unsigned> InfluenceMap::getKernelMaxIdxs() const {
-	ensureKernel();
-	return getMaxIdxsKernel();
-}
-
-std::vector<unsigned> InfluenceMap::getMaxIdxsRaw() const {
-	const auto data = std::span<const float>(rawValues, arraySize);
+std::vector<unsigned> InfluenceMap::getMaxIdxs(std::span<const float> data) const {
 	if (data.empty()) {
 		return {};
 	}
@@ -172,29 +172,7 @@ std::vector<unsigned> InfluenceMap::getMaxIdxsRaw() const {
 	if (maxIt == data.end() || *maxIt <= 0.5f) {
 		return {};
 	}
-	std::vector<unsigned> idx(arraySize);
-	std::iota(idx.begin(), idx.end(), 0u);
-	const auto count = std::min<std::size_t>(10, idx.size());
-	std::partial_sort(idx.begin(), idx.begin() + count, idx.end(), [data](unsigned a, unsigned b) {
-		return data[a] > data[b];
-	});
-	idx.resize(count);
-	while (!idx.empty() && data[idx.back()] == 0) {
-		idx.pop_back();
-	}
-	return idx;
-}
-
-std::vector<unsigned> InfluenceMap::getMaxIdxsKernel() const {
-	const auto data = std::span<const float>(kernelValues, arraySize);
-	if (data.empty()) {
-		return {};
-	}
-	const auto maxIt = std::ranges::max_element(data);
-	if (maxIt == data.end() || *maxIt <= 0.5f) {
-		return {};
-	}
-	std::vector<unsigned> idx(arraySize);
+	std::vector<unsigned> idx(data.size());
 	std::iota(idx.begin(), idx.end(), 0u);
 	const auto count = std::min<std::size_t>(10, idx.size());
 	std::partial_sort(idx.begin(), idx.begin() + count, idx.end(), [data](unsigned a, unsigned b) {
@@ -210,15 +188,6 @@ std::vector<unsigned> InfluenceMap::getMaxIdxsKernel() const {
 void InfluenceMap::ensureKernel() const {
 	if (valuesCalculateNeeded) {
 		rebuildKernel();
-	}
-}
-
-void InfluenceMap::ensureQuad() const {
-	if (!quadValues) {
-		initializeQuad();
-	}
-	if (quadDirty) {
-		rebuildQuad();
 	}
 }
 
@@ -290,7 +259,10 @@ void InfluenceMap::ensureCenter() const {
 		return;
 	}
 
-	ensureQuad();
+	if (!quadValues) {
+		initializeQuad();
+	}
+	rebuildQuad();
 	auto rawSpan = std::span<const float>(rawValues, arraySize);
 
 	if (!anyGreaterThanZero(quadLayers[0])) {
@@ -334,12 +306,6 @@ void InfluenceMap::rebuildQuad() const {
 		parent = std::span<const float>(current.data(), current.size());
 		parentRes = currentRes;
 	}
-	quadDirty = false;
-}
-
-void InfluenceMap::ensureReady() {
-	ensureKernel();
-	computeMinMax();
 }
 
 void InfluenceMap::computeMinMax() const {
@@ -350,23 +316,6 @@ void InfluenceMap::computeMinMax() const {
 		max = *maxPtr;
 		minMaxInited = true;
 	}
-}
-
-std::vector<int> InfluenceMap::getIndexesWithByValue(float percent, float tolerance) {
-	ensureKernel();
-	computeMinMax();
-	const float diff = max - min;
-	auto minV = diff * (percent - tolerance) + min;
-	auto maxV = diff * (percent + tolerance) + min;
-	float* i = kernelValues;
-	std::vector<int> indexes;
-	indexes.reserve(16);
-	auto pred = [minV, maxV](float v) { return v >= minV && v <= maxV; };
-	while ((i = std::find_if(i, kernelValues + arraySize, pred)) != kernelValues + arraySize) {
-		indexes.push_back(i - kernelValues);
-		++i;
-	}
-	return indexes;
 }
 
 bool InfluenceMap::cumulateErrors(float percent, std::span<float> intersection) {

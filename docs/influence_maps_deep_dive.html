@@ -1560,7 +1560,7 @@ if weight == 0 or max == min:
     <li><strong><code>BATTLE</code> is a per-player battle-history alias.</strong> It is not a shared global battlefield center.</li>
     <li><strong>Uniform maps do not help placement.</strong> If every cell in a map has the same kernel value, <code>cumulateErrors()</code> returns false and that map contributes nothing.</li>
     <li><strong>Visibility filtering happens before map scoring.</strong> Unseen cells start with huge error, so even a perfect influence score elsewhere cannot normally beat them.</li>
-    <li><strong><code>getRawMaxIdxs()</code> and <code>getKernelMaxIdxs()</code> are top-10 helpers.</strong> They sort descending and return nothing if the maximum value is not above 0.5.</li>
+    <li><strong><code>getRawMaxIdxs()</code> is a top-10 helper.</strong> It sorts descending and returns nothing if the maximum raw value is not above 0.5.</li>
     <li><strong>Center queries use raw data.</strong> If you expect the center of a blurred region, that is not what <code>getCenterOf()</code> currently computes.</li>
     <li><strong>Generic building placement and specialized bonus placement are separate paths.</strong> The generic path uses the 11-weight view; the special path uses raw maxima from <code>unboostedResourceActivityByTypeAndPlayer[RESOURCE]</code>.</li>
   </ul>
