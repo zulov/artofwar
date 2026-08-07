@@ -97,7 +97,7 @@ void Building::action(BuildingActionType type, unsigned short id) {
 	switch (type) {
 	case BuildingActionType::UNIT_CREATE:
 		if (resources->reduce(Game::getDatabase()->getUnit(id))) {
-			queue.add(QueueActionType::UNIT_CREATE, id, player->getLevelForUnit(id)->id);
+			queue.add(QueueActionType::UNIT_CREATE, id, player->getUnitLevel(id)->id);
 		}
 		break;
 	case BuildingActionType::UNIT_LEVEL: {

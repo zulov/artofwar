@@ -73,8 +73,6 @@ void InfluenceMap::update(const Urho3D::Vector2& pos, float value) {
 	update(calculator->indexFromPosition(pos), value);
 }
 
-void InfluenceMap::updateFromTemp() { ensureKernel(); }
-
 void InfluenceMap::reset() {
 	nonZeroIndexes.clear();
 	if (hasPendingValues()) {
