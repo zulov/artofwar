@@ -2,9 +2,8 @@
 
 #include <algorithm>
 #include <cassert>
-#include <cstddef>
-#include <ranges>
 #include <numeric>
+#include <ranges>
 
 #include "env/influence/MapsUtils.h"
 #include "env/influence/map/InfluenceTemplateProvider.h"
@@ -26,19 +25,16 @@ namespace {
 }
 
 InfluenceMap::InfluenceMap(GridCalculator* calculator, float valueThresholdDebug, bool history)
-	: templateV(InfluenceTemplateProvider::get(KERNEL_COEF, INF_LEVEL)),
-	  calculator(calculator),
-	  arraySize(0),
-	  valueThresholdDebug(valueThresholdDebug) {
-	assert(calculator);
-	arraySize = calculator->getResolution() * calculator->getResolution();
+	: arraySize(calculator->getResolution() * calculator->getResolution()),
+	  calculator(calculator), debugThreshold(valueThresholdDebug),
+	  templateV(InfluenceTemplateProvider::get(KERNEL_COEF, INF_LEVEL)) {
+
 	rawValues = new float[arraySize];
 	kernelValues = new float[arraySize];
 	std::fill_n(rawValues, arraySize, 0.f);
 	std::fill_n(kernelValues, arraySize, 0.f);
-	nonZeroIndexes.reserve(MAX_NON_ZERO_INDEXES);
+	nonZeroRawIndexes.reserve(MAX_NON_ZERO_INDEXES);
 
-	centerDirty = true;
 	if (history) {
 		minimalThreshold = HISTORY_MINIMAL_THRESHOLD;
 		vanishCoef = HISTORY_VANISH_COEF;
@@ -57,10 +53,8 @@ InfluenceMap::~InfluenceMap() {
 
 void InfluenceMap::update(unsigned index, float value) {
 	assert(value >= 0.f);
-	if (value == 0.f) {
-		return;
-	}
-	if (hasPendingValues()) {
+	if (value == 0.f) { return; }
+	if (hasHistory()) {
 		if (pendingValues[index] == 0.f) {
 			if (pendingNonZeroIndexes.size() < MAX_PENDING_NON_ZERO_INDEXES) {
 				pendingNonZeroIndexes.push_back(index);
@@ -70,7 +64,7 @@ void InfluenceMap::update(unsigned index, float value) {
 		return;
 	}
 	if (rawValues[index] == 0.f) {
-		addNonZeroIndex(nonZeroIndexes, index);
+		addNonZeroIndex(nonZeroRawIndexes, index);
 	}
 	rawValues[index] += value;
 	invalidateCaches();
@@ -81,34 +75,34 @@ void InfluenceMap::update(const Urho3D::Vector2& pos, float value) {
 }
 
 void InfluenceMap::reset() {
-	if (hasPendingValues()) {
-		const bool rawIndexesAtCapacity = nonZeroIndexes.size() >= MAX_NON_ZERO_INDEXES;
+	if (hasHistory()) {
+		const bool rawIndexesAtCapacity = nonZeroRawIndexes.size() >= MAX_NON_ZERO_INDEXES;
 		const bool pendingIndexesAtCapacity = pendingNonZeroIndexes.size() >= MAX_PENDING_NON_ZERO_INDEXES;
 		if (pendingIndexesAtCapacity || rawIndexesAtCapacity) {
-			nonZeroIndexes.clear();
+			nonZeroRawIndexes.clear();
 			const auto rawEnd = rawValues + arraySize;
 			auto* pending = pendingValues;
 			for (auto raw = rawValues; raw < rawEnd; ++raw, ++pending) {
 				*raw = *raw * vanishCoef + *pending;
 				*pending = 0.f;
 				if (*raw != 0.f) {
-					addNonZeroIndex(nonZeroIndexes, static_cast<unsigned>(raw - rawValues));
+					addNonZeroIndex(nonZeroRawIndexes, static_cast<unsigned>(raw - rawValues));
 				}
 			}
 		} else {
 			std::array<unsigned, MAX_NON_ZERO_INDEXES + MAX_PENDING_NON_ZERO_INDEXES> indexes;
-			auto indexesEnd = std::copy(nonZeroIndexes.begin(), nonZeroIndexes.end(), indexes.begin());
-			indexesEnd = std::copy(pendingNonZeroIndexes.begin(), pendingNonZeroIndexes.end(), indexesEnd);
+			auto indexesEnd = std::ranges::copy(nonZeroRawIndexes, indexes.begin()).out;
+			indexesEnd = std::ranges::copy(pendingNonZeroIndexes, indexesEnd).out;
 			std::sort(indexes.begin(), indexesEnd);
 			indexesEnd = std::unique(indexes.begin(), indexesEnd);
 
-			nonZeroIndexes.clear();
+			nonZeroRawIndexes.clear();
 			for (auto indexIt = indexes.begin(); indexIt != indexesEnd; ++indexIt) {
 				const auto index = *indexIt;
 				rawValues[index] = rawValues[index] * vanishCoef + pendingValues[index];
 				pendingValues[index] = 0.f;
 				if (rawValues[index] != 0.f) {
-					addNonZeroIndex(nonZeroIndexes, index);
+					addNonZeroIndex(nonZeroRawIndexes, index);
 				}
 			}
 		}
@@ -116,55 +110,55 @@ void InfluenceMap::reset() {
 		invalidateCaches();
 		return;
 	}
+	//TODO AI pending == has history mixed up logic 
 	if (vanishCoef != 1.f || minimalThreshold != 0.f) {
-		if (nonZeroIndexes.size() < MAX_NON_ZERO_INDEXES) {
+		if (nonZeroRawIndexes.size() < MAX_NON_ZERO_INDEXES) {
 			std::size_t writeIndex = 0;
-			for (const auto index : nonZeroIndexes) {
+			for (const auto index : nonZeroRawIndexes) {
 				rawValues[index] *= vanishCoef;
 				if (rawValues[index] != 0.f) {
-					nonZeroIndexes[writeIndex++] = index;
+					nonZeroRawIndexes[writeIndex++] = index;
 				}
 			}
-			nonZeroIndexes.resize(writeIndex);
+			nonZeroRawIndexes.resize(writeIndex);
 			invalidateCaches();
 			return;
 		}
-		nonZeroIndexes.clear();
+		nonZeroRawIndexes.clear();
 		const auto end = rawValues + arraySize;
 		for (auto i = rawValues; i < end; ++i) {
 			*i *= vanishCoef;
 			if (*i != 0.f) {
-				addNonZeroIndex(nonZeroIndexes, static_cast<unsigned>(i - rawValues));
+				addNonZeroIndex(nonZeroRawIndexes, static_cast<unsigned>(i - rawValues));
 			}
 		}
 		invalidateCaches();
 		return;
 	}
-	nonZeroIndexes.clear();
+	nonZeroRawIndexes.clear();
 	std::fill_n(rawValues, arraySize, 0.f);
 	std::fill_n(kernelValues, arraySize, 0.f);
-	valuesCalculateNeeded = false;
 	center.reset();
+
+	rawHasChanged = false;
 	centerDirty = true;
-	minMaxInited = false;
 }
 
 void InfluenceMap::resetToZero() {
-	nonZeroIndexes.clear();
+	nonZeroRawIndexes.clear();
 	const auto end = rawValues + arraySize;
 	for (auto i = rawValues; i < end; ++i) {
 		*i = *i >= minimalThreshold ? *i : 0.f;
 		if (*i != 0.f) {
-			addNonZeroIndex(nonZeroIndexes, static_cast<unsigned>(i - rawValues));
+			addNonZeroIndex(nonZeroRawIndexes, static_cast<unsigned>(i - rawValues));
 		}
 	}
 	invalidateCaches();
 }
 
 void InfluenceMap::invalidateCaches() {
-	valuesCalculateNeeded = true;
+	rawHasChanged = true;
 	centerDirty = true;
-	minMaxInited = false;
 }
 
 float InfluenceMap::getRaw(unsigned index) const {
@@ -178,10 +172,6 @@ float InfluenceMap::getRaw(const Urho3D::Vector2& pos) const {
 float InfluenceMap::getKernel(unsigned index) const {
 	ensureKernel();
 	return kernelValues[index];
-}
-
-float InfluenceMap::getKernel(const Urho3D::Vector2& pos) const {
-	return getKernel(calculator->indexFromPosition(pos));
 }
 
 std::optional<Urho3D::Vector2> InfluenceMap::getCenter() const {
@@ -202,9 +192,9 @@ std::vector<unsigned> InfluenceMap::getMaxIdxs(std::span<const float> data) cons
 		return {};
 	}
 	std::vector<unsigned> idx(data.size());
-	std::iota(idx.begin(), idx.end(), 0u);
+	std::ranges::iota(idx, 0u);
 	const auto count = std::min<std::size_t>(10, idx.size());
-	std::partial_sort(idx.begin(), idx.begin() + count, idx.end(), [data](unsigned a, unsigned b) {
+	std::ranges::partial_sort(idx, idx.begin() + count, [data](unsigned a, unsigned b) {
 		return data[a] > data[b];
 	});
 	idx.resize(count);
@@ -215,12 +205,30 @@ std::vector<unsigned> InfluenceMap::getMaxIdxs(std::span<const float> data) cons
 }
 
 void InfluenceMap::ensureKernel() const {
-	if (valuesCalculateNeeded) {
-		rebuildKernel();
+	if (rawHasChanged) {
+		std::fill_n(kernelValues, arraySize, 0.f);
+		if (nonZeroRawIndexes.size() < MAX_NON_ZERO_INDEXES) {
+			for (const auto index : nonZeroRawIndexes) {
+				applyKernel(index);
+			}
+		} else {
+			for (unsigned index = 0; index < arraySize; ++index) {
+				if (rawValues[index] != 0.f) {
+					applyKernel(index);
+				}
+			}
+		}
+		const auto [minPtr, maxPtr] = std::minmax_element(kernelValues, kernelValues + arraySize);
+		minKernel = *minPtr;
+		maxKernel = *maxPtr;
+		rawHasChanged = false;
 	}
 }
 
 void InfluenceMap::initializeQuad() const {
+	if (quadValues) {
+		return;
+	}
 	unsigned int quadArraySize = 0;
 	auto currentRes = calculator->getResolution();
 	while (currentRes % 2 == 0 && currentRes != 1) {
@@ -232,7 +240,7 @@ void InfluenceMap::initializeQuad() const {
 	}
 	quadValues = new float[quadArraySize];
 	float* ptr = quadValues;
-	for (int i = currentRes; i < calculator->getResolution(); i *= 2) {
+	for (auto i = currentRes; i < calculator->getResolution(); i *= 2) {
 		const auto size = i * i;
 		quadLayers.emplace_back(ptr, size);
 		quadResolutions.push_back(i);
@@ -241,7 +249,8 @@ void InfluenceMap::initializeQuad() const {
 	assert(!quadLayers.empty());
 }
 
-void InfluenceMap::applyKernel(unsigned index, float value) const {
+void InfluenceMap::applyKernel(unsigned index) const {
+	float value = rawValues[index];
 	if (value == 0.f) {
 		return;
 	}
@@ -261,22 +270,6 @@ void InfluenceMap::applyKernel(unsigned index, float value) const {
 	}
 }
 
-void InfluenceMap::rebuildKernel() const {
-	std::fill_n(kernelValues, arraySize, 0.f);
-	if (nonZeroIndexes.size() < MAX_NON_ZERO_INDEXES) {
-		for (const auto index : nonZeroIndexes) {
-			applyKernel(index, rawValues[index]);
-		}
-	} else {
-		for (unsigned index = 0; index < arraySize; ++index) {
-			if (rawValues[index] != 0.f) {
-				applyKernel(index, rawValues[index]);
-			}
-		}
-	}
-	valuesCalculateNeeded = false;
-}
-
 int InfluenceMap::getMaxElement(const std::array<int, 4>& indexes, std::span<const float> vals) const {
 	float values1[4] = {vals[indexes[0]], vals[indexes[1]], vals[indexes[2]], vals[indexes[3]]};
 	int i = std::distance(values1, std::max_element(values1, values1 + 4));
@@ -288,9 +281,8 @@ void InfluenceMap::ensureCenter() const {
 		return;
 	}
 
-	if (!quadValues) {
-		initializeQuad();
-	}
+	initializeQuad();
+	
 	rebuildQuad();
 	auto rawSpan = std::span<const float>(rawValues, arraySize);
 
@@ -337,24 +329,12 @@ void InfluenceMap::rebuildQuad() const {
 	}
 }
 
-void InfluenceMap::computeMinMax() const {
-	if (!minMaxInited) {
-		ensureKernel();
-		const auto [minPtr, maxPtr] = std::minmax_element(kernelValues, kernelValues + arraySize);
-		min = *minPtr;
-		max = *maxPtr;
-		minMaxInited = true;
-	}
-}
-
 bool InfluenceMap::cumulateErrors(float percent, std::span<float> intersection) {
-	if (percent == 0.f) {
+	if (percent == 0.f) {//TODO AI ask why
 		return false;
 	}
 	ensureKernel();
-	computeMinMax();
-	assert(minMaxInited);
-	const float diff = max - min;
+	const float diff = maxKernel - minKernel;
 	if (diff == 0.f) {
 		return false;
 	}
@@ -362,12 +342,12 @@ bool InfluenceMap::cumulateErrors(float percent, std::span<float> intersection) 
 	const auto coef1 = 1.f / diff * percent;
 	if (percent < 0.f) {
 		for (unsigned i = 0; i < arraySize; ++i) {
-			float val = (kernelValues[i] - min) * coef1;
+			float val = (kernelValues[i] - minKernel) * coef1;
 			intersection[i] += val * val;
 		}
 	} else {
 		for (unsigned i = 0; i < arraySize; ++i) {
-			float val = (max - kernelValues[i]) * coef1;
+			float val = (maxKernel - kernelValues[i]) * coef1;
 			intersection[i] += val * val;
 		}
 	}

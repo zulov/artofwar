@@ -18,7 +18,6 @@ static_assert(!std::is_move_constructible_v<InfluenceMap>);
 static_assert(!std::is_move_assignable_v<InfluenceMap>);
 
 
-
 // Testable subclass exposing internals for direct manipulation
 class TestableInfluenceMap : public InfluenceMap {
 public:
@@ -30,19 +29,18 @@ public:
 
 	void setValues(const std::vector<float>& vals) {
 		assert(vals.size() == arraySize);
-		std::copy(vals.begin(), vals.end(), kernelValues);
-		valuesCalculateNeeded = false;
+		std::ranges::copy(vals, kernelValues);
+		rawHasChanged = false;
 	}
 
 	void setMinMax(float minVal, float maxVal) {
-		min = minVal;
-		max = maxVal;
-		minMaxInited = true;
+		minKernel = minVal;
+		maxKernel = maxVal;
 	}
 
 	unsigned int getArraySize() const { return arraySize; }
-	bool isKernelDirty() const { return valuesCalculateNeeded; }
-	const std::vector<unsigned>& getNonZeroIndexes() const { return nonZeroIndexes; }
+	bool isKernelDirty() const { return rawHasChanged; }
+	const std::vector<unsigned>& getNonZeroIndexes() const { return nonZeroRawIndexes; }
 };
 
 class CumulateErrorsFixture : public ::testing::Test {
@@ -70,8 +68,8 @@ protected:
 	// Helper: set uniform values and min/max
 	void setupMap(const std::vector<float>& vals) {
 		map->setValues(vals);
-		float mn = *std::min_element(vals.begin(), vals.end());
-		float mx = *std::max_element(vals.begin(), vals.end());
+		float mn = *std::ranges::min_element(vals);
+		float mx = *std::ranges::max_element(vals);
 		map->setMinMax(mn, mx);
 	}
 };

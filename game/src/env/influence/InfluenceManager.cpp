@@ -307,7 +307,7 @@ InfluenceManager::getBestVisibleIndexes(std::span<InfluenceMap*> maps, std::span
 	//unseen means max float max error
 	const int noOfVisible = visibilityManager->removeUnseen(player, std::span<float>(errorsSum));
 
-	char numberOfNotEmptyMap = 0;
+	unsigned char numberOfNotEmptyMap = 0;
 	for (auto&& [map, value] : std::views::zip(maps, result)) {
 		numberOfNotEmptyMap += map->cumulateErrors(value, std::span<float>(errorsSum));
 	}

@@ -31,7 +31,6 @@ public:
 	float getRaw(unsigned index) const;
 	float getRaw(const Urho3D::Vector2& pos) const;
 	float getKernel(unsigned index) const;
-	float getKernel(const Urho3D::Vector2& pos) const;
 	std::optional<Urho3D::Vector2> getCenter() const;
 	std::vector<unsigned> getRawMaxIdxs() const;
 	void print(Urho3D::String name);
@@ -41,43 +40,44 @@ public:
 	void ensureKernel() const;
 
 protected:
-	GridCalculator* calculator;
 	unsigned int arraySize;
-	const float valueThresholdDebug;
 
-	float* rawValues;
-	float* pendingValues = nullptr;
-	float* kernelValues;
-	mutable bool valuesCalculateNeeded = false;
-	std::vector<unsigned> nonZeroIndexes;
+	mutable float minKernel = 0.f;
+	mutable float maxKernel = 0.f;
+	std::vector<unsigned> nonZeroRawIndexes;
 	std::vector<unsigned> pendingNonZeroIndexes;
-	void invalidateCaches();
-	void printMap(std::span<const float> map, const Urho3D::String& name);
+	float* kernelValues{};
 
-	mutable float min = 0.f;
-	mutable float max = 0.f;
-
-	unsigned short counter = 0;
-	mutable bool minMaxInited = false;
-	bool hasPendingValues() const { return pendingValues != nullptr; }
+	mutable bool rawHasChanged = false;
+	mutable bool centerDirty = true;
 
 private:
-	void applyKernel(unsigned index, float value) const;
+	void invalidateCaches();
+	void printMap(std::span<const float> map, const Urho3D::String& name);
+	bool hasHistory() const { return pendingValues != nullptr; }
+	void applyKernel(unsigned index) const;
 	std::vector<unsigned> getMaxIdxs(std::span<const float> values) const;
 	void ensureCenter() const;
 
 	void initializeQuad() const;
-	void rebuildKernel() const;
 	void rebuildQuad() const;
 	int getMaxElement(const std::array<int, 4>& indexes, std::span<const float> vals) const;
-	void computeMinMax() const;
+
+	GridCalculator* calculator;
+
+	const float debugThreshold;
+
+	float* rawValues{};//TODO Ai witch is better decay raw or kernal
+	float* pendingValues{};
 
 	const float* templateV;
 	mutable float* quadValues = nullptr;
+
 	mutable std::vector<std::span<float>> quadLayers;
 	mutable std::vector<unsigned short> quadResolutions;
 	mutable std::optional<Urho3D::Vector2> center;
-	mutable bool centerDirty = true;
+
 	float minimalThreshold = 0.f;
 	float vanishCoef = 1.f;
+	unsigned short counter = 0;
 };

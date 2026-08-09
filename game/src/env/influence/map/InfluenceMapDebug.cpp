@@ -10,12 +10,12 @@
 #include "debug/DebugLineRepo.h"
 
 void InfluenceMap::drawRaw() {
-	DebugLineRepo::drawQuads(DebugLineType::GRID, getResolution(), rawValues, valueThresholdDebug);
+	DebugLineRepo::drawQuads(DebugLineType::GRID, getResolution(), rawValues, debugThreshold);
 }
 
 void InfluenceMap::drawKernel() {
 	ensureKernel();
-	DebugLineRepo::drawQuads(DebugLineType::GRID, getResolution(), kernelValues, valueThresholdDebug);
+	DebugLineRepo::drawQuads(DebugLineType::GRID, getResolution(), kernelValues, debugThreshold);
 }
 
 void InfluenceMap::printMap(std::span<const float> map, const Urho3D::String& name) {
