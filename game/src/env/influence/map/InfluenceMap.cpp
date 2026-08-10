@@ -55,15 +55,13 @@ void InfluenceMap::update(unsigned index, float value) {
 	assert(value >= 0.f);
 	if (value == 0.f) { return; }
 	if (hasHistory()) {
-		if (pendingValues[index] == 0.f) {
-			if (pendingNonZeroIndexes.size() < MAX_PENDING_NON_ZERO_INDEXES) {
-				pendingNonZeroIndexes.push_back(index);
-			}
+		if (pendingValues[index] == 0.f && pendingNonZeroIndexes.size() < MAX_PENDING_NON_ZERO_INDEXES) {
+			pendingNonZeroIndexes.push_back(index);
 		}
 		pendingValues[index] += value;
 		return;
 	}
-	if (rawValues[index] == 0.f) {
+	if (rawValues[index] == 0.f) { //make sure its added once
 		addNonZeroIndex(nonZeroRawIndexes, index);
 	}
 	rawValues[index] += value;
@@ -140,7 +138,7 @@ void InfluenceMap::reset() {
 	std::fill_n(kernelValues, arraySize, 0.f);
 	center.reset();
 
-	rawHasChanged = false;
+	kernelDirty = false;
 	centerDirty = true;
 }
 
@@ -157,7 +155,7 @@ void InfluenceMap::resetToZero() {
 }
 
 void InfluenceMap::invalidateCaches() {
-	rawHasChanged = true;
+	kernelDirty = true;
 	centerDirty = true;
 }
 
@@ -205,7 +203,7 @@ std::vector<unsigned> InfluenceMap::getMaxIdxs(std::span<const float> data) cons
 }
 
 void InfluenceMap::ensureKernel() const {
-	if (rawHasChanged) {
+	if (kernelDirty) {
 		std::fill_n(kernelValues, arraySize, 0.f);
 		if (nonZeroRawIndexes.size() < MAX_NON_ZERO_INDEXES) {
 			for (const auto index : nonZeroRawIndexes) {
@@ -221,7 +219,7 @@ void InfluenceMap::ensureKernel() const {
 		const auto [minPtr, maxPtr] = std::minmax_element(kernelValues, kernelValues + arraySize);
 		minKernel = *minPtr;
 		maxKernel = *maxPtr;
-		rawHasChanged = false;
+		kernelDirty = false;
 	}
 }
 
@@ -330,7 +328,7 @@ void InfluenceMap::rebuildQuad() const {
 }
 
 bool InfluenceMap::cumulateErrors(float percent, std::span<float> intersection) {
-	if (percent == 0.f) {//TODO AI ask why
+	if (std::abs(percent) < 0.05f) {
 		return false;
 	}
 	ensureKernel();

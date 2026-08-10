@@ -30,7 +30,7 @@ public:
 	void setValues(const std::vector<float>& vals) {
 		assert(vals.size() == arraySize);
 		std::ranges::copy(vals, kernelValues);
-		rawHasChanged = false;
+		kernelDirty = false;
 	}
 
 	void setMinMax(float minVal, float maxVal) {
@@ -39,7 +39,7 @@ public:
 	}
 
 	unsigned int getArraySize() const { return arraySize; }
-	bool isKernelDirty() const { return rawHasChanged; }
+	bool isKernelDirty() const { return kernelDirty; }
 	const std::vector<unsigned>& getNonZeroIndexes() const { return nonZeroRawIndexes; }
 };
 

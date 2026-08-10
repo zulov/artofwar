@@ -48,7 +48,7 @@ protected:
 	std::vector<unsigned> pendingNonZeroIndexes;
 	float* kernelValues{};
 
-	mutable bool rawHasChanged = false;
+	mutable bool kernelDirty = false;
 	mutable bool centerDirty = true;
 
 private:
