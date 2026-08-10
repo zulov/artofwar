@@ -108,38 +108,9 @@ void InfluenceMap::reset() {
 		invalidateCaches();
 		return;
 	}
-	//TODO AI pending == has history mixed up logic 
-	if (vanishCoef != 1.f || minimalThreshold != 0.f) {
-		if (nonZeroRawIndexes.size() < MAX_NON_ZERO_INDEXES) {
-			std::size_t writeIndex = 0;
-			for (const auto index : nonZeroRawIndexes) {
-				rawValues[index] *= vanishCoef;
-				if (rawValues[index] != 0.f) {
-					nonZeroRawIndexes[writeIndex++] = index;
-				}
-			}
-			nonZeroRawIndexes.resize(writeIndex);
-			invalidateCaches();
-			return;
-		}
-		nonZeroRawIndexes.clear();
-		const auto end = rawValues + arraySize;
-		for (auto i = rawValues; i < end; ++i) {
-			*i *= vanishCoef;
-			if (*i != 0.f) {
-				addNonZeroIndex(nonZeroRawIndexes, static_cast<unsigned>(i - rawValues));
-			}
-		}
-		invalidateCaches();
-		return;
-	}
 	nonZeroRawIndexes.clear();
 	std::fill_n(rawValues, arraySize, 0.f);
-	std::fill_n(kernelValues, arraySize, 0.f);
-	center.reset();
-
-	kernelDirty = false;
-	centerDirty = true;
+	invalidateCaches();
 }
 
 void InfluenceMap::resetToZero() {
