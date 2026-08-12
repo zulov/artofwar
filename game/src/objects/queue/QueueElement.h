@@ -7,7 +7,7 @@ class QueueElement {
 public:
 	QueueElement(QueueActionType type, short id, short secondId, unsigned char maxCapacity);
 	~QueueElement() = default;
-	bool checkType(QueueActionType _type, short _id, short _secondId) const;
+	bool checkType(QueueActionType _type, unsigned short _id, unsigned short _secondId) const;
 	short add(short value);
 	void reduce(short value);
 	bool update();
@@ -22,12 +22,12 @@ private:
 	QueueActionType type;
 	unsigned char maxCapacity;
 
-	short id;
-	short amount;
-	short levelId;
+	unsigned short id;
+	unsigned short amount;
+	unsigned short levelId;
 
-	short ticksToComplete;
-	short elapsedTicks;
+	unsigned short ticksToComplete;
+	unsigned short elapsedTicks;
 
-	short ticksToCompletePerInstance;
+	unsigned short ticksToCompletePerInstance;
 };

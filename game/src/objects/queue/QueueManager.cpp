@@ -10,7 +10,7 @@ QueueManager::~QueueManager() {
 }
 
 
-void QueueManager::add(QueueActionType type, short id, short levelId, short number) {
+void QueueManager::add(QueueActionType type,unsigned short id, unsigned short levelId, short number) {
 	for (auto i : queue) {
 		if (i->checkType(type, id, levelId)) {
 			number = i->add(number);

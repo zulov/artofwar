@@ -2,21 +2,15 @@
 #include <vector>
 
 
-constexpr char INF_LEVEL = 4;
-constexpr short INF_GRID_FIELD_SIZE = 8.f;
-constexpr short VISIBILITY_GRID_FIELD_SIZE = INF_GRID_FIELD_SIZE / 2;
+constexpr unsigned char INF_LEVEL = 4;
+constexpr unsigned char INF_GRID_FIELD_SIZE = 8;
+constexpr unsigned char VISIBILITY_GRID_FIELD_SIZE = INF_GRID_FIELD_SIZE / 2;
 
 namespace MapsUtils {
 	template <typename T>
 	void resetMaps(const std::vector<T*>& maps) {
 		for (auto map : maps) {
 			map->reset();
-		}
-	}
-	template <typename T>
-	void resetToZeroMaps(const std::vector<T*>& maps) {
-		for (auto map : maps) {
-			map->resetToZero();
 		}
 	}
 

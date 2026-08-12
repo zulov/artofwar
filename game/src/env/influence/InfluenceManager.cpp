@@ -147,8 +147,6 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 			}
 		}
 	}
-	
-	//TODO perf to tutaj chyba niepotrzebne i tak bedzie zrobione lazy
 }
 
 void InfluenceManager::updateBuildings(const std::vector<Building*>* buildings) const {
@@ -171,14 +169,6 @@ void InfluenceManager::updateWithHistory() const {
 void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
                                         std::vector<ResourceEntity*>* resources) const {
 	visibilityManager->updateVisibility(buildings, units, resources);
-}
-
-void InfluenceManager::resetHistoryThresholds() const {
-	for (auto& vec : gatheringActivityByResource) {
-		MapsUtils::resetToZeroMaps(vec);
-	}
-	MapsUtils::resetToZeroMaps(economicActivity);
-	MapsUtils::resetToZeroMaps(attackActivity);
 }
 
 void InfluenceManager::draw(EnvironmentDebugMode mode, unsigned char index) {

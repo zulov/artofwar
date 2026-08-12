@@ -39,7 +39,6 @@ public:
 	void updateWithHistory() const;
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
 	                      std::vector<ResourceEntity*>* resources) const;
-	void resetHistoryThresholds() const;
 
 	// --- Events (called during simulation) ---
 	void addCollect(Unit* unit, short resId, float value) const;

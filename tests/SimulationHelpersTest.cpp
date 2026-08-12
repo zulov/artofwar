@@ -81,7 +81,6 @@ TEST_F(SimulationHelpersFixture, PerFrameActionSpecificFramesMatchConfiguredSche
 	EXPECT_FALSE(FrameInfo::get(PerFrameAction::INFLUENCE_UNITS, 1, 1));
 	EXPECT_FALSE(FrameInfo::get(PerFrameAction::INFLUENCE_OTHER, 3, 3));
 	EXPECT_TRUE(FrameInfo::get(PerFrameAction::INFLUENCE_OTHER, 3, 4));
-	EXPECT_TRUE(FrameInfo::get(PerFrameAction::INFLUENCE_HISTORY_RESET, 3, 29));
 	EXPECT_TRUE(FrameInfo::get(PerFrameAction::VISIBILITY, 6, 0));
 	EXPECT_TRUE(FrameInfo::get(PerFrameAction::AI_ORDER, 14, 0));
 	EXPECT_TRUE(FrameInfo::get(PerFrameAction::SELF_AI, 11, 0));

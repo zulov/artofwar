@@ -560,7 +560,7 @@ short AiOrchestrator::findBuildingToBuild(unsigned short unitId) const {
 			return building->id;
 		}
 	}
-	return false;
+	return -1;
 }
 
 bool AiOrchestrator::hasAnyBuildingThatDeploy(unsigned short unitId) const {

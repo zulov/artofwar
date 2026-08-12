@@ -8,6 +8,7 @@
 #include "env/influence/MapsUtils.h"
 #include "env/influence/map/InfluenceTemplateProvider.h"
 #include "math/MathUtils.h"
+#include "math/VectorUtils.h"
 #include "utils/SpanUtils.h"
 
 namespace {
@@ -18,16 +19,14 @@ namespace {
 	constexpr std::size_t MAX_PENDING_NON_ZERO_INDEXES = 75;
 
 	void addNonZeroIndex(std::vector<unsigned>& nonZeroIndexes, unsigned index) {
-		if (nonZeroIndexes.size() < MAX_NON_ZERO_INDEXES) {
-			nonZeroIndexes.push_back(index);
-		}
+		if (nonZeroIndexes.size() < MAX_NON_ZERO_INDEXES) { nonZeroIndexes.push_back(index); }
 	}
 }
 
-InfluenceMap::InfluenceMap(GridCalculator* calculator, float valueThresholdDebug, bool history)
-	: arraySize(calculator->getResolution() * calculator->getResolution()),
-	  calculator(calculator), debugThreshold(valueThresholdDebug),
-	  templateV(InfluenceTemplateProvider::get(KERNEL_COEF, INF_LEVEL)) {
+InfluenceMap::InfluenceMap(GridCalculator* calculator, float valueThresholdDebug, bool history) :
+	arraySize(calculator->getResolution() * calculator->getResolution()),
+	calculator(calculator), debugThreshold(valueThresholdDebug),
+	templateV(InfluenceTemplateProvider::get(KERNEL_COEF, INF_LEVEL)) {
 
 	rawValues = new float[arraySize];
 	kernelValues = new float[arraySize];
@@ -59,13 +58,14 @@ void InfluenceMap::update(unsigned index, float value) {
 			pendingNonZeroIndexes.push_back(index);
 		}
 		pendingValues[index] += value;
-		return;
+	} else {
+		if (rawValues[index] == 0.f) {
+			// make sure its added once
+			addNonZeroIndex(nonZeroRawIndexes, index);
+		}
+		rawValues[index] += value;
+		invalidateCaches();
 	}
-	if (rawValues[index] == 0.f) { //make sure its added once
-		addNonZeroIndex(nonZeroRawIndexes, index);
-	}
-	rawValues[index] += value;
-	invalidateCaches();
 }
 
 void InfluenceMap::update(const Urho3D::Vector2& pos, float value) {
@@ -73,56 +73,41 @@ void InfluenceMap::update(const Urho3D::Vector2& pos, float value) {
 }
 
 void InfluenceMap::reset() {
+	invalidateCaches();
 	if (hasHistory()) {
 		const bool rawIndexesAtCapacity = nonZeroRawIndexes.size() >= MAX_NON_ZERO_INDEXES;
 		const bool pendingIndexesAtCapacity = pendingNonZeroIndexes.size() >= MAX_PENDING_NON_ZERO_INDEXES;
-		if (pendingIndexesAtCapacity || rawIndexesAtCapacity) {
+		if (pendingIndexesAtCapacity || rawIndexesAtCapacity) {//fullscan
 			nonZeroRawIndexes.clear();
 			const auto rawEnd = rawValues + arraySize;
 			auto* pending = pendingValues;
 			for (auto raw = rawValues; raw < rawEnd; ++raw, ++pending) {
 				*raw = *raw * vanishCoef + *pending;
 				*pending = 0.f;
-				if (*raw != 0.f) {
+
+				if (*raw > minimalThreshold) {
 					addNonZeroIndex(nonZeroRawIndexes, static_cast<unsigned>(raw - rawValues));
-				}
+				} else { *raw = 0.f; }
 			}
 		} else {
-			std::array<unsigned, MAX_NON_ZERO_INDEXES + MAX_PENDING_NON_ZERO_INDEXES> indexes;
-			auto indexesEnd = std::ranges::copy(nonZeroRawIndexes, indexes.begin()).out;
-			indexesEnd = std::ranges::copy(pendingNonZeroIndexes, indexesEnd).out;
-			std::sort(indexes.begin(), indexesEnd);
-			indexesEnd = std::unique(indexes.begin(), indexesEnd);
-
+			pendingNonZeroIndexes.append_range(nonZeroRawIndexes);
+			sortAndRemoveDuplicates(pendingNonZeroIndexes);
 			nonZeroRawIndexes.clear();
-			for (auto indexIt = indexes.begin(); indexIt != indexesEnd; ++indexIt) {
-				const auto index = *indexIt;
+			for (unsigned index : pendingNonZeroIndexes) {
 				rawValues[index] = rawValues[index] * vanishCoef + pendingValues[index];
 				pendingValues[index] = 0.f;
-				if (rawValues[index] != 0.f) {
+				if (rawValues[index] > minimalThreshold) {
 					addNonZeroIndex(nonZeroRawIndexes, index);
+				} else {
+					rawValues[index] = 0.f;
 				}
 			}
 		}
 		pendingNonZeroIndexes.clear();
-		invalidateCaches();
-		return;
+	}else {
+		nonZeroRawIndexes.clear();
+		std::fill_n(rawValues, arraySize, 0.f);
 	}
-	nonZeroRawIndexes.clear();
-	std::fill_n(rawValues, arraySize, 0.f);
-	invalidateCaches();
-}
-
-void InfluenceMap::resetToZero() {
-	nonZeroRawIndexes.clear();
-	const auto end = rawValues + arraySize;
-	for (auto i = rawValues; i < end; ++i) {
-		*i = *i >= minimalThreshold ? *i : 0.f;
-		if (*i != 0.f) {
-			addNonZeroIndex(nonZeroRawIndexes, static_cast<unsigned>(i - rawValues));
-		}
-	}
-	invalidateCaches();
 }
 
 void InfluenceMap::invalidateCaches() {
@@ -130,13 +115,9 @@ void InfluenceMap::invalidateCaches() {
 	centerDirty = true;
 }
 
-float InfluenceMap::getRaw(unsigned index) const {
-	return rawValues[index];
-}
+float InfluenceMap::getRaw(unsigned index) const { return rawValues[index]; }
 
-float InfluenceMap::getRaw(const Urho3D::Vector2& pos) const {
-	return getRaw(calculator->indexFromPosition(pos));
-}
+float InfluenceMap::getRaw(const Urho3D::Vector2& pos) const { return getRaw(calculator->indexFromPosition(pos)); }
 
 float InfluenceMap::getKernel(unsigned index) const {
 	ensureKernel();
@@ -153,23 +134,15 @@ std::vector<unsigned> InfluenceMap::getRawMaxIdxs() const {
 }
 
 std::vector<unsigned> InfluenceMap::getMaxIdxs(std::span<const float> data) const {
-	if (data.empty()) {
-		return {};
-	}
+	if (data.empty()) { return {}; }
 	const auto maxIt = std::ranges::max_element(data);
-	if (maxIt == data.end() || *maxIt <= 0.5f) {
-		return {};
-	}
+	if (maxIt == data.end() || *maxIt <= 0.5f) { return {}; }
 	std::vector<unsigned> idx(data.size());
 	std::ranges::iota(idx, 0u);
 	const auto count = std::min<std::size_t>(10, idx.size());
-	std::ranges::partial_sort(idx, idx.begin() + count, [data](unsigned a, unsigned b) {
-		return data[a] > data[b];
-	});
+	std::ranges::partial_sort(idx, idx.begin() + count, [data](unsigned a, unsigned b) { return data[a] > data[b]; });
 	idx.resize(count);
-	while (!idx.empty() && data[idx.back()] == 0) {
-		idx.pop_back();
-	}
+	while (!idx.empty() && data[idx.back()] == 0) { idx.pop_back(); }
 	return idx;
 }
 
@@ -177,14 +150,10 @@ void InfluenceMap::ensureKernel() const {
 	if (kernelDirty) {
 		std::fill_n(kernelValues, arraySize, 0.f);
 		if (nonZeroRawIndexes.size() < MAX_NON_ZERO_INDEXES) {
-			for (const auto index : nonZeroRawIndexes) {
-				applyKernel(index);
-			}
+			for (const auto index : nonZeroRawIndexes) { applyKernel(index); }
 		} else {
 			for (unsigned index = 0; index < arraySize; ++index) {
-				if (rawValues[index] != 0.f) {
-					applyKernel(index);
-				}
+				if (rawValues[index] != 0.f) { applyKernel(index); }
 			}
 		}
 		const auto [minPtr, maxPtr] = std::minmax_element(kernelValues, kernelValues + arraySize);
@@ -195,17 +164,12 @@ void InfluenceMap::ensureKernel() const {
 }
 
 void InfluenceMap::initializeQuad() const {
-	if (quadValues) {
-		return;
-	}
+	if (quadValues) { return; }
 	unsigned int quadArraySize = 0;
 	auto currentRes = calculator->getResolution();
-	while (currentRes % 2 == 0 && currentRes != 1) {
+	while (currentRes % 2 == 0 && currentRes >= 6) {
 		currentRes /= 2;
-	}
-	currentRes *= 2;
-	for (int i = currentRes; i < calculator->getResolution(); i *= 2) {
-		quadArraySize += i * i;
+		quadArraySize += currentRes * currentRes;
 	}
 	quadValues = new float[quadArraySize];
 	float* ptr = quadValues;
@@ -220,9 +184,7 @@ void InfluenceMap::initializeQuad() const {
 
 void InfluenceMap::applyKernel(unsigned index) const {
 	float value = rawValues[index];
-	if (value == 0.f) {
-		return;
-	}
+	if (value == 0.f) { return; }
 	auto [centerX, centerZ] = calculator->getCords(index);
 	const auto minI = calculator->getValidLow(centerX - INF_LEVEL);
 	const auto maxI = calculator->getValidHigh(centerX + INF_LEVEL);
@@ -233,9 +195,7 @@ void InfluenceMap::applyKernel(unsigned index) const {
 		auto* t = &kernelValues[calculator->getNotSafeIndex(x, minJ)];
 		auto idx = (x - centerX + INF_LEVEL) * (INF_LEVEL * 2 + 1) + jStart;
 		auto ptr = templateV + idx;
-		for (short y = minJ; y <= maxJ; ++y) {
-			*(t++) += value * *(ptr++);
-		}
+		for (auto y = minJ; y <= maxJ; ++y) { *(t++) += value * *(ptr++); }
 	}
 }
 
@@ -246,13 +206,10 @@ int InfluenceMap::getMaxElement(const std::array<int, 4>& indexes, std::span<con
 }
 
 void InfluenceMap::ensureCenter() const {
-	if (!centerDirty) {
-		return;
-	}
+	if (!centerDirty) { return; }
 
-	initializeQuad();
-	
 	rebuildQuad();
+
 	auto rawSpan = std::span<const float>(rawValues, arraySize);
 
 	if (!anyGreaterThanZero(quadLayers[0])) {
@@ -261,33 +218,33 @@ void InfluenceMap::ensureCenter() const {
 		return;
 	}
 
-	int index = std::distance(quadLayers[0].begin(), std::ranges::max_element(quadLayers[0]));
+	int maxIdx = std::distance(quadLayers[0].begin(), std::ranges::max_element(quadLayers[0]));
 	unsigned short res = quadResolutions[0];
-	for (int i = 1; i < static_cast<int>(quadLayers.size()); ++i) {
-		std::array<int, 4> indexes = getCordsInHigher(res, index);
-		index = getMaxElement(indexes, quadLayers[i]);
+	for (auto& quadLayer : quadLayers) {
+		std::array<int, 4> indexes = getCordsInHigher(res, maxIdx);
+		maxIdx = getMaxElement(indexes, quadLayer);
 		res *= 2;
 	}
-	std::array<int, 4> indexes = getCordsInHigher(res, index);
-	index = getMaxElement(indexes, rawSpan);
-	center = calculator->getCenter(index);
+	std::array<int, 4> indexes = getCordsInHigher(res, maxIdx);
+	maxIdx = getMaxElement(indexes, rawSpan);
+	center = calculator->getCenter(maxIdx);
 	centerDirty = false;
 }
 
 void InfluenceMap::rebuildQuad() const {
+	initializeQuad();
 	std::span<const float> parent(rawValues, arraySize);
 	unsigned short parentRes = calculator->getResolution();
 	for (int i = static_cast<int>(quadLayers.size()) - 1; i >= 0; --i) {
 		auto current = quadLayers[i];
 		const unsigned short currentRes = quadResolutions[i];
-		assert(parentRes == currentRes * 2);
 
-		for (int prow = 0; prow < parentRes; prow += 2) {
+		for (auto prow = 0; prow < parentRes; prow += 2) {
 			const int row0 = prow * parentRes;
 			const int row1 = row0 + parentRes;
 			int child = (prow >> 1) * currentRes;
 
-			for (int pcol = 0; pcol < parentRes; pcol += 2, ++child) {
+			for (auto pcol = 0; pcol < parentRes; pcol += 2, ++child) {
 				const int j = row0 + pcol;
 				current[child] = parent[j] + parent[j + 1] + parent[row1 + pcol] + parent[row1 + pcol + 1];
 			}
@@ -299,15 +256,12 @@ void InfluenceMap::rebuildQuad() const {
 }
 
 bool InfluenceMap::cumulateErrors(float percent, std::span<float> intersection) {
-	if (std::abs(percent) < 0.05f) {
-		return false;
-	}
+	assert(intersection.size() == arraySize);
+	if (std::abs(percent) < 0.05f) { return false; }
 	ensureKernel();
 	const float diff = maxKernel - minKernel;
-	if (diff == 0.f) {
-		return false;
-	}
-	assert(intersection.size() == arraySize);
+	if (diff == 0.f) { return false; }
+
 	const auto coef1 = 1.f / diff * percent;
 	if (percent < 0.f) {
 		for (unsigned i = 0; i < arraySize; ++i) {

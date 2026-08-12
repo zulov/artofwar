@@ -253,10 +253,6 @@ void Environment::updateVisibility(std::vector<Building*>* buildings, std::vecto
 	influenceManager.updateVisibility(buildings, units, resources);
 }
 
-void Environment::updateInfluenceHistoryReset() const {
-	influenceManager.resetHistoryThresholds();
-}
-
 void Environment::update(Unit* unit) const {
 	if (unit->isAlive()) {
 		unit->setBucketInMainGrid(mainGrid.update(unit, unit->getMainGridIndex(), true));

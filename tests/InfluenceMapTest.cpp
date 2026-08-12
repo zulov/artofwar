@@ -497,9 +497,6 @@ TEST(InfluenceMapRegression, ResetToZeroDropsValuesBelowThreshold) {
 	EXPECT_FLOAT_EQ(map.getKernel(0), 0.f);
 	map.reset();
 
-	EXPECT_FLOAT_EQ(map.getKernel(0), 0.00005f);
-	map.resetToZero();
-
 	EXPECT_FLOAT_EQ(map.getRaw(0), 0.f);
 	EXPECT_FLOAT_EQ(map.getKernel(0), 0.f);
 }
@@ -680,8 +677,6 @@ TEST(InfluenceMapRegression, BufferedHistoryResetToZeroKeepsPendingAndDropsSmall
 	map.update(0, 0.00005f);
 	map.reset();
 	map.update(0, 5.f);
-
-	map.resetToZero();
 
 	EXPECT_FLOAT_EQ(map.getRaw(0), 0.f);
 	EXPECT_FLOAT_EQ(map.getKernel(0), 0.f);

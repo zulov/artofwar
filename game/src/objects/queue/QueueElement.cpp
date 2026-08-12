@@ -8,7 +8,7 @@ QueueElement::QueueElement(QueueActionType type, short id, short secondId, unsig
 	ticksToComplete(getSecToComplete(type, id, secondId)), elapsedTicks(0),
 	ticksToCompletePerInstance(getSecPerInstance(type, id, secondId)) {}
 
-bool QueueElement::checkType(QueueActionType _type, short _id, short _secondId) const {
+bool QueueElement::checkType(QueueActionType _type, unsigned short _id,unsigned short _secondId) const {
 	return type == _type && id == _id && _secondId == levelId;
 }
 

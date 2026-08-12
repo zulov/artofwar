@@ -26,7 +26,6 @@ public:
 	void update(const Urho3D::Vector2& pos, float value = 1.f);
 
 	void reset();
-	void resetToZero();
 
 	float getRaw(unsigned index) const;
 	float getRaw(const Urho3D::Vector2& pos) const;

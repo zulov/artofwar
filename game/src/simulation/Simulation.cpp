@@ -59,9 +59,6 @@ void Simulation::updateInfluenceMaps(bool force) const {
 	if (frameInfo->canUpdate(PerFrameAction::INFLUENCE_OTHER, force)) {
 		env->updateInfluenceBuildings(buildings);
 	}
-	if (frameInfo->canUpdate(PerFrameAction::INFLUENCE_HISTORY_RESET, force)) {
-		env->updateInfluenceHistoryReset();
-	}
 	if (frameInfo->canUpdate(PerFrameAction::VISIBILITY, force)) {
 		env->updateVisibility(buildings, units, resources);
 	}

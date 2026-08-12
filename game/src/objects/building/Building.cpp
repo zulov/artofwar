@@ -153,7 +153,7 @@ void Building::updateAi(bool ifBuildingAction) {
 		}
 	}
 
-	if (getDbBuilding()->toResource > 0 && dbLevel->spawnResourceRange > 0 && queue.isEmpty()) {
+	if (getDbBuilding()->toResource >= 0 && dbLevel->spawnResourceRange > 0 && queue.isEmpty()) {
 		queue.add(QueueActionType::RESOURCE_CREATE, getDbBuilding()->id, dbLevel->id);
 	}
 }

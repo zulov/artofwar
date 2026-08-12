@@ -59,7 +59,7 @@ public:
 	void updateInfluenceBuildings(const std::vector<Building*>* buildings) const;
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
 	                      std::vector<ResourceEntity*>* resources) const;
-	void updateInfluenceHistoryReset() const;
+
 	void invalidateCaches();
 	void update(Unit* unit) const;
 

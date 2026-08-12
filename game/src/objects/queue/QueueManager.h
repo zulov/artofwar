@@ -9,7 +9,7 @@ public:
 	QueueManager() = default;
 	~QueueManager();
 
-	void add(QueueActionType type, short id, short levelId, short number = 1);
+	void add(QueueActionType type, unsigned short id, unsigned short levelId, short number = 1);
 	QueueElement* update();
 	short getSize() const;
 	bool isEmpty() const { return getSize() == 0; }
