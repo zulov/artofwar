@@ -490,7 +490,7 @@ TEST(InfluenceMapRegression, ResetDecaysRawAndRebuildsKernelCache) {
 	EXPECT_FLOAT_EQ(map.getKernel(0), 1.f);
 }
 
-TEST(InfluenceMapRegression, ResetToZeroDropsValuesBelowThreshold) {
+TEST(InfluenceMapRegression, HistoryResetDropsValuesBelowThreshold) {
 	InfluenceMap map(GridCalculatorProvider::get(4, 8.f), 0.f, true);
 	map.update(0, 0.00005f);
 
@@ -499,6 +499,16 @@ TEST(InfluenceMapRegression, ResetToZeroDropsValuesBelowThreshold) {
 
 	EXPECT_FLOAT_EQ(map.getRaw(0), 0.f);
 	EXPECT_FLOAT_EQ(map.getKernel(0), 0.f);
+}
+
+TEST(InfluenceMapRegression, HistoryResetKeepsValueAtThreshold) {
+	InfluenceMap map(GridCalculatorProvider::get(4, 8.f), 0.f, true);
+	map.update(0, 0.0001f);
+
+	map.reset();
+
+	EXPECT_FLOAT_EQ(map.getRaw(0), 0.0001f);
+	EXPECT_FLOAT_EQ(map.getKernel(0), 0.0001f);
 }
 
 TEST(InfluenceMapRegression, HistoryResetDecaysRawAndInvalidatesKernel) {
@@ -656,8 +666,8 @@ TEST(InfluenceMapRegression, ResetClearsNonZeroIndexes) {
 }
 
 TEST(InfluenceMapRegression, BufferedHistoryWritesDoNotChangeVisibleRawStateBeforeReset) {
-	InfluenceMap map(GridCalculatorProvider::get(4, 8.f), 0.f, true);
-	GridCalculator calculator(4, 8.f);
+	InfluenceMap map(GridCalculatorProvider::get(40, 80.f), 0.f, true);
+	GridCalculator calculator(40, 80.f);
 	map.update(0, 4.f);
 	map.reset();
 
@@ -766,20 +776,20 @@ TEST(InfluenceMapRegression, HistoryDecayOnlyResetPreservesSparseRawValues) {
 }
 
 TEST(InfluenceMapRegression, GetCenterUsesRawTerminalLayer) {
-	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
+	TestableInfluenceMap map(GridCalculatorProvider::get(40, 80.f));
 	map.update(4, 1.f);
 	map.update(5, 2.f);
 
 	const auto center = map.getCenter();
 	ASSERT_TRUE(center.has_value());
 
-	GridCalculator calculator(4, 8.f);
+	GridCalculator calculator(40, 80.f);
 	EXPECT_EQ(*center, calculator.getCenter(5));
 }
 
 TEST(InfluenceMapRegression, GetCenterRebuildsQuadAfterReset) {
-	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
-	GridCalculator calculator(4, 8.f);
+	TestableInfluenceMap map(GridCalculatorProvider::get(40, 80.f));
+	GridCalculator calculator(40, 80.f);
 
 	map.update(0, 1.f);
 	ASSERT_EQ(map.getCenter(), calculator.getCenter(0));
@@ -790,8 +800,8 @@ TEST(InfluenceMapRegression, GetCenterRebuildsQuadAfterReset) {
 }
 
 TEST(InfluenceMapRegression, HistoryCenterWaitsForPendingValuesToMerge) {
-	InfluenceMap map(GridCalculatorProvider::get(4, 8.f), 0.f, true);
-	GridCalculator calculator(4, 8.f);
+	InfluenceMap map(GridCalculatorProvider::get(40, 80.f), 0.f, true);
+	GridCalculator calculator(40, 80.f);
 	map.update(5, 2.f);
 
 	EXPECT_FALSE(map.getCenter().has_value());
@@ -801,9 +811,9 @@ TEST(InfluenceMapRegression, HistoryCenterWaitsForPendingValuesToMerge) {
 }
 
 TEST(InfluenceMapRegression, GetCenterSupportsNonPowerOfTwoResolution) {
-	GridCalculator calculator(40, 80.f);
+	GridCalculator calculator(48, 96.f);
 	TestableInfluenceMap map(&calculator);
-	constexpr unsigned targetIndex = 27 * 40 + 13;
+	constexpr unsigned targetIndex = 31 * 48 + 17;
 
 	map.update(targetIndex, 1.f);
 

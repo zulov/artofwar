@@ -85,7 +85,7 @@ void InfluenceMap::reset() {
 				*raw = *raw * vanishCoef + *pending;
 				*pending = 0.f;
 
-				if (*raw > minimalThreshold) {
+				if (*raw >= minimalThreshold) {
 					addNonZeroIndex(nonZeroRawIndexes, static_cast<unsigned>(raw - rawValues));
 				} else { *raw = 0.f; }
 			}
@@ -96,7 +96,7 @@ void InfluenceMap::reset() {
 			for (unsigned index : pendingNonZeroIndexes) {
 				rawValues[index] = rawValues[index] * vanishCoef + pendingValues[index];
 				pendingValues[index] = 0.f;
-				if (rawValues[index] > minimalThreshold) {
+				if (rawValues[index] >= minimalThreshold) {
 					addNonZeroIndex(nonZeroRawIndexes, index);
 				} else {
 					rawValues[index] = 0.f;
@@ -210,21 +210,21 @@ void InfluenceMap::ensureCenter() const {
 
 	rebuildQuad();
 
-	auto rawSpan = std::span<const float>(rawValues, arraySize);
-
-	if (!anyGreaterThanZero(quadLayers[0])) {
+	const auto maxIt = std::ranges::max_element(quadLayers[0]);
+	if (*maxIt <= 0.f) {
 		center.reset();
 		centerDirty = false;
 		return;
 	}
 
-	int maxIdx = std::distance(quadLayers[0].begin(), std::ranges::max_element(quadLayers[0]));
+	int maxIdx = std::distance(quadLayers[0].begin(), maxIt);
 	unsigned short res = quadResolutions[0];
-	for (auto& quadLayer : quadLayers) {
+	for (std::size_t i = 1; i < quadLayers.size(); ++i) {
 		std::array<int, 4> indexes = getCordsInHigher(res, maxIdx);
-		maxIdx = getMaxElement(indexes, quadLayer);
+		maxIdx = getMaxElement(indexes, quadLayers[i]);
 		res *= 2;
 	}
+	auto rawSpan = std::span<const float>(rawValues, arraySize);
 	std::array<int, 4> indexes = getCordsInHigher(res, maxIdx);
 	maxIdx = getMaxElement(indexes, rawSpan);
 	center = calculator->getCenter(maxIdx);
