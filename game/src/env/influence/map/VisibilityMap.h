@@ -18,7 +18,7 @@ public:
 
 	void draw();
 	void update(const Urho3D::Vector2& pos, float sRadius);
-	void finishAtIndex(unsigned i) const;
+	void finishAtIndex(unsigned i);
 	void finish();
 	void reset();
 	char getValueAt(const Urho3D::Vector2& pos) const;
@@ -26,7 +26,7 @@ public:
 
 	float getValueAt(unsigned index) const;
 	int removeUnseen(std::span<float> intersection);
-	float getPercent();
+	float getPercent() const;
 	unsigned short getResolution() const { return calculator->getResolution(); }
 
 private:
@@ -48,8 +48,7 @@ private:
 	std::vector<float> unseenIntersection;
 	int visibleCount = 0;
 	LevelCache* levelCache;
-	float percent = -1.f;
-	mutable bool percentReady = false;
+	int visibilityValueSum = 0;
 	mutable bool valuesForInfluenceReady = false;
 	mutable bool unseenIntersectionReady = false;
 };
