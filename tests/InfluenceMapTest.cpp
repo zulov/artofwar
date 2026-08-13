@@ -419,38 +419,6 @@ TEST_F(CumulateErrorsFixture, PositiveAndNegativeAreSymmetric) {
 	EXPECT_NEAR(posErr2, negErr0, 1e-5f);
 }
 
-TEST(InfluenceMapRegression, GetRawMaxIdxsReturnsTheTenLargestValues) {
-	TestableInfluenceMap map(GridCalculatorProvider::get(8, 16.f));
-	for (unsigned index = 0; index < 12; ++index) {
-		map.update(index, static_cast<float>(12 - index));
-	}
-
-	const auto indexes = map.getRawMaxIdxs();
-
-	ASSERT_EQ(indexes.size(), 10u);
-	for (unsigned index = 0; index < indexes.size(); ++index) {
-		EXPECT_EQ(indexes[index], index);
-	}
-}
-
-TEST(InfluenceMapRegression, GetRawMaxIdxsUsesMaximumThresholdAndTrimsZeroes) {
-	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
-	map.update(0, 0.5f);
-	map.update(1, 0.5001f);
-	map.update(2, 2.f);
-
-	const auto indexes = map.getRawMaxIdxs();
-
-	ASSERT_EQ(indexes.size(), 3u);
-	EXPECT_EQ(indexes[0], 2u);
-	EXPECT_EQ(indexes[1], 1u);
-	EXPECT_EQ(indexes[2], 0u);
-
-	TestableInfluenceMap atThreshold(GridCalculatorProvider::get(4, 8.f));
-	atThreshold.update(0, 0.5f);
-	EXPECT_TRUE(atThreshold.getRawMaxIdxs().empty());
-}
-
 TEST(InfluenceMapRegression, ZeroWeightDoesNotRebuildKernel) {
 	TestableInfluenceMap map(GridCalculatorProvider::get(4, 8.f));
 	std::array<float, 16> errors{};

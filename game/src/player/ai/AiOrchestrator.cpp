@@ -404,7 +404,7 @@ bool AiOrchestrator::tryIssueNearbyAttack(Unit* unit, float priority, MilitaryCe
 
 std::vector<float> AiOrchestrator::calculateUnitProfileDiffs(std::span<const float> unitProfile) const {
 	std::valarray center(unitProfile.data(), unitProfile.size());
-	std::vector<float> diffs(nation->units.size(), std::numeric_limits<float>::max());
+	std::vector<float> diffs(Game::getDatabase()->getUnits().size(), std::numeric_limits<float>::max());
 
 	for (auto* unit : nation->units) {
 		if (unit) {

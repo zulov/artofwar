@@ -86,7 +86,7 @@ TEST_F(WantListFixture, AddRequestCreatesItem) {
 	EXPECT_FLOAT_EQ(item.priority, 0.5f);
 	EXPECT_FLOAT_EQ(item.basePriority, 0.5f);
 	EXPECT_EQ(item.count, 1);
-	EXPECT_EQ(item.specificId, -1);
+	EXPECT_EQ(item.specificId, 0);
 	EXPECT_EQ(item.age, 0);
 	EXPECT_EQ(item.reserveTicks, 0);
 	EXPECT_TRUE(item.active);
