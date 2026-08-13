@@ -9,11 +9,11 @@
 #include "colors/ColorPaletteRepo.h"
 #include "debug/DebugLineRepo.h"
 
-void InfluenceMap::drawRaw() {
+void InfluenceMap::drawRaw() const {
 	DebugLineRepo::drawQuads(DebugLineType::GRID, getResolution(), rawValues, debugThreshold);
 }
 
-void InfluenceMap::drawKernel() {
+void InfluenceMap::drawKernel() const {
 	ensureKernel();
 	DebugLineRepo::drawQuads(DebugLineType::GRID, getResolution(), kernelValues, debugThreshold);
 }

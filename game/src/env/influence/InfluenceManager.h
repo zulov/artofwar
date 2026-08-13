@@ -47,7 +47,6 @@ public:
 	// --- AI queries ---
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, unsigned char player) const;
 	const std::vector<unsigned>& getAreas(std::span<const float> result, unsigned char player) const;
-	std::vector<unsigned> getAreasResBonus(unsigned char resId, unsigned char player) const;
 	// --- Utility ---
 	bool isVisible(unsigned char player, const Urho3D::Vector2& pos) const;
 	float getVisibilityScore(unsigned char player) const;

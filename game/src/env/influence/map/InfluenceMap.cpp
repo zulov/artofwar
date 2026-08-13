@@ -74,10 +74,11 @@ void InfluenceMap::update(const Urho3D::Vector2& pos, float value) {
 
 void InfluenceMap::reset() {
 	invalidateCaches();
+	const bool rawIndexesAtCapacity = nonZeroRawIndexes.size() >= MAX_NON_ZERO_INDEXES;
 	if (hasHistory()) {
-		const bool rawIndexesAtCapacity = nonZeroRawIndexes.size() >= MAX_NON_ZERO_INDEXES;
 		const bool pendingIndexesAtCapacity = pendingNonZeroIndexes.size() >= MAX_PENDING_NON_ZERO_INDEXES;
-		if (pendingIndexesAtCapacity || rawIndexesAtCapacity) {//fullscan
+		if (pendingIndexesAtCapacity || rawIndexesAtCapacity) {
+			//fullscan
 			nonZeroRawIndexes.clear();
 			const auto rawEnd = rawValues + arraySize;
 			auto* pending = pendingValues;
@@ -87,7 +88,9 @@ void InfluenceMap::reset() {
 
 				if (*raw >= minimalThreshold) {
 					addNonZeroIndex(nonZeroRawIndexes, static_cast<unsigned>(raw - rawValues));
-				} else { *raw = 0.f; }
+				} else {
+					*raw = 0.f;
+				}
 			}
 		} else {
 			pendingNonZeroIndexes.append_range(nonZeroRawIndexes);
@@ -104,9 +107,15 @@ void InfluenceMap::reset() {
 			}
 		}
 		pendingNonZeroIndexes.clear();
-	}else {
+	} else {
+		if (rawIndexesAtCapacity) {//full reset
+			std::fill_n(rawValues, arraySize, 0.f);
+		} else {
+			for (unsigned index : nonZeroRawIndexes) {
+				rawValues[index] = 0;
+			}
+		}
 		nonZeroRawIndexes.clear();
-		std::fill_n(rawValues, arraySize, 0.f);
 	}
 }
 
@@ -127,23 +136,6 @@ float InfluenceMap::getKernel(unsigned index) const {
 std::optional<Urho3D::Vector2> InfluenceMap::getCenter() const {
 	ensureCenter();
 	return center;
-}
-
-std::vector<unsigned> InfluenceMap::getRawMaxIdxs() const {
-	return getMaxIdxs(std::span<const float>(rawValues, arraySize));
-}
-
-std::vector<unsigned> InfluenceMap::getMaxIdxs(std::span<const float> data) const {
-	if (data.empty()) { return {}; }
-	const auto maxIt = std::ranges::max_element(data);
-	if (maxIt == data.end() || *maxIt <= 0.5f) { return {}; }
-	std::vector<unsigned> idx(data.size());
-	std::ranges::iota(idx, 0u);
-	const auto count = std::min<std::size_t>(10, idx.size());
-	std::ranges::partial_sort(idx, idx.begin() + count, [data](unsigned a, unsigned b) { return data[a] > data[b]; });
-	idx.resize(count);
-	while (!idx.empty() && data[idx.back()] == 0) { idx.pop_back(); }
-	return idx;
 }
 
 void InfluenceMap::ensureKernel() const {

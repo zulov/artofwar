@@ -224,19 +224,22 @@ void AiOrchestrator::action() {
 			lastMasterOut.unitUrgency, lastMasterOut.attackUrgency,
 			lastMilOut.preferInfantry, lastMilOut.preferRange, lastMilOut.preferCavalry,
 			lastMasterOut.techUrgency, gameTime);
-	const auto unitProfileDiffs = calculateUnitProfileDiffs(unitOut.unitProfile);
+
 
 	// 5. Submit requests to WantList
 	wantList.resetRequests();
 
 	createWorkers();
 	upgradeWorkers();
+	if (unitOut.count || unitOut.unitUpgradeUrgency > 0.1f || unitOut.buildingUpgradeUrgency > 0.1f) {
+		const auto unitProfileDiffs = calculateUnitProfileDiffs(unitOut.unitProfile);
 
-	createUnits(unitOut, unitProfileDiffs);
-	upgradeUnits(unitOut, unitProfileDiffs);
+		createUnits(unitOut, unitProfileDiffs);
+		upgradeUnits(unitOut, unitProfileDiffs);
 
-	// Unit-producing building upgrade request (barracks, archery range, stable)
-	upgradeUnitBuilding(unitOut, unitProfileDiffs);
+		// Unit-producing building upgrade request (barracks, archery range, stable)
+		upgradeUnitBuilding(unitOut, unitProfileDiffs);
+	}
 
 	// Resource building upgrade request (farms, mills, mines, refineries, etc.)
 	upgradeResBuilding();
@@ -401,9 +404,9 @@ bool AiOrchestrator::tryIssueNearbyAttack(Unit* unit, float priority, MilitaryCe
 
 std::vector<float> AiOrchestrator::calculateUnitProfileDiffs(std::span<const float> unitProfile) const {
 	std::valarray center(unitProfile.data(), unitProfile.size());
-	std::vector<float> diffs(Game::getDatabase()->getUnits().size(), std::numeric_limits<float>::max());
+	std::vector<float> diffs(nation->units.size(), std::numeric_limits<float>::max());
 
-	for (auto* unit : Game::getDatabase()->getUnits()) {
+	for (auto* unit : nation->units) {
 		if (unit) {
 			diffs[unit->id] = sumSquaredError(center, player->getUnitLevel(unit->id)->dbUnitMetric->getValuesNormAsVal());
 		}

@@ -133,7 +133,6 @@ public:
 
 	std::optional<Urho3D::Vector2> getPosToCreate(std::span<const float> result,
 	                                              db_building* building, unsigned char player);
-	std::optional<Urho3D::Vector2> getPosToCreateResBonus(db_building* building, unsigned char player);
 	void addCollect(Unit* unit, short resId, float value) const;
 	void addAttack(char player, const Urho3D::Vector2& position, float value) const;
 	void drawInfluence();
@@ -146,7 +145,6 @@ public:
 	unsigned short getResolution() const { return calculator->getResolution(); }
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;
 	float getVisibilityScore(char player) const;
-	const std::array<Urho3D::Vector3, 4>& getDebugCellsCorners(unsigned short resolution) const;
 
 	std::vector<int> getIndexesInRange(const Urho3D::Vector2& center, float range) const;
 	std::vector<int> getIndexesInRange(int index, float range) const;

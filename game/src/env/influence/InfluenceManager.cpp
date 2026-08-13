@@ -286,10 +286,6 @@ InfluenceManager::getAreas(std::span<const float> result, unsigned char player) 
 	return getBestVisibleIndexes(maps, result, player);
 }
 
-std::vector<unsigned> InfluenceManager::getAreasResBonus(unsigned char id, unsigned char player) const {
-	return unboostedResourceActivityByPlayerAndType[player][id]->getRawMaxIdxs();
-}
-
 const std::vector<unsigned>&
 InfluenceManager::getBestVisibleIndexes(std::span<InfluenceMap*> maps, std::span<const float> result, unsigned char player) const {
 	assert(result.size() == maps.size());

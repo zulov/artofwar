@@ -75,7 +75,10 @@ void VisibilityMap::finishAtIndex(unsigned i) const {
 
 void VisibilityMap::finish() {
 	if (changedIndexes.size() >= CHANGED_INDEXES_MAX_SIZE) {
-		for (unsigned i = 0; i < arraySize; ++i) { if (ranges[i] > 0.f) { finishAtIndex(i); } }
+		//full scan
+		for (unsigned i = 0; i < arraySize; ++i) {
+			if (ranges[i] > 0.f) { finishAtIndex(i); }
+		}
 	} else { for (const int i : changedIndexes) { finishAtIndex(i); } }
 
 	changedIndexes.clear();
@@ -119,31 +122,29 @@ float VisibilityMap::getPercent() {
 
 void VisibilityMap::ensureReady() {
 	if (valuesForInfluenceReady == false) {
-	const auto* parent = values;
-	auto* current = valuesForInfluence;
-	const int res = getResolution();
-	for (int prow = 0; prow < res; prow += 2) {
-		const auto* row0 = parent + prow * res;
-		const auto* row1 = row0 + res;
-		auto* dst = current + (prow >> 1) * influenceRes;
+		const auto* parent = values;
+		auto* current = valuesForInfluence;
+		const int res = getResolution();
+		for (int prow = 0; prow < res; prow += 2) {
+			const auto* row0 = parent + prow * res;
+			const auto* row1 = row0 + res;
+			auto* dst = current + (prow >> 1) * influenceRes;
 
-		for (int pcol = 0; pcol < res; pcol += 2, ++dst) {
-			*dst =
-				row0[pcol] == VisibilityType::VISIBLE ||
-				row0[pcol + 1] == VisibilityType::VISIBLE ||
-				row1[pcol] == VisibilityType::VISIBLE ||
-				row1[pcol + 1] == VisibilityType::VISIBLE;
+			for (auto pcol = 0; pcol < res; pcol += 2, ++dst) {
+				*dst =
+						row0[pcol] == VisibilityType::VISIBLE ||
+						row0[pcol + 1] == VisibilityType::VISIBLE ||
+						row1[pcol] == VisibilityType::VISIBLE ||
+						row1[pcol + 1] == VisibilityType::VISIBLE;
+			}
 		}
-	}
 		valuesForInfluenceReady = true;
- 	}
+	}
 }
 
 void VisibilityMap::ensureUnseenIntersectionReady() {
 	ensureReady();
-	if (unseenIntersectionReady) {
-		return;
-	}
+	if (unseenIntersectionReady) { return; }
 
 	visibleCount = 0;
 	auto* src = valuesForInfluence;
@@ -153,9 +154,7 @@ void VisibilityMap::ensureUnseenIntersectionReady() {
 		if (*src) {
 			*dst = 0.f;
 			++visibleCount;
-		} else {
-			*dst = std::numeric_limits<float>::max();
-		}
+		} else { *dst = std::numeric_limits<float>::max(); }
 	}
 	unseenIntersectionReady = true;
 }
@@ -172,5 +171,4 @@ Urho3D::Vector3 VisibilityMap::getVertex(const Urho3D::Vector2& center, Urho3D::
 	return result;
 }
 
-void VisibilityMap::drawCell(unsigned int index) const {
-}
+void VisibilityMap::drawCell(unsigned int index) const {}

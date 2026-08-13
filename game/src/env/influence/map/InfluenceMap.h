@@ -19,8 +19,8 @@ public:
 	InfluenceMap(InfluenceMap&&) = delete;
 	InfluenceMap& operator=(InfluenceMap&&) = delete;
 
-	void drawRaw();
-	void drawKernel();
+	void drawRaw() const;
+	void drawKernel() const;
 
 	void update(unsigned index, float value = 1.f);
 	void update(const Urho3D::Vector2& pos, float value = 1.f);
@@ -31,7 +31,6 @@ public:
 	float getRaw(const Urho3D::Vector2& pos) const;
 	float getKernel(unsigned index) const;
 	std::optional<Urho3D::Vector2> getCenter() const;
-	std::vector<unsigned> getRawMaxIdxs() const;
 	void print(Urho3D::String name);
 	unsigned short getResolution() const { return calculator->getResolution(); }
 
@@ -55,7 +54,6 @@ private:
 	void printMap(std::span<const float> map, const Urho3D::String& name);
 	bool hasHistory() const { return pendingValues != nullptr; }
 	void applyKernel(unsigned index) const;
-	std::vector<unsigned> getMaxIdxs(std::span<const float> values) const;
 	void ensureCenter() const;
 
 	void initializeQuad() const;
