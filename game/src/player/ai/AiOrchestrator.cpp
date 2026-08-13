@@ -403,12 +403,11 @@ bool AiOrchestrator::tryIssueNearbyAttack(Unit* unit, float priority, MilitaryCe
 // tick when the ideal unit is unbuildable but a similar one is available.
 
 std::vector<float> AiOrchestrator::calculateUnitProfileDiffs(std::span<const float> unitProfile) const {
-	std::valarray center(unitProfile.data(), unitProfile.size());
 	std::vector<float> diffs(Game::getDatabase()->getUnits().size(), std::numeric_limits<float>::max());
 
 	for (auto* unit : nation->units) {
 		if (unit) {
-			diffs[unit->id] = sumSquaredError(center, player->getUnitLevel(unit->id)->dbUnitMetric->getValuesNormAsVal());
+			diffs[unit->id] = sumSquaredError(unitProfile, player->getUnitLevel(unit->id)->dbUnitMetric->getValuesNorm());
 		}
 	}
 	return diffs;

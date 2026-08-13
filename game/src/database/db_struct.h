@@ -3,7 +3,6 @@
 #include <magic_enum.hpp>
 #include <span>
 #include <vector>
-#include <valarray>
 #include <Urho3D/Math/Vector2.h>
 #include <objects/resource/ResourceType.h>
 
@@ -121,58 +120,55 @@ struct db_basic_metric {
 		valuesNormForSum.resize(newValues.size());
 		std::ranges::transform(newValues, valuesNormForSum.begin(), [y](float x){ return x * y; });
 
-		valuesNormAsVal = std::valarray(newValues.data(), newValues.size());
+		valuesNorm.assign(newValues.begin(), newValues.end());
 	}
 
 protected:
-	std::valarray<float> valuesNormAsVal;
-	std::valarray<float> typesNormAsVal;
+	std::vector<float> valuesNorm;
+	std::vector<float> typesNorm;
 
 	std::vector<float> valuesNormForSum;
 
-	void setValarray(std::valarray<float>& valarray, const std::span<const unsigned char>& idxs) {
-		std::vector<float> temp;
-
-		temp.reserve(idxs.size());
+	void setVector(std::vector<float>& values, const std::span<const unsigned char>& idxs) {
+		values.clear();
+		values.reserve(idxs.size());
 		for (const unsigned char idx : idxs) {
-			temp.push_back(valuesNormAsVal[idx]);
+			values.push_back(valuesNorm[idx]);
 		}
-		valarray = std::valarray<float>(temp.data(), temp.size());
 	}
 
 public:
-	//const std::vector<float>& getValuesNorm() const { return valuesNorm; }
-	const std::valarray<float>& getValuesNormAsVal() const { return valuesNormAsVal; }
+	const std::vector<float>& getValuesNorm() const { return valuesNorm; }
 	const std::vector<float>& getValuesNormForSum() const { return valuesNormForSum; }
 
-	const std::span<const float> getTypesVal() const {
-		return std::span{std::begin(typesNormAsVal), typesNormAsVal.size()};
+	std::span<const float> getTypesVal() const {
+		return {typesNorm.data(), typesNorm.size()};
 	}
 };
 
 struct db_building_metric : db_basic_metric {
-	std::valarray<float> otherNormAsVal;
-	std::valarray<float> defenceNormAsVal;
-	std::valarray<float> resourceNormAsVal;
-	std::valarray<float> techNormAsVal;
-	std::valarray<float> unitsNormAsVal;
+	std::vector<float> otherNorm;
+	std::vector<float> defenceNorm;
+	std::vector<float> resourceNorm;
+	std::vector<float> techNorm;
+	std::vector<float> unitsNorm;
 
 	db_building_metric(db_building* dbBuilding, db_building_level* dbLevel);
 
-	const std::valarray<float>& getValuesNormAsValForType(ParentBuildingType type) const {
+	const std::vector<float>& getValuesNormForType(ParentBuildingType type) const {
 		switch (type) {
 		case ParentBuildingType::OTHER:
-			return otherNormAsVal;
+			return otherNorm;
 		case ParentBuildingType::DEFENCE:
-			return defenceNormAsVal;
+			return defenceNorm;
 		case ParentBuildingType::RESOURCE:
-			return resourceNormAsVal;
+			return resourceNorm;
 		case ParentBuildingType::TECH:
-			return techNormAsVal;
+			return techNorm;
 		case ParentBuildingType::UNITS:
-			return unitsNormAsVal;
+			return unitsNorm;
 		default:
-			return typesNormAsVal; //BUG? fallback - should all enum values be handled explicitly?
+			return typesNorm; //BUG? fallback - should all enum values be handled explicitly?
 		}
 	}
 };

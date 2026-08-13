@@ -67,7 +67,7 @@ public:
 	void addNew(Building* building, bool bulkAdd);
 	void addNew(ResourceEntity* resource, bool bulkAdd);
 
-	void removeFromGrids(const std::vector<Unit*>& units) const;
+	void removeFromGrids(const std::vector<Unit*>& units);
 	void removeFromGrids(const std::vector<Building*>& buildingsToDispose,
 	                     const std::vector<ResourceEntity*>& resourceToDispose);
 

@@ -2,7 +2,8 @@
 #include <Urho3D/Math/Vector3.h>
 #include <Urho3D/Math/Vector2.h>
 #include <array>
-#include <valarray>
+#include <cassert>
+#include <span>
 
 inline Urho3D::IntVector2 calculateSize(int size, int central) {
 	const int first = -((size - 1) / 2);
@@ -54,8 +55,12 @@ inline int getCordsInLower(int currentRes, int parentRes, int index) {
 	return x * currentRes + z;
 }
 
-inline float sumSquaredError(const std::valarray<float>& val1, const std::valarray<float>& val2) {
-	auto diff = val1 - val2;
-	diff *= diff;
-	return diff.sum();
+inline float sumSquaredError(std::span<const float> val1, std::span<const float> val2) {
+	assert(val1.size() == val2.size());
+	float result = 0.f;
+	for (size_t i = 0; i < val1.size(); ++i) {
+		const float diff = val1[i] - val2[i];
+		result += diff * diff;
+	}
+	return result;
 }

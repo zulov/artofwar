@@ -397,11 +397,12 @@ void Environment::decCell(int index) const {
 	mainGrid.decCell(index);
 }
 
-void Environment::removeFromGrids(const std::vector<Unit*>& units) const {
+void Environment::removeFromGrids(const std::vector<Unit*>& units) {
 	for (const auto unit : units) {
 		mainGrid.removeAt(unit->getMainGridIndex(), unit);
 		sparseUnitGrid.removeAt(unit->getSparseIndex(), unit);
 	}
+	invalidateCaches();
 }
 
 void Environment::removeFromGrids(const std::vector<Building*>& buildingsToDispose,
