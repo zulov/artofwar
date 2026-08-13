@@ -11,7 +11,8 @@ LevelCacheProvider::~LevelCacheProvider() {
 
 LevelCache* LevelCacheProvider::get(unsigned short resolution, float maxDistance, GridCalculator* calculator) {
 	for (const auto cache : caches) {
-		if (cache->getResolution() == resolution && cache->getMaxDistance() == maxDistance) {
+		if (cache->getResolution() == resolution && cache->getSize() == calculator->getSize() &&
+			cache->getMaxDistance() == maxDistance) {
 			return cache;
 		}
 	}

@@ -65,8 +65,10 @@ void VisibilityMap::finishAtIndex(unsigned i) const {
 	const auto levels = levelCache->get(ranges[i], i);
 
 	for (const auto idx : *levels) {
-		assert(i + idx >= 0 && i + idx < arraySize && "out-of-bounds in VisibilityMap::finishAtIndex");
-		values[i + idx] = VisibilityType::VISIBLE;
+		const int index = static_cast<int>(i) + idx;
+		assert(index >= 0 && index < static_cast<int>(arraySize) &&
+		       "out-of-bounds in VisibilityMap::finishAtIndex");
+		values[index] = VisibilityType::VISIBLE;
 	}
 
 	ranges[i] = 0.f;

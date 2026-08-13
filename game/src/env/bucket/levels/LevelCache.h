@@ -45,6 +45,7 @@ public:
 	~LevelCache();
 
 	unsigned short getResolution() const { return calculator->getResolution(); }
+	float getSize() const { return calculator->getSize(); }
 	float getMaxDistance() const { return maxDistance; }
 
 	const std::vector<short>* get(float radius, int center) const;
