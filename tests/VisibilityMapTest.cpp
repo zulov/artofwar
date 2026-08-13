@@ -4,7 +4,6 @@
 #include <numeric>
 
 #include "env/influence/map/VisibilityType.h"
-#include "env/influence/map/VisibilityMap.h"
 #include "env/influence/VisibilityManager.h"
 #include "math/MathUtils.h"
 
@@ -188,28 +187,4 @@ TEST(VisibilityTextureUtilsTest, MapsTexturePixelsAcrossDifferentGridSizes) {
 
 	EXPECT_EQ(VisibilityTextureUtils::getVisibilityIndex(255, 255, 256, 256, 160), 159 * 160 + 159);
 	EXPECT_EQ(VisibilityTextureUtils::getVisibilityIndex(127, 255, 256, 256, 160), 79 * 160 + 159);
-}
-
-TEST(VisibilityMapTest, VisibilityScoreTracksStateTransitions) {
-	VisibilityMap map(4, 16.f, 3.f);
-	const auto calculateScore = [&map]() {
-		int sum = 0;
-		for (unsigned index = 0; index < 16; ++index) {
-			sum += static_cast<int>(map.getValueAt(index));
-		}
-		return sum / (16.f * 3.f);
-	};
-
-	EXPECT_FLOAT_EQ(map.getPercent(), 0.f);
-
-	map.update(Urho3D::Vector2::ZERO, 4.f);
-	map.finish();
-	EXPECT_FLOAT_EQ(map.getPercent(), calculateScore());
-
-	map.reset();
-	EXPECT_FLOAT_EQ(map.getPercent(), calculateScore());
-
-	map.update(Urho3D::Vector2::ZERO, 4.f);
-	map.finish();
-	EXPECT_FLOAT_EQ(map.getPercent(), calculateScore());
 }

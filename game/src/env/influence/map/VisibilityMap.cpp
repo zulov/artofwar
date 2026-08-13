@@ -1,6 +1,7 @@
 #include "VisibilityMap.h"
 #include <cassert>
 #include <algorithm>
+#include <numeric>
 #include <limits>
 #include <Urho3D/Resource/Image.h>
 
@@ -60,14 +61,13 @@ void VisibilityMap::update(const Urho3D::Vector2& pos, float sRadius) {
 	}
 }
 
-void VisibilityMap::finishAtIndex(unsigned i) {
+void VisibilityMap::finishAtIndex(unsigned i) const {
 	const auto levels = levelCache->get(ranges[i], i);
 
 	for (const auto idx : *levels) {
 		const int index = static_cast<int>(i) + idx;
 		assert(index >= 0 && index < static_cast<int>(arraySize) &&
 		       "out-of-bounds in VisibilityMap::finishAtIndex");
-		visibilityValueSum += castC(VisibilityType::VISIBLE) - castC(values[index]);
 		values[index] = VisibilityType::VISIBLE;
 	}
 
@@ -88,11 +88,8 @@ void VisibilityMap::finish() {
 
 void VisibilityMap::reset() {
 	invalidateCaches();
-	for (auto* value = values; value < values + arraySize; ++value) {
-		const auto current = static_cast<unsigned char>(*value);
-		visibilityValueSum -= current & 2;
-		*value = static_cast<VisibilityType>(current & 1);
-	}
+	char* end = (char*)values + arraySize;
+	for (char* i = (char*)values; i < end; i++) { *i &= 1; }
 }
 
 char VisibilityMap::getValueAt(const Urho3D::Vector2& pos) const {
@@ -116,8 +113,13 @@ int VisibilityMap::removeUnseen(std::span<float> intersection) {
 	return visibleCount;
 }
 
-float VisibilityMap::getPercent() const {
-	return visibilityValueSum / (arraySize * 3.f);
+float VisibilityMap::getPercent() {
+	if (!percentReady) {
+		const int sum = std::accumulate((char*)values, (char*)(values + arraySize), 0);
+		percent = sum / (arraySize * 3.f);
+		percentReady = true;
+	}
+	return percent;
 }
 
 void VisibilityMap::ensureReady() {
@@ -162,6 +164,7 @@ void VisibilityMap::ensureUnseenIntersectionReady() {
 void VisibilityMap::invalidateCaches() const {
 	valuesForInfluenceReady = false;
 	unseenIntersectionReady = false;
+	percentReady = false;
 }
 
 Urho3D::Vector3 VisibilityMap::getVertex(const Urho3D::Vector2& center, Urho3D::Vector2 vertex) const {
