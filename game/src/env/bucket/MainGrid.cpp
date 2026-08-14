@@ -278,7 +278,7 @@ bool MainGrid::cellIsAttackable(int index) const {
 	return complexData[index].cellIsAttackable();
 }
 
-bool MainGrid::anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const {
+bool MainGrid::anyCloseEnough(std::span<const int> indexes, int center, float distThreshold) const {
 	const auto centerCord = calculator->getCords(center);
 	distThreshold *= distThreshold;
 
@@ -301,9 +301,9 @@ std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector2& center, floa
 	return getIndexesInRange(calculator->indexFromPosition(center), range);
 }
 
-void MainGrid::addResBonuses(std::vector<Building*>& resBuildings) const {
+void MainGrid::addResBonuses(std::span<Building* const> resourceBuildings) const {
 	std::vector<int> changedIndexes;
-	for (const auto building : resBuildings) {
+	for (const auto building : resourceBuildings) {
 		addResourceBonuses(building, changedIndexes);
 	}
 
@@ -323,14 +323,15 @@ void MainGrid::addResBonuses(std::vector<Building*>& resBuildings) const {
 	}
 }
 
-void MainGrid::reAddBonuses(std::vector<Building*>& resBuildings, std::vector<ResourceEntity*>* resources) const {
+void MainGrid::reAddBonuses(std::span<Building* const> resourceBuildings,
+                            std::span<ResourceEntity* const> resources) const {
 	for (int i = 0; i < sqResolution; ++i) {
 		complexData[i].resetResBonuses();
 	}
-	for (const auto resource : *resources) {
+	for (const auto resource : resources) {
 		resource->resetBonus();
 	}
-	addResBonuses(resBuildings);
+	addResBonuses(resourceBuildings);
 }
 
 void MainGrid::addResourceBonuses(Building* building, std::vector<int>& changedIndexes) const {
@@ -400,7 +401,7 @@ bool MainGrid::validateGradient() const {
 	return true;
 }
 
-bool MainGrid::isInLocalArea(const int center, int indexOfAim) const {
+bool MainGrid::isInLocalArea(int center, int indexOfAim) const {
 	return closeIndexes->isInLocalArea(center, indexOfAim);
 }
 
@@ -443,7 +444,7 @@ void MainGrid::addStatic(Static* object, bool bulkAdd) {
 	}
 }
 
-void MainGrid::refreshStatic(const std::span<int> changed) {
+void MainGrid::refreshStatic(std::span<int> changed) {
 	std::vector<int> toRefresh;
 	toRefresh.reserve(9);
 
@@ -471,16 +472,17 @@ short MainGrid::getGradient(int index) const {
 	return complexData[index].getGradient();
 }
 
-void MainGrid::refreshAllStatic(std::vector<ResourceEntity*>* resources, std::vector<Building*>* buildings) {
+void MainGrid::refreshAllStatic(std::span<ResourceEntity* const> resources,
+                                std::span<Building* const> buildings) {
 	std::fill_n(countArray, sqResolution, false);
-	for (const auto resource : *resources) {
+	for (const auto resource : resources) {
 		for (const int cell : resource->getAllCells()) { countArray[cell] = true; }
 	}
-	for (const auto building : *buildings) {
+	for (const auto building : buildings) {
 		for (const int cell : building->getAllCells()) { countArray[cell] = true; }
 	}
 	std::vector<int> toRefresh;
-	toRefresh.reserve(resources->size() + buildings->size());
+	toRefresh.reserve(resources.size() + buildings.size());
 	for (int i = 0; i < sqResolution; ++i) {
 		if (countArray[i] || calculator->isEdge(i)) {
 			auto& data = complexData[i];
@@ -648,16 +650,16 @@ int MainGrid::getCloserToPassable(const ComplexBucketData& data, int index) cons
 	return -1;
 }
 
-std::vector<int> MainGrid::getPassableIndexes(const std::vector<int>& endIdxs, bool closeEnough) const {
+std::vector<int> MainGrid::getPassableIndexes(std::span<const int> endIndexes, bool closeEnough) const {
 	std::vector<int> result;
-	result.reserve(endIdxs.size());
+	result.reserve(endIndexes.size());
 	if (closeEnough) {
-		for (const int endIdx : endIdxs) {
+		for (const int endIdx : endIndexes) {
 			auto passableEnds = getPassableEnd(endIdx);
 			result.insert(result.end(), passableEnds.begin(), passableEnds.end());
 		}
 	} else {
-		for (const int endIdx : endIdxs) {
+		for (const int endIdx : endIndexes) {
 			if (complexData[endIdx].isPassable()) {
 				result.push_back(endIdx);
 			}
@@ -685,7 +687,7 @@ Urho3D::Vector2 MainGrid::getPositionFromBounds(const Urho3D::IntVector2& sizeX,
 	return (center1 + center2) / 2;
 }
 
-void MainGrid::updateNeighbors(ComplexBucketData& data, const int dataIndex) const {
+void MainGrid::updateNeighbors(ComplexBucketData& data, int dataIndex) const {
 	data.setAllOccupied();
 	for (const auto& [bit, delta] : closeIndexes->getTabIndexesWithValue(data)) {
 		if (complexData[dataIndex + delta].isPassable()) {
@@ -698,9 +700,9 @@ const std::vector<int>* MainGrid::findPath(int startIdx, int endIdx) {
 	return pathFinder.findPath(startIdx, getPassableEnd(endIdx));
 }
 
-const std::vector<int>* MainGrid::findPath(int startIdx, const std::vector<int>& endIdxs, bool closeEnough) {
-	const auto newEndIndexes = getPassableIndexes(endIdxs, closeEnough);
-	return pathFinder.findPath(startIdx, newEndIndexes);
+const std::vector<int>* MainGrid::findPath(int startIdx, std::span<const int> endIndexes, bool closeEnough) {
+	const auto passableIndexes = getPassableIndexes(endIndexes, closeEnough);
+	return pathFinder.findPath(startIdx, passableIndexes);
 }
 
 void MainGrid::drawComplex(Urho3D::Image* image, const Urho3D::String prefix) const {

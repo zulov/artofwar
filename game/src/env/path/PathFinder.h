@@ -1,5 +1,6 @@
 #pragma once
 
+#include <span>
 #include <vector>
 
 #include "PriorityHeap.h"
@@ -28,24 +29,24 @@ public:
 	const std::vector<int>* reconstructPath(int start, int goal) const;
 	const std::vector<int>* reconstructSimplifyPath(int start, int goal) const;
 
-	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs);
+	const std::vector<int>* findPath(int startIdx, std::span<const int> endIndexes);
 
 	void invalidateCache();
 	void drawMap(Urho3D::Image* image) const;
 
 private:
 
-	const std::vector<int>* realFindPath(int startIdx, const std::vector<int>& endIdxs);
-	const std::vector<int>* getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const;
+	const std::vector<int>* realFindPath(int startIdx, std::span<const int> endIndexes);
+	const std::vector<int>* getClosePath2(int startIdx, int endIndex, std::span<const short> closeIndexes) const;
 
 	void prepareToStart(int startIdx);
-	int heuristic(int from, std::vector<Urho3D::UShortVector2>& endIdxs) const;
+	int heuristic(int from, std::span<const Urho3D::UShortVector2> endCoordinates) const;
 
 	int findInCache(int start, int end) const;
 	void addToCache(int startIdx, int endIdx, const std::vector<int>* vector);
 
 	Urho3D::UShortVector2 getCords(int index) const { return calculator->getCords(index); }
-	std::vector<Urho3D::UShortVector2> getCords(const std::vector<int>& endIdxs) const;
+	std::vector<Urho3D::UShortVector2> getCords(std::span<const int> endIndexes) const;
 	void resetPathArrays();
 	bool isInLocalArea(int center, int indexOfAim) const;
 	bool isInLocal2Area(int center, int indexOfAim) const;

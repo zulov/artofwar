@@ -146,9 +146,9 @@ void Building::updateAi(bool ifBuildingAction) {
 			} else { ++currentFrameState; }
 		} else if (ifBuildingAction) {
 			const auto& thingsToInteract =
-					Game::getEnvironment()->getNeighboursFromTeamNotEq(this, dbLevel->attackRange);
+					Game::getEnvironment()->getNeighboursFromTeamNotEq(this, getPosition(), getPlayer(), dbLevel->attackRange);
 			const auto closest =
-					Game::getEnvironment()->closestPhysicalSimple(this, thingsToInteract, dbLevel->attackRange);
+					Game::getEnvironment()->closestPhysicalSimple(getPosition(), thingsToInteract, dbLevel->attackRange);
 			thingToInteract = closest;
 		}
 	}

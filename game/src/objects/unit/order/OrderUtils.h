@@ -35,11 +35,13 @@ inline bool toAction(Unit* unit, const std::vector<Physical*>& list, UnitAction 
 inline void tryToAttack(Unit* unit,
                         const std::function<bool(Physical*)>& condition) {
 	const bool result = toAction(
-		unit, Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, unit->getLevel()->interestRange),
+		unit, Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, unit->getPosition(), unit->getPlayer(),
+		                                                         unit->getLevel()->interestRange),
 		UnitAction::ATTACK, condition, true);
 	if (!result) {
 		toAction(
-			unit, Game::getEnvironment()->getBuildingsFromTeamNotEq(unit, -1, unit->getLevel()->interestRange),
+			unit, Game::getEnvironment()->getBuildingsFromTeamNotEq(unit, unit->getPosition(), unit->getTeam(), -1,
+			                                                       unit->getLevel()->interestRange),
 			UnitAction::ATTACK, condition, true);
 	}
 }

@@ -33,12 +33,12 @@ public:
 	~InfluenceManager();
 
 	// --- Update (called from game loop) ---
-	void updateUnits(std::vector<Unit*>* units) const;
-	void updateBuildings(const std::vector<Building*>* buildings) const;
+	void updateUnits(std::span<Unit* const> units) const;
+	void updateBuildings(std::span<Building* const> buildings) const;
 
 	void updateWithHistory() const;
-	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
-	                      std::vector<ResourceEntity*>* resources) const;
+	void updateVisibility(std::span<Building* const> buildings, std::span<Unit* const> units,
+	                      std::span<ResourceEntity* const> resources) const;
 
 	// --- Events (called during simulation) ---
 	void addCollect(Unit* unit, short resId, float value) const;

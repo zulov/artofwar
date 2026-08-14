@@ -34,7 +34,8 @@ public:
 	void appendIndexesInRange(const Urho3D::Vector2& center, float radius, std::vector<int>& indexes) const;
 
 	std::vector<Physical*>* getArrayNeight(MouseHeld& held, char player);
-	std::vector<Physical*>* getArrayNeightSimilarAs(Physical* clicked, float radius);
+	std::vector<Physical*>* getArrayNeightSimilarAs(const Urho3D::Vector2& center, unsigned short databaseId,
+	                                               char playerId, float radius);
 	std::vector<int> getCloseCenters(Urho3D::Vector2& center, float radius) const;
 	void invalidateCache();
 	void invalidateCache(int currentIdx, float radius);

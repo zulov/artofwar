@@ -93,7 +93,7 @@ const std::vector<Physical*>& Grid::getNotSafeContentAt(short x, short z) const 
 	return getContentAt(calculator->getNotSafeIndex(x, z));
 }
 
-std::vector<Physical*>* Grid::getArrayNeight(MouseHeld& held, const char player) {
+std::vector<Physical*>* Grid::getArrayNeight(MouseHeld& held, char player) {
 	auto [minX, maxX] = calculator->getIndex(held.minMaxX());
 	auto [minZ, maxZ] = calculator->getIndex(held.minMaxZ());
 	tempSelected->clear();
@@ -143,22 +143,23 @@ void Grid::invalidateCache(int currentIdx, float radius) {
 	prevRadius = radius;
 }
 
-std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, float radius) {
+std::vector<Physical*>* Grid::getArrayNeightSimilarAs(const Urho3D::Vector2& center,
+                                                      unsigned short databaseId, char playerId, float radius) {
 	//TODO clean prawie to samo co wy�ej
-	const auto posBeginX = calculator->getIndex(clicked->getPosition().x_ - radius);
-	const auto posBeginZ = calculator->getIndex(clicked->getPosition().y_ - radius);
-	const auto posEndX = calculator->getIndex(clicked->getPosition().x_ + radius);
-	const auto posEndZ = calculator->getIndex(clicked->getPosition().y_ + radius);
+	const auto posBeginX = calculator->getIndex(center.x_ - radius);
+	const auto posBeginZ = calculator->getIndex(center.y_ - radius);
+	const auto posEndX = calculator->getIndex(center.x_ + radius);
+	const auto posEndZ = calculator->getIndex(center.y_ + radius);
 
 	tempSelected->clear();
 	for (short i = posBeginX; i <= posEndX; ++i) {
 		for (short j = posBeginZ; j <= posEndZ; ++j) {
 			auto& content = getNotSafeContentAt(i, j);
 			std::ranges::copy_if(content, std::back_inserter(*tempSelected),
-			                     [clicked](Physical* p) {
-				                     return p->getDbId() == clicked->getDbId() && p->getPlayer() == clicked->getPlayer() &&
-					                     p->isAlive();
-			                     });
+			                     [databaseId, playerId](Physical* physical) {
+				                     return physical->getDbId() == databaseId && physical->getPlayer() == playerId &&
+					                     physical->isAlive();
+				                     });
 		}
 	}
 
