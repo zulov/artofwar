@@ -48,7 +48,7 @@ public:
 	float getSize() const { return calculator->getSize(); }
 	float getMaxDistance() const { return maxDistance; }
 
-	const std::vector<short>* get(float radius, int center) const;
+	const std::vector<short>* get(float radius, unsigned center) const;
 	const std::vector<short>* get(float radius, const Urho3D::UShortVector2& centerCords) const;
 
 private:

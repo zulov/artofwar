@@ -15,22 +15,20 @@ public:
 	VisibilityMap(unsigned short resolution, float size, float valueThresholdDebug);
 	~VisibilityMap();
 
-	void draw();
+	void draw() const;
 	void update(const Urho3D::Vector2& pos, float sRadius);
-	void finishAtIndex(unsigned i) const;
+
 	void finish();
-	void reset();
 	char getValueAt(const Urho3D::Vector2& pos) const;
 
 	char getValueAt(unsigned index) const;
 	int removeUnseen(std::span<float> intersection);
-	float getPercent();
+	float getPercent() const;
 	unsigned short getResolution() const { return calculator->getResolution(); }
 
 private:
-	void ensureReady();
 	void ensureUnseenIntersectionReady();
-	void invalidateCaches() const;
+	void finishAtIndex(unsigned i) const;
 
 	GridCalculator* calculator;
 	unsigned int arraySize;
@@ -40,12 +38,9 @@ private:
 	VisibilityType* values;
 	float* ranges;
 	std::vector<int> changedIndexes;
-	bool* valuesForInfluence;
 	std::vector<float> unseenIntersection;
 	int visibleCount = 0;
 	LevelCache* levelCache;
 	float percent = -1.f;
-	mutable bool percentReady = false;
 	mutable bool valuesForInfluenceReady = false;
-	mutable bool unseenIntersectionReady = false;
 };

@@ -20,8 +20,7 @@
 #include "env/bucket/levels/LevelCache.h"
 #include "utils/CountUtils.h"
 
-void VisibilityMap::draw() {
-	ensureReady();
+void VisibilityMap::draw() const {
 	DebugLineRepo::drawQuads(DebugLineType::GRID, getResolution(), reinterpret_cast<const unsigned char*>(values),
 	                         valueThresholdDebug);
 }
@@ -36,8 +35,6 @@ VisibilityMap::VisibilityMap(unsigned short resolution, float size, float valueT
 	levelCache(LevelCacheProvider::get(resolution, 60.f, calculator)) {
 	values = new VisibilityType[arraySize];
 	std::fill_n(values, arraySize, VisibilityType::NONE);
-	valuesForInfluence = new bool[influenceArraySize];
-	std::fill_n(valuesForInfluence, influenceArraySize, false);
 	ranges = new float[arraySize];
 	std::fill_n(ranges, arraySize, 0.f);
 	unseenIntersection.resize(influenceArraySize, 0.f);
@@ -45,13 +42,11 @@ VisibilityMap::VisibilityMap(unsigned short resolution, float size, float valueT
 
 VisibilityMap::~VisibilityMap() {
 	delete[] values;
-	delete[] valuesForInfluence;
 	delete[] ranges;
 }
 
 void VisibilityMap::update(const Urho3D::Vector2& pos, float sRadius) {
 	if (sRadius < 0) { return; }
-	invalidateCaches();
 	const auto centerIdx = calculator->indexFromPosition(pos);
 	if (ranges[centerIdx] < sRadius) {
 		if (ranges[centerIdx] == 0.f && changedIndexes.size() < CHANGED_INDEXES_MAX_SIZE) {
@@ -59,6 +54,21 @@ void VisibilityMap::update(const Urho3D::Vector2& pos, float sRadius) {
 		}
 		ranges[centerIdx] = sRadius;
 	}
+}
+
+void VisibilityMap::finish() {
+	char* end = (char*)values + arraySize;
+	for (char* i = (char*)values; i < end; i++) { *i &= 1; }
+	if (changedIndexes.size() >= CHANGED_INDEXES_MAX_SIZE) {
+		//full scan
+		for (unsigned i = 0; i < arraySize; ++i) { if (ranges[i] > 0.f) { finishAtIndex(i); } }
+	} else { for (const int i : changedIndexes) { finishAtIndex(i); } }
+
+	const int sum = std::accumulate((char*)values, (char*)(values + arraySize), 0);
+	percent = sum / (arraySize * 3.f);
+
+	changedIndexes.clear();
+	valuesForInfluenceReady = false;
 }
 
 void VisibilityMap::finishAtIndex(unsigned i) const {
@@ -71,24 +81,6 @@ void VisibilityMap::finishAtIndex(unsigned i) const {
 	}
 
 	ranges[i] = 0.f;
-	invalidateCaches();
-}
-
-void VisibilityMap::finish() {
-	if (changedIndexes.size() >= CHANGED_INDEXES_MAX_SIZE) {
-		//full scan
-		for (unsigned i = 0; i < arraySize; ++i) {
-			if (ranges[i] > 0.f) { finishAtIndex(i); }
-		}
-	} else { for (const int i : changedIndexes) { finishAtIndex(i); } }
-
-	changedIndexes.clear();
-}
-
-void VisibilityMap::reset() {
-	invalidateCaches();
-	char* end = (char*)values + arraySize;
-	for (char* i = (char*)values; i < end; i++) { *i &= 1; }
 }
 
 char VisibilityMap::getValueAt(const Urho3D::Vector2& pos) const {
@@ -107,56 +99,27 @@ int VisibilityMap::removeUnseen(std::span<float> intersection) {
 	return visibleCount;
 }
 
-float VisibilityMap::getPercent() {
-	if (!percentReady) {
-		const int sum = std::accumulate((char*)values, (char*)(values + arraySize), 0);
-		percent = sum / (arraySize * 3.f);
-		percentReady = true;
-	}
+float VisibilityMap::getPercent() const {
 	return percent;
 }
 
-void VisibilityMap::ensureReady() {
+void VisibilityMap::ensureUnseenIntersectionReady() {
 	if (valuesForInfluenceReady == false) {
-		const auto* parent = values;
-		auto* current = valuesForInfluence;
 		const int res = getResolution();
 		for (int prow = 0; prow < res; prow += 2) {
-			const auto* row0 = parent + prow * res;
+			const auto* row0 = values + prow * res;
 			const auto* row1 = row0 + res;
-			auto* dst = current + (prow >> 1) * influenceRes;
+			auto dst = unseenIntersection.begin() + (prow >> 1) * influenceRes;
 
 			for (auto pcol = 0; pcol < res; pcol += 2, ++dst) {
-				*dst =
+				auto isVisible =
 						row0[pcol] == VisibilityType::VISIBLE ||
 						row0[pcol + 1] == VisibilityType::VISIBLE ||
 						row1[pcol] == VisibilityType::VISIBLE ||
 						row1[pcol + 1] == VisibilityType::VISIBLE;
+				if (isVisible) { *dst = 0.f; } else { *dst = std::numeric_limits<float>::max(); }
 			}
 		}
 		valuesForInfluenceReady = true;
 	}
-}
-
-void VisibilityMap::ensureUnseenIntersectionReady() {
-	ensureReady();
-	if (unseenIntersectionReady) { return; }
-
-	visibleCount = 0;
-	auto* src = valuesForInfluence;
-	auto* dst = unseenIntersection.data();
-	const auto* const srcEnd = valuesForInfluence + influenceArraySize;
-	for (; src < srcEnd; ++src, ++dst) {
-		if (*src) {
-			*dst = 0.f;
-			++visibleCount;
-		} else { *dst = std::numeric_limits<float>::max(); }
-	}
-	unseenIntersectionReady = true;
-}
-
-void VisibilityMap::invalidateCaches() const {
-	valuesForInfluenceReady = false;
-	unseenIntersectionReady = false;
-	percentReady = false;
 }
