@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <optional>
+#include <span>
 #include "ComplexBucketData.h"
 #include "Grid.h"
 #include "objects/resource/ResourceEntity.h"
@@ -37,14 +38,14 @@ public:
 	std::optional<Urho3D::Vector2> getDirectionFrom(int index, const Urho3D::Vector2& position) const;
 
 	std::vector<int> getPassableEnd(int endIdx) const;
-	std::vector<int> getPassableIndexes(const std::vector<int>& endIdxs, bool closeEnough) const;
+	std::vector<int> getPassableIndexes(std::span<const int> endIndexes, bool closeEnough) const;
 
 	Urho3D::Vector2 getValidPosition(const Urho3D::UCharVector2& size, const Urho3D::UShortVector2& cords) const;
 
 	void updateNeighbors(ComplexBucketData& data, int dataIndex) const;
 
 	const std::vector<int>* findPath(int startIdx, int endIdx);
-	const std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, bool closeEnough);
+	const std::vector<int>* findPath(int startIdx, std::span<const int> endIndexes, bool closeEnough);
 
 	void drawComplex(Urho3D::Image* image, Urho3D::String prefix) const;
 
@@ -76,13 +77,14 @@ public:
 	void drawAll();
 	bool cellIsCollectable(int index) const;
 	bool cellIsAttackable(int index) const;
-	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
+	bool anyCloseEnough(std::span<const int> indexes, int center, float distThreshold) const;
 	std::vector<int> getIndexesInRange(const Urho3D::Vector2& center, float range) const;
 	std::vector<int> getIndexesInRange(int centerIndex, float range) const;
-	void addResBonuses(std::vector<Building*>& resBuildings) const;
-	void reAddBonuses(std::vector<Building*>& resBuildings, std::vector<ResourceEntity*>* resources) const;
-	void refreshAllStatic(std::vector<ResourceEntity*>* resources, std::vector<Building*>* buildings);
-	void refreshStatic(const std::span<int> changed);
+	void addResBonuses(std::span<Building* const> resourceBuildings) const;
+	void reAddBonuses(std::span<Building* const> resourceBuildings,
+	                  std::span<ResourceEntity* const> resources) const;
+	void refreshAllStatic(std::span<ResourceEntity* const> resources, std::span<Building* const> buildings);
+	void refreshStatic(std::span<int> changed);
 	const std::vector<std::pair<unsigned char, short>>& getCloseTabIndexesWithValue(int center) const;
 	const std::vector<short>& getCloseIndexes(int center) const;
 	short getGradient(int index) const;

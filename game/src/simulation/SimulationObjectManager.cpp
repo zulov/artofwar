@@ -79,7 +79,8 @@ void SimulationObjectManager::load(dbload_resource* resource) const {
 }
 
 void SimulationObjectManager::refreshAllStatic() {
-	Game::getEnvironment()->refreshAllStatic(resources, buildings);
+	Game::getEnvironment()->refreshAllStatic(std::span<ResourceEntity* const>(*resources),
+	                                         std::span<Building* const>(*buildings));
 }
 
 void SimulationObjectManager::setResUid(unsigned resUid) { resourceFactory.setResUid(resUid); }
@@ -90,7 +91,7 @@ void SimulationObjectManager::addUnits(std::vector<Unit*>& temp) const {
 		for (auto value : temp) {
 			Game::getPlayersMan()->getPlayer(value->getPlayer())->add(value);
 		}
-		Game::getEnvironment()->addNew(temp);
+		Game::getEnvironment()->addNew(std::span<Unit* const>(temp));
 	}
 }
 
@@ -125,7 +126,8 @@ void SimulationObjectManager::refreshResBonuses() const {
 	std::vector<Building*> resBuilding;
 	std::ranges::copy_if(*buildings, std::back_inserter(resBuilding), isResourceBuilding);
 
-	Game::getEnvironment()->reAddBonuses(resBuilding, resources);
+	Game::getEnvironment()->reAddBonuses(std::span<Building* const>(resBuilding),
+	                                     std::span<ResourceEntity* const>(*resources));
 }
 
 void SimulationObjectManager::dispose() const {
@@ -140,8 +142,10 @@ void SimulationObjectManager::dispose() const {
 }
 
 void SimulationObjectManager::removeFromGrids() {
-	Game::getEnvironment()->removeFromGrids(StateManager::getDeadUnits());
-	Game::getEnvironment()->removeFromGrids(StateManager::getDeadBuildings(), StateManager::getDeadResources());
+	Game::getEnvironment()->removeFromGrids(std::span<Unit* const>(StateManager::getDeadUnits()));
+	Game::getEnvironment()->removeFromGrids(
+		std::span<Building* const>(StateManager::getDeadBuildings()),
+		std::span<ResourceEntity* const>(StateManager::getDeadResources()));
 
 	refreshResBonuses();
 }

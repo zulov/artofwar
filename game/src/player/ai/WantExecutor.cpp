@@ -224,5 +224,5 @@ std::optional<Urho3D::Vector2> WantExecutor::findPosToBuild(db_building* buildin
 			building, level
 			);
 	return Game::getEnvironment()->getPosToCreate(
-			std::span<const float>(spatialOut.weights), building, playerId);
+			std::span<const float>(spatialOut.weights), building->size, playerId);
 }

@@ -82,16 +82,16 @@ void PathFinder::prepareToStart(int startIdx) {
 	update(startIdx, 0, startIdx, 0);
 }
 
-const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs) {
+const std::vector<int>* PathFinder::realFindPath(int startIdx, std::span<const int> endIndexes) {
 	//performance wersja bez vectora
 	prepareToStart(startIdx);
-	auto endCords = getCords(endIdxs);
-	assert(!endCords.empty());
-	const int limit = std::max(calculator->getBiggestManhattan(startIdx, endCords), 4) * 16;
+	auto endCoordinates = getCords(endIndexes);
+	assert(!endCoordinates.empty());
+	const int limit = std::max(calculator->getBiggestManhattan(startIdx, endCoordinates), 4) * 16;
 	int steps = 0;
 	while (!frontier.empty() && ++steps <= limit) {
 		const auto current = frontier.get();
-		if (std::ranges::binary_search(endIdxs, current)) {
+		if (std::ranges::binary_search(endIndexes, current)) {
 			//debug(startIdx, current, true);
 			return reconstructSimplifyPath(startIdx, current);
 		}
@@ -106,27 +106,28 @@ const std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector
 				const auto nextCost = cost_so_far[next];
 				if (nextCost < 0 || new_cost < nextCost) {
 					update(next, new_cost, current,
-					       new_cost + heuristic(next, endCords));
+					       new_cost + heuristic(next, endCoordinates));
 				}
 			}
 		}
 	}
 
-	//debug(startIdx, endIdxs[0], false);
+	//debug(startIdx, endIndexes[0], false);
 	tempPath->clear();
 	return tempPath;
 }
 
-const std::vector<int>* PathFinder::getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const {
-	if (!closePass.empty()) {
-		for (auto pass : closePass) {
+const std::vector<int>* PathFinder::getClosePath2(int startIdx, int endIndex,
+                                                  std::span<const short> closeIndexes) const {
+	if (!closeIndexes.empty()) {
+		for (const auto pass : closeIndexes) {
 			auto newPass = pass + startIdx;
 			assert(calculator->isValidIndex(newPass) && isInLocalArea(startIdx, newPass));
 
 			if (complexData[newPass].isPassable()) {
 				closePath->clear();
 				closePath->emplace_back(newPass);
-				closePath->emplace_back(endIdx);
+				closePath->emplace_back(endIndex);
 				return closePath;
 			}
 		}
@@ -135,39 +136,39 @@ const std::vector<int>* PathFinder::getClosePath2(int startIdx, int endIdx, cons
 }
 
 const std::vector<int>*
-PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs) {
-	if (endIdxs.empty()) {
+PathFinder::findPath(int startIdx, std::span<const int> endIndexes) {
+	if (endIndexes.empty()) {
 		Game::getLog()->WriteRaw("No TargetFound");
 		closePath->clear();
 		return closePath;
 	}
-	if (endIdxs.size() == 1) {
-		const auto foundCacheIdx = findInCache(startIdx, endIdxs[0]);
+	if (endIndexes.size() == 1) {
+		const auto foundCacheIdx = findInCache(startIdx, endIndexes[0]);
 		if (foundCacheIdx > -1) {
 			return &cache[foundCacheIdx].path;
 		}
 	}
-	for (int endIdx : endIdxs) {
-		if (isInLocalArea(startIdx, endIdx)) {
+	for (const int endIndex : endIndexes) {
+		if (isInLocalArea(startIdx, endIndex)) {
 			closePath->clear();
-			closePath->emplace_back(endIdx);
+			closePath->emplace_back(endIndex);
 			return closePath;
 		}
 	}
-	for (const int endIdx : endIdxs) {
-		const auto closePath = getClosePath2(startIdx, endIdx,
-		                                     closeIndexes->getPassIndexVia1LevelTo2(startIdx, endIdx));
+	for (const int endIndex : endIndexes) {
+		const auto closePath = getClosePath2(startIdx, endIndex,
+		                                     closeIndexes->getPassIndexVia1LevelTo2(startIdx, endIndex));
 		if (closePath) { return closePath; }
 	}
 
-	const auto path = realFindPath(startIdx, endIdxs);
+	const auto path = realFindPath(startIdx, endIndexes);
 	if (!path->empty()) {
 		addToCache(startIdx, path->back(), path);
 	} //TODO perf drugi cache do braku przejscia ale jak tu uwzglednic limit
 	return path;
 }
 
-bool PathFinder::validateIndex(const int current, int next) const {
+bool PathFinder::validateIndex(int current, int next) const {
 	if (calculator->isValidIndex(next)) {
 		return true;
 	}
@@ -175,12 +176,12 @@ bool PathFinder::validateIndex(const int current, int next) const {
 	return false;
 }
 
-int PathFinder::heuristic(int from, std::vector<Urho3D::UShortVector2>& endIdxs) const {
+int PathFinder::heuristic(int from, std::span<const Urho3D::UShortVector2> endCoordinates) const {
 	//bug lepiej wybierac do kogo heurystyka
-	assert(!endIdxs.empty());
+	assert(!endCoordinates.empty());
 	const auto a = getCords(from);
 	int min = 1024;
-	for (const auto& b : endIdxs) {
+	for (const auto& b : endCoordinates) {
 		min = std::min(min, abs(a.x_ - b.x_) + abs(a.y_ - b.y_));
 	}
 	return min * PATH_PRECISION;
@@ -256,10 +257,10 @@ void PathFinder::update(int idx, int cost, int cameForm, int heuristicCost) {
 	}
 }
 
-std::vector<Urho3D::UShortVector2> PathFinder::getCords(const std::vector<int>& endIdxs) const {
+std::vector<Urho3D::UShortVector2> PathFinder::getCords(std::span<const int> endIndexes) const {
 	std::vector<Urho3D::UShortVector2> cords;
-	cords.reserve(endIdxs.size());
-	for (auto idx : endIdxs) {
+	cords.reserve(endIndexes.size());
+	for (auto idx : endIndexes) {
 		cords.emplace_back(getCords(idx));
 	}
 	return cords;
@@ -278,7 +279,7 @@ void PathFinder::resetPathArrays() {
 	max_cost_to_ref = 0;
 }
 
-bool PathFinder::isInLocalArea(const int center, int indexOfAim) const {
+bool PathFinder::isInLocalArea(int center, int indexOfAim) const {
 	return closeIndexes->isInLocalArea(center, indexOfAim);
 }
 

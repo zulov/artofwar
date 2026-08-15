@@ -43,7 +43,8 @@ public:
 	void setToImage(unsigned* data, int index, unsigned color);
 	void setToImage(unsigned* data, int index, unsigned color, bool operatorA);
 	void hideOrShow(VisibilityMap* current, Physical* physical);
-	void updateVisibility(const std::vector<Building*>* buildings, const std::vector<Unit*>* units, const std::vector<ResourceEntity*>* resources);
+	void updateVisibility(std::span<Building* const> buildings, std::span<Unit* const> units,
+	                      std::span<ResourceEntity* const> resources);
 	void drawMaps(char index) const;
 	bool isVisible(char player, const Urho3D::Vector2& pos) const;
 	float getVisibilityScore(char player) const;

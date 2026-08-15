@@ -124,7 +124,7 @@ InfluenceManager::~InfluenceManager() {
 	delete ci;
 }
 
-void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
+void InfluenceManager::updateUnits(std::span<Unit* const> units) const {
 	MapsUtils::resetMaps(unitPresence);
 	MapsUtils::resetMaps(armyPresence);
 	for (auto& vec : unboostedResourceActivityByTypeAndPlayer) {
@@ -132,7 +132,7 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 	}
 	MapsUtils::resetMaps(unboostedResourceActivityByPlayer);
 
-	for (const auto unit : (*units)) {
+	for (const auto unit : units) {
 		const auto pId = unit->getPlayer();
 		const auto index = getIndexInInfluence(unit);
 		unitPresence[pId]->update(index);
@@ -149,9 +149,9 @@ void InfluenceManager::updateUnits(std::vector<Unit*>* units) const {
 	}
 }
 
-void InfluenceManager::updateBuildings(const std::vector<Building*>* buildings) const {
+void InfluenceManager::updateBuildings(std::span<Building* const> buildings) const {
 	MapsUtils::resetMaps(buildingPresence);
-	for (const auto building : (*buildings)) {
+	for (const auto building : buildings) {
 		buildingPresence[building->getPlayer()]->update(building->getIndexInInfluence());
 	}
 	// TODO perf to tutaj chyba niepotrzebne i tak bedzie zrobione lazy
@@ -166,8 +166,9 @@ void InfluenceManager::updateWithHistory() const {
 	MapsUtils::resetMaps(attackActivity);//obniza wartosci
 }
 
-void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
-                                        std::vector<ResourceEntity*>* resources) const {
+void InfluenceManager::updateVisibility(std::span<Building* const> buildings,
+                                        std::span<Unit* const> units,
+                                        std::span<ResourceEntity* const> resources) const {
 	visibilityManager->updateVisibility(buildings, units, resources);
 }
 

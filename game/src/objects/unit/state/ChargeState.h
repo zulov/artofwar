@@ -41,7 +41,8 @@ public:
 			StateManager::toDefaultState(unit);
 		} else {
 			const auto thingsToInteract = toCharge(
-				Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, unit->chargeData->attackRange), unit);
+				Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, unit->getPosition(), unit->getPlayer(),
+				                                                     unit->chargeData->attackRange), unit);
 			if (unit->chargeData->updateFrame()) {
 				for (const auto physical : thingsToInteract) {
 					if (unit->getTeam() != physical->getTeam()) {

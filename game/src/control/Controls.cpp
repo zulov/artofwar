@@ -126,7 +126,9 @@ void Controls::leftClick(hit_data& hitData) {
 
 void Controls::leftDoubleClick(hit_data& hitData) {
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) { unSelectAll(); }
-	select(Game::getEnvironment()->getNeighboursSimilarAs(hitData.clicked));
+	if (!hitData.clicked) { return; }
+	select(Game::getEnvironment()->getNeighboursSimilarAs(hitData.clicked->getType(), hitData.clicked->getPosition(),
+	                                                      hitData.clicked->getDbId(), hitData.clicked->getPlayer()));
 }
 
 void Controls::leftClickBuild(hit_data& hitData) {
@@ -134,13 +136,13 @@ void Controls::leftClickBuild(hit_data& hitData) {
 	createBuilding({hitData.position.x_, hitData.position.z_});
 }
 
-UnitOrder* Controls::vectorOrder(UnitAction order,const Urho3D::Vector2& vector, const bool shiftPressed,
+UnitOrder* Controls::vectorOrder(UnitAction order,const Urho3D::Vector2& vector, bool shiftPressed,
                                  const std::vector<Physical*>& vec) const {
 	if (vec.size() == 1) { return new IndividualOrder(static_cast<Unit*>(vec.at(0)), order, vector, shiftPressed); }
 	return new GroupOrder(vec, UnitActionType::ORDER, static_cast<short>(order), vector, shiftPressed);
 }
 
-UnitOrder* Controls::thingOrder(UnitAction order, Physical* toUse, const bool shiftPressed,
+UnitOrder* Controls::thingOrder(UnitAction order, Physical* toUse, bool shiftPressed,
                                 const std::vector<Physical*>& vec) const {
 	if (vec.size() == 1) { return new IndividualOrder(static_cast<Unit*>(vec.at(0)), order, toUse, shiftPressed); }
 	return new GroupOrder(vec, UnitActionType::ORDER, static_cast<short>(order), toUse, shiftPressed);

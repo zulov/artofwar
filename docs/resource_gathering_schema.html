@@ -642,7 +642,7 @@
     <div class="diagram" style="flex-wrap: wrap; gap: 10px;">
       <div class="box">
         <span class="title">Step 1</span>
-        <span class="val">EconomyBrain<br>(38 in, 18 out)</span>
+        <span class="val">EconomyBrain<br>(41 in, 18 out)</span>
       </div>
       <div class="arrow">&rarr;</div>
       <div class="box highlight">
@@ -730,7 +730,7 @@ keep top 3 by need (need > 0.1) -> wantList.addRequest(BUILDING, need, building.
     <tr>
       <td>OTHER / DEFENCE / TECH / UNITS</td>
       <td><code>BuildSpatialBrain</code> &rarr; <code>Environment::getPosToCreate()</code></td>
-      <td>BuildSpatialBrain outputs 12 influence-map weights (buildings, units, attackSpeed, 4x gatherSpeed, 3x enemy, res-not-bonus, economy); the weighted maps are combined and the best visible cell is chosen.</td>
+      <td>BuildSpatialBrain outputs 11 influence-map weights (building presence, unit presence, attack activity, 4x gathering activity, enemy building/unit/attack activity, and aggregate unboosted-resource activity); the weighted maps are combined and the best visible cell is chosen.</td>
     </tr>
   </table>
 

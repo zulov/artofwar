@@ -51,16 +51,17 @@ void Simulation::clearNodesWithoutDelete() const {
 void Simulation::updateInfluenceMaps(bool force) const {
 	const auto* frameInfo = Game::getFrameInfo();
 	if (frameInfo->canUpdate(PerFrameAction::INFLUENCE_UNITS, force)) {
-		env->updateInfluenceUnits(units);
+		env->updateInfluenceUnits(std::span<Unit* const>(*units));
 		for (const auto player : Game::getPlayersMan()->getAllPlayers()) {
 			player->getPossession()->updateNearbyResourceSupply();
 		}
 	}
 	if (frameInfo->canUpdate(PerFrameAction::INFLUENCE_OTHER, force)) {
-		env->updateInfluenceBuildings(buildings);
+		env->updateInfluenceBuildings(std::span<Building* const>(*buildings));
 	}
 	if (frameInfo->canUpdate(PerFrameAction::VISIBILITY, force)) {
-		env->updateVisibility(buildings, units, resources);
+		env->updateVisibility(std::span<Building* const>(*buildings), std::span<Unit* const>(*units),
+		                      std::span<ResourceEntity* const>(*resources));
 	}
 }
 
@@ -337,7 +338,8 @@ void Simulation::calculateForces() {
 			break;
 		case UnitState::ATTACK: {
 			//TODO improve getMaxSeparationDistance powino sie dodac jeszcze minimal dist
-			const auto& neighbours = env->getNeighboursWithCache(unit, unit->getMaxSeparationDistance());
+			const auto& neighbours = env->getNeighboursWithCache(unit, unit->getPosition(), unit->getMainGridIndex(),
+			                                                   unit->getMaxSeparationDistance());
 
 			force.separationUnits(newForce, unit, neighbours);
 			force.inCell(newForce, unit);
@@ -347,7 +349,8 @@ void Simulation::calculateForces() {
 			//TODO improve getMaxSeparationDistance powino sie dodac jeszcze minimal dist
 			const bool invalid = force.escapeFromInvalidPosition(newForce, unit);
 			if (!invalid) {
-				const auto& neighbours = env->getNeighboursWithCache(unit, unit->getMaxSeparationDistance());
+				const auto& neighbours = env->getNeighboursWithCache(unit, unit->getPosition(), unit->getMainGridIndex(),
+				                                                   unit->getMaxSeparationDistance());
 
 				force.separationUnits(newForce, unit, neighbours);
 				force.separationObstacle(newForce, unit);

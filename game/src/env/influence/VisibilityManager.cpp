@@ -70,12 +70,13 @@ void VisibilityManager::hideOrShow(VisibilityMap* current, Physical* physical) {
 	physical->setVisibility(type);
 }
 
-void VisibilityManager::updateVisibility(const std::vector<Building*>* buildings, const std::vector<Unit*>* units,
-                                         const std::vector<ResourceEntity*>* resources) {
-	for (const auto unit : (*units)) {
+void VisibilityManager::updateVisibility(std::span<Building* const> buildings,
+                                         std::span<Unit* const> units,
+                                         std::span<ResourceEntity* const> resources) {
+	for (const auto unit : units) {
 		visibilityPerPlayer[unit->getPlayer()]->update(unit->getPosition(), unit->getSightRadius());
 	}
-	for (const auto building : (*buildings)) {
+	for (const auto building : buildings) {
 		visibilityPerPlayer[building->getPlayer()]->update(building->getPosition(), building->getSightRadius());
 	}
 	for (const auto perPlayer : visibilityPerPlayer) {
@@ -121,13 +122,13 @@ void VisibilityManager::updateVisibility(const std::vector<Building*>* buildings
 			texture->SetData(image, true);
 		}
 
-		for (const auto resource : (*resources)) {
+		for (const auto resource : resources) {
 			hideOrShow(current, resource);
 		}
-		for (const auto unit : (*units)) {
+		for (const auto unit : units) {
 			hideOrShow(current, unit);
 		}
-		for (const auto building : (*buildings)) {
+		for (const auto building : buildings) {
 			hideOrShow(current, building);
 		}
 	}

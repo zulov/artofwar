@@ -142,7 +142,7 @@
 <body>
 
 <h1>Art of War - Influence Maps Deep Dive</h1>
-<h2 class="page-sub">Reference for every influence and visibility map type: how raw, kernel, quad, and center layers work; where each map is updated; how build and attack brains consume them; and what the selection math actually does.</h2>
+<h2 class="page-sub">Reference for every influence and visibility map type: how raw, kernel, quad, and center layers work; where each map is updated; how BuildSpatial and military center logic consume them; and what the selection math actually does.</h2>
 
 <div class="toc">
   <h3>Contents</h3>
@@ -161,7 +161,7 @@
   <div class="legend-item"><div class="legend-color" style="background:#4A148C"></div>Buffered history maps</div>
   <div class="legend-item"><div class="legend-color" style="background:#0D47A1"></div>Visibility</div>
   <div class="legend-item"><div class="legend-color" style="background:#6A1B9A"></div>Center aliases</div>
-  <div class="legend-item"><div class="legend-color" style="background:#BF360C"></div>Special placement maps</div>
+  <div class="legend-item"><div class="legend-color" style="background:#BF360C"></div>Typed snapshot maps</div>
 </div>
 
 <hr class="divider">
@@ -194,18 +194,18 @@
 
   <rect x="330" y="65" width="290" height="145" rx="8" fill="#1B5E20" fill-opacity="0.28" stroke="#4CAF50" stroke-width="2"/>
   <text x="475" y="94" text-anchor="middle" fill="#C8E6C9" font-size="15" font-weight="bold">Snapshot Influence Maps</text>
-  <text x="475" y="117" text-anchor="middle" fill="#A5D6A7" font-size="11">buildingsInfluencePerPlayer</text>
-  <text x="475" y="133" text-anchor="middle" fill="#A5D6A7" font-size="11">unitsInfluencePerPlayer</text>
-  <text x="475" y="149" text-anchor="middle" fill="#A5D6A7" font-size="11">armyInfluence</text>
+   <text x="475" y="117" text-anchor="middle" fill="#A5D6A7" font-size="11">buildingPresence</text>
+   <text x="475" y="133" text-anchor="middle" fill="#A5D6A7" font-size="11">unitPresence</text>
+   <text x="475" y="149" text-anchor="middle" fill="#A5D6A7" font-size="11">armyPresence</text>
   <text x="475" y="165" text-anchor="middle" fill="#A5D6A7" font-size="11">unboostedResourceActivityByTypeAndPlayer[4] and ByPlayer</text>
   <text x="475" y="184" text-anchor="middle" fill="#81C784" font-size="10">reset each scan, then refilled directly</text>
 
   <rect x="330" y="235" width="290" height="135" rx="8" fill="#4A148C" fill-opacity="0.28" stroke="#AB47BC" stroke-width="2"/>
   <text x="475" y="264" text-anchor="middle" fill="#F3E5F5" font-size="15" font-weight="bold">Buffered History Maps</text>
-  <text x="475" y="287" text-anchor="middle" fill="#E1BEE7" font-size="11">gatherSpeed[FOOD, WOOD, STONE, GOLD]</text>
-  <text x="475" y="303" text-anchor="middle" fill="#E1BEE7" font-size="11">attackSpeed</text>
+   <text x="475" y="287" text-anchor="middle" fill="#E1BEE7" font-size="11">gatheringActivityByResource[4]</text>
+   <text x="475" y="303" text-anchor="middle" fill="#E1BEE7" font-size="11">attackActivity</text>
   <text x="475" y="319" text-anchor="middle" fill="#E1BEE7" font-size="11">pending -> raw * 0.5 + pending on reset()</text>
-  <text x="475" y="338" text-anchor="middle" fill="#CE93D8" font-size="10">periodic threshold cleanup below 0.0001</text>
+   <text x="475" y="338" text-anchor="middle" fill="#CE93D8" font-size="10">history reset also removes values below 0.0001</text>
 
   <rect x="330" y="515" width="290" height="120" rx="8" fill="#0D47A1" fill-opacity="0.28" stroke="#42A5F5" stroke-width="2"/>
   <text x="475" y="544" text-anchor="middle" fill="#E3F2FD" font-size="15" font-weight="bold">VisibilityMap</text>
@@ -222,18 +222,12 @@
   <text x="865" y="185" text-anchor="middle" fill="#B2EBF2" font-size="11">enemy building, enemy units, enemy attack</text>
   <text x="865" y="201" text-anchor="middle" fill="#B2EBF2" font-size="11">unboostedResourceActivityByPlayer</text>
 
-  <rect x="730" y="275" width="270" height="105" rx="8" fill="#8E24AA" fill-opacity="0.28" stroke="#BA68C8" stroke-width="2"/>
-  <text x="865" y="304" text-anchor="middle" fill="#F3E5F5" font-size="15" font-weight="bold">Attack Spatial View</text>
-  <text x="865" y="327" text-anchor="middle" fill="#E1BEE7" font-size="11">6 ordered weights</text>
-  <text x="865" y="343" text-anchor="middle" fill="#E1BEE7" font-size="11">our building, our units, our attack</text>
-  <text x="865" y="359" text-anchor="middle" fill="#E1BEE7" font-size="11">enemy building, enemy units, enemy attack</text>
-
   <rect x="730" y="420" width="270" height="110" rx="8" fill="#6A1B9A" fill-opacity="0.26" stroke="#AB47BC" stroke-width="2"/>
   <text x="865" y="449" text-anchor="middle" fill="#F3E5F5" font-size="15" font-weight="bold">Center View</text>
-  <text x="865" y="472" text-anchor="middle" fill="#E1BEE7" font-size="11">ECON -> sum(gatherSpeed raw)</text>
-  <text x="865" y="488" text-anchor="middle" fill="#E1BEE7" font-size="11">BUILDING -> buildingsInfluencePerPlayer</text>
-  <text x="865" y="504" text-anchor="middle" fill="#E1BEE7" font-size="11">ARMY -> armyInfluence</text>
-  <text x="865" y="520" text-anchor="middle" fill="#E1BEE7" font-size="11">BATTLE -> attackSpeed</text>
+   <text x="865" y="472" text-anchor="middle" fill="#E1BEE7" font-size="11">ECON -> economicActivity</text>
+   <text x="865" y="488" text-anchor="middle" fill="#E1BEE7" font-size="11">BUILDING -> buildingPresence</text>
+   <text x="865" y="504" text-anchor="middle" fill="#E1BEE7" font-size="11">ARMY -> armyPresence</text>
+   <text x="865" y="520" text-anchor="middle" fill="#E1BEE7" font-size="11">BATTLE -> attackActivity</text>
 
   <rect x="1090" y="220" width="250" height="160" rx="8" fill="#21213a" stroke="#90A4AE" stroke-width="1.5"/>
   <text x="1215" y="248" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">Selection</text>
@@ -242,18 +236,16 @@
   <text x="1215" y="303" text-anchor="middle" fill="#B0BEC5" font-size="11">positive weight = seek high values</text>
   <text x="1215" y="319" text-anchor="middle" fill="#B0BEC5" font-size="11">negative weight = seek low values</text>
   <text x="1215" y="335" text-anchor="middle" fill="#B0BEC5" font-size="11">sort lowest error first</text>
-  <text x="1215" y="351" text-anchor="middle" fill="#78909C" font-size="10">building placement and army targeting read here</text>
+   <text x="1215" y="351" text-anchor="middle" fill="#78909C" font-size="10">placement scores here; army movement uses centers</text>
 
   <line x1="260" y1="125" x2="330" y2="125" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
   <line x1="260" y1="275" x2="330" y2="295" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
   <line x1="260" y1="275" x2="330" y2="575" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
   <line x1="620" y1="140" x2="730" y2="155" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="620" y1="300" x2="730" y2="325" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="620" y1="300" x2="730" y2="475" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+   <line x1="620" y1="300" x2="730" y2="475" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
   <line x1="620" y1="575" x2="1090" y2="300" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="6,4"/>
   <line x1="1000" y1="165" x2="1090" y2="260" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="1000" y1="325" x2="1090" y2="300" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="1000" y1="475" x2="1090" y2="340" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
+   <line x1="1000" y1="475" x2="1090" y2="340" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)"/>
 </svg>
 
 <table class="spec">
@@ -265,28 +257,28 @@
     <th>Main consumers</th>
   </tr>
   <tr>
-    <td><code>buildingsInfluencePerPlayer</code></td>
+     <td><code>buildingPresence</code></td>
     <td>1</td>
     <td>snapshot</td>
     <td><code>updateBuildings()</code> scans all buildings after reset</td>
-    <td>build spatial, attack spatial, <code>CenterType::BUILDING</code>, debug</td>
+    <td>build spatial, <code>CenterType::BUILDING</code>, debug</td>
   </tr>
   <tr>
-    <td><code>unitsInfluencePerPlayer</code></td>
+     <td><code>unitPresence</code></td>
     <td>1</td>
     <td>snapshot</td>
     <td><code>updateUnits()</code> scans all units after reset</td>
-    <td>build spatial, attack spatial, debug</td>
+    <td>build spatial, debug</td>
   </tr>
   <tr>
-    <td><code>armyInfluence</code></td>
+     <td><code>armyPresence</code></td>
     <td>1</td>
     <td>snapshot</td>
     <td><code>updateUnits()</code>, non-workers only</td>
     <td><code>CenterType::ARMY</code>, center-distance metrics, debug</td>
   </tr>
   <tr>
-    <td><code>gatherSpeed[4]</code></td>
+     <td><code>gatheringActivityByResource[4]</code></td>
     <td>4</td>
     <td>buffered history</td>
     <td><code>addCollect()</code> -> pending, then decay/merge on <code>updateWithHistory()</code></td>
@@ -300,18 +292,18 @@
     <td><code>CenterType::ECON</code>, debug</td>
   </tr>
   <tr>
-    <td><code>attackSpeed</code></td>
+     <td><code>attackActivity</code></td>
     <td>1</td>
     <td>buffered history</td>
     <td><code>addAttack()</code> -> pending, then decay/merge on <code>updateWithHistory()</code></td>
-    <td>build spatial, attack spatial, <code>CenterType::BATTLE</code>, debug</td>
+    <td>build spatial, <code>CenterType::BATTLE</code>, debug</td>
   </tr>
   <tr>
     <td><code>unboostedResourceActivityByTypeAndPlayer[4]</code></td>
     <td>4</td>
     <td>snapshot</td>
     <td><code>updateUnits()</code> marks resource nodes worked by bonus-less workers</td>
-    <td><code>getAreasResBonus()</code> special placement path</td>
+    <td>typed debug views; aggregate build-spatial slot uses the by-player map</td>
   </tr>
   <tr>
     <td><code>unboostedResourceActivityByPlayer</code></td>
@@ -325,7 +317,7 @@
     <td>1</td>
     <td>fog-of-war state</td>
     <td><code>updateVisibility()</code> from unit/building sight radii</td>
-    <td>candidate masking, visibility percent, debug</td>
+       <td>candidate masking, visibility score, debug</td>
   </tr>
 </table>
 
@@ -365,7 +357,7 @@
       <li><strong>Immediate/snapshot mode</strong>: <code>update()</code> adds straight into <code>rawValues</code>.</li>
       <li><strong>Buffered/history mode</strong>: <code>update()</code> adds into <code>pendingValues</code>; <code>reset()</code> applies <code>raw = raw * vanishCoef + pending</code>.</li>
       <li>History maps in this repo use <code>minimalThreshold = 0.0001</code> and <code>vanishCoef = 0.5</code>.</li>
-      <li><code>resetToZero()</code> later drops raw values below the threshold so old noise does not live forever.</li>
+      <li>History <code>reset()</code> drops raw values below <code>0.0001</code> while merging and decaying them, so old noise does not live forever.</li>
     </ul>
   </div>
   <div class="schema-card">
@@ -550,7 +542,7 @@ kernel[cell] = sum over all raw source cells:
 
     <rect width="1360" height="520" fill="#0f1728" rx="12"/>
     <text x="680" y="34" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">Building the quad pyramid from raw values</text>
-    <text x="680" y="56" text-anchor="middle" fill="#90A4AE" font-size="11">Readable example: raw 8x8 -> quad 4x4 -> quad 2x2. Each parent cell stores the sum of one 2x2 child block.</text>
+   <text x="680" y="56" text-anchor="middle" fill="#90A4AE" font-size="11">Illustrative sum pyramid: raw 8x8 -> quad 4x4 -> conceptual quad 2x2. Runtime layer count depends on the map resolution.</text>
 
     <rect x="30" y="100" width="390" height="380" rx="10" fill="#131d33" stroke="#37474F"/>
     <rect x="485" y="130" width="315" height="320" rx="10" fill="#131d33" stroke="#37474F"/>
@@ -558,7 +550,7 @@ kernel[cell] = sum over all raw source cells:
 
     <text x="225" y="128" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Raw 8x8</text>
     <text x="642" y="158" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Quad layer 4x4</text>
-    <text x="990" y="193" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Top quad 2x2</text>
+   <text x="990" y="193" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Conceptual quad 2x2</text>
 
     <rect x="90" y="170" width="240" height="240" fill="#102038" stroke="#607D8B"/>
     <line x1="120" y1="170" x2="120" y2="410" stroke="#455A64"/>
@@ -601,7 +593,7 @@ kernel[cell] = sum over all raw source cells:
     <text x="714" y="326" text-anchor="middle" fill="#CFD8DC" font-size="13">2</text>
     <text x="666" y="374" text-anchor="middle" fill="#CFD8DC" font-size="13">3</text>
     <text x="714" y="374" text-anchor="middle" fill="#CFD8DC" font-size="13">0</text>
-    <text x="642" y="420" text-anchor="middle" fill="#90A4AE" font-size="11">each cell here sums one raw 2x2 block</text>
+   <text x="642" y="420" text-anchor="middle" fill="#90A4AE" font-size="11">runtime 8x8 maps stop at this 4x4 layer</text>
 
     <rect x="918" y="240" width="140" height="140" fill="#102038" stroke="#607D8B"/>
     <line x1="988" y1="240" x2="988" y2="380" stroke="#455A64"/>
@@ -611,7 +603,7 @@ kernel[cell] = sum over all raw source cells:
     <text x="1023" y="282" text-anchor="middle" fill="#CFD8DC" font-size="14">0</text>
     <text x="953" y="352" text-anchor="middle" fill="#CFD8DC" font-size="14">0</text>
     <text x="1023" y="352" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">16</text>
-    <text x="988" y="408" text-anchor="middle" fill="#90A4AE" font-size="11">each cell here sums one 4x4 quadrant</text>
+   <text x="988" y="408" text-anchor="middle" fill="#90A4AE" font-size="11">conceptual next layer for larger even resolutions</text>
 
     <line x1="345" y1="300" x2="535" y2="300" stroke="#90A4AE" stroke-width="2" marker-end="url(#quadBuildArrow)"/>
     <line x1="753" y1="300" x2="898" y2="300" stroke="#90A4AE" stroke-width="2" marker-end="url(#quadBuildArrow)"/>
@@ -626,13 +618,13 @@ kernel[cell] = sum over all raw source cells:
     </tr>
     <tr><td>raw 8x8</td><td>exact original cell</td><td><code>5</code> at one hot raw cell</td></tr>
     <tr><td>quad 4x4</td><td>sum of one raw 2x2 block</td><td><code>11 = 1 + 2 + 3 + 5</code></td></tr>
-    <tr><td>quad 2x2</td><td>sum of one raw 4x4 region</td><td><code>16</code> for the dominant quadrant</td></tr>
+     <tr><td>conceptual quad 2x2</td><td>sum of one quad 4x4 region</td><td><code>16</code> for the dominant quadrant</td></tr>
   </table>
   <h4>How To Read The Quad Build Schema</h4>
   <ol>
     <li>Start from the raw grid.</li>
     <li>Collapse every raw 2x2 block into one summed parent value.</li>
-    <li>Repeat the same process on the new layer until the pyramid reaches its coarsest level.</li>
+     <li>Repeat the same process on the new layer until the pyramid reaches its coarsest allocated level. For an 8x8 runtime map, the allocated pyramid contains only the 4x4 layer.</li>
     <li>The pyramid stores mass by region, so later center lookup can find the dominant area without scanning every raw cell at every step.</li>
   </ol>
   <p><strong>Example takeaway:</strong> quad layers do not invent new signal. They are just progressively coarser sums of the raw layer.</p>
@@ -640,7 +632,7 @@ kernel[cell] = sum over all raw source cells:
 
 <div class="card" id="center-from-quad-schema">
   <h3>Center Computation Schema</h3>
-  <p>Once the quad pyramid already exists, <code>InfluenceManager::getCenterOf()</code> starts at the smallest shared quad layer, picks its best cell, then refines that choice through successively higher-resolution layers until it reaches the raw grid. The resulting center is cached on the source map.</p>
+   <p>Once the quad pyramid already exists, <code>InfluenceManager::getCenterOf()</code> starts at the map's smallest allocated quad layer, picks its best cell, then refines that choice through successively higher-resolution layers until it reaches the raw grid. The resulting center is cached on the source map.</p>
   <svg viewBox="0 0 1360 560" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:12px auto;max-width:1360px;">
     <defs>
       <marker id="centerWalkArrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
@@ -657,9 +649,9 @@ kernel[cell] = sum over all raw source cells:
     <rect x="720" y="80" width="420" height="440" rx="10" fill="#131d33" stroke="#37474F"/>
     <rect x="1180" y="190" width="140" height="140" rx="10" fill="#131d33" stroke="#37474F"/>
 
-    <text x="165" y="148" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Step 1: quad 2x2</text>
-    <text x="500" y="128" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Step 2: full quad 4x4 layer</text>
-    <text x="930" y="108" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Step 3: full raw 8x8 layer</text>
+   <text x="165" y="148" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Illustrative coarse quad 2x2</text>
+   <text x="500" y="128" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Illustrative quad 4x4 layer</text>
+   <text x="930" y="108" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Illustrative raw 8x8 layer</text>
     <text x="1250" y="218" text-anchor="middle" fill="#FFB74D" font-size="15" font-weight="bold">Step 4: world center</text>
 
     <rect x="105" y="205" width="120" height="120" fill="#102038" stroke="#607D8B"/>
@@ -734,26 +726,25 @@ kernel[cell] = sum over all raw source cells:
       <th>Compared values</th>
       <th>Winner</th>
     </tr>
-    <tr><td>quad 2x2</td><td><code>0, 0, 0, 16</code></td><td>bottom-right region</td></tr>
+     <tr><td>illustrative quad 2x2</td><td><code>0, 0, 0, 16</code></td><td>bottom-right region</td></tr>
     <tr><td>full quad 4x4 layer</td><td>selected 2x2 block contains <code>11, 2, 3, 0</code></td><td>child block sum <code>11</code></td></tr>
     <tr><td>full raw 8x8 layer</td><td>selected raw 2x2 contains <code>1, 2, 3, 5</code></td><td>raw cell <code>5</code></td></tr>
     <tr><td>return value</td><td>world-space location of raw cell <code>5</code></td><td><code>getCenterOf()</code> result</td></tr>
   </table>
   <h4>How To Read The Center Schema</h4>
   <ol>
-    <li>Start at the smallest map-owned quad layer, which is <code>quadLayers[0]</code> in the implementation. In this example that layer has resolution <code>2x2</code>.</li>
-    <li>Pick the best cell there, then convert that cell index into the four corresponding children on the next higher-resolution layer, here <code>4x4</code>.</li>
-    <li>Repeat that refinement step once more to reach the raw grid, here <code>8x8</code>.</li>
-    <li>Once the search reaches the raw grid, compare the final four raw cells directly.</li>
+     <li>Start at the smallest map-owned quad layer, which is <code>quadLayers[0]</code> in the implementation. The allocated layers depend on the raw resolution; the 2x2 layer shown here is illustrative.</li>
+     <li>Pick the best cell there, then convert that cell index into the four corresponding children on the next higher-resolution layer, if one exists.</li>
+     <li>Repeat the refinement until the raw grid is reached, then compare the final four raw candidates directly.</li>
     <li>Return the world-space center of the best raw cell, not the average position of the whole winning region.</li>
   </ol>
-  <p><strong>Example takeaway:</strong> quad construction and center selection are separate operations. Each map builds its pyramid from sums, then refines from the smallest layer until it reaches a final raw-cell winner and caches that result.</p>
+   <p><strong>Example takeaway:</strong> quad construction and center selection are separate operations. Each map builds the layers supported by its resolution, then refines from the smallest allocated layer until it reaches a final raw-cell winner and caches that result.</p>
 </div>
 
 <div class="card" id="history-schema">
   <h3>History Map Schema</h3>
   <p>History maps add one more layer: <code>pendingValues</code>. Fresh events land there first. Only <code>reset()</code> moves them into <code>rawValues</code>. Until that happens, kernel, quad, and center still read the old raw state.</p>
-  <p>In this codebase, <code>gatherSpeed[...]</code>, <code>economicActivity</code>, and <code>attackSpeed</code> are history-map families. All use <code>vanishCoef = 0.5</code> and <code>minimalThreshold = 0.0001</code>, so the runtime treats them as fading heatmaps rather than permanent counters.</p>
+   <p>In this codebase, <code>gatheringActivityByResource[...]</code>, <code>economicActivity</code>, and <code>attackActivity</code> are history-map families. All use <code>vanishCoef = 0.5</code> and <code>minimalThreshold = 0.0001</code>, so the runtime treats them as fading heatmaps rather than permanent counters.</p>
   <div class="history-stage-grid">
     <div class="history-stage">
       <h4>A. Startup / Forced Pass</h4>
@@ -1011,10 +1002,10 @@ kernel[cell] = sum over all raw source cells:
       <td>when a consumer reads the kernel, scores areas, or draws the map</td>
     </tr>
     <tr>
-      <td>threshold cleanup via <code>resetToZero()</code></td>
-      <td><code>InfluenceManager::resetHistoryThresholds()</code></td>
-      <td>every 30 seconds on frame slot 3 of the 30-frame period</td>
-      <td>later in <code>Simulation::updateInfluenceMaps()</code> as the separate <code>INFLUENCE_HISTORY_RESET</code> action</td>
+       <td>threshold cleanup during <code>reset()</code></td>
+       <td><code>InfluenceManager::updateWithHistory()</code></td>
+       <td>every five seconds with the history merge</td>
+       <td>inside the <code>INFLUENCE_OTHER</code> branch after <code>updateBuildings()</code></td>
     </tr>
     <tr>
       <td>forced startup history pass</td>
@@ -1028,7 +1019,7 @@ kernel[cell] = sum over all raw source cells:
     <li><strong>Buffered event writes:</strong> irregular. They happen whenever gameplay causes collection or attack history to be recorded.</li>
     <li><strong>Merge/decay pass:</strong> regular. It runs every five seconds in the default 30-FPS simulation schedule.</li>
     <li><strong>Kernel rebuild after merge:</strong> lazy for gather and attack maps. The first kernel consumer rebuilds the cache from the merged raw values; ECON also keeps its kernel lazy because it uses raw center data.</li>
-    <li><strong>Threshold cleanup:</strong> also regular. It is scheduled every 30 seconds as a separate history-reset action.</li>
+     <li><strong>Threshold cleanup:</strong> part of every history <code>reset()</code>. Values below <code>0.0001</code> are removed during the five-second merge/decay pass.</li>
     <li><strong>Startup forced pass:</strong> one-shot. It runs before the first normal game tick so the map system starts from a known state.</li>
   </ul>
   <table class="spec">
@@ -1051,10 +1042,10 @@ kernel[cell] = sum over all raw source cells:
       <td>merge and decay happen together</td>
     </tr>
     <tr>
-      <td><code>resetToZero()</code></td>
-      <td><code>rawValues</code></td>
-      <td>tiny residual history disappears next time caches are read</td>
-      <td>threshold cleanup removes values below <code>minimalThreshold</code></td>
+       <td><code>reset()</code> on a history map</td>
+       <td><code>rawValues</code></td>
+       <td>tiny residual history is clamped to zero during the merge</td>
+       <td>the same operation decays old values and removes values below <code>minimalThreshold</code></td>
     </tr>
   </table>
   <h4>How To Read The History Schema</h4>
@@ -1078,7 +1069,7 @@ kernel[cell] = sum over all raw source cells:
     <li>Quad and center rebuild lazily as well, but they read the already-merged raw history, so they can finally see the new hotspot.</li>
     <li>If no new event happens before the next scheduled history update five seconds later, the exact same <code>reset()</code> call still changes the map: pending contributes <code>0</code>, so raw simply decays by half.</li>
     <li>If a later event happens after that decay step, pending fills again, but kernel and center still show the decayed raw state until the following merge.</li>
-    <li>On a separate scheduled action in the same frame slot every 30 seconds, <code>resetHistoryThresholds()</code> calls <code>resetToZero()</code>. Any raw cell below <code>0.0001</code> is dropped to zero so stale noise does not linger forever.</li>
+     <li>During that same history <code>reset()</code>, any raw cell below <code>0.0001</code> is dropped to zero so stale noise does not linger forever.</li>
   </ol>
   <h4>What Is Visible At Each Moment</h4>
   <table class="spec">
@@ -1132,7 +1123,7 @@ kernel[cell] = sum over all raw source cells:
       <td>still based on the decayed raw</td>
     </tr>
     <tr>
-      <td>after threshold cleanup</td>
+       <td>after a history reset removes tiny values</td>
       <td>very small cells clamped to 0</td>
       <td>unchanged</td>
       <td>rebuilt from cleaned raw on demand</td>
@@ -1145,8 +1136,8 @@ kernel[cell] = sum over all raw source cells:
 
 <div class="card">
   <h3>Why Raw, Kernel, and Quad All Exist</h3>
-  <p><span class="tag raw">raw</span> keeps the exact counts and exact event locations. This is what special placement APIs such as <code>getAreasResBonus()</code> use, and it is also what the center-finding pyramid is built from.</p>
-  <p><span class="tag kernel">kernel</span> spreads local signal into neighboring cells, which makes AI placement and target choice less brittle than picking only exact occupied cells.</p>
+   <p><span class="tag raw">raw</span> keeps the exact counts and exact event locations. Typed unboosted-resource raw maps are available for debug views, and raw data is also what the center-finding pyramid is built from.</p>
+   <p><span class="tag kernel">kernel</span> spreads local signal into neighboring cells, which makes AI placement less brittle than picking only exact occupied cells.</p>
   <p><span class="tag center">quad + center</span> uses each <code>InfluenceMap</code>'s coarse-to-fine sum pyramid built from the raw layer, starts center search from the smallest layer, refines that choice through higher-resolution layers, and finally caches and returns the winning raw cell's world-space center. The current implementation does <strong>not</strong> use the kernel layer for center selection.</p>
   <p><span class="tag history">pending</span> exists only on history maps. It is a transient write buffer for fresh collect and attack events. Until <code>reset()</code> merges it into raw, the kernel, quad, and center caches still reflect the previous raw state.</p>
   <p class="small-note">That last point matters: a recent cluster of activity can influence placement through the kernel, while <code>getCenterOf()</code> still points at the strongest raw cell inside the dominant raw cluster.</p>
@@ -1160,23 +1151,18 @@ kernel[cell] = sum over all raw source cells:
     <tr>
       <td>unit influence update</td>
       <td><code>Environment::updateInfluenceUnits()</code></td>
-      <td>rebuilds <code>unitsInfluencePerPlayer</code>, <code>armyInfluence</code>, <code>unboostedResourceActivityByTypeAndPlayer[4]</code>, and <code>unboostedResourceActivityByPlayer</code></td>
+       <td>every two seconds, rebuilds <code>unitPresence</code>, <code>armyPresence</code>, <code>unboostedResourceActivityByTypeAndPlayer[4]</code>, and <code>unboostedResourceActivityByPlayer</code></td>
     </tr>
     <tr>
       <td>other influence update</td>
       <td><code>Environment::updateInfluenceBuildings()</code></td>
-      <td>every five seconds, rebuilds <code>buildingsInfluencePerPlayer</code>, then calls <code>updateWithHistory()</code> to decay and merge <code>gatherSpeed[4]</code> and <code>attackSpeed</code>; this invalidates cached ECON centers</td>
+       <td>every five seconds, rebuilds <code>buildingPresence</code>, then calls <code>updateWithHistory()</code> to decay and merge <code>gatheringActivityByResource[4]</code>, <code>economicActivity</code>, and <code>attackActivity</code>; this invalidates cached ECON centers</td>
     </tr>
-    <tr>
-      <td>history threshold cleanup</td>
-      <td><code>Environment::updateInfluenceHistoryReset()</code></td>
-      <td>drops tiny residual values from <code>gatherSpeed[4]</code> and <code>attackSpeed</code></td>
-    </tr>
-    <tr>
-      <td>visibility update</td>
-      <td><code>Environment::updateVisibility()</code></td>
-      <td>rebuilds per-player visibility state and the downsampled visibility mask used by area selection</td>
-    </tr>
+     <tr>
+       <td>visibility update</td>
+       <td><code>Environment::updateVisibility()</code></td>
+       <td>every second, rebuilds per-player visibility state and the downsampled visibility mask used by area selection</td>
+     </tr>
   </table>
   <p><strong>Important:</strong> history maps are the only ones with a pending buffer. Snapshot maps are fully recomputed from current world state. ECON sums only merged gather raw values, so fresh pending collection events are not visible until the next history merge.</p>
 </div>
@@ -1209,38 +1195,36 @@ if weight == 0 or max == min:
 <div class="section-sub">This section describes every concrete map family created by <code>InfluenceManager</code>, not just the AI-facing aliases.</div>
 
 <div class="card">
-  <h3><code>buildingsInfluencePerPlayer</code></h3>
+  <h3><code>buildingPresence</code></h3>
   <div><span class="tag snapshot">snapshot</span><span class="tag kernel">kernel-consumed</span><span class="tag center">BUILDING center</span></div>
   <p>Raw meaning: number of buildings owned by that player in each influence cell. Updated by <code>updateBuildings()</code> after a full reset.</p>
-  <p>Kernel meaning: blurred building presence. This is what the build and attack spatial brains actually score.</p>
+  <p>Kernel meaning: blurred building presence. This is what the BuildSpatial brain scores.</p>
   <p>Center meaning: <code>CenterType::BUILDING</code> resolves to this map's raw hotspot, not the kernel hotspot.</p>
   <p>AI consumption:</p>
   <ul>
     <li>Build spatial slot 0 = our buildings, slot 7 = enemy buildings.</li>
-    <li>Attack spatial slot 0 = our buildings, slot 3 = enemy buildings.</li>
   </ul>
   <p>Typical use: positive for placing support buildings near an existing base; negative for expanding away from a crowded footprint; positive on the enemy view for aggressive forward placement or target bias.</p>
 </div>
 
 <div class="card">
-  <h3><code>unitsInfluencePerPlayer</code></h3>
+  <h3><code>unitPresence</code></h3>
   <div><span class="tag snapshot">snapshot</span><span class="tag kernel">kernel-consumed</span></div>
   <p>Raw meaning: number of all units in each cell, workers included. Updated by <code>updateUnits()</code> after a full reset.</p>
   <p>Kernel meaning: general unit density around each cell.</p>
   <p>AI consumption:</p>
   <ul>
     <li>Build spatial slot 1 = our units, slot 8 = enemy units.</li>
-    <li>Attack spatial slot 1 = our units, slot 4 = enemy units.</li>
   </ul>
   <p>Typical use: positive on our map keeps production and defense near population; positive on the enemy map pulls attacks toward likely contact zones; negative can search for open space.</p>
-  <p class="small-note">Debug mode <code>UNITS_NUMBER_PER_PLAYER</code> shows the raw map, while <code>UNITS_INFLUENCE_PER_PLAYER</code> shows the kernel-smoothed version.</p>
+  <p class="small-note">Debug modes <code>UNITS_RAW</code> and <code>UNITS_INFLUENCE</code> show the raw and kernel-smoothed versions.</p>
 </div>
 
 <div class="card">
-  <h3><code>armyInfluence</code></h3>
+  <h3><code>armyPresence</code></h3>
   <div><span class="tag snapshot">snapshot</span><span class="tag raw">raw-centered</span><span class="tag center">ARMY center</span></div>
   <p>Raw meaning: number of <strong>non-worker</strong> units in each cell. It is updated inside <code>updateUnits()</code> and ignores workers.</p>
-  <p>This family is not part of the 11-slot build schema or the 6-slot attack schema. Its main job is providing a stable army center for higher-level distance metrics and military planning.</p>
+  <p>This family is not part of the 11-slot BuildSpatial schema. Its main job is providing a stable army center for higher-level distance metrics and military planning.</p>
   <p>Primary consumers:</p>
   <ul>
     <li><code>CenterType::ARMY</code></li>
@@ -1250,11 +1234,11 @@ if weight == 0 or max == min:
 </div>
 
 <div class="card">
-  <h3><code>gatherSpeed[FOOD, WOOD, STONE, GOLD]</code></h3>
+  <h3><code>gatheringActivityByResource[FOOD, WOOD, STONE, GOLD]</code></h3>
   <div><span class="tag history">buffered history</span><span class="tag kernel">kernel-consumed</span></div>
   <p>Raw meaning: decayed recent collection intensity for one resource type. Updates arrive through <code>addCollect()</code>, which writes to <code>pendingValues</code> at the worker's influence cell.</p>
   <p>On <code>updateWithHistory()</code>, active cells perform <code>raw = raw * 0.5 + pending</code>; then pending is cleared and the kernel cache is rebuilt lazily on its next query.</p>
-  <p>Threshold cleanup later removes raw values below <code>0.0001</code> so old collection trails disappear completely.</p>
+  <p>Each history <code>reset()</code> removes raw values below <code>0.0001</code> so old collection trails disappear completely.</p>
   <p>AI consumption:</p>
   <ul>
     <li>Build spatial slots 3, 4, 5, 6 map to food, wood, stone, gold respectively.</li>
@@ -1263,7 +1247,7 @@ if weight == 0 or max == min:
 </div>
 
 <div class="card">
-  <h3><code>attackSpeed</code></h3>
+  <h3><code>attackActivity</code></h3>
   <div><span class="tag history">buffered history</span><span class="tag kernel">kernel-consumed</span><span class="tag center">BATTLE center</span></div>
   <p>Raw meaning: decayed recent combat activity for a player. Updates arrive through <code>addAttack()</code>, which is called by attack and projectile code paths.</p>
   <p>Like gather maps, it uses <code>pendingValues</code>, <code>vanishCoef = 0.5</code>, and threshold pruning. This makes it a battle heatmap, not a direct unit count.</p>
@@ -1273,30 +1257,29 @@ if weight == 0 or max == min:
     <li>Attack spatial slot 2 = our attack history, slot 5 = enemy attack history.</li>
     <li><code>CenterType::BATTLE</code> resolves to this map for the current player.</li>
   </ul>
-  <p class="small-note">The code comment is accurate: <code>BATTLE</code> is only an alias to the player's <code>attackSpeed</code> map. It is not a shared cross-player battle center.</p>
+  <p class="small-note"><code>BATTLE</code> is an alias to the player's <code>attackActivity</code> map. It is not a shared cross-player battle center.</p>
 </div>
 
 <div class="card">
   <h3><code>economicActivity</code> / <code>ECON</code> Center</h3>
   <div><span class="tag history">gather history</span><span class="tag center">cached center</span></div>
-  <p>One buffered history map per player aggregates all resource types. Each <code>addCollect()</code> writes the collected value to both the resource-type <code>gatherSpeed</code> map and <code>economicActivity</code>.</p>
-  <p>It merges pending collection into raw with the same decay and threshold-pruning cadence as gather history. Its normal raw quad-center selection caches the resulting world position, including an empty result; ECON uses raw center data and its kernel is rebuilt lazily if queried.</p>
+  <p>One buffered history map per player aggregates all resource types. Each <code>addCollect()</code> writes the collected value to both the resource-type <code>gatheringActivityByResource</code> map and <code>economicActivity</code>.</p>
+  <p>It merges pending collection into raw with the same decay and threshold-pruning cadence as gathering history. Its normal raw quad-center selection caches the resulting world position, including an empty result; ECON uses raw center data and its kernel is rebuilt lazily if queried.</p>
   <p>Fresh collection events remain in <code>pendingValues</code>, so they do not change ECON until the next five-second <code>updateWithHistory()</code> merge.</p>
   <p>AI consumption: <code>CenterType::ECON</code> for economy nearby-supply queries, worker deployment choice, and economy military targets. The <code>ECONOMY</code> debug mode renders the map raw values.</p>
 </div>
 
 <div class="card">
   <h3><code>unboostedResourceActivityByTypeAndPlayer[RESOURCE]</code></h3>
-  <div><span class="tag snapshot">snapshot</span><span class="tag raw">raw maxima API</span><span class="tag special">special placement</span></div>
+  <div><span class="tag snapshot">snapshot</span><span class="tag raw">raw debug view</span></div>
   <p>Raw meaning: resource nodes currently being worked by this player's workers that have no collection bonus, for one specific resource type.</p>
   <p>How it is built: during <code>updateUnits()</code>, if a worker is in <code>COLLECT</code> state, still has a live target, and that target's bonus is at most <code>1</code>, the code marks the resource entity's own influence index. So the peaks are on the unboosted resource cells, not on the worker cells.</p>
-  <p>Primary consumer: <code>getAreasResBonus(resourceId, player)</code>, which returns <code>getRawMaxIdxs()</code> from this map. That means the special path deliberately uses the exact raw peaks rather than the kernel-smoothed field.</p>
-  <p class="small-note">There is an <code>Environment::getPosToCreateResBonus()</code> helper for this path, but the current generic build flow uses the 11-weight build-spatial output instead of calling that helper directly.</p>
+  <p>These typed maps are maintained as raw tracking maps and exposed through the typed debug views. Generic building placement uses the aggregate <code>unboostedResourceActivityByPlayer</code> map in BuildSpatial slot 10 instead of a separate resource-placement path.</p>
 </div>
 
 <div class="card">
   <h3><code>unboostedResourceActivityByPlayer</code></h3>
-  <div><span class="tag snapshot">snapshot</span><span class="tag special">build-spatial only</span></div>
+  <div><span class="tag snapshot">snapshot</span><span class="tag kernel">build-spatial</span></div>
   <p>Raw meaning: the union of all four <code>unboostedResourceActivityByTypeAndPlayer[RESOURCE]</code> families. If a worker is collecting from an unboosted resource node, this map gets a mark at that resource's influence cell.</p>
   <p>This family exists because the build-spatial brain only has one general slot for this resource-activity signal rather than four separate slots.</p>
   <p>AI consumption:</p>
@@ -1316,7 +1299,8 @@ if weight == 0 or max == min:
     <li><code>SEEN = 1</code> - explored before, not currently visible</li>
     <li><code>VISIBLE = 3</code> - currently visible</li>
   </ul>
-  <p><code>reset()</code> demotes <code>VISIBLE</code> to <code>SEEN</code> by applying a bit-mask; it does not wipe exploration history. For influence selection, the map downsamples 2x2 visibility cells into one influence cell, and only <code>VISIBLE</code> counts.</p>
+  <p><code>reset()</code> demotes <code>VISIBLE</code> to <code>SEEN</code> by applying a bit-mask; it does not wipe exploration history. The map maintains <code>visibilityValueSum</code> incrementally as cells become visible or reset, so <code>getPercent()</code> returns <code>sum(state) / (3 * cellCount)</code> without rescanning the full grid. For influence selection, the map downsamples 2x2 visibility cells into one influence cell, and only <code>VISIBLE</code> counts.</p>
+  <p>Visibility score meaning: <code>VISIBLE = 3</code>, <code>SEEN = 1</code>, and <code>NONE = 0</code>. The score feeds player score and therefore affects AI inputs indirectly.</p>
   <p>Main consumers:</p>
   <ul>
     <li><code>removeUnseen()</code> seeds the error array for <code>getAreas()</code></li>
@@ -1340,16 +1324,16 @@ if weight == 0 or max == min:
     <th>Positive weight means</th>
     <th>Negative weight means</th>
   </tr>
-  <tr><td>0</td><td><code>W_BUILDINGS_INFLUENCE</code></td><td>our <code>buildingsInfluencePerPlayer</code></td><td>seek our building clusters</td><td>avoid our building clusters</td></tr>
-  <tr><td>1</td><td><code>W_UNITS_INFLUENCE</code></td><td>our <code>unitsInfluencePerPlayer</code></td><td>seek our unit density</td><td>avoid our unit density</td></tr>
-  <tr><td>2</td><td><code>W_ATTACK_SPEED</code></td><td>our <code>attackSpeed</code></td><td>seek our recent battles</td><td>avoid our recent battles</td></tr>
-  <tr><td>3</td><td><code>W_GATHER_FOOD</code></td><td>our <code>gatherSpeed[FOOD]</code></td><td>seek active food lanes</td><td>avoid active food lanes</td></tr>
-  <tr><td>4</td><td><code>W_GATHER_WOOD</code></td><td>our <code>gatherSpeed[WOOD]</code></td><td>seek active wood lanes</td><td>avoid active wood lanes</td></tr>
-  <tr><td>5</td><td><code>W_GATHER_STONE</code></td><td>our <code>gatherSpeed[STONE]</code></td><td>seek active stone lanes</td><td>avoid active stone lanes</td></tr>
-  <tr><td>6</td><td><code>W_GATHER_GOLD</code></td><td>our <code>gatherSpeed[GOLD]</code></td><td>seek active gold lanes</td><td>avoid active gold lanes</td></tr>
-  <tr><td>7</td><td><code>W_ENEMY_BUILDINGS_INFLUENCE</code></td><td>enemy <code>buildingsInfluencePerPlayer</code></td><td>seek enemy structures</td><td>avoid enemy structures</td></tr>
-  <tr><td>8</td><td><code>W_ENEMY_UNITS_INFLUENCE</code></td><td>enemy <code>unitsInfluencePerPlayer</code></td><td>seek enemy presence</td><td>avoid enemy presence</td></tr>
-  <tr><td>9</td><td><code>W_ENEMY_ATTACK_SPEED</code></td><td>enemy <code>attackSpeed</code></td><td>seek enemy battle heat</td><td>avoid enemy battle heat</td></tr>
+  <tr><td>0</td><td><code>W_BUILDINGS_INFLUENCE</code></td><td>our <code>buildingPresence</code></td><td>seek our building clusters</td><td>avoid our building clusters</td></tr>
+  <tr><td>1</td><td><code>W_UNITS_INFLUENCE</code></td><td>our <code>unitPresence</code></td><td>seek our unit density</td><td>avoid our unit density</td></tr>
+  <tr><td>2</td><td><code>W_ATTACK_SPEED</code></td><td>our <code>attackActivity</code></td><td>seek our recent battles</td><td>avoid our recent battles</td></tr>
+  <tr><td>3</td><td><code>W_GATHER_FOOD</code></td><td>our <code>gatheringActivityByResource[FOOD]</code></td><td>seek active food lanes</td><td>avoid active food lanes</td></tr>
+  <tr><td>4</td><td><code>W_GATHER_WOOD</code></td><td>our <code>gatheringActivityByResource[WOOD]</code></td><td>seek active wood lanes</td><td>avoid active wood lanes</td></tr>
+  <tr><td>5</td><td><code>W_GATHER_STONE</code></td><td>our <code>gatheringActivityByResource[STONE]</code></td><td>seek active stone lanes</td><td>avoid active stone lanes</td></tr>
+  <tr><td>6</td><td><code>W_GATHER_GOLD</code></td><td>our <code>gatheringActivityByResource[GOLD]</code></td><td>seek active gold lanes</td><td>avoid active gold lanes</td></tr>
+  <tr><td>7</td><td><code>W_ENEMY_BUILDINGS_INFLUENCE</code></td><td>enemy <code>buildingPresence</code></td><td>seek enemy structures</td><td>avoid enemy structures</td></tr>
+  <tr><td>8</td><td><code>W_ENEMY_UNITS_INFLUENCE</code></td><td>enemy <code>unitPresence</code></td><td>seek enemy presence</td><td>avoid enemy presence</td></tr>
+  <tr><td>9</td><td><code>W_ENEMY_ATTACK_SPEED</code></td><td>enemy <code>attackActivity</code></td><td>seek enemy battle heat</td><td>avoid enemy battle heat</td></tr>
   <tr><td>10</td><td><code>W_RES_NOT_BONUS</code></td><td>our <code>unboostedResourceActivityByPlayer</code></td><td>seek unboosted resource activity</td><td>avoid unboosted resource activity</td></tr>
 </table>
 
@@ -1364,9 +1348,9 @@ if weight == 0 or max == min:
     <th>Typical consumers</th>
   </tr>
   <tr><td><code>ECON</code></td><td><code>economicActivity</code></td><td>cached center of aggregate decayed gathering activity</td><td><code>EconomyBrain</code>, deployment choice, military economy targets</td></tr>
-  <tr><td><code>BUILDING</code></td><td><code>buildingsInfluencePerPlayer</code></td><td>raw center of the base footprint</td><td>deployment, strategic distances, debug</td></tr>
-  <tr><td><code>ARMY</code></td><td><code>armyInfluence</code></td><td>raw center of army mass (non-workers only)</td><td><code>MasterBrain</code>, <code>MilitaryBrain</code>, army orders</td></tr>
-  <tr><td><code>BATTLE</code></td><td><code>attackSpeed</code></td><td>recent fight hotspot for that player</td><td>military movement fallback</td></tr>
+  <tr><td><code>BUILDING</code></td><td><code>buildingPresence</code></td><td>raw center of the base footprint</td><td>deployment, strategic distances, debug</td></tr>
+  <tr><td><code>ARMY</code></td><td><code>armyPresence</code></td><td>raw center of army mass (non-workers only)</td><td><code>MasterBrain</code>, <code>MilitaryBrain</code>, army orders</td></tr>
+  <tr><td><code>BATTLE</code></td><td><code>attackActivity</code></td><td>recent fight hotspot for that player</td><td>military movement fallback</td></tr>
 </table>
 
 <div class="card">
@@ -1421,7 +1405,7 @@ if weight == 0 or max == min:
 </div>
 
 <div class="example">
-  <h3>Example 2 - History Decay in <code>attackSpeed</code> or <code>gatherSpeed</code></h3>
+  <h3>Example 2 - History Decay in <code>attackActivity</code> or <code>gatheringActivity</code></h3>
   <p>Suppose one cell currently has raw value 6 from previous fights, and this tick it receives 4 more attack value in the pending buffer.</p>
   <table class="spec">
     <tr>
@@ -1486,7 +1470,7 @@ if weight == 0 or max == min:
   <p>Step by step:</p>
   <ol>
     <li>During <code>updateUnits()</code>, each worker marks the resource entity's influence index, not the worker's own current position, only when that resource has no collection bonus.</li>
-    <li>The specialized helper <code>getAreasResBonus(WOOD)</code> reads the raw peaks directly, so it answers a very narrow question: "where are active wood collection nodes right now?"</li>
+    <li>The typed raw debug map answers a narrow diagnostic question: "where are active wood collection nodes right now?"</li>
     <li>The generic build-spatial path uses the broader <code>unboostedResourceActivityByPlayer</code> map, but combines it with 11 other weighted maps.</li>
     <li>That broader path can choose to sacrifice the strongest resource-activity hotspot if economy, danger, congestion, or enemy pressure make another visible area a better overall build location.</li>
   </ol>
@@ -1530,14 +1514,14 @@ if weight == 0 or max == min:
     <th>Layer shown</th>
     <th>Notes</th>
   </tr>
-  <tr><td><code>UNITS_RAW</code></td><td><code>unitsInfluencePerPlayer</code></td><td>raw</td><td>exact per-cell unit count</td></tr>
-  <tr><td><code>UNITS_INFLUENCE</code></td><td><code>unitsInfluencePerPlayer</code></td><td>kernel</td><td>smoothed density</td></tr>
-  <tr><td><code>BUILDING_INFLUENCE</code></td><td><code>buildingsInfluencePerPlayer</code></td><td>kernel</td><td>smoothed building presence</td></tr>
-  <tr><td><code>FOOD_SPEED</code></td><td><code>gatherSpeed[FOOD]</code></td><td>kernel</td><td>decayed recent food collection</td></tr>
-  <tr><td><code>WOOD_SPEED</code></td><td><code>gatherSpeed[WOOD]</code></td><td>kernel</td><td>decayed recent wood collection</td></tr>
-  <tr><td><code>STONE_SPEED</code></td><td><code>gatherSpeed[STONE]</code></td><td>kernel</td><td>decayed recent stone collection</td></tr>
-  <tr><td><code>GOLD_SPEED</code></td><td><code>gatherSpeed[GOLD]</code></td><td>kernel</td><td>decayed recent gold collection</td></tr>
-  <tr><td><code>ATTACK_SPEED</code></td><td><code>attackSpeed</code></td><td>kernel</td><td>recent combat heat</td></tr>
+   <tr><td><code>UNITS_RAW</code></td><td><code>unitPresence</code></td><td>raw</td><td>exact per-cell unit count</td></tr>
+   <tr><td><code>UNITS_INFLUENCE</code></td><td><code>unitPresence</code></td><td>kernel</td><td>smoothed density</td></tr>
+   <tr><td><code>BUILDING_INFLUENCE</code></td><td><code>buildingPresence</code></td><td>kernel</td><td>smoothed building presence</td></tr>
+   <tr><td><code>FOOD_SPEED</code></td><td><code>gatheringActivityByResource[FOOD]</code></td><td>kernel</td><td>decayed recent food collection</td></tr>
+   <tr><td><code>WOOD_SPEED</code></td><td><code>gatheringActivityByResource[WOOD]</code></td><td>kernel</td><td>decayed recent wood collection</td></tr>
+   <tr><td><code>STONE_SPEED</code></td><td><code>gatheringActivityByResource[STONE]</code></td><td>kernel</td><td>decayed recent stone collection</td></tr>
+   <tr><td><code>GOLD_SPEED</code></td><td><code>gatheringActivityByResource[GOLD]</code></td><td>kernel</td><td>decayed recent gold collection</td></tr>
+   <tr><td><code>ATTACK_SPEED</code></td><td><code>attackActivity</code></td><td>kernel</td><td>recent combat heat</td></tr>
   <tr><td><code>ECONOMY</code></td><td><code>economicActivity</code></td><td>raw</td><td>aggregate collection history; pending collection is excluded</td></tr>
   <tr><td><code>UNBOOSTED_RESOURCES</code></td><td><code>unboostedResourceActivityByPlayer</code></td><td>raw</td><td>all resource nodes currently worked without a bonus</td></tr>
   <tr><td><code>UNBOOSTED_FOOD</code></td><td><code>unboostedResourceActivityByTypeAndPlayer[FOOD]</code></td><td>raw</td><td>food nodes currently worked without a bonus</td></tr>
@@ -1554,9 +1538,9 @@ if weight == 0 or max == min:
     <li><strong><code>BATTLE</code> is a per-player battle-history alias.</strong> It is not a shared global battlefield center.</li>
     <li><strong>Uniform maps do not help placement.</strong> If every cell in a map has the same kernel value, <code>cumulateErrors()</code> returns false and that map contributes nothing.</li>
     <li><strong>Visibility filtering happens before map scoring.</strong> Unseen cells start with huge error, so even a perfect influence score elsewhere cannot normally beat them.</li>
-    <li><strong><code>getRawMaxIdxs()</code> is a top-10 helper.</strong> It sorts descending and returns nothing if the maximum raw value is not above 0.5.</li>
+    <li><strong>Typed unboosted-resource maps are diagnostic inputs.</strong> Generic placement uses the aggregate by-player map through BuildSpatial slot 10.</li>
     <li><strong>Center queries use raw data.</strong> If you expect the center of a blurred region, that is not what <code>getCenterOf()</code> currently computes.</li>
-    <li><strong>Generic building placement and specialized bonus placement are separate paths.</strong> The generic path uses the 11-weight view; the special path uses raw maxima from <code>unboostedResourceActivityByTypeAndPlayer[RESOURCE]</code>.</li>
+    <li><strong>Generic building placement has one spatial path.</strong> It uses the 11-weight view, including aggregate <code>unboostedResourceActivityByPlayer</code> in slot 10.</li>
   </ul>
   <h4>Source files behind this page</h4>
   <ul>
