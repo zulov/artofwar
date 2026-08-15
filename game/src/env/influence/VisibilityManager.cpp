@@ -61,11 +61,11 @@ void VisibilityManager::hideOrShow(VisibilityMap* current, Physical* physical) {
 	} else if (visibilityMode == VisibilityMode::ALL_PLAYERS) {
 		char val = castC(type);
 		for (auto vis : visibilityPerPlayer) {
-			val |= castC(vis->getValueAt(pos.x_, pos.y_));
+			val |= vis->getValueAt(pos);
 		}
 		type = static_cast<VisibilityType>(val);
 	} else {
-		type = current->getValueAt(pos.x_,pos.y_);
+		type = static_cast<VisibilityType>(current->getValueAt(pos));
 	}
 	physical->setVisibility(type);
 }
@@ -102,8 +102,7 @@ void VisibilityManager::updateVisibility(const std::vector<Building*>* buildings
 					char combineTime = castC(VisibilityType::NONE);
 					if (visibilityMode == VisibilityMode::ALL_PLAYERS) {
 						for (auto vis : visibilityPerPlayer) {
-							const char currentValue = vis->getValueAt(visibilityIndex);
-							combineTime |= currentValue;
+							combineTime |= vis->getValueAt(visibilityIndex);
 						}
 					} else {
 						combineTime = current->getValueAt(visibilityIndex);

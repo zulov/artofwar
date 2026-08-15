@@ -66,8 +66,7 @@ void VisibilityMap::finishAtIndex(unsigned i) const {
 
 	for (const auto idx : *levels) {
 		const int index = static_cast<int>(i) + idx;
-		assert(index >= 0 && index < static_cast<int>(arraySize) &&
-		       "out-of-bounds in VisibilityMap::finishAtIndex");
+		assert(index >= 0 && index < static_cast<int>(arraySize) && "out-of-bounds in VisibilityMap::finishAtIndex");
 		values[index] = VisibilityType::VISIBLE;
 	}
 
@@ -96,12 +95,7 @@ char VisibilityMap::getValueAt(const Urho3D::Vector2& pos) const {
 	return getValueAt(calculator->indexFromPosition(pos));
 }
 
-VisibilityType VisibilityMap::getValueAt(float x, float z) const {
-	char val = getValueAt(calculator->indexFromPosition(x, z));
-	return static_cast<VisibilityType>(val);
-}
-
-float VisibilityMap::getValueAt(unsigned index) const {
+char VisibilityMap::getValueAt(unsigned index) const {
 	assert(index < getResolution() * getResolution());
 	return castC(values[index]);
 }
@@ -166,11 +160,3 @@ void VisibilityMap::invalidateCaches() const {
 	unseenIntersectionReady = false;
 	percentReady = false;
 }
-
-Urho3D::Vector3 VisibilityMap::getVertex(const Urho3D::Vector2& center, Urho3D::Vector2 vertex) const {
-	auto result = Game::getEnvironment()->getPosWithHeightAt(center.x_ + vertex.x_, center.y_ + vertex.y_);
-	result.y_ += 1.f;
-	return result;
-}
-
-void VisibilityMap::drawCell(unsigned int index) const {}
