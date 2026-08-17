@@ -105,6 +105,7 @@ float VisibilityMap::getPercent() const {
 
 void VisibilityMap::ensureUnseenIntersectionReady() {
 	if (valuesForInfluenceReady == false) {
+		visibleCount = 0;
 		const int res = getResolution();
 		for (int prow = 0; prow < res; prow += 2) {
 			const auto* row0 = values + prow * res;
@@ -117,7 +118,10 @@ void VisibilityMap::ensureUnseenIntersectionReady() {
 						row0[pcol + 1] == VisibilityType::VISIBLE ||
 						row1[pcol] == VisibilityType::VISIBLE ||
 						row1[pcol + 1] == VisibilityType::VISIBLE;
-				if (isVisible) { *dst = 0.f; } else { *dst = std::numeric_limits<float>::max(); }
+				if (isVisible) {
+					*dst = 0.f;
+					visibleCount++ ;
+				} else { *dst = std::numeric_limits<float>::max(); }
 			}
 		}
 		valuesForInfluenceReady = true;
