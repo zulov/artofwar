@@ -125,3 +125,12 @@ TEST_F(ComplexBucketDataFixture, ResetResBonusesRemovesStoredBonuses) {
 
 	EXPECT_FLOAT_EQ(data.getResBonus(0, 0), 1.f);
 }
+
+TEST_F(ComplexBucketDataFixture, ClearingAStaticCellRemovesStoredBonuses) {
+	ComplexBucketData data;
+	data.setResBonuses(0, 0, 4.f);
+
+	data.clear();
+
+	EXPECT_FLOAT_EQ(data.getResBonus(0, 0), 1.f);
+}

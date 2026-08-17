@@ -182,7 +182,7 @@ Environment::getResources(const Urho3D::Vector2& center, int resourceId, int res
 	const float sqInnerRadius = innerRadius < 0.f ? innerRadius : innerRadius * innerRadius;
 	neighbors.clear();
 	for (auto neighbor : resourceStaticGrid.get(center, resourceLevel)) {
-		if (resourceId == -1 || resourceId == neighbor->getDbId()) {
+		if (resourceId == -1 || resourceId == static_cast<ResourceEntity*>(neighbor)->getResourceId()) {
 			const float distance = center.SqDistXZ(neighbor->getPosition());
 			if (distance <= sqRadius && distance > sqInnerRadius) {
 				neighbors.push_back(neighbor);

@@ -35,6 +35,7 @@ public:
 	void load(dbload_building* building) const;
 	void load(dbload_resource* resource) const;
 	void refreshAllStatic();
+	void refreshResourceBonuses() const;
 	void setResUid(unsigned resUid);
 
 private:
@@ -42,7 +43,7 @@ private:
 	void addBuilding(Building* building, bool bulkAdd) const;
 	void addResource(ResourceEntity* resource, bool bulkAdd) const;
 
-	void refreshResBonuses() const;
+	void refreshResBonuses(bool force) const;
 
 	UnitFactory unitFactory;
 	BuildingFactory buildingFactory;

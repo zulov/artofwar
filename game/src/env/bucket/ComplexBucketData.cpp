@@ -21,6 +21,7 @@ void ComplexBucketData::setStatic(Static* object) {
 }
 
 void ComplexBucketData::clear() {
+	resetResBonuses();
 	state = CellState::NONE;
 	additionalInfo = -1;
 	staticObj = nullptr;

@@ -18,6 +18,7 @@ void UpgradeCommand::execute(SimulationObjectManager* simulationObjectManager) c
 				building->levelUp(level);
 			}
 		}
+		simulationObjectManager->refreshResourceBonuses();
 	}
 }
 

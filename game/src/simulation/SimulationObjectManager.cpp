@@ -61,6 +61,7 @@ void SimulationObjectManager::addBuilding(unsigned short id, const Urho3D::UShor
 ResourceEntity* SimulationObjectManager::addResource(unsigned short id, const Urho3D::UShortVector2& _bucketCords) {
 	if (const auto res = resourceFactory.create(id, _bucketCords)) {
 		addResource(res, false);
+		refreshResourceBonuses();
 		return res;
 	}
 	return nullptr;
@@ -116,18 +117,23 @@ void SimulationObjectManager::addResource(ResourceEntity* resource, bool bulkAdd
 	}
 }
 
-void SimulationObjectManager::refreshResBonuses() const {
+void SimulationObjectManager::refreshResBonuses(bool force) const {
 	auto isResourceBuilding = [](const Building* building){
 		return building->getDb()->typeResourceAny;
 	};
-
-	if (!std::ranges::any_of(StateManager::getDeadBuildings(), isResourceBuilding)) { return; }
+	if (!force && !std::ranges::any_of(StateManager::getDeadBuildings(), isResourceBuilding)) { return; }
 
 	std::vector<Building*> resBuilding;
-	std::ranges::copy_if(*buildings, std::back_inserter(resBuilding), isResourceBuilding);
+	std::ranges::copy_if(*buildings, std::back_inserter(resBuilding), [&](const Building* building) {
+		return building->isAlive() && isResourceBuilding(building);
+	});
 
 	Game::getEnvironment()->reAddBonuses(std::span<Building* const>(resBuilding),
 	                                     std::span<ResourceEntity* const>(*resources));
+}
+
+void SimulationObjectManager::refreshResourceBonuses() const {
+	refreshResBonuses(true);
 }
 
 void SimulationObjectManager::dispose() const {
@@ -147,5 +153,5 @@ void SimulationObjectManager::removeFromGrids() {
 		std::span<Building* const>(StateManager::getDeadBuildings()),
 		std::span<ResourceEntity* const>(StateManager::getDeadResources()));
 
-	refreshResBonuses();
+	refreshResBonuses(false);
 }
