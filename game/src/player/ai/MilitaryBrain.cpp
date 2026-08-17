@@ -72,11 +72,10 @@ MilitaryOutput MilitaryBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::ENEMY_CAVALRY_RATIO)] = norm(enemyPossession->getCavalryNumber(), enemySafeDiv);
 
 	// History — order failures signal unreachable targets
-	constexpr unsigned int LOOKBACK = 1800;
-	inputData[idx(I::RECENT_ATTACK_FAILURES)] = norm(history->attackFailureScore(LOOKBACK), NormScale::FAILURE);
-	inputData[idx(I::RECENT_DEFEND_FAILURES)] = norm(history->defendFailureScore(LOOKBACK), NormScale::FAILURE);
-	inputData[idx(I::RECENT_ATTACK_ACTIVITY)] = norm(history->attackActivityScore(LOOKBACK), NormScale::ACTIVITY);
-	inputData[idx(I::RECENT_DEFEND_ACTIVITY)] = norm(history->defendActivityScore(LOOKBACK), NormScale::ACTIVITY);
+	inputData[idx(I::RECENT_ATTACK_FAILURES)] = norm(history->attackFailureScore(), NormScale::FAILURE);
+	inputData[idx(I::RECENT_DEFEND_FAILURES)] = norm(history->defendFailureScore(), NormScale::FAILURE);
+	inputData[idx(I::RECENT_ATTACK_ACTIVITY)] = norm(history->attackActivityScore(), NormScale::ACTIVITY);
+	inputData[idx(I::RECENT_DEFEND_ACTIVITY)] = norm(history->defendActivityScore(), NormScale::ACTIVITY);
 
 	// Overall tech progress ([0,1]) — lets the brain weight aggression by tech lead/deficit
 	inputData[idx(I::TECH_LEVEL)] = techLevel;

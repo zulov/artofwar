@@ -88,12 +88,11 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 	// Overall tech progress: pooled average upgrade level across all units and buildings ([0,1]).
 	inputData[idx(I::TECH_LEVEL)] = avgTechLevel(nation->units, nation->buildings, player);
 
-	// History inputs (lookback ~30 seconds at 30 ticks/s = 900 ticks)
-	constexpr unsigned int LOOKBACK = 900;
-	inputData[idx(I::RECENT_BUILD_FAILURES)] = norm(history->buildingFailureScore(LOOKBACK), NormScale::BUILD_FAILURE);
-	inputData[idx(I::RECENT_UNIT_FAILURES)] = norm(history->unitFailureScore(LOOKBACK), NormScale::FAILURE);
-	inputData[idx(I::RECENT_ATTACK_ACTIVITY)] = norm(history->attackActivityScore(LOOKBACK), NormScale::ACTIVITY);
-	inputData[idx(I::RECENT_DEFEND_ACTIVITY)] = norm(history->defendActivityScore(LOOKBACK), NormScale::ACTIVITY);
+	// History inputs use a shared 40-second lookback at 30 ticks/s.
+	inputData[idx(I::RECENT_BUILD_FAILURES)] = norm(history->buildingFailureScore(), NormScale::BUILD_FAILURE);
+	inputData[idx(I::RECENT_UNIT_FAILURES)] = norm(history->unitFailureScore(), NormScale::FAILURE);
+	inputData[idx(I::RECENT_ATTACK_ACTIVITY)] = norm(history->attackActivityScore(), NormScale::ACTIVITY);
+	inputData[idx(I::RECENT_DEFEND_ACTIVITY)] = norm(history->defendActivityScore(), NormScale::ACTIVITY);
 
 	updateHistory(player, enemy);
 

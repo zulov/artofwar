@@ -262,10 +262,10 @@
   <!-- History -->
   <rect x="1050" y="270" width="190" height="100" rx="8" fill="#004D40" fill-opacity="0.25" stroke="#00897B" stroke-width="1.5"/>
   <text x="1145" y="298" text-anchor="middle" fill="#00897B" font-size="14" font-weight="bold">History</text>
-  <text x="1145" y="318" text-anchor="middle" fill="#80CBC4" font-size="11">128-entry circular buffer</text>
+  <text x="1145" y="318" text-anchor="middle" fill="#80CBC4" font-size="11">2048-entry circular buffer</text>
   <text x="1145" y="333" text-anchor="middle" fill="#80CBC4" font-size="11">Actions + Orders</text>
   <text x="1145" y="348" text-anchor="middle" fill="#80CBC4" font-size="11">Recency/failure scores</text>
-  <text x="1145" y="363" text-anchor="middle" fill="#80CBC4" font-size="10">Lookback: 900 ticks (~30s)</text>
+  <text x="1145" y="363" text-anchor="middle" fill="#80CBC4" font-size="10">Lookback: 1200 ticks (~40s)</text>
 
   <line x1="1050" y1="320" x2="570" y2="120" stroke="#00897B" stroke-width="1" marker-end="url(#arrowGreen)" stroke-dasharray="4,2"/>
 
@@ -667,23 +667,23 @@
 <!-- ========================================== -->
 <hr class="divider">
 <div class="section-title" id="history">9. History System — Feedback Loop</div>
-<div class="section-sub">128-entry circular buffer tracking actions (build, produce) and orders (attack, defend, collect). Provides recency and failure scores to Master Brain.</div>
+<div class="section-sub">2048-entry circular buffers tracking actions (build, produce) and orders (attack, defend, collect). Provides recency and failure scores to Master Brain.</div>
 
 <div class="card">
 <h3>Two Buffers</h3>
 <table class="spec">
 <tr><th>Buffer</th><th>Entry</th><th>Tracks</th></tr>
-<tr><td>Actions (128)</td><td>tick, AiActionType, AiActionResult, chosenId</td><td>CREATE_UNIT, CREATE_WORKER, CREATE_BUILDING_*</td></tr>
-<tr><td>Orders (128)</td><td>tick, AiOrderType, AiOrderResult, unitCount</td><td>ATTACK_*, DEFEND_*, COLLECT_RESOURCE_*</td></tr>
+<tr><td>Actions (2048)</td><td>tick, AiActionType, AiActionResult, chosenId</td><td>CREATE_UNIT, CREATE_WORKER, CREATE_BUILDING_*</td></tr>
+<tr><td>Orders (2048)</td><td>tick, AiOrderType, AiOrderResult, unitCount</td><td>ATTACK_*, DEFEND_*, COLLECT_RESOURCE_*</td></tr>
 </table>
 
 <h3>Scoring Functions</h3>
 <ul>
-  <li><span class="highlight">recencyScore(type, lookback)</span> — sum of (1 - age/lookback) for successful entries. Higher = more recent activity</li>
-  <li><span class="highlight">failureScore(type, lookback)</span> — same formula but for failed entries. Higher = more recent failures</li>
+  <li><span class="highlight">recencyScore(type)</span> — sum of (1 - age/1200) for successful entries in the fixed 1200-tick window. Higher = more recent activity</li>
+  <li><span class="highlight">failureScore(type)</span> — same formula but for failed entries in the fixed 1200-tick window. Higher = more recent failures</li>
   <li>Composite: buildingFailureScore, unitFailureScore, attackActivityScore, defendActivityScore</li>
 </ul>
-<p>Lookback is 900 ticks (~30 seconds at 30 tps). With 128 entries, the buffer covers sustained activity without overflowing during active phases.</p>
+<p>Scores use a fixed 1200-tick (~40-second) window at 30 tps. Each 2048-entry buffer provides retention headroom for multiple events recorded during one AI pass.</p>
 </div>
 
 <!-- ========================================== -->

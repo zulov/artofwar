@@ -100,8 +100,7 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	inputData[idx(I::EXPAND_URGENCY)] = expandUrgency;
 
 	// History — collection failures signal resource scarcity nearby
-	constexpr unsigned int LOOKBACK = 1800;
-	inputData[idx(I::RECENT_COLLECT_FAILURES)] = norm(history->collectFailureScore(LOOKBACK), NormScale::BUILD_FAILURE);
+	inputData[idx(I::RECENT_COLLECT_FAILURES)] = norm(history->collectFailureScore(), NormScale::BUILD_FAILURE);
 
 	// Upgrade inputs (4)
 	inputData[idx(I::TECH_URGENCY)] = techUrgency;
