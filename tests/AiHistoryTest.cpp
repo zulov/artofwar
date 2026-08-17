@@ -123,10 +123,7 @@ TEST_F(AiHistoryFixture, CircularBufferOverwritesOldEntries) {
 	// Fill buffer beyond MAX_ENTRIES
 	for (int i = 0; i < AiHistory::MAX_ENTRIES + 5; ++i) {
 		history.addAction(AiActionType::CREATE_WORKER, AiActionResult::SUCCESS);
-		advanceTicks(1);
 	}
-	// Should still work, count capped at MAX_ENTRIES
-	EXPECT_EQ(history.getActionCount(), AiHistory::MAX_ENTRIES);
-	float score = history.recencyScore(AiActionType::CREATE_WORKER);
-	EXPECT_GT(score, 0.f);
+	// All entries have score 1, so the score also verifies the circular-buffer cap.
+	EXPECT_FLOAT_EQ(history.recencyScore(AiActionType::CREATE_WORKER), AiHistory::MAX_ENTRIES);
 }

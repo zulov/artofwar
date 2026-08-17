@@ -27,9 +27,6 @@ public:
 	void addAction(AiActionType type, AiActionResult result, uint8_t chosenId = 0);
 	void addOrder(AiOrderType type, AiOrderResult result, uint8_t unitCount = 0);
 
-	int getActionCount() const { return actionCount; }
-	int getOrderCount() const { return orderCount; }
-
 	float recencyScore(AiActionType type) const;
 	float recencyScore(AiOrderType type) const;
 	float recencyScore(std::initializer_list<AiActionType> types) const;
@@ -60,4 +57,6 @@ private:
 	mutable std::array<float, magic_enum::enum_count<AiActionType>()> actionFailureScores{};
 	mutable std::array<float, magic_enum::enum_count<AiOrderType>()> orderSuccessScores{};
 	mutable std::array<float, magic_enum::enum_count<AiOrderType>()> orderFailureScores{};
+	mutable bool scoresValid = false;
+	mutable unsigned int scoresTick = 0;
 };

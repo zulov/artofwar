@@ -11,12 +11,14 @@ void AiHistory::addAction(AiActionType type, AiActionResult result, uint8_t chos
 	// std::cout << magic_enum::enum_name(type) << " " << magic_enum::enum_name(result) << std::endl;
 	actionHead = (actionHead + 1) % MAX_ENTRIES;
 	actionCount = std::min(actionCount + 1, MAX_ENTRIES);
+	scoresValid = false;
 }
 
 void AiHistory::addOrder(AiOrderType type, AiOrderResult result, uint8_t unitCount) {
 	orders[orderHead] = {Game::getFrameInfo()->getTotalTicks(), type, result, unitCount};
 	orderHead = (orderHead + 1) % MAX_ENTRIES;
 	orderCount = std::min(orderCount + 1, MAX_ENTRIES);
+	scoresValid = false;
 }
 
 const ActionHistoryEntry& AiHistory::getAction(int index) const {
@@ -73,12 +75,14 @@ float AiHistory::failureScore(AiActionType type) const {
 }
 
 void AiHistory::ensureScores() const {
+	const unsigned int now = Game::getFrameInfo()->getTotalTicks();
+	if (scoresValid && scoresTick == now) { return; }
+
 	actionSuccessScores.fill(0.f);
 	actionFailureScores.fill(0.f);
 	orderSuccessScores.fill(0.f);
 	orderFailureScores.fill(0.f);
 
-	const unsigned int now = Game::getFrameInfo()->getTotalTicks();
 	const unsigned int minTick = now > LOOKBACK_TICKS ? now - LOOKBACK_TICKS : 0;
 	const float lookback = static_cast<float>(LOOKBACK_TICKS);
 
@@ -105,6 +109,9 @@ void AiHistory::ensureScores() const {
 			orderFailureScores[type] += score;
 		}
 	}
+
+	scoresTick = now;
+	scoresValid = true;
 }
 
 float AiHistory::buildingFailureScore() const {
