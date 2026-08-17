@@ -31,11 +31,6 @@ const OrderHistoryEntry& AiHistory::getOrder(int index) const {
 	return orders[actual];
 }
 
-float AiHistory::recencyScore(AiActionType type) const {
-	ensureScores();
-	return actionSuccessScores[static_cast<size_t>(type)];
-}
-
 float AiHistory::recencyScore(std::initializer_list<AiActionType> types) const {
 	ensureScores();
 	float score = 0.f;
@@ -62,11 +57,6 @@ float AiHistory::failureScore(std::initializer_list<AiOrderType> types) const {
 	float score = 0.f;
 	for (auto type : types) { score += orderFailureScores[static_cast<size_t>(type)]; }
 	return score;
-}
-
-float AiHistory::recencyScore(AiOrderType type) const {
-	ensureScores();
-	return orderSuccessScores[static_cast<size_t>(type)];
 }
 
 float AiHistory::failureScore(AiActionType type) const {

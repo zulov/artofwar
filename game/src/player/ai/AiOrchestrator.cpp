@@ -228,6 +228,7 @@ void AiOrchestrator::action() {
 
 	// 5. Submit requests to WantList
 	wantList.resetRequests();
+	//TODO ai skip after load when not all data are present
 
 	createWorkers();
 	upgradeWorkers();
