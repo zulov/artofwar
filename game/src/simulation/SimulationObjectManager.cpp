@@ -119,7 +119,7 @@ void SimulationObjectManager::addResource(ResourceEntity* resource, bool bulkAdd
 
 void SimulationObjectManager::refreshResBonuses(bool force) const {
 	auto isResourceBuilding = [](const Building* building){
-		return building->getDb()->typeResourceAny;
+		return building->getDb()->isResourceBuilding();
 	};
 	if (!force && !std::ranges::any_of(StateManager::getDeadBuildings(), isResourceBuilding)) { return; }
 

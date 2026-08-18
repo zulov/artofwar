@@ -53,8 +53,7 @@ inline float getCircleSize(const db_building* dbBuilding, const db_building_leve
 	if (dbBuilding->typeDefence) {
 		return level->attackRange;
 	}
-	if (dbBuilding->typeResourceFood || dbBuilding->typeResourceWood
-		|| dbBuilding->typeResourceStone || dbBuilding->typeResourceGold) {
+	if (dbBuilding->isResourceBuilding()) {
 		return level->resourceRange;
 	}
 	return level->sightRadius;

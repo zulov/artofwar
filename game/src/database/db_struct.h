@@ -403,6 +403,14 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 	void finish(size_t unitsCount, const std::vector<db_nation*>& allNations);
 
 	bool canEverProduceUnit(unsigned char nationId, unsigned short unitId) const;
+
+	bool hasResourceType(ResourceType resource) const { return resourceType == cast(resource); }
+	bool isResourceBuilding() const { return typeResourceAny; }
+	bool isResourceBonus(const db_building_level* level) const;
+	bool isResourceBonus(const db_building_level* level, ResourceType resource) const;
+	bool spawnsResource() const { return toResource >= 0; }
+	bool spawnsResourceInPlace(const db_building_level* level) const;
+	bool spawnsResourceNearby(const db_building_level* level) const;
 };
 
 struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_building_attack,
@@ -456,7 +464,31 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 	void finish(db_building* dbBuilding) {
 		dbBuildingMetric = new db_building_metric(dbBuilding, this);
 	}
+
+	bool isResourceBonus() const { return collect > 0.f && resourceRange > 0.f; }
+	bool storesFood() const { return foodStorage > 0; }
+	bool storesGold() const { return goldStorage > 0; }
+	bool refinesStone() const { return stoneRefineCapacity > 0.f; }
+	bool refinesGold() const { return goldRefineCapacity > 0.f; }
+	bool spawnsResourceInPlace() const { return spawnResourceRange <= 0; }
+	bool spawnsResourceNearby() const { return spawnResourceRange > 0; }
 };
+
+inline bool db_building::spawnsResourceInPlace(const db_building_level* level) const {
+	return spawnsResource() && level->spawnsResourceInPlace();
+}
+
+inline bool db_building::spawnsResourceNearby(const db_building_level* level) const {
+	return spawnsResource() && level->spawnsResourceNearby();
+}
+
+inline bool db_building::isResourceBonus(const db_building_level* level, ResourceType resource) const {
+	return hasResourceType(resource) && level->isResourceBonus();
+}
+
+inline bool db_building::isResourceBonus(const db_building_level* level) const {
+	return isResourceBuilding() && level->isResourceBonus();
+}
 
 struct db_nation : db_with_name {
 	std::vector<db_unit*> units;

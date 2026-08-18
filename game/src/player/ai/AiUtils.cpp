@@ -39,19 +39,19 @@ float avgBuildingLevel(const std::vector<db_building*>& buildings, Player* playe
 
 BuildPlacementClass classifyPlacement(const db_building* building, const db_building_level* level) {
 	// Resource subtypes first, most specific wins.
-	if (building->typeResourceAny && level->collect > 0.f && level->resourceRange > 0.f) {
+	if (building->isResourceBonus(level)) {
 		return BuildPlacementClass::RES_BONUS;
 	}
-	if (building->toResource >= 0 && level->spawnResourceRange > 0) {
+	if (building->spawnsResourceNearby(level)) {
 		return BuildPlacementClass::RES_SPAWNER;
 	}
-	if (building->toResource >= 0) {
+	if (building->spawnsResource()) {
 		return BuildPlacementClass::RES_CONVERT;
 	}
-	if (level->stoneRefineCapacity > 0.f || level->goldRefineCapacity > 0.f) {
+	if (level->refinesStone() || level->refinesGold()) {
 		return BuildPlacementClass::RES_REFINE;
 	}
-	if (level->foodStorage > 0 || level->goldStorage > 0) {
+	if (level->storesFood() || level->storesGold()) {
 		return BuildPlacementClass::RES_STORAGE;
 	}
 

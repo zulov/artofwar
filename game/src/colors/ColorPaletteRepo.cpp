@@ -61,13 +61,13 @@ Urho3D::Color ColorPaletteRepo::getCircleColor(db_building* dbBuilding) const {
 	if (dbBuilding->typeDefence) {
 		return Urho3D::Color::BLACK;
 	}
-	if (dbBuilding->typeResourceWood) {
+	if (dbBuilding->hasResourceType(ResourceType::WOOD)) {
 		return Urho3D::Color(0x00654321, Urho3D::Color::ARGB);
 	}
-	if (dbBuilding->typeResourceStone) {
+	if (dbBuilding->hasResourceType(ResourceType::STONE)) {
 		return Urho3D::Color::GRAY;
 	}
-	if (dbBuilding->typeResourceGold) {
+	if (dbBuilding->hasResourceType(ResourceType::GOLD)) {
 		return Urho3D::Color::YELLOW;
 	}
 	return Urho3D::Color::CYAN;

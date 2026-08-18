@@ -29,6 +29,11 @@ struct db_building;
 struct db_building_level;
 struct db_with_cost;
 
+struct ResBuildingNeed {
+	db_building* building;
+	float need;
+};
+
 namespace Urho3D {
 	class Vector2;
 }
@@ -45,8 +50,8 @@ public:
 	void upgradeWorkers();
 	void upgradeUnitBuilding(const UnitOutput& unitOut, std::span<const float> unitProfileDiffs);
 
-	void upgradeResBuilding();
-	void createResBuilding();
+	void upgradeResBuilding(const std::vector<ResBuildingNeed>& buildingNeeds);
+	void createResBuilding(const std::vector<ResBuildingNeed>& buildingNeeds);
 	AiOrchestrator(const AiOrchestrator&) = delete;
 
 	void action();
@@ -84,11 +89,12 @@ private:
 	db_building* resolveBuildingUpgrade(std::span<const float> unitProfileDiffs);
 	db_unit* resolveWorkerUpgrade();
 	short resolveWorkerId() const;
-	db_building* resolveResBuildingUpgrade(const EconomyOutput& econOutput) const;
+	db_building* resolveResBuildingUpgrade(const std::vector<ResBuildingNeed>& buildingNeeds) const;
 
 	// Building resolution
 	db_building* resolveBuilding(ParentBuildingType type);
 	std::vector<db_building*> getPossibleBuildingsInType(ParentBuildingType type) const;
+	std::vector<ResBuildingNeed> calculateResBuildingNeeds() const;
 
 	// Worker collection
 	void manageWorkers();

@@ -385,7 +385,7 @@
   <table>
     <tr><th>#</th><th>Name</th><th>Meaning</th><th>Consumer</th></tr>
     <tr style="color:#a5d6a7;"><td>16</td><td>WORKER_UPGRADE_URGENCY</td><td>How much to upgrade a worker unit (threshold 0.1)</td><td>WantList: addRequest(UNIT_UPGRADE)</td></tr>
-    <tr style="color:#a5d6a7;"><td>17</td><td>RES_BUILDING_UPGRADE_URGENCY</td><td>How much to upgrade a resource building (threshold 0.1)</td><td>WantList: addRequest(BUILDING_UPGRADE); building chosen by weighted resource priority</td></tr>
+    <tr style="color:#a5d6a7;"><td>17</td><td>RES_BUILDING_UPGRADE_URGENCY</td><td>How much to upgrade a resource building (threshold 0.1)</td><td>WantList: addRequest(BUILDING_UPGRADE); building chosen by weighted resource-building need</td></tr>
   </table>
 </div>
 
@@ -419,7 +419,7 @@
    -> the WantList then places affordable ones via BuildSpatialBrain</pre>
   </div>
 
-  <p>Resource-building <em>upgrades</em> use a separate path (<code>resolveResBuildingUpgrade</code>): candidate resource buildings with a next level are weighted by their resource-type priority plus matching subtype needs, then one is chosen by weighted random sampling.</p>
+  <p>Resource-building <em>upgrades</em> use a separate selection path (<code>resolveResBuildingUpgrade</code>): the same max-based resource-building need scores are calculated once for both build and upgrade decisions, then upgradeable candidates are chosen by weighted random sampling.</p>
 
   <div class="illust">
     <svg width="700" height="300" viewBox="0 0 700 300">

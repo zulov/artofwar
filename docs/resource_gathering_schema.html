@@ -707,7 +707,7 @@ if goldRefineCapacity>0:                                need = max(need, NEED_GO
 keep top 3 by need (need > 0.1) -> wantList.addRequest(BUILDING, need, building.id)</pre>
   </div>
 
-  <p>A building with several capabilities (e.g. a bank with BONUS+STORAGE, or a tree nursery with BONUS+SOURCE) takes the maximum across all the needs it satisfies. Resource-building <em>upgrades</em> use a separate weighted-choice path (<code>resolveResBuildingUpgrade</code>) driven by <code>RES_BUILDING_UPGRADE_URGENCY</code> plus resource-type priorities.</p>
+   <p>A building with several capabilities (e.g. a bank with BONUS+STORAGE, or a tree nursery with BONUS+SOURCE) takes the maximum across all the needs it satisfies. Resource-building <em>upgrades</em> use a separate weighted-choice path (<code>resolveResBuildingUpgrade</code>) driven by <code>RES_BUILDING_UPGRADE_URGENCY</code> and the same shared need scores.</p>
 
   <div class="file-ref">AiOrchestrator.cpp: createResBuilding(), resolveResBuildingUpgrade()</div>
 </div>

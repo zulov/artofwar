@@ -337,7 +337,7 @@ void MainGrid::reAddBonuses(std::span<Building* const> resourceBuildings,
 void MainGrid::addResourceBonuses(Building* building, std::vector<int>& changedIndexes) const {
 	const auto [dbBuilding, level] = building->getData();
 
-	if (dbBuilding->typeResourceAny) {
+	if (dbBuilding->isResourceBuilding()) {
 		std::vector<int> indexesWithBonus;
 
 		for (const int cell : building->getOccupiedCells()) {

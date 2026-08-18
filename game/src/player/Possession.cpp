@@ -360,13 +360,11 @@ void Possession::ensureBuildingMetrics() {
 
 		if (building->isReady()) {
 			const auto db = building->getDb();
-			if (db->typeResourceAny) { ++resourceBuildingCount; }
-			if (db->toResource >= 0) {
-				if (building->getLevel()->spawnResourceRange > 0) {
-					++spawnerCount;
-				} else {
-					++convertBuildingCount;
-				}
+			if (db->isResourceBuilding()) { ++resourceBuildingCount; }
+			if (db->spawnsResourceNearby(building->getLevel())) {
+				++spawnerCount;
+			} else if (db->spawnsResource()) {
+				++convertBuildingCount;
 			}
 		}
 	}

@@ -171,8 +171,7 @@ void StateManager::startState(Building* building) {
 	case StaticState::ALIVE: {
 		auto [data, level] = building->getData();
 
-		auto res = data->toResource;
-		if (res >= 0 && level->spawnResourceRange <= 0) { changeState(building, StaticState::DEAD); }
+		if (data->spawnsResourceInPlace(level)) { changeState(building, StaticState::DEAD); }
 	}
 		break;
 	case StaticState::DEAD:
@@ -191,8 +190,8 @@ void StateManager::startState(Building* building) {
 				}
 			}
 		} else {
-			auto res = building->getDb()->toResource;
-			if (res >= 0) { Game::getActionCenter()->addResource(res, building->getMainGridIndex()); }
+			auto* data = building->getDb();
+			if (data->spawnsResource()) { Game::getActionCenter()->addResource(data->toResource, building->getMainGridIndex()); }
 		}
 		instance->buildingIsInDisposeState = true;
 		break;

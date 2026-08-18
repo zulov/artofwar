@@ -38,13 +38,10 @@
 #include "database/DatabaseCache.h"
 
 namespace {
-	bool isResBonus(db_building* b, db_building_level* l, ResourceType res) {
-		return b->resourceType == cast(res) && l->collect > 0.f && l->resourceRange > 0.f;
-	}
-
 	constexpr float SEMI_CLOSE = 30.f;
 	constexpr float SQ_SEMI_CLOSE = SEMI_CLOSE * SEMI_CLOSE;
 	constexpr int MAX_RES_BUILDING_REQUESTS = 3;
+	constexpr float MIN_RES_BUILDING_NEED = 0.1f;
 	constexpr float MIN_ARMY_ORDER_PRESSURE = 0.1f;
 	constexpr float MILITARY_COMMAND_RADIUS = 120.f;
 
@@ -130,9 +127,9 @@ void AiOrchestrator::upgradeUnitBuilding(const UnitOutput& unitOut, std::span<co
 	}
 }
 
-void AiOrchestrator::upgradeResBuilding() {
+void AiOrchestrator::upgradeResBuilding(const std::vector<ResBuildingNeed>& buildingNeeds) {
 	if (lastEconOut.resBuildingUpgradeUrgency > 0.1f) {
-		if (auto* found = resolveResBuildingUpgrade(lastEconOut)) {
+		if (auto* found = resolveResBuildingUpgrade(buildingNeeds)) {
 			tryToUpgradeBuilding(found->id, lastEconOut.resBuildingUpgradeUrgency);
 		}
 	}
@@ -148,36 +145,41 @@ void AiOrchestrator::tryToUpgradeBuilding(unsigned short id, float priority) {
 	}
 }
 
-//TODO AI name functions that determine resource type eg. isResBonus isFoodStarage and use it where posible put it in db_building and db_building_level
-//TODO AI better scoring if in more than ona category how to sum it
-void AiOrchestrator::createResBuilding() {
-	struct Candidate {
-		float need;
-		unsigned short id;
-	};
-	std::vector<Candidate> candidates;
+std::vector<ResBuildingNeed> AiOrchestrator::calculateResBuildingNeeds() const {
+	std::vector<ResBuildingNeed> buildingNeeds;
+	buildingNeeds.reserve(nation->buildings.size());
 
-	for (const auto b : getPossibleBuildingsInType(ParentBuildingType::RESOURCE)) {
-		auto* l = player->getBuildingLevel(b->id);
+	for (auto* building : getPossibleBuildingsInType(ParentBuildingType::RESOURCE)) {
+		auto* level = player->getBuildingLevel(building->id);
 		float need = 0.f;
-		if (isResBonus(b, l, ResourceType::FOOD)) { need = std::max(need, lastEconOut.needBonusFood); }
-		if (isResBonus(b, l, ResourceType::WOOD)) { need = std::max(need, lastEconOut.needBonusWood); }
-		if (isResBonus(b, l, ResourceType::STONE)) { need = std::max(need, lastEconOut.needBonusStone); }
-		if (isResBonus(b, l, ResourceType::GOLD)) { need = std::max(need, lastEconOut.needBonusGold); }
-		if (b->toResource >= 0 && l->spawnResourceRange <= 0) { need = std::max(need, lastEconOut.needFoodSource); }
-		if (b->toResource >= 0 && l->spawnResourceRange > 0) { need = std::max(need, lastEconOut.needWoodSource); }
-		if (l->foodStorage > 0) { need = std::max(need, lastEconOut.needFoodStorage); }
-		if (l->goldStorage > 0) { need = std::max(need, lastEconOut.needGoldStorage); }
-		if (l->stoneRefineCapacity > 0.f) { need = std::max(need, lastEconOut.needStoneRefine); }
-		if (l->goldRefineCapacity > 0.f) { need = std::max(need, lastEconOut.needGoldRefine); }
-		if (need > 0.1f) { candidates.push_back({.need = need, .id = b->id}); }
+		if (building->isResourceBonus(level, ResourceType::FOOD)) { need = std::max(need, lastEconOut.needBonusFood); }
+		if (building->isResourceBonus(level, ResourceType::WOOD)) { need = std::max(need, lastEconOut.needBonusWood); }
+		if (building->isResourceBonus(level, ResourceType::STONE)) { need = std::max(need, lastEconOut.needBonusStone); }
+		if (building->isResourceBonus(level, ResourceType::GOLD)) { need = std::max(need, lastEconOut.needBonusGold); }
+		if (building->spawnsResourceInPlace(level)) { need = std::max(need, lastEconOut.needFoodSource); }
+		if (building->spawnsResourceNearby(level)) { need = std::max(need, lastEconOut.needWoodSource); }
+		if (level->storesFood()) { need = std::max(need, lastEconOut.needFoodStorage); }
+		if (level->storesGold()) { need = std::max(need, lastEconOut.needGoldStorage); }
+		if (level->refinesStone()) { need = std::max(need, lastEconOut.needStoneRefine); }
+		if (level->refinesGold()) { need = std::max(need, lastEconOut.needGoldRefine); }
+		buildingNeeds.push_back({.building = building, .need = need});
+	}
+
+	return buildingNeeds;
+}
+
+void AiOrchestrator::createResBuilding(const std::vector<ResBuildingNeed>& buildingNeeds) {
+	std::vector<ResBuildingNeed> candidates;
+	candidates.reserve(buildingNeeds.size());
+	for (const auto& buildingNeed : buildingNeeds) {
+		if (buildingNeed.need > MIN_RES_BUILDING_NEED) { candidates.push_back(buildingNeed); }
 	}
 
 	const size_t keep = std::min<size_t>(candidates.size(), MAX_RES_BUILDING_REQUESTS);
 	std::ranges::partial_sort(candidates, candidates.begin() + keep,
-	                          [](const Candidate& a, const Candidate& b) { return a.need > b.need; });
+	                          [](const ResBuildingNeed& a, const ResBuildingNeed& b) { return a.need > b.need; });
 	for (size_t i = 0; i < keep; ++i) {
-		wantList.addRequest(WantItemType::BUILDING, candidates[i].need, candidates[i].id);
+		wantList.addRequest(WantItemType::BUILDING, candidates[i].need, candidates[i].building->id);
 	}
 }
 
@@ -244,7 +246,9 @@ void AiOrchestrator::action() {
 	}
 
 	// Resource building upgrade request (farms, mills, mines, refineries, etc.)
-	upgradeResBuilding();
+	const auto resBuildingNeeds = calculateResBuildingNeeds();
+	createResBuilding(resBuildingNeeds);
+	upgradeResBuilding(resBuildingNeeds);
 
 	// Defence building upgrade request (tower)
 	//submitBuildingUpgradeRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
@@ -258,7 +262,6 @@ void AiOrchestrator::action() {
 	// submitBuildingRequest(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
 	// submitBuildingRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
 
-	createResBuilding();
 
 	// 6. Execute WantList
 	wantExecutor.prepare(lastMasterOut);
@@ -492,72 +495,21 @@ db_unit* AiOrchestrator::resolveWorkerUpgrade() {
 // TODO: pick a worker type intentionally; for now just use the first one the nation has.
 short AiOrchestrator::resolveWorkerId() const { return nation->workers.empty() ? -1 : nation->workers.at(0)->id; }
 
-db_building* AiOrchestrator::resolveResBuildingUpgrade(const EconomyOutput& econOutput) const {
-	auto& buildings = nation->buildings;
+db_building* AiOrchestrator::resolveResBuildingUpgrade(
+		const std::vector<ResBuildingNeed>& buildingNeeds) const {
 	std::vector<db_building*> candidates;
-	candidates.reserve(buildings.size());
-	for (auto* building : buildings) {
-		if (building->parentType[static_cast<int>(ParentBuildingType::RESOURCE)]
-			&& player->getNextBuildingLevel(building->id).has_value()) { candidates.push_back(building); }
+	std::vector<float> weights;
+	candidates.reserve(buildingNeeds.size());
+	weights.reserve(buildingNeeds.size());
+	for (const auto& buildingNeed : buildingNeeds) {
+		if (buildingNeed.need >= MIN_RES_BUILDING_NEED
+			&& player->getNextBuildingLevel(buildingNeed.building->id).has_value()) {
+			candidates.push_back(buildingNeed.building);
+			weights.push_back(buildingNeed.need);
+		}
 	}
+
 	if (candidates.empty()) { return nullptr; }
-	if (candidates.size() == 1) { return candidates[0]; }
-
-	// Weight by resource type priority + subtype need signals
-	auto weights = scoreCandidates(candidates, [this, &econOutput](db_building* building) {
-		float weight = 0.1f; // base weight
-		auto* level = player->getBuildingLevel(building->id);
-
-		// Resource type priority
-		if (building->typeResourceFood) {
-			weight += std::max(0.f, econOutput.foodPriority);
-		}
-		if (building->typeResourceWood) {
-			weight += std::max(0.f, econOutput.woodPriority);
-		}
-		if (building->typeResourceStone) {
-			weight += std::max(0.f, econOutput.stonePriority);
-		}
-		if (building->typeResourceGold) {
-			weight += std::max(0.f, econOutput.goldPriority);
-		}
-
-		// Subtype need signals — distinguish between buildings of the same resource type
-		if (level->foodStorage > 0) {
-			weight += std::max(0.f, econOutput.needFoodStorage);
-		}
-		if (level->goldStorage > 0) {
-			weight += std::max(0.f, econOutput.needGoldStorage);
-		}
-		if (level->stoneRefineCapacity > 0.f) {
-			weight += std::max(0.f, econOutput.needStoneRefine);
-		}
-		if (level->goldRefineCapacity > 0.f) {
-			weight += std::max(0.f, econOutput.needGoldRefine);
-		}
-		if (level->collect > 0.f && level->resourceRange > 0.f) {
-			if (building->typeResourceFood) {
-				weight += std::max(0.f, econOutput.needBonusFood);
-			}
-			if (building->typeResourceWood) {
-				weight += std::max(0.f, econOutput.needBonusWood);
-			}
-			if (building->typeResourceStone) {
-				weight += std::max(0.f, econOutput.needBonusStone);
-			}
-			if (building->typeResourceGold) {
-				weight += std::max(0.f, econOutput.needBonusGold);
-			}
-		}
-		if (building->toResource >= 0 && level->spawnResourceRange <= 0) {
-			weight += std::max(0.f, econOutput.needFoodSource);
-		}
-		if (building->toResource >= 0 && level->spawnResourceRange > 0) {
-			weight += std::max(0.f, econOutput.needWoodSource);
-		}
-
-		return weight;
-	});
 
 	float totalWeight = 0.f;
 	for (float w : weights) { totalWeight += w; }
