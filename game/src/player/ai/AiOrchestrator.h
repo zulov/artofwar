@@ -112,6 +112,9 @@ private:
 	WantList wantList;
 	WantExecutor wantExecutor;
 
+	// TODO: Persist simulation time, AI history, and MasterBrain snapshot in saves; remove this warm-up then.
+	bool skipFirstAiCycle = true;
+
 	// Cached outputs
 	MasterOutput lastMasterOut{};
 	EconomyOutput lastEconOut{};

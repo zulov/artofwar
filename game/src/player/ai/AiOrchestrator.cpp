@@ -226,9 +226,10 @@ void AiOrchestrator::action() {
 			lastMasterOut.techUrgency, gameTime);
 
 
+	if (skipFirstAiCycle) { return; }
+
 	// 5. Submit requests to WantList
 	wantList.resetRequests();
-	//TODO ai skip after load when not all data are present
 
 	createWorkers();
 	upgradeWorkers();
@@ -284,6 +285,11 @@ void AiOrchestrator::submitBuildingUpgradeRequest(float urgency, ParentBuildingT
 }
 
 void AiOrchestrator::order() {
+	if (skipFirstAiCycle) {
+		skipFirstAiCycle = false;
+		return;
+	}
+
 	manageWorkers();
 	decayUnitOrderPriorities();
 
