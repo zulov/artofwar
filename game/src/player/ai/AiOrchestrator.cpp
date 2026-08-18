@@ -245,6 +245,7 @@ void AiOrchestrator::action() {
 
 	// Resource building upgrade request (farms, mills, mines, refineries, etc.)
 	upgradeResBuilding();
+	createResBuilding();
 
 	// Defence building upgrade request (tower)
 	//submitBuildingUpgradeRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
@@ -258,7 +259,7 @@ void AiOrchestrator::action() {
 	// submitBuildingRequest(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
 	// submitBuildingRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
 
-	createResBuilding();
+
 
 	// 6. Execute WantList
 	wantExecutor.prepare(lastMasterOut);
