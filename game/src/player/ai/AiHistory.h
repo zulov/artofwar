@@ -27,8 +27,6 @@ public:
 	void addAction(AiActionType type, AiActionResult result, uint8_t chosenId = 0);
 	void addOrder(AiOrderType type, AiOrderResult result, uint8_t unitCount = 0);
 
-	float recencyScore(AiActionType type) const;
-	float recencyScore(AiOrderType type) const;
 	float recencyScore(std::initializer_list<AiActionType> types) const;
 	float recencyScore(std::initializer_list<AiOrderType> types) const;
 	float failureScore(AiActionType type) const;

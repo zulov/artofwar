@@ -28,23 +28,23 @@ protected:
 
 TEST_F(AiHistoryFixture, RecencyScoreZeroWhenEmpty) {
 	advanceTicks(10);
-	EXPECT_FLOAT_EQ(history.recencyScore(AiActionType::CREATE_WORKER), 0.f);
+	EXPECT_FLOAT_EQ(history.recencyScore({AiActionType::CREATE_WORKER}), 0.f);
 }
 
 TEST_F(AiHistoryFixture, RecencyScoreOneForJustCreated) {
 	advanceTicks(1);
 	history.addAction(AiActionType::CREATE_WORKER, AiActionResult::SUCCESS);
 	// age = 0, score = 1.0 - 0/1200 = 1.0
-	EXPECT_FLOAT_EQ(history.recencyScore(AiActionType::CREATE_WORKER), 1.f);
+	EXPECT_FLOAT_EQ(history.recencyScore({AiActionType::CREATE_WORKER}), 1.f);
 }
 
 TEST_F(AiHistoryFixture, RecencyScoreDecaysWithAge) {
 	advanceTicks(1);
 	history.addAction(AiActionType::CREATE_WORKER, AiActionResult::SUCCESS);
-	EXPECT_FLOAT_EQ(history.recencyScore(AiActionType::CREATE_WORKER), 1.f);
+	EXPECT_FLOAT_EQ(history.recencyScore({AiActionType::CREATE_WORKER}), 1.f);
 	advanceTicks(50);
 	// age = 50, lookback = 1200, score = 1.0 - 50/1200.
-	EXPECT_NEAR(history.recencyScore(AiActionType::CREATE_WORKER), 1.f - 50.f / 1200.f, 1e-5f);
+	EXPECT_NEAR(history.recencyScore({AiActionType::CREATE_WORKER}), 1.f - 50.f / 1200.f, 1e-5f);
 }
 
 TEST_F(AiHistoryFixture, RecencyScoreIgnoresOldEntries) {
@@ -52,13 +52,13 @@ TEST_F(AiHistoryFixture, RecencyScoreIgnoresOldEntries) {
 	history.addAction(AiActionType::CREATE_WORKER, AiActionResult::SUCCESS);
 	advanceTicks(1201);
 	// age = 1201 > lookback = 1200, entry is outside window
-	EXPECT_FLOAT_EQ(history.recencyScore(AiActionType::CREATE_WORKER), 0.f);
+	EXPECT_FLOAT_EQ(history.recencyScore({AiActionType::CREATE_WORKER}), 0.f);
 }
 
 TEST_F(AiHistoryFixture, RecencyScoreIgnoresOtherTypes) {
 	advanceTicks(1);
 	history.addAction(AiActionType::CREATE_UNIT, AiActionResult::SUCCESS);
-	EXPECT_FLOAT_EQ(history.recencyScore(AiActionType::CREATE_WORKER), 0.f);
+	EXPECT_FLOAT_EQ(history.recencyScore({AiActionType::CREATE_WORKER}), 0.f);
 }
 
 TEST_F(AiHistoryFixture, RecencyScoreAccumulatesMultipleSuccesses) {
@@ -74,7 +74,7 @@ TEST_F(AiHistoryFixture, RecencyScoreAccumulatesMultipleSuccesses) {
 	// entry at tick 11: 1.0 - 10/1200
 	// entry at tick 21: 1.0 - 0/1200 = 1.0
 	// total = 2.975
-	EXPECT_NEAR(history.recencyScore(AiActionType::CREATE_WORKER), 2.975f, 1e-5f);
+	EXPECT_NEAR(history.recencyScore({AiActionType::CREATE_WORKER}), 2.975f, 1e-5f);
 }
 
 TEST_F(AiHistoryFixture, RetainsEntriesAcrossLegacyBufferCapacity) {
@@ -86,14 +86,14 @@ TEST_F(AiHistoryFixture, RetainsEntriesAcrossLegacyBufferCapacity) {
 	}
 
 	const float expected = EVENTS - (128.f * 129.f) / (2.f * 1200.f);
-	EXPECT_NEAR(history.recencyScore(AiActionType::CREATE_WORKER), expected, 1e-5f);
+	EXPECT_NEAR(history.recencyScore({AiActionType::CREATE_WORKER}), expected, 1e-5f);
 }
 
 TEST_F(AiHistoryFixture, RecencyScoreOrderOverload) {
 	advanceTicks(1);
 	history.addOrder(AiOrderType::COLLECT_RESOURCE_0, AiOrderResult::SUCCESS);
-	EXPECT_FLOAT_EQ(history.recencyScore(AiOrderType::COLLECT_RESOURCE_0), 1.f);
-	EXPECT_FLOAT_EQ(history.recencyScore(AiOrderType::ATTACK_ECON), 0.f);
+	EXPECT_FLOAT_EQ(history.recencyScore({AiOrderType::COLLECT_RESOURCE_0}), 1.f);
+	EXPECT_FLOAT_EQ(history.recencyScore({AiOrderType::ATTACK_ECON}), 0.f);
 }
 
 TEST_F(AiHistoryFixture, CompositeScoresSumTypesFromTheSameHistoryWindow) {
@@ -112,10 +112,10 @@ TEST_F(AiHistoryFixture, CompositeScoresSumTypesFromTheSameHistoryWindow) {
 TEST_F(AiHistoryFixture, ScoresReflectHistoryChanges) {
 	advanceTicks(1);
 	history.addOrder(AiOrderType::ATTACK_ECON, AiOrderResult::SUCCESS);
-	EXPECT_FLOAT_EQ(history.recencyScore(AiOrderType::ATTACK_ECON), 1.f);
+	EXPECT_FLOAT_EQ(history.recencyScore({AiOrderType::ATTACK_ECON}), 1.f);
 
 	history.addOrder(AiOrderType::ATTACK_ECON, AiOrderResult::SUCCESS);
-	EXPECT_FLOAT_EQ(history.recencyScore(AiOrderType::ATTACK_ECON), 2.f);
+	EXPECT_FLOAT_EQ(history.recencyScore({AiOrderType::ATTACK_ECON}), 2.f);
 }
 
 TEST_F(AiHistoryFixture, CircularBufferOverwritesOldEntries) {
@@ -125,5 +125,5 @@ TEST_F(AiHistoryFixture, CircularBufferOverwritesOldEntries) {
 		history.addAction(AiActionType::CREATE_WORKER, AiActionResult::SUCCESS);
 	}
 	// All entries have score 1, so the score also verifies the circular-buffer cap.
-	EXPECT_FLOAT_EQ(history.recencyScore(AiActionType::CREATE_WORKER), AiHistory::MAX_ENTRIES);
+	EXPECT_FLOAT_EQ(history.recencyScore({AiActionType::CREATE_WORKER}), AiHistory::MAX_ENTRIES);
 }
