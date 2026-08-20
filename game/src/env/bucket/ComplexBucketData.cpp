@@ -35,9 +35,7 @@ void ComplexBucketData::resetForReuse() {
 	isNeightOccupied = 0;
 	gradient = -1;
 	staticObj = nullptr;
-	if (resourceBonuses) {
-		PrimitiveArrayProvider<float>::release(resourceBonuses, MAX_PLAYERS * RESOURCES_SIZE);
-	}
+	PrimitiveArrayProvider<float>::release(resourceBonuses, MAX_PLAYERS * RESOURCES_SIZE);
 	resourceBonuses = nullptr;
 	cost = 0;
 }
@@ -83,9 +81,7 @@ void ComplexBucketData::setResBonuses(char player, unsigned char resId, float bo
 }
 
 void ComplexBucketData::resetResBonuses() {
-	if (resourceBonuses) {
-		PrimitiveArrayProvider<float>::release(resourceBonuses, MAX_PLAYERS * RESOURCES_SIZE);
-	}
+	PrimitiveArrayProvider<float>::release(resourceBonuses, MAX_PLAYERS * RESOURCES_SIZE);
 	resourceBonuses = nullptr;
 }
 

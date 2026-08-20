@@ -74,10 +74,8 @@ Urho3D::IntVector2 Static::getSurroundSize(const Urho3D::IntVector2 oSize, int r
 }
 
 void Static::populate() {
-	if (data) {
-		PrimitiveArrayProvider<int>::release(data, dataSize);
-		data = nullptr;
-	}
+	PrimitiveArrayProvider<int>::release(data, dataSize);
+	data = nullptr;
 	auto env = Game::getEnvironment();
 	const auto gridSize = getGridSize();
 	const auto cordsCell = env->getCords(indexInMainGrid);

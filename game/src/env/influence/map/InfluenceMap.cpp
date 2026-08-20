@@ -162,7 +162,7 @@ void InfluenceMap::initializeQuad() const {
 		quadArraySize += currentRes * currentRes;
 	}
 	this->quadArraySize = quadArraySize;
-	quadValues = PrimitiveArrayProvider<float>::get(quadArraySize, 0.f);
+	quadValues = PrimitiveArrayProvider<float>::get(quadArraySize);
 	float* ptr = quadValues;
 	for (auto i = currentRes; i < calculator->getResolution(); i *= 2) {
 		const auto size = i * i;

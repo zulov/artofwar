@@ -91,6 +91,18 @@ TEST_F(ArrayProviderUtilsFixture, PrimitiveFloatArrayProviderReusesAndRefillsRel
 	delete[] reused;
 }
 
+TEST_F(ArrayProviderUtilsFixture, PrimitiveArrayProviderCanReuseWithoutRefilling) {
+	auto* data = PrimitiveArrayProvider<int>::get(37, 11);
+	PrimitiveArrayProvider<int>::release(data, 37);
+
+	auto* reused = PrimitiveArrayProvider<int>::get(37);
+	EXPECT_EQ(reused, data);
+	EXPECT_EQ(reused[0], 11);
+	EXPECT_EQ(reused[36], 11);
+
+	delete[] reused;
+}
+
 TEST_F(ArrayProviderUtilsFixture, ArrayProviderResetsPathCacheArraysBeforeReuse) {
 	auto* data = ArrayProvider<PathCache>::get(1);
 	std::vector<int> path = {1, 2, 3};

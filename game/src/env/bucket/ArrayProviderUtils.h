@@ -55,16 +55,12 @@ public:
 		pool.clear();
 	}
 
-	static T* get(int size, T defaultValue = T{}) {
-		for (auto it = pool.begin(); it != pool.end(); ++it) {
-			if (it->size == size) {
-				T* data = it->data;
-				pool.erase(it);
-				std::fill_n(data, size, defaultValue);
-				return data;
-			}
-		}
-		auto* data = new T[size];
+	static T* get(int size) {
+		return getFromPool(size);
+	}
+
+	static T* get(int size, T defaultValue) {
+		auto* data = getFromPool(size);
 		std::fill_n(data, size, defaultValue);
 		return data;
 	}
@@ -75,6 +71,17 @@ public:
 	}
 
 private:
+	static T* getFromPool(int size) {
+		for (auto it = pool.begin(); it != pool.end(); ++it) {
+			if (it->size == size) {
+				T* data = it->data;
+				pool.erase(it);
+				return data;
+			}
+		}
+		return new T[size];
+	}
+
 	PrimitiveArrayProvider() = default;
 
 	struct PoolEntry {
