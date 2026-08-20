@@ -20,13 +20,13 @@ struct ResettableValue {
 class ArrayProviderUtilsFixture : public ::testing::Test {};
 
 TEST_F(ArrayProviderUtilsFixture, ArrayProviderReusesReleasedArraysOfSameSize) {
-	auto* data = ArrayProvider<ResettableValue>::get(5);
+	auto* data = ArrayProvider<ResettableValue>::get(16);
 	data[0].value = 17;
 	data[1].value = 42;
 
-	ArrayProvider<ResettableValue>::release(data, 5);
+	ArrayProvider<ResettableValue>::release(data, 16);
 
-	auto* reused = ArrayProvider<ResettableValue>::get(5);
+	auto* reused = ArrayProvider<ResettableValue>::get(16);
 	EXPECT_EQ(reused, data);
 	EXPECT_EQ(reused[0].value, 0);
 	EXPECT_EQ(reused[1].value, 0);
@@ -37,17 +37,30 @@ TEST_F(ArrayProviderUtilsFixture, ArrayProviderReusesReleasedArraysOfSameSize) {
 }
 
 TEST_F(ArrayProviderUtilsFixture, ArrayProviderKeepsPoolsSeparatedBySize) {
-	auto* sizeSeven = ArrayProvider<ResettableValue>::get(7);
-	ArrayProvider<ResettableValue>::release(sizeSeven, 7);
+	auto* sizeSixteen = ArrayProvider<ResettableValue>::get(16);
+	ArrayProvider<ResettableValue>::release(sizeSixteen, 16);
 
-	auto* sizeEight = ArrayProvider<ResettableValue>::get(8);
-	auto* reusedSeven = ArrayProvider<ResettableValue>::get(7);
+	auto* sizeSeventeen = ArrayProvider<ResettableValue>::get(17);
+	auto* reusedSixteen = ArrayProvider<ResettableValue>::get(16);
 
-	EXPECT_NE(sizeEight, sizeSeven);
-	EXPECT_EQ(reusedSeven, sizeSeven);
+	EXPECT_NE(sizeSeventeen, sizeSixteen);
+	EXPECT_EQ(reusedSixteen, sizeSixteen);
 
-	delete[] sizeEight;
-	delete[] reusedSeven;
+	delete[] sizeSeventeen;
+	delete[] reusedSixteen;
+}
+
+TEST_F(ArrayProviderUtilsFixture, ArrayProviderSkipsPoolingBelowMinimumSize) {
+	auto* data = ArrayProvider<ResettableValue>::get(15);
+	data[0].value = 17;
+
+	ArrayProvider<ResettableValue>::release(data, 15);
+
+	auto* fresh = ArrayProvider<ResettableValue>::get(15);
+	EXPECT_EQ(fresh[0].value, 0);
+	EXPECT_EQ(fresh[0].resetCount, 0);
+
+	delete[] fresh;
 }
 
 TEST_F(ArrayProviderUtilsFixture, PrimitiveArrayProviderFillsFreshArraysWithDefaultValue) {
@@ -61,16 +74,16 @@ TEST_F(ArrayProviderUtilsFixture, PrimitiveArrayProviderFillsFreshArraysWithDefa
 }
 
 TEST_F(ArrayProviderUtilsFixture, PrimitiveArrayProviderReusesAndRefillsReleasedArrays) {
-	auto* data = PrimitiveArrayProvider<int>::get(4, 1);
+	auto* data = PrimitiveArrayProvider<int>::get(16, 1);
 	data[0] = 50;
 	data[1] = 60;
 
-	PrimitiveArrayProvider<int>::release(data, 4);
+	PrimitiveArrayProvider<int>::release(data, 16);
 
-	auto* reused = PrimitiveArrayProvider<int>::get(4, 7);
+	auto* reused = PrimitiveArrayProvider<int>::get(16, 7);
 	EXPECT_EQ(reused, data);
 
-	for (int i = 0; i < 4; ++i) {
+	for (int i = 0; i < 16; ++i) {
 		EXPECT_EQ(reused[i], 7);
 	}
 
@@ -78,13 +91,13 @@ TEST_F(ArrayProviderUtilsFixture, PrimitiveArrayProviderReusesAndRefillsReleased
 }
 
 TEST_F(ArrayProviderUtilsFixture, PrimitiveFloatArrayProviderReusesAndRefillsReleasedArrays) {
-	auto* data = PrimitiveArrayProvider<float>::get(3, 1.5f);
-	PrimitiveArrayProvider<float>::release(data, 3);
+	auto* data = PrimitiveArrayProvider<float>::get(16, 1.5f);
+	PrimitiveArrayProvider<float>::release(data, 16);
 
-	auto* reused = PrimitiveArrayProvider<float>::get(3, -2.25f);
+	auto* reused = PrimitiveArrayProvider<float>::get(16, -2.25f);
 	EXPECT_EQ(reused, data);
 
-	for (int i = 0; i < 3; ++i) {
+	for (int i = 0; i < 16; ++i) {
 		EXPECT_FLOAT_EQ(reused[i], -2.25f);
 	}
 
@@ -103,14 +116,27 @@ TEST_F(ArrayProviderUtilsFixture, PrimitiveArrayProviderCanReuseWithoutRefilling
 	delete[] reused;
 }
 
+TEST_F(ArrayProviderUtilsFixture, PrimitiveArrayProviderSkipsPoolingBelowMinimumSize) {
+	auto* data = PrimitiveArrayProvider<ResettableValue>::get(15);
+	data[0].value = 17;
+
+	PrimitiveArrayProvider<ResettableValue>::release(data, 15);
+
+	auto* fresh = PrimitiveArrayProvider<ResettableValue>::get(15);
+	EXPECT_EQ(fresh[0].value, 0);
+	EXPECT_EQ(fresh[0].resetCount, 0);
+
+	delete[] fresh;
+}
+
 TEST_F(ArrayProviderUtilsFixture, ArrayProviderResetsPathCacheArraysBeforeReuse) {
-	auto* data = ArrayProvider<PathCache>::get(1);
+	auto* data = ArrayProvider<PathCache>::get(16);
 	std::vector<int> path = {1, 2, 3};
 	data[0].set(4, 5, &path);
 
-	ArrayProvider<PathCache>::release(data, 1);
+	ArrayProvider<PathCache>::release(data, 16);
 
-	auto* reused = ArrayProvider<PathCache>::get(1);
+	auto* reused = ArrayProvider<PathCache>::get(16);
 	EXPECT_EQ(reused, data);
 	EXPECT_EQ(reused[0].start, -1);
 	EXPECT_EQ(reused[0].end, -1);
