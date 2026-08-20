@@ -16,7 +16,8 @@ public:
 		for (auto it = pool.begin(); it != pool.end(); ++it) {
 			if (it->size == size) {
 				T* data = it->data;
-				pool.erase(it);
+				*it = pool.back();
+				pool.pop_back();
 				return data;
 			}
 		}
@@ -75,7 +76,8 @@ private:
 		for (auto it = pool.begin(); it != pool.end(); ++it) {
 			if (it->size == size) {
 				T* data = it->data;
-				pool.erase(it);
+				*it = pool.back();
+				pool.pop_back();
 				return data;
 			}
 		}
