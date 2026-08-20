@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <vector>
 
 template <typename T>
@@ -23,6 +24,7 @@ public:
 	}
 
 	static void release(T* data, int size) {
+		if (data == nullptr) { return; }
 		for (int i = 0; i < size; ++i) {
 			data[i].resetForReuse();
 		}
@@ -68,6 +70,7 @@ public:
 	}
 
 	static void release(T* data, int size) {
+		if (data == nullptr) { return; }
 		pool.push_back({data, size});
 	}
 

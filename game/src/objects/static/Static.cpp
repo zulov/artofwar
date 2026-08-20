@@ -9,6 +9,7 @@
 #include "objects/NodeUtils.h"
 #include "scene/load/dbload_container.h"
 #include "env/Environment.h"
+#include "env/bucket/ArrayProviderUtils.h"
 #include "utils/OtherUtils.h"
 
 Static::Static(const Urho3D::Vector3& _position, int indexInGrid, UId uId) : Physical(_position, uId) {
@@ -16,7 +17,7 @@ Static::Static(const Urho3D::Vector3& _position, int indexInGrid, UId uId) : Phy
 }
 
 Static::~Static() {
-	delete []data;
+	PrimitiveArrayProvider<int>::release(data, dataSize);
 }
 
 void Static::load(dbload_static* dbloadStatic) {
@@ -73,6 +74,10 @@ Urho3D::IntVector2 Static::getSurroundSize(const Urho3D::IntVector2 oSize, int r
 }
 
 void Static::populate() {
+	if (data) {
+		PrimitiveArrayProvider<int>::release(data, dataSize);
+		data = nullptr;
+	}
 	auto env = Game::getEnvironment();
 	const auto gridSize = getGridSize();
 	const auto cordsCell = env->getCords(indexInMainGrid);
@@ -83,9 +88,11 @@ void Static::populate() {
 	const auto sSizeZ = getSurroundSize(oSizeZ, res);
 
 	occupiedCellsSize = gridSize.x_ * gridSize.y_;
+	surroundCellsSize = 0;
 
 	auto tabSize = (sSizeX.y_ - sSizeX.x_) * (sSizeZ.y_ - sSizeZ.x_);
-	data = new int[tabSize]; //TODO obliczyc dokladnie rozmiar
+	dataSize = tabSize;
+	data = PrimitiveArrayProvider<int>::get(tabSize); //TODO obliczyc dokladnie rozmiar
 	int* o = data;
 	int* s = data + occupiedCellsSize;
 	for (short i = sSizeX.x_; i < sSizeX.y_; ++i) {

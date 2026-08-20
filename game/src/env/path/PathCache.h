@@ -8,6 +8,8 @@ struct PathCache {
 	PathCache() = default;
 	PathCache(const PathCache& rhs) = delete;
 
+	void resetForReuse() { clear(); }
+
 	void clear() {
 		start = -1;
 		end = -1;

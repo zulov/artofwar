@@ -62,4 +62,5 @@ protected:
 	unsigned char surroundCellsSize = 0;
 	VisibilityType visibilityType = VisibilityType::VISIBLE;
 	int* data{};
+	int dataSize = 0;
 };

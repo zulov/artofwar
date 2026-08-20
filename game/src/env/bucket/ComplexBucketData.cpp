@@ -4,6 +4,7 @@
 #include <objects/resource/ResourceType.h>
 
 #include "objects/static/Static.h"
+#include "ArrayProviderUtils.h"
 #include "CellEnums.h"
 #include "utils/Flags.h"
 
@@ -34,7 +35,9 @@ void ComplexBucketData::resetForReuse() {
 	isNeightOccupied = 0;
 	gradient = -1;
 	staticObj = nullptr;
-	delete[] resourceBonuses;
+	if (resourceBonuses) {
+		PrimitiveArrayProvider<float>::release(resourceBonuses, MAX_PLAYERS * RESOURCES_SIZE);
+	}
 	resourceBonuses = nullptr;
 	cost = 0;
 }
@@ -71,9 +74,8 @@ void ComplexBucketData::decStateSize() {
 }
 
 void ComplexBucketData::setResBonuses(char player, unsigned char resId, float bonus) {
-	if (resourceBonuses == nullptr) {//TODO mem perf doda� jakis pool obiektow
-		resourceBonuses = new float[MAX_PLAYERS * RESOURCES_SIZE];
-		std::fill_n(resourceBonuses, MAX_PLAYERS * RESOURCES_SIZE, 1.f);
+	if (resourceBonuses == nullptr) {
+		resourceBonuses = PrimitiveArrayProvider<float>::get(MAX_PLAYERS * RESOURCES_SIZE, 1.f);
 	}
 	auto& val = resourceBonuses[player * RESOURCES_SIZE + resId];
 
@@ -81,7 +83,9 @@ void ComplexBucketData::setResBonuses(char player, unsigned char resId, float bo
 }
 
 void ComplexBucketData::resetResBonuses() {
-	delete[] resourceBonuses;
+	if (resourceBonuses) {
+		PrimitiveArrayProvider<float>::release(resourceBonuses, MAX_PLAYERS * RESOURCES_SIZE);
+	}
 	resourceBonuses = nullptr;
 }
 

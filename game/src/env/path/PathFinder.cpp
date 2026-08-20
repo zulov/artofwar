@@ -22,7 +22,7 @@ PathFinder::PathFinder(short resolution, float size) :
 	resolution(resolution), sqResolution(resolution * resolution), max_cost_to_ref(sqResolution - 1) {
 	came_from = PrimitiveArrayProvider<int>::get(sqResolution, -1);
 	cost_so_far = PrimitiveArrayProvider<int>::get(sqResolution, -1);
-	cache = new PathCache[MAX_CACHE_SIZE];
+	cache = ArrayProvider<PathCache>::get(MAX_CACHE_SIZE);
 }
 
 PathFinder::~PathFinder() {
@@ -31,7 +31,7 @@ PathFinder::~PathFinder() {
 
 	delete tempPath;
 	delete closePath;
-	delete[] cache;
+	ArrayProvider<PathCache>::release(cache, MAX_CACHE_SIZE);
 }
 
 void PathFinder::setComplexBucketData(ComplexBucketData* complexData) {

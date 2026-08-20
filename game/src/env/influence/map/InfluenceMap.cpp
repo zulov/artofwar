@@ -7,6 +7,7 @@
 
 #include "env/influence/MapsUtils.h"
 #include "env/influence/map/InfluenceTemplateProvider.h"
+#include "env/bucket/ArrayProviderUtils.h"
 #include "math/MathUtils.h"
 #include "math/VectorUtils.h"
 #include "utils/SpanUtils.h"
@@ -28,26 +29,23 @@ InfluenceMap::InfluenceMap(GridCalculator* calculator, float valueThresholdDebug
 	calculator(calculator), debugThreshold(valueThresholdDebug),
 	templateV(InfluenceTemplateProvider::get(KERNEL_COEF, INF_LEVEL)) {
 
-	rawValues = new float[arraySize];
-	kernelValues = new float[arraySize];
-	std::fill_n(rawValues, arraySize, 0.f);
-	std::fill_n(kernelValues, arraySize, 0.f);
+	rawValues = PrimitiveArrayProvider<float>::get(arraySize, 0.f);
+	kernelValues = PrimitiveArrayProvider<float>::get(arraySize, 0.f);
 	nonZeroRawIndexes.reserve(MAX_NON_ZERO_INDEXES);
 
 	if (history) {
 		minimalThreshold = HISTORY_MINIMAL_THRESHOLD;
 		vanishCoef = HISTORY_VANISH_COEF;
-		pendingValues = new float[arraySize];
-		std::fill_n(pendingValues, arraySize, 0.f);
+		pendingValues = PrimitiveArrayProvider<float>::get(arraySize, 0.f);
 		pendingNonZeroIndexes.reserve(MAX_PENDING_NON_ZERO_INDEXES);
 	}
 }
 
 InfluenceMap::~InfluenceMap() {
-	delete[] rawValues;
-	delete[] pendingValues;
-	delete[] kernelValues;
-	delete[] quadValues;
+	PrimitiveArrayProvider<float>::release(rawValues, arraySize);
+	PrimitiveArrayProvider<float>::release(pendingValues, arraySize);
+	PrimitiveArrayProvider<float>::release(kernelValues, arraySize);
+	PrimitiveArrayProvider<float>::release(quadValues, quadArraySize);
 }
 
 void InfluenceMap::update(unsigned index, float value) {
@@ -163,7 +161,8 @@ void InfluenceMap::initializeQuad() const {
 		currentRes /= 2;
 		quadArraySize += currentRes * currentRes;
 	}
-	quadValues = new float[quadArraySize];
+	this->quadArraySize = quadArraySize;
+	quadValues = PrimitiveArrayProvider<float>::get(quadArraySize, 0.f);
 	float* ptr = quadValues;
 	for (auto i = currentRes; i < calculator->getResolution(); i *= 2) {
 		const auto size = i * i;

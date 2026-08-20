@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "env/bucket/ArrayProviderUtils.h"
+#include "env/path/PathCache.h"
 
 namespace {
 struct ResettableValue {
@@ -72,6 +73,36 @@ TEST_F(ArrayProviderUtilsFixture, PrimitiveArrayProviderReusesAndRefillsReleased
 	for (int i = 0; i < 4; ++i) {
 		EXPECT_EQ(reused[i], 7);
 	}
+
+	delete[] reused;
+}
+
+TEST_F(ArrayProviderUtilsFixture, PrimitiveFloatArrayProviderReusesAndRefillsReleasedArrays) {
+	auto* data = PrimitiveArrayProvider<float>::get(3, 1.5f);
+	PrimitiveArrayProvider<float>::release(data, 3);
+
+	auto* reused = PrimitiveArrayProvider<float>::get(3, -2.25f);
+	EXPECT_EQ(reused, data);
+
+	for (int i = 0; i < 3; ++i) {
+		EXPECT_FLOAT_EQ(reused[i], -2.25f);
+	}
+
+	delete[] reused;
+}
+
+TEST_F(ArrayProviderUtilsFixture, ArrayProviderResetsPathCacheArraysBeforeReuse) {
+	auto* data = ArrayProvider<PathCache>::get(1);
+	std::vector<int> path = {1, 2, 3};
+	data[0].set(4, 5, &path);
+
+	ArrayProvider<PathCache>::release(data, 1);
+
+	auto* reused = ArrayProvider<PathCache>::get(1);
+	EXPECT_EQ(reused, data);
+	EXPECT_EQ(reused[0].start, -1);
+	EXPECT_EQ(reused[0].end, -1);
+	EXPECT_TRUE(reused[0].path.empty());
 
 	delete[] reused;
 }

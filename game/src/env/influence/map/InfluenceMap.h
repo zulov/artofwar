@@ -69,6 +69,7 @@ private:
 
 	const float* templateV;
 	mutable float* quadValues = nullptr;
+	mutable unsigned int quadArraySize = 0;
 
 	mutable std::vector<std::span<float>> quadLayers;
 	mutable std::vector<unsigned short> quadResolutions;
