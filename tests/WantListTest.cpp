@@ -22,14 +22,14 @@ protected:
 namespace {
 	class TestWantExecutor : public IWantExecutor {
 	public:
-		void setCost(short id, unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold) {
+		void setCost(int id, unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold) {
 			costs.erase(id);
 			costs.emplace(std::piecewise_construct,
 			              std::forward_as_tuple(id),
 			              std::forward_as_tuple(food, wood, stone, gold));
 		}
 
-		void setExecuteResult(short id, bool result) {
+		void setExecuteResult(int id, bool result) {
 			executeResults[id] = result;
 		}
 
@@ -48,12 +48,12 @@ namespace {
 			return it == executeResults.end() ? true : it->second;
 		}
 
-		std::vector<short> executedIds;
-		std::vector<short> notEnoughIds;
+		std::vector<int> executedIds;
+		std::vector<int> notEnoughIds;
 
 	private:
-		std::map<short, db_with_cost> costs;
-		std::map<short, bool> executeResults;
+		std::map<int, db_with_cost> costs;
+		std::map<int, bool> executeResults;
 	};
 
 	std::array<float, RESOURCES_SIZE> resourcesWithWood(float wood) {
@@ -63,7 +63,7 @@ namespace {
 	}
 
 	void runTick(WantList& wl, IWantExecutor& executor, std::span<const float> resources,
-	             WantItemType type, float priority, short id, unsigned char count = 1) {
+	             WantItemType type, float priority, int id, unsigned char count = 1) {
 		wl.resetRequests();
 		wl.addRequest(type, priority, id, count);
 		wl.execute(resources, executor);
@@ -100,6 +100,13 @@ TEST_F(WantListFixture, AddRequestWithSpecificIdAndCount) {
 	EXPECT_EQ(item.type, WantItemType::BUILDING);
 	EXPECT_EQ(item.count, 2);
 	EXPECT_EQ(item.specificId, 42);
+}
+
+TEST_F(WantListFixture, AddRequestPreservesFullDatabaseId) {
+	wl.addRequest(WantItemType::UNIT, 0.8f, 65535);
+
+	ASSERT_EQ(wl.getItemCount(), 1);
+	EXPECT_EQ(wl.getItems()[0].specificId, 65535);
 }
 
 TEST_F(WantListFixture, AddRequestReactivatesExistingMatch) {

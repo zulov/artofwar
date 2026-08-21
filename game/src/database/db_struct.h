@@ -430,7 +430,7 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 	std::vector<db_unit*> allUnits;
 
 	std::vector<std::vector<db_unit*>*> unitsPerNation;
-	std::vector<std::vector<unsigned char>*> unitsPerNationIds; //TODO remember must be storted
+	std::vector<std::vector<unsigned short>*> unitsPerNationIds; //TODO remember must be storted
 
 	//std::vector<db_building_metric*> dbBuildingMetricPerNation;
 	db_building_metric* dbBuildingMetric;

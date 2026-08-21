@@ -4,6 +4,7 @@
 #include <numeric>
 
 #include "env/influence/map/VisibilityType.h"
+#include "env/GridCalculator.h"
 #include "env/influence/VisibilityManager.h"
 #include "math/MathUtils.h"
 
@@ -70,6 +71,13 @@ std::vector<bool> downsampleBlockValues(int visibilityRes, const std::vector<Vis
 } // namespace
 
 class VisibilityDownsampleFixture : public ::testing::Test {};
+
+TEST(VisibilityGridIndexTest, KeepsPositionsInTheSameVisibilityCellTogether) {
+	GridCalculator calculator(8, 80.f);
+
+	EXPECT_EQ(calculator.indexFromPosition({0.f, 0.f}), calculator.indexFromPosition({4.9f, 4.9f}));
+	EXPECT_NE(calculator.indexFromPosition({0.f, 0.f}), calculator.indexFromPosition({10.1f, 0.f}));
+}
 
 // Single visible cell: both formulations agree, exhaustively, for every parent index.
 TEST_F(VisibilityDownsampleFixture, SingleCellEquivalentExhaustive) {

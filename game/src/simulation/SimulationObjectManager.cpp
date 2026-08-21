@@ -3,6 +3,7 @@
 #include <Urho3D/IO/Log.h>
 
 #include "Game.h"
+#include "database/DatabaseCache.h"
 #include "database/db_struct.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
@@ -10,6 +11,7 @@
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
+#include "player/Resources.h"
 #include "scene/load/dbload_container.h"
 #include "env/Environment.h"
 #include "math/VectorUtils.h"
@@ -52,7 +54,15 @@ void SimulationObjectManager::addUnits(unsigned number, unsigned short id, Urho3
 
 void SimulationObjectManager::addBuilding(unsigned short id, const Urho3D::UShortVector2& _bucketCords, char level,
                                           char player) const {
+	auto* const playerEnt = Game::getPlayersMan()->getPlayer(player);
+	auto* const dbBuilding = Game::getDatabase()->getBuilding(id);
+	auto* const resources = playerEnt->getResources();
+	if (!resources->hasEnough(dbBuilding)) {
+		return;
+	}
+
 	if (auto* building = buildingFactory.create(id, _bucketCords, level, player)) {
+		resources->reduce(dbBuilding);
 		building->postCreate();
 		addBuilding(building, false);
 	}

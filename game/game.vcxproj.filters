@@ -195,11 +195,8 @@
     <ClCompile Include="src\env\influence\map\VisibilityMap.cpp" />
     <ClCompile Include="src\env\bucket\StaticGrid.cpp" />
     <ClCompile Include="src\objects\projectile\ProjectileManager.cpp" />
-    <ClCompile Include="src\objects\projectile\ProjectileBase.h" />
     <ClCompile Include="src\env\influence\VisibilityManager.cpp" />
     <ClCompile Include="src\utils\CountUtils.cpp" />
-    <ClCompile Include="src\objects\UId.h" />
-    <ClCompile Include="src\database\db_update_utils.h" />
     <ClCompile Include="src\player\ai\AiHistory.cpp" />
     <ClCompile Include="src\database\db_struct_metric.cpp" />
     <ClCompile Include="src\player\ai\AiOrchestrator.cpp" />
@@ -217,7 +214,6 @@
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\Benchmark.h" />
     <ClInclude Include="src\Game.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="src\camera\CameraEnums.h">
       <Filter>camera</Filter>
     </ClInclude>
@@ -492,7 +488,6 @@
     <ClInclude Include="src\control\HealthBarProvider.h" />
     <ClInclude Include="src\env\GridCalculatorProvider.h" />
     <ClInclude Include="src\objects\queue\QueueUtils.h" />
-    <ClInclude Include="src\objects\Metrics.h" />
     <ClInclude Include="src\hud\window\SimplePanel.h">
       <Filter>hud\windows</Filter>
     </ClInclude>
@@ -507,7 +502,6 @@
     <ClInclude Include="src\player\ai\nn\BrainProvider.h" />
     <ClInclude Include="src\simulation\SimGlobals.h" />
     <ClInclude Include="src\utils\FileUtils.h" />
-    <ClInclude Include="src\player\ai\AiTypes.h" />
     <ClInclude Include="src\simulation\FrameInfo.h" />
     <ClInclude Include="src\database\db_basic_struct.h" />
     <ClInclude Include="src\database\db_grah_structs.h" />
@@ -539,6 +533,14 @@
     <ClInclude Include="src\player\ai\AiHistory.h" />
     <ClInclude Include="src\player\ai\AiHistoryEnums.h" />
     <ClInclude Include="src\player\ai\AiOrchestrator.h" />
+    <ClInclude Include="src\database\db_columns.h" />
+    <ClInclude Include="src\database\db_update_utils.h" />
+    <ClInclude Include="src\objects\building\BuildPlacementClass.h" />
+    <ClInclude Include="src\objects\projectile\ProjectileBase.h" />
+    <ClInclude Include="src\objects\resource\ResourceType.h" />
+    <ClInclude Include="src\objects\UId.h" />
+    <ClInclude Include="src\player\ai\NormScale.h" />
+    <ClInclude Include="src\player\ai\WeightedSample.h" />
     <ClInclude Include="src\player\ai\EconomyBrain.h" />
     <ClInclude Include="src\player\ai\MasterBrain.h" />
     <ClInclude Include="src\player\ai\MilitaryBrain.h" />

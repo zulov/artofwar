@@ -3,7 +3,7 @@
 
 struct NewGamePlayer {
 	Urho3D::String name;
-	char nation;
+	unsigned char nation;
 	char team;
 	int color;
 	char id;

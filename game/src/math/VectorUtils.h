@@ -101,14 +101,15 @@ static void collectSortedBelow(std::vector<unsigned int>& out, std::span<T> v, T
 	}
 }
 
-static std::vector<unsigned char> intersection(std::vector<std::vector<unsigned char>*>& ids) {
-	std::vector<unsigned char> common; //TODO check if ids sorted sometimes?
+template <typename T>
+static std::vector<T> intersection(std::vector<std::vector<T>*>& ids) {
+	std::vector<T> common; //TODO check if ids sorted sometimes?
 	if (ids.empty()) {
 		return common;
 	}
 	common = *ids[0];
 	for (int i = 1; i < ids.size(); ++i) {
-		std::vector<unsigned char> temp;
+		std::vector<T> temp;
 		std::ranges::set_intersection(common, *ids[i],
 		                              std::back_inserter(temp));
 		common = temp; //TODO optimize, może nie kopiować

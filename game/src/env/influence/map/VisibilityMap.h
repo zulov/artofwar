@@ -22,6 +22,7 @@ public:
 	char getValueAt(const Urho3D::Vector2& pos) const;
 
 	char getValueAt(unsigned index) const;
+	int getIndexAt(const Urho3D::Vector2& pos) const { return calculator->indexFromPosition(pos); }
 	int removeUnseen(std::span<float> intersection);
 	float getPercent() const;
 	unsigned short getResolution() const { return calculator->getResolution(); }

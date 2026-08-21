@@ -27,7 +27,6 @@ CreationCommand* CreationCommandList::addBuilding(unsigned short id, Urho3D::Vec
 		if (env->isVisible(player, position)) {
 			const auto cords = env->getCords(position);
 			if (env->validateStatic(building->size, cords, true)) {
-				resources->reduce(building);
 				return new CreationCommand(ObjectType::BUILDING, id, cords, level, player);
 			}
 		}

@@ -65,7 +65,7 @@ private:
 
 	void resetRestButtons(int from) const;
 
-	std::vector<unsigned char> getUnitInBuilding(SelectedInfo* selectedInfo) const;
+	std::vector<unsigned short> getUnitInBuilding(SelectedInfo* selectedInfo) const;
 	std::vector<unsigned char> getOrderForUnit(SelectedInfo* selectedInfo) const;
 	template <typename T>
 	void setIcons(const std::vector<T*>& icons, Urho3D::String path, ActionType type);

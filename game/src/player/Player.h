@@ -15,7 +15,7 @@ class Player {
 	friend void bindRow<Player>(sqlite3_stmt*, int, const Player*);
 
 public:
-	Player(unsigned short nationId, unsigned char team, unsigned char id, unsigned char color, Urho3D::String name,
+	Player(unsigned char nationId, unsigned char team, unsigned char id, unsigned char color, Urho3D::String name,
 		   bool active, unsigned currentBuildingUId, unsigned currentUnitUId);
 	~Player();
 

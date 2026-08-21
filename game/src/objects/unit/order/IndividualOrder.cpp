@@ -31,7 +31,7 @@ void IndividualOrder::addTargetAim() {
 
 void IndividualOrder::addFollowAim() {
 	const auto indexes = toUse->getIndexesForUse();
-	if (indexes.empty()) { unit->action(static_cast<UnitAction>(id), getFollowAim(unit->getMainGridIndex(), indexes)); }
+	if (!indexes.empty()) { unit->action(static_cast<UnitAction>(id), getFollowAim(unit->getMainGridIndex(), indexes)); }
 }
 
 void IndividualOrder::addChargeAim() { unit->action(static_cast<UnitAction>(id), getChargeAim(*vector)); }

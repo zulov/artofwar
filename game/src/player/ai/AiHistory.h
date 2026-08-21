@@ -10,7 +10,7 @@ struct ActionHistoryEntry {
 	unsigned int tick;
 	AiActionType actionType;
 	AiActionResult result;
-	uint8_t chosenId;
+	uint16_t chosenId;
 };
 
 struct OrderHistoryEntry {
@@ -24,7 +24,7 @@ class AiHistory {
 public:
 	static constexpr int MAX_ENTRIES = 2048;
 
-	void addAction(AiActionType type, AiActionResult result, uint8_t chosenId = 0);
+	void addAction(AiActionType type, AiActionResult result, uint16_t chosenId = 0);
 	void addOrder(AiOrderType type, AiOrderResult result, uint8_t unitCount = 0);
 
 	float recencyScore(std::initializer_list<AiActionType> types) const;

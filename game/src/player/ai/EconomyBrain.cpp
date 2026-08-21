@@ -1,12 +1,12 @@
 #include "EconomyBrain.h"
 
 #include <magic_enum.hpp>
-#include "nn/Brain.h"
-#include "nn/BrainProvider.h"
 #include "AiHistory.h"
 #include "AiUtils.h"
 #include "NormScale.h"
 #include "database/db_struct.h"
+#include "nn/Brain.h"
+#include "nn/BrainProvider.h"
 #include "player/Player.h"
 #include "player/Possession.h"
 #include "player/Resources.h"
@@ -15,19 +15,21 @@
 #include <algorithm>
 #include <cmath>
 
-EconomyBrain::EconomyBrain(db_nation* nation)
-	: brain(BrainProvider::get(nation->brainPrefix[1] + "economy.csv")),
-	  nation(nation) {
+namespace {
+	// Small positive tanh outputs should not enqueue a worker creation request.
+	constexpr float MIN_WORKER_ALLOCATION = 0.1f;
+} // namespace
+
+EconomyBrain::EconomyBrain(db_nation* nation) :
+	brain(BrainProvider::get(nation->brainPrefix[1] + "economy.csv")), nation(nation) {
 	assert(brain->getInputSize() == inputData.size());
 	assert(brain->getInputSize() == magic_enum::enum_count<EconomyInputIdx>());
 	assert(brain->getOutputSize() == magic_enum::enum_count<EconomyOutputIdx>());
 }
 
-EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
-                                    const std::array<float, 4>& lackingPerResource,
-                                    float economyUrgency, float workerUrgency, float expandUrgency,
-                                    float techUrgency, float gameTime,
-                                    const AiHistory* history) {
+EconomyOutput EconomyBrain::decide(Player* player, Player* enemy, const std::array<float, 4>& lackingPerResource,
+								   float economyUrgency, float workerUrgency, float expandUrgency, float techUrgency,
+								   float gameTime, const AiHistory* history) {
 	using I = EconomyInputIdx;
 
 	auto* res = player->getResources();
@@ -105,8 +107,7 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 	// Upgrade inputs (4)
 	inputData[idx(I::TECH_URGENCY)] = techUrgency;
 
-	inputData[idx(I::AVG_WORKER_LEVEL)] = avgUnitLevel(nation->workers, player,
-		[](const db_unit*) { return true; });
+	inputData[idx(I::AVG_WORKER_LEVEL)] = avgUnitLevel(nation->workers, player, [](const db_unit*) { return true; });
 
 	inputData[idx(I::AVG_RES_BUILDING_LEVEL)] = avgBuildingLevel(nation->buildings, player, ParentBuildingType::RESOURCE);
 
@@ -118,30 +119,30 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy,
 
 	float workerAlloc = result[idx(O::WORKER_ALLOCATION)];
 	unsigned char workerCount = 0;
-	if (workerAlloc > 0.1f) {
+	if (workerAlloc > MIN_WORKER_ALLOCATION) {
 		int raw = roundToInt(workerAlloc * MAX_WORKERS_PER_TICK);
 		workerCount = static_cast<unsigned char>(std::max(1, raw));
 	}
 
 	return EconomyOutput{
-		workerAlloc,
-		result[idx(O::FOOD_PRIORITY)],
-		result[idx(O::WOOD_PRIORITY)],
-		result[idx(O::STONE_PRIORITY)],
-		result[idx(O::GOLD_PRIORITY)],
-		result[idx(O::EXPAND_PRIORITY)],
-		result[idx(O::NEED_BONUS_FOOD)],
-		result[idx(O::NEED_BONUS_WOOD)],
-		result[idx(O::NEED_BONUS_STONE)],
-		result[idx(O::NEED_BONUS_GOLD)],
-		result[idx(O::NEED_FOOD_SOURCE)],
-		result[idx(O::NEED_FOOD_STORAGE)],
-		result[idx(O::NEED_GOLD_STORAGE)],
-		result[idx(O::NEED_GOLD_REFINE)],
-		result[idx(O::NEED_STONE_REFINE)],
-		result[idx(O::NEED_WOOD_SOURCE)],
-		result[idx(O::WORKER_UPGRADE_URGENCY)],
-		result[idx(O::RES_BUILDING_UPGRADE_URGENCY)],
-		workerCount
+			.workerAllocation = workerAlloc,
+			.foodPriority = result[idx(O::FOOD_PRIORITY)],
+			.woodPriority = result[idx(O::WOOD_PRIORITY)],
+			.stonePriority = result[idx(O::STONE_PRIORITY)],
+			.goldPriority = result[idx(O::GOLD_PRIORITY)],
+			.expandPriority = result[idx(O::EXPAND_PRIORITY)],
+			.needBonusFood = result[idx(O::NEED_BONUS_FOOD)],
+			.needBonusWood = result[idx(O::NEED_BONUS_WOOD)],
+			.needBonusStone = result[idx(O::NEED_BONUS_STONE)],
+			.needBonusGold = result[idx(O::NEED_BONUS_GOLD)],
+			.needFoodSource = result[idx(O::NEED_FOOD_SOURCE)],
+			.needFoodStorage = result[idx(O::NEED_FOOD_STORAGE)],
+			.needGoldStorage = result[idx(O::NEED_GOLD_STORAGE)],
+			.needGoldRefine = result[idx(O::NEED_GOLD_REFINE)],
+			.needStoneRefine = result[idx(O::NEED_STONE_REFINE)],
+			.needWoodSource = result[idx(O::NEED_WOOD_SOURCE)],
+			.workerUpgradeUrgency = result[idx(O::WORKER_UPGRADE_URGENCY)],
+			.resBuildingUpgradeUrgency = result[idx(O::RES_BUILDING_UPGRADE_URGENCY)],
+			.workerCount = workerCount,
 	};
 }

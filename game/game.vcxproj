@@ -137,7 +137,6 @@
       <Version>
       </Version>
       <Profile>true</Profile>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -277,10 +276,7 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\database\db_update_utils.h" />
-    <ClCompile Include="src\objects\projectile\ProjectileBase.h" />
     <ClCompile Include="src\objects\projectile\ProjectileManager.cpp" />
-    <ClCompile Include="src\objects\UId.h" />
     <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
     <ClCompile Include="src\player\ai\nn\BrainProvider.cpp" />
     <ClCompile Include="src\env\CloseIndexesProvider.cpp" />
@@ -407,11 +403,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utils\CountUtils.h" />
+    <ClInclude Include="src\database\db_columns.h" />
+    <ClInclude Include="src\database\db_update_utils.h" />
     <ClInclude Include="src\env\bucket\ArrayProviderUtils.h" />
     <ClInclude Include="src\database\db_insert_defs.h" />
     <ClInclude Include="src\database\db_insert_utils.h" />
     <ClInclude Include="src\env\path\PathCache.h" />
     <ClInclude Include="src\objects\building\ParentBuildingType.h" />
+    <ClInclude Include="src\objects\building\BuildPlacementClass.h" />
+    <ClInclude Include="src\objects\projectile\ProjectileBase.h" />
+    <ClInclude Include="src\objects\resource\ResourceType.h" />
+    <ClInclude Include="src\objects\UId.h" />
     <ClInclude Include="src\objects\projectile\ProjectileManager.h" />
     <ClInclude Include="src\camera\CameraInfo.h" />
     <ClInclude Include="src\database\db_basic_struct.h" />
@@ -430,7 +432,6 @@
     <ClInclude Include="src\env\influence\map\VisibilityType.h" />
     <ClInclude Include="src\env\influence\VisibilityMode.h" />
     <ClInclude Include="src\simulation\FrameInfo.h" />
-    <ClInclude Include="src\player\ai\AiTypes.h" />
     <ClInclude Include="src\player\ai\nn\BrainProvider.h" />
     <ClInclude Include="src\env\CloseIndexesProvider.h" />
     <ClInclude Include="src\env\bucket\levels\LevelCacheProvider.h" />
@@ -438,7 +439,6 @@
     <ClInclude Include="src\hud\window\EventPanel.h" />
     <ClInclude Include="src\env\influence\CenterType.h" />
     <ClInclude Include="src\simulation\SimGlobals.h" />
-    <ClInclude Include="src\objects\Metrics.h" />
     <ClInclude Include="src\objects\queue\QueueUtils.h" />
     <ClInclude Include="src\env\GridCalculatorProvider.h" />
     <ClInclude Include="src\control\HealthBarProvider.h" />
@@ -510,7 +510,6 @@
     <ClInclude Include="src\hud\window\main_menu\help\MainMenuHelpPanel.h" />
     <ClInclude Include="src\hud\window\main_menu\MainMenuDetailsPanel.h" />
     <ClInclude Include="src\hud\window\main_menu\MainMenuPanel.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="src\camera\TopCameraBehave.h" />
     <ClInclude Include="src\commands\PhysicalCommand.h" />
     <ClInclude Include="src\control\HitData.h" />
@@ -621,6 +620,8 @@
     <ClInclude Include="src\env\bucket\StaticGrid.h" />
     <ClInclude Include="src\env\influence\VisibilityManager.h" />
     <ClInclude Include="src\player\ai\AiOrchestrator.h" />
+    <ClInclude Include="src\player\ai\NormScale.h" />
+    <ClInclude Include="src\player\ai\WeightedSample.h" />
     <ClInclude Include="src\player\ai\EconomyBrain.h" />
     <ClInclude Include="src\player\ai\MasterBrain.h" />
     <ClInclude Include="src\player\ai\MilitaryBrain.h" />

@@ -186,12 +186,12 @@ void MenuPanel::levelBuilding() {
 	resetRestButtons(k);
 }
 
-std::vector<unsigned char> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) const {
+std::vector<unsigned short> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) const {
 	if (selectedInfo->getAllNumber() <= 0) { return {}; }
 
 	auto& infoTypes = selectedInfo->getSelectedTypes();
 	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
-	std::vector<std::vector<unsigned char>*> ids;
+	std::vector<std::vector<unsigned short>*> ids;
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
 			ids.push_back(Game::getPlayersMan()->getActivePlayer()->getBuildingLevel(i)->unitsPerNationIds[nation]);

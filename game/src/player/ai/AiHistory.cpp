@@ -6,7 +6,7 @@ namespace {
 	constexpr unsigned int LOOKBACK_TICKS = 1200;
 }
 
-void AiHistory::addAction(AiActionType type, AiActionResult result, uint8_t chosenId) {
+void AiHistory::addAction(AiActionType type, AiActionResult result, uint16_t chosenId) {
 	actions[actionHead] = {Game::getFrameInfo()->getTotalTicks(), type, result, chosenId};
 	// std::cout << magic_enum::enum_name(type) << " " << magic_enum::enum_name(result) << std::endl;
 	actionHead = (actionHead + 1) % MAX_ENTRIES;

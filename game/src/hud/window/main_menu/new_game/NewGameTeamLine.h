@@ -68,7 +68,7 @@ struct NewGameTeamLine {
 		NewGamePlayer player;
 		player.name = lineEdit->GetText();
 		player.color = color->GetSelection();
-		player.nation = nation->GetSelection();
+		player.nation = static_cast<unsigned char>(nation->GetSelection());
 		player.team = team->GetSelection();
 		player.id = id;
 		player.active = chk->IsChecked();

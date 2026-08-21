@@ -21,7 +21,7 @@ namespace {
 constexpr float NEARBY_RESOURCE_SUPPLY_RADIUS = 32.f;
 }
 
-Possession::Possession(unsigned short nation) {
+Possession::Possession(unsigned char nation) {
 	for (const auto building : Game::getDatabase()->getNation(nation)->buildings) {
 		auto id = building->id;
 		if (buildingsPerId.size() <= id) {

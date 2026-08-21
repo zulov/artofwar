@@ -62,7 +62,7 @@ void DatabaseCache::loadData(const std::string& name) {
 					level->unitsPerNation[nation->id] = new std::vector<db_unit*>();
 				}
 				if (level->unitsPerNationIds[nation->id] == nullptr) {
-					level->unitsPerNationIds[nation->id] = new std::vector<unsigned char>();
+					level->unitsPerNationIds[nation->id] = new std::vector<unsigned short>();
 				}
 			}
 		}

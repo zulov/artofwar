@@ -21,7 +21,7 @@ struct ArmyByActivity {
 
 class Possession {
 public:
-	Possession(unsigned short nation);
+	Possession(unsigned char nation);
 	~Possession();
 	Possession(const Possession&) = delete;
 
