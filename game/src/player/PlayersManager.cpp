@@ -49,7 +49,7 @@ Player* PlayersManager::getActivePlayer() const {
 	return activePlayer;
 }
 
-Player* PlayersManager::getPlayer(short i) {
+Player* PlayersManager::getPlayer(unsigned char i) const{
 	return allPlayers.at(i);
 }
 
@@ -57,7 +57,7 @@ std::vector<Player*>& PlayersManager::getTeam(short i) {
 	return teams[i];
 }
 
-void PlayersManager::changeActive(short i) {
+void PlayersManager::changeActive(unsigned char i) {
 	activePlayer = allPlayers[i];
 }
 
@@ -86,7 +86,7 @@ char PlayersManager::getActivePlayerID() const {
 
 void PlayersManager::activateNext() { activePlayer = getEnemyFor(activePlayer->getId()); }
 
-char PlayersManager::getEnemyIdFor(unsigned char player) {
+unsigned char PlayersManager::getEnemyIdFor(unsigned char player) const {
 	if (player == 0) {
 		//TODO bug do it better
 		return 1;

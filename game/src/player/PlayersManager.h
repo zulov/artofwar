@@ -18,13 +18,14 @@ public:
 	void addPlayer(NewGamePlayer& player);
 	void load(NewGameForm* form);
 	Player* getActivePlayer() const;
-	Player* getPlayer(unsigned char id) const;
+	Player* getPlayer(unsigned char i) const;
 	std::vector<Player*>& getTeam(short i);
 	void changeActive(unsigned char id);
 	void update(FrameInfo* frameInfo);
 	char getActivePlayerID() const;
 	void activateNext();
 	Player* getEnemyFor(unsigned char player) const;
+	unsigned char getEnemyIdFor(unsigned char player) const;
 
 	std::vector<Player*>& getAllPlayers();
 private:
