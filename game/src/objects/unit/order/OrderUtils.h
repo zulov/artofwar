@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "env/Environment.h"
 #include "objects/PhysicalUtils.h"
+#include "objects/resource/ResourceEntity.h"
 
 inline bool isAttackAction(UnitAction action) {
 	return action == UnitAction::ATTACK || action == UnitAction::CHARGE;
@@ -47,20 +48,25 @@ inline void tryToAttack(Unit* unit,
 }
 
 inline void tryToCollect(Unit* unit) {
-	const auto id = unit->getLastActionThingId();
-	const std::vector<Physical*>& allResources = Game::getEnvironment()->getResources(unit->getPosition(), unit->getLevel()->interestRange);
+	const auto resourceId = unit->getLastActionThingId();
+	if (resourceId < 0) { return; }
 
-	bool result = false;
-	if (id >= 0) {
-		std::vector<Physical*> resWithId;
-		for (const auto physical : allResources) {
-			if (physical->getSecondaryId() == id) {
-				resWithId.push_back(physical);
-			}
+	const auto& allResources = Game::getEnvironment()->getResources(unit->getPosition(), unit->getLevel()->interestRange);
+	std::vector<Physical*> boosted;
+	std::vector<Physical*> regular;
+	boosted.reserve(allResources.size());
+	regular.reserve(allResources.size());
+	for (auto* physical : allResources) {
+		if (physical->getSecondaryId() != resourceId) { continue; }
+		if (static_cast<ResourceEntity*>(physical)->getBonus(unit->getPlayer()) > 1.f) {
+			boosted.push_back(physical);
+		} else {
+			regular.push_back(physical);
 		}
-		result = toAction(unit, resWithId, UnitAction::COLLECT, belowClose, false);
 	}
-	if (!result) {
-		toAction(unit, allResources, UnitAction::COLLECT, belowClose, false);
+
+	// Keep gathering the same type. A reachable boosted node wins; otherwise use a regular one.
+	if (!toAction(unit, boosted, UnitAction::COLLECT, belowClose, false)) {
+		toAction(unit, regular, UnitAction::COLLECT, belowClose, false);
 	}
 }
