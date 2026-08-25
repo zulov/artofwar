@@ -302,8 +302,8 @@
     <tr><td>16</td><td>STONE_REFINE_GAP</td><td>max(0, stoneGather - stoneCap)</td><td>/10</td></tr>
     <tr><td>17</td><td>GOLD_REFINE_GAP</td><td>max(0, goldGather - goldCap)</td><td>/10</td></tr>
     <tr><td>18-21</td><td>BONUS_COVERAGE_FOOD/WOOD/STONE/GOLD</td><td>Possession::getBonusCoverage()</td><td>raw [0..1]</td></tr>
-    <tr><td>22</td><td>NEARBY_FOOD_SUPPLY</td><td>Environment::sumFoodWoodWithin() (econ center, R128)</td><td>/5000</td></tr>
-    <tr><td>23</td><td>NEARBY_WOOD_SUPPLY</td><td>Environment::sumFoodWoodWithin() (econ center, R128)</td><td>/5000</td></tr>
+    <tr><td>22</td><td>NEARBY_FOOD_SUPPLY</td><td>Possession worker-cell resource scan (radius 32)</td><td>/5000</td></tr>
+    <tr><td>23</td><td>NEARBY_WOOD_SUPPLY</td><td>Possession worker-cell resource scan (radius 32)</td><td>/5000</td></tr>
     <tr><td>24</td><td>TOTAL_RES_BUILDINGS</td><td>Possession::getResourceBuildingCount()</td><td>/20</td></tr>
     <tr><td>25-28</td><td>RES_WO_BONUS_FOOD/WOOD/STONE/GOLD</td><td>Possession::getResWithOutBonus()</td><td>/100</td></tr>
     <tr><td>29-32</td><td>LACKING_FOOD/WOOD/STONE/GOLD</td><td>WantList::LackingResult (prev tick)</td><td>/500</td></tr>
@@ -336,7 +336,7 @@
   </table>
 
   <h3>Building Need Outputs (10)</h3>
-  <p>Each tick the orchestrator scores every resource building against these needs (matching on DB fields), keeps the top 3 with need &gt; 0.1, and submits them as BUILDING wants.</p>
+  <p>Each AI action the orchestrator scores every resource building against these needs (matching on DB fields), keeps the top 3 with need &gt; 0.1, and submits them as BUILDING wants.</p>
   <table>
     <tr><th>#</th><th>Name</th><th>Capability</th><th>Resource</th><th>DB Match Criteria</th></tr>
     <tr style="color:#4caf50;">
@@ -396,7 +396,7 @@
   <h2>Building Resolution Algorithm</h2>
   <span class="tag new">AiOrchestrator::createResBuilding()</span>
 
-  <p>Each tick the orchestrator scores every resource building the nation can build against the 10 need outputs and submits the most-needed ones as BUILDING wants. No hardcoded building IDs -- matching uses DB fields from <code>db_building</code> and the player's current <code>db_building_level</code>.</p>
+  <p>Each AI action the orchestrator scores every resource building the nation can build against the 10 need outputs and submits the most-needed ones as BUILDING wants. No hardcoded building IDs -- matching uses DB fields from <code>db_building</code> and the player's current <code>db_building_level</code>.</p>
 
   <div class="formula-box">
     <div class="label">Algorithm (AiOrchestrator::createResBuilding)</div>

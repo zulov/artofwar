@@ -5,11 +5,13 @@
 The computer-player decision flow starts in `game/src/player/ai/AiOrchestrator.cpp`:
 
 1. `action()` runs Master, Economy, Military, and Unit brains.
-2. It converts outputs into `WantList` requests for workers, units, buildings, and upgrades.
-3. `WantExecutor` checks costs and queues game commands. It also uses `BuildSpatialBrain` to select visible valid building positions.
+2. It converts outputs into `WantList` requests for workers, units, resource buildings, and active upgrades.
+3. `WantList` applies affordability and soft-reserve checks; `WantExecutor` resolves costs, queues game commands, and uses `BuildSpatialBrain` to select visible valid building positions.
 4. `order()` assigns worker collection and military movement/combat orders.
 
-The simulation schedules the action and order phases independently through `PerFrameAction::AI_ACTION` and `PerFrameAction::AI_ORDER` in `game/src/simulation/Simulation.cpp`.
+The simulation schedules the action and order phases independently through `PerFrameAction::AI_ACTION` and `PerFrameAction::AI_ORDER` in `game/src/simulation/Simulation.cpp`. The first action phase computes brain outputs but intentionally does not submit wants; the first order phase clears that warm-up flag. Normal request submission begins on the following action phase.
+
+Brains receive the selected enemy player's current possession and score data. There is no scouting subsystem, but this is not fog-of-war-limited strategic information. Visibility currently restricts building-placement candidates rather than the enemy inputs supplied to brains.
 
 ## Brain Files And Dimensions
 
@@ -21,16 +23,20 @@ Default weights are in `game/Data/ai/`. A nation's `brain_prefix` database field
 4. `unit.csv`
 5. `military.csv`
 
+Runtime consumes slots 0 through 4 only and does not validate the prefix-token count. The checked-in nation data currently has an unused sixth token; do not treat it as an active brain slot.
+
 The constructors in `MasterBrain.cpp`, `EconomyBrain.cpp`, `BuildSpatialBrain.cpp`, `UnitBrain.cpp`, and `MilitaryBrain.cpp` assert that CSV input and output widths match their enums. Enum order is therefore part of the model-data interface. Do not reorder existing enum members.
 
 The CSV loader is `game/src/utils/FileUtils.h`. Its first row is an input holder: its number of weights declares the input width, and its values are not evaluated. Each later row is one dense layer, with weights and biases separated by `;;`. Runtime evaluation is `tanh(W * input + bias)` in `game/src/player/ai/nn/Layer.cpp`.
+
+Constructor assertions validate exposed input and output widths, but the loader does not fully validate malformed CSV content, intermediate layer connectivity, or zero/mismatched bias shapes. Treat CSV generation and review as part of correctness; a successful endpoint-width assertion is not a complete topology validation.
 
 Use `tools/gen_brain_csv.ps1` to generate structurally valid random weights rather than hand-writing CSV rows. It creates untrained brains only. `BrainProvider` logs and asserts for missing or empty files; brain constructors assert declared input and output dimensions.
 
 Example topology check:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools\gen_brain_csv.ps1 -Check -Brains 'master.csv|44|22|9'
+powershell -ExecutionPolicy Bypass -File tools\gen_brain_csv.ps1 -Check -Brains 'master.csv|34|22|9'
 ```
 
 The dimensions in this example must be derived from the current enums, not copied blindly. Confirm them in source before generating or replacing a CSV.
@@ -59,15 +65,18 @@ Do not update only the enum or only the CSV. Constructor assertions catch basic 
 - Unit selection compares the profile with normalized unit metrics in `AiOrchestrator::resolveUnit()`. Metric order and normalization live in `MetricDefinitions.h` and `db_struct_metric.cpp`.
 - `MilitaryBrain` emits one signed pressure for each unordered pair of `MilitaryCenterIdx` values, followed by infantry/range/cavalry preferences. Preserve this layout and `MILITARY_OUTPUT_COUNT`.
 - `BuildSpatialBrain` output width must equal `AI_MAP_COUNT`. Its one-hot building placement class must stay in `BuildPlacementClass` enum order.
-- `WantList` persists requests across AI actions. It boosts active requests, decays inactive requests, caps the sorted list, and reports unaffordable costs back to the brains. See `WantList.cpp`, `WantListExecute.cpp`, and `WantExecutor.cpp`.
+- `WantList` persists requests across AI actions. It boosts active requests, decays inactive requests, caps the sorted list, applies affordability/soft-reserve logic, and reports unaffordable costs back to the brains. See `WantList.cpp`, `WantListExecute.cpp`, and `WantExecutor.cpp`.
+
+`AiOrchestrator` applies a one-hop missing-producer fallback before adding worker, unit, or unit-upgrade wants. It checks whether the player owns any building type that can ever produce the unit, not whether that building is ready. If no such instance exists, it emits the producer-building want at the same priority and does not persist the original want; a later AI action must emit it again. The executor later filters producer buildings by readiness, so a queued unit-like want can still fail for that action pass. Building upgrades become a base-building want only when no owned instance exists; the upgrade command itself has no readiness predicate.
+
+Master `BUILDING_URGENCY`, `DEFENCE_BUILDING_URGENCY`, and direct tech-building requests are currently disabled in `AiOrchestrator.cpp`. Resource-building needs and missing-producer fallback are the live building-creation paths. `EXPAND_URGENCY` reaches `BuildSpatialBrain` only when a building is already being placed; it does not initiate an expansion request. `TECH_URGENCY` remains an input to EconomyBrain and UnitBrain.
 
 ## Focused Tests
 
-- `tests/BrainValidationTest.cpp`: brain holder and dense-layer dimension validation.
+- `tests/BrainValidationTest.cpp`: valid brain holder and endpoint-dimension behavior.
+- `tests/FileUtilsTest.cpp`: CSV parsing behavior.
 - `tests/LayerTest.cpp`: feed-forward layer behavior.
 - `tests/WantListTest.cpp`: request merging, priority aging, affordability, and reserve behavior.
-
-The want-building layer now also applies a one-hop feasibility fallback in `AiOrchestrator`: if a unit-like want cannot run because its producer building does not exist, the AI emits the missing producer building at the same priority and retries the original want next tick. If a building upgrade is not currently executable, it is dropped for that tick and can be re-evaluated on the next AI pass.
 - `tests/MilitaryCommandCalculatorTest.cpp`: per-unit military target selection.
 - `tests/AiHistoryTest.cpp` and `tests/AiUtilsTest.cpp`: feedback and AI utility logic.
 
@@ -88,19 +97,13 @@ Its normal workflow is:
 
 The training configuration is `AiTrainer/src/main/resources/properties.yaml`. It controls the fitness-oriented `TRAIN_SET`, match duration, population size, generations, worker processes, crossover/mutation parameters, and game flags. `TrainSet.java` maps each training set to a fitness function and the brain types it evolves. Art of War writes the score, unit/building counts, resources, and aggregate metrics used by those fitness functions in `Main::writeOutput()`.
 
-Run the trainer from `AiTrainer`, after verifying that its `build/` directory is a complete game runtime containing the intended executable, `Data/`, `CoreData/`, `CoreDataMy/`, and the configured save. It requires JDK 21 and Maven.
+Run the trainer from `AiTrainer`, after verifying that its `build/` directory is a complete game runtime containing the intended executable, `Data/`, `CoreData/`, `CoreDataMy/`, and the configured save. Its current Maven configuration targets Java 25, so use a compatible JDK and Maven.
 
 ### Compatibility Gate
 
 `AiTrainer` currently matches the five Art of War brain slots: Master, Economy, Build Spatial, Unit, and Military. The trainer topology tests lock their current input/output widths and hidden widths. Future brain-interface changes must update the C++ enums, `AiTrainer/src/main/java/pl/zulov/data/BrainType.java`, and their tests in one change.
 
-Before a training run, refresh the ignored local runtime with:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File tools\sync_artofwar_runtime.ps1 -Configuration Release
-```
-
-Run that command from `AiTrainer`. It copies the current Art of War release executable, DLLs, assets, saves, and five active brain CSVs into `AiTrainer/build/`, then removes the obsolete `attack_spatial.csv`. Training against a stale copied executable or stale baseline weights can still produce incompatible candidates.
+There is currently no checked-in runtime-sync script in this repository. Before training, manually or through maintained trainer-local tooling refresh `AiTrainer/build/` with the intended release executable, DLLs, assets, saves, and five active brain CSVs. Training against a stale copied executable or stale baseline weights can produce incompatible candidates.
 
 At minimum, verify for every active brain:
 

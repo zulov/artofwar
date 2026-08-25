@@ -231,7 +231,7 @@
     </tr>
     <tr style="color:#8d6e4e; background:#1a2c1a;">
       <td>17</td><td><strong>tree_nursery</strong></td><td>100f 50w 25g</td>
-      <td>BONUS + SPAWN</td>
+      <td>SPAWN</td>
       <td>Wood resource type (tR=1, resRng=10). Periodically spawns young_tree (id=7, 50HP wood) every 900 frames (~30s) within range 100. Renewable wood supply.</td>
     </tr>
   </table>
@@ -329,7 +329,7 @@
     <br>default bonus (no building nearby) = 1.0
   </div>
 
-  <p>Buildings: mill (collect=1.25, resRng=15), sawmill (1.25, 15), mine_s (1.25, 15), mine_g (1.25, 15), tree_nursery (collect=0, resRng=10 -- marks cells as bonused but gives no speed bonus).</p>
+  <p>Buildings: mill (collect=1.25, resRng=15), sawmill (1.25, 15), mine_s (1.25, 15), mine_g (1.25, 15). tree_nursery has collect=0 and resRng=10, but the effective bonus is max(existing, collect), so it leaves the default 1.0 bonus unchanged and does not mark resources as boosted.</p>
 
   <div class="file-ref">MainGrid.cpp:315-377 | ComplexBucketData.cpp:72 | CollectState.h:65</div>
 </div>
@@ -689,7 +689,7 @@
   <div class="file-ref">EconomyBrain.h: EconomyOutputIdx (NEED_* entries) | MetricDefinitions.h: ResourceEconomyMetricIdx (resource-economy metric set)</div>
 
   <h3 style="color:#e6c44d; margin: 20px 0 8px;">Step 3: Scoring &amp; Selection (createResBuilding)</h3>
-  <p>Each tick <code>AiOrchestrator::createResBuilding()</code> walks every resource building the nation can build and assigns it a single <code>need</code> = the max of whichever NEED_* outputs match its capabilities (by the DB fields above). The top 3 buildings with <code>need &gt; 0.1</code> are submitted to the WantList as BUILDING requests.</p>
+  <p>Each AI action <code>AiOrchestrator::createResBuilding()</code> walks every resource building the nation can build and assigns it a single <code>need</code> = the max of whichever NEED_* outputs match its capabilities (by the DB fields above). The top 3 buildings with <code>need &gt; 0.1</code> are submitted to the WantList as BUILDING requests.</p>
 
   <div class="formula-box">
     <div class="label">Per-building need (AiOrchestrator::createResBuilding)</div>

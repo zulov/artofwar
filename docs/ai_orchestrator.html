@@ -168,7 +168,7 @@
   </defs>
 
   <!-- Game State Input -->
-  <g data-tt-title="Game State" data-tt-body="Inputs available to all brains:<br>- Player/enemy scores<br>- Resource stockpiles (food, wood, stone, gold)<br>- Gather speeds<br>- Army counts, attack/defence sums<br>- Spatial distances between centers<br>- Lacking resources from previous tick">
+  <g data-tt-title="Game State" data-tt-body="Inputs available to all brains:<br>- Player/enemy scores<br>- Resource stockpiles (food, wood, stone, gold)<br>- Gather speeds<br>- Army counts, attack/defence sums<br>- Spatial distances between centers<br>- Lacking resources from the previous AI action">
     <rect x="500" y="10" width="400" height="50" rx="8" fill="#37474F" stroke="#78909C" stroke-width="1.5"/>
     <text x="700" y="32" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Game State</text>
     <text x="700" y="48" text-anchor="middle" fill="#90A4AE" font-size="10">scores, resources, army, distances, lacking</text>
@@ -178,7 +178,7 @@
   <line x1="700" y1="60" x2="700" y2="90" stroke="#aaa" stroke-width="1.5" marker-end="url(#ar)"/>
 
   <!-- Step 1: MasterBrain -->
-  <g data-tt-title="1. MasterBrain (34 inputs &rarr; 9 outputs)" data-tt-body="<span class='tt-logic'>Runs first in the action phase.</span><br><br><span class='tt-input'>Inputs (34):</span> player/enemy scores, building/worker/army/enemy-army counts, 4 resource stockpiles, 4 gather speeds, attack/defence sums, 4 spatial distances, total lacking, 5 deltas (score, enemy score, units, resources, gather speed), game time, KD ratio, in-combat ratio, tech level, and 4 history scores (build/unit failures, attack/defend activity)<br><br><span class='tt-output'>Outputs (9 urgencies):</span><br>- workerUrgency<br>- economyUrgency<br>- buildingUrgency<br>- unitUrgency<br>- militaryUrgency<br>- expandUrgency<br>- techUrgency<br>- defenceBuildingUrgency<br>- attackUrgency<br><br>These urgencies drive ALL downstream brains.">
+  <g data-tt-title="1. MasterBrain (34 inputs &rarr; 9 outputs)" data-tt-body="<span class='tt-logic'>Runs first in the action phase.</span><br><br><span class='tt-input'>Inputs (34):</span> player/enemy scores, building/worker/army/enemy-army counts, 4 resource stockpiles, 4 gather speeds, attack/defence sums, 4 spatial distances, total lacking, 5 deltas (score, enemy score, units, resources, gather speed), game time, KD ratio, in-combat ratio, tech level, and 4 history scores (build/unit failures, attack/defend activity). Enemy possession is read directly and is not visibility-limited.<br><br><span class='tt-output'>Outputs (9 urgencies):</span><br>- workerUrgency<br>- economyUrgency<br>- buildingUrgency<br>- unitUrgency<br>- militaryUrgency<br>- expandUrgency<br>- techUrgency<br>- defenceBuildingUrgency<br>- attackUrgency<br><br>Worker, economy, unit, military, and placement paths are active. Direct Master requests for OTHER, TECH, and DEFENCE buildings/upgrades are currently disabled.">
     <rect x="450" y="95" width="500" height="70" rx="10" fill="#1B5E20" stroke="#FF9800" stroke-width="2.5"/>
     <text x="700" y="120" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">1. MasterBrain</text>
     <text x="700" y="138" text-anchor="middle" fill="#FFE082" font-size="11">34 inputs &rarr; 9 urgency outputs</text>
@@ -200,7 +200,7 @@
   </g>
 
   <!-- Step 3: UnitBrain -->
-  <g data-tt-title="3. UnitBrain (21 inputs &rarr; 23-dim profile + 2 upgrades + count)" data-tt-body="<span class='tt-logic'>Decides what type of unit to train, whether to upgrade, and how many.</span><br><br><span class='tt-input'>Inputs (21):</span> own/enemy army composition ratios (infantry, cavalry, range), army counts, attack/defence sums, enemy score, workers count, unit/attack urgencies, 3 composition preferences from MilitaryBrain, tech urgency, avg unit/building level, game time<br><br><span class='tt-output'>Outputs (25):</span><br>- 23-dim unit profile vector (ideal unit properties)<br>- unitUpgradeUrgency, buildingUpgradeUrgency<br>- count = round(unitUrgency * 5), max 5/tick<br><br>The profile vector is matched against db_unit metrics using distance. The closest matching unit type is selected (and reused for upgrade matching).">
+  <g data-tt-title="3. UnitBrain (21 inputs &rarr; 23-dim profile + 2 upgrades + count)" data-tt-body="<span class='tt-logic'>Decides what type of unit to train, whether to upgrade, and how many.</span><br><br><span class='tt-input'>Inputs (21):</span> own/enemy army composition ratios (infantry, cavalry, range), army counts, attack/defence sums, enemy score, workers count, unit/attack urgencies, 3 composition preferences from MilitaryBrain, tech urgency, avg unit/building level, game time<br><br><span class='tt-output'>Outputs (25):</span><br>- 23-dim unit profile vector (ideal unit properties)<br>- unitUpgradeUrgency, buildingUpgradeUrgency<br>- count = round(unitUrgency * 5), max 5 per AI action<br><br>The profile vector is matched against db_unit metrics using distance. Each distinct sampled unit ID receives that full count. The closest matching unit type is selected (and reused for upgrade matching).">
     <rect x="850" y="215" width="400" height="70" rx="10" fill="#311B92" stroke="#FF5722" stroke-width="2.5"/>
     <text x="1050" y="240" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">3. UnitBrain</text>
     <text x="1050" y="258" text-anchor="middle" fill="#FFAB91" font-size="11">21 inputs &rarr; 23-dim profile + 2 upgrades + count</text>
@@ -211,15 +211,15 @@
   <line x1="350" y1="285" x2="350" y2="370" stroke="#4CAF50" stroke-width="2" marker-end="url(#ag)"/>
   <text x="360" y="330" fill="#4CAF50" font-size="9">worker wants + building wants</text>
   <line x1="700" y1="165" x2="700" y2="370" stroke="#9C27B0" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#ab)"/>
-  <text x="710" y="330" fill="#9C27B0" font-size="9">building wants (from urgencies)</text>
+  <text x="710" y="330" fill="#9C27B0" font-size="9">direct Master building paths disabled</text>
   <line x1="1050" y1="285" x2="1050" y2="370" stroke="#FF5722" stroke-width="2" marker-end="url(#ab)"/>
   <text x="1060" y="330" fill="#FF5722" font-size="9">unit wants (type + count)</text>
 
   <!-- Step 4: Want List -->
-  <g data-tt-title="4. Want List &mdash; Priority Queue" data-tt-body="<span class='tt-logic'>Central execution system for all resource-spending actions.</span><br><br><b>Per tick:</b><br>1. resetRequests() &mdash; mark all items inactive (carried over)<br>2. addRequest() &mdash; brains submit new wants (worker, unit, building, unit-upgrade, building-upgrade); re-requested items refresh basePriority<br>3. Boost active items (boost = 2.0 * age/(age+8), up to +200%), decay inactive ones (x0.85), drop below 0.05<br>4. Sort by priority (highest first), cap at 32 items<br>5. Walk top-down: affordable &rarr; EXECUTE, not affordable &rarr; reserve &amp; track lacking, continue<br>6. Compute lacking resources for next tick's feedback<br><br><span class='tt-ok'>CAN EXECUTE MULTIPLE ITEMS PER TICK</span><br>The only limit is available resources.<br><br><span class='tt-warn'>Army movement orders do NOT use this list.</span>">
+  <g data-tt-title="4. Want List &mdash; Priority Queue" data-tt-body="<span class='tt-logic'>Central execution system for all resource-spending actions.</span><br><br><b>Per AI action:</b><br>1. resetRequests() &mdash; mark all items inactive (carried over)<br>2. addRequest() &mdash; brains submit new wants (worker, unit, building, unit-upgrade, building-upgrade); re-requested items refresh basePriority<br>3. Boost active items (boost = 2.0 * age/(age+8), up to +200%), decay inactive ones (x0.85), drop below 0.05<br>4. Sort by priority (highest first), cap at 32 items<br>5. Walk top-down: affordable &rarr; EXECUTE, not affordable &rarr; reserve &amp; track lacking, continue<br>6. Compute lacking resources for the following action's feedback<br><br><span class='tt-ok'>CAN EXECUTE MULTIPLE ITEMS PER ACTION</span><br>The only limit is available resources.<br><br><span class='tt-warn'>Army movement orders do NOT use this list.</span>">
     <rect x="200" y="375" width="1000" height="70" rx="10" fill="#0D47A1" stroke="#2196F3" stroke-width="2.5"/>
     <text x="700" y="400" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">4. Want List &mdash; Priority Queue</text>
-    <text x="700" y="418" text-anchor="middle" fill="#90CAF9" font-size="11">Reset &rarr; Add &rarr; Boost/Decay &rarr; Sort/cap 32 &rarr; Execute top-down (multiple items per tick)</text>
+    <text x="700" y="418" text-anchor="middle" fill="#90CAF9" font-size="11">Reset &rarr; Add &rarr; Boost/Decay &rarr; Sort/cap 32 &rarr; Execute top-down (multiple items per action)</text>
     <text x="700" y="436" text-anchor="middle" fill="#64B5F6" font-size="10">Affordable &rarr; execute | Not affordable &rarr; reserve &amp; track lacking</text>
   </g>
 
@@ -227,7 +227,7 @@
   <line x1="700" y1="445" x2="700" y2="480" stroke="#aaa" stroke-width="1.5" marker-end="url(#ar)"/>
 
   <!-- Execution -->
-  <g data-tt-title="5. Execution Callbacks" data-tt-body="When the Want List decides an item is affordable, it calls back into AiOrchestrator:<br><br><b>executeWorker():</b> find a building that can deploy the worker type, issue BuildingActionCommand<br><br><b>executeUnit(unitId):</b> find a building that can deploy this unit, issue BuildingActionCommand. If no building exists, record lackingBuildingForUnit for next tick.<br><br><b>executeBuilding(buildingId):</b> find position via BuildSpatialBrain + influence maps, issue addBuilding command.">
+  <g data-tt-title="5. Execution Callbacks" data-tt-body="When the Want List decides an item is affordable, it calls back into AiOrchestrator:<br><br><b>executeWorker()/executeUnit(unitId):</b> choose a ready building that can deploy the unit, then issue BuildingActionCommand. A pre-queue one-hop fallback requests a producer building only when the player owns no producer type at all.<br><br><b>executeBuilding(buildingId):</b> find position via BuildSpatialBrain + influence maps, issue addBuilding command.">
     <rect x="300" y="485" width="800" height="60" rx="8" fill="#263238" stroke="#78909C" stroke-width="1.5"/>
     <text x="700" y="510" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">5. Execution: executeWorker() | executeUnit() | executeBuilding()</text>
     <text x="700" y="530" text-anchor="middle" fill="#90A4AE" font-size="10">Issues BuildingActionCommand or addBuilding to ActionCenter</text>
@@ -246,7 +246,7 @@
   <line x1="200" y1="750" x2="130" y2="750" stroke="#EF5350" stroke-width="1.5"/>
   <line x1="130" y1="750" x2="130" y2="95" stroke="#EF5350" stroke-width="1.5"/>
   <line x1="130" y1="95" x2="450" y2="95" stroke="#EF5350" stroke-width="1.5" marker-end="url(#ar)"/>
-  <text x="135" y="430" fill="#EF5350" font-size="10" transform="rotate(-90,135,430)">lacking feedback (next tick)</text>
+  <text x="135" y="430" fill="#EF5350" font-size="10" transform="rotate(-90,135,430)">lacking feedback (next action)</text>
 </svg>
 
 <!-- ===== PHASE 2 DIAGRAM ===== -->
@@ -261,7 +261,7 @@
   </defs>
 
   <!-- Worker Collection (left side) -->
-  <g data-tt-title="Worker Collection (manageWorkers)" data-tt-body="<span class='tt-logic'>Assigns idle workers to resource gathering.</span><br><br>1. Find all free workers (idle, not already collecting)<br>2. Use EconomyBrain's resource priorities (food/wood/stone/gold) to rank resources<br>3. Split workers across resources proportionally to priorities (largest-remainder rounding)<br>4. Each worker takes the highest-priority resource that still needs workers and has a reachable node (expanding resource-query levels)<br>5. Issue IndividualOrder with UnitAction::COLLECT<br>6. If the worst-priority resource is very negative, pull one busy worker off that resource<br><br>Workers are assigned individually, not grouped.">
+  <g data-tt-title="Worker Collection (manageWorkers)" data-tt-body="<span class='tt-logic'>Assigns idle workers to resource gathering.</span><br><br>1. Find all free workers (idle, not already collecting)<br>2. Use EconomyBrain's resource priorities (food/wood/stone/gold) to rank resources<br>3. Split workers across resources proportionally to priorities (largest-remainder rounding)<br>4. Each worker takes the highest-priority resource that still needs workers and has a reachable node (expanding resource-query levels)<br>5. Issue IndividualOrder with UnitAction::COLLECT<br>6. If the lowest-priority resource is below -0.5, pull one busy worker off that resource<br><br>Workers are assigned individually, not grouped.">
     <rect x="50" y="20" width="350" height="60" rx="8" fill="#1B5E20" stroke="#4CAF50" stroke-width="2"/>
     <text x="225" y="45" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">manageWorkers()</text>
     <text x="225" y="65" text-anchor="middle" fill="#A5D6A7" font-size="10">economy priorities &rarr; assign idle workers to resources</text>
@@ -342,7 +342,7 @@
   <ul>
     <li><code>Brain</code> class holds <code>vector&lt;Layer*&gt;</code></li>
     <li><code>BrainProvider</code> caches and reuses loaded brains</li>
-    <li>CSV files are per-nation (via <code>db_nation::actionPrefix</code> / <code>orderPrefix</code>), enabling different AI personalities per faction</li>
+    <li>CSV files are per-nation through the five-slot <code>db_nation::brainPrefix</code> vector, enabling different AI personalities per faction</li>
     <li>Input values are normalized (scores /1000, counts /200, etc.)</li>
   </ul>
 </div>
@@ -354,8 +354,8 @@
     <li>Five types: <code>WORKER</code>, <code>UNIT</code>, <code>BUILDING</code>, <code>UNIT_UPGRADE</code>, <code>BUILDING_UPGRADE</code></li>
     <li>Re-requested items get <b>boosted</b> with age (<code>boost = 2.0 * age/(age+8)</code>, up to +200% with diminishing returns), inactive ones <b>decay</b> (x0.85), below 0.05 are <b>dropped</b></li>
     <li>Sorted by priority, capped at 32 items, executed top-down while affordable</li>
-    <li>Tracks <b>lacking resources</b> (what couldn't be afforded) &mdash; fed back to MasterBrain (total) and EconomyBrain (per-resource) next tick</li>
-    <li>Can execute <b>multiple items per tick</b> (e.g., 2 units + 1 building if affordable)</li>
+    <li>Lacking resources feed back to MasterBrain (total) and EconomyBrain (per-resource) on the following AI action</li>
+    <li>Can execute <b>multiple items per AI action</b> (e.g., 2 units + 1 building if affordable)</li>
   </ul>
 </div>
 
@@ -372,11 +372,11 @@
 
 <div class="card">
   <h3 style="color:#EF5350">Feedback Loop</h3>
-  <p>The AI self-corrects via a tick-to-tick feedback loop:</p>
+  <p>The AI self-corrects through an action-to-action feedback loop:</p>
   <ul>
     <li>Want List computes <b>lacking resources</b> (what it couldn't afford)</li>
-    <li>MasterBrain and EconomyBrain receive this lacking data as input next tick</li>
-    <li>If unit creation fails because no building can deploy it, <code>pendingLackingBuilding</code> is set, boosting building construction urgency</li>
+    <li>MasterBrain and EconomyBrain receive this lacking data on the following AI action</li>
+    <li>Before worker/unit/unit-upgrade wants enter the list, a missing producer type emits a same-priority one-hop BUILDING want; the original want must be emitted again by a later AI action</li>
   </ul>
 </div>
 
@@ -402,7 +402,7 @@
   <p class="sit">Resources: 500F 300W 200S 100G | Army: 15 | Enemy army: 25 nearby | attack activity map shows enemy at base</p>
   <table>
     <tr><th>Brain</th><th>Key Output</th><th>Effect</th></tr>
-    <tr><td>MasterBrain</td><td>militaryUrgency=0.9, defenceBuildingUrgency=0.7, unitUrgency=0.8</td><td>Defend! Build army and defences</td></tr>
+    <tr><td>MasterBrain</td><td>militaryUrgency=0.9, defenceBuildingUrgency=0.7, unitUrgency=0.8</td><td>Defend and build army; direct defence-building submission is currently disabled</td></tr>
     <tr><td>MilitaryBrain</td><td>center-pair pressures pull toward OUR_BUILDING / OUR_ECON</td><td>Per-unit defend orders near base</td></tr>
     <tr><td>Per-unit orders</td><td>CLOSE to target</td><td>Find nearest enemy units, issue ATTACK orders</td></tr>
   </table>
@@ -414,7 +414,7 @@
   <table>
     <tr><th>Brain</th><th>Key Output</th><th>Effect</th></tr>
     <tr><td>MasterBrain</td><td>attackUrgency=0.9, unitUrgency=0.6, economyUrgency=0.3</td><td>Aggressive posture</td></tr>
-    <tr><td>UnitBrain</td><td>profile=[heavy cavalry bias], count=3</td><td>Train 3 cavalry for assault</td></tr>
+    <tr><td>UnitBrain</td><td>profile=[heavy cavalry bias], count=3</td><td>Each distinct sampled cavalry type receives a want for 3 units</td></tr>
     <tr><td>MilitaryBrain</td><td>center-pair pressures pull toward ENEMY_ECON / ENEMY_BUILDING</td><td>Per-unit attack orders into enemy territory</td></tr>
     <tr><td>Per-unit orders</td><td>FAR from target</td><td>All units march toward enemy base, GO orders</td></tr>
   </table>
@@ -427,7 +427,7 @@
 <div class="todo-list">
   <div class="todo-item">
     <h4>Tech/Defence building selection</h4>
-    <p><code>resolveBuilding()</code> for non-RESOURCE types defaults to <code>buildings.at(0)</code> (see TODO in code). Needs metric matching or a dedicated brain. Resource buildings already use need-driven selection.</p>
+    <p><code>resolveBuilding()</code> for non-RESOURCE types defaults to <code>buildings.at(0)</code> (see TODO in code). Direct Master submissions for those types are currently disabled; if re-enabled, they need metric matching or a dedicated brain. Resource buildings already use need-driven selection.</p>
   </div>
   <div class="todo-item">
     <h4>DeploySpatialBrain &mdash; which building to deploy units from</h4>
@@ -435,7 +435,7 @@
   </div>
   <div class="todo-item">
     <h4>ScoutSpatialBrain</h4>
-    <p>Decide where to send scouts based on fog of war and last-seen timestamps. No scouting exists yet &mdash; the AI plays blind until enemy contact.</p>
+    <p>Decide where to send scouts based on fog of war and last-seen timestamps. No scouting exists yet. Current strategic brains nevertheless read global selected-enemy possession, so making scouting meaningful also requires visibility-limited inputs.</p>
   </div>
   <div class="todo-item">
     <h4>ExpandSpatialBrain</h4>

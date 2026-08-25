@@ -130,8 +130,8 @@
 <!-- 1. SYSTEM OVERVIEW                          -->
 <!-- ========================================== -->
 <hr class="divider">
-<div class="section-title" id="overview">1. System Overview — One Tick</div>
-<div class="section-sub">Every AI tick: Master Brain reads game state and outputs urgencies. Sub-brains generate specific requests. Want List prioritizes and executes. Lacking feedback loops back.</div>
+<div class="section-title" id="overview">1. System Overview — One AI Action</div>
+<div class="section-sub">Each AI action phase (normally once per second): Master Brain reads game state and outputs urgencies. Sub-brains generate specific requests. Want List prioritizes and executes. Lacking feedback reaches the following action phase.</div>
 
 <svg viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1400px;">
   <defs>
@@ -147,7 +147,7 @@
   <rect width="1400" height="900" fill="#12122a" rx="12"/>
 
   <!-- Title -->
-  <text x="700" y="35" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">AI Decision Pipeline — One Tick</text>
+  <text x="700" y="35" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">AI Decision Pipeline — One AI Action</text>
 
   <!-- Game State Box -->
   <rect x="50" y="60" width="200" height="120" rx="8" fill="#263238" stroke="#546E7A" stroke-width="1.5"/>
@@ -242,14 +242,14 @@
   <!-- Feedback -->
   <rect x="200" y="720" width="700" height="80" rx="8" fill="#004D40" fill-opacity="0.25" stroke="#00897B" stroke-width="2"/>
   <text x="550" y="748" text-anchor="middle" fill="#00897B" font-size="14" font-weight="bold">Feedback Loop</text>
-  <text x="550" y="768" text-anchor="middle" fill="#80CBC4" font-size="11">LackingResult: per-resource deficits + total sum + lackingBuildingForUnit</text>
-  <text x="550" y="785" text-anchor="middle" fill="#80CBC4" font-size="11">Feeds back to Master Brain (totalLacking) and Economy Brain (perResource) next tick</text>
+   <text x="550" y="768" text-anchor="middle" fill="#80CBC4" font-size="11">LackingResult: per-resource deficits + total sum</text>
+   <text x="550" y="785" text-anchor="middle" fill="#80CBC4" font-size="11">Feeds back to Master Brain (totalLacking) and Economy Brain (perResource) next action</text>
 
   <!-- Arrow: Execution -> Feedback -->
   <line x1="775" y1="650" x2="775" y2="720" stroke="#00897B" stroke-width="1.5" marker-end="url(#arrowGreen)"/>
   <!-- Arrow: Feedback -> Game State (loop) -->
   <path d="M 200 760 Q 50 760 50 400 Q 50 120 50 120" stroke="#00897B" stroke-width="1.5" fill="none" marker-end="url(#arrowGreen)" stroke-dasharray="6,3"/>
-  <text x="30" y="440" fill="#00897B" font-size="10" transform="rotate(-90,30,440)">next tick</text>
+   <text x="30" y="440" fill="#00897B" font-size="10" transform="rotate(-90,30,440)">next AI action</text>
 
   <!-- Military direct path -->
   <rect x="650" y="420" width="190" height="70" rx="8" fill="#B71C1C" fill-opacity="0.15" stroke="#f44336" stroke-width="1.5" stroke-dasharray="4,2"/>
@@ -293,7 +293,7 @@
 <!-- ========================================== -->
 <hr class="divider">
 <div class="section-title" id="master">2. Master Brain — Strategic Coordinator</div>
-<div class="section-sub">Reads 34 game-state inputs and outputs 9 urgency signals. These urgencies drive all sub-brains and the want list.</div>
+<div class="section-sub">Reads 34 game-state inputs and outputs 9 urgency signals. The active paths feed sub-brains, resource-building needs, unit wants, upgrades, and placement; several direct Master building paths are disabled in code.</div>
 
 <div class="card">
 <h3>Inputs (34)</h3>
@@ -319,12 +319,12 @@
 <tr><th>Output</th><th>Drives</th><th>Effect</th></tr>
 <tr><td>WORKER_URGENCY</td><td>Economy Brain</td><td>How many workers to produce</td></tr>
 <tr><td>ECONOMY_URGENCY</td><td>Economy Brain</td><td>Resource allocation intensity</td></tr>
-<tr><td>BUILDING_URGENCY</td><td>Want List</td><td>OTHER building construction + upgrade priority</td></tr>
+<tr><td>BUILDING_URGENCY</td><td>Disabled direct path</td><td>Latent output; OTHER building construction/upgrade submission is currently commented out</td></tr>
 <tr><td>UNIT_URGENCY</td><td>Unit Brain + Want List</td><td>Military unit production count + priority</td></tr>
 <tr><td>MILITARY_URGENCY</td><td>Military Brain</td><td>Overall combat engagement level</td></tr>
-<tr><td>EXPAND_URGENCY</td><td>Economy + BuildSpatial Brain</td><td>Expand territory vs stay compact</td></tr>
-<tr><td>TECH_URGENCY</td><td>Economy + Unit Brain + Want List</td><td>Tech building + upgrade priority</td></tr>
-<tr><td>DEFENCE_BUILDING_URGENCY</td><td>Want List</td><td>Defensive structure + upgrade priority</td></tr>
+<tr><td>EXPAND_URGENCY</td><td>Economy + BuildSpatial Brain</td><td>Economy input; affects placement weights when a building is already being placed</td></tr>
+<tr><td>TECH_URGENCY</td><td>Economy + Unit Brain</td><td>Brain input; direct tech-building construction/upgrade submission is currently disabled</td></tr>
+<tr><td>DEFENCE_BUILDING_URGENCY</td><td>Disabled direct path</td><td>Latent output; defensive construction/upgrade submission is currently commented out</td></tr>
 <tr><td>ATTACK_URGENCY</td><td>Unit + Military Brain</td><td>Aggression level</td></tr>
 </table>
 </div>
@@ -339,14 +339,14 @@
 <div class="card">
 <h3>Key Outputs (18)</h3>
 <ul>
-  <li><span class="highlight">workerAllocation</span> — drives workerCount = round(workerAllocation * 3), max 3 workers added to want list per tick (threshold 0.1)</li>
+  <li><span class="highlight">workerAllocation</span> — drives workerCount = round(workerAllocation * 3), max 3 workers added to WantList per AI action (threshold 0.1)</li>
   <li><span class="highlight">foodPriority / woodPriority / stonePriority / goldPriority</span> — which resource to collect first</li>
   <li><span class="highlight">expandPriority</span> — territorial expansion weight</li>
   <li><span class="highlight">10 building need scores</span> — NEED_BONUS_FOOD/WOOD/STONE/GOLD, NEED_FOOD_SOURCE, NEED_FOOD_STORAGE, NEED_GOLD_STORAGE, NEED_GOLD_REFINE, NEED_STONE_REFINE, NEED_WOOD_SOURCE. Matched to resource buildings via DB fields (top 3 needs &gt; 0.1 become BUILDING wants)</li>
   <li><span class="highlight">workerUpgradeUrgency / resBuildingUpgradeUrgency</span> — drive UNIT_UPGRADE / BUILDING_UPGRADE wants (threshold 0.1)</li>
 </ul>
 <h3>Worker Collection Flow</h3>
-<p>Free workers are split across the 4 resource types proportionally to their (non-negative) priorities (largest-remainder rounding). Each worker takes the highest-priority resource that still needs workers and has a reachable node (expanding resource-query levels). If the worst-priority resource is very negative, one busy worker is stolen from that resource. Only one worker is reassigned per tick.</p>
+<p>Free workers are split across the 4 resource types proportionally to their (non-negative) priorities (largest-remainder rounding). Each worker takes the highest-priority resource that still needs workers and has a reachable node (expanding resource-query levels). If the worst-priority resource is very negative, one busy worker is stolen from that resource. Only one worker is reassigned per AI order phase.</p>
 </div>
 
 <!-- ========================================== -->
@@ -433,17 +433,17 @@
   <!-- Count -->
   <rect x="300" y="340" width="180" height="60" rx="8" fill="#263238" stroke="#546E7A" stroke-width="1"/>
   <text x="390" y="365" text-anchor="middle" fill="#B0BEC5" font-size="11">count = round(unitUrgency * 5)</text>
-  <text x="390" y="385" text-anchor="middle" fill="#78909C" font-size="10">Max 5 per tick, 0 if urgency &lt;= 0</text>
+  <text x="390" y="385" text-anchor="middle" fill="#78909C" font-size="10">Max 5 per AI action, 0 if urgency &lt;= 0</text>
 
   <!-- Output -->
   <rect x="830" y="340" width="300" height="60" rx="8" fill="#1B5E20" fill-opacity="0.2" stroke="#4CAF50" stroke-width="1.5"/>
   <text x="980" y="365" text-anchor="middle" fill="#4CAF50" font-size="12" font-weight="bold">Result: vector&lt;db_unit*&gt;</text>
-  <text x="980" y="385" text-anchor="middle" fill="#A5D6A7" font-size="11">Each becomes WantItem(UNIT, urgency, count=1, id)</text>
+  <text x="980" y="385" text-anchor="middle" fill="#A5D6A7" font-size="11">Each distinct ID becomes WantItem(UNIT, urgency, count)</text>
 
   <line x1="980" y1="280" x2="980" y2="340" stroke="#4CAF50" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <!-- Count to output -->
-  <text x="600" y="465" text-anchor="middle" fill="#78909C" font-size="11">count rolls of lowestWithRand produce variety: e.g., 2x heavy infantry + 1x light infantry</text>
+  <text x="600" y="465" text-anchor="middle" fill="#78909C" font-size="11">count rolls can produce variety, but each distinct sampled ID receives the full count</text>
 </svg>
 
 <!-- ========================================== -->
@@ -457,8 +457,8 @@
 <h3>UnitMetricIdx Enum (23 dimensions)</h3>
 <table class="spec">
 <tr><th>#</th><th>Metric</th><th>Source</th><th>Weight</th><th>Range</th><th>Purpose</th></tr>
-<tr><td>0</td><td>COST</td><td>getSumCost()</td><td>400</td><td>0-1+</td><td>Prefer cheap or expensive units</td></tr>
-<tr><td>1</td><td>MAX_HP</td><td>maxHp</td><td>300</td><td>0-1+</td><td>Tankiness preference</td></tr>
+<tr><td>0</td><td>COST</td><td>getSumCost()</td><td>500</td><td>0-1</td><td>Prefer cheap or expensive units</td></tr>
+<tr><td>1</td><td>MAX_HP</td><td>maxHp</td><td>500</td><td>0-1</td><td>Tankiness preference</td></tr>
 <tr><td>2</td><td>ARMOR</td><td>armor</td><td>1</td><td>0-1</td><td>Damage reduction</td></tr>
 <tr><td>3</td><td>SIGHT_RADIUS</td><td>sightRadius</td><td>20</td><td>0-1</td><td>Vision range</td></tr>
 <tr><td>4</td><td>ATTACK</td><td>attack</td><td>10</td><td>0-1+</td><td>Damage output</td></tr>
@@ -548,7 +548,7 @@
 <!-- ========================================== -->
 <hr class="divider">
 <div class="section-title" id="wantlist">7. Want List — Priority Queue Execution</div>
-<div class="section-sub">All production requests compete in a single priority queue. Multiple items can execute per tick.</div>
+<div class="section-sub">All production requests compete in a single priority queue. Multiple items can execute per AI action.</div>
 
 <svg viewBox="0 0 1200 380" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:1200px;">
   <rect width="1200" height="380" fill="#12122a" rx="12"/>
@@ -694,7 +694,7 @@
 
 <div class="example">
 <h3>Example 1: Early Game — Economy Focus</h3>
-<p class="sit">Tick 300. Score: 50. Army: 2 militia. Enemy: unknown (no contact). Resources: 200F, 150W, 50S, 0G. 5 workers.</p>
+<p class="sit">Tick 300. Score: 50. Army: 2 militia. Enemy army: 0. Resources: 200F, 150W, 50S, 0G. 5 workers. The brains can read the selected enemy's current score and possession even without visual contact.</p>
 <p><span class="step">Master Brain:</span> Low enemy threat -> low MILITARY_URGENCY (-0.3). Few buildings -> BUILDING_URGENCY = 0.6. Low resources -> ECONOMY_URGENCY = 0.8. WORKER_URGENCY = 0.7.</p>
 <p><span class="step">Economy Brain:</span> workerAllocation = 0.7 -> workerCount = round(0.7 * 3) = 2. foodPriority = 0.8, woodPriority = 0.6, stonePriority = 0.1, goldPriority = 0.0. NEED_FOOD_SOURCE = 0.7 (need a food bonus building).</p>
 <p><span class="step">Unit Brain:</span> unitUrgency = 0.1 -> count = round(0.1 * 5) = 1. Profile outputs weak preference for cheap infantry. One unit added to want list.</p>
@@ -708,18 +708,18 @@
 <p><span class="step">Master Brain:</span> High enemy army + low KD -> UNIT_URGENCY = 0.9, MILITARY_URGENCY = 0.7, ATTACK_URGENCY = -0.2 (defend). DEFENCE_BUILDING_URGENCY = 0.5.</p>
 <p><span class="step">Unit Brain:</span> count = round(0.9 * 5) = 5. Sees enemy cavalry ratio is high.</p>
 <p>Brain outputs: TYPE_INFANTRY = 0.8, TYPE_HEAVY = 0.3, BONUS_CAVALRY = 0.9, TYPE_CAVALRY = -0.7 (avoid cavalry).</p>
-<p><span class="step">Profile Matching:</span> lowestWithRand runs 5 times. Spearman (anti-cavalry infantry) has lowest distance. Results: 4x Spearman, 1x Pikeman (similar but slightly different roll).</p>
+<p><span class="step">Profile Matching:</span> lowestWithRand runs 5 times. Spearman (anti-cavalry infantry) has lowest distance. If Spearman and Pikeman are both sampled, each distinct want is submitted with count 5, so the total requested units can exceed five.</p>
 <p><span class="step">Military Brain:</span> Center-pair pressures pull the army toward OUR_BUILDING (defend the base) over enemy centers. Per-unit, MilitaryCommandCalculator routes units to defend near own buildings.</p>
-<p><span class="result">Result:</span> 5 anti-cavalry units queued (if affordable). Army defends base. Counter-composition evolves naturally.</p>
+<p><span class="result">Result:</span> One or more anti-cavalry wants are queued if affordable; each distinct sampled type requests the full count. Army defends base. Counter-composition evolves naturally.</p>
 </div>
 
 <div class="example">
 <h3>Example 3: Unbuildable Unit Fallback</h3>
 <p class="sit">Brain wants cavalry archers, but the Archery Range is destroyed. Only Barracks is standing.</p>
 <p><span class="step">resolveUnit():</span> Profile matches "Mounted Archer" (cavalry + range type). Returns it.</p>
-<p><span class="step">executeUnit():</span> getBuildingsCanDeploy("Mounted Archer") returns empty. Sets pendingLackingBuilding = Archery Range ID.</p>
-<p><span class="step">Feedback:</span> Next tick, lackingBuildingForUnit is set. submitBuildingRequest adds Archery Range to want list with boosted urgency (min 0.5). Meanwhile, the WantItem for Mounted Archer fails and decays.</p>
-<p><span class="result">Result:</span> AI prioritizes rebuilding the Archery Range. Unit request fails gracefully. Resources freed for the building.</p>
+<p><span class="step">tryUnitWant():</span> Before adding the Mounted Archer want, it finds no owned building type that can ever produce the unit.</p>
+<p><span class="step">Fallback:</span> It adds an Archery Range BUILDING want at the same priority and does not add or persist the Mounted Archer want. A future AI action must emit the unit want again.</p>
+<p><span class="result">Result:</span> AI can prioritize rebuilding the Archery Range without a recursive same-pass retry. An owned but unready range bypasses this fallback; the executor then rejects the unit want until a ready producer exists.</p>
 </div>
 
 <div class="example">
@@ -748,10 +748,10 @@
   <li><span class="pro">Nation-agnostic unit selection</span> — Same NN works across factions with different unit rosters. Profile describes properties, not IDs.</li>
   <li><span class="pro">Emergent counter-play</span> — The brain learns to output anti-cavalry profiles when enemy has cavalry, without hardcoded rules.</li>
   <li><span class="pro">GA-evolvable</span> — All brains are neural networks with weights from CSV files. No hand-tuning needed for strategy. Evolution discovers good play.</li>
-  <li><span class="pro">Stochastic variety</span> — lowestWithRand prevents perfectly predictable play. Multiple rolls per tick produce army variety.</li>
+  <li><span class="pro">Stochastic variety</span> — lowestWithRand prevents perfectly predictable play. Multiple rolls per AI action produce army variety.</li>
   <li><span class="pro">Priority-based resource allocation</span> — Want list naturally balances economy vs military vs tech. Persistent needs escalate via age boost.</li>
-  <li><span class="pro">Unit &amp; building upgrades</span> — Unit Brain and Economy Brain emit upgrade urgencies; UNIT_UPGRADE / BUILDING_UPGRADE wants compete in the same queue. Tech level (avg upgrade level) feeds back into Master/Unit/Military brains.</li>
-  <li><span class="pro">Feedback loops</span> — Lacking resources feed back to Master Brain. Building failures feed back to unit production. History informs future decisions.</li>
+  <li><span class="pro">Unit &amp; active-building upgrades</span> — Unit Brain and Economy Brain emit upgrade urgencies; unit-producing and resource-building upgrade wants compete in the same queue. Tech level (avg upgrade level) feeds back into Master/Unit/Military brains.</li>
+  <li><span class="pro">Feedback loops</span> — Lacking resources feed back to Master Brain and Economy Brain. History informs future decisions.</li>
   <li><span class="pro">Metric validation</span> — Assert at DB load ensures all metrics stay in [0, 1]. New units that violate this are caught immediately.</li>
   <li><span class="pro">Negative outputs as repulsion</span> — tanh [-1, 1] gives the brain 3x stronger "avoid" signals vs [0, 1] range, enabling active trait avoidance.</li>
   <li><span class="pro">Efficient multi-sampling</span> — lowestWithRand(diffs, count) computes weights once, samples N times. sampleWeighted is O(candidates) per sample.</li>
@@ -763,10 +763,10 @@
 <ul>
   <li><span class="con">No retreat logic</span> — Army fights to death. No health threshold, no "pull back and regroup." Armies are wasted in losing engagements.</li>
   <li><span class="con">Non-resource building selection is a stub</span> — resolveBuilding() for DEFENCE/TECH/UNITS/OTHER returns buildings.at(0). No NN-driven selection (TODO in code).</li>
-  <li><span class="con">No scouting</span> — AI cannot explore fog of war. Plays blind until enemy contact. Disadvantaged on large maps.</li>
+  <li><span class="con">No scouting</span> — AI does not issue exploration orders. Strategic brains nevertheless read the selected enemy's global current possession, so this is not fog-of-war-blind intelligence.</li>
   <li><span class="con">Single enemy</span> — getEnemyFor() returns one enemy. FFA/multiplayer ignored.</li>
   <li><span class="con">No attack outcome tracking</span> — History records "order sent" as success, not whether the battle was won.</li>
-  <li><span class="con">Worker reassignment is slow</span> — Only 1 worker per tick, only if priority gap > 0.3. Slow to adapt economy.</li>
+  <li><span class="con">Worker reassignment is slow</span> — Only 1 worker per AI order phase, and only when the lowest resource priority is below -0.5. Slow to adapt economy.</li>
   <li><span class="con">Save/load breaks deltas</span> — MasterBrain prev* fields not serialized. First tick after load produces false delta spikes.</li>
   <li><span class="con">No training pipeline in repo</span> — No GA implementation, no fitness functions, no weight export. Brains must be evolved externally (see tools/gen_brain_csv.ps1 for untrained weight generation only).</li>
   <li><span class="con">lowestWithRand samples with replacement</span> — Can return the same unit type multiple times when variety might be better.</li>
@@ -785,14 +785,14 @@
 <tr><th>Priority</th><th>Gap</th><th>Impact</th><th>Location</th></tr>
 <tr><td style="color:#EF5350;font-weight:bold;">P1</td><td>No retreat logic</td><td>Army wasted in losing fights</td><td>AiOrchestrator.cpp order() / issueAdvancePerUnit()</td></tr>
 <tr><td style="color:#EF5350;font-weight:bold;">P2</td><td>Building selection stub</td><td>Wrong buildings chosen for non-resource types (returns buildings.at(0))</td><td>AiOrchestrator.cpp:564-571 resolveBuilding()</td></tr>
-<tr><td style="color:#FF9800;font-weight:bold;">P3</td><td>No scouting</td><td>Blind until contact</td><td>(not implemented)</td></tr>
-<tr><td style="color:#FF9800;font-weight:bold;">P4</td><td>FOW-blind attack fallback</td><td>Units advance toward stale/unseen influence centers</td><td>AiOrchestrator.cpp order() (TODO in code)</td></tr>
+<tr><td style="color:#FF9800;font-weight:bold;">P3</td><td>No scouting</td><td>No exploration or last-seen decision path; strategic brains currently read global enemy state</td><td>(not implemented)</td></tr>
+<tr><td style="color:#FF9800;font-weight:bold;">P4</td><td>Visibility-aware targeting</td><td>Units can advance toward stale/unseen influence centers</td><td>AiOrchestrator.cpp order() (TODO in code)</td></tr>
 <tr><td style="color:#FFB74D;">P5</td><td>Save/load delta spike</td><td>One-tick false urgency after load</td><td>MasterBrain.h:88-92 (prev* not serialized)</td></tr>
 <tr><td style="color:#FFB74D;">P6</td><td>Single enemy limitation</td><td>Ignores FFA opponents</td><td>AiOrchestrator.cpp (getEnemyFor)</td></tr>
 <tr><td style="color:#78909C;">P7</td><td>Attack outcome tracking</td><td>Records "order sent" as success, can't learn from lost battles</td><td>AiOrchestrator.cpp order() history->addOrder(...SUCCESS)</td></tr>
-<tr><td style="color:#78909C;">P8</td><td>Worker reassignment speed</td><td>1 worker/tick, gap &gt; 0.3 — slow economy adaptation</td><td>AiOrchestrator.cpp findReassignableWorker()</td></tr>
+<tr><td style="color:#78909C;">P8</td><td>Worker reassignment speed</td><td>1 worker/order phase only when lowest priority &lt; -0.5 — slow economy adaptation</td><td>AiOrchestrator.cpp findReassignableWorker()</td></tr>
 </table>
-<p style="color:#66BB6A;font-size:12px;">Resolved since earlier drafts: the tech/upgrade system is now implemented (UNIT_UPGRADE / BUILDING_UPGRADE wants, TECH_LEVEL input wired to avgTechLevel); GAME_TIME, KD_RATIO and IN_COMBAT_RATIO are now real game-state values.</p>
+<p style="color:#66BB6A;font-size:12px;">Implemented since earlier drafts: unit and active resource/unit-producing-building upgrades use UNIT_UPGRADE / BUILDING_UPGRADE wants, and TECH_LEVEL is wired to avgTechLevel. Direct Master TECH/DEFENCE/OTHER building submission remains disabled. GAME_TIME, KD_RATIO and IN_COMBAT_RATIO are real game-state values.</p>
 </div>
 
 </body>

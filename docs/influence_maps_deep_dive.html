@@ -1299,7 +1299,7 @@ if weight == 0 or max == min:
     <li><code>SEEN = 1</code> - explored before, not currently visible</li>
     <li><code>VISIBLE = 3</code> - currently visible</li>
   </ul>
-  <p><code>reset()</code> demotes <code>VISIBLE</code> to <code>SEEN</code> by applying a bit-mask; it does not wipe exploration history. The map maintains <code>visibilityValueSum</code> incrementally as cells become visible or reset, so <code>getPercent()</code> returns <code>sum(state) / (3 * cellCount)</code> without rescanning the full grid. For influence selection, the map downsamples 2x2 visibility cells into one influence cell, and only <code>VISIBLE</code> counts.</p>
+  <p><code>reset()</code> demotes <code>VISIBLE</code> to <code>SEEN</code> by applying a bit-mask; it does not wipe exploration history. During <code>finish()</code>, the map recomputes its visibility score with a full accumulation over cells, then <code>getPercent()</code> returns the cached <code>sum(state) / (3 * cellCount)</code>. For influence selection, the map downsamples 2x2 visibility cells into one influence cell, and only <code>VISIBLE</code> counts.</p>
   <p>Visibility score meaning: <code>VISIBLE = 3</code>, <code>SEEN = 1</code>, and <code>NONE = 0</code>. The score feeds player score and therefore affects AI inputs indirectly.</p>
   <p>Main consumers:</p>
   <ul>
