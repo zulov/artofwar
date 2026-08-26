@@ -23,7 +23,7 @@ BucketIterator* BucketIterator::init(const std::vector<short>* _levels, int _cen
 }
 
 void BucketIterator::setRange() {
-	const auto& content = bucketGrid->getContentAt((*index) + center);
+	const auto content = bucketGrid->getContentAt((*index) + center);
 
 	currentIterator = content.begin();
 	currentEnd = content.end();

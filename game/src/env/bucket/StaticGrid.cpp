@@ -81,7 +81,7 @@ void StaticGrid::ensureInited(int index, int centerIndex) {
 	}
 }
 
-const std::vector<Physical*>& StaticGrid::get(const Urho3D::Vector2& center, int level) {
+std::span<Physical* const> StaticGrid::get(const Urho3D::Vector2& center, int level) {
 	const int centerIndex = calculator->indexFromPosition(center);
 
 	ensureInited(level, centerIndex);

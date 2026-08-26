@@ -13,6 +13,7 @@
     <ClCompile Include="MetricComposeTest.cpp" />
     <ClCompile Include="InfluenceMapTest.cpp" />
     <ClCompile Include="LevelCacheTest.cpp" />
+    <ClCompile Include="ResourcesTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

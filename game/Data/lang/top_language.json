@@ -10,7 +10,7 @@
 		"pl":"Żywność: %d\nDrewno: %d\nKamień: %d\nZłoto: %d",
 	},
 	"top_food_tooltip":{
-		"pl":"Tempo: %s/s\nZ bonusem %d/%d\nW spirażniach: %d/%d\nOstatnia strata %d\nPrzyszła strata %d",
+		"pl":"Tempo: %s/s\nZ bonusem %d/%d\nW spirażniach: %d/%d\nOstatnia strata %s\nPrzyszła strata %s",
 	},
 	"top_wood_tooltip":{
 		"pl":"Tempo: %s/s\nZ bonusem %d/%d",

@@ -49,7 +49,7 @@ public:
 	const std::vector<Physical*>& getResources(const Urho3D::Vector2& center, int resourceId, int resourceLevel);
 	const std::vector<Physical*>& getResources(const Urho3D::Vector2& center, float radius);
 	std::vector<int> getUniqueResourceIndexesInRange(const std::unordered_set<int>& centerIndexes, float radius) const;
-	const std::vector<Physical*>& getResourcesAt(int cellIndex) const;
+	std::span<Physical* const> getResourcesAt(int cellIndex) const;
 
 	int getResourceLevelCount() const { return resourceStaticGrid.levelCount(); }
 

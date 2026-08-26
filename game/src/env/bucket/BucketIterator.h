@@ -1,4 +1,5 @@
 #pragma once
+#include <span>
 #include <vector>
 
 struct LevelCacheValue;
@@ -21,6 +22,6 @@ private:
 
 	//std::vector<short>* levels;
 	Grid* bucketGrid;
-	std::vector<Physical*>::const_iterator currentIterator;
-	std::vector<Physical*>::const_iterator currentEnd;
+	std::span<Physical* const>::iterator currentIterator;
+	std::span<Physical* const>::iterator currentEnd;
 };

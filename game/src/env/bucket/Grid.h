@@ -1,4 +1,6 @@
 #pragma once
+#include <span>
+
 #include "BucketIterator.h"
 #include "objects/building/Building.h"
 
@@ -30,7 +32,7 @@ public:
 
 	virtual int updateNew(Physical* physical) const;
 
-	const std::vector<Physical*>& getContentAt(int index) const;
+	std::span<Physical* const> getContentAt(int index) const;
 	void appendIndexesInRange(const Urho3D::Vector2& center, float radius, std::vector<int>& indexes) const;
 
 	std::vector<Physical*>* getArrayNeight(MouseHeld& held, char player);
@@ -57,7 +59,7 @@ protected:
 	int sqResolution;
 
 private:
-	const std::vector<Physical*>& getNotSafeContentAt(short x, short z) const;
+	std::span<Physical* const> getNotSafeContentAt(short x, short z) const;
 
 	void addAt(int index, Physical* entity) const;
 

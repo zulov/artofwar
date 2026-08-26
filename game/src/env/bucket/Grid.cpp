@@ -77,7 +77,7 @@ void Grid::addAt(int index, Physical* entity) const {
 	buckets[index].add(entity);
 }
 
-const std::vector<Physical*>& Grid::getContentAt(int index) const {
+std::span<Physical* const> Grid::getContentAt(int index) const {
 	assert(calculator->isValidIndex(index)); 
 	return buckets[index].getContent();
 }
@@ -89,7 +89,7 @@ void Grid::appendIndexesInRange(const Urho3D::Vector2& center, float radius, std
 	}
 }
 
-const std::vector<Physical*>& Grid::getNotSafeContentAt(short x, short z) const {
+std::span<Physical* const> Grid::getNotSafeContentAt(short x, short z) const {
 	return getContentAt(calculator->getNotSafeIndex(x, z));
 }
 
@@ -154,7 +154,7 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(const Urho3D::Vector2& cen
 	tempSelected->clear();
 	for (short i = posBeginX; i <= posEndX; ++i) {
 		for (short j = posBeginZ; j <= posEndZ; ++j) {
-			auto& content = getNotSafeContentAt(i, j);
+			const auto content = getNotSafeContentAt(i, j);
 			std::ranges::copy_if(content, std::back_inserter(*tempSelected),
 			                     [databaseId, playerId](Physical* physical) {
 				                     return physical->getDbId() == databaseId && physical->getPlayer() == playerId &&
@@ -185,6 +185,6 @@ std::vector<Physical*>* Grid::getAll(int currentIdx, float radius) {
 }
 
 void Grid::addFromCell(short shiftIdx, int currentIdx) const {
-	auto& content = getContentAt(shiftIdx + currentIdx);
+	const auto content = getContentAt(shiftIdx + currentIdx);
 	cache->insert(cache->end(), content.begin(), content.end());
 }

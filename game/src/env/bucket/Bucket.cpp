@@ -14,7 +14,7 @@ void Bucket::add(Physical* entity) {
 	content.push_back(entity);
 }
 
-void Bucket::add(const std::vector<Physical*>& things) {
+void Bucket::add(std::span<Physical* const> things) {
 	content.insert(content.end(), things.begin(), things.end());
 }
 

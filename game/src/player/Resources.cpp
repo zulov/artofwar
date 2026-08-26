@@ -44,9 +44,14 @@ bool Resources::hasEnough(const db_with_cost* costs) const {
 	return true;
 }
 
-void Resources::add(int id, float value) {
+void Resources::addGathered(int id, float value) {
 	values[id] += value;
 	sumGatherSpeed[id] += value;
+	sumValues[id] += value;
+}
+
+void Resources::addIncome(int id, float value) {
+	values[id] += value;
 	sumValues[id] += value;
 }
 
@@ -72,8 +77,8 @@ void Resources::update1s(Possession* possession) {
 		stoneRefineCapacity += level->stoneRefineCapacity;
 		goldRefineCapacity += level->goldRefineCapacity;
 	}
-	values[cast(ResourceType::STONE)] += getPotentialStoneRefinement();
-	values[cast(ResourceType::GOLD)] += getPotentialGoldRefinement();
+	addIncome(cast(ResourceType::STONE), getPotentialStoneRefinement());
+	addIncome(cast(ResourceType::GOLD), getPotentialGoldRefinement());
 }
 
 void Resources::updateMonth() {
@@ -84,5 +89,5 @@ void Resources::updateMonth() {
 
 void Resources::updateYear() {
 	lastGoldGain = potentialGoldGain();
-	values[cast(ResourceType::GOLD)] += potentialGoldGain();
+	addIncome(cast(ResourceType::GOLD), lastGoldGain);
 }

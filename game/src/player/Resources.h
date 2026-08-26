@@ -22,7 +22,8 @@ public:
 
 	bool reduce(const db_with_cost* costs);
 	bool hasEnough(const db_with_cost* costs) const;
-	void add(int id, float value);
+	void addGathered(int id, float value);
+	void addIncome(int id, float value);
 
 	std::span<float> getValues() { return values; }
 	std::span<float> getGatherSpeeds() { return gatherSpeeds1s; }
@@ -63,7 +64,7 @@ private:
 	std::array<float, RESOURCES_SIZE> sumValues;
 
 	int foodStorage = 0;
-	int lastFoodLost = 0;
+	float lastFoodLost = 0.f;
 	float foodLostRate = 0.1f;
 
 	float stoneRefineCapacity = 0.f;

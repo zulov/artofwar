@@ -102,8 +102,8 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	                                   workersPerRes[cast(ResourceType::FOOD)],
 	                                   (int)vals[cast(ResourceType::FOOD)],
 	                                   (int)resources->getFoodStorage(),
-	                                   (int)resources->getLastFoodLost(),
-	                                   (int)resources->potentialFoodLost()));
+	                                   asStringF(resources->getLastFoodLost(), 1).c_str(),
+	                                   asStringF(resources->potentialFoodLost(), 1).c_str()));
 	elements[cast(ResourceType::WOOD)]->setToolTip(l10nFormat("top_wood_tooltip",
 	                                   asStringF(gather[cast(ResourceType::WOOD)], 1).c_str(),
 	                                   (int)(workersPerRes[cast(ResourceType::WOOD)] - without[cast(ResourceType::WOOD)]),

@@ -135,7 +135,7 @@ std::vector<int> Environment::getUniqueResourceIndexesInRange(const std::unorder
 	return indexes;
 }
 
-const std::vector<Physical*>& Environment::getResourcesAt(int cellIndex) const {
+std::span<Physical* const> Environment::getResourcesAt(int cellIndex) const {
 	return resourceStaticGrid.getContentAt(cellIndex);
 }
 

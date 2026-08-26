@@ -1,4 +1,5 @@
 #pragma once
+#include <span>
 #include <vector>
 
 #include "Grid.h"
@@ -14,7 +15,7 @@ public:
 	void updateStatic(Static* staticObj, bool bulkAdd) const;
 
 	void ensureInited(int index, int centerIndex);
-	const std::vector<Physical*>& get(const Urho3D::Vector2& center, int level);
+	std::span<Physical* const> get(const Urho3D::Vector2& center, int level);
 
 	int levelCount() const { return static_cast<int>(queryRadius.size()); }
 	float getRadiusForLevel(int level) const { return queryRadius[level]; }
