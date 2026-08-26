@@ -39,7 +39,7 @@ public:
 
 	unsigned char getCost() const;
 
-	short getAdditionalInfo() const { return additionalInfo; }
+	short getAdditionalInfo() const;
 
 	CellState getType() const { return state; }
 
@@ -72,7 +72,6 @@ private:
 
 	Static* staticObj{};
 	float* resourceBonuses{};
-	short additionalInfo = -1;
 	short gradient = -1;
 	unsigned char isNeightOccupied = 0; //na poczatku wszystko wolne
 	unsigned char indexOfCloseIndexes;

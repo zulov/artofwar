@@ -81,12 +81,137 @@ namespace {
 AiOrchestrator::AiOrchestrator(Player* player, db_nation* nation, AiHistory* history) :
 	player(player), playerId(player->getId()), possession(player->getPossession()), nation(nation),
 	history(history),
-	masterBrain(nation),
-	economyBrain(nation),
-	unitBrain(nation),
-	militaryBrain(nation),
-	militaryCommandCalculator(MILITARY_COMMAND_RADIUS),
-	wantExecutor(player, nation, history) { lastLacking.reset(); }
+	masterBrain(nation), economyBrain(nation), unitBrain(nation), militaryBrain(nation),
+	militaryCommandCalculator(MILITARY_COMMAND_RADIUS), wantExecutor(player, nation, history) { lastLacking.reset(); }
+
+void AiOrchestrator::action() {
+	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
+
+	lastMasterOut = masterBrain.decide(player, enemy, lastLacking.totalSum, history);
+
+	float gameTime = norm(Game::getFrameInfo()->getSeconds(), NormScale::GAME_TIME_SHORT);
+	lastEconOut = economyBrain.decide(player, enemy, lastLacking.perResource, lastMasterOut.economyUrgency,
+									  lastMasterOut.workerUrgency, lastMasterOut.expandUrgency,
+									  lastMasterOut.techUrgency, gameTime, history);
+
+	// 3. Military Brain (composition prefs feed into UnitBrain)
+	float techLevel = avgTechLevel(nation->units, nation->buildings, player);
+	lastMilOut = militaryBrain.decide(player, enemy, lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency,
+									  techLevel, history);
+
+	// 4. Unit Brain
+	auto unitOut = unitBrain.decide(player, enemy, lastMasterOut.unitUrgency, lastMasterOut.attackUrgency,
+									lastMilOut.preferInfantry, lastMilOut.preferRange, lastMilOut.preferCavalry,
+									lastMasterOut.techUrgency, gameTime);
+
+	if (skipFirstAiCycle) { return; }
+
+	// 5. Submit requests to WantList
+	wantList.resetRequests();
+
+	createWorkers();
+	upgradeWorkers();
+	if (unitOut.count || unitOut.unitUpgradeUrgency > 0.1f || unitOut.buildingUpgradeUrgency > 0.1f) {
+		const auto unitProfileDiffs = calculateUnitProfileDiffs(unitOut.unitProfile);
+
+		createUnits(unitOut, unitProfileDiffs);
+		upgradeUnits(unitOut, unitProfileDiffs);
+
+		// Unit-producing building upgrade request (barracks, archery range, stable)
+		upgradeUnitBuilding(unitOut, unitProfileDiffs);
+	}
+
+	// Resource building upgrade request (farms, mills, mines, refineries, etc.)
+	const auto resBuildingNeeds = calculateResBuildingNeeds();
+	if (!resBuildingNeeds.empty()) {
+		createResBuilding(resBuildingNeeds);
+		upgradeResBuilding(resBuildingNeeds);
+	}
+
+	// Defence building upgrade request (tower)
+	// submitBuildingUpgradeRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
+	// Other building upgrade request (center, house)
+	// submitBuildingUpgradeRequest(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
+	// Tech building upgrade request (blacksmith, university)
+	// submitBuildingUpgradeRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
+
+	// Building requests — use MasterBrain urgencies directly
+	// submitBuildingRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
+	// submitBuildingRequest(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
+	// submitBuildingRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
+
+	// 6. Execute WantList
+	wantExecutor.prepare(lastMasterOut);
+	lastLacking = wantList.execute(player->getResources()->getValues(), wantExecutor);
+}
+
+void AiOrchestrator::order() {
+	if (skipFirstAiCycle) {
+		skipFirstAiCycle = false;
+		return;
+	}
+
+	manageWorkers();
+	decayUnitOrderPriorities();
+
+	std::vector<Unit*> allArmy = possession->getAllArmy();
+	if (allArmy.empty()) {
+		return;
+	}
+
+	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
+	const auto enemyId = enemy->getId();
+	std::array<std::optional<Urho3D::Vector2>, MILITARY_CENTER_COUNT> centers{};
+	for (const auto& spec : ARMY_TARGET_SPECS) {
+		const unsigned char owner = spec.enemyOwner ? enemyId : playerId;
+		if (auto target = Game::getEnvironment()->getCenterOf(spec.centerType, owner)) {
+			centers[castC(spec.center)] = *target;
+		}
+	}
+
+	// Per-unit decision: each unit picks the highest-pressure target at its own
+	// position. Units that fall below the pressure threshold (or pick a center
+	// whose snapshot is unavailable) are routed to hold.
+	std::array<std::vector<std::pair<Unit*, float>>, ARMY_TARGET_SPEC_COUNT> buckets{};
+	std::vector<std::pair<Unit*, MilitaryCenterIdx>> holdUnits;
+	for (auto* unit : allArmy) {
+		if (unit->getCommandPriority() >= MAX_COMMAND_PRIORITY) {
+			continue;
+		}
+		const auto unitResult = militaryCommandCalculator.calculate(unit->getPosition(), centers, lastMilOut);
+		const auto specIndex = armyTargetIndex(unitResult.best.center);
+		if (unitResult.best.score <= MIN_ARMY_ORDER_PRESSURE || specIndex == ARMY_TARGET_SPEC_COUNT) {
+			holdUnits.emplace_back(unit, unitResult.best.center);
+			continue;
+		}
+		buckets[specIndex].emplace_back(unit, unitResult.best.score);
+	}
+
+	// Each bucket goes directly to the center selected by MilitaryBrain pressure.
+	for (size_t i = 0; i < ARMY_TARGET_SPEC_COUNT; ++i) {
+		if (buckets[i].empty()) {
+			continue;
+		}
+		const auto& spec = ARMY_TARGET_SPECS[i];
+		const auto& bestTarget = centers[castC(spec.center)];
+		if (!bestTarget.has_value()) {
+			for (const auto& entry : buckets[i]) {
+				holdUnits.emplace_back(entry.first, spec.center);
+			}
+			continue;
+		}
+		std::ranges::sort(buckets[i], [&](const auto& a, const auto& b) {
+			return a.first->getPosition().SqDistXZ(*bestTarget) < b.first->getPosition().SqDistXZ(*bestTarget);
+		});
+		issueAdvancePerUnit(buckets[i], spec.center, *bestTarget);
+		history->addOrder(spec.orderType, AiOrderResult::SUCCESS, static_cast<uint8_t>(buckets[i].size()));
+	}
+
+	if (!holdUnits.empty()) {
+		history->addOrder(AiOrderType::NONE, AiOrderResult::NO_CENTER_POSITION);
+		issueHold(holdUnits, MIN_ARMY_ORDER_PRESSURE);
+	}
+}
 
 void AiOrchestrator::createWorkers() {
 	const short workerId = resolveWorkerId();
@@ -162,7 +287,7 @@ std::vector<ResBuildingNeed> AiOrchestrator::calculateResBuildingNeeds() const {
 		if (level->storesGold()) { need = std::max(need, lastEconOut.needGoldStorage); }
 		if (level->refinesStone()) { need = std::max(need, lastEconOut.needStoneRefine); }
 		if (level->refinesGold()) { need = std::max(need, lastEconOut.needGoldRefine); }
-		buildingNeeds.push_back({.building = building, .need = need});
+		if (need > 0.1f) { buildingNeeds.push_back({.building = building, .need = need}); }
 	}
 
 	return buildingNeeds;
@@ -204,70 +329,6 @@ bool AiOrchestrator::hasOwnedBuildingInstance(unsigned short buildingId) const {
 	return !possession->getBuildings(buildingId)->empty();
 }
 
-void AiOrchestrator::action() {
-	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
-
-	lastMasterOut = masterBrain.decide(player, enemy, lastLacking.totalSum, history);
-
-	float gameTime = norm(Game::getFrameInfo()->getSeconds(), NormScale::GAME_TIME_SHORT);
-	lastEconOut = economyBrain.decide(player, enemy,
-			lastLacking.perResource,
-			lastMasterOut.economyUrgency, lastMasterOut.workerUrgency, lastMasterOut.expandUrgency,
-			lastMasterOut.techUrgency, gameTime, history);
-
-	// 3. Military Brain (composition prefs feed into UnitBrain)
-	float techLevel = avgTechLevel(nation->units, nation->buildings, player);
-	lastMilOut = militaryBrain.decide(player, enemy,
-			lastMasterOut.militaryUrgency, lastMasterOut.attackUrgency,
-			techLevel, history);
-
-	// 4. Unit Brain
-	auto unitOut = unitBrain.decide(player, enemy,
-			lastMasterOut.unitUrgency, lastMasterOut.attackUrgency,
-			lastMilOut.preferInfantry, lastMilOut.preferRange, lastMilOut.preferCavalry,
-			lastMasterOut.techUrgency, gameTime);
-
-
-	if (skipFirstAiCycle) { return; }
-
-	// 5. Submit requests to WantList
-	wantList.resetRequests();
-
-	createWorkers();
-	upgradeWorkers();
-	if (unitOut.count || unitOut.unitUpgradeUrgency > 0.1f || unitOut.buildingUpgradeUrgency > 0.1f) {
-		const auto unitProfileDiffs = calculateUnitProfileDiffs(unitOut.unitProfile);
-
-		createUnits(unitOut, unitProfileDiffs);
-		upgradeUnits(unitOut, unitProfileDiffs);
-
-		// Unit-producing building upgrade request (barracks, archery range, stable)
-		upgradeUnitBuilding(unitOut, unitProfileDiffs);
-	}
-
-	// Resource building upgrade request (farms, mills, mines, refineries, etc.)
-	const auto resBuildingNeeds = calculateResBuildingNeeds();
-	createResBuilding(resBuildingNeeds);
-	upgradeResBuilding(resBuildingNeeds);
-
-	// Defence building upgrade request (tower)
-	//submitBuildingUpgradeRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
-	// Other building upgrade request (center, house)
-	//submitBuildingUpgradeRequest(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
-	// Tech building upgrade request (blacksmith, university)
-	//submitBuildingUpgradeRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
-
-	// Building requests — use MasterBrain urgencies directly
-	// submitBuildingRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
-	// submitBuildingRequest(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
-	// submitBuildingRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
-
-
-	// 6. Execute WantList
-	wantExecutor.prepare(lastMasterOut);
-	lastLacking = wantList.execute(player->getResources()->getValues(), wantExecutor);
-}
-
 //return first of its type
 void AiOrchestrator::submitBuildingRequest(float urgency, ParentBuildingType type) {
 	if (urgency > 0.1f) {
@@ -284,66 +345,6 @@ void AiOrchestrator::submitBuildingUpgradeRequest(float urgency, ParentBuildingT
 			&& player->getNextBuildingLevel(building->id).has_value()) {
 			wantList.addRequest(WantItemType::BUILDING_UPGRADE, urgency, building->id);
 		}
-	}
-}
-
-void AiOrchestrator::order() {
-	if (skipFirstAiCycle) {
-		skipFirstAiCycle = false;
-		return;
-	}
-
-	manageWorkers();
-	decayUnitOrderPriorities();
-
-	std::vector<Unit*> allArmy = possession->getAllArmy();
-	if (allArmy.empty()) { return; }
-
-	const auto enemy = Game::getPlayersMan()->getEnemyFor(playerId);
-	const auto enemyId = enemy->getId();
-	std::array<std::optional<Urho3D::Vector2>, MILITARY_CENTER_COUNT> centers{};
-	for (const auto& spec : ARMY_TARGET_SPECS) {
-		const unsigned char owner = spec.enemyOwner ? enemyId : playerId;
-		if (auto target = Game::getEnvironment()->getCenterOf(spec.centerType, owner)) {
-			centers[castC(spec.center)] = *target;
-		}
-	}
-
-	// Per-unit decision: each unit picks the highest-pressure target at its own
-	// position. Units that fall below the pressure threshold (or pick a center
-	// whose snapshot is unavailable) are routed to hold.
-	std::array<std::vector<std::pair<Unit*, float>>, ARMY_TARGET_SPEC_COUNT> buckets{};
-	std::vector<std::pair<Unit*, MilitaryCenterIdx>> holdUnits;
-	for (auto* unit : allArmy) {
-		if (unit->getCommandPriority() >= MAX_COMMAND_PRIORITY) { continue; }
-		const auto unitResult = militaryCommandCalculator.calculate(unit->getPosition(), centers, lastMilOut);
-		const auto specIndex = armyTargetIndex(unitResult.best.center);
-		if (unitResult.best.score <= MIN_ARMY_ORDER_PRESSURE || specIndex == ARMY_TARGET_SPEC_COUNT) {
-			holdUnits.push_back({unit, unitResult.best.center});
-			continue;
-		}
-		buckets[specIndex].push_back({unit, unitResult.best.score});
-	}
-
-	// Each bucket goes directly to the center selected by MilitaryBrain pressure.
-	for (size_t i = 0; i < ARMY_TARGET_SPEC_COUNT; ++i) {
-		if (buckets[i].empty()) { continue; }
-		const auto& spec = ARMY_TARGET_SPECS[i];
-		const auto& bestTarget = centers[castC(spec.center)];
-		if (!bestTarget.has_value()) {
-			for (const auto& entry : buckets[i]) { holdUnits.push_back({entry.first, spec.center}); }
-			continue;
-		}
-		std::ranges::sort(buckets[i], [&](const auto& a, const auto& b) {
-			return a.first->getPosition().SqDistXZ(*bestTarget) < b.first->getPosition().SqDistXZ(*bestTarget);
-		});
-		issueAdvancePerUnit(buckets[i], spec.center, *bestTarget);
-		history->addOrder(spec.orderType, AiOrderResult::SUCCESS, static_cast<uint8_t>(buckets[i].size()));
-	}
-
-	if (!holdUnits.empty()) {
-		history->addOrder(AiOrderType::NONE, AiOrderResult::NO_CENTER_POSITION);
-		issueHold(holdUnits, MIN_ARMY_ORDER_PRESSURE);
 	}
 }
 
