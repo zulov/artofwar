@@ -398,8 +398,8 @@ void AiOrchestrator::issueHold(std::vector<std::pair<Unit*, MilitaryCenterIdx>>&
 }
 
 bool AiOrchestrator::tryIssueNearbyAttack(Unit* unit, float priority, MilitaryCenterIdx center) const {
-	auto& things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, unit->getPosition(), unit->getPlayer(),
-	                                                                  SEMI_CLOSE);
+	auto& things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit->getPosition(), SEMI_CLOSE,
+	                                                                  unit->getPlayer());
 	if (things.empty()) { return false; }
 	const auto closest = Game::getEnvironment()->
 			closestPhysical(unit->getMainGridIndex(), things, belowClose, true);

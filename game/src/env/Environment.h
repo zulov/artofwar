@@ -35,15 +35,13 @@ public:
 	explicit Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolution);
 	~Environment();
 
-	const std::vector<Physical*>& getNeighboursFromSparseSamePlayer(const Physical* source,
-	                                                               const Urho3D::Vector2& center, float radius,
+	const std::vector<Physical*>& getNeighboursFromSparseSamePlayer(const Urho3D::Vector2& center, float radius,
 	                                                               char playerId);
-	const std::vector<Physical*>& getNeighboursFromTeamNotEq(const Physical* source, const Urho3D::Vector2& center,
-	                                                        char playerId, float radius);
+	const std::vector<Physical*>& getNeighboursFromTeamNotEq(const Urho3D::Vector2& center, float radius,
+	                                                        char playerId);
 
-	const std::vector<Physical*>& getNeighboursWithCache(const Physical* source, const Urho3D::Vector2& center,
-	                                                    int gridIndex, float radius);
-	const std::vector<Physical*>& getNeighboursSimilarAs(ObjectType objectType, const Urho3D::Vector2& center,
+	const std::vector<Physical*>& getNeighboursWithCache(const Urho3D::Vector2& center, float radius, int gridIndex);
+	const std::vector<Physical*>& getNeighboursSimilarAs(const Urho3D::Vector2& center, ObjectType objectType,
 	                                                     unsigned short databaseId, char playerId) const;
 
 	const std::vector<Physical*>& getResources(const Urho3D::Vector2& center, int resourceId, int resourceLevel);
@@ -53,9 +51,8 @@ public:
 
 	int getResourceLevelCount() const { return resourceStaticGrid.levelCount(); }
 
-	const std::vector<Physical*>& getBuildingsFromTeamNotEq(const Physical* source, const Urho3D::Vector2& center,
-	                                                       char teamId, int buildingId,
-	                                                       float radius);
+	const std::vector<Physical*>& getBuildingsFromTeamNotEq(const Urho3D::Vector2& center, float radius, char teamId,
+	                                                       int buildingId);
 
 	void updateInfluenceUnits(std::span<Unit* const> units) const;
 
@@ -170,11 +167,10 @@ private:
 	std::optional<Urho3D::Vector2> getPosFromIndexes(const Urho3D::UCharVector2& buildingSize, unsigned char player,
 	                                                 std::span<const unsigned> indexes);
 
-	const std::vector<Physical*>& getNeighbours(const Physical* source, const Urho3D::Vector2& center, Grid& grid,
-	                                      float radius,
+	const std::vector<Physical*>& getNeighbours(const Urho3D::Vector2& center, float radius, Grid& grid,
 	                                      const std::function<bool(const Physical*)>& condition = {}) const;
 
-	void addIfInRange(const Physical* source, const Urho3D::Vector2& center, Physical* neighbor, float squaredRadius,
+	void addIfInRange(const Urho3D::Vector2& center, Physical* neighbor, float squaredRadius,
 	                  const std::function<bool(const Physical*)>& condition) const;
 	float getPosFromPercent(float value) const;
 	float mapSize;

@@ -127,7 +127,7 @@ void Controls::leftClick(hit_data& hitData) {
 void Controls::leftDoubleClick(hit_data& hitData) {
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) { unSelectAll(); }
 	if (!hitData.clicked) { return; }
-	select(Game::getEnvironment()->getNeighboursSimilarAs(hitData.clicked->getType(), hitData.clicked->getPosition(),
+	select(Game::getEnvironment()->getNeighboursSimilarAs(hitData.clicked->getPosition(), hitData.clicked->getType(),
 	                                                      hitData.clicked->getDbId(), hitData.clicked->getPlayer()));
 }
 

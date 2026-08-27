@@ -338,8 +338,8 @@ void Simulation::calculateForces() {
 			break;
 		case UnitState::ATTACK: {
 			//TODO improve getMaxSeparationDistance powino sie dodac jeszcze minimal dist
-			const auto& neighbours = env->getNeighboursWithCache(unit, unit->getPosition(), unit->getMainGridIndex(),
-			                                                   unit->getMaxSeparationDistance());
+			const auto& neighbours = env->getNeighboursWithCache(unit->getPosition(), unit->getMaxSeparationDistance(),
+			                                                   unit->getMainGridIndex());
 
 			force.separationUnits(newForce, unit, neighbours);
 			force.inCell(newForce, unit);
@@ -349,8 +349,8 @@ void Simulation::calculateForces() {
 			//TODO improve getMaxSeparationDistance powino sie dodac jeszcze minimal dist
 			const bool invalid = force.escapeFromInvalidPosition(newForce, unit);
 			if (!invalid) {
-				const auto& neighbours = env->getNeighboursWithCache(unit, unit->getPosition(), unit->getMainGridIndex(),
-				                                                   unit->getMaxSeparationDistance());
+				const auto& neighbours = env->getNeighboursWithCache(unit->getPosition(), unit->getMaxSeparationDistance(),
+				                                                   unit->getMainGridIndex());
 
 				force.separationUnits(newForce, unit, neighbours);
 				force.separationObstacle(newForce, unit);
