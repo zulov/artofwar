@@ -22,7 +22,7 @@ public:
 	std::vector<Player*>& getTeam(short i);
 	void changeActive(unsigned char id);
 	void update(FrameInfo* frameInfo);
-	char getActivePlayerID() const;
+	unsigned char getActivePlayerID() const;
 	void activateNext();
 	Player* getEnemyFor(unsigned char player) const;
 	unsigned char getEnemyIdFor(unsigned char player) const;

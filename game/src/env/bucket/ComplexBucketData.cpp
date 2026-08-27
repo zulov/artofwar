@@ -13,30 +13,22 @@ void ComplexBucketData::setStatic(Static* object) {
 	staticObj = object;
 	if (object->getType() == ObjectType::BUILDING) {
 		state = CellState::BUILDING;
-		additionalInfo = object->getPlayer();
-	}
-	else {
+	} else {
 		state = CellState::RESOURCE;
-		additionalInfo = object->getDbId();
 	}
 }
 
 void ComplexBucketData::clear() {
 	resetResBonuses();
 	state = CellState::NONE;
-	additionalInfo = -1;
 	staticObj = nullptr;
 }
 
 void ComplexBucketData::resetForReuse() {
-	state = CellState::NONE;
 	size = 0;
-	additionalInfo = -1;
 	isNeightOccupied = 0;
 	gradient = -1;
-	staticObj = nullptr;
-	PrimitiveArrayProvider<float>::release(resourceBonuses, MAX_PLAYERS * RESOURCES_SIZE);
-	resourceBonuses = nullptr;
+	clear();
 	cost = 0;
 }
 
@@ -49,6 +41,12 @@ void ComplexBucketData::setNeightFree(const unsigned char index) {
 }
 
 unsigned char ComplexBucketData::getCost() const { return cost; }
+
+short ComplexBucketData::getAdditionalInfo() const {
+	if (state == CellState::BUILDING) { return staticObj->getPlayer(); }
+	if (state == CellState::RESOURCE) { return staticObj->getDbId(); }
+	return -1;
+}
 
 bool ComplexBucketData::isBuildable() const {
 	return state == CellState::NONE

@@ -80,7 +80,7 @@ void PlayersManager::update(FrameInfo* frameInfo) {
 	}
 }
 
-char PlayersManager::getActivePlayerID() const {
+unsigned char PlayersManager::getActivePlayerID() const {
 	return activePlayer->getId();
 }
 
