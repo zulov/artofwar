@@ -1,6 +1,6 @@
 #pragma once
 
-enum class UnitAction : char {
+enum class UnitAction :unsigned char {
 	GO = 0,
 	STOP,
 	CHARGE,
@@ -11,13 +11,13 @@ enum class UnitAction : char {
 	COLLECT
 };
 
-enum class UnitActionType : char {
+enum class UnitActionType :unsigned char {
 	ORDER = 0,
 	FORMATION
 };
 
-enum class UnitOrderType :char {
-	GO,
+enum class UnitOrderType :unsigned char {
+	GO = 0,
 	STOP,
 	CHARGE,
 	ATTACK,

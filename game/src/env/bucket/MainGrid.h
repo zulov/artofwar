@@ -15,7 +15,7 @@ namespace Urho3D {
 class Unit;
 struct content_info;
 
-enum class GridDebugType : char {
+enum class GridDebugType : unsigned char {
 	NONE,
 	CELLS_TYPE
 };

@@ -14,7 +14,7 @@ struct ActionParameter;
 class Unit;
 class State;
 class Static;
-enum class StaticState : char;
+enum class StaticState : unsigned char;
 enum class ObjectType : char;
 
 class StateManager {

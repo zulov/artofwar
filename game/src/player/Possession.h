@@ -6,7 +6,7 @@
 
 
 struct PossessionMetric;
-enum class ParentBuildingType : char;
+enum class ParentBuildingType : unsigned char;
 class Physical;
 class Player;
 class Unit;

@@ -6,7 +6,7 @@
 struct ProjectileWithNode;
 class AbstractQueueManager;
 struct dbload_building;
-enum class BuildingActionType : char;
+enum class BuildingActionType : unsigned char;
 struct db_building;
 struct db_building_level;
 class QueueElement;

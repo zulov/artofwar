@@ -2,7 +2,7 @@
 #include <vector>
 #include "commands/PhysicalCommand.h"
 
-enum class ResourceActionType : char;
+enum class ResourceActionType : unsigned char;
 class ResourceEntity;
 class Physical;
 

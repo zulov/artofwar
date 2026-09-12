@@ -1,7 +1,7 @@
 #pragma once
 #include "commands/PhysicalCommand.h"
 
-enum class GeneralActionType : char;
+enum class GeneralActionType : unsigned char;
 
 class GeneralActionCommand : public PhysicalCommand {
 public:

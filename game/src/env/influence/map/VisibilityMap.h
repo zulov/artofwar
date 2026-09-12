@@ -7,7 +7,7 @@
 
 #include "env/GridCalculator.h"
 
-enum class VisibilityType : char;
+enum class VisibilityType : unsigned char;
 class LevelCache;
 
 class VisibilityMap {

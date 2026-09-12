@@ -1,5 +1,5 @@
 #pragma once
-enum class QueueActionType : char {
+enum class QueueActionType : unsigned char {
 	UNIT_CREATE=0,
 	UNIT_LEVEL,
 	UNIT_UPGRADE,//TODO dodac to kiedys

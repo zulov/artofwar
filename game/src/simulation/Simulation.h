@@ -8,9 +8,9 @@
 
 struct dbload_container;
 struct FrameInfo;
-enum class UnitAction : char;
-enum class UnitState : char;
-enum class SimColorMode : char;
+enum class UnitAction : unsigned char;
+enum class UnitState : unsigned char;
+enum class SimColorMode : unsigned char;
 struct NewGameForm;
 class Unit;
 class ResourceEntity;

@@ -8,7 +8,7 @@
 
 class UnitOrder;
 struct FrameInfo;
-enum class ActionType : char;
+enum class ActionType : unsigned char;
 constexpr char MAX_DEPLOY_MARK_NUMBER = 5;
 
 namespace Urho3D {
@@ -19,8 +19,8 @@ namespace Urho3D {
 	class Node;
 }
 
-enum class BuildingActionType : char;
-enum class ResourceActionType : char;
+enum class BuildingActionType : unsigned char;
+enum class ResourceActionType : unsigned char;
 class HudData;
 class Physical;
 class SelectedInfo;

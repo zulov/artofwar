@@ -1,8 +1,8 @@
 #pragma once
 #include "commands/PhysicalCommand.h"
 
-enum class ActionType : char;
-enum class QueueActionType : char;
+enum class ActionType : unsigned char;
+enum class QueueActionType : unsigned char;
 class SimulationObjectManager;
 
 class UpgradeCommand {

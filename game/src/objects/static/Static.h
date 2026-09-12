@@ -5,7 +5,7 @@
 #include "env/influence/map/VisibilityType.h"
 
 struct dbload_static;
-enum class CellState : char;
+enum class CellState : unsigned char;
 class Building;
 class ResourceEntity;
 

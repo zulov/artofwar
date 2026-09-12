@@ -8,7 +8,7 @@ namespace Urho3D {
 class Physical;
 class TargetAim;
 struct ActionParameter;
-enum class UnitAction : char;
+enum class UnitAction : unsigned char;
 
 class UnitOrder {
 public:
@@ -25,10 +25,11 @@ public:
 	UnitAction getAction() const { return static_cast<UnitAction>(id); }
 
 protected:
+	//TODO union or variant
 	Physical* toUse = nullptr;
 	Urho3D::Vector2* vector = nullptr;
 
-	const short id;
+	const unsigned char id;
 	const bool append;
 
 	ActionParameter getTargetAim(int startInx, Urho3D::Vector2& to);

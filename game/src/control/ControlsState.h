@@ -1,6 +1,6 @@
 #pragma once
 
-enum class ControlsState : char {
+enum class ControlsState : unsigned char {
 	DEFAULT = 0,
 	BUILD,
 	ORDER

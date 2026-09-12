@@ -6,7 +6,7 @@ namespace Urho3D {
 	class UIElement;
 }
 
-enum class ActionType : char;
+enum class ActionType : unsigned char;
 
 class HudData {
 public:

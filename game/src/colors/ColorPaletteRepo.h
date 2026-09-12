@@ -3,9 +3,9 @@
 #include <Urho3D/Math/Color.h>
 
 struct db_building;
-enum class VisibilityType : char;
-enum class CellState : char;
-enum class ColorPallet : char;
+enum class VisibilityType : unsigned char;
+enum class CellState : unsigned char;
+enum class ColorPallet : unsigned char;
 
 namespace Urho3D {
 	class Material;

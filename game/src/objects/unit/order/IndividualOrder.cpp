@@ -7,10 +7,10 @@
 #include "objects/unit/ActionParameter.h"
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, const Urho3D::Vector2& vector, bool append) :
-	UnitOrder(static_cast<short>(action), append, vector), unit(unit) {}
+	UnitOrder(static_cast<unsigned char>(action), append, vector), unit(unit) {}
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, Physical* toUse, bool append) :
-	UnitOrder(static_cast<short>(action), append, toUse), unit(unit) { assert(toUse->isAlive()); }
+	UnitOrder(static_cast<unsigned char>(action), append, toUse), unit(unit) { assert(toUse->isAlive()); }
 
 bool IndividualOrder::expired() { return toUse != nullptr && !toUse->isAlive(); }
 

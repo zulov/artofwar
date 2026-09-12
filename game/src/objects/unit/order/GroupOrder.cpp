@@ -9,27 +9,24 @@
 #include "simulation/formation/FormationManager.h"
 
 
-GroupOrder::GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, short id,
-                       Physical* toUse, bool append)
+GroupOrder::GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, unsigned char id, Physical* toUse, bool append)
 	: UnitOrder(id, append, toUse), actionType(actionType) {
 	addUnits(entities);
 }
 
-GroupOrder::GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, short id,
-                       Urho3D::Vector2 vector, bool append)
+GroupOrder::GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, unsigned char id, Urho3D::Vector2 vector, bool append)
 	: UnitOrder(id, append, vector), actionType(actionType) {
 	addUnits(entities);
 }
 
-GroupOrder::GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, short id,
-                       Urho3D::Vector2 vector, bool append)
-	: UnitOrder(id, append, vector), actionType(actionType),
-	  units(std::move(entities)) {
+GroupOrder::GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, unsigned char id, Urho3D::Vector2 vector, bool append)
+	: UnitOrder(id, append, vector), units(std::move(entities)),
+	  actionType(actionType) {
 }
 
-GroupOrder::GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, short id, Physical* toUse, bool append)
-	: UnitOrder(id, append, toUse), actionType(actionType),
-	  units(std::move(entities)) {
+GroupOrder::GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, unsigned char id, Physical* toUse, bool append)
+	: UnitOrder(id, append, toUse), units(std::move(entities)),
+	  actionType(actionType) {
 }
 
 void GroupOrder::addUnits(const std::vector<Physical*>& entities) {

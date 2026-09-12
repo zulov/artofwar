@@ -38,8 +38,8 @@ namespace Urho3D {
 	class Vector2;
 }
 
-enum class ParentBuildingType : char;
-enum class CenterType : char;
+enum class ParentBuildingType : unsigned char;
+enum class CenterType : unsigned char;
 
 class AiOrchestrator {
 public:

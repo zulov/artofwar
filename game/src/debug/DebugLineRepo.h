@@ -10,7 +10,7 @@ namespace Urho3D {
 	class CustomGeometry;
 }
 
-enum class DebugLineType : char {
+enum class DebugLineType : unsigned char {
 	UNIT_LINES,
 	GRID
 };

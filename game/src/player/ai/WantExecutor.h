@@ -20,8 +20,8 @@ namespace Urho3D {
 	class Vector2;
 }
 
-enum class ParentBuildingType : char;
-enum class CenterType : char;
+enum class ParentBuildingType : unsigned char;
+enum class CenterType : unsigned char;
 
 // Carries out WantList items: turns an abstract want (worker/unit/building/upgrade)
 // into concrete game actions. Holds all the low-level "how" so AiOrchestrator can

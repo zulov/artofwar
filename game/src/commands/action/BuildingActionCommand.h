@@ -2,7 +2,7 @@
 #include <vector>
 #include "commands/PhysicalCommand.h"
 
-enum class BuildingActionType : char;
+enum class BuildingActionType : unsigned char;
 class Building;
 class Physical;
 

@@ -2,7 +2,7 @@
 #include "UnitOrder.h"
 
 class Unit;
-enum class UnitAction : char;
+enum class UnitAction : unsigned char;
 
 class IndividualOrder : public UnitOrder {
 public:

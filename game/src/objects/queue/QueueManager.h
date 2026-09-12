@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-enum class QueueActionType : char;
+enum class QueueActionType : unsigned char;
 class QueueElement;
 
 class QueueManager {

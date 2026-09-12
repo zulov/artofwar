@@ -6,13 +6,11 @@
 #include "simulation/formation/Formation.h"
 #include "env/Environment.h"
 
-FormationOrder::FormationOrder(Formation* formation, short action,
-                               Urho3D::Vector2& vector, bool append):
+FormationOrder::FormationOrder(Formation* formation, unsigned char action, Urho3D::Vector2& vector, bool append):
 	UnitOrder(action, append, vector), formation(formation) {
 }
 
-FormationOrder::FormationOrder(Formation* formation, short action,
-                               Physical* toUse, bool append):
+FormationOrder::FormationOrder(Formation* formation, unsigned char action, Physical* toUse, bool append):
 	UnitOrder(action, append, toUse), formation(formation) {
 }
 
