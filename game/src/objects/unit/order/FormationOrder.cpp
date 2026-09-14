@@ -25,10 +25,6 @@ bool FormationOrder::expired() {
 		|| (toUse != nullptr && !toUse->isAlive());
 }
 
-short FormationOrder::getSize() const {
-	return formation->getSize();
-}
-
 void FormationOrder::addCollectAim() {
 	followAndAct(9);
 }

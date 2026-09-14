@@ -18,7 +18,6 @@ public:
 	~FormationOrder() override = default;
 	bool add() override;
 	bool expired() override;
-	short getSize() const override;
 private:
 	Formation* formation;
 

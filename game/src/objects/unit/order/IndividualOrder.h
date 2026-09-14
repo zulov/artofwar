@@ -12,7 +12,6 @@ public:
 
 	bool expired() override;
 	bool add() override;
-	short getSize() const override;
 private:
 	void addCollectAim() override;
 	void addTargetAim() override;

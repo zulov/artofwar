@@ -11,18 +11,14 @@ class GroupOrder : public UnitOrder {
 public:
 	void addUnits(const std::vector<Physical*>& entities);
 	GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, unsigned char id, Physical* toUse, bool append = false);
-
 	GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, unsigned char id, Urho3D::Vector2 vector, bool append = false);
-
 	GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, unsigned char id, Urho3D::Vector2 vector, bool append = false);
-
 	GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, unsigned char id, Physical* toUse, bool append = false);
 
-	~GroupOrder() = default;
+	~GroupOrder() override = default;
 
 	bool add() override;
 	bool expired() override;
-	short getSize() const override;
 private:
 	std::vector<Unit*> units;
 	//TODO to trzeba kopiowac, ale wtedy trzeba sprawdzac przed wykonaniem
