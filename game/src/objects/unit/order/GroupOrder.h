@@ -10,13 +10,10 @@ class Unit;
 class GroupOrder : public UnitOrder {
 public:
 	void addUnits(const std::vector<Physical*>& entities);
-	GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, short id, Physical* toUse, bool append = false);
-
-	GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, short id, Urho3D::Vector2 vector, bool append = false);
-
-	GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, short id, Urho3D::Vector2 vector, bool append = false);
-
-	GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, short id, Physical* toUse, bool append = false);
+	GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, unsigned char id, Physical* toUse, bool append = false);
+	GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, unsigned char id, Urho3D::Vector2 vector, bool append = false);
+	GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, unsigned char id, Urho3D::Vector2 vector, bool append = false);
+	GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, unsigned char id, Physical* toUse, bool append = false);
 
 	~GroupOrder() = default;
 
