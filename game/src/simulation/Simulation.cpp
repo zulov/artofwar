@@ -2,33 +2,43 @@
 
 #include <Urho3D/Resource/ResourceCache.h>
 
+#include <algorithm>
+#include <unordered_map>
+#include <utility>
+#include <vector>
+#include "FrameInfo.h"
 #include "Game.h"
 #include "SimulationObjectManager.h"
 #include "camera/CameraManager.h"
 #include "commands/upgrade/UpgradeCommand.h"
+#include "database/DatabaseCache.h"
 #include "debug/DebugLineRepo.h"
 #include "debug/DebugUnitType.h"
 #include "env/Environment.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
+#include "math/RandGen.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/building/Building.h"
+#include "objects/projectile/ProjectileManager.h"
 #include "objects/queue/QueueActionType.h"
 #include "objects/queue/QueueElement.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/SimColorMode.h"
+#include "objects/unit/order/OrderUtils.h"
+#include "objects/unit/order/FormationOrder.h"
+#include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Possession.h"
+#include "player/Resources.h"
 #include "player/ai/ActionCenter.h"
-#include "scene/load/dbload_container.h"
+#include "player/ai/WantList.h"
+#include "scene/load/RuntimeSaveData.h"
 #include "scene/load/SceneLoader.h"
+#include "scene/load/dbload_container.h"
 #include "simulation/formation/FormationManager.h"
-#include "FrameInfo.h"
-#include "database/DatabaseCache.h"
-#include "objects/projectile/ProjectileManager.h"
-#include "objects/unit/order/OrderUtils.h"
 
-Simulation::Simulation(Environment* environment): env(environment),colorScheme(SimColorMode::BASIC) {
+Simulation::Simulation(Environment* environment) : env(environment), colorScheme(SimColorMode::BASIC) {
 	simObjectManager = new SimulationObjectManager();
 	Game::setActionCenter(new ActionCenter(simObjectManager));
 
@@ -46,6 +56,7 @@ Simulation::~Simulation() {
 
 void Simulation::clearNodesWithoutDelete() const {
 	simObjectManager->clearNodesWithoutDelete();
+	ProjectileManager::clearNodesWithoutDelete();
 }
 
 void Simulation::updateInfluenceMaps(bool force) const {
@@ -61,7 +72,7 @@ void Simulation::updateInfluenceMaps(bool force) const {
 	}
 	if (frameInfo->canUpdate(PerFrameAction::VISIBILITY, force)) {
 		env->updateVisibility(std::span<Building* const>(*buildings), std::span<Unit* const>(*units),
-		                      std::span<ResourceEntity* const>(*resources));
+							  std::span<ResourceEntity* const>(*resources));
 	}
 }
 
@@ -71,7 +82,7 @@ FrameInfo* Simulation::update(float timeStep) {
 	frameInfo->resetRealFrame();
 
 	while (frameInfo->getAccumulateTime() >= TIME_PER_UPDATE) {
-		//TODO bug a co jesli kilka razy sie wykona, moga byc bledy np w control
+		// TODO bug a co jesli kilka razy sie wykona, moga byc bledy np w control
 
 		Game::getActionCenter()->createAndUpgrade();
 
@@ -123,14 +134,16 @@ void Simulation::objectAI() const {
 		}
 	}
 	for (const auto building : *buildings) {
-		if (building->isReady()) { building->updateAi(ifSelfAction); }
+		if (building->isReady()) {
+			building->updateAi(ifSelfAction);
+		}
 	}
 }
 
 std::function<bool(Physical*)> Simulation::ifAttack(db_unit* dbUnit) const {
 	if (dbUnit->typeRange) {
 		if (dbUnit->typeMelee) {
-			return belowCloseOrRange; //TODO bug? teraz to sie wyklucza?
+			return belowCloseOrRange; // TODO bug? teraz to sie wyklucza?
 		}
 		return belowRange;
 	}
@@ -156,33 +169,184 @@ void Simulation::loadEntities(dbload_container* data) const {
 	simObjectManager->refreshAllStatic();
 }
 
+void Simulation::restoreRuntimeState(dbload_container* data) const {
+	for (auto* player : Game::getPlayersMan()->getAllPlayers()) {
+		player->getResources()->recalculateBuildingState(player->getPossession());
+	}
+
+	std::unordered_map<unsigned, Physical*> byUid;
+	for (auto* unit : *units) {
+		byUid.emplace(unit->getUid(), unit);
+	}
+	for (auto* building : *buildings) {
+		byUid.emplace(building->getUid(), building);
+	}
+	for (auto* resource : *resources) {
+		byUid.emplace(resource->getUid(), resource);
+	}
+	auto find = [&byUid](unsigned uid) -> Physical* {
+		const auto it = byUid.find(uid);
+		return it == byUid.end() ? nullptr : it->second;
+	};
+
+	for (const auto& saved : data->formations) {
+		std::vector<std::pair<short, Unit*>> savedMembers;
+		for (const auto* savedUnit : *data->units) {
+			if (savedUnit->runtime.formation != saved.id) {
+				continue;
+			}
+			if (auto* physical = find(savedUnit->uid); physical && physical->getType() == ObjectType::UNIT) {
+				savedMembers.emplace_back(savedUnit->runtime.posInState, static_cast<Unit*>(physical));
+			}
+		}
+		// Rebuild a deterministic temporary vector from the unit-owned formation state.
+		std::ranges::sort(savedMembers, [](const auto& lhs, const auto& rhs) {
+			if (lhs.first != rhs.first) {
+				return lhs.first < rhs.first;
+			}
+			return lhs.second->getUid() < rhs.second->getUid();
+		});
+		std::vector<Unit*> members;
+		members.reserve(savedMembers.size());
+		for (const auto& member : savedMembers) {
+			members.push_back(member.second);
+		}
+		Game::getFormationManager()->restoreFormation(saved.id, members, static_cast<FormationType>(saved.type),
+																		  static_cast<FormationState>(saved.state),
+																		  {saved.directionX, saved.directionZ});
+	}
+	for (const auto* saved : *data->units) {
+		const auto it = byUid.find(saved->uid);
+		if (it == byUid.end() || it->second->getType() != ObjectType::UNIT) {
+			continue;
+		}
+		auto* unit = static_cast<Unit*>(it->second);
+		const auto& runtime = saved->runtime;
+		unit->loadRuntimeState(runtime, find(runtime.targetUid), find(runtime.pendingTargetUid), byUid);
+		if (unit->hasStateChangePending()) {
+			StateManager::restoreUnitStateChangePending();
+		}
+		if (unit->getFormation() >= 0 && !Game::getFormationManager()->getFormation(unit->getFormation())) {
+			unit->resetFormation();
+		}
+	}
+	for (const auto* saved : *data->buildings) {
+		if (const auto it = byUid.find(saved->uid); it != byUid.end() && it->second->getType() == ObjectType::BUILDING) {
+			static_cast<Building*>(it->second)->loadRuntimeState(find(saved->thingToInteract));
+		}
+	}
+	for (auto* building : *buildings) {
+		if (building->getState() != building->getNextState()) {
+			StateManager::restoreStaticStateChangePending(building);
+		}
+	}
+	for (auto* resource : *resources) {
+		if (resource->getState() != resource->getNextState()) {
+			StateManager::restoreStaticStateChangePending(resource);
+		}
+	}
+	for (const auto& saved : data->playerLevels) {
+		auto* player = Game::getPlayersMan()->getPlayer(saved.player);
+		if (saved.type == 0) {
+			player->restoreUnitLevel(saved.id, saved.level);
+		} else {
+			player->restoreBuildingLevel(saved.id, saved.level);
+		}
+	}
+	for (const auto& saved : data->queues) {
+		QueueManager* queue{};
+		if (saved.ownerType == 0) {
+			queue = &Game::getPlayersMan()->getPlayer(static_cast<unsigned char>(saved.ownerId))->getQueue();
+		} else if (auto* owner = find(saved.ownerId); owner && owner->getType() == ObjectType::BUILDING) {
+			queue = &static_cast<Building*>(owner)->getQueue();
+		}
+		if (queue) {
+			queue->restore(static_cast<QueueActionType>(saved.type), saved.id, saved.levelId, saved.amount,
+						   saved.elapsedTicks);
+		}
+	}
+	for (auto* unit : *units) {
+		unit->restoreInteraction();
+	}
+	for (const auto& saved : data->aiStates) {
+		Game::getPlayersMan()->getPlayer(saved.player)->getAiOrchestrator().loadState(saved);
+	}
+	for (auto* player : Game::getPlayersMan()->getAllPlayers()) {
+		std::vector<WantItem> wants;
+		for (const auto& saved : data->aiWants) {
+			if (saved.player == player->getId()) {
+				wants.emplace_back(saved.priority, saved.basePriority, static_cast<WantItemType>(saved.type), saved.count,
+						saved.specificId, saved.age, saved.reserveTicks, saved.active);
+			}
+		}
+		player->getAiOrchestrator().restoreWantItems(wants);
+	}
+	for (const auto& saved : data->formationOrders) {
+		auto* formation = Game::getFormationManager()->getFormation(saved.data.formationId);
+		if (!formation) { continue; }
+		FormationOrder* order = nullptr;
+		if (saved.data.hasTarget) {
+			if (auto* target = find(saved.data.targetUid)) {
+				order = new FormationOrder(formation, saved.data.action, target, saved.data.append);
+			}
+		} else {
+			Urho3D::Vector2 position(saved.data.x, saved.data.z);
+			order = new FormationOrder(formation, saved.data.action, position, saved.data.append);
+		}
+		if (order) {
+			formation->restoreOrder(order, saved.pending);
+		}
+	}
+	for (auto* player : Game::getPlayersMan()->getAllPlayers()) {
+		player->getAiHistory().loadState(data->aiHistory, player->getId());
+	}
+	if (data->random) {
+		RandGen::loadState(*data->random);
+	}
+	ProjectileManager::loadState(data->projectiles, byUid);
+}
+
+void Simulation::restorePendingCommands(SceneLoader& loader) const {
+	std::unordered_map<unsigned, Physical*> byUid;
+	for (auto* unit : *units) {
+		byUid.emplace(unit->getUid(), unit);
+	}
+	for (auto* building : *buildings) {
+		byUid.emplace(building->getUid(), building);
+	}
+	for (auto* resource : *resources) {
+		byUid.emplace(resource->getUid(), resource);
+	}
+	Game::getActionCenter()->loadState(loader.getData()->pendingCommands, byUid);
+}
+
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
 		auto p0 = Urho3D::Vector2(-185, -140);
-		auto p01 = p0+ Urho3D::Vector2(-16.f, 0.f);
-		//auto c = Urho3D::Vector2(-185, -150);
-		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.1f, 0, Urho3D::Vector2(0, 100), 0);
-		//Game::getActionCenter()->addUnits(60, 1, Urho3D::Vector2(-5, 25), 0);
-		//Game::getActionCenter()->addUnits(UNITS_NUMBER  * 0.1f, 2, Urho3D::Vector2(0, 70), 1);
+		auto p01 = p0 + Urho3D::Vector2(-16.f, 0.f);
+		// auto c = Urho3D::Vector2(-185, -150);
+		// Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.1f, 0, Urho3D::Vector2(0, 100), 0);
+		// Game::getActionCenter()->addUnits(60, 1, Urho3D::Vector2(-5, 25), 0);
+		// Game::getActionCenter()->addUnits(UNITS_NUMBER  * 0.1f, 2, Urho3D::Vector2(0, 70), 1);
 
-		//Game::getActionCenter()->addUnits(20, 1, b, 0);
-		//Game::getActionCenter()->addUnits(10, 2, Urho3D::Vector2(0, 70), 1);
+		// Game::getActionCenter()->addUnits(20, 1, b, 0);
+		// Game::getActionCenter()->addUnits(10, 2, Urho3D::Vector2(0, 70), 1);
 
-		//Game::getActionCenter()->addBuilding(10, p0, 0, true);
-		//Game::getActionCenter()->addBuilding(17, p01, 0, true);
-		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.5f, 1, Urho3D::Vector2(300, 212), 0);
-		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.2f, 1, Urho3D::Vector2(290, 210), 0);
-		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 4, Urho3D::Vector2(10, 240), 1);
-		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 30, 1, Urho3D::Vector2(0, 0), 0);
-		//Game::getActionCenter()->addUnits(UNITS_NUMBER*10, 4, Urho3D::Vector2(-20, -200), 1);
-		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0);
-		//Game::getActionCenter()->addResource(5, b);
+		// Game::getActionCenter()->addBuilding(10, p0, 0, true);
+		// Game::getActionCenter()->addBuilding(17, p01, 0, true);
+		// Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.5f, 1, Urho3D::Vector2(300, 212), 0);
+		// Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.2f, 1, Urho3D::Vector2(290, 210), 0);
+		// Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 4, Urho3D::Vector2(10, 240), 1);
+		// Game::getActionCenter()->addUnits(UNITS_NUMBER * 30, 1, Urho3D::Vector2(0, 0), 0);
+		// Game::getActionCenter()->addUnits(UNITS_NUMBER*10, 4, Urho3D::Vector2(-20, -200), 1);
+		// Game::getActionCenter()->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0);
+		// Game::getActionCenter()->addResource(5, b);
 	}
 }
 
 void Simulation::loadEntities(NewGameForm* form) const {
 	for (const auto& player : form->players) {
-		auto fejkPost = Urho3D::Vector2(); //TODO trzeba inne
+		auto fejkPost = Urho3D::Vector2(); // TODO trzeba inne
 		simObjectManager->addUnits(10, 1, fejkPost, player.id, 0);
 	}
 }
@@ -217,7 +381,7 @@ void Simulation::updateBuildingQueues() const {
 			case QueueActionType::RESOURCE_CREATE: {
 				const auto [dbBuilding, level] = build->getData();
 				auto indexes = env->getIndexesInRange(build->getMainGridIndex(),
-				                                      static_cast<float>(level->spawnResourceRange));
+													  static_cast<float>(level->spawnResourceRange));
 				auto dbResource = Game::getDatabase()->getResource(dbBuilding->toResource);
 
 				// TODO shuffle index
@@ -250,9 +414,7 @@ void Simulation::updateQueues() const {
 	}
 }
 
-void Simulation::changeCoef(int i, int wheel) {
-	force.changeCoef(i, wheel);
-}
+void Simulation::changeCoef(int i, int wheel) { force.changeCoef(i, wheel); }
 
 void Simulation::changeColorMode(SimColorMode _colorMode) {
 	colorSchemeChanged = true;
@@ -274,6 +436,7 @@ void Simulation::executeStateTransition() const {
 
 void Simulation::initScene(SceneLoader& loader) const {
 	loadEntities(loader.getData());
+	restoreRuntimeState(loader.getData());
 	addTestEntities();
 	Game::getActionCenter()->createAndUpgrade();
 }
@@ -308,20 +471,20 @@ void Simulation::moveUnitsAndCheck() {
 		unit->checkAim();
 		if (hasMoved) {
 			env->update(unit);
-		} else { unit->setIndexChanged(false); }
+		} else {
+			unit->setIndexChanged(false);
+		}
 	}
-	env->invalidateCaches();
-
-    colorUnits();
+	colorUnits();
 }
 
-void Simulation::colorUnits(){
-    if (!SIM_GLOBALS.HEADLESS && (colorSchemeChanged || colorScheme != SimColorMode::BASIC)){
-        for (const auto unit : *units){
-            unit->changeColor(colorScheme);
-        }
-        colorSchemeChanged = false;
-    }
+void Simulation::colorUnits() {
+	if (!SIM_GLOBALS.HEADLESS && (colorSchemeChanged || colorScheme != SimColorMode::BASIC)) {
+		for (const auto unit : *units) {
+			unit->changeColor(colorScheme);
+		}
+		colorSchemeChanged = false;
+	}
 }
 
 void Simulation::calculateForces() {
@@ -337,20 +500,17 @@ void Simulation::calculateForces() {
 			force.inCell(newForce, unit);
 			break;
 		case UnitState::ATTACK: {
-			//TODO improve getMaxSeparationDistance powino sie dodac jeszcze minimal dist
-			const auto& neighbours = env->getNeighboursWithCache(unit->getPosition(), unit->getMaxSeparationDistance(),
-			                                                   unit->getMainGridIndex());
+			// TODO improve getMaxSeparationDistance powino sie dodac jeszcze minimal dist
+			const auto& neighbours = env->getNeighbours(unit->getPosition(), unit->getMaxSeparationDistance());
 
 			force.separationUnits(newForce, unit, neighbours);
 			force.inCell(newForce, unit);
-		}
-		break;
+		} break;
 		default: {
-			//TODO improve getMaxSeparationDistance powino sie dodac jeszcze minimal dist
+			// TODO improve getMaxSeparationDistance powino sie dodac jeszcze minimal dist
 			const bool invalid = force.escapeFromInvalidPosition(newForce, unit);
 			if (!invalid) {
-				const auto& neighbours = env->getNeighboursWithCache(unit->getPosition(), unit->getMaxSeparationDistance(),
-				                                                   unit->getMainGridIndex());
+				const auto& neighbours = env->getNeighbours(unit->getPosition(), unit->getMaxSeparationDistance());
 
 				force.separationUnits(newForce, unit, neighbours);
 				force.separationObstacle(newForce, unit);
@@ -364,7 +524,7 @@ void Simulation::calculateForces() {
 
 		unit->setAcceleration(newForce);
 		if (!SIM_GLOBALS.HEADLESS) {
-			unit->debug(DebugUnitType::AIM, stats); //TODO przeniesc do Controls
+			unit->debug(DebugUnitType::AIM, stats); // TODO przeniesc do Controls
 		}
 	}
 	DebugLineRepo::commit(DebugLineType::UNIT_LINES);

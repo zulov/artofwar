@@ -1,10 +1,10 @@
 #pragma once
 
-#include "objects/queue/QueueManager.h"
-#include "ai/AiOrchestrator.h"
+#include <span>
 #include "ai/AiHistory.h"
+#include "ai/AiOrchestrator.h"
 #include "database/db_insert_utils.h"
-
+#include "objects/queue/QueueManager.h"
 
 class Possession;
 class Resources;
@@ -46,12 +46,21 @@ public:
 
 	QueueElement* updateQueue();
 	QueueManager& getQueue() { return queue; }
+	const QueueManager& getQueue() const { return queue; }
 	db_unit_level* getUnitLevel(unsigned short id) const;
 	db_building_level* getBuildingLevel(unsigned short id) const;
 	std::optional<db_unit_level*> getNextUnitLevel(unsigned short id) const;
 	std::optional<db_building_level*> getNextBuildingLevel(unsigned short id) const;
 	void addKilled(Physical* physical) const;
 	void resetScore();
+	std::span<const char> getUnitLevels() const;
+	std::span<const char> getBuildingLevels() const;
+	void restoreUnitLevel(unsigned short id, char level) const;
+	void restoreBuildingLevel(unsigned short id, char level) const;
+	AiHistory& getAiHistory() { return aiHistory; }
+	const AiHistory& getAiHistory() const { return aiHistory; }
+	AiOrchestrator& getAiOrchestrator() { return aiOrchestrator; }
+	const AiOrchestrator& getAiOrchestrator() const { return aiOrchestrator; }
 
 	unsigned getNextBuildingId() { return ++currentBuildingUId; }
 	unsigned getNextUnitId() { return ++currentUnitUId; }
@@ -66,7 +75,7 @@ private:
 	unsigned currentBuildingUId;
 	unsigned currentUnitUId;
 
-	db_nation* dbNation; //Must be first
+	db_nation* dbNation; // Must be first
 	Possession* possession;
 	Resources* resources;
 	QueueManager queue;

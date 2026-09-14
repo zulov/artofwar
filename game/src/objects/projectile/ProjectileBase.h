@@ -1,11 +1,12 @@
 #pragma once
+#include "Game.h"
 #include "database/db_struct.h"
-#include "objects/Physical.h"
+#include "env/Environment.h"
 #include "math/MathUtils.h"
+#include "objects/Physical.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "env/Environment.h"
-#include "Game.h"
+#include "scene/load/RuntimeSaveData.h"
 
 struct ProjectileBase {
 	Physical* aim;
@@ -18,6 +19,7 @@ struct ProjectileBase {
 	bool active = false;
 
 	ProjectileBase() = default;
+	virtual ~ProjectileBase() = default;
 
 	ProjectileBase(const ProjectileBase&) = delete;
 
@@ -58,10 +60,21 @@ struct ProjectileBase {
 	virtual void reset() {
 		aim = nullptr;
 		active = false;
+
+	}
+	virtual void clearNodeWithoutDelete() {}
+	bool isActive() const { return active; }
+
+	virtual ProjectileSaveData saveState() const {
+		return {aim ? aim->getUid() : 0, percentToGo, speed, attackVal, player};
 	}
 
-	bool isActive() const {
-		return active;
+	virtual void loadState(const ProjectileSaveData& state, Physical* target) {
+		aim = target;
+		percentToGo = state.percentToGo;
+		speed = state.speed;
+		attackVal = state.attackVal;
+		player = state.player;
+		active = target != nullptr;
 	}
-
 };

@@ -13,8 +13,12 @@ void RandGen::init(bool isRandom) {
 		instance = new RandGen();
 	}
 	resetIndexes();
+	instance->seed = isRandom ? static_cast<unsigned>(time(nullptr)) : 2;
+	generateData();
+}
 
-	std::mt19937 gen(isRandom ? time(0) : 2);
+void RandGen::generateData() {
+	std::mt19937 gen(instance->seed);
 
 	std::uniform_real_distribution disFloat(0.0, 1.0);
 	for (float& j : instance->dataFloat) {
@@ -27,9 +31,7 @@ void RandGen::init(bool isRandom) {
 	}
 }
 
-void RandGen::dispose() {
-	delete instance;
-}
+void RandGen::dispose() { delete instance; }
 
 void RandGen::reset(bool isRandom) {
 	if (isRandom) {
@@ -59,4 +61,36 @@ int RandGen::nextRand(RandIntType type, int max) {
 	instance->indexesInt[id]++;
 	instance->indexesInt[id] = instance->indexesInt[id] % RAND_TAB_SIZE;
 	return instance->dataInt[instance->indexesInt[id]] % max;
+}
+
+RandSaveData RandGen::saveState() {
+	RandSaveData state;
+	state.seed = instance->seed;
+	state.floatIndexes.assign(instance->indexesFloat, instance->indexesFloat + magic_enum::enum_count<RandFloatType>());
+	state.intIndexes.assign(instance->indexesInt, instance->indexesInt + magic_enum::enum_count<RandIntType>());
+	return state;
+}
+
+void RandGen::loadState(const RandSaveData& state) {
+	if (instance == nullptr) {
+		instance = new RandGen();
+	}
+	resetIndexes();
+	instance->seed = state.seed;
+	generateData();
+
+	if (state.floatIndexes.size() == magic_enum::enum_count<RandFloatType>()) {
+		for (size_t i = 0; i < state.floatIndexes.size(); ++i) {
+			if (state.floatIndexes[i] >= 0 && state.floatIndexes[i] < RAND_TAB_SIZE) {
+				instance->indexesFloat[i] = state.floatIndexes[i];
+			}
+		}
+	}
+	if (state.intIndexes.size() == magic_enum::enum_count<RandIntType>()) {
+		for (size_t i = 0; i < state.intIndexes.size(); ++i) {
+			if (state.intIndexes[i] >= 0 && state.intIndexes[i] < RAND_TAB_SIZE) {
+				instance->indexesInt[i] = state.intIndexes[i];
+			}
+		}
+	}
 }

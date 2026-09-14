@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Art of War - Load System Development</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --page: #101827;
+      --surface: #172235;
+      --border: #2c3d56;
+      --text: #dbe7f5;
+      --muted: #9aabc0;
+      --heading: #7dd3fc;
+      --accent: #38bdf8;
+      --code: #fde68a;
+      --stage: #21344b;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 42px 28px 64px;
+      background: var(--page);
+      color: var(--text);
+      font: 16px/1.6 "Segoe UI", Tahoma, sans-serif;
+    }
+    header { border-bottom: 1px solid var(--border); margin-bottom: 32px; padding-bottom: 24px; }
+    h1, h2, h3 { line-height: 1.2; }
+    h1 { margin: 0 0 8px; color: #f8fafc; font-size: clamp(2rem, 5vw, 3rem); }
+    h2 { margin: 42px 0 14px; color: var(--heading); font-size: 1.5rem; }
+    p { margin: 0 0 16px; }
+    .subtitle { margin: 0; color: var(--muted); font-size: 1.05rem; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 0; }
+    .links a { border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px; }
+    a { color: var(--heading); }
+    code { color: var(--code); font: 0.9em Consolas, "Courier New", monospace; }
+    .callout {
+      margin: 20px 0;
+      padding: 16px 20px;
+      border-left: 4px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      background: var(--surface);
+    }
+    table { width: 100%; border-collapse: collapse; margin: 18px 0; overflow: hidden; border: 1px solid var(--border); }
+    th, td { padding: 12px 14px; border: 1px solid var(--border); text-align: left; vertical-align: top; }
+    th { background: #1d324d; color: #e0f2fe; }
+    td:first-child { color: #bae6fd; font-weight: 700; white-space: nowrap; }
+    ol { padding-left: 24px; }
+    li { margin: 8px 0; }
+    pre {
+      overflow-x: auto;
+      margin: 18px 0;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #0b1220;
+      color: #d1fae5;
+      font: 0.9rem/1.55 Consolas, "Courier New", monospace;
+    }
+    .stages { display: grid; gap: 12px; margin: 18px 0; }
+    .stage { display: grid; grid-template-columns: 44px minmax(150px, 0.8fr) 2.2fr; gap: 16px; align-items: start; padding: 15px; border: 1px solid var(--border); border-radius: 9px; background: var(--stage); }
+    .stage-number { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: #082f49; font-weight: 800; }
+    .stage-owner { color: #e0f2fe; font-weight: 700; }
+    .stage-work { color: var(--muted); }
+    @media (max-width: 700px) {
+      body { padding: 28px 16px 48px; font-size: 15px; }
+      table { display: block; overflow-x: auto; }
+      .stage { grid-template-columns: 36px 1fr; gap: 10px; }
+      .stage-work { grid-column: 2; }
+    }
+    @media print {
+      :root { color-scheme: light; }
+      body { max-width: none; padding: 0; background: #fff; color: #111; font-size: 10pt; }
+      header { margin-bottom: 18px; padding-bottom: 12px; border-color: #bbb; }
+      h1, h2, h3, a, td:first-child { color: #111; }
+      h2 { margin-top: 24px; }
+      .subtitle, .stage-work { color: #444; }
+      .links, .callout, .stage, pre { background: #fff; border-color: #999; }
+      .links a { border-color: #999; }
+      .stage-number { background: #ddd; color: #111; }
+      th, td { border-color: #999; color: #111; }
+      th { background: #eee; }
+      .stage, table, pre { break-inside: avoid; page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Load System Development</h1>
+    <p class="subtitle">Runtime save restoration and cross-entity link resolution.</p>
+    <nav class="links" aria-label="Related documentation">
+      <a href="save-development.html">Save System Development</a>
+      <a href="data-development.md">Data Development</a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h2>Scope</h2>
+       <p><code>SceneLoader</code> opens the filename passed by <code>Main</code> below <code>saves/</code> without changing it, validates the five required tables and their required column names, and reads the save into <code>dbload_container</code>. The one-row <code>config</code> table carries precision/map/size, simulation ticks, and RNG continuation; it has no active schema-version field or camera state. It does not create game objects or resolve cross-entity references. Entity creation and runtime-link restoration happen later through <code>Simulation</code> and <code>Main</code>.</p>
+      <div class="callout">
+        <strong>Related code:</strong> <code>game/src/scene/load/SceneLoader.cpp</code> reads SQLite into DTOs, <code>game/src/simulation/Simulation.cpp</code> constructs entities and restores runtime state, and <code>game/src/Main.cpp</code> performs the final startup restoration.
+      </div>
+    </section>
+
+    <section>
+      <h2>Load Order</h2>
+      <div class="stages" aria-label="Load restoration stages">
+         <div class="stage"><div class="stage-number">1</div><div class="stage-owner"><code>SceneLoader::createLoad()</code></div><div class="stage-work">Open the save read-only, require <code>config</code>, <code>players</code>, <code>units</code>, <code>buildings</code>, and <code>resources</code>, validate their required column names, require exactly one valid <code>config</code> row, restore its RNG fields, and read optional runtime rows while SQLite is open.</div></div>
+        <div class="stage"><div class="stage-number">2</div><div class="stage-owner"><code>SceneLoader::load()</code></div><div class="stage-work">Read base <code>players</code>, <code>units</code>, <code>buildings</code>, and <code>resources</code> DTOs, then close SQLite.</div></div>
+        <div class="stage"><div class="stage-number">3</div><div class="stage-owner"><code>Simulation::loadEntities()</code></div><div class="stage-work">Construct base entities and rebuild static grids.</div></div>
+         <div class="stage"><div class="stage-number">4</div><div class="stage-owner"><code>Simulation::restoreRuntimeState()</code></div><div class="stage-work">Build the physical UID map, restore formations, unit links, aims, orders, embedded building targets, levels, queues, AI/resource state, RNG from <code>config</code>, and projectiles.</div></div>
+         <div class="stage"><div class="stage-number">5</div><div class="stage-owner"><code>Main::load()</code></div><div class="stage-work">Refresh influence and visibility maps, use the normal GUI camera setup, restore deferred commands, close the loader, reset the frame service, then restore the persisted total tick count. Wall time, the render accumulator, and the real-frame flag remain reset.</div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>UID Resolution</h2>
+      <p>Runtime rows store cross-entity links as UIDs because a target can be a unit, building, or resource. They must not be resolved in <code>SceneLoader</code>: referenced entities exist only after stage 3.</p>
+      <p><code>Simulation::restoreRuntimeState()</code> builds one lookup over all physical entities:</p>
+      <pre>units.uid + buildings.uid + resources.uid -&gt; Physical*</pre>
+      <p>It uses that lookup for <code>target_uid</code>, <code>aim_target_uid</code>, <code>projectiles.aim_uid</code>, formation members, and deferred-command entity lists. Missing or invalid UID links are skipped rather than creating a replacement object.</p>
+    </section>
+
+    <section>
+       <h2>Compatibility</h2>
+         <p>Variable-length runtime tables are optional. Mandatory unit continuation, building combat state, player resource state, simulation ticks, and RNG state are read from the required <code>units</code>, <code>buildings</code>, <code>players</code>, and expanded <code>config</code> rows. GUI camera state is intentionally recreated by normal startup. The checked-in <code>quicksave.db</code>, <code>quicksave256.db</code>, and <code>quicksave512.db</code> files use the legacy five-table schema and are rejected because required columns are missing. Migrate a copy with <code>docs/old-save-migration.txt</code>. A save from the immediately previous pre-consolidation format, with a four-column <code>config</code> plus <code>random</code> and <code>camera</code> singleton tables, uses <code>docs/config-table-migration.txt</code>.</p>
+         <p>Save writes use named columns, and loads use explicit column lists generated from the enums in <code>game/src/database/db_columns.h</code>. Physical SQLite column order and extra columns do not affect the current loader, but required names and enum order must remain aligned. A save-schema change must update the matching SQL definition, enum, save binding, and load binding together. The format has no active schema-version field, so there is no automatic schema migration; saves missing required tables or columns must be migrated explicitly or regenerated.</p>
+    </section>
+
+    <section>
+      <h2>Validation</h2>
+      <ol>
+         <li>Copy and migrate a legacy five-table save, then confirm base entities load with continuation fields initialized by the migration defaults.</li>
+        <li>Load a runtime save with targets, queued work, formations, projectiles, and pending commands.</li>
+        <li>Confirm every UID link is resolved only after entity creation and static-grid refresh.</li>
+         <li>Run <code>tests.exe --gtest_filter=PersistenceRowTest.*:PersistenceStateTest.*</code> and a game save/load smoke test.</li>
+      </ol>
+    </section>
+  </main>
+</body>
+</html>

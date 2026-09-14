@@ -1,5 +1,6 @@
 #include "CreationCommandList.h"
 #include "CreationCommand.h"
+#include "scene/load/RuntimeSaveData.h"
 #include "Game.h"
 #include "objects/ObjectEnums.h"
 #include "database/DatabaseCache.h"
@@ -69,4 +70,13 @@ void CreationCommandList::execute() {
 		delete command;
 	}
 	commands.clear();
+}
+
+std::vector<PendingCommandSaveData> CreationCommandList::saveState(unsigned short& nextOrder) const {
+	std::vector<PendingCommandSaveData> state;
+	state.reserve(commands.size());
+	for (const auto* command : commands) {
+		state.push_back(command->saveState(nextOrder++));
+	}
+	return state;
 }

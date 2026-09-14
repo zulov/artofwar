@@ -16,8 +16,10 @@ public:
 	QueueElement* getAt(short i) const;
 	QueueElement* first() const;
 	void changeMaxUnitsGroupSize(unsigned char maxUnitsGroupSize);
+	void restore(QueueActionType type, unsigned short id, unsigned short levelId, unsigned short amount,
+				 unsigned short elapsedTicks);
 
 private:
 	std::vector<QueueElement*> queue;
-	unsigned char maxUnitsGroup;
+	unsigned char maxUnitsGroup = 1;
 };

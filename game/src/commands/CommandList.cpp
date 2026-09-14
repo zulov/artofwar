@@ -1,5 +1,6 @@
 #include "CommandList.h"
 #include "PhysicalCommand.h"
+#include "scene/load/RuntimeSaveData.h"
 #include "utils/DeleteUtils.h"
 
 CommandList::~CommandList() {
@@ -24,4 +25,13 @@ void CommandList::execute() {
 		delete command;
 	}
 	commands.clear();
+}
+
+std::vector<PendingCommandSaveData> CommandList::saveState(unsigned short& nextOrder) const {
+	std::vector<PendingCommandSaveData> state;
+	state.reserve(commands.size());
+	for (const auto* command : commands) {
+		state.push_back(command->saveState(nextOrder++));
+	}
+	return state;
 }

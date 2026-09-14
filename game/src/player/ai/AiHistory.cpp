@@ -104,17 +104,13 @@ void AiHistory::ensureScores() const {
 	scoresValid = true;
 }
 
-float AiHistory::buildingFailureScore() const {
-	return failureScore({AiActionType::CREATE_BUILDING});
-}
+float AiHistory::buildingFailureScore() const { return failureScore({AiActionType::CREATE_BUILDING}); }
 
-float AiHistory::unitFailureScore() const {
-	return failureScore(AiActionType::CREATE_UNIT);
-}
+float AiHistory::unitFailureScore() const { return failureScore(AiActionType::CREATE_UNIT); }
 
 float AiHistory::collectFailureScore() const {
 	return failureScore({AiOrderType::COLLECT_RESOURCE_0, AiOrderType::COLLECT_RESOURCE_1,
-			                    AiOrderType::COLLECT_RESOURCE_2, AiOrderType::COLLECT_RESOURCE_3});
+						 AiOrderType::COLLECT_RESOURCE_2, AiOrderType::COLLECT_RESOURCE_3});
 }
 
 float AiHistory::attackFailureScore() const {
@@ -131,4 +127,39 @@ float AiHistory::attackActivityScore() const {
 
 float AiHistory::defendActivityScore() const {
 	return recencyScore({AiOrderType::DEFEND_ECON, AiOrderType::DEFEND_BUILDING, AiOrderType::DEFEND_ARMY});
+}
+
+std::vector<AiHistorySaveData> AiHistory::saveState(unsigned char player) const {
+	std::vector<AiHistorySaveData> state;
+	state.reserve(actionCount + orderCount);
+	for (int i = 0; i < actionCount; ++i) {
+		const auto& entry = getAction(i);
+		state.push_back({player, true, entry.tick, static_cast<char>(entry.actionType), static_cast<char>(entry.result),
+						 entry.chosenId});
+	}
+	for (int i = 0; i < orderCount; ++i) {
+		const auto& entry = getOrder(i);
+		state.push_back({player, false, entry.tick, static_cast<char>(entry.orderType), static_cast<char>(entry.result),
+						 entry.unitCount});
+	}
+	return state;
+}
+
+void AiHistory::loadState(const std::vector<AiHistorySaveData>& state, unsigned char player) {
+	actionHead = actionCount = orderHead = orderCount = 0;
+	for (const auto& saved : state) {
+		if (saved.player != player) {
+			continue;
+		}
+		if (saved.action && actionCount < MAX_ENTRIES) {
+			actions[actionCount++] = {saved.tick, static_cast<AiActionType>(saved.type),
+									  static_cast<AiActionResult>(saved.result), static_cast<uint16_t>(saved.chosenId)};
+		} else if (!saved.action && orderCount < MAX_ENTRIES) {
+			orders[orderCount++] = {saved.tick, static_cast<AiOrderType>(saved.type),
+									static_cast<AiOrderResult>(saved.result), static_cast<uint8_t>(saved.chosenId)};
+		}
+	}
+	actionHead = actionCount % MAX_ENTRIES;
+	orderHead = orderCount % MAX_ENTRIES;
+	scoresValid = false;
 }

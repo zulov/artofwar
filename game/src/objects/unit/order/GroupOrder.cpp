@@ -7,6 +7,7 @@
 #include "objects/unit/GroupUtils.h"
 #include "objects/unit/Unit.h"
 #include "simulation/formation/FormationManager.h"
+#include "scene/load/RuntimeSaveData.h"
 
 
 GroupOrder::GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, short id,
@@ -122,4 +123,13 @@ bool GroupOrder::expired() {
 
 short GroupOrder::getSize() const {
 	return units.size();
+}
+
+PendingCommandSaveData GroupOrder::saveState(unsigned short order) const {
+	auto state = createSaveState(order, PendingCommandKind::GROUP_ORDER);
+	state.actionType = static_cast<char>(actionType);
+	for (const auto* unit : units) {
+		state.entityUids.push_back(unit->getUid());
+	}
+	return state;
 }

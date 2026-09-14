@@ -2,9 +2,9 @@
 
 #include <Urho3D/Math/Vector2.h>
 
-
 enum class ObjectType : char;
 class SimulationObjectManager;
+struct PendingCommandSaveData;
 
 class CreationCommand {
 public:
@@ -14,6 +14,7 @@ public:
 	~CreationCommand() = default;
 	void execute(SimulationObjectManager* simulationObjectManager);
 	void setHp(float value) { hp = value; }
+	PendingCommandSaveData saveState(unsigned short order) const;
 
 private:
 	union {

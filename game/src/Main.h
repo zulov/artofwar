@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <span>
 #include <Urho3D/Engine/Application.h>
 #include "Benchmark.h"
@@ -68,6 +69,7 @@ private:
 	void miniReadParameters() const;
 	void changeCamera(CameraBehaviorType type);
 	void load(const Urho3D::String& saveName, NewGameForm* form);
+	void abortLoad(const std::string& error);
 	void createEnv(unsigned short mainMapResolution) const;
 	void save(const Urho3D::String& name);
 	void running(float timeStep);

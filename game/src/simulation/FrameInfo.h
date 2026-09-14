@@ -3,11 +3,12 @@
 #include <magic_enum.hpp>
 
 #include "SimGlobals.h"
+#include "scene/load/RuntimeSaveData.h"
 #include "utils/OtherUtils.h"
 
 constexpr unsigned int SECONDS_IN_MONTH = 5;
 
-enum class PerFrameAction:char {
+enum class PerFrameAction : char {
 	INFLUENCE_UNITS = 0,
 	INFLUENCE_OTHER,
 	SELF_AI,
@@ -38,6 +39,7 @@ struct FrameInfo {
 	void set(unsigned char frame, unsigned int secs) {
 		currentFrame = frame;
 		seconds = secs;
+		totalTicks = secs * FRAMES_IN_PERIOD + frame;
 		realFrame = true;
 	}
 
@@ -58,13 +60,9 @@ struct FrameInfo {
 		return std::make_tuple(seconds / 3600, (seconds / 60) % 60, seconds % 60);
 	}
 
-	bool shouldRun(PerFrameAction type) const {
-		return get(type, currentFrame, seconds);
-	}
+	bool shouldRun(PerFrameAction type) const { return get(type, currentFrame, seconds); }
 
-	bool canUpdate(PerFrameAction type, bool force) const {
-		return force || shouldRun(type);
-	}
+	bool canUpdate(PerFrameAction type, bool force) const { return force || shouldRun(type); }
 
 	void reset() {
 		seconds = 0;
@@ -77,7 +75,7 @@ struct FrameInfo {
 
 	static bool get(PerFrameAction type, unsigned char frameNum, unsigned int second = 0) {
 		const auto val = data[castC(type)][frameNum];
-		return val != 0 && (second+1) % val == 0;
+		return val != 0 && (second + 1) % val == 0;
 	}
 
 	void addWallTime(float time) { wallTime += time; }
@@ -89,6 +87,15 @@ struct FrameInfo {
 	}
 
 	float getAccumulateTime() const { return accumulateTime; }
+	FrameSaveData saveState() const { return {totalTicks}; }
+	void loadState(const FrameSaveData& state) {
+		totalTicks = state.totalTicks;
+		seconds = totalTicks / FRAMES_IN_PERIOD;
+		currentFrame = static_cast<unsigned char>(totalTicks % FRAMES_IN_PERIOD);
+		wallTime = 0;
+		accumulateTime = 0;
+		realFrame = false;
+	}
 
 private:
 	inline static const std::array<unsigned char, FRAMES_IN_PERIOD> ONCE_PER_SECOND = {

@@ -1,8 +1,8 @@
 #pragma once
+#include <Urho3D/Math/Vector2.h>
 #include <optional>
 #include <unordered_map>
 #include <vector>
-#include <Urho3D/Math/Vector2.h>
 #include "FormationState.h"
 #include "FormationType.h"
 
@@ -20,11 +20,18 @@ public:
 	float getPriority(int id) const;
 
 	FormationState getState() const { return state; }
+	FormationType getType() const { return type; }
+	const Urho3D::Vector2& getDirection() const { return direction; }
+	short getId() const { return id; }
+	void restoreState(FormationState savedState) { state = savedState; }
 	bool isInAttack() const;
 	bool isInDefend() const;
 	std::optional<Unit*> getLeader();
 
 	void addOrder(FormationOrder* order);
+	void restoreOrder(FormationOrder* order, bool pending);
+	const std::vector<FormationOrder*>& getOrders() const { return unitOrders; }
+	const FormationOrder* getPendingOrder() const { return pendingOrder; }
 	size_t getSize() const;
 	void semiReset();
 	std::vector<Unit*>& getUnits() { return units; }
@@ -33,6 +40,7 @@ public:
 	bool isMoving(Unit* unit) const;
 	int getCachePath(int startIdx, int aimIndex) const;
 	void addCachePath(int startIdx, int aimIndex, int next);
+
 private:
 	bool hasLeader() const;
 
@@ -72,5 +80,5 @@ private:
 	float notWellFormed = 1.f;
 	float notWellFormedExact = 1.f;
 
-	std::unordered_map<size_t, int> pathCache;//TODO czy nie wystarczy cachce z pathFinder
+	std::unordered_map<size_t, int> pathCache; // TODO czy nie wystarczy cachce z pathFinder
 };

@@ -1,15 +1,17 @@
 #pragma once
 #include <vector>
 
+#include "scene/load/RuntimeSaveData.h"
+
 namespace Urho3D {
 	class UShortVector2;
 	class Vector2;
-}
+} // namespace Urho3D
 
 class SimulationObjectManager;
 class CreationCommand;
 
-class CreationCommandList  {
+class CreationCommandList {
 public:
 	explicit CreationCommandList(SimulationObjectManager* simulationObjectManager);
 	~CreationCommandList() = default;
@@ -20,6 +22,7 @@ public:
 
 	void add(CreationCommand* command);
 	void execute();
+	std::vector<PendingCommandSaveData> saveState(unsigned short& nextOrder) const;
 private:
 	std::vector<CreationCommand*> commands;
 	SimulationObjectManager* simulationObjectManager;

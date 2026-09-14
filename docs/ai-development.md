@@ -9,7 +9,7 @@ The computer-player decision flow starts in `game/src/player/ai/AiOrchestrator.c
 3. `WantList` applies affordability and soft-reserve checks; `WantExecutor` resolves costs, queues game commands, and uses `BuildSpatialBrain` to select visible valid building positions.
 4. `order()` assigns worker collection and military movement/combat orders.
 
-The simulation schedules the action and order phases independently through `PerFrameAction::AI_ACTION` and `PerFrameAction::AI_ORDER` in `game/src/simulation/Simulation.cpp`. The first action phase computes brain outputs but intentionally does not submit wants; the first order phase clears that warm-up flag. Normal request submission begins on the following action phase.
+The simulation schedules the action and order phases independently through `PerFrameAction::AI_ACTION` and `PerFrameAction::AI_ORDER` in `game/src/simulation/Simulation.cpp`. Each phase operates on the latest available brain outputs and state; action requests are submitted during the first action phase.
 
 Brains receive the selected enemy player's current possession and score data. There is no scouting subsystem, but this is not fog-of-war-limited strategic information. Visibility currently restricts building-placement candidates rather than the enemy inputs supplied to brains.
 

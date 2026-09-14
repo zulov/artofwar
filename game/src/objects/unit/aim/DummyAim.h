@@ -6,19 +6,13 @@ public:
 	DummyAim() = default;
 	~DummyAim() override = default;
 
-	Urho3D::Vector2 getDirection(Unit* unit) override {
-		return {};
-	}
+	Urho3D::Vector2 getDirection(Unit* unit) override { return {}; }
 
-	bool ifReach(Unit* unit) override {
-		return true;
-	}
+	bool ifReach(Unit* unit) override { return true; }
 
-	bool expired() override {
-		return false;
-	}
+	bool expired() override { return false; }
 
-	std::vector<Urho3D::Vector3> getDebugLines(Unit* unit) const override {
-		return {};
-	}
+	AimSaveData saveState() const override { return {}; }
+
+	std::vector<Urho3D::Vector3> getDebugLines(Unit* unit) const override { return {}; }
 };

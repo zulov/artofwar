@@ -1,6 +1,6 @@
 #pragma once
-#include "Aim.h"
 #include <vector>
+#include "Aim.h"
 
 class TargetAim;
 class Physical;
@@ -14,6 +14,8 @@ public:
 	Urho3D::Vector2 getDirection(Unit* follower) override;
 	bool ifReach(Unit* follower) override;
 	bool expired() override;
+	AimSaveData saveState() const override;
+
 private:
 	Physical* physical;
 	TargetAim* subTarget;

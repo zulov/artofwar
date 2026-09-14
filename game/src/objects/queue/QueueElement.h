@@ -17,7 +17,11 @@ public:
 	short getLevelId() const { return levelId; }
 	short getAmount() const { return amount; }
 	short getMaxCapacity() const { return maxCapacity; }
+	unsigned short getTicksToComplete() const { return ticksToComplete; }
+	unsigned short getElapsedTicks() const { return elapsedTicks; }
 	float getProgress() const { return ((float)elapsedTicks) / ticksToComplete; }
+	void restore(unsigned short savedElapsedTicks);
+
 private:
 	QueueActionType type;
 	unsigned char maxCapacity;

@@ -362,8 +362,11 @@
     <ClInclude Include="src\env\ContentInfo.h" />
     <ClInclude Include="src\hud\window\in_game_menu\InGameMenuPanel.h" />
     <ClInclude Include="src\scene\save\SceneSaver.h" />
+    <ClInclude Include="src\scene\save\SaveTable.h" />
+    <ClInclude Include="src\scene\save\SaveTableUtils.h" />
     <ClInclude Include="src\scene\load\SceneLoader.h" />
     <ClInclude Include="src\scene\load\dbload_container.h" />
+	<ClInclude Include="src\scene\load\RuntimeSaveData.h" />
     <ClInclude Include="src\commands\creation\CreationCommandList.h">
       <Filter>command\list</Filter>
     </ClInclude>
@@ -528,6 +531,7 @@
     <ClInclude Include="src\utils\PrintUtils.h" />
     <ClInclude Include="src\database\db_insert_utils.h" />
     <ClInclude Include="src\database\db_insert_defs.h" />
+    <ClInclude Include="src\database\db_read_defs.h" />
     <ClInclude Include="src\utils\CountUtils.h" />
     <ClInclude Include="src\env\bucket\ArrayProviderUtils.h" />
     <ClInclude Include="src\player\ai\AiHistory.h" />

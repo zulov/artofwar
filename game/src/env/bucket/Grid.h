@@ -39,15 +39,8 @@ public:
 	std::vector<Physical*>* getArrayNeightSimilarAs(const Urho3D::Vector2& center, unsigned short databaseId,
 	                                               char playerId, float radius);
 	std::vector<int> getCloseCenters(Urho3D::Vector2& center, float radius) const;
-	void invalidateCache();
-	void invalidateCache(int currentIdx, float radius);
 	BucketIterator& getArrayNeight(const Urho3D::Vector2& position, float radius);
 	BucketIterator& getArrayNeight(int center, float radius);
-
-	bool onlyOneInside(int index) const;
-	std::vector<Physical*>* getAllFromCache(int currentIdx, float radius);
-	void addFromCell(short shiftIdx, int currentIdx) const;
-	std::vector<Physical*>* getAll(int currentIdx, float radius);
 
 protected:
 	GridCalculator* calculator;
@@ -66,7 +59,4 @@ private:
 	BucketIterator iterator;
 
 	std::vector<Physical*>* tempSelected;
-	std::vector<Physical*>* cache;
-	int prevIndex = -1;
-	float prevRadius = -1.f;
 };

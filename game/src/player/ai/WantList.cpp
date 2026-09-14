@@ -49,3 +49,10 @@ void WantList::sortByPriority() {
 		items.resize(MAX_ITEMS);
 	}
 }
+
+void WantList::restoreItems(std::span<const WantItem> savedItems) {
+	items.assign(savedItems.begin(), savedItems.end());
+	if (static_cast<int>(items.size()) > MAX_ITEMS) {
+		items.resize(MAX_ITEMS);
+	}
+}

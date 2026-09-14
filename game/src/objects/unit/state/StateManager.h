@@ -23,12 +23,13 @@ public:
 	static bool changeState(Unit* unit, UnitState stateTo);
 	static bool toDefaultState(Unit* unit);
 
-	static bool canStartState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter, State* stateFrom,
-	                          State* toState);
+	static bool canStartState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter, State* stateFrom, State* toState);
 	static bool canChangeState(Unit* unit, UnitState stateTo);
 	static void execute(Unit* unit, float timeStamp);
 	static void executeChange(const std::vector<Unit*>* units);
 	static void reset();
+	static void restoreUnitStateChangePending();
+	static void restoreStaticStateChangePending(Static* obj);
 	static const std::vector<Unit*>& getDeadUnits() { return instance->deadUnits; }
 	static const std::vector<Building*>& getDeadBuildings() { return instance->deadBuildings; }
 	static const std::vector<ResourceEntity*>& getDeadResources() { return instance->deadResources; }
@@ -56,8 +57,8 @@ public:
 	static void dispose();
 
 private:
-	void initOrders() const; //TODO move to level
-	void initStates() const; //TODO move to level
+	void initOrders() const; // TODO move to level
+	void initStates() const; // TODO move to level
 
 	StateManager();
 	~StateManager();
@@ -90,7 +91,7 @@ inline bool isInStates(UnitState state, std::initializer_list<UnitState> states)
 }
 
 inline bool isInFreeState(Unit* unit) {
-	//return isInStates(state, {UnitState::STOP, UnitState::MOVE});
+	// return isInStates(state, {UnitState::STOP, UnitState::MOVE});
 	auto state = unit->getState();
 	return state == UnitState::STOP || state == UnitState::MOVE;
 }

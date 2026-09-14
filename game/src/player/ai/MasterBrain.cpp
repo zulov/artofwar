@@ -3,20 +3,20 @@
 #include <magic_enum.hpp>
 #include "AiHistory.h"
 #include "AiUtils.h"
+#include "Game.h"
+#include "MetricDefinitions.h"
 #include "NormScale.h"
+#include "database/db_struct.h"
+#include "env/influence/CenterType.h"
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
-#include "MetricDefinitions.h"
-#include "database/db_struct.h"
 #include "player/Player.h"
+#include "player/PlayersManager.h"
 #include "player/Possession.h"
 #include "player/Resources.h"
-#include "player/PlayersManager.h"
-#include "Game.h"
-#include "env/influence/CenterType.h"
 
-MasterBrain::MasterBrain(db_nation* nation)
-	: brain(BrainProvider::get(nation->brainPrefix[0] + "master.csv")), nation(nation) {
+MasterBrain::MasterBrain(db_nation* nation) :
+	brain(BrainProvider::get(nation->brainPrefix[0] + "master.csv")), nation(nation) {
 	assert(brain->getInputSize() == inputData.size());
 	assert(brain->getInputSize() == magic_enum::enum_count<MasterInputIdx>());
 	assert(brain->getOutputSize() == magic_enum::enum_count<MasterOutputIdx>());
@@ -65,10 +65,14 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 	inputData[idx(I::DEFENCE_SUM)] = norm(possession->getDefenceAttackSum(), NormScale::DEFENCE);
 
 	// Spatial distances
-	inputData[idx(I::DIST_OUR_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, player, 0.f);
-	inputData[idx(I::DIST_OUR_ARMY_ENEMY_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, enemy, 1.f);
-	inputData[idx(I::DIST_ENEMY_ARMY_OUR_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, player, 1.f);
-	inputData[idx(I::DIST_ENEMY_ARMY_ENEMY_BUILDING)] = MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, enemy, 0.f);
+	inputData[idx(I::DIST_OUR_ARMY_OUR_BUILDING)] =
+			MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, player, 0.f);
+	inputData[idx(I::DIST_OUR_ARMY_ENEMY_BUILDING)] =
+			MetricDefinitions::diffOfCenters(CenterType::ARMY, player, CenterType::BUILDING, enemy, 1.f);
+	inputData[idx(I::DIST_ENEMY_ARMY_OUR_BUILDING)] =
+			MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, player, 1.f);
+	inputData[idx(I::DIST_ENEMY_ARMY_ENEMY_BUILDING)] =
+			MetricDefinitions::diffOfCenters(CenterType::ARMY, enemy, CenterType::BUILDING, enemy, 0.f);
 
 	// Lacking feedback
 	inputData[idx(I::TOTAL_LACKING)] = norm(totalLacking, NormScale::TOTAL_LACKING);
@@ -99,17 +103,15 @@ MasterOutput MasterBrain::decide(Player* player, Player* enemy, float totalLacki
 	auto result = brain->decide(inputData);
 
 	using O = MasterOutputIdx;
-	return MasterOutput{
-			.workerUrgency = result[idx(O::WORKER_URGENCY)],
-			.economyUrgency = result[idx(O::ECONOMY_URGENCY)],
-			.buildingUrgency = result[idx(O::BUILDING_URGENCY)],
-			.unitUrgency = result[idx(O::UNIT_URGENCY)],
-			.militaryUrgency = result[idx(O::MILITARY_URGENCY)],
-			.expandUrgency = result[idx(O::EXPAND_URGENCY)],
-			.techUrgency = result[idx(O::TECH_URGENCY)],
-			.defenceBuildingUrgency = result[idx(O::DEFENCE_BUILDING_URGENCY)],
-			.attackUrgency = result[idx(O::ATTACK_URGENCY)]
-	};
+	return MasterOutput{.workerUrgency = result[idx(O::WORKER_URGENCY)],
+						.economyUrgency = result[idx(O::ECONOMY_URGENCY)],
+						.buildingUrgency = result[idx(O::BUILDING_URGENCY)],
+						.unitUrgency = result[idx(O::UNIT_URGENCY)],
+						.militaryUrgency = result[idx(O::MILITARY_URGENCY)],
+						.expandUrgency = result[idx(O::EXPAND_URGENCY)],
+						.techUrgency = result[idx(O::TECH_URGENCY)],
+						.defenceBuildingUrgency = result[idx(O::DEFENCE_BUILDING_URGENCY)],
+						.attackUrgency = result[idx(O::ATTACK_URGENCY)]};
 }
 
 void MasterBrain::updateHistory(Player* player, Player* enemy) {
@@ -118,4 +120,16 @@ void MasterBrain::updateHistory(Player* player, Player* enemy) {
 	prevUnits = player->getPossession()->getUnitsNumber();
 	prevResSum = sumSpan(player->getResources()->getValues());
 	prevGatherSum = sumSpan(player->getResources()->getGatherSpeeds());
+}
+
+AiSaveData MasterBrain::saveState(unsigned char player) const {
+	return {player, prevScore, prevEnemyScore, prevUnits, prevResSum, prevGatherSum};
+}
+
+void MasterBrain::loadState(const AiSaveData& state) {
+	prevScore = state.prevScore;
+	prevEnemyScore = state.prevEnemyScore;
+	prevUnits = state.prevUnits;
+	prevResSum = state.prevResSum;
+	prevGatherSum = state.prevGatherSum;
 }

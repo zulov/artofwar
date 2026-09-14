@@ -2,6 +2,7 @@
 
 #include <cassert>
 
+#include "scene/load/RuntimeSaveData.h"
 #include "objects/unit/order/UnitOrder.h"
 
 
@@ -15,4 +16,8 @@ void UnitActionCommand::execute() {
 		delete order;
 		order = nullptr;
 	}
+}
+
+PendingCommandSaveData UnitActionCommand::saveState(unsigned short order) const {
+	return this->order->saveState(order);
 }

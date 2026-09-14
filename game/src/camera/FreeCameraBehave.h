@@ -9,6 +9,7 @@ public:
 	bool translate(bool cameraKeys[], int wheel, float timeStep, float min) override;
 	bool rotate(const Urho3D::IntVector2& mouseMove, float mouse_sensitivity) override;
 
+	CameraBehaviorType getType() const override { return CameraBehaviorType::FREE; }
 	Urho3D::MouseMode getMouseMode() override;
 private:
 	float yaw = 0.f;

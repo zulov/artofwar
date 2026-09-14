@@ -4,35 +4,36 @@
 #include "utils/StringUtils.h"
 
 #include "Game.h"
+#include "aim/Aim.h"
+#include "camera/CameraInfo.h"
 #include "colors/ColorPaletteRepo.h"
 #include "colors/ColorPallet.h"
 #include "database/DatabaseCache.h"
 #include "database/db_struct.h"
 #include "debug/DebugLineRepo.h"
 #include "debug/DebugUnitType.h"
+#include "env/Environment.h"
+#include "math/MathUtils.h"
 #include "math/VectorUtils.h"
+#include "objects/NodeUtils.h"
 #include "objects/unit/ChargeData.h"
 #include "objects/unit/SimColorMode.h"
 #include "order/IndividualOrder.h"
 #include "order/UnitConst.h"
 #include "scene/load/dbload_container.h"
-#include "env/Environment.h"
 #include "simulation/force/ForceStats.h"
 #include "simulation/formation/FormationManager.h"
 #include "state/StateManager.h"
-#include "camera/CameraInfo.h"
-#include "math/MathUtils.h"
-#include "utils/consts.h"
+#include "state/StateUtils.h"
 #include "utils/Flags.h"
-#include "objects/NodeUtils.h"
 #include "utils/PrintUtils.h"
+#include "utils/consts.h"
 
-Unit::Unit(const Urho3D::Vector3& _position, short dbId, char playerId, char teamId, char level, UId uId) : Physical(_position, uId),
-                                                                                                            state(UnitState::STOP),
-                                                                                                            nextState(UnitState::STOP) {
+Unit::Unit(const Urho3D::Vector3& _position, short dbId, char playerId, char teamId, char level, UId uId) :
+	Physical(_position, uId), state(UnitState::STOP), nextState(UnitState::STOP) {
 	auto dbUnit = Game::getDatabase()->getUnit(dbId);
 	dbEntity = dbUnit;
-	dbLevel = dbUnit->getLevel(level).value(); //TODO bug value
+	dbLevel = dbUnit->getLevel(level).value(); // TODO bug value
 	setPlayerAndTeam(playerId, teamId);
 	loadXml("Objects/units/" + dbLevel->node);
 	populate();
@@ -44,13 +45,9 @@ Unit::Unit(const Urho3D::Vector3& _position, short dbId, char playerId, char tea
 	shouldUpdate = true;
 }
 
-Unit::~Unit() {
-	delete chargeData;
-}
+Unit::~Unit() { delete chargeData; }
 
-bool Unit::isAlive() const {
-	return state != UnitState::DEAD && state != UnitState::DISPOSE;
-}
+bool Unit::isAlive() const { return state != UnitState::DEAD && state != UnitState::DISPOSE; }
 
 db_unit* Unit::getDbUnit() const { return static_cast<db_unit*>(dbEntity); }
 db_unit* Unit::getDb() const { return getDbUnit(); }
@@ -61,9 +58,9 @@ void Unit::populate() {
 	hp = dbLevel->maxHp;
 }
 
-//TODO sprobowac przeniesc do MoveState
+// TODO sprobowac przeniesc do MoveState
 void Unit::checkAim() {
-	if (aims.process(this)) {//TODO co to mialo robic
+	if (aims.process(this)) { // TODO co to mialo robic
 		StateManager::changeState(this, UnitState::MOVE);
 	}
 }
@@ -172,9 +169,7 @@ void Unit::addOrder(IndividualOrder* aim) {
 	aims.add(aim);
 }
 
-void Unit::setIndexChanged(bool changed) {
-	indexHasChanged = changed;
-}
+void Unit::setIndexChanged(bool changed) { indexHasChanged = changed; }
 
 void Unit::resetToInteract() {
 	thingToInteract = nullptr;
@@ -182,17 +177,14 @@ void Unit::resetToInteract() {
 	slotToInteract = -1;
 }
 
-void Unit::setAim(Aim* aim) {
-	aims.set(aim);
-}
+void Unit::setAim(Aim* aim) { aims.set(aim); }
 
 void Unit::setTransform(const Urho3D::Vector2& rotation, float y) const {
 	node->SetTransform(Urho3D::Vector3(position.x_, y, position.y_),
-	                   Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(rotation.x_, 0.f, rotation.y_)));
+					   Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(rotation.x_, 0.f, rotation.y_)));
 }
 
-void Unit::drawLineTo(const Urho3D::Vector2& second,
-                      const Urho3D::Color& color = Urho3D::Color::WHITE) const {
+void Unit::drawLineTo(const Urho3D::Vector2& second, const Urho3D::Color& color = Urho3D::Color::WHITE) const {
 	if (!second.Equals(Urho3D::Vector2::ZERO)) {
 		const auto nodePos = node->GetPosition();
 		Urho3D::Vector3 from = Urho3D::Vector3(position.x_, nodePos.y_, position.y_);
@@ -246,27 +238,22 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 					}
 				}
 				break;
-			case DebugUnitType::INTERACT: //TODO charge
-				DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, node->GetPosition(), thingToInteract->getNode()->GetPosition());
+			case DebugUnitType::INTERACT: // TODO charge
+				DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, node->GetPosition(),
+										thingToInteract->getNode()->GetPosition());
 				break;
-			default: ;
+			default:;
 			}
-			//stats.vectorReset();
+			// stats.vectorReset();
 		}
 	}
 }
 
-void Unit::removeCurrentAim() {
-	aims.removeCurrentAim();
-}
+void Unit::removeCurrentAim() { aims.removeCurrentAim(); }
 
-void Unit::decayCommandPriority(float multiplier) {
-	commandPriority = std::max(0.f, commandPriority * multiplier);
-}
+void Unit::decayCommandPriority(float multiplier) { commandPriority = std::max(0.f, commandPriority * multiplier); }
 
-void Unit::setIndexToInteract(int index) {
-	indexToInteract = index;
-}
+void Unit::setIndexToInteract(int index) { indexToInteract = index; }
 
 Urho3D::String Unit::getInfo() const {
 	return l10nFormat("info_unit",
@@ -281,9 +268,7 @@ Urho3D::String Unit::getInfo() const {
 	                  magic_enum::enum_name(state).data());
 }
 
-const Urho3D::String& Unit::getName() const {
-	return getDbUnit()->name;
-}
+const Urho3D::String& Unit::getName() const { return getDbUnit()->name; }
 
 bool Unit::action(UnitAction unitAction) {
 	assert(unitAction == UnitAction::STOP || unitAction == UnitAction::DEAD || unitAction == UnitAction::DEFEND);
@@ -300,10 +285,10 @@ bool Unit::action(UnitAction unitAction, const ActionParameter& parameter) {
 		return StateManager::changeState(this, UnitState::CHARGE, parameter);
 	case UnitAction::ATTACK:
 		if (getDbUnit()->typeRange) {
-			//TODO perf chyba trzeba dodacparamter do actionParameter
-			//TODO zawsze strzelac? nawet z bliska
+			// TODO perf chyba trzeba dodacparamter do actionParameter
+			// TODO zawsze strzelac? nawet z bliska
 			if (!parameter.thingToInteract->isInCloseRange(getMainGridIndex())) {
-				//jezeli nie jest in close range
+				// jezeli nie jest in close range
 				return StateManager::changeState(this, UnitState::SHOT, parameter);
 			}
 		}
@@ -317,7 +302,7 @@ bool Unit::action(UnitAction unitAction, const ActionParameter& parameter) {
 		return StateManager::changeState(this, UnitState::FOLLOW, parameter);
 	case UnitAction::COLLECT:
 		return StateManager::changeState(this, UnitState::COLLECT, parameter);
-	default: ;
+	default:;
 	}
 }
 
@@ -327,17 +312,11 @@ void Unit::setSparseIndex(int index) {
 	}
 }
 
-float Unit::getModelHeight() const {
-	return dbLevel->modelHeight;
-}
+float Unit::getModelHeight() const { return dbLevel->modelHeight; }
 
-void Unit::setModelData(float modelHeight) const {
-	dbLevel->modelHeight = modelHeight;
-}
+void Unit::setModelData(float modelHeight) const { dbLevel->modelHeight = modelHeight; }
 
-Urho3D::Color Unit::getColor(db_player_colors* col) const {
-	return col->unitColor;
-}
+Urho3D::Color Unit::getColor(db_player_colors* col) const { return col->unitColor; }
 
 void Unit::setVisibility(VisibilityType type) {
 	if (node) {
@@ -357,9 +336,7 @@ void Unit::setVisibility(VisibilityType type) {
 	}
 }
 
-void Unit::resetStateChangePending() {
-	stateChangePending = false;
-}
+void Unit::resetStateChangePending() { stateChangePending = false; }
 
 void Unit::changeColor(SimColorMode mode) {
 	switch (mode) {
@@ -403,46 +380,121 @@ float Unit::getAttackVal(Physical* aim) {
 	return dbLevel->attack;
 }
 
-void Unit::setFormation(short _formation) {
-	formation = _formation;
-}
+void Unit::setFormation(short _formation) { formation = _formation; }
 
 void Unit::resetFormation() {
 	formation = -1;
 	posInState = -1;
 }
 
-void Unit::setPositionInFormation(short _pos) {
-	posInState = _pos;
-}
+void Unit::setPositionInFormation(short _pos) { posInState = _pos; }
 
 void Unit::clearAims() {
 	aims.clear();
 	resetCommandPriority();
 }
 
+UnitRuntimeSaveData Unit::captureRuntimeState() const {
+	const bool pendingNeedsTarget =
+			nextState == UnitState::ATTACK || nextState == UnitState::COLLECT || nextState == UnitState::SHOT;
+	const bool pendingNeedsAim =
+			nextState == UnitState::GO || nextState == UnitState::FOLLOW || nextState == UnitState::CHARGE;
+	return {getUid(),
+			thingToInteract ? thingToInteract->getUid() : 0,
+			stateChangePending && pendingNeedsTarget && nextActionParameter.thingToInteract
+					? nextActionParameter.thingToInteract->getUid()
+					: 0,
+			static_cast<char>(nextState),
+			stateChangePending,
+			currentFrameState,
+			formation,
+			posInState,
+			commandPriority,
+			static_cast<unsigned char>(commandCenter),
+			chargeData ? chargeData->energy : 0.f,
+			aims.saveState(),
+			stateChangePending && pendingNeedsAim && nextActionParameter.aim ? nextActionParameter.aim->saveState()
+																																 : AimSaveData{},
+			aims.saveOrders(getUid())};
+}
+
+void Unit::loadRuntimeState(const UnitRuntimeSaveData& runtime, Physical* target, Physical* pendingTarget,
+							const std::unordered_map<unsigned, Physical*>& byUid) {
+	thingToInteract = target;
+	nextState = static_cast<UnitState>(runtime.nextState);
+	stateChangePending = runtime.stateChangePending;
+	if (stateChangePending) {
+		if (nextState == UnitState::ATTACK || nextState == UnitState::COLLECT || nextState == UnitState::SHOT) {
+			nextActionParameter.thingToInteract = pendingTarget;
+			stateChangePending = pendingTarget != nullptr;
+		} else if (nextState == UnitState::GO || nextState == UnitState::FOLLOW || nextState == UnitState::CHARGE) {
+			nextActionParameter.aim = Aims::createAim(runtime.pendingAim, byUid);
+			stateChangePending = nextActionParameter.aim != nullptr;
+		} else {
+			nextActionParameter.resetUsed();
+		}
+	}
+	if (!stateChangePending) {
+		nextState = state;
+		nextActionParameter.resetUsed();
+	}
+	currentFrameState = runtime.currentFrameState;
+	formation = runtime.formation;
+	posInState = runtime.posInState;
+	commandPriority = runtime.commandPriority;
+	commandCenter = static_cast<MilitaryCenterIdx>(runtime.commandCenter);
+	if (chargeData) {
+		chargeData->energy = runtime.chargeEnergy;
+	}
+	if (state == UnitState::CHARGE) {
+		maxSpeed = dbLevel->maxSpeed * 2.f;
+	}
+	aims.loadState(this, runtime.aim, runtime.orders, byUid);
+}
+
+void Unit::restoreInteraction() {
+	if (!thingToInteract || !thingToInteract->isAlive()) {
+		thingToInteract = nullptr;
+		return;
+	}
+
+	switch (state) {
+	case UnitState::ATTACK:
+		setStartData(this, thingToInteract, CellState::ATTACK);
+		if (thingToInteract->getType() == ObjectType::UNIT) {
+			setSlotData(this, static_cast<Unit*>(thingToInteract));
+		}
+		maxSpeed = dbLevel->maxSpeed / 2.f;
+		break;
+	case UnitState::COLLECT:
+		setStartData(this, thingToInteract, CellState::COLLECT);
+		velocity = Urho3D::Vector2::ZERO;
+		break;
+	case UnitState::SHOT:
+		thingToInteract->upRange();
+		break;
+	default:
+		thingToInteract = nullptr;
+		break;
+	}
+}
+
 void Unit::setNextState(UnitState stateTo, const ActionParameter& actionParameter) {
-	const bool mayHaveAim = nextState == UnitState::GO || nextState == UnitState::CHARGE || nextState ==
-		UnitState::FOLLOW;
+	const bool mayHaveAim =
+			nextState == UnitState::GO || nextState == UnitState::CHARGE || nextState == UnitState::FOLLOW;
 	nextActionParameter.reset(actionParameter, mayHaveAim);
 	nextState = stateTo;
 	stateChangePending = true;
 }
 
-void Unit::setNextState(UnitState stateTo) {
-	setNextState(stateTo, Consts::EMPTY_ACTION_PARAMETER);
-}
+void Unit::setNextState(UnitState stateTo) { setNextState(stateTo, Consts::EMPTY_ACTION_PARAMETER); }
 
-ActionParameter& Unit::getNextActionParameter() {
-	return nextActionParameter;
-}
+ActionParameter& Unit::getNextActionParameter() { return nextActionParameter; }
 
-bool Unit::hasStateChangePending() const {
-	return stateChangePending;
-}
+bool Unit::hasStateChangePending() const { return stateChangePending; }
 
 void Unit::applyForce(float timeStep) {
-	velocity *= 0.5f; //TODO to dac jaki wspolczynnik tarcia terenu
+	velocity *= 0.5f; // TODO to dac jaki wspolczynnik tarcia terenu
 	velocity += acceleration * (timeStep * dbLevel->invMass);
 
 	float y = Game::getEnvironment()->getGroundHeightAt(position);
@@ -466,51 +518,34 @@ void Unit::applyForce(float timeStep) {
 	}
 }
 
-float Unit::getAttackRange() const {
-	return dbLevel->attackRange;
-}
+float Unit::getAttackRange() const { return dbLevel->attackRange; }
 
-float Unit::getMinimalDistance() const {
-	return dbLevel->minDist;
-}
+float Unit::getMinimalDistance() const { return dbLevel->minDist; }
 
-float Unit::getMaxSeparationDistance() const {
-	return dbLevel->maxSep;
-}
+float Unit::getMaxSeparationDistance() const { return dbLevel->maxSep; }
 
-UnitState Unit::getDesiredState() const {
-	return getDbUnit()->desiredState;
-}
+UnitState Unit::getDesiredState() const { return getDbUnit()->desiredState; }
 
-bool Unit::isFirstThingAlive() const {
-	return thingToInteract != nullptr
-		&& thingToInteract->isUsable();
-}
+bool Unit::isFirstThingAlive() const { return thingToInteract != nullptr && thingToInteract->isUsable(); }
 
 void Unit::clean() {
 	if (notAlive(thingToInteract)) {
 		thingToInteract = nullptr;
 	}
-	//aims.clearExpired();
+	// aims.clearExpired();
 }
 
-float Unit::getSightRadius() const {
-	return dbLevel->sightRadius;
-}
+float Unit::getSightRadius() const { return dbLevel->sightRadius; }
 
 Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
-	//TODO bug co to za dziwna funkcja
+	// TODO bug co to za dziwna funkcja
 	const auto vector = Consts::circleCords[i] * (dbLevel->minDist + toFollow->getMinimalDistance()) * 2;
 	return {toFollow->getPosition().x_ + vector.x_, toFollow->getPosition().y_ + vector.y_};
 }
 
-short Unit::getCostSum() const {
-	return getDbUnit()->getSumCost();
-}
+short Unit::getCostSum() const { return getDbUnit()->getSumCost(); }
 
-bool Unit::isInCloseRange(int index) const {
-	return Game::getEnvironment()->isInLocalArea(getMainGridIndex(), index);
-}
+bool Unit::isInCloseRange(int index) const { return Game::getEnvironment()->isInLocalArea(getMainGridIndex(), index); }
 
 std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(Unit* user) {
 	float minDistance = 99999;
@@ -520,10 +555,10 @@ std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(Unit
 
 	for (auto [i, val] : Game::getEnvironment()->getCloseTabIndexesWithValue(mainIndex)) {
 		if (ifSlotFree(i)) {
-			//TODO1
+			// TODO1
 			int index = mainIndex + val;
 			if (Game::getEnvironment()->cellIsPassable(index)) {
-				//TODO2 to chyba sprawdza to samo prawie?
+				// TODO2 to chyba sprawdza to samo prawie?
 				Urho3D::Vector2 posToFollow = getSocketPos(this, i);
 				if (index == user->getMainGridIndex()) {
 					return {{posToFollow, 0}};
@@ -578,17 +613,15 @@ std::vector<int> Unit::getIndexesForRangeUse(Unit* user) const {
 	std::vector<int> indexes;
 	if (belowRangeLimit() <= 0) { return indexes; }
 	const auto env = Game::getEnvironment();
-	const std::vector<int> allIndexes = env->getIndexesInRange(
-	                                                           getPosition(), user->getLevel()->attackRange);
+	const std::vector<int> allIndexes = env->getIndexesInRange(getPosition(), user->getLevel()->attackRange);
 	const int mainIndex = getMainGridIndex();
 	const std::vector<short>& closeIndexes = env->getCloseIndexs(mainIndex);
 
 	for (auto index : allIndexes) {
-		if (env->cellIsAttackable(index)
-			&& mainIndex != index
-			&& std::ranges::find(closeIndexes, index - mainIndex) == closeIndexes.end()) {
-			//TODO better jest juz funkcja intab?
-			//czy to ok?
+		if (env->cellIsAttackable(index) && mainIndex != index &&
+			std::ranges::find(closeIndexes, index - mainIndex) == closeIndexes.end()) {
+			// TODO better jest juz funkcja intab?
+			// czy to ok?
 			indexes.push_back(index);
 		}
 	}
@@ -605,7 +638,7 @@ void Unit::setOccupiedIndexSlot(char index, bool value) {
 	}
 }
 
-bool Unit::ifSlotFree(unsigned char index) const {//TODO perf and clean zwrocic tylko wolne
+bool Unit::ifSlotFree(unsigned char index) const { // TODO perf and clean zwrocic tylko wolne
 	assert(index < 8);
 	return !(useSockets & Flags::bitFlags[index]);
 }

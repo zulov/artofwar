@@ -1,8 +1,8 @@
 #include "Environment.h"
 
-#include <cassert>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Terrain.h>
+#include <cassert>
 #include "EnvConsts.h"
 #include "GridCalculator.h"
 #include "GridCalculatorProvider.h"
@@ -13,45 +13,41 @@
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
-#include "utils/consts.h"
 #include "utils/OtherUtils.h"
+#include "utils/consts.h"
 
-
-Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolution):
-	mapSize(mainMapResolution * BUCKET_GRID_FIELD_SIZE),
-	mainGrid(mainMapResolution, mapSize, 24),
+Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolution) :
+	mapSize(mainMapResolution * BUCKET_GRID_FIELD_SIZE), mainGrid(mainMapResolution, mapSize, 24),
 	buildingGrid(mapSize / BUCKET_GRID_FIELD_SIZE_BUILD, mapSize, 256.f),
 	resourceStaticGrid(mapSize / BUCKET_GRID_FIELD_SIZE_RESOURCE, mapSize, RESOURCE_GRID_QUERY_RADIUS_LEVELS),
-	sparseUnitGrid((short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256.f),
-	terrain(terrain), influenceManager(MAX_PLAYERS, mapSize, terrain),
+	sparseUnitGrid((short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256.f), terrain(terrain),
+	influenceManager(MAX_PLAYERS, mapSize, terrain),
 	calculator(GridCalculatorProvider::get(mainMapResolution, mapSize)) {
 	auto a = {160, 192, 256, 320, 384, 512};
-	assert(std::ranges::any_of(a, [mainMapResolution](int i) {return mainMapResolution == i; }));
+	assert(std::ranges::any_of(a, [mainMapResolution](int i) { return mainMapResolution == i; }));
 }
-
 
 Environment::~Environment() = default;
 
-
 const std::vector<Physical*>& Environment::getNeighboursFromSparseSamePlayer(const Urho3D::Vector2& center,
-                                                                               float radius, char playerId) {
-	return getNeighbours(center, radius, sparseUnitGrid,
-	                     [playerId](const Physical* neighbor) { return neighbor->getPlayer() == playerId && neighbor->isAlive(); });
+																			 float radius, char playerId) {
+	return getNeighbours(center, radius, sparseUnitGrid, [playerId](const Physical* neighbor) {
+		return neighbor->getPlayer() == playerId && neighbor->isAlive();
+	});
 }
 
-const std::vector<Physical*>& Environment::getNeighboursFromTeamNotEq(const Urho3D::Vector2& center,
-                                                                        float radius, char playerId) {
-	return getNeighbours(center, radius, sparseUnitGrid,
-	                     [playerId](const Physical* neighbor) { return neighbor->getPlayer() != playerId && neighbor->isAlive(); });
+const std::vector<Physical*>& Environment::getNeighboursFromTeamNotEq(const Urho3D::Vector2& center, float radius,
+																	  char playerId) {
+	return getNeighbours(center, radius, sparseUnitGrid, [playerId](const Physical* neighbor) {
+		return neighbor->getPlayer() != playerId && neighbor->isAlive();
+	});
 }
 
 bool Environment::isVisible(char player, const Urho3D::Vector2& pos) const {
 	return influenceManager.isVisible(player, pos);
 }
 
-float Environment::getVisibilityScore(char player) const {
-	return influenceManager.getVisibilityScore(player);
-}
+float Environment::getVisibilityScore(char player) const { return influenceManager.getVisibilityScore(player); }
 
 std::vector<int> Environment::getIndexesInRange(int index, float range) const {
 	return mainGrid.getIndexesInRange(index, range);
@@ -75,12 +71,10 @@ void Environment::flipTerrainShaderParam(const Urho3D::String& name) const {
 	}
 }
 
-void Environment::nextVisibilityType() const {
-	influenceManager.nextVisibilityType();
-}
+void Environment::nextVisibilityType() const { influenceManager.nextVisibilityType(); }
 
 void Environment::reAddBonuses(std::span<Building* const> resourceBuildings,
-                               std::span<ResourceEntity* const> resources) const {
+							   std::span<ResourceEntity* const> resources) const {
 	mainGrid.reAddBonuses(resourceBuildings, resources);
 }
 
@@ -89,12 +83,10 @@ void Environment::refreshAllStatic(std::span<ResourceEntity* const> resources, s
 	mainGrid.invalidatePathCache();
 }
 
-short Environment::getOccupationLevel(int index) const {
-	return mainGrid.getGradient(index);
-}
+short Environment::getOccupationLevel(int index) const { return mainGrid.getGradient(index); }
 
 const std::vector<Physical*>& Environment::getNeighbours(const Urho3D::Vector2& center, float radius, Grid& grid,
-                                                          const std::function<bool(const Physical*)>& condition) const {
+														 const std::function<bool(const Physical*)>& condition) const {
 	neighbors.clear();
 	BucketIterator& bucketIterator = grid.getArrayNeight(center, radius);
 	const float squaredRadius = radius * radius;
@@ -121,8 +113,7 @@ const std::vector<Physical*>& Environment::getResources(const Urho3D::Vector2& c
 	return neighbors;
 }
 
-std::vector<int> Environment::getUniqueResourceIndexesInRange(const std::unordered_set<int>& centerIndexes,
-                                                               float radius) const {
+std::vector<int> Environment::getUniqueResourceIndexesInRange(const std::unordered_set<int>& centerIndexes, float radius) const {
 	std::vector<int> indexes;
 	indexes.reserve(100);
 	for (const auto centerIndex : centerIndexes) {
@@ -137,41 +128,27 @@ std::span<Physical* const> Environment::getResourcesAt(int cellIndex) const {
 }
 
 void Environment::addIfInRange(const Urho3D::Vector2& center, Physical* neighbor, float sqRadius,
-                                const std::function<bool(const Physical*)>& condition) const {
-	if (&center != &neighbor->getPosition() && (!condition || condition(neighbor))
+							   const std::function<bool(const Physical*)>& condition) const {
+	if (&center != &neighbor->getPosition() 
+		&& (!condition || condition(neighbor)) 
 		&& center.SqDistXZ(neighbor->getPosition()) < sqRadius) {
 		neighbors.push_back(neighbor);
 	}
 }
 
-const std::vector<Physical*>& Environment::getNeighboursWithCache(const Urho3D::Vector2& center, float radius,
-                                                                   int gridIndex) {
-	assert(gridIndex >= 0);
-	if (mainGrid.onlyOneInside(gridIndex)) {
-		return getNeighbours(center, radius, mainGrid);
-	}//TODO czy ten cache cos wogole daje?
-	const auto cachedNeighbors = mainGrid.getAllFromCache(gridIndex, radius);
-
-	const float squaredRadius = radius * radius;
-	neighbors.clear();
-	auto isInRange = [squaredRadius, &center](const Physical* neighbor) {
-		return (&center != &neighbor->getPosition() && center.SqDistXZ(neighbor->getPosition()) < squaredRadius);
-	};
-	std::ranges::copy_if(*cachedNeighbors, std::back_inserter(neighbors), isInRange);
-
-	return neighbors;
+const std::vector<Physical*>& Environment::getNeighbours(const Urho3D::Vector2& center, float radius) {
+	return getNeighbours(center, radius, mainGrid);
 }
 
 const std::vector<Physical*>& Environment::getNeighboursSimilarAs(const Urho3D::Vector2& center,
-                                                                   const ObjectType objectType,
-                                                                   unsigned short databaseId, char playerId) const {
+																  const ObjectType objectType,
+																  unsigned short databaseId, char playerId) const {
 	return *grids[castC(objectType)]->getArrayNeightSimilarAs(center, databaseId, playerId, 20.f);
 }
 
-const std::vector<Physical*>&
-Environment::getResources(const Urho3D::Vector2& center, int resourceId, int resourceLevel) {
-	const float innerRadius = resourceLevel > 0
-		? resourceStaticGrid.getRadiusForLevel(resourceLevel - 1) : -1.f;
+const std::vector<Physical*>& Environment::getResources(const Urho3D::Vector2& center, int resourceId,
+														int resourceLevel) {
+	const float innerRadius = resourceLevel > 0 ? resourceStaticGrid.getRadiusForLevel(resourceLevel - 1) : -1.f;
 	const float radius = resourceStaticGrid.getRadiusForLevel(resourceLevel);
 	const float sqRadius = radius * radius;
 	const float sqInnerRadius = innerRadius < 0.f ? innerRadius : innerRadius * innerRadius;
@@ -187,18 +164,14 @@ Environment::getResources(const Urho3D::Vector2& center, int resourceId, int res
 	return neighbors;
 }
 
-const std::vector<Physical*>&
-Environment::getBuildingsFromTeamNotEq(const Urho3D::Vector2& center, float radius, char teamId, int buildingId) {
+const std::vector<Physical*>& Environment::getBuildingsFromTeamNotEq(const Urho3D::Vector2& center, float radius, char teamId, int buildingId) {
 	auto condition = [buildingId, teamId](const Physical* building) {
-		return (buildingId < 0 || building->getDbId() == buildingId)
-			&& (building->getTeam() != teamId || teamId < 0);
+		return (buildingId < 0 || building->getDbId() == buildingId) && (building->getTeam() != teamId || teamId < 0);
 	};
 	return getNeighbours(center, radius, buildingGrid, condition);
 }
 
-void Environment::updateInfluenceUnits(std::span<Unit* const> units) const {
-	influenceManager.updateUnits(units);
-}
+void Environment::updateInfluenceUnits(std::span<Unit* const> units) const { influenceManager.updateUnits(units); }
 
 void Environment::updateInfluenceBuildings(std::span<Building* const> buildings) const {
 	influenceManager.updateBuildings(buildings);
@@ -206,7 +179,7 @@ void Environment::updateInfluenceBuildings(std::span<Building* const> buildings)
 }
 
 void Environment::updateVisibility(std::span<Building* const> buildings, std::span<Unit* const> units,
-                                   std::span<ResourceEntity* const> resources) const {
+								   std::span<ResourceEntity* const> resources) const {
 	influenceManager.updateVisibility(buildings, units, resources);
 }
 
@@ -228,12 +201,6 @@ void Environment::addNew(std::span<Unit* const> units) {
 		unit->setSparseIndex(sparseUnitGrid.updateNew(unit));
 	}
 
-	invalidateCaches();
-}
-
-void Environment::invalidateCaches() {
-	mainGrid.invalidateCache();
-	sparseUnitGrid.invalidateCache();
 }
 
 void Environment::addNew(Building* building, bool bulkAdd) {
@@ -243,10 +210,12 @@ void Environment::addNew(Building* building, bool bulkAdd) {
 
 	building->setIndexInInfluence(influenceManager.getIndex(building->getPosition()));
 
-	for (const auto cell : building->getSurroundCells()) {
-		if (mainGrid.isBuildable(cell)) {
-			building->setDeploy(cell);
-			break;
+	if (!building->getDeploy().has_value()) {
+		for (const auto cell : building->getSurroundCells()) {
+			if (mainGrid.isBuildable(cell)) {
+				building->setDeploy(cell);
+				break;
+			}
 		}
 	}
 	assert(building->getDeploy().has_value());
@@ -266,14 +235,11 @@ void Environment::addNew(ResourceEntity* resource, bool bulkAdd) {
 	}
 }
 
-Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) {
-	return mainGrid.repulseObstacle(unit);
-}
+Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) { return mainGrid.repulseObstacle(unit); }
 
 std::optional<Urho3D::Vector2> Environment::validatePosition(int index, const Urho3D::Vector2& position) const {
 	return mainGrid.getDirectionFrom(index, position);
 }
-
 
 const std::vector<Physical*>& Environment::getNeighbours(MouseHeld& held, char playerId) {
 	for (const auto grid : grids) {
@@ -292,13 +258,9 @@ float Environment::getGroundHeightAt(float x, float z) const {
 	return 0.f;
 }
 
-float Environment::getGroundHeightAt(const Urho3D::Vector2& pos) const {
-	return getGroundHeightAt(pos.x_, pos.y_);
-}
+float Environment::getGroundHeightAt(const Urho3D::Vector2& pos) const { return getGroundHeightAt(pos.x_, pos.y_); }
 
-Urho3D::Vector3 Environment::getPosWithHeightAt(float x, float z) const {
-	return {x, getGroundHeightAt(x, z), z};
-}
+Urho3D::Vector3 Environment::getPosWithHeightAt(float x, float z) const { return {x, getGroundHeightAt(x, z), z}; }
 
 Urho3D::Vector3 Environment::getPosWithHeightAt(int index) const {
 	const auto center = calculator->getCenter(index);
@@ -312,14 +274,12 @@ float Environment::getGroundHeightPercentScaled(float x, float z, float div) con
 	return 0.f;
 }
 
-bool Environment::validateStatic(const Urho3D::UCharVector2& size, const Urho3D::Vector2& position,
-                                 bool isBuilding) const {
-	return mainGrid.validateAdd(size,
-	                            {calculator->getIndex(position.x_), calculator->getIndex(position.y_)}, isBuilding);
+bool Environment::validateStatic(const Urho3D::UCharVector2& size, const Urho3D::Vector2& position, bool isBuilding) const {
+	return mainGrid.validateAdd(size, {calculator->getIndex(position.x_), calculator->getIndex(position.y_)},
+								isBuilding);
 }
 
-bool Environment::validateStatic(const Urho3D::UCharVector2& size, const Urho3D::UShortVector2& bucketCords,
-                                 bool isBuilding) const {
+bool Environment::validateStatic(const Urho3D::UCharVector2& size, const Urho3D::UShortVector2& bucketCords,  bool isBuilding) const {
 	return mainGrid.validateAdd(size, bucketCords, isBuilding);
 }
 
@@ -328,18 +288,14 @@ bool Environment::validateStatic(const Urho3D::UCharVector2& size, int index, bo
 }
 
 std::optional<Urho3D::Vector2> Environment::tryGetValidPosition(const Urho3D::UCharVector2& size,
-	                                                            const Urho3D::UShortVector2& bucketCords,
-	                                                            bool isBuilding) const {
+																const Urho3D::UShortVector2& bucketCords,
+																bool isBuilding) const {
 	return mainGrid.tryGetValidPosition(size, bucketCords, isBuilding);
 }
 
-Urho3D::Vector2 Environment::getCenter(int index) const {
-	return calculator->getCenter(index);
-}
+Urho3D::Vector2 Environment::getCenter(int index) const { return calculator->getCenter(index); }
 
-bool Environment::cellInState(int index, CellState state) const {
-	return mainGrid.cellInState(index, state);
-}
+bool Environment::cellInState(int index, CellState state) const { return mainGrid.cellInState(index, state); }
 
 void Environment::incCell(int index, CellState cellState) const {
 	assert(calculator->isValidIndex(index));
@@ -356,11 +312,10 @@ void Environment::removeFromGrids(std::span<Unit* const> units) {
 		mainGrid.removeAt(unit->getMainGridIndex(), unit);
 		sparseUnitGrid.removeAt(unit->getSparseIndex(), unit);
 	}
-	invalidateCaches();
 }
 
 void Environment::removeFromGrids(std::span<Building* const> buildingsToDispose,
-                                  std::span<ResourceEntity* const> resourcesToDispose) {
+								  std::span<ResourceEntity* const> resourcesToDispose) {
 	for (const auto building : buildingsToDispose) {
 		mainGrid.removeStatic(building);
 		mainGrid.removeDeploy(building);
@@ -388,21 +343,17 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 	influenceManager.draw(environmentDebugMode, index);
 }
 
-const std::vector<short>& Environment::getCloseIndexs(int center) const {
-	return mainGrid.getCloseIndexes(center);
-}
+const std::vector<short>& Environment::getCloseIndexs(int center) const { return mainGrid.getCloseIndexes(center); }
 
 std::optional<Urho3D::Vector2> Environment::getPosFromIndexes(const Urho3D::UCharVector2& buildingSize,
-                                                              unsigned char player,
-                                                              std::span<const unsigned> indexes) {
+															  unsigned char player, std::span<const unsigned> indexes) {
 	const float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
 	for (const auto centerIndex : indexes) {
 		Urho3D::Vector2 center = influenceManager.getCenter(centerIndex);
 		for (const auto index : mainGrid.getCloseCenters(center, ratio)) {
-			//ten index jest widoczny
+			// ten index jest widoczny
 			auto gridCenter = calculator->getCenter(index);
-			if (validateStatic(buildingSize, gridCenter, true) &&
-				influenceManager.isVisible(player, gridCenter)) {
+			if (validateStatic(buildingSize, gridCenter, true) && influenceManager.isVisible(player, gridCenter)) {
 				return gridCenter;
 			}
 		}
@@ -411,9 +362,9 @@ std::optional<Urho3D::Vector2> Environment::getPosFromIndexes(const Urho3D::UCha
 }
 
 std::optional<Urho3D::Vector2> Environment::getPosToCreate(std::span<const float> result,
-                                                           const Urho3D::UCharVector2& buildingSize,
-                                                           unsigned char player) {
-	auto &indexes = influenceManager.getAreas(result, player);
+														   const Urho3D::UCharVector2& buildingSize,
+														   unsigned char player) {
+	auto& indexes = influenceManager.getAreas(result, player);
 
 	return getPosFromIndexes(buildingSize, player, indexes);
 }
@@ -431,31 +382,28 @@ void Environment::drawInfluence() {
 	mainGrid.drawAll();
 }
 
-bool Environment::cellIsPassable(int index) const {
-	return mainGrid.isPassable(index);
-}
+bool Environment::cellIsPassable(int index) const { return mainGrid.isPassable(index); }
 
-bool Environment::cellIsCollectable(int index) const {
-	return mainGrid.cellIsCollectable(index);
-}
+bool Environment::cellIsCollectable(int index) const { return mainGrid.cellIsCollectable(index); }
 
-bool Environment::cellIsAttackable(int index) const {
-	return mainGrid.cellIsAttackable(index);
-}
+bool Environment::cellIsAttackable(int index) const { return mainGrid.cellIsAttackable(index); }
 
 std::optional<Urho3D::Vector2> Environment::getCenterOf(CenterType type, unsigned char player) const {
 	return influenceManager.getCenterOf(type, player);
 }
 
-float Environment::getDiffOfCenters(CenterType type1, char id1, CenterType type2, char id2,
-                                    float defaultVal) const {
+float Environment::getDiffOfCenters(CenterType type1, char id1, CenterType type2, char id2, float defaultVal) const {
 	const auto optCenter1 = getCenterOf(type1, id1);
-	if (!optCenter1.has_value()) { return defaultVal; }
+	if (!optCenter1.has_value()) {
+		return defaultVal;
+	}
 	const auto optCenter2 = getCenterOf(type2, id2);
-	if (!optCenter2.has_value()) { return defaultVal; }
+	if (!optCenter2.has_value()) {
+		return defaultVal;
+	}
 
-	return (optCenter1.value() - optCenter2.value()).Length()
-		/ (calculator->getFieldSize() * calculator->getResolution());
+	return (optCenter1.value() - optCenter2.value()).Length() /
+			(calculator->getFieldSize() * calculator->getResolution());
 }
 
 bool Environment::anyCloseEnough(std::span<const int> indexes, int center, float distThreshold) const {
@@ -470,16 +418,14 @@ bool Environment::isInLocal1and2Area(int getMainCell, int aimIndex) const {
 	return mainGrid.isInLocal1and2Area(getMainCell, aimIndex);
 }
 
-int Environment::closestPassableCell(int posIndex) const {
-	return mainGrid.closestPassableCell(posIndex);
-}
+int Environment::closestPassableCell(int posIndex) const { return mainGrid.closestPassableCell(posIndex); }
 
 Urho3D::Vector3 Environment::getValidPosition(const Urho3D::UCharVector2& size, const Urho3D::Vector2& pos) const {
 	return getValidPosition(size, calculator->getCords(pos));
 }
 
 Urho3D::Vector3 Environment::getValidPosition(const Urho3D::UCharVector2& size,
-                                              const Urho3D::UShortVector2& bucketCords) const {
+											  const Urho3D::UShortVector2& bucketCords) const {
 	auto pos2d = mainGrid.getValidPosition(size, bucketCords);
 	return getPosWithHeightAt(pos2d.x_, pos2d.y_);
 }
@@ -494,13 +440,9 @@ const std::vector<int>* Environment::findPath(int startIdx, std::span<const int>
 	return mainGrid.findPath(startIdx, endIndexes, true);
 }
 
-const std::vector<int>* Environment::findPath(int startIdx, int endIdx) {
-	return mainGrid.findPath(startIdx, endIdx);
-}
+const std::vector<int>* Environment::findPath(int startIdx, int endIdx) { return mainGrid.findPath(startIdx, endIdx); }
 
-void Environment::prepareGridToFind() const {
-	mainGrid.prepareGridToFind();
-}
+void Environment::prepareGridToFind() const { mainGrid.prepareGridToFind(); }
 
 content_info* Environment::getContentInfo(Urho3D::Vector2 centerPercent, bool checks[], int activePlayer) {
 	const float x = getPosFromPercent(centerPercent.x_);
@@ -510,16 +452,14 @@ content_info* Environment::getContentInfo(Urho3D::Vector2 centerPercent, bool ch
 	return influenceManager.getContentInfo({x, z}, state, addInfo, checks, activePlayer);
 }
 
-float Environment::getPosFromPercent(float value) const {
-	return mapSize * (value - 0.5);
-}
+float Environment::getPosFromPercent(float value) const { return mapSize * (value - 0.5); }
 
 Urho3D::Vector2 Environment::getPosFromPercent(float x, float z) const {
 	return {getPosFromPercent(x), getPosFromPercent(z)};
 }
 
 Physical* Environment::closestPhysical(int startIdx, const std::vector<Physical*>& things,
-                                       const std::function<bool(Physical*)>& condition, bool closeEnough) {
+									   const std::function<bool(Physical*)>& condition, bool closeEnough) {
 	if (things.empty()) {
 		return nullptr;
 	}
@@ -530,7 +470,7 @@ Physical* Environment::closestPhysical(int startIdx, const std::vector<Physical*
 
 	for (const auto entity : things) {
 		if (entity->isAlive() && condition(entity)) {
-			//TODO perf ogranizcyc liczbe indeksow, np wybrac jeden dla obiektu
+			// TODO perf ogranizcyc liczbe indeksow, np wybrac jeden dla obiektu
 			entity->addIndexesForUse(allIndexes);
 			thingsFiltered.push_back(entity);
 		}
@@ -549,8 +489,7 @@ Physical* Environment::closestPhysical(int startIdx, const std::vector<Physical*
 	return nullptr;
 }
 
-Physical* Environment::closestPhysicalSimple(const Urho3D::Vector2& center, const std::vector<Physical*>& things,
-                                             float range) const {
+Physical* Environment::closestPhysicalSimple(const Urho3D::Vector2& center, const std::vector<Physical*>& things, float range) const {
 	if (things.empty()) {
 		return nullptr;
 	}

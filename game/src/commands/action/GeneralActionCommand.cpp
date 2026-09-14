@@ -1,4 +1,5 @@
 #include "GeneralActionCommand.h"
+#include "scene/load/RuntimeSaveData.h"
 
 #include "Game.h"
 #include "objects/queue/QueueActionType.h"
@@ -23,4 +24,8 @@ void GeneralActionCommand::execute() {
 			}
 		}
 	}
+}
+
+PendingCommandSaveData GeneralActionCommand::saveState(unsigned short order) const {
+	return {order, PendingCommandKind::GENERAL_ACTION, static_cast<char>(action), 0, static_cast<unsigned short>(id), player};
 }

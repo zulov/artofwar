@@ -1,31 +1,28 @@
 #pragma once
 #include "Game.h"
-#include "database/db_struct.h"
 #include "State.h"
 #include "StateManager.h"
 #include "StateUtils.h"
+#include "UnitState.h"
+#include "database/db_struct.h"
+#include "env/Environment.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/Unit.h"
-#include "UnitState.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "env/Environment.h"
-
 
 class AttackState : public State {
 public:
-	AttackState(): State({
-		                     UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
-		                     UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE
-	                     }) { }
+	AttackState() :
+		State({UnitState::STOP, UnitState::DEFEND, UnitState::DEAD, UnitState::GO, UnitState::FOLLOW,
+			   UnitState::CHARGE}) {}
 
 	~AttackState() = default;
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
-		return parameter.isThingAlive()
-			&& parameter.thingToInteract->indexCanBeUse(unit->getMainGridIndex())
-			&& parameter.thingToInteract->belowCloseLimit() > 0;
-		//sprawdzic cell limit
+		return parameter.isThingAlive() && parameter.thingToInteract->indexCanBeUse(unit->getMainGridIndex()) &&
+				parameter.thingToInteract->belowCloseLimit() > 0;
+		// sprawdzic cell limit
 	}
 
 	void setData(Unit* unit, Physical* const thing) {
@@ -69,7 +66,7 @@ public:
 		}
 		++unit->currentFrameState;
 		if (unit->currentFrameState >= unit->dbLevel->attackReload) {
-			const auto val = unit->getAttackVal(unit)*10;
+			const auto val = unit->getAttackVal(first) * 10;
 			const auto [value, died] = first->absorbAttack(val);
 			Game::getEnvironment()->addAttack(unit->getPlayer(), first->getPosition(), value);
 			if (died) {

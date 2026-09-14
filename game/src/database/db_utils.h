@@ -2,43 +2,75 @@
 #include <sqlite3/sqlite3.h>
 #include <cstdio>
 #include <iostream>
+#include <string>
 #include <type_traits>
 
-inline sqlite3* openDb(const std::string& name, bool readOnly = true) {
-	sqlite3* database;
+inline sqlite3* openDb(const std::string& name, bool readOnly = true, std::string* error = nullptr) {
+	sqlite3* database = nullptr;
 	int flags = (readOnly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_READWRITE) | SQLITE_OPEN_NOMUTEX;
 	if (const int rc = sqlite3_open_v2(name.c_str(), &database, flags, nullptr)) {
-		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << name << std::endl;
-		sqlite3_close_v2(database);
+		const std::string detail = database ? sqlite3_errmsg(database) : "unknown error";
+		if (error) {
+			*error = "open failed (code " + std::to_string(rc) + "): " + detail;
+		}
+		std::cerr << "Error opening SQLite3 database: " << detail << " " << name << std::endl;
+		if (database) {
+			sqlite3_close_v2(database);
+		}
 		return nullptr;
 	}
 	sqlite3_busy_timeout(database, 100);
 	return database;
 }
 
-inline void ifError(int rc, char* error, const std::string& sql) {
-	if (rc != SQLITE_OK && rc != SQLITE_DONE) {
-		fprintf(stderr, "SQL error %d: %s\t%s\n", rc, error ? error : "(no details)", sql.c_str());
-		if (error) { sqlite3_free(error); }
+inline bool ifError(int rc, const char* error, const std::string& sql) {
+	if (rc == SQLITE_OK || rc == SQLITE_DONE) {
+		return true;
 	}
+	fprintf(stderr, "SQL error %d: %s\t%s\n", rc, error ? error : "(no details)", sql.c_str());
+	return false;
+}
+
+inline bool execSql(sqlite3* database, const char* sql) {
+	char* error = nullptr;
+	const int rc = sqlite3_exec(database, sql, nullptr, nullptr, &error);
+	const bool success = ifError(rc, error, sql);
+	if (error) {
+		sqlite3_free(error);
+	}
+	return success;
 }
 
 template <typename Creator>
-void loadFromTable(sqlite3* database, const std::string& sqlStr, Creator createFn) {
+bool loadFromTable(sqlite3* database, const std::string& sqlStr, Creator createFn, std::string* error = nullptr) {
+	auto reportError = [&](const std::string& message) {
+		if (error) {
+			*error = message;
+		}
+		std::cerr << "[SQLite ERROR] " << message << "\n";
+	};
+
+	if (!database) {
+		reportError("database is not open");
+		return false;
+	}
 	const char* sql = sqlStr.c_str();
 	sqlite3_stmt* stmt = nullptr;
 	int rc = sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr);
 	if (rc != SQLITE_OK) {
-		std::cerr << "[SQLite ERROR] sqlite3_prepare_v2 failed\n";
-		std::cerr << "Code: " << rc << "\n";
-		std::cerr << "Message: " << sqlite3_errmsg(database) << "\n";
-		std::cerr << "SQL: " << sqlStr << "\n";
-		return;
+		reportError("prepare failed (code " + std::to_string(rc) + "): " + sqlite3_errmsg(database) +
+				"; SQL: " + sqlStr + "; likely an old save schema or missing column");
+		return false;
 	}
 
-	while (sqlite3_step(stmt) == SQLITE_ROW) { createFn(stmt); }
+	while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) { createFn(stmt); }
+	if (rc != SQLITE_DONE) {
+		reportError("query failed (code " + std::to_string(rc) + "): " + sqlite3_errmsg(database) +
+				"; SQL: " + sqlStr);
+	}
 
 	sqlite3_finalize(stmt);
+	return rc == SQLITE_DONE;
 }
 
 template <typename T>
@@ -59,4 +91,7 @@ template <typename T> inline unsigned char asUByte(sqlite3_stmt* stmt, T iCol) {
 template <typename T> inline const char* asText(sqlite3_stmt* stmt, T iCol) { return reinterpret_cast<const char*>(sqlite3_column_text(stmt, col(iCol))); }
 
 template <typename T> inline unsigned asHex(sqlite3_stmt* stmt, T iCol) { return static_cast<unsigned>(std::strtoul(asText(stmt, col(iCol)), nullptr, 16)); }
+
+template <typename T>
+T readRow(sqlite3_stmt* stmt, int precision);
 

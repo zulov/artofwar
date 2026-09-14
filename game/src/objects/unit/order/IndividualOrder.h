@@ -13,6 +13,8 @@ public:
 	bool expired() override;
 	bool add() override;
 	short getSize() const override;
+	PendingCommandSaveData saveState(unsigned short order) const override;
+
 private:
 	void addCollectAim() override;
 	void addTargetAim() override;

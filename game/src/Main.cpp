@@ -1,24 +1,25 @@
 #include "Main.h"
 
-#include <numeric>
 #include <Urho3D/Core/CoreEvents.h>
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
 #include <Urho3D/Engine/EngineDefs.h>
 #include <Urho3D/Graphics/Camera.h>
 #include <Urho3D/Graphics/Graphics.h>
+#include <Urho3D/Graphics/RenderPath.h>
 #include <Urho3D/Graphics/Renderer.h>
-#include <Urho3D/Input/Input.h>
 #include <Urho3D/IO/FileSystem.h>
 #include <Urho3D/IO/Log.h>
+#include <Urho3D/Input/Input.h>
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/SceneEvents.h>
 #include <Urho3D/UI/Button.h>
+#include <Urho3D/UI/ProgressBar.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
-#include <Urho3D/Graphics/RenderPath.h>
-#include <Urho3D/UI/ProgressBar.h>
+#include <iostream>
+#include <numeric>
 
 #include "camera/CameraEnums.h"
 #include "camera/CameraManager.h"
@@ -28,9 +29,12 @@
 #include "database/DatabaseCache.h"
 #include "database/db_grah_structs.h"
 #include "debug/DebugLineRepo.h"
+#include "env/Environment.h"
+#include "env/influence/CenterType.h"
 #include "hud/Hud.h"
 #include "hud/HudData.h"
 #include "hud/MySprite.h"
+#include "hud/UiUtils.h"
 #include "hud/window/in_game_menu/middle/FileFormData.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "hud/window/selected/SelectedHudElement.h"
@@ -39,25 +43,21 @@
 #include "objects/projectile/ProjectileManager.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
+#include "player/Possession.h"
+#include "player/Resources.h"
+#include "player/ai/PossessionMetric.h"
 #include "scene/LevelBuilder.h"
 #include "scene/load/dbload_container.h"
 #include "simulation/FrameInfo.h"
 #include "simulation/SimGlobals.h"
 #include "simulation/Simulation.h"
-#include "env/Environment.h"
-#include "env/influence/CenterType.h"
-#include "hud/UiUtils.h"
-#include "player/Possession.h"
-#include "player/Resources.h"
-#include "player/ai/PossessionMetric.h"
 #include "simulation/formation/FormationManager.h"
 #include "utils/CountUtils.h"
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
-
 Main::Main(Urho3D::Context* context) : Application(context), useMouseMode_(Urho3D::MM_ABSOLUTE), saver(100),
-                                       gameState(GameState::STARTING), loadingProgress(4) {
+									   gameState(GameState::STARTING), loadingProgress(4) {
 	if (!engineParameters_[Urho3D::EP_HEADLESS].GetBool()) {
 		MySprite::RegisterObject(context);
 	}
@@ -102,8 +102,7 @@ void Main::Setup() {
 		engineParameters_[Urho3D::EP_LOG_NAME] = "logs/" + GetTypeName() + ".log";
 	}
 	if (!SIM_GLOBALS.HEADLESS) {
-		Game::setConsole(GetSubsystem<Urho3D::Console>())
-			->setLog(GetSubsystem<Urho3D::Log>());
+		Game::setConsole(GetSubsystem<Urho3D::Console>())->setLog(GetSubsystem<Urho3D::Log>());
 	}
 	if (!SIM_GLOBALS.HEADLESS || !SIM_GLOBALS.FAKE_TERRAIN) {
 		Game::setCache(GetSubsystem<Urho3D::ResourceCache>());
@@ -133,7 +132,7 @@ void Main::Start() {
 }
 
 void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>> funcs1,
-                       std::initializer_list<const std::function<const std::span<const float>(Player*)>> funcs2) const {
+					   std::initializer_list<const std::function<const std::span<const float>(Player*)>> funcs2) const {
 	std::string buffer;
 	buffer.reserve(1024);
 	for (const auto player : Game::getPlayersMan()->getAllPlayers()) {
@@ -159,26 +158,26 @@ void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>
 void Main::writeOutput() const {
 	if (!outputName.Empty()) {
 		writeOutput(
-		            {
-			            [](Player* p) -> float { return p->getScore(); },
-			            [](Player* p) -> float { return p->getPossession()->getUnitsNumber(); },
-			            [](Player* p) -> float { return p->getPossession()->getBuildingsNumber(); }
-		            },
-		            {
-			            [](Player* p) -> std::span<float> { return p->getResources()->getValues(); },
-			            [](Player* p) -> std::span<float> { return p->getResources()->getSumValues(); },
+				{
+					[](Player* p) -> float { return p->getScore(); },
+					[](Player* p) -> float { return p->getPossession()->getUnitsNumber(); },
+					[](Player* p) -> float { return p->getPossession()->getBuildingsNumber(); }
+				},
+				{
+					[](Player* p) -> std::span<float> { return p->getResources()->getValues(); },
+					[](Player* p) -> std::span<float> { return p->getResources()->getSumValues(); },
 
-			            [](Player* p) -> const std::span<const float> { return p->getPossession()->getMetrics()->unitsSum; },
-			            [](Player* p) -> const std::span<const float> { return p->getPossession()->getMetrics()->buildingsSum; }
-		            });
+					[](Player* p) -> const std::span<const float> { return p->getPossession()->getMetrics()->unitsSum; },
+					[](Player* p) -> const std::span<const float> { return p->getPossession()->getMetrics()->buildingsSum; }
+});
 	}
 }
 
 void Main::setCameraPos() const {
 	if (!SIM_GLOBALS.HEADLESS) {
 		auto camPos = Game::getEnvironment()
-		              ->getCenterOf(CenterType::BUILDING, Game::getPlayersMan()->getActivePlayerID())
-		              .value_or(Urho3D::Vector2::ZERO);
+							  ->getCenterOf(CenterType::BUILDING, Game::getPlayersMan()->getActivePlayerID())
+							  .value_or(Urho3D::Vector2::ZERO);
 		Game::getCameraManager()->changePosition(camPos);
 	}
 }
@@ -195,9 +194,8 @@ void Main::Stop() {
 
 	if (!SIM_GLOBALS.HEADLESS) { engine_->DumpResources(true); }
 
-	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-	                                                                            std::chrono::system_clock::now() -
-	                                                                            SimGlobals::SUPER_START);
+	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() -
+																				SimGlobals::SUPER_START);
 	Count::print_x2y();
 	Count::print_counters();
 	std::cout << "ENDED at " << duration.count() << " ms" << std::endl;
@@ -251,7 +249,7 @@ void Main::running(const float timeStep) {
 void Main::HandleUpdate(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
 	switch (gameState) {
 	case GameState::MENU_MAIN:
-		//changeState(GameState::LOADING);
+		// changeState(GameState::LOADING);
 		break;
 	case GameState::LOADING:
 		load(saveToLoad, nullptr);
@@ -263,7 +261,6 @@ void Main::HandleUpdate(Urho3D::StringHash eventType, Urho3D::VariantMap& eventD
 		break;
 	case GameState::CLOSING:
 		disposeScene();
-
 		changeState(GameState::LOADING);
 		break;
 	case GameState::NEW_GAME:
@@ -271,7 +268,7 @@ void Main::HandleUpdate(Urho3D::StringHash eventType, Urho3D::VariantMap& eventD
 		break;
 	case GameState::STARTING:
 		break;
-	default: ;
+	default:;
 	}
 }
 
@@ -317,26 +314,27 @@ void Main::InitLocalizationSystem() const {
 }
 
 void Main::save(const Urho3D::String& name) {
-	// TODO id mapy wpisac
-	saver.createSave(name, simulation->getUnits(), simulation->getBuildings(), simulation->getResources(),
-					 Game::getPlayersMan()->getAllPlayers(), 1, Game::getEnvironment()->getResolution());	
+	if (!saver.createSave(name, simulation->getUnits(), simulation->getBuildings(), simulation->getResources(),
+					  Game::getPlayersMan()->getAllPlayers(), levelBuilder->getMapId(),
+					  Game::getEnvironment()->getResolution())) {
+		std::cerr << "[Save Error] " << saver.getError() << "\n";
+		URHO3D_LOGERROR("{}", saver.getError());
+	}
 }
 
-void Main::createSimulation() {
-	simulation = new Simulation(Game::getEnvironment());
-}
+void Main::createSimulation() { simulation = new Simulation(Game::getEnvironment()); }
 
 void Main::setSimpleManagers() {
 	Game::setCameraManager(new CameraManager())
-		->setFormationManager(new FormationManager())
-		->setPlayersManager(new PlayersManager())
-		->setColorPaletteRepo(new ColorPaletteRepo());
+			->setFormationManager(new FormationManager())
+			->setPlayersManager(new PlayersManager())
+			->setColorPaletteRepo(new ColorPaletteRepo());
 }
 
 void Main::updateProgress(Progress& progress) const {
 	if (!SIM_GLOBALS.HEADLESS) {
-		std::string msg = Game::getLocalization()->Get("load_msg_" +
-		                                               Urho3D::String((int)loadingProgress.currentStage)).CString();
+		std::string msg =
+				Game::getLocalization()->Get("load_msg_" + Urho3D::String((int)loadingProgress.currentStage)).CString();
 		progress.inc(std::move(msg));
 		hud->updateLoading(progress.getProgress());
 	} else {
@@ -350,7 +348,7 @@ void Main::load(const Urho3D::String& saveName, NewGameForm* form) {
 		case 0: {
 			RandGen::reset(SIM_GLOBALS.RANDOM);
 			ProjectileManager::reset();
-			//disposeScene();
+			// disposeScene();
 			Game::getDatabase()->refreshAfterParametersRead();
 			setSimpleManagers();
 
@@ -360,7 +358,16 @@ void Main::load(const Urho3D::String& saveName, NewGameForm* form) {
 				Game::getPlayersMan()->load(form);
 			} else {
 				loader.createLoad(saveName, SIM_GLOBALS.CURRENT_RUN > 0);
-				Game::getPlayersMan()->load(loader.loadPlayers());
+				if (loader.hasError()) {
+					abortLoad(loader.getError());
+					return;
+				}
+				const auto players = loader.loadPlayers();
+				if (loader.hasError() || !players) {
+					abortLoad(loader.getError());
+					return;
+				}
+				Game::getPlayersMan()->load(players);
 			}
 
 			if (!engineParameters_[Urho3D::EP_HEADLESS].GetBool()) {
@@ -375,6 +382,10 @@ void Main::load(const Urho3D::String& saveName, NewGameForm* form) {
 				levelBuilder->createScene(form);
 			} else {
 				levelBuilder->createScene(loader);
+				if (loader.hasError()) {
+					abortLoad(loader.getError());
+					return;
+				}
 			}
 		}
 		break;
@@ -403,9 +414,16 @@ void Main::load(const Urho3D::String& saveName, NewGameForm* form) {
 			setCameraPos();
 			break;
 		case 3:
-			delete form; //TODO trzeba ustawic na null
+			const bool loadingSave = form == nullptr;
+			delete form; // TODO trzeba ustawic na null
+			if (loadingSave) {
+				simulation->restorePendingCommands(loader);
+			}
 			loader.end();
 			Game::reset();
+			if (loadingSave && loader.getData()->frame) {
+				Game::getFrameInfo()->loadState(*loader.getData()->frame);
+			}
 			changeState(GameState::RUNNING);
 			inited = true;
 			break;
@@ -416,6 +434,32 @@ void Main::load(const Urho3D::String& saveName, NewGameForm* form) {
 
 void Main::createEnv(unsigned short mainMapResolution) const {
 	Game::setEnvironment(new Environment(levelBuilder->getTerrain(), mainMapResolution));
+}
+
+void Main::abortLoad(const std::string& error) {
+	std::cerr << error << "\n";
+	URHO3D_LOGERROR("{}", error);
+	loader.end();
+
+	delete controls;
+	controls = nullptr;
+	delete Game::getPlayersMan();
+	Game::setPlayersManager(nullptr);
+	delete Game::getColorPaletteRepo();
+	Game::setColorPaletteRepo(nullptr);
+	delete Game::getFormationManager();
+	Game::setFormationManager(nullptr);
+	delete Game::getCameraManager();
+	Game::setCameraManager(nullptr);
+	delete levelBuilder;
+	levelBuilder = nullptr;
+
+	loadingProgress.reset();
+	if (SIM_GLOBALS.HEADLESS) {
+		engine_->Exit();
+	} else {
+		changeState(GameState::MENU_MAIN);
+	}
 }
 
 void Main::changeState(GameState newState) {
@@ -484,9 +528,7 @@ void Main::HandleLoadGame(Urho3D::StringHash eventType, Urho3D::VariantMap& even
 	saveToLoad = Urho3D::String(fileName);
 }
 
-void Main::HandleCloseGame(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
-	engine_->Exit();
-}
+void Main::HandleCloseGame(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) { engine_->Exit(); }
 
 void Main::HandleLeftMenuButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
 	const auto hudData = HudData::getFromElement(eventData);
@@ -494,7 +536,7 @@ void Main::HandleLeftMenuButton(Urho3D::StringHash eventType, Urho3D::VariantMap
 	switch (hudData->getType()) {
 	case ActionType::BUILDING_CREATE:
 		return controls->toBuild(hudData);
-	default: ;
+	default:;
 		controls->order(hudData->getId(), hudData->getType());
 	}
 }
@@ -561,7 +603,7 @@ void Main::SetupViewport() {
 	auto v = new Urho3D::Viewport(context_, Game::getScene(), Game::getCameraManager()->getComponent());
 	Urho3D::SharedPtr<Urho3D::Viewport> viewport(v);
 
-	//v->GetRenderPath()->Append(Game::getCache()->GetResource<XMLFile>("PostProcess/FXAA2.xml"));
+	// v->GetRenderPath()->Append(Game::getCache()->GetResource<XMLFile>("PostProcess/FXAA2.xml"));
 
 	const auto renderer = GetSubsystem<Urho3D::Renderer>();
 	if (renderer) {
@@ -726,7 +768,7 @@ void Main::miniReadParameters() const {
 		if (arguments[i].Length() > 1 && arguments[i][0] == '-') {
 			Urho3D::String argument = arguments[i].Substring(1).ToLower();
 			const Urho3D::String value = i + 1 < arguments.Size() ? arguments[i + 1] : Urho3D::String::EMPTY;
-			//TODO czy to dalej potrzbne
+			// TODO czy to dalej potrzbne
 			if (argument == "headless") {
 				SimGlobals::HEADLESS = true;
 			}

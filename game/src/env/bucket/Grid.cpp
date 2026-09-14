@@ -18,13 +18,11 @@ Grid::Grid(unsigned short resolution, float size, float maxQueryRadius)
 	  resolution(resolution), sqResolution(resolution * resolution) {
 	buckets = ArrayProvider<Bucket>::get(sqResolution);
 	tempSelected = new std::vector<Physical*>();
-	cache = new std::vector<Physical*>();
 }
 
 Grid::~Grid() {
 	ArrayProvider<Bucket>::release(buckets, sqResolution);
 	delete tempSelected;
-	delete cache;
 }
 
 int Grid::update(Unit* unit, int currentIndex, bool shouldChangeFlag) const {
@@ -55,10 +53,6 @@ BucketIterator& Grid::getArrayNeight(const Urho3D::Vector2& position, float radi
 
 BucketIterator& Grid::getArrayNeight(int center, float radius) {
 	return *iterator.init(levelCache->get(radius, center), center, this);
-}
-
-bool Grid::onlyOneInside(int index) const {
-	return buckets[index].getSize() == 1;
 }
 
 void Grid::removeAt(int index, Physical* entity) const {
@@ -133,16 +127,6 @@ std::vector<int> Grid::getCloseCenters(Urho3D::Vector2& center, float radius) co
 	return indexes;
 }
 
-void Grid::invalidateCache() {
-	invalidateCache(-1, -1.f);
-}
-
-void Grid::invalidateCache(int currentIdx, float radius) {
-	cache->clear();
-	prevIndex = currentIdx;
-	prevRadius = radius;
-}
-
 std::vector<Physical*>* Grid::getArrayNeightSimilarAs(const Urho3D::Vector2& center,
                                                       unsigned short databaseId, char playerId, float radius) {
 	//TODO clean prawie to samo co wy�ej
@@ -164,27 +148,4 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(const Urho3D::Vector2& cen
 	}
 
 	return tempSelected;
-}
-
-std::vector<Physical*>* Grid::getAllFromCache(int currentIdx, float radius) {
-	if (currentIdx == prevIndex && radius == prevRadius) {
-		return cache;
-	}
-	return getAll(currentIdx, radius);
-}
-
-std::vector<Physical*>* Grid::getAll(int currentIdx, float radius) {
-	invalidateCache(currentIdx, radius);
-	const auto levels = levelCache->get(radius, currentIdx);
-
-	for (const auto idx : *levels) {
-		addFromCell(idx, currentIdx);
-	}
-
-	return cache;
-}
-
-void Grid::addFromCell(short shiftIdx, int currentIdx) const {
-	const auto content = getContentAt(shiftIdx + currentIdx);
-	cache->insert(cache->end(), content.begin(), content.end());
 }

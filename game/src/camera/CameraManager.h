@@ -9,7 +9,7 @@ namespace Urho3D {
 	class Input;
 	class Camera;
 	class String;
-	enum MouseMode: unsigned char;
+	enum MouseMode : unsigned char;
 }
 
 enum class CameraBehaviorType : char;
@@ -20,6 +20,7 @@ public:
 	CameraManager();
 	~CameraManager();
 	void setCameraBehave(CameraBehaviorType _type);
+	CameraBehaviorType getCameraBehave() const;
 	Urho3D::Camera* getComponent() const;
 	void translate(const Urho3D::IntVector2& cursorPos, Urho3D::Input* input, float timeStep);
 	const Urho3D::String& getPosInfo() const;

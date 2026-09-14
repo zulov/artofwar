@@ -6,8 +6,8 @@
 #include "database/DatabaseCache.h"
 #include "database/db_other_struct.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
-#include "load/dbload_container.h"
 #include "load/SceneLoader.h"
+#include "load/dbload_container.h"
 #include "objects/NodeUtils.h"
 
 LevelBuilder::LevelBuilder() {
@@ -25,10 +25,14 @@ LevelBuilder::~LevelBuilder() {
 
 void LevelBuilder::createScene(SceneLoader& loader) {
 	loader.load();
+	if (loader.hasError()) {
+		return;
+	}
 	createMap(loader.getConfig()->map, loader.getConfig()->size);
 }
 
-void LevelBuilder::createMap(int mapId, int size) {
+void LevelBuilder::createMap(unsigned short mapId, int size) {
+	this->mapId = mapId;
 	const auto map = Game::getDatabase()->getMaps()[mapId];
 	if (!SIM_GLOBALS.HEADLESS) {
 		createNode("map/zone.xml");
@@ -37,13 +41,9 @@ void LevelBuilder::createMap(int mapId, int size) {
 	createGround(map->xmlName, size);
 }
 
-void LevelBuilder::createScene(NewGameForm* form) {
-	createMap(form->map, form->size / 256.f);
-}
+void LevelBuilder::createScene(NewGameForm* form) { createMap(form->map, form->size / 256.f); }
 
-Urho3D::Terrain* LevelBuilder::getTerrain() const {
-	return terrain;
-}
+Urho3D::Terrain* LevelBuilder::getTerrain() const { return terrain; }
 
 void LevelBuilder::createGround(const Urho3D::String& xmlName, int size) {
 	if (!SIM_GLOBALS.FAKE_TERRAIN) {

@@ -1,7 +1,7 @@
 #pragma once
+#include "database/db_insert_utils.h"
 #include "objects/queue/QueueManager.h"
 #include "objects/static/Static.h"
-#include "database/db_insert_utils.h"
 
 struct ProjectileWithNode;
 class AbstractQueueManager;
@@ -25,13 +25,14 @@ public:
 	Building* load(dbload_building* dbloadBuilding);
 
 	QueueElement* updateQueue();
-    void updateAi(bool ifBuildingAction);
+	void updateAi(bool ifBuildingAction);
 
-    bool isDeadOrTooFar() const;
+	bool isDeadOrTooFar() const;
 
-    std::optional<int> getDeploy();
+	std::optional<int> getDeploy();
 
-	//TODO target to nie to samo co gdzie sie maja pojawiac!
+	// TODO target to nie to samo co gdzie sie maja pojawiac!
+	QueueManager& getQueue() { return queue; }
 	const QueueManager& getQueue() const { return queue; }
 	bool isReady() const { return state != StaticState::CREATING; }
 
@@ -50,6 +51,7 @@ public:
 	void createDeploy();
 	void setDeploy(int cell);
 	void complete();
+	void loadRuntimeState(Physical* target);
 
 	float getSightRadius() const override;
 	short getCostSum() const override;
@@ -62,7 +64,7 @@ public:
 	db_building* getDb() const;
 	std::pair<db_building*, db_building_level*> getData() const;
 	unsigned char getMaxCloseUsers() const override;
-	//TODO getUniT DATA i resource
+	// TODO getUniT DATA i resource
 private:
 	db_building* getDbBuilding() const;
 	int deployIndex = -1;

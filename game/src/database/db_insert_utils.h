@@ -1,26 +1,36 @@
 #pragma once
-#include <functional>
 #include <sqlite3/sqlite3.h>
+#include <vector>
 
 #include "db_utils.h"
 
-inline void executeBatch(sqlite3* db, const char* sql, const std::function<void(sqlite3_stmt*)>& binderLoop) {
+template <typename BinderLoop>
+inline bool executeBatch(sqlite3* db, const char* sql, BinderLoop binderLoop) {
 	sqlite3_stmt* stmt = nullptr;
 
 	int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
-	ifError(rc, nullptr, sql);
+	if (!ifError(rc, nullptr, sql)) {
+		if (stmt) {
+			sqlite3_finalize(stmt);
+		}
+		return false;
+	}
 
-	binderLoop(stmt);
+	const bool success = binderLoop(stmt, sql);
 
 	sqlite3_finalize(stmt);
+	return success;
 }
 
-inline void stepAndReset(sqlite3_stmt* stmt, const char* sql) {
+inline bool stepAndReset(sqlite3_stmt* stmt, const char* sql) {
 	int rc = sqlite3_step(stmt);
-	ifError(rc, nullptr, sql);
+	const bool success = ifError(rc, nullptr, sql);
 
-	sqlite3_reset(stmt);
+	if (sqlite3_reset(stmt) != SQLITE_OK) {
+		return false;
+	}
 	sqlite3_clear_bindings(stmt);
+	return success;
 }
 
 template <typename E>

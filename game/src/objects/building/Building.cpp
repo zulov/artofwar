@@ -1,34 +1,32 @@
 #include "Building.h"
+#include <Urho3D/IO/Log.h>
+#include <magic_enum.hpp>
+#include <string>
+#include "Game.h"
 #include "commands/action/BuildingActionType.h"
 #include "database/DatabaseCache.h"
-#include "Game.h"
+#include "env/Environment.h"
+#include "math/MathUtils.h"
 #include "objects/NodeUtils.h"
+#include "objects/projectile/ProjectileManager.h"
 #include "objects/queue/QueueActionType.h"
+#include "objects/queue/QueueElement.h"
 #include "objects/queue/QueueManager.h"
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
 #include "scene/load/dbload_container.h"
-#include <magic_enum.hpp>
-#include <string>
-#include <Urho3D/IO/Log.h>
 #include "utils/StringUtils.h"
-#include "math/MathUtils.h"
-#include "objects/projectile/ProjectileManager.h"
-#include "objects/queue/QueueElement.h"
-#include "env/Environment.h"
 
-
-Building::Building(const Urho3D::Vector3& _position, db_building* db_building, unsigned char playerId, unsigned char teamId,
-				   unsigned char level, int indexInGrid, UId uId) :
+Building::Building(const Urho3D::Vector3& _position, db_building* db_building, unsigned char playerId,
+				   unsigned char teamId, unsigned char level, int indexInGrid, UId uId) :
 	Static(_position, indexInGrid, uId), dbLevel(db_building->getLevel(level).value()) {
 	player = playerId;
 	team = teamId;
 	dbEntity = db_building;
 	levelUp(level);
 }
-
 
 Building::~Building() { if (node) { node->RemoveAllChildren(); } }
 
@@ -101,7 +99,7 @@ void Building::action(BuildingActionType type, unsigned short id) {
 		}
 		break;
 	case BuildingActionType::UNIT_LEVEL: {
-		//TODO bug czy to dobre uzycie optionala
+		// TODO bug czy to dobre uzycie optionala
 		if (auto nextLevel = player->getNextUnitLevel(id)) {
 			if (resources->reduce(*nextLevel)) { queue.add(QueueActionType::UNIT_LEVEL, id, (*nextLevel)->id); }
 		}
@@ -113,7 +111,7 @@ void Building::action(BuildingActionType type, unsigned short id) {
 }
 
 void Building::levelUp(char level) {
-	dbLevel = getDbBuilding()->getLevel(level).value(); //TODO BUG value()
+	dbLevel = getDbBuilding()->getLevel(level).value(); // TODO BUG value()
 	const int hpTemp = hp;
 	loadXml("Objects/buildings/" + dbLevel->nodeName);
 	populate();
@@ -122,18 +120,24 @@ void Building::levelUp(char level) {
 
 Building* Building::load(dbload_building* dbloadBuilding) {
 	Static::load(dbloadBuilding);
-	//TODO loadQueue
+	currentFrameState = dbloadBuilding->currentFrameState;
 	return this;
 }
 
+void Building::loadRuntimeState(Physical* target) {
+	thingToInteract = target;
+}
+
 QueueElement* Building::updateQueue() {
-	if (!isReady() && !SIM_GLOBALS.HEADLESS) { setShaderParam(this, "Progress", queue.first()->getProgress()); }
+	if (!isReady() && !SIM_GLOBALS.HEADLESS) {
+		setShaderParam(this, "Progress", queue.first()->getProgress());
+	}
 
 	return queue.update();
 }
 
 void Building::updateAi(bool ifBuildingAction) {
-	//TODO fun to check if not null and alive
+	// TODO fun to check if not null and alive
 	if (thingToInteract && isDeadOrTooFar()) {
 		thingToInteract = nullptr;
 		currentFrameState = 0;
@@ -143,12 +147,13 @@ void Building::updateAi(bool ifBuildingAction) {
 			if (currentFrameState >= dbLevel->attackReload) {
 				ProjectileManager::shoot(this, thingToInteract, 7, player); // TODO magic number
 				currentFrameState = 0;
-			} else { ++currentFrameState; }
+			} else {
+				++currentFrameState;
+			}
 		} else if (ifBuildingAction) {
-			const auto& thingsToInteract =
-					Game::getEnvironment()->getNeighboursFromTeamNotEq(getPosition(), dbLevel->attackRange, getPlayer());
-			const auto closest =
-					Game::getEnvironment()->closestPhysicalSimple(getPosition(), thingsToInteract, dbLevel->attackRange);
+			const auto& thingsToInteract = Game::getEnvironment()->getNeighboursFromTeamNotEq(
+					getPosition(), dbLevel->attackRange, getPlayer());
+			const auto closest = Game::getEnvironment()->closestPhysicalSimple(getPosition(), thingsToInteract, dbLevel->attackRange);
 			thingToInteract = closest;
 		}
 	}
@@ -159,8 +164,7 @@ void Building::updateAi(bool ifBuildingAction) {
 }
 
 bool Building::isDeadOrTooFar() const {
-	return !thingToInteract->isAlive() ||
-			thingToInteract->getPosition().SqDistXZ(position) > dbLevel->sqAttackRange;
+	return !thingToInteract->isAlive() || thingToInteract->getPosition().SqDistXZ(position) > dbLevel->sqAttackRange;
 }
 
 std::optional<int> Building::getDeploy() {
@@ -172,7 +176,11 @@ const Urho3D::UCharVector2 Building::getGridSize() const { return getDbBuilding(
 
 void Building::createDeploy() {
 	deployIndex = -1;
-	for (auto i : getSurroundCells()) { if (Game::getEnvironment()->cellIsPassable(i)) { deployIndex = i; } }
+	for (auto i : getSurroundCells()) {
+		if (Game::getEnvironment()->cellIsPassable(i)) {
+			deployIndex = i;
+		}
+	}
 }
 
 void Building::setDeploy(int cell) { deployIndex = cell; }
@@ -180,9 +188,9 @@ void Building::setDeploy(int cell) { deployIndex = cell; }
 void Building::complete() {
 	StateManager::changeState(this, StaticState::ALIVE);
 	setShaderParam(this, "Progress", 2.0);
-	//const int hpTemp = hp;
-	//loadXml("Objects/buildings/" + dbLevel->nodeName);
-	//hp = hpTemp;
+	// const int hpTemp = hp;
+	// loadXml("Objects/buildings/" + dbLevel->nodeName);
+	// hp = hpTemp;
 }
 
 float Building::getSightRadius() const { return dbLevel->sightRadius * (1 - 0.7f * !isReady()); }

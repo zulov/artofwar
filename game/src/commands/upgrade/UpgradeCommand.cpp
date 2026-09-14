@@ -1,4 +1,5 @@
 #include "UpgradeCommand.h"
+#include "scene/load/RuntimeSaveData.h"
 #include "Game.h"
 #include "objects/building/Building.h"
 #include "player/Player.h"
@@ -24,4 +25,8 @@ void UpgradeCommand::execute(SimulationObjectManager* simulationObjectManager) c
 
 void UpgradeCommand::setSimulationObjectManager(SimulationObjectManager* _simulationObjectManager) {
 	simulationObjectManager = _simulationObjectManager;
+}
+
+PendingCommandSaveData UpgradeCommand::saveState(unsigned short order) const {
+	return {order, PendingCommandKind::UPGRADE, static_cast<char>(type), 0, static_cast<unsigned short>(id), player};
 }

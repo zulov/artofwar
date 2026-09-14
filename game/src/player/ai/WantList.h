@@ -89,6 +89,7 @@ public:
 
 	const std::vector<WantItem>& getItems() const { return items; }
 	int getItemCount() const { return static_cast<int>(items.size()); }
+	void restoreItems(std::span<const WantItem> savedItems);
 
 private:
 	void boostOrDecay();

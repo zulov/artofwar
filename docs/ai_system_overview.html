@@ -767,7 +767,7 @@
   <li><span class="con">Single enemy</span> — getEnemyFor() returns one enemy. FFA/multiplayer ignored.</li>
   <li><span class="con">No attack outcome tracking</span> — History records "order sent" as success, not whether the battle was won.</li>
   <li><span class="con">Worker reassignment is slow</span> — Only 1 worker per AI order phase, and only when the lowest resource priority is below -0.5. Slow to adapt economy.</li>
-  <li><span class="con">Save/load breaks deltas</span> — MasterBrain prev* fields not serialized. First tick after load produces false delta spikes.</li>
+  <li><span class="con">Legacy save AI state</span> — Current saves preserve MasterBrain and other AI continuation state in runtime tables. Legacy saves without those tables load without the cached state; migrate or regenerate them when continuity is required.</li>
   <li><span class="con">No training pipeline in repo</span> — No GA implementation, no fitness functions, no weight export. Brains must be evolved externally (see tools/gen_brain_csv.ps1 for untrained weight generation only).</li>
   <li><span class="con">lowestWithRand samples with replacement</span> — Can return the same unit type multiple times when variety might be better.</li>
 </ul>
@@ -787,7 +787,7 @@
 <tr><td style="color:#EF5350;font-weight:bold;">P2</td><td>Building selection stub</td><td>Wrong buildings chosen for non-resource types (returns buildings.at(0))</td><td>AiOrchestrator.cpp:564-571 resolveBuilding()</td></tr>
 <tr><td style="color:#FF9800;font-weight:bold;">P3</td><td>No scouting</td><td>No exploration or last-seen decision path; strategic brains currently read global enemy state</td><td>(not implemented)</td></tr>
 <tr><td style="color:#FF9800;font-weight:bold;">P4</td><td>Visibility-aware targeting</td><td>Units can advance toward stale/unseen influence centers</td><td>AiOrchestrator.cpp order() (TODO in code)</td></tr>
-<tr><td style="color:#FFB74D;">P5</td><td>Save/load delta spike</td><td>One-tick false urgency after load</td><td>MasterBrain.h:88-92 (prev* not serialized)</td></tr>
+<tr><td style="color:#FFB74D;">P5</td><td>Save schema migration</td><td>Legacy saves missing the current required tables or columns require an explicit migration or regeneration</td><td>SceneLoader.cpp / SQLConsts.h</td></tr>
 <tr><td style="color:#FFB74D;">P6</td><td>Single enemy limitation</td><td>Ignores FFA opponents</td><td>AiOrchestrator.cpp (getEnemyFor)</td></tr>
 <tr><td style="color:#78909C;">P7</td><td>Attack outcome tracking</td><td>Records "order sent" as success, can't learn from lost battles</td><td>AiOrchestrator.cpp order() history->addOrder(...SUCCESS)</td></tr>
 <tr><td style="color:#78909C;">P8</td><td>Worker reassignment speed</td><td>1 worker/order phase only when lowest priority &lt; -0.5 — slow economy adaptation</td><td>AiOrchestrator.cpp findReassignableWorker()</td></tr>

@@ -1,12 +1,9 @@
 #include "FormationManager.h"
+#include <optional>
 #include "objects/unit/Unit.h"
 #include "utils/DeleteUtils.h"
-#include <optional>
 
-
-FormationManager::~FormationManager() {
-	clear_vector(formations);
-}
+FormationManager::~FormationManager() { clear_vector(formations); }
 
 std::optional<Formation*> FormationManager::createFormation(const std::vector<Unit*>& _units, FormationType _type) {
 	if (_units.empty()) { return {}; }
@@ -40,11 +37,9 @@ std::optional<Formation*> FormationManager::createFormation(const std::vector<Un
 		if (currentlyFree == formations.size()) {
 			formations.push_back(nullptr);
 		}
-		auto returnFormation = formations[currentlyFree] = new Formation(
-			currentlyFree, _units, _type, Urho3D::Vector2(1, 1));
+		auto returnFormation = formations[currentlyFree] = new Formation(currentlyFree, _units, _type, Urho3D::Vector2(1, 1));
 		currentlyFree++;
 		return returnFormation;
-
 	}
 	return {};
 }
@@ -65,19 +60,34 @@ void FormationManager::update() {
 }
 
 float FormationManager::getPriority(Unit* unit) {
-	const short formation = unit->getFormation();
-	if (formation >= 0) {
-		return formations[formation]->getPriority(unit->getPositionInState());
+	auto formation = getFormation(unit);
+	if (formation) {
+		return formation->getPriority(unit->getPositionInState());
 	}
 	return 0.f;
 }
 
 bool FormationManager::isLeader(Unit* unit) const {
-	const short formation = unit->getFormation();
-	return formation >= 0 && formations[formation]->isLeader(unit);
+	auto formation = getFormation(unit);
+	return formation && formation->isLeader(unit);
 }
 
 bool FormationManager::isMoving(Unit* unit) const {
-	const short formation = unit->getFormation();
-	return formation >= 0 && formations[formation]->isMoving(unit);
+	auto formation = getFormation(unit);
+	return formation && formation->isMoving(unit);
+}
+
+Formation* FormationManager::restoreFormation(short id, const std::vector<Unit*>& units, FormationType type,
+											  FormationState state, const Urho3D::Vector2& direction) {
+	if (id < 0 || units.empty()) { return nullptr; }
+	if (formations.size() <= id) {
+		formations.resize(id + 1, nullptr);
+	}
+	delete formations[id];
+	formations[id] = new Formation(id, units, type, direction);
+	formations[id]->restoreState(state);
+	while (currentlyFree < formations.size() && formations[currentlyFree]) {
+		++currentlyFree;
+	}
+	return formations[id];
 }

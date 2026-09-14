@@ -1,75 +1,354 @@
 #include "SceneLoader.h"
-#include "dbload_container.h"
+
+#include <algorithm>
+#include <sstream>
+
+#include "RuntimeSaveData.h"
+#include "database/db_read_defs.h"
 #include "database/db_utils.h"
+#include "dbload_container.h"
+#include "math/RandGen.h"
 #include "utils/StringUtils.h"
 
-SceneLoader::~SceneLoader() { end(); }
+namespace {
+	bool tableExists(sqlite3* database, const char* tableName) {
+		if (!database) {
+			return false;
+		}
+		sqlite3_stmt* statement{};
+		if (sqlite3_prepare_v2(database, "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?;", -1, &statement,
+								nullptr) != SQLITE_OK) {
+			return false;
+		}
+		const bool bound = sqlite3_bind_text(statement, 1, tableName, -1, SQLITE_STATIC) == SQLITE_OK;
+		const bool exists = bound && sqlite3_step(statement) == SQLITE_ROW;
+		sqlite3_finalize(statement);
+		return exists;
+	}
+
+	bool inspectTable(sqlite3* database, const char* tableName, const std::vector<std::string>& expected,
+					 std::string& detail) {
+		const std::string sql = "PRAGMA table_info(" + std::string(tableName) + ");";
+		sqlite3_stmt* statement{};
+		if (sqlite3_prepare_v2(database, sql.c_str(), -1, &statement, nullptr) != SQLITE_OK) {
+			detail = sqlite3_errmsg(database);
+			return false;
+		}
+		std::vector<std::string> actual;
+		int rc = SQLITE_OK;
+		while ((rc = sqlite3_step(statement)) == SQLITE_ROW) {
+			actual.emplace_back(reinterpret_cast<const char*>(sqlite3_column_text(statement, 1)));
+		}
+		if (rc != SQLITE_DONE) {
+			detail = sqlite3_errmsg(database);
+			sqlite3_finalize(statement);
+			return false;
+		}
+		sqlite3_finalize(statement);
+
+		std::vector<std::string> missing;
+		for (const auto& column : expected) {
+			if (std::ranges::find(actual, column) == actual.end()) {
+				missing.push_back(column);
+			}
+		}
+		if (missing.empty()) {
+			return true;
+		}
+
+		std::ostringstream message;
+		message << "missing columns: ";
+		for (size_t i = 0; i < missing.size(); ++i) {
+			if (i > 0) {
+				message << ", ";
+			}
+			message << missing[i];
+		}
+		message << "; actual columns: ";
+		for (size_t i = 0; i < actual.size(); ++i) {
+			if (i > 0) {
+				message << ", ";
+			}
+			message << actual[i];
+		}
+		detail = message.str();
+		return false;
+	}
+} // namespace
+
+SceneLoader::~SceneLoader() {
+	close();
+	delete dbLoad;
+	dbLoad = nullptr;
+}
 
 void SceneLoader::load() {
-	loadPlayers();
-
+	if (!loadPlayers() || hasError()) {
+		return;
+	}
 	loadUnits();
+	if (hasError()) {
+		return;
+	}
 	loadBuildings();
+	if (hasError()) {
+		return;
+	}
 	loadResourcesEntities();
 	close();
 }
 
 void SceneLoader::reset() {
-	database = nullptr;
+	close();
 	delete dbLoad;
 	dbLoad = new dbload_container();
+	error.clear();
 }
 
 dbload_container* SceneLoader::getData() const { return dbLoad; }
 
 void SceneLoader::createLoad(const Urho3D::String& fileName, bool tryReuse) {
-	if (fileName == lastLoad && tryReuse) { return; }
+	if (fileName == lastLoad && tryReuse) {
+		return;
+	}
 	reset();
 
 	lastLoad = fileName;
-	std::string name = std::string("saves/") + fileName.CString();
-	database = openDb(name);
-	load("config", [this](auto* s) { dbLoad->config = new dbload_config(s); });
+	path = std::string("saves/") + fileName.CString();
+	std::string openError;
+	database = openDb(path, true, &openError);
+	if (!database) {
+		reportError("load '" + path + "' failed: " + openError);
+		return;
+	}
+	for (const char* table : {SaveTable<ConfigCol>::name, SaveTable<PlayerCol>::name, SaveTable<UnitCol>::name,
+							 SaveTable<BuildingCol>::name, SaveTable<ResourceCol>::name}) {
+		if (!hasTable(table)) {
+			reportError("load '" + path + "' failed: required table '" + table + "' is missing; this is an old or incomplete save, "
+					"see docs/old-save-migration.txt");
+			return;
+		}
+	}
+	const auto validateTable = [this](const char* table, const auto& columns) {
+		std::string detail;
+		if (!inspectTable(database, table, columns, detail)) {
+			reportError("load '" + path + "' failed: table '" + table + "' schema mismatch: " + detail +
+					"; compare with the current save schema or run docs/old-save-migration.txt");
+			return false;
+		}
+		return true;
+	};
+	if (!validateTable(SaveTable<ConfigCol>::name, saveColumns<ConfigCol>()) ||
+			!validateTable(SaveTable<PlayerCol>::name, saveColumns<PlayerCol>()) ||
+			!validateTable(SaveTable<UnitCol>::name, saveColumns<UnitCol>()) ||
+			!validateTable(SaveTable<BuildingCol>::name, saveColumns<BuildingCol>()) ||
+			!validateTable(SaveTable<ResourceCol>::name, saveColumns<ResourceCol>())) {
+		return;
+	}
+	bool hasConfig = false;
+	if (!loadSaveTable<ConfigCol>("", [this, &hasConfig](auto* s) {
+		if (hasConfig) {
+			reportError("load '" + path + "' failed: config table must contain exactly one row");
+			return;
+		}
+		const auto config = readRow<ConfigSaveData>(s, 1);
+		if (config.precision <= 0) {
+			reportError("load '" + path + "' failed: config.precision must be positive, got " +
+					std::to_string(config.precision));
+			return;
+		}
+		if (config.map < 0 || config.size <= 0) {
+			reportError("load '" + path + "' failed: invalid config values (map=" + std::to_string(config.map) +
+					", size=" + std::to_string(config.size) + ")");
+			return;
+		}
+		dbLoad->config = new dbload_config(config.precision, config.map, config.size, config.totalTicks);
+		dbLoad->frame = dbLoad->config->frame;
+		if (config.randomPresent) {
+			dbLoad->random = config.random;
+		}
+		hasConfig = true;
+	})) {
+		return;
+	}
+	if (hasError()) {
+		return;
+	}
+	if (!hasConfig) {
+		reportError("load '" + path + "' failed: config table must contain exactly one row");
+		return;
+	}
+	loadRuntimeState();
 }
 
 dbload_config* SceneLoader::getConfig() const { return dbLoad->config; }
 
 const std::vector<dbload_player*>* SceneLoader::loadPlayers() const {
-	if (dbLoad->players) { return dbLoad->players; }
+	if (hasError() || !dbLoad->config) {
+		if (!hasError()) {
+			reportError("load '" + path + "' failed: config must be loaded before players");
+		}
+		return nullptr;
+	}
+	if (dbLoad->players) {
+		return dbLoad->players;
+	}
 	dbLoad->players = new std::vector<dbload_player*>();
 
-	load("players",
-	     [this](auto* s) { dbLoad->players->push_back(new dbload_player(s, dbLoad->config->precision)); });
+	loadSaveTable<PlayerCol>("", [this](auto* s) {
+		dbLoad->players->push_back(new dbload_player(s, dbLoad->config->precision));
+	});
 	return dbLoad->players;
 }
 
 void SceneLoader::loadUnits() const {
-	if (dbLoad->units) { return; }
+	if (hasError() || !dbLoad->config) {
+		if (!hasError()) {
+			reportError("load '" + path + "' failed: config must be loaded before units");
+		}
+		return;
+	}
+	if (dbLoad->units) {
+		return;
+	}
 	dbLoad->units = new std::vector<dbload_unit*>();
-	load("units",
-	     [this](auto* s) { dbLoad->units->push_back(new dbload_unit(s, dbLoad->config->precision)); });
+	loadSaveTable<UnitCol>("", [this](auto* s) {
+		auto* unit = new dbload_unit(s, dbLoad->config->precision);
+		if (const auto it = dbLoad->unitVariable.find(unit->uid); it != dbLoad->unitVariable.end()) {
+			unit->runtime.orders = std::move(it->second.orders);
+			unit->runtime.aim.path = std::move(it->second.aimPath);
+			unit->runtime.pendingAim.path = std::move(it->second.pendingAimPath);
+			dbLoad->unitVariable.erase(it);
+		}
+		dbLoad->units->push_back(unit);
+	});
 }
 
 void SceneLoader::loadBuildings() const {
-	if (dbLoad->buildings) { return; }
+	if (hasError() || !dbLoad->config) {
+		if (!hasError()) {
+			reportError("load '" + path + "' failed: config must be loaded before buildings");
+		}
+		return;
+	}
+	if (dbLoad->buildings) {
+		return;
+	}
 	dbLoad->buildings = new std::vector<dbload_building*>();
-
-	load("buildings",
-	     [this](auto* s) { dbLoad->buildings->push_back(new dbload_building(s, dbLoad->config->precision)); });
+	loadSaveTable<BuildingCol>("", [this](auto* s) {
+		dbLoad->buildings->push_back(new dbload_building(s, dbLoad->config->precision));
+	});
 }
 
 void SceneLoader::loadResourcesEntities() const {
-	if (dbLoad->resources) { return; }
+	if (hasError() || !dbLoad->config) {
+		if (!hasError()) {
+			reportError("load '" + path + "' failed: config must be loaded before resources");
+		}
+		return;
+	}
+	if (dbLoad->resources) {
+		return;
+	}
 	dbLoad->resources = new std::vector<dbload_resource*>();
 
-	count("resources", [this](auto* s) { dbLoad->resources->reserve(asInt(s, 0)); });
-	load("resources",
-	     [this](auto* s) { dbLoad->resources->push_back(new dbload_resource(s, dbLoad->config->precision)); });
+	if (!count(SaveTable<ResourceCol>::name, [this](auto* s) { dbLoad->resources->reserve(asInt(s, 0)); })) {
+		return;
+	}
+	loadSaveTable<ResourceCol>("", [this](auto* s) {
+		dbLoad->resources->push_back(new dbload_resource(s, dbLoad->config->precision));
+	});
 }
 
 void SceneLoader::end() { close(); }
 
 void SceneLoader::close() {
-	sqlite3_close_v2(database);
-	database = nullptr;
+	if (database) {
+		sqlite3_close_v2(database);
+		database = nullptr;
+	}
+}
+
+bool SceneLoader::hasTable(const char* tableName) const { return tableExists(database, tableName); }
+
+void SceneLoader::reportError(const std::string& message) const {
+	if (error.empty() || error.find("[Load Error]") == std::string::npos) {
+		error = "[Load Error] " + message;
+		std::cerr << error << "\n";
+	}
+}
+
+void SceneLoader::loadRuntimeState() const {
+	loadOptionalSaveTable<UnitOrderCol>(" ORDER BY unit_uid, order_idx", [this](sqlite3_stmt* s) {
+		const auto order = readRow<UnitOrderSaveData>(s, 1);
+		dbLoad->unitVariable[order.unitUid].orders.push_back(order);
+	});
+
+	loadOptionalSaveTable<AimPathCol>(" ORDER BY unit_uid, pending, order_idx", [this](sqlite3_stmt* s) {
+		const auto row = readRow<AimPathRow>(s, 1);
+		auto& state = dbLoad->unitVariable[row.unitUid];
+		auto& path = row.pending ? state.pendingAimPath : state.aimPath;
+		path.push_back(row.cell);
+	});
+
+	loadOptionalSaveTable<QueueCol>(" ORDER BY owner_type, owner_id, order_idx", [this](sqlite3_stmt* s) {
+		dbLoad->queues.push_back(readRow<QueueRow>(s, 1).data);
+	});
+
+	loadOptionalSaveTable<PlayerLevelCol>("", [this](sqlite3_stmt* s) {
+		dbLoad->playerLevels.push_back(readRow<PlayerLevelSaveData>(s, 1));
+	});
+
+	if (dbLoad->random) {
+		for (const auto index : dbLoad->random->floatIndexes) {
+			if (index < 0 || index >= RAND_TAB_SIZE) {
+				reportError("load '" + path + "' failed: random float stream index is out of range");
+				return;
+			}
+		}
+		for (const auto index : dbLoad->random->intIndexes) {
+			if (index < 0 || index >= RAND_TAB_SIZE) {
+				reportError("load '" + path + "' failed: random int stream index is out of range");
+				return;
+			}
+		}
+	}
+
+	loadOptionalSaveTable<ProjectileCol>("", [this](sqlite3_stmt* s) {
+		dbLoad->projectiles.push_back(readRow<ProjectileSaveData>(s, 1));
+	});
+
+	loadOptionalSaveTable<FormationCol>("", [this](sqlite3_stmt* s) {
+		dbLoad->formations.push_back(readRow<FormationSaveData>(s, 1));
+	});
+
+	loadOptionalSaveTable<FormationOrderCol>(" ORDER BY formation_id, pending, order_idx", [this](sqlite3_stmt* s) {
+		dbLoad->formationOrders.push_back(readRow<FormationOrderRow>(s, 1));
+	});
+
+	loadOptionalSaveTable<PendingCommandCol>(" ORDER BY order_idx", [this](sqlite3_stmt* s) {
+		dbLoad->pendingCommands.push_back(readRow<PendingCommandSaveData>(s, 1));
+	});
+
+	loadOptionalSaveTable<PendingCommandEntityCol>(" ORDER BY command_idx, order_idx", [this](sqlite3_stmt* s) {
+		const auto row = readRow<PendingCommandEntityRow>(s, 1);
+		for (auto& command : dbLoad->pendingCommands) {
+			if (command.order == row.commandIndex) {
+				command.entityUids.push_back(row.uid);
+				break;
+			}
+		}
+	});
+
+	loadOptionalSaveTable<AiStateCol>("", [this](sqlite3_stmt* s) {
+		dbLoad->aiStates.push_back(readRow<AiSaveData>(s, 1));
+	});
+	loadOptionalSaveTable<AiWantCol>(" ORDER BY player, order_idx", [this](sqlite3_stmt* s) {
+		dbLoad->aiWants.push_back(readRow<AiWantRow>(s, 1).data);
+	});
+
+	loadOptionalSaveTable<AiHistoryCol>(" ORDER BY player, action, order_idx", [this](sqlite3_stmt* s) {
+		dbLoad->aiHistory.push_back(readRow<AiHistoryRow>(s, 1).data);
+	});
+
 }

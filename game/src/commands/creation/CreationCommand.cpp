@@ -1,4 +1,5 @@
 #include "CreationCommand.h"
+#include "scene/load/RuntimeSaveData.h"
 #include "objects/ObjectEnums.h"
 #include "objects/resource/ResourceEntity.h"
 #include "simulation/SimulationObjectManager.h"
@@ -30,4 +31,24 @@ void CreationCommand::execute(SimulationObjectManager* simulationObjectManager) 
 		}
 		break;
 	}
+}
+
+PendingCommandSaveData CreationCommand::saveState(unsigned short order) const {
+	PendingCommandSaveData state;
+	state.order = order;
+	state.kind = PendingCommandKind::CREATION;
+	state.action = static_cast<char>(objectType);
+	state.id = id;
+	state.player = player;
+	state.level = level;
+	state.number = number;
+	state.hp = hp;
+	if (objectType == ObjectType::UNIT) {
+		state.x = position.x_;
+		state.z = position.y_;
+	} else {
+		state.x = bucketCords.x_;
+		state.z = bucketCords.y_;
+	}
+	return state;
 }

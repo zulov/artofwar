@@ -1,0 +1,81 @@
+-- Art of War - config table consolidation migration
+-- =================================================
+
+-- Purpose
+-- -------
+-- Upgrade a save written by the immediately previous pre-consolidation format.
+-- That format has a four-column config table plus singleton random and camera tables. The
+-- current format stores the random singleton row in config and removes both
+-- singleton tables. Camera state is no longer part of the save. The current
+-- schema has 17 recognized tables; optional tables are only created when they
+-- contain rows. Unknown legacy tables are ignored by the loader.
+
+-- Assumptions
+-- -----------
+-- The input file has the current pre-consolidation tables config, random, and
+-- camera. Other runtime tables are left unchanged. The config table contains
+-- exactly one row; random and camera contain at most one row with id = 0.
+-- Run this script once against a copy of the save.
+
+-- Usage with sqlite3.exe
+-- ----------------------
+-- sqlite3.exe current-save.db < config-table-migration.txt
+
+PRAGMA foreign_keys = OFF;
+BEGIN TRANSACTION;
+
+ALTER TABLE config ADD COLUMN random_present INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN random_seed INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN random_float_ai_index INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN random_float_resource_rotation_index INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN random_float_collision_force_index INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN random_float_other_index INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN random_int_save_index INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN random_int_player_name_index INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN random_int_resource_node_index INT NOT NULL DEFAULT 0;
+
+-- Make absent singleton tables behave like an empty source for the copy step.
+CREATE TABLE IF NOT EXISTS random (
+    id INT PRIMARY KEY,
+    seed INT NOT NULL,
+    float_ai_index INT NOT NULL,
+    float_resource_rotation_index INT NOT NULL,
+    float_collision_force_index INT NOT NULL,
+    float_other_index INT NOT NULL,
+    int_save_index INT NOT NULL,
+    int_player_name_index INT NOT NULL,
+    int_resource_node_index INT NOT NULL
+) WITHOUT ROWID;
+CREATE TABLE IF NOT EXISTS camera (
+    id INT PRIMARY KEY,
+    mode INT NOT NULL,
+    target_x REAL NOT NULL,
+    target_z REAL NOT NULL
+) WITHOUT ROWID;
+
+UPDATE config SET
+    random_present = EXISTS (SELECT 1 FROM random WHERE id = 0),
+    random_seed = COALESCE((SELECT seed FROM random WHERE id = 0), 0),
+    random_float_ai_index = COALESCE((SELECT float_ai_index FROM random WHERE id = 0), 0),
+    random_float_resource_rotation_index = COALESCE((SELECT float_resource_rotation_index FROM random WHERE id = 0), 0),
+    random_float_collision_force_index = COALESCE((SELECT float_collision_force_index FROM random WHERE id = 0), 0),
+    random_float_other_index = COALESCE((SELECT float_other_index FROM random WHERE id = 0), 0),
+    random_int_save_index = COALESCE((SELECT int_save_index FROM random WHERE id = 0), 0),
+    random_int_player_name_index = COALESCE((SELECT int_player_name_index FROM random WHERE id = 0), 0),
+    random_int_resource_node_index = COALESCE((SELECT int_resource_node_index FROM random WHERE id = 0), 0);
+
+DROP TABLE random;
+DROP TABLE camera;
+
+COMMIT;
+PRAGMA foreign_keys = ON;
+
+-- Validation
+-- ----------
+-- Expected: config has 13 current columns plus any ignored legacy columns;
+-- random and camera no longer exist. The recognized current tables can contain
+-- at most 17 tables because empty optional tables are omitted. Any other legacy
+-- tables are ignored by the current loader and are not removed by this script.
+PRAGMA table_info(config);
+SELECT name FROM sqlite_master
+WHERE type = 'table' AND name IN ('random', 'camera');

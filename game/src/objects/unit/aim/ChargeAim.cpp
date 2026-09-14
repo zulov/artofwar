@@ -1,10 +1,8 @@
 #include "ChargeAim.h"
-#include "../Unit.h"
 #include <Urho3D/Scene/Node.h>
+#include "../Unit.h"
 
-ChargeAim::ChargeAim(Urho3D::Vector2* _direction): direction(*_direction), chargeEnergy(50) {
-	direction.Normalize();
-}
+ChargeAim::ChargeAim(Urho3D::Vector2* _direction) : direction(*_direction) { direction.Normalize(); }
 
 std::vector<Urho3D::Vector3> ChargeAim::getDebugLines(Unit* unit) const {
 	std::vector<Urho3D::Vector3> points;
@@ -16,14 +14,10 @@ std::vector<Urho3D::Vector3> ChargeAim::getDebugLines(Unit* unit) const {
 	return points;
 }
 
-Urho3D::Vector2 ChargeAim::getDirection(Unit* unit) {
-	return direction;
-}
+Urho3D::Vector2 ChargeAim::getDirection(Unit* unit) { return direction; }
 
-bool ChargeAim::ifReach(Unit* unit) {
-	return false;
-}
+bool ChargeAim::ifReach(Unit* unit) { return false; }
 
-bool ChargeAim::expired() {
-	return false;
-}
+bool ChargeAim::expired() { return false; }
+
+AimSaveData ChargeAim::saveState() const { return {AimSaveKind::CHARGE, 0, 0, direction.x_, direction.y_}; }

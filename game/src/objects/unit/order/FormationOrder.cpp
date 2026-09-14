@@ -5,6 +5,7 @@
 #include "UnitConst.h"
 #include "simulation/formation/Formation.h"
 #include "env/Environment.h"
+#include "scene/load/RuntimeSaveData.h"
 
 FormationOrder::FormationOrder(Formation* formation, short action,
                                Urho3D::Vector2& vector, bool append):
@@ -29,6 +30,12 @@ bool FormationOrder::expired() {
 
 short FormationOrder::getSize() const {
 	return formation->getSize();
+}
+
+PendingCommandSaveData FormationOrder::saveState(unsigned short order) const {
+	auto state = createSaveState(order, PendingCommandKind::FORMATION_ORDER);
+	state.formationId = formation ? formation->getId() : -1;
+	return state;
 }
 
 void FormationOrder::addCollectAim() {

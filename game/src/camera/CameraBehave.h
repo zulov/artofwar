@@ -1,14 +1,15 @@
 #pragma once
 #include <Urho3D/Graphics/Camera.h>
 
+#include "CameraEnums.h"
+
 namespace Urho3D {
 	class Quaternion;
 	class IntVector2;
 	class String;
 	class Vector3;
-	enum MouseMode: unsigned char;
+	enum MouseMode : unsigned char;
 }
-
 
 class CameraBehave {
 public:
@@ -20,6 +21,7 @@ public:
 
 	virtual void setRotation(const Urho3D::Quaternion& rotation) {}
 	Urho3D::Camera* getComponent() const;
+	virtual CameraBehaviorType getType() const = 0;
 	Urho3D::String getInfo() const;
 	virtual Urho3D::MouseMode getMouseMode() = 0;
 	const Urho3D::Vector3& getPosition() const;

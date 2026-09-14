@@ -3,12 +3,14 @@
 #include <Urho3D/Container/Str.h>
 #include <Urho3D/Math/Vector2.h>
 #include <tuple>
+#include <unordered_map>
 
 #include "ActionParameter.h"
 #include "aim/Aims.h"
 #include "database/db_insert_utils.h"
 #include "objects/ObjectEnums.h"
 #include "objects/Physical.h"
+#include "scene/load/RuntimeSaveData.h"
 #include "state/UnitState.h"
 
 class IndividualOrder;
@@ -105,6 +107,10 @@ public:
 	void drawLineTo(const Urho3D::Vector2& second, const Urho3D::Color& color) const;
 	void debug(DebugUnitType type, ForceStats& stats);
 	bool isFirstThingAlive() const;
+	UnitRuntimeSaveData captureRuntimeState() const;
+	void loadRuntimeState(const UnitRuntimeSaveData& runtime, Physical* target, Physical* pendingTarget,
+						  const std::unordered_map<unsigned, Physical*>& byUid);
+	void restoreInteraction();
 
 	float getMaxSeparationDistance() const;
 	short getPositionInState() const { return posInState; }
@@ -157,9 +163,7 @@ public:
 	Urho3D::Color getColor(db_player_colors* col) const override;
 	void setVisibility(VisibilityType type) override;
 
-	void setThingToInteract(Physical* toUse) {
-		thingToInteract = toUse;
-	}
+	void setThingToInteract(Physical* toUse) { thingToInteract = toUse; }
 
 	unsigned char getMaxRangeUsers() const { return 16; }
 	void resetStateChangePending();
@@ -195,7 +199,7 @@ private:
 	bool stateChangePending = false;
 	char slotToInteract = -1;
 	unsigned char useSockets = 0;
-	char lastActionThingId = -1; //TODO reset po jakim� czasie
+	char lastActionThingId = -1; // Runtime-only collection preference; revisit save persistence if worker continuity requires it.
 
 	bool indexHasChanged = false;
 	bool shouldUpdate = false;

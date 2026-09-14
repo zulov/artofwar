@@ -3,12 +3,10 @@
 #include <utility>
 #include "../Unit.h"
 #include "Game.h"
-#include "math/MathUtils.h"
 #include "env/Environment.h"
+#include "math/MathUtils.h"
 
-
-TargetAim::TargetAim(std::vector<int> _path) :
-	path(std::move(_path)), current(0) {
+TargetAim::TargetAim(std::vector<int> _path) : path(std::move(_path)), current(0) {
 	currentTarget = Game::getEnvironment()->getCenter(path[current]);
 }
 
@@ -38,6 +36,13 @@ bool TargetAim::ifReach(Unit* unit) {
 	return false;
 }
 
-bool TargetAim::expired() {
-	return false;
+bool TargetAim::expired() { return false; }
+
+AimSaveData TargetAim::saveState() const { return {AimSaveKind::TARGET, 0, current, 0.f, 0.f, path}; }
+
+void TargetAim::setCurrent(short savedCurrent) {
+	if (savedCurrent >= 0 && savedCurrent < path.size()) {
+		current = savedCurrent;
+		currentTarget = Game::getEnvironment()->getCenter(path[current]);
+	}
 }

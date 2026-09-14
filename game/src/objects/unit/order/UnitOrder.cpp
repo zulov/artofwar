@@ -1,5 +1,6 @@
 #include "UnitOrder.h"
 
+#include "scene/load/RuntimeSaveData.h"
 #include "Game.h"
 #include "UnitConst.h"
 #include "objects/Physical.h"
@@ -16,6 +17,27 @@ UnitOrder::UnitOrder(short id, bool append, Physical* toUse):
 
 UnitOrder::~UnitOrder() {
 	delete vector;
+}
+
+UnitOrderSaveData UnitOrder::saveOrder(unsigned unitUid) const {
+	const auto* target = toUse;
+	return {unitUid, static_cast<char>(getAction()), append, target != nullptr, target ? target->getUid() : 0,
+			vector ? vector->x_ : 0.f, vector ? vector->y_ : 0.f};
+}
+
+PendingCommandSaveData UnitOrder::createSaveState(unsigned short order, PendingCommandKind kind) const {
+	PendingCommandSaveData state;
+	state.order = order;
+	state.kind = kind;
+	state.action = static_cast<char>(getAction());
+	state.append = append;
+	if (toUse) {
+		state.targetUid = toUse->getUid();
+	} else if (vector) {
+		state.x = vector->x_;
+		state.z = vector->y_;
+	}
+	return state;
 }
 
 ActionParameter UnitOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {

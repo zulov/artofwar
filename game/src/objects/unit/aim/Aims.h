@@ -1,14 +1,17 @@
 #pragma once
+#include <unordered_map>
 #include <vector>
+#include "scene/load/RuntimeSaveData.h"
 
 namespace Urho3D {
 	class Vector3;
 	class Vector2;
-}
+} // namespace Urho3D
 
 class IndividualOrder;
 class Aim;
 class Unit;
+class Physical;
 
 class Aims {
 public:
@@ -26,6 +29,12 @@ public:
 	bool isIdle() const { return !hasAim(); }
 	std::vector<Urho3D::Vector3> getDebugLines(Unit* unit) const;
 	void set(Aim* aim);
+	AimSaveData saveState() const;
+	std::vector<UnitOrderSaveData> saveOrders(unsigned unitUid) const;
+	static Aim* createAim(const AimSaveData& state, const std::unordered_map<unsigned, Physical*>& byUid);
+	void loadState(Unit* unit, const AimSaveData& state, const std::vector<UnitOrderSaveData>& orders,
+				   const std::unordered_map<unsigned, Physical*>& byUid);
+
 private:
 	std::vector<IndividualOrder*> nextAims;
 	Aim* current;

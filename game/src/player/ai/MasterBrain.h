@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <magic_enum.hpp>
+#include "scene/load/RuntimeSaveData.h"
 
 class Brain;
 class Player;
@@ -75,6 +76,8 @@ public:
 	MasterBrain(const MasterBrain&) = delete;
 
 	MasterOutput decide(Player* player, Player* enemy, float totalLacking, const AiHistory* history);
+	AiSaveData saveState(unsigned char player) const;
+	void loadState(const AiSaveData& state);
 
 private:
 	void updateHistory(Player* player, Player* enemy);

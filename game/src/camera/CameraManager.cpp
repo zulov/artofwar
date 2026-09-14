@@ -1,17 +1,16 @@
 #include "CameraManager.h"
+#include <Urho3D/Graphics/Graphics.h>
+#include <Urho3D/Input/Input.h>
+#include "CameraEnums.h"
 #include "FreeCameraBehave.h"
 #include "Game.h"
 #include "RtsCameraBehave.h"
 #include "TopCameraBehave.h"
-#include "CameraEnums.h"
 #include "env/Environment.h"
-#include <Urho3D/Graphics/Graphics.h>
-#include <Urho3D/Input/Input.h>
 
 #include "simulation/SimGlobals.h"
 #include "utils/DeleteUtils.h"
 #include "utils/OtherUtils.h"
-
 
 CameraManager::CameraManager() {
 	if (!SIM_GLOBALS.HEADLESS) {
@@ -20,7 +19,6 @@ CameraManager::CameraManager() {
 		cameraBehaves[2] = new TopCameraBehave();
 
 		activeBehave = cameraBehaves[1];
-
 
 		float border = 256.f;
 		auto graphics = Game::getGraphics();
@@ -48,12 +46,12 @@ void CameraManager::setCameraBehave(CameraBehaviorType _type) {
 	hasMoved = true;
 }
 
-Urho3D::Camera* CameraManager::getComponent() const {
-	return activeBehave->getComponent();
-}
+CameraBehaviorType CameraManager::getCameraBehave() const { return activeBehave->getType(); }
+
+Urho3D::Camera* CameraManager::getComponent() const { return activeBehave->getComponent(); }
 
 void CameraManager::createCameraKeys(Urho3D::Input* input, bool cameraKeys[4],
-                                     const Urho3D::IntVector2& cursorPos) const {
+									 const Urho3D::IntVector2& cursorPos) const {
 	cameraKeys[0] = input->GetKeyDown(Urho3D::KEY_W);
 	cameraKeys[1] = input->GetKeyDown(Urho3D::KEY_S);
 	cameraKeys[2] = input->GetKeyDown(Urho3D::KEY_A);
@@ -85,13 +83,9 @@ void CameraManager::translate(const Urho3D::IntVector2& cursorPos, Urho3D::Input
 	}
 }
 
-const Urho3D::String& CameraManager::getPosInfo() const {
-	return camInfo->info;
-}
+const Urho3D::String& CameraManager::getPosInfo() const { return camInfo->info; }
 
-Urho3D::MouseMode CameraManager::getMouseMode() const {
-	return activeBehave->getMouseMode();
-}
+Urho3D::MouseMode CameraManager::getMouseMode() const { return activeBehave->getMouseMode(); }
 
 void CameraManager::changePositionInPercent(float x, float y) {
 	activeBehave->changeTargetInPercent(x, y);
@@ -99,22 +93,19 @@ void CameraManager::changePositionInPercent(float x, float y) {
 	camInfo->info = activeBehave->getInfo();
 }
 
-
-void CameraManager::changePosition(const Urho3D::Vector2 &pos) {
+void CameraManager::changePosition(const Urho3D::Vector2& pos) {
 	activeBehave->changeTarget(pos);
 	hasMoved = true;
 	camInfo->info = activeBehave->getInfo();
 }
 
-const Urho3D::Vector2 CameraManager::getTargetPos() const {
-	return activeBehave->getTargetPos();
-}
+const Urho3D::Vector2 CameraManager::getTargetPos() const { return activeBehave->getTargetPos(); }
 
 const CameraInfo* CameraManager::getCamInfo(float radius) {
 	if (!SIM_GLOBALS.HEADLESS) {
 		auto camPos = activeBehave->getTargetPos();
-		camInfo->boundary = Urho3D::Vector4(camPos.x_ - radius, camPos.x_ + radius, camPos.y_ - radius,
-		                                    camPos.y_ + radius);
+		camInfo->boundary =
+				Urho3D::Vector4(camPos.x_ - radius, camPos.x_ + radius, camPos.y_ - radius, camPos.y_ + radius);
 		camInfo->hasMoved = hasMoved;
 		hasMoved = false;
 	} else {

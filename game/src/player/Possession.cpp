@@ -141,7 +141,7 @@ std::vector<Building*>* Possession::getBuildings(unsigned short id) {
 	return buildingsPerId[id];
 }
 
-const std::vector<Building*>& Possession::getBuildings() {
+const std::vector<Building*>& Possession::getBuildings() const {
 	return buildings;
 }
 

@@ -5,6 +5,7 @@
 #include "objects/unit/order/UnitConst.h"
 #include "env/Environment.h"
 #include "objects/unit/ActionParameter.h"
+#include "scene/load/RuntimeSaveData.h"
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, const Urho3D::Vector2& vector, bool append) :
 	UnitOrder(static_cast<short>(action), append, vector), unit(unit) {}
@@ -20,6 +21,12 @@ bool IndividualOrder::add() {
 }
 
 short IndividualOrder::getSize() const { return 1; }
+
+PendingCommandSaveData IndividualOrder::saveState(unsigned short order) const {
+	auto state = createSaveState(order, PendingCommandKind::INDIVIDUAL_ORDER);
+	state.entityUids.push_back(unit->getUid());
+	return state;
+}
 
 void IndividualOrder::addCollectAim() { followAndAct(); }
 

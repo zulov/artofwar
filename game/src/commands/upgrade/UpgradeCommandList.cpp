@@ -1,5 +1,6 @@
 #include "UpgradeCommandList.h"
 #include "UpgradeCommand.h"
+#include "scene/load/RuntimeSaveData.h"
 
 
 UpgradeCommandList::UpgradeCommandList(SimulationObjectManager* simulationObjectManager)
@@ -15,4 +16,13 @@ void UpgradeCommandList::execute() {
 		delete command;
 	}
 	commands.clear();
+}
+
+std::vector<PendingCommandSaveData> UpgradeCommandList::saveState(unsigned short& nextOrder) const {
+	std::vector<PendingCommandSaveData> state;
+	state.reserve(commands.size());
+	for (const auto* command : commands) {
+		state.push_back(command->saveState(nextOrder++));
+	}
+	return state;
 }

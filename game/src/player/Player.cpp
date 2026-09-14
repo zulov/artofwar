@@ -4,17 +4,14 @@
 #include "Possession.h"
 #include "Resources.h"
 #include "database/DatabaseCache.h"
-#include "objects/queue/QueueActionType.h"
 #include "env/Environment.h"
+#include "objects/queue/QueueActionType.h"
 
-
-Player::Player(unsigned char nationId, unsigned char team, unsigned char id, unsigned char color, Urho3D::String name, bool active,
-               unsigned currentBuildingUId, unsigned currentUnitUId) :
-	team(team), id(id), active(active), color(color),
-	currentBuildingUId(currentBuildingUId), currentUnitUId(currentUnitUId),
-	dbNation(Game::getDatabase()->getNation(nationId)),
-	possession(new Possession(nationId)), resources(new Resources()),
-	aiOrchestrator(this, dbNation, &aiHistory),
+Player::Player(unsigned char nationId, unsigned char team, unsigned char id, unsigned char color, Urho3D::String name,
+			   bool active, unsigned currentBuildingUId, unsigned currentUnitUId) :
+	team(team), id(id), active(active), color(color), currentBuildingUId(currentBuildingUId),
+	currentUnitUId(currentUnitUId), dbNation(Game::getDatabase()->getNation(nationId)),
+	possession(new Possession(nationId)), resources(new Resources()), aiOrchestrator(this, dbNation, &aiHistory),
 	name(std::move(name)) {
 	unitLevels = new char[Game::getDatabase()->getUnits().size()];
 	buildingLevels = new char[Game::getDatabase()->getBuildings().size()];
@@ -34,9 +31,7 @@ void Player::setResourceAmount(float food, float wood, float stone, float gold) 
 	resources->setValue(food, wood, stone, gold);
 }
 
-void Player::setResourceAmount(float amount) const {
-	resources->init(amount);
-}
+void Player::setResourceAmount(float amount) const { resources->init(amount); }
 
 char Player::upgradeLevel(QueueActionType type, int id) const {
 	switch (type) {
@@ -54,7 +49,7 @@ char Player::upgradeLevel(QueueActionType type, int id) const {
 		break;
 	case QueueActionType::UNIT_UPGRADE:
 		break;
-	default: ;
+	default:;
 	}
 	return -1;
 }
@@ -77,37 +72,39 @@ std::optional<db_building_level*> Player::getNextBuildingLevel(unsigned short id
 	return Game::getDatabase()->getBuilding(id)->getLevel(buildingLevels[id] + 1);
 }
 
-void Player::addKilled(Physical* physical) const {
-	possession->addKilled(physical);
+void Player::addKilled(Physical* physical) const { possession->addKilled(physical); }
+
+void Player::resetScore() { score = -1; }
+
+std::span<const char> Player::getUnitLevels() const { return {unitLevels, Game::getDatabase()->getUnits().size()}; }
+
+std::span<const char> Player::getBuildingLevels() const {
+	return {buildingLevels, Game::getDatabase()->getBuildings().size()};
 }
 
-void Player::resetScore() {
-	score = -1;
+void Player::restoreUnitLevel(unsigned short id, char level) const {
+	if (id < Game::getDatabase()->getUnits().size()) {
+		unitLevels[id] = level;
+	}
 }
 
-void Player::updateResource1s() const {
-	resources->update1s(possession);
+void Player::restoreBuildingLevel(unsigned short id, char level) const {
+	if (id < Game::getDatabase()->getBuildings().size()) {
+		buildingLevels[id] = level;
+	}
 }
 
-void Player::updateResourceMonth() const {
-	resources->updateMonth();
-}
+void Player::updateResource1s() const { resources->update1s(possession); }
 
-void Player::updateResourceYear() const {
-	resources->updateYear();
-}
+void Player::updateResourceMonth() const { resources->updateMonth(); }
 
-void Player::updatePossession() {
-	possession->updateAndClean(resources);
-}
+void Player::updateResourceYear() const { resources->updateYear(); }
 
-void Player::add(Unit* unit) const {
-	possession->add(unit);
-}
+void Player::updatePossession() { possession->updateAndClean(resources); }
 
-void Player::add(Building* building) const {
-	possession->add(building);
-}
+void Player::add(Unit* unit) const { possession->add(unit); }
+
+void Player::add(Building* building) const { possession->add(building); }
 
 int Player::getScore() {
 	if (score < 0) {
@@ -117,18 +114,10 @@ int Player::getScore() {
 	return score;
 }
 
-int Player::getWorkersNumber() const {
-	return possession->getWorkersNumber();
-}
+int Player::getWorkersNumber() const { return possession->getWorkersNumber(); }
 
-QueueElement* Player::updateQueue() {
-	return queue.update();
-}
+QueueElement* Player::updateQueue() { return queue.update(); }
 
-void Player::aiAction() {
-	aiOrchestrator.action();
-}
+void Player::aiAction() { aiOrchestrator.action(); }
 
-void Player::aiOrder() {
-	aiOrchestrator.order();
-}
+void Player::aiOrder() { aiOrchestrator.order(); }

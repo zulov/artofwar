@@ -1,10 +1,11 @@
 #pragma once
-#include "AiHistoryEnums.h"
 #include <array>
 #include <cstddef>
 #include <initializer_list>
+#include "AiHistoryEnums.h"
 
 #include <magic_enum.hpp>
+#include "scene/load/RuntimeSaveData.h"
 
 struct ActionHistoryEntry {
 	unsigned int tick;
@@ -40,6 +41,8 @@ public:
 	float defendFailureScore() const;
 	float attackActivityScore() const;
 	float defendActivityScore() const;
+	std::vector<AiHistorySaveData> saveState(unsigned char player) const;
+	void loadState(const std::vector<AiHistorySaveData>& state, unsigned char player);
 
 private:
 	const ActionHistoryEntry& getAction(int index) const;

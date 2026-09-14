@@ -12,7 +12,7 @@ Global level IDs are also direct vector keys. Level rows must reference an exist
 
 ## Decision
 
-Treat database IDs as stable runtime keys. Renumbering or deleting referenced IDs requires an explicit migration of every affected data source and compatibility decision for existing saves. Database and save schemas are positional runtime interfaces because loaders decode `SELECT *` results by ordinal enum; column reordering needs the same coordinated change.
+Treat database IDs as stable runtime keys. Renumbering or deleting referenced IDs requires an explicit migration of every affected data source and compatibility decision for existing saves. Database data tables and save tables have different schema contracts: data-table loaders decode `SELECT *` results by ordinal enum, while save writes use named columns and save loads use explicit enum-generated `SELECT` lists. Save enum names and order still form a C++ runtime interface, but SQLite physical column reordering does not by itself break the current save loader. Singleton global continuation state belongs in the one-row `config` table; variable-length state remains in dedicated runtime tables. The current save format has no active schema-version field; structural changes require an explicit migration or regeneration when old saves must remain readable.
 
 ## Consequences
 

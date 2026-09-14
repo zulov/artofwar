@@ -48,6 +48,7 @@ inline void tryToAttack(Unit* unit,
 }
 
 inline void tryToCollect(Unit* unit) {
+	// This runtime-only preference is intentionally not saved. Revisit persistence if worker continuity needs it.
 	const auto resourceId = unit->getLastActionThingId();
 	if (resourceId < 0) { return; }
 

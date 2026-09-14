@@ -3,7 +3,7 @@
 #include "player/Resources.h"
 #include "player/Resources.cpp"
 
-const std::vector<Building*>& Possession::getBuildings() {
+const std::vector<Building*>& Possession::getBuildings() const {
 	static const std::vector<Building*> buildings;
 	return buildings;
 }

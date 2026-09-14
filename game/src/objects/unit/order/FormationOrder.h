@@ -3,8 +3,7 @@
 
 class Physical;
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class Vector2;
 }
 
@@ -19,6 +18,8 @@ public:
 	bool add() override;
 	bool expired() override;
 	short getSize() const override;
+	PendingCommandSaveData saveState(unsigned short order) const override;
+
 private:
 	Formation* formation;
 

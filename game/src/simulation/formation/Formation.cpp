@@ -354,6 +354,15 @@ void Formation::addOrder(FormationOrder* order) {
 	unitOrders.emplace_back(order);
 }
 
+void Formation::restoreOrder(FormationOrder* order, bool pending) {
+	if (pending) {
+		delete pendingOrder;
+		pendingOrder = order;
+	} else {
+		unitOrders.emplace_back(order);
+	}
+}
+
 size_t Formation::getSize() const {
 	return units.size();
 }

@@ -40,7 +40,7 @@ public:
 	const std::vector<Physical*>& getNeighboursFromTeamNotEq(const Urho3D::Vector2& center, float radius,
 	                                                        char playerId);
 
-	const std::vector<Physical*>& getNeighboursWithCache(const Urho3D::Vector2& center, float radius, int gridIndex);
+	const std::vector<Physical*>& getNeighbours(const Urho3D::Vector2& center, float radius);
 	const std::vector<Physical*>& getNeighboursSimilarAs(const Urho3D::Vector2& center, ObjectType objectType,
 	                                                     unsigned short databaseId, char playerId) const;
 
@@ -60,7 +60,6 @@ public:
 	void updateVisibility(std::span<Building* const> buildings, std::span<Unit* const> units,
 	                      std::span<ResourceEntity* const> resources) const;
 
-	void invalidateCaches();
 	void update(Unit* unit) const;
 
 	void addNew(std::span<Unit* const> units);

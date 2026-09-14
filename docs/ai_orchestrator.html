@@ -450,8 +450,8 @@
     <p>History records "order sent" as SUCCESS, not whether the engagement was won. Tracking real outcomes would let the failure/recency feedback reflect lost battles.</p>
   </div>
   <div class="todo-item">
-    <h4>Save/load delta continuity</h4>
-    <p>MasterBrain <code>prev*</code> fields (prevScore, prevEnemyScore, prevUnits, prevResSum, prevGatherSum) are not serialized, so the first tick after load produces false delta spikes.</p>
+    <h4>Legacy save AI state</h4>
+    <p>Current saves serialize the MasterBrain <code>prev*</code> fields (prevScore, prevEnemyScore, prevUnits, prevResSum, prevGatherSum) in <code>ai_state</code> and restore them with the other AI continuation state. Legacy saves without that table load without cached AI continuation; migrate or regenerate them when preserving that state is required.</p>
   </div>
   <div class="todo-item">
     <h4>CSV training pipeline</h4>

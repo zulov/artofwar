@@ -4,22 +4,16 @@
 
 #include "Possession.h"
 #include "database/DatabaseCache.h"
-#include "utils/SpanUtils.h"
 #include "math/VectorUtils.h"
 #include "objects/building/Building.h"
+#include "utils/SpanUtils.h"
 
+Resources::Resources() { init(0); }
 
-Resources::Resources() {
-	init(0);
-}
-
-Resources::Resources(float valueForAll) {
-	init(valueForAll);
-}
+Resources::Resources(float valueForAll) { init(valueForAll); }
 
 void Resources::init(float valueForAll) {
 	resetSpan(values, valueForAll);
-	resetSpan(gatherSpeeds60s);
 	resetSpan(gatherSpeeds1s);
 	resetSpan(sumGatherSpeed);
 	resetSpan(sumValues);
@@ -62,21 +56,35 @@ void Resources::setValue(float food, float wood, float stone, float gold) {
 	values[cast(ResourceType::GOLD)] = gold;
 }
 
-void Resources::update1s(Possession* possession) {
-	std::ranges::copy(sumGatherSpeed, gatherSpeeds1s.begin());
-	resetArray(sumGatherSpeed);
+ResourcesSaveData Resources::saveState(unsigned char player) const {
+	return {player, gatherSpeeds1s, sumGatherSpeed, sumValues};
+}
 
+void Resources::loadState(const ResourcesSaveData& state) {
+	gatherSpeeds1s = state.gatherSpeeds1s;
+	sumGatherSpeed = state.sumGatherSpeed;
+	sumValues = state.sumValues;
+}
+
+void Resources::recalculateBuildingState(const Possession* possession) {
 	foodStorage = 0;
 	goldStorage = 0;
 	stoneRefineCapacity = 0;
 	goldRefineCapacity = 0;
-	for (const auto building : possession->getBuildings()) {
-		const auto level = building->getLevel();
+	for (const auto* building : possession->getBuildings()) {
+		const auto* level = building->getLevel();
 		foodStorage += level->foodStorage;
 		goldStorage += level->goldStorage;
 		stoneRefineCapacity += level->stoneRefineCapacity;
 		goldRefineCapacity += level->goldRefineCapacity;
 	}
+}
+
+void Resources::update1s(Possession* possession) {
+	std::ranges::copy(sumGatherSpeed, gatherSpeeds1s.begin());
+	resetArray(sumGatherSpeed);
+
+	recalculateBuildingState(possession);
 	addIncome(cast(ResourceType::STONE), getPotentialStoneRefinement());
 	addIncome(cast(ResourceType::GOLD), getPotentialGoldRefinement());
 }

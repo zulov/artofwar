@@ -1,17 +1,14 @@
 #include "FollowAim.h"
-#include "../Unit.h"
 #include <Urho3D/Scene/Node.h>
-#include "math/MathUtils.h"
+#include "../Unit.h"
 #include "TargetAim.h"
+#include "math/MathUtils.h"
 
-
-FollowAim::FollowAim(Physical* physical, TargetAim* subTarget): physical(physical), subTarget(subTarget) {
+FollowAim::FollowAim(Physical* physical, TargetAim* subTarget) : physical(physical), subTarget(subTarget) {
 	radiusSq = 1 * 1;
 }
 
-FollowAim::~FollowAim() {
-	delete subTarget;
-}
+FollowAim::~FollowAim() { delete subTarget; }
 
 std::vector<Urho3D::Vector3> FollowAim::getDebugLines(Unit* follower) const {
 	if (subTarget) {
@@ -52,5 +49,17 @@ bool FollowAim::ifReach(Unit* follower) {
 }
 
 bool FollowAim::expired() {
-	return !physical->isAlive() || physical->indexChanged();// || haspostToUSe?
+	return !physical->isAlive() || physical->indexChanged(); // || haspostToUSe?
+}
+
+AimSaveData FollowAim::saveState() const {
+	AimSaveData state;
+	state.kind = AimSaveKind::FOLLOW;
+	state.targetUid = physical ? physical->getUid() : 0;
+	if (subTarget) {
+		auto targetState = subTarget->saveState();
+		state.current = targetState.current;
+		state.path = std::move(targetState.path);
+	}
+	return state;
 }

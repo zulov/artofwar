@@ -63,6 +63,8 @@
     <ClCompile Include="OtherUtilsTest.cpp" />
     <ClCompile Include="PathFinderTest.cpp" />
     <ClCompile Include="PriorityHeapTest.cpp" />
+	<ClCompile Include="PersistenceStateTest.cpp" />
+	<ClCompile Include="PersistenceRowTest.cpp" />
     <ClCompile Include="RandGenTest.cpp" />
     <ClCompile Include="ResourcesTest.cpp" />
     <ClCompile Include="SimulationHelpersTest.cpp" />

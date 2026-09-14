@@ -1,8 +1,8 @@
 #pragma once
 
-#include "force/Force.h"
-#include <vector>
 #include <functional>
+#include <vector>
+#include "force/Force.h"
 
 #include "database/db_struct.h"
 
@@ -27,7 +27,7 @@ class CommandList;
 namespace Urho3D {
 	class Node;
 	class Scene;
-}
+} // namespace Urho3D
 
 class Simulation {
 public:
@@ -40,23 +40,25 @@ public:
 	FrameInfo* update(float timeStep);
 	void initScene(SceneLoader& loader) const;
 	void initScene(NewGameForm* form) const;
+	void restorePendingCommands(SceneLoader& loader) const;
 
 	void changeCoef(int i, int wheel);
 	void changeColorMode(SimColorMode _colorMode);
-	const std::vector<Unit*>* getUnits()const { return units; }
+	const std::vector<Unit*>* getUnits() const { return units; }
 	const std::vector<Building*>* getBuildings() const { return buildings; }
 	const std::vector<ResourceEntity*>* getResources() const { return resources; }
 
 private:
 	void aiPlayers() const;
 	void calculateForces();
-    void moveUnitsAndCheck();
-    void colorUnits();
-    void performStateAction() const;
+	void moveUnitsAndCheck();
+	void colorUnits();
+	void performStateAction() const;
 	void executeStateTransition() const;
 
 	void loadEntities(NewGameForm* form) const;
 	void loadEntities(dbload_container* data) const;
+	void restoreRuntimeState(dbload_container* data) const;
 	void applyForce() const;
 	void levelUp(QueueElement* done, char player) const;
 	void updateBuildingQueues() const;

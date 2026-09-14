@@ -51,7 +51,7 @@ public:
 	std::span<float> getResWithOutBonus();
 	float getResWithOutBonus(ResourceType rt);
 	std::vector<Building*>* getBuildings(unsigned short id);
-	const std::vector<Building*>& getBuildings();
+	const std::vector<Building*>& getBuildings() const;
 
 	void addKilled(Physical* physical);
 

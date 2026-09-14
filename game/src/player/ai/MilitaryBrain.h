@@ -4,6 +4,8 @@
 #include <span>
 #include <magic_enum.hpp>
 
+#include "scene/load/RuntimeSaveData.h"
+
 class Brain;
 class Player;
 class AiHistory;
@@ -51,6 +53,8 @@ enum class MilitaryCenterIdx : unsigned char {
 
 static constexpr size_t MILITARY_CENTER_COUNT = magic_enum::enum_count<MilitaryCenterIdx>();
 static constexpr size_t MILITARY_CENTER_PAIR_COUNT = MILITARY_CENTER_COUNT * (MILITARY_CENTER_COUNT - 1) / 2;
+static_assert(MILITARY_CENTER_PAIR_COUNT == AI_MILITARY_PRESSURE_COUNT,
+              "AI save state must contain one column for every military center pair");
 
 // One signed output per unordered pair. Positive means pressure from the first
 // enum name to the second; negative means pressure in the opposite direction.

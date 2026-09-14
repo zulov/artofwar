@@ -1,5 +1,8 @@
 #include "PlayersManager.h"
+#include "Game.h"
 #include "Player.h"
+#include "Resources.h"
+#include "database/DatabaseCache.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "objects/UId.h"
 #include "scene/load/dbload_container.h"
@@ -13,9 +16,13 @@ PlayersManager::~PlayersManager() {
 
 void PlayersManager::load(const std::vector<dbload_player*>* players) {
 	for (auto player : *players) {
-		auto newPlayer = new Player(player->nation, player->team, player->id, player->color, player->name,
+		const auto colors = Game::getDatabase()->getPlayerColors().size();
+		const auto color = static_cast<unsigned char>(colors ? player->id % colors : 0);
+		const auto name = Urho3D::String("Player ") + Urho3D::String(static_cast<int>(player->id));
+		auto newPlayer = new Player(player->nation, player->team, player->id, color, name,
 		                            player->is_active, player->buildingUid, player->unitUid);
 		newPlayer->setResourceAmount(player->food, player->wood, player->stone, player->gold);
+		newPlayer->getResources()->loadState(player->resources);
 		if (player->is_active) {
 			activePlayer = newPlayer;
 		}

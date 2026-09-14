@@ -1,0 +1,206 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1060" viewBox="0 0 1400 1060" role="img" aria-labelledby="title desc">
+  <title id="title">Art of War save schema relationships</title>
+  <desc id="desc">Base scene tables connect to runtime continuation tables through player ID, physical UID, formation ID, and pending command order.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,4 L0,8 z" fill="#64748b"/>
+    </marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { fill: #0f172a; font-family: Arial, sans-serif; font-size: 24px; font-weight: 700; }
+      .subtitle { fill: #475569; font-family: Arial, sans-serif; font-size: 13px; }
+      .group { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
+      .groupTitle { fill: #334155; font-family: Arial, sans-serif; font-size: 14px; font-weight: 700; letter-spacing: .4px; }
+      .base { fill: #e0f2fe; stroke: #0284c7; stroke-width: 1.5; }
+      .runtime { fill: #ecfdf5; stroke: #059669; stroke-width: 1.5; }
+      .global { fill: #fef3c7; stroke: #d97706; stroke-width: 1.5; }
+      .command { fill: #fce7f3; stroke: #db2777; stroke-width: 1.5; }
+      .table { fill: #0f172a; font-family: Consolas, monospace; font-size: 14px; font-weight: 700; }
+      .key { fill: #334155; font-family: Consolas, monospace; font-size: 11px; }
+      .note { fill: #475569; font-family: Arial, sans-serif; font-size: 11px; }
+      .edge { fill: none; stroke: #64748b; stroke-width: 1.4; marker-end: url(#arrow); }
+      .edgeDash { fill: none; stroke: #64748b; stroke-width: 1.4; stroke-dasharray: 5 4; marker-end: url(#arrow); }
+      .label { fill: #475569; font-family: Arial, sans-serif; font-size: 11px; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1400" height="1060"/>
+  <text class="title" x="40" y="42">Art of War Save Schema</text>
+  <text class="subtitle" x="40" y="65">Blue: base scene snapshot with mandatory continuation. Green: runtime continuation. Amber: global state. Pink: deferred commands.</text>
+
+  <rect class="group" x="30" y="95" width="300" height="840" rx="10"/>
+  <text class="groupTitle" x="50" y="125">BASE SCENE</text>
+
+  <g transform="translate(55 150)">
+    <rect class="base" width="250" height="74" rx="7"/>
+    <text class="table" x="15" y="27">players</text>
+    <text class="key" x="15" y="49">PK  id</text>
+    <text class="note" x="15" y="66">identity, stockpiles, resource state, UID counters</text>
+  </g>
+  <g transform="translate(55 250)">
+    <rect class="base" width="250" height="74" rx="7"/>
+    <text class="table" x="15" y="27">units</text>
+    <text class="key" x="15" y="49">PK  uid</text>
+    <text class="note" x="15" y="66">identity, position, mandatory runtime state</text>
+  </g>
+  <g transform="translate(55 350)">
+    <rect class="base" width="250" height="74" rx="7"/>
+    <text class="table" x="15" y="27">buildings</text>
+    <text class="key" x="15" y="49">PK  uid</text>
+    <text class="note" x="15" y="66">identity, location, state, target, reload</text>
+  </g>
+  <g transform="translate(55 450)">
+    <rect class="base" width="250" height="74" rx="7"/>
+    <text class="table" x="15" y="27">resources</text>
+    <text class="key" x="15" y="49">PK  uid</text>
+    <text class="note" x="15" y="66">identity, static location, state</text>
+  </g>
+  <g transform="translate(55 550)">
+    <rect class="base" width="250" height="74" rx="7"/>
+    <text class="table" x="15" y="27">config</text>
+    <text class="key" x="15" y="49">one row</text>
+     <text class="note" x="15" y="66">map, ticks, RNG; camera is transient</text>
+  </g>
+  <text class="note" x="55" y="675">Physical UID namespace:</text>
+  <text class="note" x="55" y="693">units.uid, buildings.uid, resources.uid</text>
+  <text class="note" x="55" y="724">Runtime links are resolved only after all</text>
+  <text class="note" x="55" y="742">base entities and static grids are rebuilt.</text>
+
+  <rect class="group" x="365" y="95" width="480" height="335" rx="10"/>
+  <text class="groupTitle" x="385" y="125">ENTITY CONTINUATION</text>
+
+  <g transform="translate(390 150)">
+    <rect class="runtime" width="200" height="70" rx="7"/>
+    <text class="table" x="14" y="26">units fields</text>
+    <text class="key" x="14" y="48">embedded in base row</text>
+    <text class="note" x="14" y="64">mandatory aim, target, movement, state</text>
+  </g>
+  <g transform="translate(620 150)">
+    <rect class="runtime" width="200" height="70" rx="7"/>
+    <text class="table" x="14" y="26">buildings fields</text>
+    <text class="key" x="14" y="48">target_uid, frame_state</text>
+    <text class="note" x="14" y="64">embedded in base row</text>
+  </g>
+  <g transform="translate(390 255)">
+    <rect class="runtime" width="200" height="70" rx="7"/>
+    <text class="table" x="14" y="26">unit_orders</text>
+    <text class="key" x="14" y="48">PK  unit_uid, order_idx</text>
+    <text class="note" x="14" y="64">queued unit orders</text>
+  </g>
+  <g transform="translate(620 255)">
+    <rect class="runtime" width="200" height="70" rx="7"/>
+    <text class="table" x="14" y="26">aim_paths</text>
+    <text class="key" x="14" y="48">PK  unit_uid, pending, order_idx</text>
+    <text class="note" x="14" y="64">current and pending path cells</text>
+  </g>
+  <g transform="translate(390 370)">
+    <rect class="runtime" width="200" height="70" rx="7"/>
+    <text class="table" x="14" y="26">formations</text>
+    <text class="key" x="14" y="48">PK  id</text>
+    <text class="note" x="14" y="64">formation state</text>
+  </g>
+  <g transform="translate(620 370)">
+    <rect class="runtime" width="200" height="70" rx="7"/>
+    <text class="table" x="14" y="26">formation_orders</text>
+    <text class="key" x="14" y="48">PK  formation_id, order_idx, pending</text>
+    <text class="note" x="14" y="64">queued and pending orders</text>
+  </g>
+  <text class="note" x="390" y="455">Unit membership and layout slot are embedded in units.formation and units.pos_in_state.</text>
+
+  <rect class="group" x="365" y="465" width="480" height="365" rx="10"/>
+  <text class="groupTitle" x="385" y="600">PLAYER AND AI CONTINUATION</text>
+
+  <g transform="translate(390 520)">
+    <rect class="runtime" width="200" height="62" rx="7"/>
+    <text class="table" x="14" y="25">queues</text>
+    <text class="key" x="14" y="45">owner_id, owner_type, order_idx</text>
+  </g>
+  <g transform="translate(620 520)">
+    <rect class="runtime" width="200" height="62" rx="7"/>
+    <text class="table" x="14" y="25">player_levels</text>
+    <text class="key" x="14" y="45">player, type, id</text>
+  </g>
+   <g transform="translate(390 605)">
+     <rect class="runtime" width="430" height="62" rx="7"/>
+     <text class="table" x="14" y="25">players fields</text>
+     <text class="key" x="14" y="45">embedded in base row; mandatory resource state</text>
+   </g>
+   <g transform="translate(390 690)">
+     <rect class="runtime" width="200" height="62" rx="7"/>
+     <text class="table" x="14" y="25">ai_wants</text>
+     <text class="key" x="14" y="45">PK  player, order_idx</text>
+     <text class="note" x="14" y="59">scheduler requests</text>
+   </g>
+   <g transform="translate(620 690)">
+    <rect class="runtime" width="200" height="62" rx="7"/>
+     <text class="table" x="14" y="25">ai_state</text>
+     <text class="key" x="14" y="45">PK  player</text>
+     <text class="note" x="14" y="59">master, economy, military state</text>
+   </g>
+   <g transform="translate(390 775)">
+     <rect class="runtime" width="430" height="42" rx="7"/>
+     <text class="table" x="14" y="19">ai_history</text>
+     <text class="key" x="14" y="35">PK  player, action, order_idx</text>
+  </g>
+
+  <rect class="group" x="880" y="95" width="490" height="405" rx="10"/>
+  <text class="groupTitle" x="900" y="125">GLOBAL CONTINUATION</text>
+
+   <g transform="translate(905 150)">
+     <rect class="global" width="435" height="82" rx="7"/>
+     <text class="table" x="14" y="27">config fields</text>
+    <text class="key" x="14" y="48">one row; schema, ticks, RNG</text>
+     <text class="note" x="14" y="66">wall time and accumulator remain transient</text>
+   </g>
+   <g transform="translate(905 270)">
+     <rect class="global" width="200" height="62" rx="7"/>
+     <text class="table" x="14" y="25">projectiles</text>
+     <text class="key" x="14" y="45">no PK; aim_uid</text>
+   </g>
+    <text class="note" x="1140" y="285">RNG seed and named stream indexes</text>
+    <text class="note" x="1140" y="302">continue deterministic sequences.</text>
+
+  <rect class="group" x="880" y="535" width="490" height="400" rx="10"/>
+  <text class="groupTitle" x="900" y="565">DEFERRED COMMANDS</text>
+  <g transform="translate(905 595)">
+    <rect class="command" width="435" height="76" rx="7"/>
+    <text class="table" x="15" y="28">pending_commands</text>
+    <text class="key" x="15" y="49">PK  order_idx</text>
+    <text class="note" x="15" y="66">creation, upgrade, order, and action commands waiting to execute</text>
+  </g>
+  <g transform="translate(905 705)">
+    <rect class="command" width="435" height="76" rx="7"/>
+    <text class="table" x="15" y="28">pending_command_entities</text>
+    <text class="key" x="15" y="49">PK  command_idx, order_idx</text>
+    <text class="note" x="15" y="66">physical entity UID lists for multi-entity commands</text>
+  </g>
+  <text class="note" x="905" y="828">Solid arrows: direct key relationship.</text>
+  <text class="note" x="905" y="847">Dashed arrows: UID may reference any physical entity type.</text>
+
+  <path class="edge" d="M305 187 H370 V185 H390"/>
+  <text class="label" x="334" y="177">id</text>
+  <path class="edge" d="M305 287 H365 V185 H390"/>
+  <text class="label" x="326" y="277">uid</text>
+  <path class="edge" d="M305 387 H620"/>
+  <text class="label" x="425" y="377">uid</text>
+  <path class="edge" d="M490 220 V255"/>
+  <text class="label" x="500" y="244">unit_uid</text>
+  <path class="edge" d="M490 220 V370"/>
+  <text class="label" x="500" y="354">formation</text>
+  <path class="edge" d="M590 405 H620"/>
+  <text class="label" x="596" y="395">formation_id</text>
+   <path class="edge" d="M305 187 H365 V656 H390"/>
+   <path class="edge" d="M305 187 H365 V721 H390"/>
+   <path class="edge" d="M305 187 H605 V721 H620"/>
+   <path class="edge" d="M305 187 H365 V796 H390"/>
+  <path class="edgeDash" d="M305 287 H870 V361 H905"/>
+  <path class="edgeDash" d="M305 350 H870 V361 H905"/>
+  <path class="edgeDash" d="M305 450 H870 V361 H905"/>
+  <text class="label" x="704" y="349">aim_uid</text>
+  <path class="edge" d="M1122 671 V705"/>
+  <text class="label" x="1130" y="696">order_idx</text>
+  <path class="edgeDash" d="M305 287 H865 V743 H905"/>
+  <path class="edgeDash" d="M305 350 H855 V743 H905"/>
+  <path class="edgeDash" d="M305 450 H845 V743 H905"/>
+  <text class="label" x="746" y="733">entity UID list</text>
+</svg>

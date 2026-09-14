@@ -14,6 +14,8 @@
     <ClCompile Include="InfluenceMapTest.cpp" />
     <ClCompile Include="LevelCacheTest.cpp" />
     <ClCompile Include="ResourcesTest.cpp" />
+    <ClCompile Include="PersistenceRowTest.cpp" />
+    <ClCompile Include="PersistenceStateTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

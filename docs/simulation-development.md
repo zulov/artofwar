@@ -4,7 +4,7 @@
 
 In normal mode, `Simulation::update()` accumulates render elapsed time and executes fixed simulation ticks while the accumulator is at least `TIME_PER_UPDATE`. Benchmark mode accumulates exactly one `TIME_PER_UPDATE` per engine update instead. The value is `0.033333333f`, approximately 30 updates per second, in `game/src/simulation/SimGlobals.h`. There is no catch-up cap.
 
-Gameplay changes must be reasoned about in fixed ticks, not rendering frames. The loop can run more than one simulation tick for a single render update.
+Gameplay changes must be reasoned about in fixed ticks, not rendering frames. The loop can run more than one simulation tick for a single render update. `FrameInfo` derives the current frame and seconds from `totalTicks`; they are not independent simulation state.
 
 ## Tick Order
 

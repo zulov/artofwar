@@ -408,6 +408,7 @@
     <ClInclude Include="src\env\bucket\ArrayProviderUtils.h" />
     <ClInclude Include="src\database\db_insert_defs.h" />
     <ClInclude Include="src\database\db_insert_utils.h" />
+    <ClInclude Include="src\database\db_read_defs.h" />
     <ClInclude Include="src\env\path\PathCache.h" />
     <ClInclude Include="src\objects\building\ParentBuildingType.h" />
     <ClInclude Include="src\objects\building\BuildPlacementClass.h" />
@@ -545,6 +546,9 @@
     <ClInclude Include="src\objects\unit\state\GoState.h" />
     <ClInclude Include="src\objects\unit\state\MoveState.h" />
     <ClInclude Include="src\scene\load\dbload_container.h" />
+	<ClInclude Include="src\scene\load\RuntimeSaveData.h" />
+	<ClInclude Include="src\scene\save\SaveTable.h" />
+	<ClInclude Include="src\scene\save\SaveTableUtils.h" />
     <ClInclude Include="src\scene\load\SceneLoader.h" />
     <ClInclude Include="src\scene\save\SceneSaver.h" />
     <ClInclude Include="src\env\bucket\Bucket.h" />
