@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Offline planning guide for future Art of War engineering work.">
+  <title>Art of War | Vacation Work Planning</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #e7edf5;
+      --muted: #94a3b8;
+      --faint: #64748b;
+      --page: #0b111b;
+      --panel: #111b2b;
+      --panel-2: #162235;
+      --panel-3: #1b2b42;
+      --line: #293b55;
+      --line-soft: #1d2b40;
+      --cyan: #67e8f9;
+      --blue: #93c5fd;
+      --green: #86efac;
+      --yellow: #fde68a;
+      --orange: #fdba74;
+      --red: #fda4af;
+      --violet: #c4b5fd;
+      --code: #d9f99d;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 8% -5%, rgba(103, 232, 249, 0.10), transparent 28rem),
+        radial-gradient(circle at 100% 18%, rgba(196, 181, 253, 0.08), transparent 24rem),
+        var(--page);
+      color: var(--ink);
+      font: 16px/1.62 "Segoe UI", Tahoma, sans-serif;
+    }
+
+    a { color: var(--cyan); }
+    a:hover { color: #cffafe; }
+    code, pre, .eyebrow, .label, .badge, .file, th { font-family: Consolas, "Courier New", monospace; }
+    code { color: var(--code); font-size: 0.91em; }
+    p { margin: 0 0 14px; }
+    ul, ol { margin: 8px 0 16px; padding-left: 24px; }
+    li { margin: 5px 0; }
+
+    .shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 28px;
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 30px 28px 80px;
+    }
+
+    main { min-width: 0; }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 22px;
+      padding: 38px 40px 34px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background:
+        linear-gradient(135deg, rgba(22, 34, 53, 0.96), rgba(12, 24, 38, 0.96)),
+        var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      position: absolute;
+      right: -80px;
+      bottom: -120px;
+      width: 360px;
+      height: 360px;
+      border: 1px solid rgba(103, 232, 249, 0.14);
+      border-radius: 50%;
+      box-shadow: 0 0 0 28px rgba(103, 232, 249, 0.03), 0 0 0 56px rgba(103, 232, 249, 0.02);
+      content: "";
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      margin-bottom: 12px;
+      color: var(--cyan);
+      font-size: 0.73rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, h4 { line-height: 1.2; }
+    h1 {
+      max-width: 850px;
+      margin: 0 0 14px;
+      color: #f8fafc;
+      font-size: clamp(2.2rem, 5vw, 4.8rem);
+      letter-spacing: -0.055em;
+    }
+    h2 {
+      margin: 0 0 14px;
+      color: #f8fafc;
+      font-size: clamp(1.55rem, 3vw, 2.15rem);
+      letter-spacing: -0.025em;
+    }
+    h3 { margin: 25px 0 10px; color: var(--blue); font-size: 1.2rem; }
+    h4 { margin: 0 0 9px; color: #f8fafc; font-size: 1.03rem; }
+
+    .lede {
+      max-width: 800px;
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 1.12rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 24px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 4px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.73rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .badge.green { border-color: rgba(134, 239, 172, 0.36); color: var(--green); background: rgba(134, 239, 172, 0.08); }
+    .badge.yellow { border-color: rgba(253, 230, 138, 0.36); color: var(--yellow); background: rgba(253, 230, 138, 0.08); }
+    .badge.orange { border-color: rgba(253, 186, 116, 0.36); color: var(--orange); background: rgba(253, 186, 116, 0.08); }
+    .badge.red { border-color: rgba(253, 164, 175, 0.36); color: var(--red); background: rgba(253, 164, 175, 0.08); }
+    .badge.violet { border-color: rgba(196, 181, 253, 0.36); color: var(--violet); background: rgba(196, 181, 253, 0.08); }
+
+    .side {
+      position: sticky;
+      top: 20px;
+      align-self: start;
+      max-height: calc(100vh - 40px);
+      overflow: auto;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(17, 27, 43, 0.92);
+      box-shadow: var(--shadow);
+    }
+
+    .side-title {
+      margin-bottom: 12px;
+      color: var(--faint);
+      font: 700 0.71rem/1.2 Consolas, "Courier New", monospace;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .toc { display: grid; gap: 2px; }
+    .toc a {
+      display: block;
+      padding: 7px 9px;
+      border-left: 2px solid transparent;
+      color: #b8c5d6;
+      font-size: 0.88rem;
+      text-decoration: none;
+    }
+    .toc a:hover, .toc a.active { border-left-color: var(--cyan); color: #f8fafc; background: rgba(103, 232, 249, 0.07); }
+
+    .progress-box {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line-soft);
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font: 0.76rem Consolas, "Courier New", monospace;
+    }
+    .progress-track { height: 7px; overflow: hidden; border-radius: 99px; background: #22334b; }
+    .progress-value { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--cyan), var(--green)); transition: width 180ms ease; }
+
+    .side-actions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+    button {
+      cursor: pointer;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 7px 10px;
+      background: var(--panel-2);
+      color: var(--ink);
+      font: 0.78rem Consolas, "Courier New", monospace;
+    }
+    button:hover { border-color: var(--cyan); background: var(--panel-3); }
+
+    section {
+      scroll-margin-top: 20px;
+      margin-bottom: 24px;
+      padding: 28px 30px 32px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(17, 27, 43, 0.88);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .section-number {
+      flex: 0 0 auto;
+      color: var(--cyan);
+      font: 700 0.76rem Consolas, "Courier New", monospace;
+      letter-spacing: 0.12em;
+    }
+    .section-sub { max-width: 720px; margin: -4px 0 16px; color: var(--muted); }
+
+    .callout {
+      margin: 18px 0;
+      padding: 15px 17px;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--cyan);
+      border-radius: 0 10px 10px 0;
+      background: rgba(103, 232, 249, 0.055);
+    }
+    .callout strong { color: #f8fafc; }
+    .callout.warning { border-left-color: var(--yellow); background: rgba(253, 230, 138, 0.055); }
+    .callout.risk { border-left-color: var(--red); background: rgba(253, 164, 175, 0.055); }
+    .callout.idea { border-left-color: var(--violet); background: rgba(196, 181, 253, 0.055); }
+
+    .grid-2, .grid-3, .grid-4 {
+      display: grid;
+      gap: 14px;
+    }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .card {
+      min-width: 0;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(22, 34, 53, 0.68);
+    }
+    .card p:last-child, .card ul:last-child, .card ol:last-child { margin-bottom: 0; }
+    .card h3 { margin-top: 0; }
+    .card .tagline { margin-bottom: 9px; color: var(--muted); font-size: 0.9rem; }
+
+    .state {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 2px 7px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+      font: 700 0.66rem Consolas, "Courier New", monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .state.confirmed { color: var(--green); }
+    .state.limit { color: var(--orange); }
+    .state.proposed { color: var(--violet); }
+    .state.decision { color: var(--yellow); }
+    .state.risk { color: var(--red); }
+
+    .diagram {
+      overflow-x: auto;
+      margin: 20px 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #0a111c;
+    }
+    .diagram svg { display: block; width: 100%; min-width: 650px; height: auto; }
+    .diagram-caption { margin: 9px 2px 0; color: var(--faint); font-size: 0.82rem; }
+
+    pre {
+      overflow-x: auto;
+      margin: 14px 0;
+      padding: 15px 17px;
+      border: 1px solid var(--line-soft);
+      border-radius: 9px;
+      background: #0a111c;
+      color: #cbd5e1;
+      font-size: 0.86rem;
+      line-height: 1.55;
+    }
+
+    table {
+      width: 100%;
+      margin: 15px 0 20px;
+      border-collapse: collapse;
+      font-size: 0.91rem;
+    }
+    th, td {
+      padding: 10px 11px;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      color: #cffafe;
+      background: #172b42;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    td:first-child { color: #dbeafe; font-weight: 600; }
+    tr:nth-child(even) td { background: rgba(22, 34, 53, 0.3); }
+
+    .file {
+      display: inline-block;
+      margin: 2px 3px 2px 0;
+      padding: 2px 6px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: var(--code);
+      font-size: 0.76rem;
+      line-height: 1.5;
+      text-decoration: none;
+      word-break: break-word;
+    }
+    .file:hover { border-color: var(--cyan); background: rgba(103, 232, 249, 0.08); }
+    .refs { margin-top: 12px; color: var(--muted); font-size: 0.83rem; }
+
+    .roadmap {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(125px, 1fr));
+      gap: 8px;
+      overflow-x: auto;
+      margin: 22px 0;
+    }
+    .roadmap-step {
+      position: relative;
+      min-height: 120px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--panel-2);
+    }
+    .roadmap-step:not(:last-child)::after {
+      position: absolute;
+      top: 50%;
+      right: -11px;
+      z-index: 1;
+      color: var(--cyan);
+      content: ">";
+      font: 700 1.3rem Consolas, "Courier New", monospace;
+    }
+    .roadmap-step .num { color: var(--cyan); font: 700 0.75rem Consolas, "Courier New", monospace; }
+    .roadmap-step strong { display: block; margin: 10px 0 4px; font-size: 0.9rem; }
+    .roadmap-step span { color: var(--muted); font-size: 0.78rem; }
+
+    .initiative {
+      position: relative;
+      margin: 16px 0;
+      padding: 20px 20px 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(22, 34, 53, 0.82), rgba(13, 23, 37, 0.78));
+    }
+    .initiative-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 13px;
+    }
+    .initiative-title { display: flex; gap: 11px; align-items: flex-start; }
+    .priority {
+      display: inline-flex;
+      flex: 0 0 auto;
+      width: 31px;
+      height: 31px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: var(--cyan);
+      color: #082f49;
+      font: 700 0.8rem Consolas, "Courier New", monospace;
+    }
+    .initiative-meta { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+    .initiative-meta .badge { min-height: 24px; padding: 3px 7px; font-size: 0.65rem; }
+    .initiative h3 { margin: 2px 0 5px; color: #f8fafc; }
+    .initiative .summary-line { color: #cbd5e1; }
+    .initiative-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+    .initiative-grid > div { padding: 12px; border: 1px solid var(--line-soft); border-radius: 8px; background: rgba(10, 17, 28, 0.3); }
+    .mini-title { margin-bottom: 5px; color: var(--cyan); font: 700 0.69rem Consolas, "Courier New", monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+    .initiative-grid p, .initiative-grid ul { margin-bottom: 0; color: #bdc9d8; font-size: 0.9rem; }
+
+    .checklist { display: grid; gap: 8px; }
+    .check-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 11px;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: rgba(10, 17, 28, 0.32);
+    }
+    .check-row input { flex: 0 0 auto; width: 17px; height: 17px; margin-top: 3px; accent-color: #22d3ee; }
+    .check-row label { flex: 1; cursor: pointer; color: #cbd5e1; }
+    .check-row input:checked + label { color: var(--muted); text-decoration: line-through; }
+
+    .worksheet { display: grid; gap: 15px; }
+    .prompt {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(22, 34, 53, 0.56);
+    }
+    .prompt label { display: block; margin-bottom: 8px; color: #f8fafc; font-weight: 600; }
+    .prompt small { display: block; margin-bottom: 9px; color: var(--muted); }
+    textarea {
+      display: block;
+      width: 100%;
+      min-height: 84px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 10px;
+      outline: none;
+      background: #0a111c;
+      color: var(--ink);
+      font: 0.91rem/1.5 "Segoe UI", Tahoma, sans-serif;
+    }
+    textarea:focus { border-color: var(--cyan); box-shadow: 0 0 0 2px rgba(103, 232, 249, 0.12); }
+
+    .legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 20px; }
+    .legend span { color: var(--muted); font-size: 0.82rem; }
+    .legend span::before { display: inline-block; width: 8px; height: 8px; margin: 0 5px 1px 0; border-radius: 50%; content: ""; }
+    .legend .confirmed::before { background: var(--green); }
+    .legend .limitation::before { background: var(--orange); }
+    .legend .proposal::before { background: var(--violet); }
+    .legend .decision-needed::before { background: var(--yellow); }
+    .legend .risk-legend::before { background: var(--red); }
+
+    .footer-note { color: var(--faint); font-size: 0.82rem; text-align: center; }
+
+    @media (max-width: 1050px) {
+      .shell { grid-template-columns: 1fr; }
+      .side { position: static; max-height: none; order: -1; }
+      .toc { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .progress-box, .side-actions { max-width: 520px; }
+    }
+    @media (max-width: 700px) {
+      body { font-size: 15px; }
+      .shell { padding: 12px 10px 50px; }
+      .hero, section { padding: 23px 18px 25px; border-radius: 12px; }
+      .hero { padding-top: 27px; }
+      .toc { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-2, .grid-3, .grid-4, .initiative-grid { grid-template-columns: 1fr; }
+      .section-head, .initiative-head { display: block; }
+      .section-number { display: block; margin-top: 8px; }
+      .initiative-meta { justify-content: flex-start; margin-top: 12px; }
+      .diagram svg { min-width: 570px; }
+      table { display: block; overflow-x: auto; white-space: normal; }
+      th, td { min-width: 150px; }
+      .roadmap { grid-template-columns: repeat(7, 145px); padding-bottom: 7px; }
+    }
+
+    @media print {
+      :root { color-scheme: light; --ink: #111827; --muted: #374151; --faint: #4b5563; --page: #fff; --panel: #fff; --panel-2: #f8fafc; --panel-3: #f1f5f9; --line: #9ca3af; --line-soft: #d1d5db; --cyan: #075985; --blue: #1e3a8a; --green: #166534; --yellow: #854d0e; --orange: #9a3412; --red: #9f1239; --violet: #5b21b6; --code: #365314; }
+      body { background: #fff; font-size: 9pt; }
+      .shell { display: block; max-width: none; padding: 0; }
+      .side { display: none; }
+      .hero, section { margin: 0 0 16px; padding: 18px; box-shadow: none; background: #fff; break-inside: avoid; page-break-inside: avoid; }
+      .hero::after { display: none; }
+      h1 { font-size: 28pt; }
+      h2 { font-size: 16pt; }
+      h3 { font-size: 11pt; }
+      .diagram { background: #fff; break-inside: avoid; page-break-inside: avoid; }
+      .diagram svg { min-width: 0; }
+      .card, .initiative, .prompt, .check-row { background: #fff; break-inside: avoid; page-break-inside: avoid; }
+      .callout { background: #fff; }
+      table { font-size: 8pt; }
+      th { background: #e5e7eb; }
+      a { color: #111827; text-decoration: underline; }
+      .file { color: #111827; }
+      textarea { min-height: 50px; background: #fff; color: #111827; }
+      .footer-note { color: #374151; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <main>
+      <header class="hero" id="top">
+        <div class="eyebrow">Art of War / field notebook / September 2026</div>
+        <h1>Future Work Planning Guide</h1>
+        <p class="lede">A calm, practical map of the project to read away from the keyboard. Use it to choose the next valuable problem, protect the runtime contracts, and return with a concrete first experiment instead of a vague ambition.</p>
+        <div class="hero-meta">
+          <span class="badge green">confirmed behavior included</span>
+          <span class="badge orange">known limitations marked</span>
+          <span class="badge violet">future ideas separated</span>
+          <span class="badge">offline and print friendly</span>
+        </div>
+      </header>
+
+      <section id="how-to-use">
+        <div class="section-head">
+          <div>
+            <h2>How To Use This Guide</h2>
+            <p class="section-sub">Do not read this as a commitment to build everything. Read it as a set of maps and decision prompts for selecting one coherent slice of work.</p>
+          </div>
+          <div class="section-number">00 / START HERE</div>
+        </div>
+        <div class="legend" aria-label="Document status legend">
+          <span class="confirmed">confirmed in source or project documentation</span>
+          <span class="limitation">current limitation or technical debt</span>
+          <span class="proposal">proposed future direction</span>
+          <span class="decision-needed">decision needed before implementation</span>
+          <span class="risk-legend">cross-system risk</span>
+        </div>
+        <div class="grid-3">
+          <div class="card">
+            <span class="state confirmed">confirmed</span>
+            <h3>First pass: understand</h3>
+            <p>Read the architecture and schemas. The code is authoritative when an older diagram disagrees with it.</p>
+          </div>
+          <div class="card">
+            <span class="state decision">decision</span>
+            <h3>Second pass: choose</h3>
+            <p>Select one problem with a visible success condition. Write down what is deliberately out of scope.</p>
+          </div>
+          <div class="card">
+            <span class="state proposed">proposal</span>
+            <h3>Third pass: shape</h3>
+            <p>Define the smallest experiment, its affected contracts, focused tests, and the first runtime smoke scenario.</p>
+          </div>
+        </div>
+        <div class="callout">
+          <strong>North-star rule:</strong> the project has several interfaces that are easy to break silently. Treat simulation tick order, database IDs, save columns, AI enum order, CSV topology, and physical UIDs as contracts, not implementation details.
+        </div>
+      </section>
+
+      <section id="snapshot">
+        <div class="section-head">
+          <div>
+            <h2>Project Snapshot</h2>
+            <p class="section-sub">The shortest useful context before thinking about a feature.</p>
+          </div>
+          <div class="section-number">01 / CONTEXT</div>
+        </div>
+        <div class="grid-4">
+          <div class="card"><h3>Runtime</h3><p>C++23 game on Urho3D, built with Visual Studio/MSBuild for Windows x64.</p></div>
+          <div class="card"><h3>Simulation</h3><p>Fixed-step loop at <code>0.033333333f</code>, approximately 30 simulation ticks per second.</p></div>
+          <div class="card"><h3>Data</h3><p>SQLite databases define gameplay, maps, and scene-save continuation state.</p></div>
+          <div class="card"><h3>AI</h3><p>Five feed-forward CSV-backed brains coordinate through wants, commands, and spatial maps.</p></div>
+        </div>
+        <h3>Repository map</h3>
+        <table>
+          <thead><tr><th>Area</th><th>Role</th><th>Start here</th><th>Planning question</th></tr></thead>
+          <tbody>
+            <tr><td>Simulation</td><td>Ticks, commands, movement, states, queues, disposal</td><td><a class="file" href="../game/src/simulation/Simulation.cpp">Simulation.cpp</a></td><td>At which tick phase are inputs valid and outputs still safe?</td></tr>
+            <tr><td>Environment</td><td>Grids, pathfinding, influence, visibility, placement</td><td><a class="file" href="../game/src/env/Environment.cpp">Environment.cpp</a></td><td>What spatial cache or snapshot becomes stale?</td></tr>
+            <tr><td>Player AI</td><td>Brains, wants, worker allocation, army orders</td><td><a class="file" href="../game/src/player/ai/AiOrchestrator.cpp">AiOrchestrator.cpp</a></td><td>Is this a behavior rule, a model interface, or a command issue?</td></tr>
+            <tr><td>Runtime data</td><td>Definitions, IDs, levels, relationships, metrics</td><td><a class="file" href="../game/src/database/DatabaseCache.cpp">DatabaseCache.cpp</a></td><td>Which ID, ordinal column, or metric range must remain stable?</td></tr>
+            <tr><td>Persistence</td><td>SQLite snapshot and continuation state</td><td><a class="file" href="../game/src/scene/save/SQLConsts.h">SQLConsts.h</a></td><td>Must existing saves remain readable?</td></tr>
+            <tr><td>Tests</td><td>Focused deterministic behavior checks</td><td><a class="file" href="../tests">tests/</a></td><td>What can be tested without starting the full game?</td></tr>
+          </tbody>
+        </table>
+        <p class="refs">Project constraints: <a href="../AGENTS.md">AGENTS.md</a> and <a href="simulation-development.md">simulation-development.md</a>.</p>
+      </section>
+
+      <section id="architecture">
+        <div class="section-head">
+          <div>
+            <h2>Runtime Architecture</h2>
+            <p class="section-sub">The service graph is intentionally distributed. Preserve the existing creators and teardown paths unless a lifecycle refactor is explicitly planned.</p>
+          </div>
+          <div class="section-number">02 / SYSTEM MAP</div>
+        </div>
+        <div class="diagram">
+          <svg viewBox="0 0 1040 370" role="img" aria-labelledby="architecture-title architecture-desc">
+            <title id="architecture-title">Art of War runtime architecture</title>
+            <desc id="architecture-desc">Main initializes a Game service locator and Simulation. Simulation coordinates commands, AI, movement, maps, queues, disposal, players, and formations.</desc>
+            <defs>
+              <marker id="arrow-cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#67e8f9"></path></marker>
+              <style>
+                .a-box { fill: #162235; stroke: #293b55; stroke-width: 1.5; }
+                .a-main { fill: #123047; stroke: #67e8f9; }
+                .a-sim { fill: #25314b; stroke: #c4b5fd; }
+                .a-text { fill: #e7edf5; font: 15px 'Segoe UI', sans-serif; }
+                .a-small { fill: #94a3b8; font: 12px Consolas, monospace; }
+                .a-line { fill: none; stroke: #67e8f9; stroke-width: 1.8; marker-end: url(#arrow-cyan); }
+              </style>
+            </defs>
+            <rect class="a-box a-main" x="35" y="135" width="145" height="90" rx="10"></rect>
+            <text class="a-text" x="107" y="169" text-anchor="middle">Main</text>
+            <text class="a-small" x="107" y="193" text-anchor="middle">init / lifecycle</text>
+            <rect class="a-box" x="235" y="38" width="215" height="285" rx="12"></rect>
+            <text class="a-text" x="342" y="70" text-anchor="middle">Game service locator</text>
+            <text class="a-small" x="342" y="93" text-anchor="middle">registered access, not ownership</text>
+            <text class="a-small" x="258" y="127">DatabaseCache</text>
+            <text class="a-small" x="258" y="153">Environment</text>
+            <text class="a-small" x="258" y="179">PlayersManager</text>
+            <text class="a-small" x="258" y="205">Camera / HUD</text>
+            <text class="a-small" x="258" y="231">FormationManager</text>
+            <text class="a-small" x="258" y="257">FrameInfo / globals</text>
+            <path class="a-line" d="M180 180 H235"></path>
+            <rect class="a-box a-sim" x="535" y="38" width="215" height="285" rx="12"></rect>
+            <text class="a-text" x="642" y="70" text-anchor="middle">Simulation</text>
+            <text class="a-small" x="558" y="113">ActionCenter</text>
+            <text class="a-small" x="558" y="139">object / player AI</text>
+            <text class="a-small" x="558" y="165">movement / combat</text>
+            <text class="a-small" x="558" y="191">queues / state changes</text>
+            <text class="a-small" x="558" y="217">influence / visibility</text>
+            <text class="a-small" x="558" y="243">dispose / players / formations</text>
+            <path class="a-line" d="M450 180 H535"></path>
+            <rect class="a-box" x="835" y="38" width="170" height="125" rx="10"></rect>
+            <text class="a-text" x="920" y="72" text-anchor="middle">Runtime data</text>
+            <text class="a-small" x="920" y="98" text-anchor="middle">Data/Database/*.db</text>
+            <text class="a-small" x="920" y="122" text-anchor="middle">Data/ai/*.csv</text>
+            <path class="a-line" d="M750 102 H835"></path>
+            <rect class="a-box" x="835" y="200" width="170" height="123" rx="10"></rect>
+            <text class="a-text" x="920" y="234" text-anchor="middle">Scene saves</text>
+            <text class="a-small" x="920" y="260" text-anchor="middle">saves/*.db</text>
+            <text class="a-small" x="920" y="284" text-anchor="middle">UID links / continuation</text>
+            <path class="a-line" d="M750 260 H835"></path>
+          </svg>
+          <p class="diagram-caption">The important boundary is lifecycle, not just access. <code>Game::set*</code> registers pointers; it does not define who deletes them.</p>
+        </div>
+        <div class="callout risk"><strong>Ownership invariant:</strong> do not introduce isolated smart-pointer ownership into the existing raw-pointer service graph as a side effect of gameplay work. A lifecycle migration needs its own scope, creator/destructor plan, and tests.</div>
+        <div class="grid-2">
+          <div class="card"><h3>Creation path</h3><p><code>Main</code> creates major managers, initializes globals, loads databases and maps, then starts normal or headless execution.</p></div>
+          <div class="card"><h3>Disposal path</h3><p><code>Simulation</code> owns its action center and object manager. Other services follow their existing creator and teardown path.</p></div>
+        </div>
+        <p class="refs">Decision record: <a href="decisions/0001-runtime-ownership-model.md">0001-runtime-ownership-model.md</a>.</p>
+      </section>
+
+      <section id="simulation">
+        <div class="section-head">
+          <div>
+            <h2>Simulation Contract</h2>
+            <p class="section-sub">Reason about gameplay in fixed ticks. A render update can execute zero, one, or several simulation ticks.</p>
+          </div>
+          <div class="section-number">03 / TICK ORDER</div>
+        </div>
+        <div class="diagram">
+          <svg viewBox="0 0 1040 235" role="img" aria-labelledby="tick-title tick-desc">
+            <title id="tick-title">Fixed-step simulation order</title>
+            <desc id="tick-desc">Each simulation tick applies commands, runs AI, executes actions, moves units and projectiles, advances queues, updates maps, disposes entities, and updates players and formations.</desc>
+            <defs><marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#86efac"></path></marker></defs>
+            <style>
+              .t-box { fill: #162235; stroke: #293b55; stroke-width: 1.4; }
+              .t-num { fill: #67e8f9; font: 700 13px Consolas, monospace; }
+              .t-text { fill: #e7edf5; font: 13px 'Segoe UI', sans-serif; }
+              .t-line { fill: none; stroke: #86efac; stroke-width: 1.8; marker-end: url(#arrow-green); }
+            </style>
+            <rect class="t-box" x="10" y="78" width="130" height="78" rx="9"></rect><text class="t-num" x="24" y="102">01</text><text class="t-text" x="24" y="124">create / upgrade</text><text class="t-text" x="24" y="143">commands</text>
+            <rect class="t-box" x="160" y="78" width="130" height="78" rx="9"></rect><text class="t-num" x="174" y="102">02</text><text class="t-text" x="174" y="124">object + player</text><text class="t-text" x="174" y="143">AI phases</text>
+            <rect class="t-box" x="310" y="78" width="130" height="78" rx="9"></rect><text class="t-num" x="324" y="102">03</text><text class="t-text" x="324" y="124">execute deferred</text><text class="t-text" x="324" y="143">actions</text>
+            <rect class="t-box" x="460" y="78" width="130" height="78" rx="9"></rect><text class="t-num" x="474" y="102">04</text><text class="t-text" x="474" y="124">forces, movement,</text><text class="t-text" x="474" y="143">states, projectiles</text>
+            <rect class="t-box" x="610" y="78" width="130" height="78" rx="9"></rect><text class="t-num" x="624" y="102">05</text><text class="t-text" x="624" y="124">queues, influence,</text><text class="t-text" x="624" y="143">visibility</text>
+            <rect class="t-box" x="760" y="78" width="130" height="78" rx="9"></rect><text class="t-num" x="774" y="102">06</text><text class="t-text" x="774" y="124">grid removal +</text><text class="t-text" x="774" y="143">disposal</text>
+            <rect class="t-box" x="910" y="78" width="120" height="78" rx="9"></rect><text class="t-num" x="924" y="102">07</text><text class="t-text" x="924" y="124">players +</text><text class="t-text" x="924" y="143">formations</text>
+            <path class="t-line" d="M140 117 H160"></path><path class="t-line" d="M290 117 H310"></path><path class="t-line" d="M440 117 H460"></path><path class="t-line" d="M590 117 H610"></path><path class="t-line" d="M740 117 H760"></path><path class="t-line" d="M890 117 H910"></path>
+            <path d="M1010 166 C1010 210 65 210 65 166" fill="none" stroke="#67e8f9" stroke-width="1.5" stroke-dasharray="5 5" marker-end="url(#arrow-green)"></path>
+            <text x="520" y="226" text-anchor="middle" fill="#94a3b8" font="12px Consolas, monospace">repeat while accumulator >= TIME_PER_UPDATE</text>
+          </svg>
+          <p class="diagram-caption">Current order from <a href="../game/src/simulation/Simulation.cpp">Simulation.cpp</a> and <a href="simulation-development.md">simulation-development.md</a>.</p>
+        </div>
+        <div class="grid-3">
+          <div class="card"><span class="state confirmed">confirmed</span><h3>Use tick time</h3><p>Movement, projectiles, state work, reloads, and queue progression use <code>TIME_PER_UPDATE</code>, not renderer frame time.</p></div>
+          <div class="card"><span class="state limit">watch closely</span><h3>Queued changes</h3><p>AI submits commands before action execution. Creation and upgrade queues are processed at the established command phase.</p></div>
+          <div class="card"><span class="state risk">risk</span><h3>Snapshot window</h3><p>Influence and visibility refresh before disposal. A dead or disposable entity can still be present in that snapshot for part of the tick.</p></div>
+        </div>
+        <h3>Questions before changing a tick</h3>
+        <div class="checklist">
+          <div class="check-row"><input type="checkbox" id="sim-check-1" data-persist="sim-check-1"><label for="sim-check-1">Which phase first has the input my feature needs?</label></div>
+          <div class="check-row"><input type="checkbox" id="sim-check-2" data-persist="sim-check-2"><label for="sim-check-2">Which later phase consumes or invalidates the result?</label></div>
+          <div class="check-row"><input type="checkbox" id="sim-check-3" data-persist="sim-check-3"><label for="sim-check-3">Could multiple ticks execute during one render update?</label></div>
+          <div class="check-row"><input type="checkbox" id="sim-check-4" data-persist="sim-check-4"><label for="sim-check-4">Can a command path replace direct collection mutation?</label></div>
+        </div>
+      </section>
+
+      <section id="ai">
+        <div class="section-head">
+          <div>
+            <h2>AI Architecture</h2>
+            <p class="section-sub">The AI is a coordinated pipeline, not five independent decisions. The hand-offs and persisted state matter as much as the networks.</p>
+          </div>
+          <div class="section-number">04 / DECISION PIPELINE</div>
+        </div>
+        <div class="diagram">
+          <svg viewBox="0 0 1040 360" role="img" aria-labelledby="ai-title ai-desc">
+            <title id="ai-title">AI decision pipeline</title>
+            <desc id="ai-desc">Player and enemy state enters Master, Economy, Military, and Unit brains. Their outputs become wants, which are executed into commands. The Build Spatial brain is used during building placement. Order logic separately manages workers and army movement.</desc>
+            <defs><marker id="arrow-violet" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c4b5fd"></path></marker></defs>
+            <style>
+              .i-box { fill: #162235; stroke: #293b55; stroke-width: 1.5; }
+              .i-brain { fill: #2b2342; stroke: #c4b5fd; }
+              .i-out { fill: #123047; stroke: #67e8f9; }
+              .i-text { fill: #e7edf5; font: 14px 'Segoe UI', sans-serif; }
+              .i-small { fill: #94a3b8; font: 11px Consolas, monospace; }
+              .i-line { fill: none; stroke: #c4b5fd; stroke-width: 1.7; marker-end: url(#arrow-violet); }
+            </style>
+            <rect class="i-box" x="20" y="126" width="155" height="95" rx="10"></rect><text class="i-text" x="97" y="160" text-anchor="middle">player state</text><text class="i-small" x="97" y="184" text-anchor="middle">resources / units / maps</text><text class="i-small" x="97" y="201" text-anchor="middle">enemy snapshot / history</text>
+            <rect class="i-box i-brain" x="230" y="25" width="150" height="75" rx="9"></rect><text class="i-text" x="305" y="57" text-anchor="middle">MasterBrain</text><text class="i-small" x="305" y="78" text-anchor="middle">34 -> 9 urgency values</text>
+            <rect class="i-box i-brain" x="230" y="117" width="150" height="75" rx="9"></rect><text class="i-text" x="305" y="149" text-anchor="middle">EconomyBrain</text><text class="i-small" x="305" y="170" text-anchor="middle">priorities + building needs</text>
+            <rect class="i-box i-brain" x="230" y="209" width="150" height="75" rx="9"></rect><text class="i-text" x="305" y="241" text-anchor="middle">MilitaryBrain</text><text class="i-small" x="305" y="262" text-anchor="middle">21 pressures + composition</text>
+            <rect class="i-box i-brain" x="230" y="301" width="150" height="45" rx="9"></rect><text class="i-text" x="305" y="329" text-anchor="middle">UnitBrain</text>
+            <path class="i-line" d="M175 160 C198 160 205 63 230 63"></path><path class="i-line" d="M175 170 H230"></path><path class="i-line" d="M175 184 C198 184 205 246 230 246"></path><path class="i-line" d="M175 198 C198 198 205 323 230 323"></path>
+            <rect class="i-box i-out" x="450" y="106" width="175" height="125" rx="10"></rect><text class="i-text" x="537" y="140" text-anchor="middle">WantList</text><text class="i-small" x="537" y="164" text-anchor="middle">merge / age / decay</text><text class="i-small" x="537" y="182" text-anchor="middle">affordability / soft reserve</text><text class="i-small" x="537" y="200" text-anchor="middle">cap and prioritize</text>
+            <path class="i-line" d="M380 63 C415 63 415 145 450 145"></path><path class="i-line" d="M380 154 H450"></path><path class="i-line" d="M380 246 C415 246 415 192 450 192"></path><path class="i-line" d="M380 323 C415 323 415 216 450 216"></path>
+            <rect class="i-box" x="690" y="106" width="155" height="125" rx="10"></rect><text class="i-text" x="767" y="140" text-anchor="middle">WantExecutor</text><text class="i-small" x="767" y="164" text-anchor="middle">costs / producers</text><text class="i-small" x="767" y="182" text-anchor="middle">placement / readiness</text><text class="i-small" x="767" y="200" text-anchor="middle">command creation</text>
+            <path class="i-line" d="M625 168 H690"></path>
+            <rect class="i-box i-out" x="900" y="106" width="120" height="125" rx="10"></rect><text class="i-text" x="960" y="140" text-anchor="middle">commands</text><text class="i-small" x="960" y="164" text-anchor="middle">create / upgrade</text><text class="i-small" x="960" y="182" text-anchor="middle">unit actions</text><text class="i-small" x="960" y="200" text-anchor="middle">orders</text>
+            <path class="i-line" d="M845 168 H900"></path>
+            <rect class="i-box" x="450" y="270" width="395" height="60" rx="9"></rect><text class="i-text" x="647" y="296" text-anchor="middle">BuildSpatialBrain is invoked during placement</text><text class="i-small" x="647" y="315" text-anchor="middle">11 ordered map weights -> valid visible environment position</text>
+            <path class="i-line" d="M625 216 C650 216 650 270 650 270"></path>
+          </svg>
+          <p class="diagram-caption">The active flow begins in <a href="../game/src/player/ai/AiOrchestrator.cpp">AiOrchestrator::action()</a>; worker and army orders are scheduled separately in <code>order()</code>.</p>
+        </div>
+        <table>
+          <thead><tr><th>Brain</th><th>Current interface</th><th>Output meaning</th><th>Change impact</th></tr></thead>
+          <tbody>
+            <tr><td>Master</td><td>34 inputs -> 9 outputs</td><td>Worker, economy, building, unit, military, expansion, tech, defence, attack urgency</td><td>Changes affect every downstream priority path and <code>master.csv</code>.</td></tr>
+            <tr><td>Economy</td><td>41 inputs -> resource priorities and 10 <code>NEED_*</code> outputs</td><td>Resource allocation, storage/refinement, building capability needs</td><td>Touches resource metrics, building matching, and <code>economy.csv</code>.</td></tr>
+            <tr><td>Build Spatial</td><td>20 inputs -> 11 ordered map weights</td><td>Placement preference over influence-map families</td><td>Output enum order and map-slot semantics must stay aligned.</td></tr>
+            <tr><td>Unit</td><td>21 inputs -> 23-value profile plus 2 urgencies</td><td>Nation-agnostic unit profile and upgrade requests</td><td>Metric order, unit resolution, CSV width, and trainer assumptions change together.</td></tr>
+            <tr><td>Military</td><td>27 inputs -> 21 pair pressures plus 3 preferences</td><td>Army target centers and infantry/range/cavalry preference</td><td>Center layout is a fixed pairwise interface; targeting behavior depends on it.</td></tr>
+          </tbody>
+        </table>
+        <div class="callout warning"><strong>CSV interface rule:</strong> add enum members at an intentional location, populate and normalize the new input, update the consumer for new outputs, regenerate or retrain affected files, then run dimension and behavior tests. Never change only the C++ enum or only the CSV.</div>
+        <p class="refs">AI contracts: <a href="ai-development.md">ai-development.md</a>, <a href="decisions/0002-ai-csv-is-a-runtime-interface.md">0002-ai-csv-is-a-runtime-interface.md</a>, and <a href="../tools/gen_brain_csv.ps1">gen_brain_csv.ps1</a>.</p>
+      </section>
+
+      <section id="influence">
+        <div class="section-head">
+          <div>
+            <h2>Influence, Visibility, And Placement</h2>
+            <p class="section-sub">Spatial systems are shared simulation state. A feature that adds movement, spawning, disposal, targeting, or placement must account for refresh and invalidation order.</p>
+          </div>
+          <div class="section-number">05 / SPATIAL STATE</div>
+        </div>
+        <div class="grid-3">
+          <div class="card"><h3>Snapshot maps</h3><p>Building presence, unit presence, army presence, and unboosted-resource activity are rebuilt from current entities at scheduled cadences.</p></div>
+          <div class="card"><h3>History maps</h3><p>Gathering, economy, and attack activity buffer events, then merge using decay. Fresh events may wait for the scheduled history update.</p></div>
+          <div class="card"><h3>Visibility map</h3><p><code>NONE</code> means never seen, <code>SEEN</code> means explored but not visible, and <code>VISIBLE</code> means currently visible.</p></div>
+        </div>
+        <h3>BuildSpatial output schema</h3>
+        <table>
+          <thead><tr><th>Index</th><th>Enum</th><th>Underlying map</th><th>Positive weight</th><th>Negative weight</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td><code>W_BUILDINGS_INFLUENCE</code></td><td>our building presence</td><td>seek our building clusters</td><td>avoid our building clusters</td></tr>
+            <tr><td>1</td><td><code>W_UNITS_INFLUENCE</code></td><td>our unit presence</td><td>seek our unit density</td><td>avoid our unit density</td></tr>
+            <tr><td>2</td><td><code>W_ATTACK_SPEED</code></td><td>our attack activity</td><td>seek recent battles</td><td>avoid recent battles</td></tr>
+            <tr><td>3-6</td><td><code>W_GATHER_*</code></td><td>food, wood, stone, gold gathering</td><td>seek active resource lanes</td><td>avoid active resource lanes</td></tr>
+            <tr><td>7</td><td><code>W_ENEMY_BUILDINGS_INFLUENCE</code></td><td>enemy building presence</td><td>seek enemy structures</td><td>avoid enemy structures</td></tr>
+            <tr><td>8</td><td><code>W_ENEMY_UNITS_INFLUENCE</code></td><td>enemy unit presence</td><td>seek enemy presence</td><td>avoid enemy presence</td></tr>
+            <tr><td>9</td><td><code>W_ENEMY_ATTACK_SPEED</code></td><td>enemy attack activity</td><td>seek enemy battle heat</td><td>avoid enemy battle heat</td></tr>
+            <tr><td>10</td><td><code>W_RES_NOT_BONUS</code></td><td>aggregate unboosted resources</td><td>seek unboosted activity</td><td>avoid unboosted activity</td></tr>
+          </tbody>
+        </table>
+        <h3>Military center schema</h3>
+        <table>
+          <thead><tr><th>Center</th><th>Source</th><th>Current meaning</th><th>Question for future work</th></tr></thead>
+          <tbody>
+            <tr><td><code>OUR_ARMY</code></td><td>own army presence</td><td>defend the army</td><td>Should a damaged army use a safer fallback center?</td></tr>
+            <tr><td><code>OUR_ECON</code></td><td>own economic activity</td><td>defend economy</td><td>Is the center recent enough for emergency defense?</td></tr>
+            <tr><td><code>OUR_BUILDING</code></td><td>own building presence</td><td>defend base</td><td>Should high-value structures alter priority?</td></tr>
+            <tr><td><code>ENEMY_ARMY</code></td><td>enemy army presence</td><td>attack army</td><td>Is this target known, visible, or stale?</td></tr>
+            <tr><td><code>ENEMY_ECON</code></td><td>enemy economic activity</td><td>attack economy</td><td>Can the army reach it without scouting?</td></tr>
+            <tr><td><code>ENEMY_BUILDING</code></td><td>enemy building presence</td><td>attack base</td><td>Does this represent a known objective?</td></tr>
+            <tr><td><code>BATTLE</code></td><td>own attack activity</td><td>move toward recent fighting</td><td>Does activity mean a battle worth joining or a danger to avoid?</td></tr>
+          </tbody>
+        </table>
+        <div class="callout risk"><strong>Current asymmetry:</strong> building placement filters candidate positions through visibility, but strategic brains and military center selection can use the selected enemy's global current possession. Meaningful fog-of-war work requires a known-state model, not only a scout unit.</div>
+        <p class="refs">Deep reference: <a href="influence_maps_deep_dive.html">influence_maps_deep_dive.html</a>, <a href="army_targeting_flow.html">army_targeting_flow.html</a>, and <a href="../game/src/env/influence/InfluenceManager.cpp">InfluenceManager.cpp</a>.</p>
+      </section>
+
+      <section id="economy">
+        <div class="section-head">
+          <div>
+            <h2>Economy And Resource Building Flow</h2>
+            <p class="section-sub">Resource buildings are currently the most complete building-decision path. Use this as a model for understanding the missing general building path.</p>
+          </div>
+          <div class="section-number">06 / ECONOMY</div>
+        </div>
+        <div class="diagram">
+          <svg viewBox="0 0 1040 190" role="img" aria-labelledby="economy-title economy-desc">
+            <title id="economy-title">Resource building decision flow</title>
+            <desc id="economy-desc">Economy state enters EconomyBrain, which produces needs. Buildings are matched by database capabilities, top candidates become wants, and WantExecutor places them using BuildSpatial and Environment.</desc>
+            <defs><marker id="arrow-yellow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#fde68a"></path></marker></defs>
+            <style>
+              .e-box { fill: #162235; stroke: #293b55; stroke-width: 1.5; }
+              .e-hot { fill: #3a3020; stroke: #fde68a; }
+              .e-text { fill: #e7edf5; font: 14px 'Segoe UI', sans-serif; }
+              .e-small { fill: #94a3b8; font: 11px Consolas, monospace; }
+              .e-line { fill: none; stroke: #fde68a; stroke-width: 1.8; marker-end: url(#arrow-yellow); }
+            </style>
+            <rect class="e-box" x="18" y="55" width="165" height="80" rx="9"></rect><text class="e-text" x="100" y="87" text-anchor="middle">economy inputs</text><text class="e-small" x="100" y="109" text-anchor="middle">stockpiles / speeds / gaps</text><text class="e-small" x="100" y="125" text-anchor="middle">workers / supply / feedback</text>
+            <rect class="e-box e-hot" x="225" y="55" width="165" height="80" rx="9"></rect><text class="e-text" x="307" y="87" text-anchor="middle">EconomyBrain</text><text class="e-small" x="307" y="110" text-anchor="middle">10 NEED_* outputs</text>
+            <rect class="e-box" x="432" y="55" width="165" height="80" rx="9"></rect><text class="e-text" x="514" y="87" text-anchor="middle">capability match</text><text class="e-small" x="514" y="109" text-anchor="middle">DB fields -> building need</text><text class="e-small" x="514" y="125" text-anchor="middle">keep top 3 above 0.1</text>
+            <rect class="e-box" x="639" y="55" width="165" height="80" rx="9"></rect><text class="e-text" x="721" y="87" text-anchor="middle">WantList</text><text class="e-small" x="721" y="109" text-anchor="middle">priority / cost / reserve</text><text class="e-small" x="721" y="125" text-anchor="middle">BUILDING request</text>
+            <rect class="e-box" x="846" y="55" width="176" height="80" rx="9"></rect><text class="e-text" x="934" y="87" text-anchor="middle">placement + command</text><text class="e-small" x="934" y="109" text-anchor="middle">BuildSpatial -> Environment</text><text class="e-small" x="934" y="125" text-anchor="middle">visible valid position</text>
+            <path class="e-line" d="M183 95 H225"></path><path class="e-line" d="M390 95 H432"></path><path class="e-line" d="M597 95 H639"></path><path class="e-line" d="M804 95 H846"></path>
+          </svg>
+          <p class="diagram-caption">The capability matrix is implemented in <a href="../game/src/player/ai/AiOrchestrator.cpp">AiOrchestrator::createResBuilding()</a>.</p>
+        </div>
+        <table>
+          <thead><tr><th>Need output</th><th>Capability</th><th>Matches a building when</th></tr></thead>
+          <tbody>
+            <tr><td><code>NEED_BONUS_FOOD</code> through <code>NEED_BONUS_GOLD</code></td><td>collection bonus</td><td>collect is positive, resource range is positive, and resource type matches</td></tr>
+            <tr><td><code>NEED_FOOD_SOURCE</code></td><td>food source</td><td><code>toResource &gt;= 0</code> and spawn range is non-positive</td></tr>
+            <tr><td><code>NEED_WOOD_SOURCE</code></td><td>wood source</td><td><code>toResource &gt;= 0</code> and spawn range is positive</td></tr>
+            <tr><td><code>NEED_FOOD_STORAGE</code> / <code>NEED_GOLD_STORAGE</code></td><td>storage</td><td>the corresponding storage capacity is positive</td></tr>
+            <tr><td><code>NEED_STONE_REFINE</code> / <code>NEED_GOLD_REFINE</code></td><td>refinement</td><td>the corresponding refinement capacity is positive</td></tr>
+          </tbody>
+        </table>
+        <div class="callout"><strong>Useful design pattern:</strong> the AI asks for a capability, not a nation-specific building ID. The database translates capability into candidates. Future defence and tech selection can reuse this pattern if their capabilities and prerequisites are made explicit.</div>
+        <p class="refs">References: <a href="resource_gathering_schema.html">resource_gathering_schema.html</a>, <a href="economy_brain_architecture.html">economy_brain_architecture.html</a>, and <a href="../game/src/player/Resources.cpp">Resources.cpp</a>.</p>
+      </section>
+
+      <section id="persistence">
+        <div class="section-head">
+          <div>
+            <h2>Save And Load Contract</h2>
+            <p class="section-sub">A scene save is a SQLite snapshot of gameplay plus enough continuation state to resume simulation. It is not only a picture of the map.</p>
+          </div>
+          <div class="section-number">07 / PERSISTENCE</div>
+        </div>
+        <div class="diagram">
+          <svg viewBox="0 0 1040 330" role="img" aria-labelledby="save-title save-desc">
+            <title id="save-title">Save and load relationship schema</title>
+            <desc id="save-desc">Five base tables support runtime continuation tables. Physical entities link by UID, player state links by player ID, and config stores global tick and random state.</desc>
+            <style>
+              .s-base { fill: #123047; stroke: #67e8f9; stroke-width: 1.5; }
+              .s-runtime { fill: #2b2342; stroke: #c4b5fd; stroke-width: 1.5; }
+              .s-global { fill: #3a3020; stroke: #fde68a; stroke-width: 1.5; }
+              .s-text { fill: #e7edf5; font: 14px 'Segoe UI', sans-serif; }
+              .s-small { fill: #94a3b8; font: 11px Consolas, monospace; }
+              .s-line { fill: none; stroke: #94a3b8; stroke-width: 1.4; stroke-dasharray: 5 4; }
+            </style>
+            <rect class="s-base" x="25" y="35" width="170" height="70" rx="9"></rect><text class="s-text" x="110" y="65" text-anchor="middle">units</text><text class="s-small" x="110" y="87" text-anchor="middle">uid / id_db / targets</text>
+            <rect class="s-base" x="25" y="130" width="170" height="70" rx="9"></rect><text class="s-text" x="110" y="160" text-anchor="middle">buildings</text><text class="s-small" x="110" y="182" text-anchor="middle">uid / id_db / combat state</text>
+            <rect class="s-base" x="25" y="225" width="170" height="70" rx="9"></rect><text class="s-text" x="110" y="255" text-anchor="middle">resources</text><text class="s-small" x="110" y="277" text-anchor="middle">uid / id_db / state</text>
+            <rect class="s-base" x="260" y="130" width="170" height="70" rx="9"></rect><text class="s-text" x="345" y="160" text-anchor="middle">players</text><text class="s-small" x="345" y="182" text-anchor="middle">id / nation / resources</text>
+            <rect class="s-global" x="260" y="235" width="170" height="70" rx="9"></rect><text class="s-text" x="345" y="265" text-anchor="middle">config</text><text class="s-small" x="345" y="287" text-anchor="middle">ticks / map / RNG</text>
+            <rect class="s-runtime" x="520" y="35" width="185" height="70" rx="9"></rect><text class="s-text" x="612" y="65" text-anchor="middle">orders / aim_paths</text><text class="s-small" x="612" y="87" text-anchor="middle">unit_uid -> units.uid</text>
+            <rect class="s-runtime" x="520" y="130" width="185" height="70" rx="9"></rect><text class="s-text" x="612" y="160" text-anchor="middle">queues / levels</text><text class="s-small" x="612" y="182" text-anchor="middle">player or building owner</text>
+            <rect class="s-runtime" x="520" y="225" width="185" height="70" rx="9"></rect><text class="s-text" x="612" y="255" text-anchor="middle">ai_state / wants / history</text><text class="s-small" x="612" y="277" text-anchor="middle">player -> players.id</text>
+            <rect class="s-runtime" x="790" y="35" width="220" height="70" rx="9"></rect><text class="s-text" x="900" y="65" text-anchor="middle">formations / projectiles</text><text class="s-small" x="900" y="87" text-anchor="middle">UID and formation links</text>
+            <rect class="s-runtime" x="790" y="130" width="220" height="70" rx="9"></rect><text class="s-text" x="900" y="160" text-anchor="middle">pending_commands</text><text class="s-small" x="900" y="182" text-anchor="middle">deferred actions at save time</text>
+            <rect class="s-runtime" x="790" y="225" width="220" height="70" rx="9"></rect><text class="s-text" x="900" y="255" text-anchor="middle">pending_command_entities</text><text class="s-small" x="900" y="277" text-anchor="middle">command index -> UID list</text>
+            <path class="s-line" d="M195 70 H520"></path><path class="s-line" d="M195 165 H260"></path><path class="s-line" d="M195 260 H260"></path><path class="s-line" d="M430 165 H520"></path><path class="s-line" d="M430 270 H520"></path><path class="s-line" d="M705 70 H790"></path><path class="s-line" d="M705 165 H790"></path><path class="s-line" d="M705 260 H790"></path>
+          </svg>
+          <p class="diagram-caption">Physical <code>uid</code> identifies a runtime entity; <code>id_db</code> identifies a gameplay definition. Do not mix them.</p>
+        </div>
+        <h3>Mandatory and optional tables</h3>
+        <table>
+          <thead><tr><th>Group</th><th>Tables</th><th>Important contract</th></tr></thead>
+          <tbody>
+            <tr><td>Mandatory base</td><td><code>units</code>, <code>buildings</code>, <code>resources</code>, <code>players</code>, <code>config</code></td><td>Required tables and current required columns must exist before map or simulation construction.</td></tr>
+            <tr><td>Entity continuation</td><td><code>unit_orders</code>, <code>aim_paths</code>, building combat fields</td><td>UID links resolve only after all base entities and static grids exist.</td></tr>
+            <tr><td>AI continuation</td><td><code>ai_state</code>, <code>ai_wants</code>, <code>ai_history</code></td><td>Persisted state affects behavior after loading; legacy saves can lose this continuity.</td></tr>
+            <tr><td>World continuation</td><td><code>queues</code>, <code>player_levels</code>, <code>formations</code>, <code>projectiles</code></td><td>Empty variable-length tables may be omitted. Derived values are rebuilt from loaded definitions.</td></tr>
+            <tr><td>Deferred actions</td><td><code>pending_commands</code>, <code>pending_command_entities</code></td><td>Commands remain deferred and must not be resolved before referenced entities exist.</td></tr>
+          </tbody>
+        </table>
+        <div class="callout warning"><strong>Save schema rule:</strong> update <code>SQLConsts.h</code>, the matching column enum, saver bindings, loader DTO bindings, count assertions, tests, and migration policy together. Save loading is insensitive to physical SQLite column order, but enum names and binding order are not optional.</div>
+        <div class="grid-2">
+          <div class="card"><span class="state limit">current limitation</span><h3>No active schema version</h3><p>Compatibility is inferred from required tables and columns. Adding a required field needs explicit migration or save regeneration.</p></div>
+          <div class="card"><span class="state limit">current limitation</span><h3>Existing save replacement</h3><p>The saver does not replace an existing database; creating tables without <code>IF NOT EXISTS</code> makes overwrite fail.</p></div>
+        </div>
+        <p class="refs">Persistence references: <a href="save-development.html">save-development.html</a>, <a href="load-development.html">load-development.html</a>, <a href="../game/src/scene/save/SceneSaver.cpp">SceneSaver.cpp</a>, and <a href="../game/src/scene/load/SceneLoader.cpp">SceneLoader.cpp</a>.</p>
+      </section>
+
+      <section id="backlog">
+        <div class="section-head">
+          <div>
+            <h2>Future Work Backlog</h2>
+            <p class="section-sub">These are candidate initiatives, ordered by expected value and dependency risk. Each should become a small design note before code is changed.</p>
+          </div>
+          <div class="section-number">08 / CHOICES</div>
+        </div>
+
+        <article class="initiative" id="initiative-building">
+          <div class="initiative-head">
+            <div class="initiative-title"><span class="priority">P1</span><div><h3>Make ordinary building decisions functional</h3><p class="summary-line">Replace the non-resource <code>buildings.at(0)</code> fallback with deliberate defence, tech, home, and unit-production selection.</p></div></div>
+            <div class="initiative-meta"><span class="badge green">high value</span><span class="badge">medium scope</span></div>
+          </div>
+          <div class="initiative-grid">
+            <div><div class="mini-title">Why it matters</div><p>Master outputs for defence, tech, and other buildings are currently disabled. Re-enabling them without real selection can produce the wrong structure.</p></div>
+            <div><div class="mini-title">Candidate shape</div><p>Model building capabilities and prerequisites in data, then rank candidates deterministically or through a dedicated output. Reuse the resource capability pattern where possible.</p></div>
+            <div><div class="mini-title">Dependencies</div><p>Building definitions, prerequisites, readiness rules, AI request paths, placement behavior, and possibly new CSV outputs.</p></div>
+            <div><div class="mini-title">First experiment</div><p>Add a pure selection function for one category, such as defence, with a table-driven test. Do not re-enable every Master path at once.</p></div>
+          </div>
+          <p class="refs">Start at <a class="file" href="../game/src/player/ai/AiOrchestrator.cpp">AiOrchestrator.cpp</a> and <a class="file" href="../game/src/player/ai/WantExecutor.cpp">WantExecutor.cpp</a>.</p>
+        </article>
+
+        <article class="initiative" id="initiative-producer">
+          <div class="initiative-head">
+            <div class="initiative-title"><span class="priority">P2</span><div><h3>Close producer dependency gaps</h3><p class="summary-line">Handle producers that exist but are not ready, under-levelled, or competing with other upgrades.</p></div></div>
+            <div class="initiative-meta"><span class="badge green">high value</span><span class="badge">low-medium scope</span></div>
+          </div>
+          <div class="initiative-grid">
+            <div><div class="mini-title">Current behavior</div><p>The fallback checks whether any producer type exists, then queues the original request. Producer readiness is checked later, and the original request may be lost for that pass.</p></div>
+            <div><div class="mini-title">Candidate shape</div><p>Represent producer status explicitly: absent, building, not ready, ready, insufficient level, or blocked by cost. Route the next useful upgrade or retry without creating loops.</p></div>
+            <div><div class="mini-title">Risks</div><p>Want priority, soft reserves, queue capacity, and save/load of wants can all change. A fallback graph deeper than one hop can loop.</p></div>
+            <div><div class="mini-title">First experiment</div><p>Write deterministic tests for one unit with an absent producer, a building producer, and an under-levelled producer. Keep the fallback one-hop until behavior is measured.</p></div>
+          </div>
+          <p class="refs">Known TODO: <a class="file" href="../game/src/player/ai/AiOrchestrator.cpp">AiOrchestrator.cpp</a> near <code>tryUnitWant()</code>; flow diagram: <a href="want_fallback_flow.html">want_fallback_flow.html</a>.</p>
+        </article>
+
+        <article class="initiative" id="initiative-combat">
+          <div class="initiative-head">
+            <div class="initiative-title"><span class="priority">P3</span><div><h3>Add retreat and real combat outcomes</h3><p class="summary-line">Make the army capable of preserving strength and make AI history describe what happened, not only what was ordered.</p></div></div>
+            <div class="initiative-meta"><span class="badge red">behavior risk</span><span class="badge">medium scope</span></div>
+          </div>
+          <div class="initiative-grid">
+            <div><div class="mini-title">Current gap</div><p>There is no health-threshold withdrawal or regroup behavior. Attack history records an order as success, not whether an engagement was won.</p></div>
+            <div><div class="mini-title">Decisions first</div><p>Define retreat threshold, safe destination, regroup condition, command-priority interaction, and whether outcome history needs new enum values.</p></div>
+            <div><div class="mini-title">Useful signals</div><p>Own health, nearby enemy pressure, recent losses, distance to own economy/buildings, battle activity, and target visibility.</p></div>
+            <div><div class="mini-title">First experiment</div><p>Instrument a headless match with order-issued, combat-started, unit-lost, and target-destroyed events before changing decisions.</p></div>
+          </div>
+          <p class="refs">Start at <a class="file" href="../game/src/player/ai/AiOrchestrator.cpp">AiOrchestrator::order()</a>, <a class="file" href="../game/src/player/ai/AiHistoryEnums.h">AiHistoryEnums.h</a>, and <a href="army_targeting_flow.html">army_targeting_flow.html</a>.</p>
+        </article>
+
+        <article class="initiative" id="initiative-scouting">
+          <div class="initiative-head">
+            <div class="initiative-title"><span class="priority">P4</span><div><h3>Make scouting and fog of war meaningful</h3><p class="summary-line">Add last-seen knowledge and stop strategic decisions from using information the player could not have obtained.</p></div></div>
+            <div class="initiative-meta"><span class="badge violet">large design</span><span class="badge yellow">decision heavy</span></div>
+          </div>
+          <div class="initiative-grid">
+            <div><div class="mini-title">This is more than scout orders</div><p>Meaningful scouting needs scout behavior, last-seen positions and timestamps, known versus global enemy state, visibility-aware centers, and persistence decisions.</p></div>
+            <div><div class="mini-title">State design</div><p>Decide whether memory belongs per player, per map cell, or per entity class. Decide how stale knowledge decays and what a loaded save remembers.</p></div>
+            <div><div class="mini-title">AI contract impact</div><p>Enemy inputs currently use the selected enemy's current possession. Visibility-limited inputs may change normalization and every affected brain CSV.</p></div>
+            <div><div class="mini-title">First experiment</div><p>Prototype a last-seen record outside the neural network and render it in debug mode. Validate semantics before changing brain inputs.</p></div>
+          </div>
+          <p class="refs">Relevant code: <a class="file" href="../game/src/env/influence/VisibilityManager.cpp">VisibilityManager.cpp</a> and <a class="file" href="../game/src/player/ai/MasterBrain.cpp">MasterBrain.cpp</a>.</p>
+        </article>
+
+        <article class="initiative" id="initiative-economy">
+          <div class="initiative-head">
+            <div class="initiative-title"><span class="priority">P5</span><div><h3>Improve worker adaptation and expansion</h3><p class="summary-line">Make the economy respond faster to shortages, travel costs, node depletion, and strategic expansion needs.</p></div></div>
+            <div class="initiative-meta"><span class="badge green">visible payoff</span><span class="badge">medium scope</span></div>
+          </div>
+          <div class="initiative-grid">
+            <div><div class="mini-title">Current gap</div><p>Only one busy worker is reassigned per order phase under a low-priority condition. Expansion urgency influences placement indirectly but does not initiate an expansion request.</p></div>
+            <div><div class="mini-title">Candidate improvements</div><p>Use travel time, resource depletion, node safety, and available capacity. Consider resource-specific spatial outputs instead of one aggregate unboosted-resource signal.</p></div>
+            <div><div class="mini-title">Data questions</div><p>Are queue durations and reload values tick counts or seconds? Can resource metrics remain in their normalized ranges after new signals are added?</p></div>
+            <div><div class="mini-title">First experiment</div><p>Log worker reassignment reason, distance, resource priority, and result. Compare one-worker and bounded multi-worker policies in the same headless scenario.</p></div>
+          </div>
+          <p class="refs">References: <a class="file" href="../game/src/player/ai/AiOrchestrator.cpp">AiOrchestrator.cpp</a>, <a href="resource_gathering_schema.html">resource_gathering_schema.html</a>, and <a href="influence_maps_deep_dive.html">influence_maps_deep_dive.html</a>.</p>
+        </article>
+
+        <article class="initiative" id="initiative-save">
+          <div class="initiative-head">
+            <div class="initiative-title"><span class="priority">P6</span><div><h3>Formalize save versioning and migration</h3><p class="summary-line">Turn the current required-column contract into an explicit versioned policy before adding more long-lived state.</p></div></div>
+            <div class="initiative-meta"><span class="badge orange">reliability</span><span class="badge">medium scope</span></div>
+          </div>
+          <div class="initiative-grid">
+            <div><div class="mini-title">Why now</div><p>Scouting memory, richer AI outcomes, and multiplayer state will all need persistence. Without a schema version, every required field creates a manual compatibility decision.</p></div>
+            <div><div class="mini-title">Policy choices</div><p>Choose supported versions, migration direction, whether saves are upgraded in place or copied, and whether incompatible saves are rejected early.</p></div>
+            <div><div class="mini-title">Reliability choices</div><p>Decide whether saving replaces files atomically, whether it is restricted to safe simulation boundaries, and how broken UID references are diagnosed.</p></div>
+            <div><div class="mini-title">First experiment</div><p>Add a version value to a copy of the config contract and write a migration test for one documented legacy format. Do not alter live saves until policy is agreed.</p></div>
+          </div>
+          <p class="refs">References: <a class="file" href="../game/src/scene/save/SQLConsts.h">SQLConsts.h</a>, <a class="file" href="../game/src/scene/load/SceneLoader.cpp">SceneLoader.cpp</a>, <a href="old-save-migration.txt">old-save-migration.txt</a>, and <a href="config-table-migration.txt">config-table-migration.txt</a>.</p>
+        </article>
+
+        <article class="initiative" id="initiative-ffa">
+          <div class="initiative-head">
+            <div class="initiative-title"><span class="priority">P7</span><div><h3>Generalize beyond two players</h3><p class="summary-line">Replace the hard-coded single-enemy model with threat selection and multi-opponent state.</p></div></div>
+            <div class="initiative-meta"><span class="badge violet">large scope</span><span class="badge red">architecture risk</span></div>
+          </div>
+          <div class="initiative-grid">
+            <div><div class="mini-title">Current assumption</div><p>Enemy selection and influence ownership derive from a two-player world. This is a data and AI-interface change, not only a new loop.</p></div>
+            <div><div class="mini-title">Systems affected</div><p>PlayersManager, enemy inputs, influence-map slots, military centers, visibility, scores, target selection, and save state.</p></div>
+            <div><div class="mini-title">Decision first</div><p>Choose whether brains see one selected threat, aggregated threats, a fixed number of opponents, or a separate opponent-selection layer.</p></div>
+            <div><div class="mini-title">First experiment</div><p>Make threat selection a pure function over three mocked players. Keep the existing two-player runtime behind the function until the policy is clear.</p></div>
+          </div>
+          <p class="refs">Start at <a class="file" href="../game/src/player/PlayersManager.cpp">PlayersManager.cpp</a> and <a class="file" href="../game/src/env/influence/InfluenceManager.cpp">InfluenceManager.cpp</a>.</p>
+        </article>
+
+        <article class="initiative" id="initiative-model">
+          <div class="initiative-head">
+            <div class="initiative-title"><span class="priority">P8</span><div><h3>Harden or replace the AI runtime</h3><p class="summary-line">Choose between strengthening the existing CSV runtime and migrating to a validated model format such as ONNX.</p></div></div>
+            <div class="initiative-meta"><span class="badge violet">long horizon</span><span class="badge yellow">decision heavy</span></div>
+          </div>
+          <div class="initiative-grid">
+            <div><div class="mini-title">Lower-risk path</div><p>Validate every layer's dimensions, bias shape, and topology; add model metadata; improve diagnostics; preserve the current trainer and CSV compatibility.</p></div>
+            <div><div class="mini-title">Large path</div><p>A hierarchical policy network with shared features and multiple heads could reduce manual routing. ONNX Runtime or LibTorch could replace fragile parsing and inference.</p></div>
+            <div><div class="mini-title">Hidden work</div><p>Windows packaging, deterministic inference, model versioning, training export, trainer updates, weight reproducibility, and candidate compatibility gates.</p></div>
+            <div><div class="mini-title">First experiment</div><p>Build a topology validator that reports layer widths and bias shapes for all five current CSV brains. Use it before considering a runtime replacement.</p></div>
+          </div>
+          <p class="refs">References: <a href="ideas.txt">ideas.txt</a>, <a href="ai-development.md">ai-development.md</a>, <a class="file" href="../game/src/player/ai/nn/Layer.cpp">Layer.cpp</a>, and <a href="../tools/gen_brain_csv.ps1">gen_brain_csv.ps1</a>.</p>
+        </article>
+      </section>
+
+      <section id="roadmap">
+        <div class="section-head">
+          <div>
+            <h2>Recommended Work Sequence</h2>
+            <p class="section-sub">This sequence reduces the chance of designing new state on top of unstable contracts.</p>
+          </div>
+          <div class="section-number">09 / ORDER</div>
+        </div>
+        <div class="roadmap" aria-label="Recommended work sequence">
+          <div class="roadmap-step"><div class="num">01</div><strong>Baseline</strong><span>Document actual dimensions, state, limits, and smoke commands.</span></div>
+          <div class="roadmap-step"><div class="num">02</div><strong>AI correctness</strong><span>Fix building choice and producer fallback with focused tests.</span></div>
+          <div class="roadmap-step"><div class="num">03</div><strong>Combat feedback</strong><span>Add observability, retreat policy, and real outcomes.</span></div>
+          <div class="roadmap-step"><div class="num">04</div><strong>Scouting design</strong><span>Define known state, stale state, and persistence first.</span></div>
+          <div class="roadmap-step"><div class="num">05</div><strong>Save versioning</strong><span>Make long-lived state migration explicit.</span></div>
+          <div class="roadmap-step"><div class="num">06</div><strong>FFA</strong><span>Generalize player and threat models after state contracts settle.</span></div>
+          <div class="roadmap-step"><div class="num">07</div><strong>Model runtime</strong><span>Only then consider a larger neural-network migration.</span></div>
+        </div>
+        <div class="callout idea"><strong>Why this order:</strong> behavior fixes can be tested against the current interfaces. Scouting and FFA change what the AI knows and who it reasons about. Save versioning should precede new persistent state. Model replacement should wait until the behavior and state contracts are stable enough to measure.</div>
+      </section>
+
+      <section id="worksheets">
+        <div class="section-head">
+          <div>
+            <h2>Vacation Decision Worksheets</h2>
+            <p class="section-sub">These fields are saved in this browser with <code>localStorage</code>. They are intentionally plain text so they remain useful when copied into an issue or design note.</p>
+          </div>
+          <div class="section-number">10 / NOTES</div>
+        </div>
+        <div class="worksheet">
+          <div class="prompt"><label for="note-problem">1. What problem do I want to solve?</label><small>Describe player-visible or developer-visible pain. Avoid starting with a technology.</small><textarea id="note-problem" data-persist="note-problem" placeholder="Example: the AI often queues a unit but cannot make progress because its only producer exists but is not ready."></textarea></div>
+          <div class="prompt"><label for="note-success">2. What would success look like?</label><small>Write an observable result and, if possible, a number or comparison.</small><textarea id="note-success" data-persist="note-success" placeholder="Example: in a fixed headless scenario, the AI routes to a producer upgrade within two action cycles and eventually creates the unit."></textarea></div>
+          <div class="prompt"><label for="note-scope">3. What is the smallest useful version?</label><small>Choose one player, one unit, one building category, one map, or one test fixture.</small><textarea id="note-scope" data-persist="note-scope" placeholder="Smallest slice, deliberately excluding multiplayer, new neural inputs, and save compatibility unless required."></textarea></div>
+          <div class="prompt"><label for="note-contracts">4. Which contracts could this break?</label><small>Check simulation order, database IDs, data columns, save schema, UIDs, AI enum order, CSV topology, metrics, and ownership.</small><textarea id="note-contracts" data-persist="note-contracts" placeholder="Affected files, enums, data tables, save tables, CSVs, runtime links, and lifecycle assumptions."></textarea></div>
+          <div class="prompt"><label for="note-experiment">5. What is the first experiment?</label><small>Prefer a pure function, log, focused test, debug view, or one headless scenario before broad implementation.</small><textarea id="note-experiment" data-persist="note-experiment" placeholder="The smallest experiment that can disprove my current design."></textarea></div>
+          <div class="prompt"><label for="note-not-now">6. What am I deliberately not building?</label><small>Explicit non-goals protect vacation ideas from becoming an accidental rewrite.</small><textarea id="note-not-now" data-persist="note-not-now" placeholder="Not included in this slice: ..."></textarea></div>
+        </div>
+        <div class="callout"><strong>Good design-note ending:</strong> "If this experiment succeeds, the next code change is ____. If it fails, I will learn ____ and will not yet add persistent state or change a model interface."</div>
+      </section>
+
+      <section id="checklist">
+        <div class="section-head">
+          <div>
+            <h2>Implementation Readiness Checklist</h2>
+            <p class="section-sub">Do not start a broad change until these questions have short answers.</p>
+          </div>
+          <div class="section-number">11 / RETURN PLAN</div>
+        </div>
+        <div class="checklist">
+          <div class="check-row"><input type="checkbox" id="ready-1" data-persist="ready-1"><label for="ready-1">I can name the user or simulation problem in one sentence.</label></div>
+          <div class="check-row"><input type="checkbox" id="ready-2" data-persist="ready-2"><label for="ready-2">I identified the smallest relevant source module and traced its input/output flow.</label></div>
+          <div class="check-row"><input type="checkbox" id="ready-3" data-persist="ready-3"><label for="ready-3">I know which simulation tick phase should produce and consume the change.</label></div>
+          <div class="check-row"><input type="checkbox" id="ready-4" data-persist="ready-4"><label for="ready-4">I checked database IDs, relationship rows, levels, and normalized metric ranges.</label></div>
+          <div class="check-row"><input type="checkbox" id="ready-5" data-persist="ready-5"><label for="ready-5">I decided whether existing saves need to remain readable and whether migration is required.</label></div>
+          <div class="check-row"><input type="checkbox" id="ready-6" data-persist="ready-6"><label for="ready-6">I decided whether AI enum widths, CSV files, or the external trainer are affected.</label></div>
+          <div class="check-row"><input type="checkbox" id="ready-7" data-persist="ready-7"><label for="ready-7">I wrote at least one deterministic focused test and one integration or headless scenario.</label></div>
+          <div class="check-row"><input type="checkbox" id="ready-8" data-persist="ready-8"><label for="ready-8">I have a definition of done and a list of explicit non-goals.</label></div>
+        </div>
+        <h3>Useful verification commands</h3>
+        <pre>msbuild artofw.sln /m /p:Configuration=Debug /p:Platform=x64
+tests.exe --gtest_filter=PersistenceRowTest.*:PersistenceStateTest.*
+powershell -ExecutionPolicy Bypass -File tools/gen_brain_csv.ps1 -Check -Brains 'master.csv|34|22|9'
+
+# Run the game from the game runtime directory so Data/, CoreData/, and saves/ resolve.</pre>
+        <p class="refs">The exact brain dimensions in the example must be confirmed from current enums before use. Focused tests are preferred over relying on a full game run.</p>
+      </section>
+
+      <section id="references">
+        <div class="section-head">
+          <div>
+            <h2>Reference Shelf</h2>
+            <p class="section-sub">Open these when an idea becomes implementation work.</p>
+          </div>
+          <div class="section-number">12 / SOURCES</div>
+        </div>
+        <div class="grid-3">
+          <div class="card"><h3>Core contracts</h3><p><a href="simulation-development.md">Simulation development</a><br><a href="data-development.md">Data development</a><br><a href="ai-development.md">AI development</a></p></div>
+          <div class="card"><h3>Architecture diagrams</h3><p><a href="ai_system_overview.html">AI system overview</a><br><a href="ai_orchestrator.html">AI orchestrator</a><br><a href="influence_maps_deep_dive.html">Influence maps deep dive</a><br><a href="army_targeting_flow.html">Army targeting flow</a></p></div>
+          <div class="card"><h3>Persistence and economy</h3><p><a href="save-development.html">Save development</a><br><a href="load-development.html">Load development</a><br><a href="resource_gathering_schema.html">Resource gathering schema</a><br><a href="economy_brain_architecture.html">Economy brain architecture</a></p></div>
+        </div>
+        <p class="refs">Remember the external dependency: <code>../AiTrainer</code> evolves candidates outside this repository. Its five brain slots and topology tests must stay compatible with C++ changes.</p>
+      </section>
+
+      <p class="footer-note">This guide is a planning aid, not a second source of truth. Confirm behavior in source, tests, runtime data, and current documentation before implementation.</p>
+    </main>
+
+    <aside class="side" aria-label="Document navigation">
+      <div class="side-title">Contents</div>
+      <nav class="toc">
+        <a href="#top">Cover</a>
+        <a href="#how-to-use">How to use</a>
+        <a href="#snapshot">Project snapshot</a>
+        <a href="#architecture">Runtime architecture</a>
+        <a href="#simulation">Simulation contract</a>
+        <a href="#ai">AI architecture</a>
+        <a href="#influence">Influence and visibility</a>
+        <a href="#economy">Economy flow</a>
+        <a href="#persistence">Save and load</a>
+        <a href="#backlog">Future backlog</a>
+        <a href="#roadmap">Work sequence</a>
+        <a href="#worksheets">Decision worksheets</a>
+        <a href="#checklist">Readiness checklist</a>
+        <a href="#references">Reference shelf</a>
+      </nav>
+      <div class="progress-box">
+        <div class="progress-label"><span>planning progress</span><span id="progress-text">0%</span></div>
+        <div class="progress-track" aria-hidden="true"><div class="progress-value" id="progress-value"></div></div>
+      </div>
+      <div class="side-actions">
+        <button type="button" id="export-notes">Export notes</button>
+        <button type="button" id="clear-notes">Clear saved state</button>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var storagePrefix = "art-of-war-vacation-planning:";
+      var persisted = document.querySelectorAll("[data-persist]");
+      var progressValue = document.getElementById("progress-value");
+      var progressText = document.getElementById("progress-text");
+
+      function storageKey(element) {
+        return storagePrefix + element.getAttribute("data-persist");
+      }
+
+      function updateProgress() {
+        var boxes = document.querySelectorAll('input[type="checkbox"][data-persist]');
+        var checked = 0;
+        boxes.forEach(function (box) {
+          if (box.checked) checked += 1;
+        });
+        var percent = boxes.length ? Math.round((checked / boxes.length) * 100) : 0;
+        progressValue.style.width = percent + "%";
+        progressText.textContent = percent + "%";
+      }
+
+      persisted.forEach(function (element) {
+        var saved = localStorage.getItem(storageKey(element));
+        if (saved !== null) {
+          if (element.type === "checkbox") {
+            element.checked = saved === "true";
+          } else {
+            element.value = saved;
+          }
+        }
+        element.addEventListener("input", function () {
+          localStorage.setItem(storageKey(element), element.type === "checkbox" ? String(element.checked) : element.value);
+          updateProgress();
+        });
+        element.addEventListener("change", function () {
+          localStorage.setItem(storageKey(element), element.type === "checkbox" ? String(element.checked) : element.value);
+          updateProgress();
+        });
+      });
+
+      document.getElementById("clear-notes").addEventListener("click", function () {
+        if (!window.confirm("Clear saved checkboxes and planning notes in this browser?")) return;
+        persisted.forEach(function (element) {
+          localStorage.removeItem(storageKey(element));
+          if (element.type === "checkbox") element.checked = false;
+          else element.value = "";
+        });
+        updateProgress();
+      });
+
+      document.getElementById("export-notes").addEventListener("click", function () {
+        var lines = ["Art of War - Vacation Work Planning", "", "Exported: " + new Date().toISOString(), ""];
+        persisted.forEach(function (element) {
+          var label = document.querySelector('label[for="' + element.id + '"]');
+          var title = label ? label.textContent.trim() : element.id;
+          var value = element.type === "checkbox" ? (element.checked ? "checked" : "not checked") : (element.value.trim() || "(empty)");
+          lines.push(title + ":");
+          lines.push(value);
+          lines.push("");
+        });
+        var blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+        var link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "art-of-war-vacation-notes.txt";
+        link.click();
+        URL.revokeObjectURL(link.href);
+      });
+
+      var sections = document.querySelectorAll("main section[id]");
+      var links = document.querySelectorAll(".toc a");
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          links.forEach(function (link) {
+            link.classList.toggle("active", link.getAttribute("href") === "#" + entry.target.id);
+          });
+        });
+      }, { rootMargin: "-15% 0px -72% 0px" });
+      sections.forEach(function (section) { observer.observe(section); });
+
+      updateProgress();
+    }());
+  </script>
+</body>
+</html>

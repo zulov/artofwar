@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Art of War - Technology and Upgrade Design</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --page: #101827;
+      --surface: #172235;
+      --surface-2: #1d2c43;
+      --surface-3: #111b2d;
+      --border: #30445f;
+      --text: #dbe7f5;
+      --muted: #9aabc0;
+      --heading: #86efac;
+      --accent: #34d399;
+      --blue: #7dd3fc;
+      --gold: #fcd34d;
+      --red: #fda4af;
+      --purple: #c4b5fd;
+      --code: #fde68a;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 42px 28px 72px;
+      background: var(--page);
+      color: var(--text);
+      font: 16px/1.62 "Segoe UI", Tahoma, sans-serif;
+    }
+    header { border-bottom: 1px solid var(--border); margin-bottom: 30px; padding-bottom: 24px; }
+    h1, h2, h3, h4 { line-height: 1.2; }
+    h1 { margin: 0 0 10px; color: #f8fafc; font-size: clamp(2rem, 5vw, 3.25rem); }
+    h2 { margin: 48px 0 15px; color: var(--heading); font-size: 1.65rem; }
+    h3 { margin: 30px 0 12px; color: #bbf7d0; font-size: 1.2rem; }
+    h4 { margin: 20px 0 8px; color: var(--blue); font-size: 1rem; }
+    p { margin: 0 0 16px; }
+    .subtitle { margin: 0; color: var(--muted); font-size: 1.08rem; }
+    .meta { margin-top: 14px; color: var(--muted); font-size: 0.86rem; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 0; }
+    .links a { border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px; }
+    a { color: #a7f3d0; }
+    code {
+      color: var(--code);
+      font: 0.9em Consolas, "Courier New", monospace;
+      background: #0c1422;
+      border-radius: 4px;
+      padding: 1px 5px;
+    }
+    pre {
+      margin: 14px 0 18px;
+      padding: 15px 18px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #0b1320;
+      color: #d9f99d;
+      font: 0.87rem/1.55 Consolas, "Courier New", monospace;
+    }
+    .toc, .card, .diagram, .callout, .example, .phase {
+      margin: 18px 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .toc, .card, .callout, .example, .phase { padding: 18px 22px; background: var(--surface); }
+    .toc { background: #142238; }
+    .toc h3 { margin-top: 0; }
+    .toc ol { columns: 2; margin: 8px 0 0; padding-left: 22px; }
+    .toc li { margin: 5px 0; }
+    .callout { border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; }
+    .callout.warning { border-left-color: var(--gold); background: #29251a; }
+    .callout.danger { border-left-color: var(--red); background: #291b27; }
+    .callout strong { color: #f8fafc; }
+    .diagram { padding: 12px; overflow-x: auto; background: var(--surface-3); }
+    .diagram svg { display: block; width: 100%; min-width: 900px; height: auto; }
+    .diagram-caption { margin: 10px 3px 1px; color: var(--muted); font-size: 0.87rem; }
+    svg text { font-family: "Segoe UI", Tahoma, sans-serif; }
+    table { width: 100%; margin: 18px 0; border-collapse: collapse; border: 1px solid var(--border); }
+    th, td { padding: 10px 12px; border: 1px solid var(--border); text-align: left; vertical-align: top; }
+    th { background: #1d3b37; color: #dcfce7; }
+    td:first-child { color: #bbf7d0; font-weight: 700; }
+    td:nth-child(2) { color: #fef3c7; }
+    .tag {
+      display: inline-block;
+      margin: 0 4px 4px 0;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #263a55;
+      color: #bae6fd;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .tag.green { background: #1b493c; color: #bbf7d0; }
+    .tag.gold { background: #4a3c1b; color: #fde68a; }
+    .tag.red { background: #4a2633; color: #fecdd3; }
+    .tag.purple { background: #3e315d; color: #ddd6fe; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .grid > .card, .grid > .example { margin: 0; }
+    .example { background: #1a2a43; }
+    .example h3 { margin-top: 0; color: var(--gold); }
+    .example .result { color: #86efac; }
+    .example .tradeoff { color: #fda4af; }
+    .phase { position: relative; padding-left: 74px; }
+    .phase-number {
+      position: absolute;
+      top: 18px;
+      left: 20px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #082016;
+      font-weight: 800;
+      line-height: 34px;
+      text-align: center;
+    }
+    .phase h3 { margin-top: 0; }
+    .formula { color: #d9f99d; font: 0.95rem/1.6 Consolas, "Courier New", monospace; }
+    .small { color: var(--muted); font-size: 0.88rem; }
+    .checklist { padding-left: 23px; }
+    .checklist li { margin: 7px 0; }
+    .source { margin-top: 30px; color: var(--muted); font-size: 0.86rem; }
+    @media (max-width: 800px) {
+      body { padding: 28px 16px 52px; font-size: 15px; }
+      .toc ol { columns: 1; }
+      .grid { grid-template-columns: 1fr; }
+      table { display: block; overflow-x: auto; }
+    }
+    @media print {
+      :root { color-scheme: light; }
+      body { max-width: none; padding: 0; background: #fff; color: #111; font-size: 9pt; }
+      header { border-color: #aaa; }
+      h1, h2, h3, h4, a, td:first-child, td:nth-child(2) { color: #111; }
+      .subtitle, .meta, .small, .diagram-caption, .source { color: #444; }
+      .links, .toc, .card, .callout, .example, .phase, .diagram, pre { background: #fff; border-color: #999; }
+      th, td { border-color: #999; color: #111; }
+      th { background: #eee; }
+      .diagram, table, .callout, .phase, .example { break-inside: avoid; page-break-inside: avoid; }
+      .diagram svg { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Technology and Upgrade Design</h1>
+    <p class="subtitle">A design for making progression broader than “level this unit” or “level this building”: player-wide technologies, branching doctrines, counter-tech, trade-offs, and long-term strategic identity.</p>
+    <p class="meta">Status: design proposal | Scope: gameplay, data, simulation, UI, save/load, and AI | Code remains authoritative if this document and implementation diverge.</p>
+    <nav class="links" aria-label="Related documentation">
+      <a href="data-development.md">Data Development</a>
+      <a href="simulation-development.md">Simulation Development</a>
+      <a href="ai-development.md">AI Development</a>
+      <a href="ai_system_overview.html">AI System Overview</a>
+      <a href="save-development.html">Save Development</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#short-version">Short version</a></li>
+        <li><a href="#current-system">Current system</a></li>
+        <li><a href="#design-principles">Design principles</a></li>
+        <li><a href="#progression-layers">Progression layers</a></li>
+        <li><a href="#technology-model">Technology model</a></li>
+        <li><a href="#research-flow">Research flow</a></li>
+        <li><a href="#effect-system">Effect system</a></li>
+        <li><a href="#tech-trees">Example tech trees</a></li>
+        <li><a href="#upgrade-ideas">Upgrade ideas</a></li>
+        <li><a href="#schema">Database schema</a></li>
+        <li><a href="#save-load">Save and load</a></li>
+        <li><a href="#ui-ai">UI and AI</a></li>
+        <li><a href="#implementation">Implementation phases</a></li>
+        <li><a href="#balance">Balance rules</a></li>
+      </ol>
+    </div>
+
+    <section id="short-version">
+      <h2>1. Short Version</h2>
+      <div class="callout">
+        <strong>Recommendation:</strong> keep unit/building levels and introduce a separate player-owned technology system. Levels improve one concrete database entity. Technologies affect a class of entities, a relationship between classes, the economy, production, or the available rules of the game.
+      </div>
+      <p>For the example “bonus for all melee attack,” add a technology such as <strong>Tempered Blades</strong>. It should not point to a specific unit ID. It should match units through the existing unit tags, such as <code>typeMelee</code>, and apply its modifier when damage is calculated.</p>
+      <pre>Tempered Blades
+  owner: Player 1
+  filter: own unit has typeMelee
+  effect: attack multiplier +10%
+  timing: applies to existing and newly created units
+  prerequisite: Blacksmith level 1
+  cost: food + wood + gold
+  research: player queue</pre>
+      <p>This creates a strategic choice. A player is no longer only deciding which unit to level. The player is deciding what kind of army, economy, defense, or timing attack the whole civilization is building toward.</p>
+    </section>
+
+    <section id="current-system">
+      <h2>2. Current System And Its Boundary</h2>
+      <p>The current implementation has a useful foundation, but it is primarily an entity-definition level system:</p>
+      <table>
+        <thead><tr><th>Current concept</th><th>Meaning</th><th>Runtime shape</th><th>Good for</th></tr></thead>
+        <tbody>
+          <tr><td>Unit level</td><td>A player-wide level for one unit database definition.</td><td><code>Player::unitLevels[id]</code> selects a <code>db_unit_level</code>.</td><td>Improve swordsman level 1 to swordsman level 2.</td></tr>
+          <tr><td>Building level</td><td>A player-wide level for one building database definition.</td><td><code>Player::buildingLevels[id]</code> selects a <code>db_building_level</code>.</td><td>Improve one barracks or one resource-building type.</td></tr>
+          <tr><td>Building queue</td><td>A queue owned by a building for production and unit upgrades.</td><td><code>QueueManager</code> and <code>QueueElement</code>.</td><td>Train units or level a unit through a ready producer.</td></tr>
+          <tr><td>Player queue</td><td>A queue owned by the player for building upgrades.</td><td><code>Player::queue</code>.</td><td>Research-like work already has a natural owner.</td></tr>
+          <tr><td>Unit combat tags</td><td>Boolean categories such as melee, infantry, cavalry, heavy, and light.</td><td>Fields on <code>db_unit</code>.</td><td>Targeting and bonuses against categories.</td></tr>
+        </tbody>
+      </table>
+      <p>Unit level data already contains category bonuses. However, the existing <code>bonus_melee</code> value is used by <code>Unit::getAttackVal()</code> as a bonus against a melee target. It is not a player-wide bonus for melee attackers. A new technology system should make the two directions explicit:</p>
+      <div class="grid">
+        <div class="example">
+          <h3>Attacker filter</h3>
+          <p><code>own unit has typeMelee</code></p>
+          <p class="result">“All melee units deal +10% damage.”</p>
+        </div>
+        <div class="example">
+          <h3>Target filter</h3>
+          <p><code>enemy unit has typeMelee</code></p>
+          <p class="result">“All units deal +10% damage against melee.”</p>
+        </div>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 1180 370" role="img" aria-labelledby="current-flow-title current-flow-desc">
+          <title id="current-flow-title">Current unit and building level flow</title>
+          <desc id="current-flow-desc">A player selects a next unit or building level, pays resources, a queue advances, then a deferred upgrade command changes player level state and runtime objects.</desc>
+          <defs>
+            <marker id="arrow-current" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#7dd3fc"/></marker>
+            <marker id="arrow-current-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#86efac"/></marker>
+          </defs>
+          <rect width="1180" height="370" rx="8" fill="#111b2d"/>
+          <rect x="35" y="105" width="190" height="115" rx="10" fill="#263a55" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="130" y="139" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Player / UI</text>
+          <text x="130" y="164" text-anchor="middle" fill="#bae6fd" font-size="12">select next level</text>
+          <text x="130" y="184" text-anchor="middle" fill="#bae6fd" font-size="12">pay resource cost</text>
+          <text x="130" y="204" text-anchor="middle" fill="#bae6fd" font-size="12">unit or building ID</text>
+
+          <rect x="285" y="105" width="190" height="115" rx="10" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="380" y="139" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">QueueManager</text>
+          <text x="380" y="164" text-anchor="middle" fill="#ddd6fe" font-size="12">level ID</text>
+          <text x="380" y="184" text-anchor="middle" fill="#ddd6fe" font-size="12">elapsed ticks</text>
+          <text x="380" y="204" text-anchor="middle" fill="#ddd6fe" font-size="12">completion</text>
+
+          <rect x="535" y="105" width="190" height="115" rx="10" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
+          <text x="630" y="139" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Deferred command</text>
+          <text x="630" y="164" text-anchor="middle" fill="#fef3c7" font-size="12">UpgradeCommand</text>
+          <text x="630" y="184" text-anchor="middle" fill="#fef3c7" font-size="12">simulation create/upgrade phase</text>
+          <text x="630" y="204" text-anchor="middle" fill="#fef3c7" font-size="12">safe mutation point</text>
+
+          <rect x="785" y="55" width="165" height="115" rx="10" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="867" y="89" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Player state</text>
+          <text x="867" y="114" text-anchor="middle" fill="#bbf7d0" font-size="12">unitLevels[id]</text>
+          <text x="867" y="134" text-anchor="middle" fill="#bbf7d0" font-size="12">buildingLevels[id]</text>
+          <text x="867" y="154" text-anchor="middle" fill="#bbf7d0" font-size="12">save: player_levels</text>
+
+          <rect x="785" y="205" width="165" height="115" rx="10" fill="#18324a" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="867" y="239" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Runtime object</text>
+          <text x="867" y="264" text-anchor="middle" fill="#bae6fd" font-size="12">dbLevel changes</text>
+          <text x="867" y="284" text-anchor="middle" fill="#bae6fd" font-size="12">existing same-type units</text>
+          <text x="867" y="304" text-anchor="middle" fill="#bae6fd" font-size="12">may be refreshed</text>
+
+          <rect x="1010" y="105" width="135" height="115" rx="10" fill="#263a55" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="1077" y="139" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Result</text>
+          <text x="1077" y="164" text-anchor="middle" fill="#bae6fd" font-size="12">one entity ID</text>
+          <text x="1077" y="184" text-anchor="middle" fill="#bae6fd" font-size="12">has stronger level</text>
+
+          <line x1="225" y1="162" x2="285" y2="162" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arrow-current)"/>
+          <line x1="475" y1="162" x2="535" y2="162" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arrow-current)"/>
+          <path d="M725 144 L785 115" fill="none" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-current-green)"/>
+          <path d="M725 180 L785 255" fill="none" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arrow-current)"/>
+          <line x1="950" y1="162" x2="1010" y2="162" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arrow-current)"/>
+          <text x="760" y="91" fill="#86efac" font-size="11">persistent level</text>
+          <text x="753" y="229" fill="#7dd3fc" font-size="11">refresh affected type</text>
+        </svg>
+        <p class="diagram-caption">The current flow is excellent for direct type progression. The proposed technology layer adds a second branch rather than replacing this one.</p>
+      </div>
+    </section>
+
+    <section id="design-principles">
+      <h2>3. Design Principles</h2>
+      <div class="grid">
+        <div class="card"><h3>1. Separate identity from scope</h3><p>A unit level targets one unit definition. A technology targets a filter, relationship, rule, or capability. Do not encode global bonuses by copying values into every unit level.</p></div>
+        <div class="card"><h3>2. Prefer meaningful choices</h3><p>A technology should create a decision: faster pressure, stronger defense, better economy, a counter, a new unit, or a trade-off. Avoid a tree where every node is an automatic universal bonus.</p></div>
+        <div class="card"><h3>3. Make filters visible</h3><p>The player should understand exactly who benefits. “Melee attackers” and “damage against melee targets” are different effects and should be displayed differently.</p></div>
+        <div class="card"><h3>4. Keep calculations deterministic</h3><p>Effects should be resolved from completed player technologies and static database definitions. Avoid hidden per-unit mutation when a calculation-time modifier is sufficient.</p></div>
+        <div class="card"><h3>5. Use existing categories first</h3><p>Existing unit tags such as melee, infantry, cavalry, heavy, light, range, worker, and special already provide useful grouping without requiring a new class system.</p></div>
+        <div class="card"><h3>6. Build a small core first</h3><p>Start with a handful of effect types and one exclusive branch. A generic effect system can grow later after the queue, save, UI, and balance rules are proven.</p></div>
+      </div>
+    </section>
+
+    <section id="progression-layers">
+      <h2>4. Three Progression Layers</h2>
+      <p>The game can have three related but distinct progression layers. Each solves a different design problem.</p>
+      <table>
+        <thead><tr><th>Layer</th><th>Question it answers</th><th>Example</th><th>Scope</th><th>Recommended behavior</th></tr></thead>
+        <tbody>
+          <tr><td>Entity level</td><td>How does this unit/building definition become better?</td><td>Spearman level 2 gains HP and attack.</td><td>One unit or building ID.</td><td>Keep the current level tables and level queues.</td></tr>
+          <tr><td>Technology</td><td>What capability or specialization has the player researched?</td><td>All melee units gain +10% attack.</td><td>Player-wide filter or rule.</td><td>Add a dedicated research queue and unlock state.</td></tr>
+          <tr><td>Doctrine</td><td>What strategic identity has the player committed to?</td><td>Shock doctrine improves speed and attack but reduces armor.</td><td>Player-wide mutually exclusive branch.</td><td>Use exclusive groups and irreversible choices, at least initially.</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warning"><strong>Do not make every technology permanent power stacking.</strong> If every branch can be completed, the late game converges to the same fully upgraded civilization. Use limited research slots, exclusive doctrines, escalating costs, or situational technologies to preserve differentiation.</div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 1180 330" role="img" aria-labelledby="layers-title layers-desc">
+          <title id="layers-title">Three progression layers</title>
+          <desc id="layers-desc">Entity levels, player technologies, and doctrines flow into final gameplay statistics with different scopes.</desc>
+          <rect width="1180" height="330" rx="8" fill="#111b2d"/>
+          <rect x="45" y="55" width="275" height="190" rx="12" fill="#18324a" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="182" y="92" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">Entity level</text>
+          <text x="182" y="126" text-anchor="middle" fill="#bae6fd" font-size="13">Spearman level 2</text>
+          <text x="182" y="149" text-anchor="middle" fill="#bae6fd" font-size="13">+HP, +attack, +armor</text>
+          <text x="182" y="185" text-anchor="middle" fill="#9acbe8" font-size="12">one database unit ID</text>
+          <text x="182" y="207" text-anchor="middle" fill="#9acbe8" font-size="12">direct level replacement</text>
+
+          <rect x="452" y="55" width="275" height="190" rx="12" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="589" y="92" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">Technology</text>
+          <text x="589" y="126" text-anchor="middle" fill="#bbf7d0" font-size="13">Tempered Blades</text>
+          <text x="589" y="149" text-anchor="middle" fill="#bbf7d0" font-size="13">all melee attackers +10%</text>
+          <text x="589" y="185" text-anchor="middle" fill="#a8d8bb" font-size="12">player-wide filter</text>
+          <text x="589" y="207" text-anchor="middle" fill="#a8d8bb" font-size="12">calculation-time modifier</text>
+
+          <rect x="859" y="55" width="275" height="190" rx="12" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="996" y="92" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">Doctrine</text>
+          <text x="996" y="126" text-anchor="middle" fill="#ddd6fe" font-size="13">Shock or Shield Wall</text>
+          <text x="996" y="149" text-anchor="middle" fill="#ddd6fe" font-size="13">bonus plus a weakness</text>
+          <text x="996" y="185" text-anchor="middle" fill="#c4b5e4" font-size="12">exclusive player branch</text>
+          <text x="996" y="207" text-anchor="middle" fill="#c4b5e4" font-size="12">defines strategic identity</text>
+
+          <line x1="320" y1="150" x2="452" y2="150" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arrow-current)"/>
+          <line x1="727" y1="150" x2="859" y2="150" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-current-green)"/>
+          <rect x="380" y="270" width="420" height="38" rx="8" fill="#263a55" stroke="#7dd3fc"/>
+          <text x="590" y="295" text-anchor="middle" fill="#e0f2fe" font-size="13">final gameplay result = base data + level + active effects</text>
+        </svg>
+        <p class="diagram-caption">The layers combine at gameplay calculation points, but they should remain separately owned and persisted.</p>
+      </div>
+    </section>
+
+    <section id="technology-model">
+      <h2>5. Technology Model</h2>
+      <h3>5.1 A technology is a player-owned rule package</h3>
+      <p>A technology should define its identity, cost, prerequisites, research location, effects, and optional exclusive group. The player stores completion state. A unit does not store a copied list of every technology that affected it.</p>
+      <pre>Technology
+  id: 12
+  name: "Tempered Blades"
+  tier: 1
+  research_building: BLACKSMITH
+  cost: 100 wood, 75 gold
+  research_time: 180 ticks
+  prerequisites: []
+  exclusive_group: "offense_doctrine"  // optional
+  effects:
+    - own_unit_tag = MELEE
+      stat = ATTACK_PERCENT
+      value = 0.10</pre>
+
+      <h3>5.2 Effect dimensions</h3>
+      <table>
+        <thead><tr><th>Dimension</th><th>Examples</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>Source filter</td><td>Own melee unit, own worker, own defensive building.</td><td>Which entity receives the modifier?</td></tr>
+          <tr><td>Target filter</td><td>Enemy cavalry, enemy building, resource node.</td><td>When should a relationship bonus activate?</td></tr>
+          <tr><td>Statistic</td><td>Attack, armor, speed, reload, range, HP, gather rate, cost.</td><td>What changes?</td></tr>
+          <tr><td>Operation</td><td>Add, multiply, replace, unlock, cap, or conditional bonus.</td><td>How is the value combined?</td></tr>
+          <tr><td>Context</td><td>Combat, production, construction, map, health threshold, stance.</td><td>When does the effect apply?</td></tr>
+          <tr><td>Duration</td><td>Permanent, timed, battle-only, or until a doctrine changes.</td><td>How long does it remain active?</td></tr>
+        </tbody>
+      </table>
+
+      <h3>5.3 Recommended first effect vocabulary</h3>
+      <p>Use a constrained enum-based system first. It is easier to validate, balance, expose to the UI, and consume from AI than a free-form expression language.</p>
+      <table>
+        <thead><tr><th>Effect enum</th><th>Example</th><th>Initial implementation point</th></tr></thead>
+        <tbody>
+          <tr><td><code>ATTACK_PERCENT</code></td><td>Melee attackers deal +10%.</td><td><code>Unit::getAttackVal()</code></td></tr>
+          <tr><td><code>ATTACK_VS_TAG_PERCENT</code></td><td>Ranged units deal +15% against cavalry.</td><td><code>Unit::getAttackVal()</code></td></tr>
+          <tr><td><code>ARMOR_PERCENT</code></td><td>Infantry receive +10% armor.</td><td><code>Unit::absorbAttack()</code></td></tr>
+          <tr><td><code>MAX_HP_PERCENT</code></td><td>Defensive buildings gain +20% max HP.</td><td>HP initialization and max-HP accessors</td></tr>
+          <tr><td><code>SPEED_PERCENT</code></td><td>Light units move +8% faster.</td><td>Movement/force calculation</td></tr>
+          <tr><td><code>RANGE_ADD</code></td><td>Melee units gain +1 attack range.</td><td>Range access and target search</td></tr>
+          <tr><td><code>GATHER_PERCENT</code></td><td>Workers gather +10% faster.</td><td>Resource collection calculation</td></tr>
+          <tr><td><code>COST_PERCENT</code></td><td>Infantry cost 10% less food.</td><td>Cost resolution before queue insertion</td></tr>
+          <tr><td><code>BUILD_TIME_PERCENT</code></td><td>Buildings construct 15% faster.</td><td>Queue nominal duration</td></tr>
+          <tr><td><code>UNLOCK_UNIT</code></td><td>Unlocks the Dragoon unit.</td><td>Creation validation and UI</td></tr>
+          <tr><td><code>UNLOCK_BUILDING</code></td><td>Unlocks the Siege Workshop.</td><td>Building placement validation and UI</td></tr>
+          <tr><td><code>QUEUE_CAPACITY_ADD</code></td><td>Universities can hold one extra research.</td><td>Queue capacity</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout warning"><strong>Clarify stacking.</strong> A good default is to add all additive bonuses first, then apply multipliers, then clamp values. For example: base attack 10, +10% from level bonus and +10% from technology gives 12, not 12.1 or 10.21. Write the rule down before adding many effect types.</div>
+      <p class="formula">final value = clamp((base value + additive bonuses) × (1 + percentage bonuses), minimum, maximum)</p>
+    </section>
+
+    <section id="research-flow">
+      <h2>6. Research Flow</h2>
+      <p>Add a dedicated <code>TECH_RESEARCH</code> queue action. Do not reuse the unfinished <code>UNIT_UPGRADE</code> value: a technology is not an upgrade of one unit definition, and its completion changes player-wide rules.</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 1240 530" role="img" aria-labelledby="research-title research-desc">
+          <title id="research-title">Proposed technology research flow</title>
+          <desc id="research-desc">The player chooses a technology, validation checks prerequisites and a research building, resources are paid, a queue advances, a deferred command completes the technology, and the player effect registry becomes active.</desc>
+          <defs>
+            <marker id="arrow-research" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#7dd3fc"/></marker>
+            <marker id="arrow-research-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#86efac"/></marker>
+            <marker id="arrow-research-gold" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#fcd34d"/></marker>
+          </defs>
+          <rect width="1240" height="530" rx="8" fill="#111b2d"/>
+          <rect x="30" y="55" width="205" height="125" rx="10" fill="#263a55" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="132" y="91" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Research panel</text>
+          <text x="132" y="117" text-anchor="middle" fill="#bae6fd" font-size="12">player chooses technology</text>
+          <text x="132" y="137" text-anchor="middle" fill="#bae6fd" font-size="12">shows cost and effects</text>
+          <text x="132" y="157" text-anchor="middle" fill="#bae6fd" font-size="12">shows locked reason</text>
+
+          <rect x="285" y="55" width="205" height="125" rx="10" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="387" y="91" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Validation</text>
+          <text x="387" y="117" text-anchor="middle" fill="#ddd6fe" font-size="12">prerequisites complete?</text>
+          <text x="387" y="137" text-anchor="middle" fill="#ddd6fe" font-size="12">building ready?</text>
+          <text x="387" y="157" text-anchor="middle" fill="#ddd6fe" font-size="12">exclusive branch free?</text>
+
+          <rect x="540" y="55" width="205" height="125" rx="10" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
+          <text x="642" y="91" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Player queue</text>
+          <text x="642" y="117" text-anchor="middle" fill="#fef3c7" font-size="12">TECH_RESEARCH</text>
+          <text x="642" y="137" text-anchor="middle" fill="#fef3c7" font-size="12">cost paid once</text>
+          <text x="642" y="157" text-anchor="middle" fill="#fef3c7" font-size="12">progress in fixed ticks</text>
+
+          <rect x="795" y="55" width="205" height="125" rx="10" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
+          <text x="897" y="91" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Deferred command</text>
+          <text x="897" y="117" text-anchor="middle" fill="#fef3c7" font-size="12">ResearchCommand</text>
+          <text x="897" y="137" text-anchor="middle" fill="#fef3c7" font-size="12">simulation command phase</text>
+          <text x="897" y="157" text-anchor="middle" fill="#fef3c7" font-size="12">safe completion point</text>
+
+          <rect x="1050" y="55" width="160" height="125" rx="10" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="1130" y="91" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Unlocked</text>
+          <text x="1130" y="117" text-anchor="middle" fill="#bbf7d0" font-size="12">player tech state</text>
+          <text x="1130" y="137" text-anchor="middle" fill="#bbf7d0" font-size="12">effect registry active</text>
+          <text x="1130" y="157" text-anchor="middle" fill="#bbf7d0" font-size="12">save state</text>
+
+          <line x1="235" y1="117" x2="285" y2="117" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arrow-research)"/>
+          <line x1="490" y1="117" x2="540" y2="117" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arrow-research)"/>
+          <line x1="745" y1="117" x2="795" y2="117" stroke="#fcd34d" stroke-width="3" marker-end="url(#arrow-research-gold)"/>
+          <line x1="1000" y1="117" x2="1050" y2="117" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-research-green)"/>
+
+          <rect x="170" y="275" width="900" height="165" rx="12" fill="#18283c" stroke="#30445f"/>
+          <text x="620" y="310" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">Important timing rule</text>
+          <text x="620" y="345" text-anchor="middle" fill="#c7d7e8" font-size="13">Research completion changes player state during the established deferred-command phase.</text>
+          <text x="620" y="370" text-anchor="middle" fill="#c7d7e8" font-size="13">The next combat, production, or economy calculation sees the completed technology.</text>
+          <text x="620" y="395" text-anchor="middle" fill="#fcd34d" font-size="13">Do not mutate the technology registry while iterating a queue or unit collection.</text>
+        </svg>
+        <p class="diagram-caption">The first implementation can use the existing player queue. A later version can give each University or Blacksmith its own research queue.</p>
+      </div>
+
+      <h3>6.1 Player queue or building queue?</h3>
+      <table>
+        <thead><tr><th>Option</th><th>Advantages</th><th>Costs and risks</th><th>Recommendation</th></tr></thead>
+        <tbody>
+          <tr><td>Player queue</td><td>Minimal new ownership model; already exists; easy to save and load; one clear research timeline.</td><td>Multiple research buildings do not create parallel research without more work.</td><td><span class="tag green">Start here</span></td></tr>
+          <tr><td>Building queue</td><td>Multiple Universities can research in parallel; research buildings become strategically important.</td><td>Needs building UID in commands, ready-state validation, UI selection, and more complex AI.</td><td><span class="tag gold">Later expansion</span></td></tr>
+          <tr><td>Research points</td><td>Flexible economy; several buildings can contribute to one pool.</td><td>Less readable; can become passive waiting and harder to balance.</td><td><span class="tag purple">Optional variant</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="effect-system">
+      <h2>7. Effect Matching And Combat Examples</h2>
+      <h3>7.1 Effect matching</h3>
+      <p>At a calculation point, the game should ask a small, explicit question: which completed player effects match this source, target, and context?</p>
+      <div class="diagram">
+        <svg viewBox="0 0 1220 470" role="img" aria-labelledby="effect-title effect-desc">
+          <title id="effect-title">Technology effect matching</title>
+          <desc id="effect-desc">A melee unit attacks a cavalry unit. The effect registry checks source tags, target tags, and combat context before applying matching effects.</desc>
+          <defs>
+            <marker id="arrow-effect" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#7dd3fc"/></marker>
+            <marker id="arrow-effect-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#86efac"/></marker>
+          </defs>
+          <rect width="1220" height="470" rx="8" fill="#111b2d"/>
+          <rect x="35" y="60" width="230" height="140" rx="10" fill="#18324a" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="150" y="96" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">Source unit</text>
+          <text x="150" y="125" text-anchor="middle" fill="#bae6fd" font-size="13">typeMelee = true</text>
+          <text x="150" y="147" text-anchor="middle" fill="#bae6fd" font-size="13">typeHeavy = true</text>
+          <text x="150" y="169" text-anchor="middle" fill="#bae6fd" font-size="13">player = 1</text>
+
+          <rect x="35" y="270" width="230" height="140" rx="10" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="150" y="306" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">Target</text>
+          <text x="150" y="335" text-anchor="middle" fill="#ddd6fe" font-size="13">typeCavalry = true</text>
+          <text x="150" y="357" text-anchor="middle" fill="#ddd6fe" font-size="13">typeMelee = false</text>
+          <text x="150" y="379" text-anchor="middle" fill="#ddd6fe" font-size="13">player = 2</text>
+
+          <rect x="375" y="105" width="240" height="245" rx="10" fill="#263a55" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="495" y="141" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">Effect matcher</text>
+          <text x="495" y="177" text-anchor="middle" fill="#bae6fd" font-size="13">source filter?</text>
+          <text x="495" y="201" text-anchor="middle" fill="#bae6fd" font-size="13">target filter?</text>
+          <text x="495" y="225" text-anchor="middle" fill="#bae6fd" font-size="13">combat context?</text>
+          <line x1="415" y1="247" x2="575" y2="247" stroke="#496783"/>
+          <text x="495" y="278" text-anchor="middle" fill="#86efac" font-size="13">matching effects</text>
+          <text x="495" y="302" text-anchor="middle" fill="#bbf7d0" font-size="13">Tempered Blades +10%</text>
+          <text x="495" y="324" text-anchor="middle" fill="#bbf7d0" font-size="13">Hunter Doctrine +15% vs cavalry</text>
+
+          <rect x="725" y="105" width="210" height="245" rx="10" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="830" y="141" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">Modifier result</text>
+          <text x="830" y="180" text-anchor="middle" fill="#bbf7d0" font-size="13">base attack = 10</text>
+          <text x="830" y="205" text-anchor="middle" fill="#bbf7d0" font-size="13">+10% own melee</text>
+          <text x="830" y="230" text-anchor="middle" fill="#bbf7d0" font-size="13">+15% vs cavalry</text>
+          <text x="830" y="270" text-anchor="middle" fill="#86efac" font-size="15" font-weight="700">final attack = 12.5</text>
+          <text x="830" y="302" text-anchor="middle" fill="#a8d8bb" font-size="12">(10 × 1.25)</text>
+
+          <rect x="1045" y="140" width="135" height="175" rx="10" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
+          <text x="1112" y="178" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Combat</text>
+          <text x="1112" y="210" text-anchor="middle" fill="#fef3c7" font-size="12">projectile or</text>
+          <text x="1112" y="230" text-anchor="middle" fill="#fef3c7" font-size="12">direct hit uses</text>
+          <text x="1112" y="250" text-anchor="middle" fill="#fef3c7" font-size="12">resolved value</text>
+
+          <line x1="265" y1="130" x2="375" y2="180" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arrow-effect)"/>
+          <line x1="265" y1="340" x2="375" y2="280" stroke="#c4b5fd" stroke-width="3" marker-end="url(#arrow-effect)"/>
+          <line x1="615" y1="227" x2="725" y2="227" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-effect-green)"/>
+          <line x1="935" y1="227" x2="1045" y2="227" stroke="#fcd34d" stroke-width="3" marker-end="url(#arrow-effect)"/>
+        </svg>
+        <p class="diagram-caption">This calculation-time approach means existing and newly created units receive the same completed player technology without rewriting every unit instance.</p>
+      </div>
+
+      <h3>7.2 Attack formula</h3>
+      <p>Keep the existing level and target bonuses, then add technology bonuses at the same calculation boundary:</p>
+      <pre>base = unit database level attack
+levelTargetBonus = existing bonus against target type
+technologyBonus = player effects matching source, target, and context
+
+finalAttack = base * (1 + levelTargetBonus + technologyBonus)</pre>
+      <p>For a more sophisticated future system, use separate buckets:</p>
+      <pre>finalAttack = base
+            * (1 + additiveAttackBonuses)
+            * (1 + targetSpecificBonuses)
+            * stanceMultiplier</pre>
+      <p class="small">Choose one formula and use it consistently. The examples in this document are design values, not final balance values.</p>
+    </section>
+
+    <section id="tech-trees">
+      <h2>8. Example Technology Trees</h2>
+      <p>These trees are examples of structure and interaction. They intentionally include choices, counters, and trade-offs rather than only increasing numbers.</p>
+
+      <h3>8.1 Blacksmith: military specialization</h3>
+      <div class="diagram">
+        <svg viewBox="0 0 1220 610" role="img" aria-labelledby="blacksmith-title blacksmith-desc">
+          <title id="blacksmith-title">Blacksmith military technology tree</title>
+          <desc id="blacksmith-desc">A branching tree starts with metallurgy and leads to offensive, defensive, and counter-specialization branches, ending in exclusive Shock Doctrine or Shield Wall Doctrine.</desc>
+          <defs>
+            <marker id="arrow-tree" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#86efac"/></marker>
+          </defs>
+          <rect width="1220" height="610" rx="8" fill="#111b2d"/>
+          <rect x="485" y="30" width="250" height="82" rx="10" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="610" y="61" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">Metallurgy</text>
+          <text x="610" y="84" text-anchor="middle" fill="#bbf7d0" font-size="12">unlock Blacksmith research</text>
+          <text x="610" y="101" text-anchor="middle" fill="#bbf7d0" font-size="11">basic military prerequisite</text>
+
+          <rect x="85" y="165" width="260" height="105" rx="10" fill="#263a55" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="215" y="198" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Tempered Blades</text>
+          <text x="215" y="222" text-anchor="middle" fill="#bae6fd" font-size="12">melee attackers +10% attack</text>
+          <text x="215" y="242" text-anchor="middle" fill="#bae6fd" font-size="11">supports direct pressure</text>
+
+          <rect x="480" y="165" width="260" height="105" rx="10" fill="#263a55" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="610" y="198" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Reinforced Mail</text>
+          <text x="610" y="222" text-anchor="middle" fill="#bae6fd" font-size="12">infantry +10% armor</text>
+          <text x="610" y="242" text-anchor="middle" fill="#bae6fd" font-size="11">supports holding ground</text>
+
+          <rect x="875" y="165" width="260" height="105" rx="10" fill="#263a55" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="1005" y="198" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Counter Drills</text>
+          <text x="1005" y="222" text-anchor="middle" fill="#bae6fd" font-size="12">choose one enemy tag</text>
+          <text x="1005" y="242" text-anchor="middle" fill="#bae6fd" font-size="11">+15% damage against it</text>
+
+          <rect x="85" y="340" width="260" height="105" rx="10" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="215" y="373" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Long Haft Weapons</text>
+          <text x="215" y="397" text-anchor="middle" fill="#ddd6fe" font-size="12">melee attack range +1</text>
+          <text x="215" y="417" text-anchor="middle" fill="#ddd6fe" font-size="11">changes engagement geometry</text>
+
+          <rect x="480" y="340" width="260" height="105" rx="10" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="610" y="373" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Shield Wall</text>
+          <text x="610" y="397" text-anchor="middle" fill="#ddd6fe" font-size="12">infantry armor +15%, speed -8%</text>
+          <text x="610" y="417" text-anchor="middle" fill="#ddd6fe" font-size="11">defensive doctrine branch</text>
+
+          <rect x="875" y="340" width="260" height="105" rx="10" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="1005" y="373" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Shock Doctrine</text>
+          <text x="1005" y="397" text-anchor="middle" fill="#ddd6fe" font-size="12">melee attack +12%, speed +8%</text>
+          <text x="1005" y="417" text-anchor="middle" fill="#fda4af" font-size="11">armor -5%; exclusive with Shield Wall</text>
+
+          <rect x="400" y="505" width="420" height="70" rx="10" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
+          <text x="610" y="535" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Late choice: one doctrine</text>
+          <text x="610" y="557" text-anchor="middle" fill="#fef3c7" font-size="12">Shock = tempo and damage | Shield Wall = endurance and control</text>
+
+          <line x1="610" y1="112" x2="215" y2="165" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-tree)"/>
+          <line x1="610" y1="112" x2="610" y2="165" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-tree)"/>
+          <line x1="610" y1="112" x2="1005" y2="165" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-tree)"/>
+          <line x1="215" y1="270" x2="215" y2="340" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-tree)"/>
+          <line x1="610" y1="270" x2="610" y2="340" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-tree)"/>
+          <line x1="1005" y1="270" x2="1005" y2="340" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-tree)"/>
+          <path d="M345 393 L400 540" fill="none" stroke="#fcd34d" stroke-width="2" stroke-dasharray="7 5"/>
+          <path d="M740 393 L820 540" fill="none" stroke="#fcd34d" stroke-width="2" stroke-dasharray="7 5"/>
+          <path d="M875 393 L820 540" fill="none" stroke="#fcd34d" stroke-width="2" stroke-dasharray="7 5"/>
+        </svg>
+        <p class="diagram-caption">A tree can branch by playstyle. It does not need to be a single linear ladder.</p>
+      </div>
+
+      <h3>8.2 University: economy and information</h3>
+      <div class="diagram">
+        <svg viewBox="0 0 1220 480" role="img" aria-labelledby="university-title university-desc">
+          <title id="university-title">University economy technology tree</title>
+          <desc id="university-desc">A University tree branches into logistics, applied mathematics, and scouting, leading to different economic and information advantages.</desc>
+          <rect width="1220" height="480" rx="8" fill="#111b2d"/>
+          <rect x="485" y="30" width="250" height="78" rx="10" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="610" y="62" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">Scholarship</text>
+          <text x="610" y="85" text-anchor="middle" fill="#bbf7d0" font-size="12">research costs -5%</text>
+
+          <rect x="70" y="150" width="255" height="115" rx="10" fill="#263a55" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="197" y="183" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Pack Animals</text>
+          <text x="197" y="207" text-anchor="middle" fill="#bae6fd" font-size="12">workers gather +10%</text>
+          <text x="197" y="228" text-anchor="middle" fill="#bae6fd" font-size="11">economic acceleration</text>
+
+          <rect x="482" y="150" width="255" height="115" rx="10" fill="#263a55" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="610" y="183" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Applied Mathematics</text>
+          <text x="610" y="207" text-anchor="middle" fill="#bae6fd" font-size="12">building upgrades -10% cost</text>
+          <text x="610" y="228" text-anchor="middle" fill="#bae6fd" font-size="11">long-term infrastructure</text>
+
+          <rect x="895" y="150" width="255" height="115" rx="10" fill="#263a55" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="1022" y="183" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Field Cartography</text>
+          <text x="1022" y="207" text-anchor="middle" fill="#bae6fd" font-size="12">+15% sight for scouts</text>
+          <text x="1022" y="228" text-anchor="middle" fill="#bae6fd" font-size="11">information and map control</text>
+
+          <rect x="70" y="340" width="255" height="92" rx="10" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="197" y="373" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Supply Network</text>
+          <text x="197" y="397" text-anchor="middle" fill="#ddd6fe" font-size="12">unit train time -10%, cost +5%</text>
+
+          <rect x="482" y="340" width="255" height="92" rx="10" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="610" y="373" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Civic Engineering</text>
+          <text x="610" y="397" text-anchor="middle" fill="#ddd6fe" font-size="12">construction speed +15%</text>
+
+          <rect x="895" y="340" width="255" height="92" rx="10" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="1022" y="373" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Counterintelligence</text>
+          <text x="1022" y="397" text-anchor="middle" fill="#ddd6fe" font-size="12">enemy tech advantage less visible</text>
+
+          <defs><marker id="arrow-uni" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#86efac"/></marker></defs>
+          <line x1="610" y1="108" x2="197" y2="150" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-uni)"/>
+          <line x1="610" y1="108" x2="610" y2="150" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-uni)"/>
+          <line x1="610" y1="108" x2="1022" y2="150" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-uni)"/>
+          <line x1="197" y1="265" x2="197" y2="340" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-uni)"/>
+          <line x1="610" y1="265" x2="610" y2="340" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-uni)"/>
+          <line x1="1022" y1="265" x2="1022" y2="340" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-uni)"/>
+        </svg>
+        <p class="diagram-caption">Not every tree has to be military. Economy and information technologies can create a different route to victory.</p>
+      </div>
+
+      <h3>8.3 A compact example with choices</h3>
+      <pre>Tier 1:  Metallurgy
+          ├── Tempered Blades       all melee attack +10%
+          ├── Reinforced Mail       infantry armor +10%
+          └── Counter Drills        choose one target tag: +15% damage
+
+Tier 2:  choose one strategic doctrine
+          ├── Shock Doctrine        melee attack +12%, speed +8%, armor -5%
+          ├── Shield Wall            infantry armor +15%, speed -8%
+          └── Siege Corps            building damage +20%, unit cost +5%
+
+Tier 3:  doctrine capstone
+          ├── Veteran Cadres        selected tag units train faster
+          └── Fortress Network       defensive buildings share influence bonus</pre>
+    </section>
+
+    <section id="upgrade-ideas">
+      <h2>9. Different Upgrade Styles</h2>
+      <p>Use a mix of these styles. A healthy technology roster should contain direct power, counters, economic choices, unlocks, and rules that change how the player approaches the map.</p>
+      <table>
+        <thead><tr><th>Style</th><th>Example</th><th>Strategic question</th><th>Balance risk</th></tr></thead>
+        <tbody>
+          <tr><td>Global category bonus</td><td>All melee units +10% attack.</td><td>Am I committing to melee?</td><td>Can become an automatic best choice if too broad.</td></tr>
+          <tr><td>Source-target counter</td><td>Ranged units +15% damage against cavalry.</td><td>What is the enemy likely to build?</td><td>Weak if scouting is absent or enemy composition is unknown.</td></tr>
+          <tr><td>Stat trade-off</td><td>+12% attack, -5% armor.</td><td>Do I want speed and pressure or staying power?</td><td>Harder to explain and tune.</td></tr>
+          <tr><td>Production transformation</td><td>Units train 15% faster but cost 5% more food.</td><td>Can my economy sustain tempo?</td><td>May snowball if both bonuses are too strong.</td></tr>
+          <tr><td>Unlock technology</td><td>Unlocks a fast but fragile cavalry unit.</td><td>Do I spend now to access a new plan?</td><td>Must validate all ownership and producer paths.</td></tr>
+          <tr><td>Infrastructure bonus</td><td>Defensive buildings gain HP or range.</td><td>Can I hold a location?</td><td>Static defense can make games stall.</td></tr>
+          <tr><td>Map interaction</td><td>Workers gather +20% near owned storage buildings.</td><td>Where should I place infrastructure?</td><td>Placement and pathing can dominate balance.</td></tr>
+          <tr><td>Formation or army rule</td><td>Infantry in formation take less damage from the front.</td><td>Can I use the formation system well?</td><td>Requires clear feedback and formation testing.</td></tr>
+          <tr><td>Conditional timing</td><td>Units below 50% HP gain +10% speed.</td><td>Do I retreat or commit?</td><td>Can produce unintuitive combat outcomes.</td></tr>
+          <tr><td>Temporary doctrine</td><td>Activate “Forced March” for 30 seconds; units move faster but fatigue.</td><td>When is the timing window?</td><td>Needs cooldown and save semantics.</td></tr>
+          <tr><td>Choice reward</td><td>Choose attack range, damage, or cheaper production for one unit tag.</td><td>What does this army need now?</td><td>More UI and state complexity.</td></tr>
+          <tr><td>Information technology</td><td>Reveal enemy army category but not exact position.</td><td>Can I make a better strategic decision?</td><td>Current enemy information is already unusually complete for AI.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="grid">
+        <div class="example">
+          <h3>Example: economic trade-off</h3>
+          <p><strong>Pack Animals:</strong> workers gather 10% faster.</p>
+          <p class="tradeoff">Cost: unit production uses 5% more food.</p>
+          <p class="result">Use when expanding the economy or preparing a long game. Avoid when early military timing is critical.</p>
+        </div>
+        <div class="example">
+          <h3>Example: counter investment</h3>
+          <p><strong>Hunter Doctrine:</strong> ranged units deal 15% more damage to cavalry.</p>
+          <p class="tradeoff">No bonus against infantry or buildings.</p>
+          <p class="result">Strong when scouting identifies cavalry, but a bad automatic choice against another army.</p>
+        </div>
+        <div class="example">
+          <h3>Example: positional technology</h3>
+          <p><strong>Field Fortifications:</strong> units within influence of a defensive building gain 8% armor.</p>
+          <p class="tradeoff">No effect while fighting away from the network.</p>
+          <p class="result">Makes map control and building placement matter instead of only increasing army stats.</p>
+        </div>
+        <div class="example">
+          <h3>Example: behavior change</h3>
+          <p><strong>Salvage Engineering:</strong> destroying an enemy building refunds a percentage of its resource value.</p>
+          <p class="tradeoff">Units deal 5% less damage to buildings.</p>
+          <p class="result">Encourages repeated raids and creates a different siege economy.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="schema">
+      <h2>10. Proposed Database Schema</h2>
+      <p>Runtime definitions belong in <code>game/Data/Database/data.db</code>. Keep technology definitions separate from unit and building level rows. The data loader currently uses <code>SELECT *</code> with ordinal enums, so any data-table column change must update the matching enum and constructor binding together.</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 1240 590" role="img" aria-labelledby="schema-title schema-desc">
+          <title id="schema-title">Technology database schema</title>
+          <desc id="schema-desc">Technology definitions connect to prerequisites, effects, exclusive groups, and building requirements. Player save state is separate from definition data.</desc>
+          <rect width="1240" height="590" rx="8" fill="#111b2d"/>
+          <rect x="55" y="65" width="295" height="240" rx="10" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="202" y="100" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">technology</text>
+          <text x="80" y="135" fill="#bbf7d0" font-size="13">id (stable runtime key)</text>
+          <text x="80" y="158" fill="#bbf7d0" font-size="13">name, description, icon</text>
+          <text x="80" y="181" fill="#bbf7d0" font-size="13">tier, research_time</text>
+          <text x="80" y="204" fill="#bbf7d0" font-size="13">food, wood, stone, gold</text>
+          <text x="80" y="227" fill="#bbf7d0" font-size="13">required building type</text>
+          <text x="80" y="250" fill="#bbf7d0" font-size="13">exclusive_group</text>
+          <text x="80" y="281" fill="#a8d8bb" font-size="11">one definition per technology</text>
+
+          <rect x="465" y="45" width="295" height="155" rx="10" fill="#263a55" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="612" y="80" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">technology_prerequisite</text>
+          <text x="490" y="116" fill="#bae6fd" font-size="13">technology_id</text>
+          <text x="490" y="140" fill="#bae6fd" font-size="13">required_technology_id</text>
+          <text x="490" y="164" fill="#bae6fd" font-size="13">PRIMARY KEY (both)</text>
+
+          <rect x="465" y="245" width="295" height="235" rx="10" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="612" y="280" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">technology_effect</text>
+          <text x="490" y="316" fill="#ddd6fe" font-size="13">technology_id</text>
+          <text x="490" y="339" fill="#ddd6fe" font-size="13">effect_type</text>
+          <text x="490" y="362" fill="#ddd6fe" font-size="13">source_unit_tag / target_unit_tag</text>
+          <text x="490" y="385" fill="#ddd6fe" font-size="13">building_tag / resource_type</text>
+          <text x="490" y="408" fill="#ddd6fe" font-size="13">value / secondary_value</text>
+          <text x="490" y="431" fill="#ddd6fe" font-size="13">condition / context</text>
+          <text x="490" y="462" fill="#c4b5e4" font-size="11">one technology can have several effects</text>
+
+          <rect x="875" y="65" width="300" height="240" rx="10" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
+          <text x="1025" y="100" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">player_technologies</text>
+          <text x="900" y="135" fill="#fef3c7" font-size="13">player</text>
+          <text x="900" y="158" fill="#fef3c7" font-size="13">technology_id</text>
+          <text x="900" y="181" fill="#fef3c7" font-size="13">state / completed_tick</text>
+          <text x="900" y="204" fill="#fef3c7" font-size="13">optional chosen_variant</text>
+          <text x="900" y="250" fill="#e9c968" font-size="11">scene save table</text>
+          <text x="900" y="271" fill="#e9c968" font-size="11">stores completed player state</text>
+
+          <rect x="875" y="370" width="300" height="125" rx="10" fill="#18283c" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="1025" y="405" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">Existing definitions</text>
+          <text x="1025" y="432" text-anchor="middle" fill="#bae6fd" font-size="12">db_unit / db_building tags</text>
+          <text x="1025" y="453" text-anchor="middle" fill="#bae6fd" font-size="12">unit_level / building_level stats</text>
+          <text x="1025" y="474" text-anchor="middle" fill="#bae6fd" font-size="12">research building categories</text>
+
+          <defs><marker id="arrow-schema" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#86efac"/></marker></defs>
+          <line x1="350" y1="145" x2="465" y2="115" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-schema)"/>
+          <line x1="350" y1="225" x2="465" y2="350" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-schema)"/>
+          <line x1="760" y1="115" x2="875" y2="145" stroke="#fcd34d" stroke-width="3" marker-end="url(#arrow-schema)"/>
+          <line x1="760" y1="350" x2="875" y2="180" stroke="#fcd34d" stroke-width="3" marker-end="url(#arrow-schema)"/>
+          <line x1="1025" y1="305" x2="1025" y2="370" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arrow-schema)"/>
+        </svg>
+        <p class="diagram-caption">Definition tables belong to <code>data.db</code>; completed player state belongs to the scene save. Do not duplicate effects into every unit row.</p>
+      </div>
+
+      <h3>10.1 Suggested columns</h3>
+      <table>
+        <thead><tr><th>Table</th><th>Required first version</th><th>Later extension</th></tr></thead>
+        <tbody>
+          <tr><td><code>technology</code></td><td><code>id</code>, name, icon, tier, cost fields, research time, required building category, exclusive group.</td><td>nation restrictions, repeatable flag, display order, AI weight.</td></tr>
+          <tr><td><code>technology_prerequisite</code></td><td>technology ID and required technology ID.</td><td>OR groups, minimum building levels, resource thresholds.</td></tr>
+          <tr><td><code>technology_effect</code></td><td>technology ID, effect enum, source tag, target tag, value.</td><td>building/resource tags, context, condition, secondary value, cap.</td></tr>
+          <tr><td><code>technology_variant</code></td><td>Not needed if the first tree has fixed effects.</td><td>Choice-based rewards such as attack, range, or cost.</td></tr>
+          <tr><td><code>player_technologies</code></td><td>player, technology, state, completed tick.</td><td>selected variant, activation time, charges, temporary expiration.</td></tr>
+        </tbody>
+      </table>
+      <div class="callout danger"><strong>Database invariant:</strong> technology IDs become runtime keys once they appear in player save state. Keep IDs stable and dense enough for the chosen lookup structure. References must point to existing technology rows.</div>
+    </section>
+
+    <section id="save-load">
+      <h2>11. Save And Load</h2>
+      <p>Completed technologies are persistent player state, not static database data. Add a dedicated optional save table rather than overloading <code>player_levels</code>, which currently represents unit and building levels using a type and definition ID.</p>
+      <pre>CREATE TABLE player_technologies (
+    player INT NOT NULL,
+    technology INT NOT NULL,
+    state INT NOT NULL,
+    completed_tick INT NOT NULL,
+    PRIMARY KEY (player, technology)
+) WITHOUT ROWID;</pre>
+
+      <div class="diagram">
+        <svg viewBox="0 0 1180 350" role="img" aria-labelledby="save-tech-title save-tech-desc">
+          <title id="save-tech-title">Technology save and load flow</title>
+          <desc id="save-tech-desc">The technology definition database remains static while completed player technology state is written into and restored from a scene save.</desc>
+          <rect width="1180" height="350" rx="8" fill="#111b2d"/>
+          <rect x="55" y="80" width="250" height="145" rx="10" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="180" y="116" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">data.db</text>
+          <text x="180" y="145" text-anchor="middle" fill="#bbf7d0" font-size="13">technology definitions</text>
+          <text x="180" y="168" text-anchor="middle" fill="#bbf7d0" font-size="13">prerequisites and effects</text>
+          <text x="180" y="191" text-anchor="middle" fill="#bbf7d0" font-size="13">never modified by a match</text>
+
+          <rect x="455" y="80" width="270" height="145" rx="10" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
+          <text x="590" y="116" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">Scene save</text>
+          <text x="590" y="145" text-anchor="middle" fill="#fef3c7" font-size="13">player_technologies</text>
+          <text x="590" y="168" text-anchor="middle" fill="#fef3c7" font-size="13">research queue and progress</text>
+          <text x="590" y="191" text-anchor="middle" fill="#fef3c7" font-size="13">pending research command</text>
+
+          <rect x="875" y="80" width="250" height="145" rx="10" fill="#18324a" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="1000" y="116" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">Runtime restore</text>
+          <text x="1000" y="145" text-anchor="middle" fill="#bae6fd" font-size="13">restore player state</text>
+          <text x="1000" y="168" text-anchor="middle" fill="#bae6fd" font-size="13">rebuild effect registry</text>
+          <text x="1000" y="191" text-anchor="middle" fill="#bae6fd" font-size="13">continue next tick</text>
+
+          <defs><marker id="arrow-save-tech" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#fcd34d"/></marker></defs>
+          <line x1="305" y1="152" x2="455" y2="152" stroke="#fcd34d" stroke-width="3" marker-end="url(#arrow-save-tech)"/>
+          <line x1="725" y1="152" x2="875" y2="152" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arrow-save-tech)"/>
+          <text x="380" y="130" text-anchor="middle" fill="#fcd34d" font-size="11">definition IDs referenced</text>
+          <text x="800" y="130" text-anchor="middle" fill="#7dd3fc" font-size="11">restore completed IDs</text>
+
+          <rect x="270" y="270" width="640" height="42" rx="8" fill="#29251a" stroke="#fcd34d"/>
+          <text x="590" y="296" text-anchor="middle" fill="#fef3c7" font-size="12">Existing saves need regeneration or an explicit migration because save schema has no active version field.</text>
+        </svg>
+        <p class="diagram-caption">The effect registry can be rebuilt after loading completed technology IDs; there is no need to persist a copied modifier list.</p>
+      </div>
+
+      <h3>Save checklist</h3>
+      <ul class="checklist">
+        <li>Update <code>SQLConsts.h</code>, <code>db_columns.h</code>, save table mapping, row DTOs, saver bindings, and loader bindings together.</li>
+        <li>Persist completed technologies and in-progress research queues if a save can happen during research.</li>
+        <li>Restore technology state after players exist and before gameplay calculations resume.</li>
+        <li>Validate that every saved technology ID exists in the loaded <code>data.db</code>.</li>
+        <li>Decide whether temporary technologies store remaining duration, activation time, or are excluded from the first release.</li>
+        <li>Test a save with completed technology, active research, prerequisite branches, and an exclusive doctrine.</li>
+      </ul>
+    </section>
+
+    <section id="ui-ai">
+      <h2>12. UI And AI</h2>
+      <h3>12.1 UI proposal</h3>
+      <p>Add a Research panel rather than mixing technologies into the current unit-level icon list. The panel should make the strategic consequences readable before the player pays.</p>
+      <table>
+        <thead><tr><th>UI element</th><th>Information to show</th></tr></thead>
+        <tbody>
+          <tr><td>Technology card</td><td>Icon, name, tier, short effect summary, cost, time, required building.</td></tr>
+          <tr><td>Effect detail</td><td>Source filter and target filter separately: “melee attackers” versus “against melee targets.”</td></tr>
+          <tr><td>Prerequisite state</td><td>Completed, missing prerequisite, missing building, insufficient resource, blocked exclusive group.</td></tr>
+          <tr><td>Research queue</td><td>Current technology, progress, remaining time, cancel policy, and whether the cost is refundable.</td></tr>
+          <tr><td>Active effects</td><td>A compact list of completed technologies with the units/buildings they affect.</td></tr>
+          <tr><td>Choice dialog</td><td>For variants, compare choices side by side and explain that the choice is permanent or reversible.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>12.2 AI proposal without immediately changing neural-network dimensions</h3>
+      <p>The current AI already exposes <code>TECH_URGENCY</code>, but adding one brain output for every technology would require changing CSV dimensions, regenerating weights, and updating the external trainer. Start with a deterministic technology selector driven by existing urgency and game state.</p>
+      <pre>technology_score =
+      base_tech_urgency
+    + army_match_bonus
+    + enemy_counter_bonus
+    + economy_match_bonus
+    + prerequisite_progress_bonus
+    - resource_opportunity_cost
+    - duplicate_effect_penalty</pre>
+      <table>
+        <thead><tr><th>AI situation</th><th>Preferred research</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td>Mostly melee army</td><td>Tempered Blades or Long Haft Weapons</td><td>Improve the composition the AI already chose.</td></tr>
+          <tr><td>Enemy cavalry pressure</td><td>Hunter Doctrine or Counter Drills vs cavalry</td><td>Respond to observed enemy composition.</td></tr>
+          <tr><td>Strong economy, weak army</td><td>Military technology</td><td>Convert economic lead into battlefield strength.</td></tr>
+          <tr><td>Under attack at home</td><td>Reinforced Mail or Fortress Network</td><td>Prioritize survival and defensive positions.</td></tr>
+          <tr><td>Long quiet game</td><td>Pack Animals or Applied Mathematics</td><td>Invest in compounding economic advantage.</td></tr>
+        </tbody>
+      </table>
+      <p>Later, add three preference outputs rather than one output per technology: <code>MILITARY_TECH_PREFERENCE</code>, <code>ECONOMY_TECH_PREFERENCE</code>, and <code>DEFENSIVE_TECH_PREFERENCE</code>. That preserves a compact brain interface.</p>
+
+      <div class="callout warning"><strong>AI data contract:</strong> if a brain enum or output width changes, update C++ enums, all compatible CSV files, focused dimension tests, and the external trainer together. A technology feature does not need a neural-network interface change in its first version.</div>
+    </section>
+
+    <section id="implementation">
+      <h2>13. Implementation Phases</h2>
+      <p>Build the smallest complete vertical slice first. Do not begin with every possible effect or a fully generic scripting language.</p>
+
+      <div class="phase"><span class="phase-number">1</span><h3>Player technology state</h3><p>Add a technology collection to <code>Player</code>, with queries such as <code>hasTechnology(id)</code> and <code>getTechnologyEffects()</code>. Keep ownership/lifecycle consistent with the existing raw-pointer service graph.</p><p class="small">Verification: deterministic tests for unlock, duplicate completion, unknown ID, and exclusive group rejection.</p></div>
+      <div class="phase"><span class="phase-number">2</span><h3>Three fixed effects</h3><p>Implement only <code>ATTACK_PERCENT</code>, <code>GATHER_PERCENT</code>, and <code>ARMOR_PERCENT</code>. Use existing unit tags and apply effects at combat/resource calculation points.</p><p class="small">Verification: melee-only attack bonus, non-melee unaffected, existing units and future units both affected, armor and gather values remain in valid ranges.</p></div>
+      <div class="phase"><span class="phase-number">3</span><h3>Technology research queue</h3><p>Add <code>TECH_RESEARCH</code>, research cost validation, fixed-tick progress, completion command, prerequisite validation, and one required building category.</p><p class="small">Verification: no duplicate queue entries, no completion before required ticks, deferred command ordering, insufficient resources, and missing research building.</p></div>
+      <div class="phase"><span class="phase-number">4</span><h3>Data-driven definitions</h3><p>Add the technology, prerequisite, and effect tables to <code>data.db</code>. Update ordinal column enums and constructors together. Start with 8-12 technologies.</p><p class="small">Verification: database referential integrity, stable IDs, level/building relationship checks, and runtime load from the game working directory.</p></div>
+      <div class="phase"><span class="phase-number">5</span><h3>Save/load</h3><p>Add <code>player_technologies</code> and preserve in-progress research. Rebuild active effects after loading player state.</p><p class="small">Verification: save/load with completed technology, active queue, exclusive branch, and existing unit/building levels.</p></div>
+      <div class="phase"><span class="phase-number">6</span><h3>Research UI</h3><p>Add technology cards, prerequisites, costs, queue progress, active effects, and locked reasons. Reuse the established Urho3D UI patterns.</p><p class="small">Verification: long names, missing icons, mobile/window resizing, disabled actions, and correct effect descriptions.</p></div>
+      <div class="phase"><span class="phase-number">7</span><h3>AI selection</h3><p>Use deterministic scoring with existing <code>TECH_URGENCY</code>. Add AI history results for researched, blocked, unaffordable, and duplicate requests.</p><p class="small">Verification: headless match where the AI researches a valid technology and does not repeatedly request a blocked branch.</p></div>
+      <div class="phase"><span class="phase-number">8</span><h3>Advanced branches</h3><p>Add mutually exclusive doctrines, target-specific counters, unlocks, temporary effects, map interaction, and optional building-owned research queues one at a time.</p><p class="small">Verification: each new effect gets a focused test and a balance scenario before it enters the default data set.</p></div>
+    </section>
+
+    <section id="balance">
+      <h2>14. Balance And Readability Rules</h2>
+      <div class="grid">
+        <div class="card"><h3>Every bonus needs a victim</h3><p>If a technology improves attack, ask what it gives up: resources, armor, speed, time, another branch, or effectiveness against another target.</p></div>
+        <div class="card"><h3>Do not make categories overlap too much</h3><p>A heavy melee infantry unit could receive melee, heavy, and infantry bonuses. Limit stacking or make the technologies compete for the same branch.</p></div>
+        <div class="card"><h3>Counter-tech should be readable</h3><p>“+15% against cavalry” is interesting only if the player can identify cavalry, understand the effect, and react before spending resources.</p></div>
+        <div class="card"><h3>Research time is a strategic cost</h3><p>While researching, the player may not be producing another technology. This opportunity cost is often healthier than very large resource costs.</p></div>
+        <div class="card"><h3>Do not heal for free by changing max HP</h3><p>If a technology raises maximum HP, decide whether current HP is unchanged, proportionally changed, or capped. The safest default is unchanged current HP.</p></div>
+        <div class="card"><h3>Effects must be inspectable</h3><p>Players should be able to answer why a unit has its current attack, armor, speed, and cost. Hidden stacks make balance bugs feel random.</p></div>
+      </div>
+
+      <h3>Suggested initial numbers</h3>
+      <table>
+        <thead><tr><th>Technology role</th><th>Starting range</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Broad category bonus</td><td>5-10%</td><td>Broad effects reach many units and should be modest.</td></tr>
+          <tr><td>Target-specific counter</td><td>10-20%</td><td>Strong only in the right matchup; make the target clear.</td></tr>
+          <tr><td>Trade-off doctrine</td><td>8-15% positive, 4-10% negative</td><td>Positive and negative values should be comparable.</td></tr>
+          <tr><td>Production speed</td><td>8-15%</td><td>Speed compounds with queue capacity and economy.</td></tr>
+          <tr><td>Unlock technology</td><td>Moderate cost, meaningful time</td><td>The new unit is the value; avoid also adding a large universal bonus.</td></tr>
+          <tr><td>Defensive building HP</td><td>10-20%</td><td>Test whether it causes static turtling or merely improves map holding.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="recommendation">
+      <h2>15. Recommended First Vertical Slice</h2>
+      <div class="callout">
+        <strong>Build this first:</strong> one Blacksmith technology, one player queue, one effect, one prerequisite, one save table, and one UI card.
+      </div>
+      <pre>Technology: Tempered Blades
+Prerequisite: player owns a ready Blacksmith
+Cost: 100 wood + 75 gold
+Research time: 180 fixed ticks
+Effect: own units with typeMelee deal +10% attack
+Scope: existing and newly created units
+Exclusive: no
+AI: selected when melee army ratio and TECH_URGENCY are high</pre>
+      <ol class="checklist">
+        <li>Research it in the player queue.</li>
+        <li>Complete it through a deferred command.</li>
+        <li>Store completion in <code>Player</code>.</li>
+        <li>Apply the effect in <code>Unit::getAttackVal()</code>.</li>
+        <li>Display the exact source filter in the UI.</li>
+        <li>Save and load completion state.</li>
+        <li>Test it against a non-melee unit and against a melee unit.</li>
+      </ol>
+      <p>Once this vertical slice works, add a second technology with a target filter, such as “ranged units deal +15% against cavalry.” That proves the architecture can express both broad specialization and matchup-specific counterplay before adding more complex doctrines.</p>
+    </section>
+
+    <p class="source"><strong>Relevant implementation anchors:</strong> <code>game/src/player/Player.h</code>, <code>game/src/player/Player.cpp</code>, <code>game/src/commands/upgrade/UpgradeCommand.cpp</code>, <code>game/src/objects/queue/QueueActionType.h</code>, <code>game/src/objects/unit/Unit.cpp</code>, <code>game/src/database/db_struct.h</code>, <code>game/src/scene/save/SQLConsts.h</code>, <code>game/src/scene/save/SceneSaver.cpp</code>, <code>game/src/scene/load/SceneLoader.cpp</code>, and <code>game/src/simulation/Simulation.cpp</code>.</p>
+  </main>
+</body>
+</html>
