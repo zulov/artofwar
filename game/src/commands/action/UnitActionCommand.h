@@ -7,7 +7,7 @@ namespace Urho3D {
 
 class UnitOrder;
 class Physical;
-enum class UnitAction : char;
+enum class UnitAction : unsigned char;
 struct PendingCommandSaveData;
 
 class UnitActionCommand : public PhysicalCommand {

@@ -1,13 +1,13 @@
 #pragma once
 
-enum class RandFloatType : char {
+enum class RandFloatType : unsigned char {
 	AI=0,
 	RESOURCE_ROTATION,
 	COLLISION_FORCE,
 	OTHER
 };
 
-enum class RandIntType : char {
+enum class RandIntType : unsigned char {
 	SAVE=0,
 	PLAYER_NAME,
 	RESOURCE_NODE

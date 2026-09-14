@@ -1,6 +1,6 @@
 #pragma once
 
-enum class GameState : char {
+enum class GameState : unsigned char {
 	STARTING=0,
 	NEW_GAME,
 	LOADING,

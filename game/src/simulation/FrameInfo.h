@@ -8,7 +8,7 @@
 
 constexpr unsigned int SECONDS_IN_MONTH = 5;
 
-enum class PerFrameAction : char {
+enum class PerFrameAction : unsigned  char {
 	INFLUENCE_UNITS = 0,
 	INFLUENCE_OTHER,
 	SELF_AI,

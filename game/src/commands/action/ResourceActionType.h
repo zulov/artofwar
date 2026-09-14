@@ -1,5 +1,5 @@
 #pragma once
-enum class ResourceActionType : char {
+enum class ResourceActionType : unsigned char {
 	COLLECT=0,
 	CANCEL
 };

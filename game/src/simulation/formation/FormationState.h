@@ -1,6 +1,5 @@
 #pragma once
-enum class FormationState : char
-{
+enum class FormationState : unsigned char {
 	FORMING=0,
 	MOVING,
 	REACHED,

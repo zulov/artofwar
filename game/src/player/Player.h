@@ -9,7 +9,7 @@
 class Possession;
 class Resources;
 struct db_nation;
-enum class ActionType : char;
+enum class ActionType : unsigned char;
 
 class Player {
 	friend void bindRow<Player>(sqlite3_stmt*, int, const Player*);

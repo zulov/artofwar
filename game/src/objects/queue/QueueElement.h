@@ -1,7 +1,7 @@
 #pragma once
 
-enum class QueueActionType : char;
-enum class ActionType : char;
+enum class QueueActionType : unsigned char;
+enum class ActionType : unsigned char;
 
 class QueueElement {
 public:

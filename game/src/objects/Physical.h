@@ -13,7 +13,7 @@
 #include "Urho3D/Math/Vector3.h"
 
 
-enum class VisibilityType : char;
+enum class VisibilityType : unsigned char;
 
 namespace Urho3D {
 	class Node;

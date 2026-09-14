@@ -24,9 +24,9 @@ namespace Urho3D {
 
 constexpr char USE_SOCKETS_NUMBER = 8;
 
-enum class UnitAction : char;
-enum class DebugUnitType : char;
-enum class SimColorMode : char;
+enum class UnitAction : unsigned char;
+enum class DebugUnitType : unsigned char;
+enum class SimColorMode : unsigned char;
 enum class MilitaryCenterIdx : unsigned char;
 struct ForceStats;
 struct db_unit_level;

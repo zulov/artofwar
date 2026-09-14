@@ -17,8 +17,8 @@ constexpr char CHECKS_NUMBER = 3;
 constexpr char BUTTONS_PER_ROW = 4;
 constexpr char BUTTONS_NUMBER = BUTTONS_PER_ROW * (ROWS_NUMBER - 1);
 
-enum class ActionType : char;
-enum class LeftMenuMode : char;
+enum class ActionType : unsigned char;
+enum class LeftMenuMode : unsigned char;
 class SelectedInfo;
 class HudData;
 class LeftMenuInfoPanel;

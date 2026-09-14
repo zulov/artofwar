@@ -1,6 +1,6 @@
 #pragma once
 
-enum class UnitState : char {
+enum class UnitState : unsigned char {
 	STOP=0,
 	MOVE,
 	GO,

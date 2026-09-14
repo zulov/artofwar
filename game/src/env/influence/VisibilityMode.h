@@ -1,7 +1,7 @@
 #pragma once
 #include <magic_enum.hpp>
 
-enum class VisibilityMode:char {
+enum class VisibilityMode : unsigned char {
 	PLAYER_ONLY= 0,
 	ALL_PLAYERS,
 	//TEAM,

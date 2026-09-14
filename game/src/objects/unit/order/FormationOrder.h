@@ -7,17 +7,16 @@ namespace Urho3D {
 	class Vector2;
 }
 
-enum class UnitAction : char;
+enum class UnitAction : unsigned char;
 class Formation;
 
 class FormationOrder : public UnitOrder {
 public:
-	FormationOrder(Formation* formation, short action, Urho3D::Vector2& vector, bool append = false);
-	FormationOrder(Formation* formation, short action, Physical* toUse, bool append = false);
+	FormationOrder(Formation* formation, unsigned char action, Urho3D::Vector2& vector, bool append = false);
+	FormationOrder(Formation* formation, unsigned char action, Physical* toUse, bool append = false);
 	~FormationOrder() override = default;
 	bool add() override;
 	bool expired() override;
-	short getSize() const override;
 	PendingCommandSaveData saveState(unsigned short order) const override;
 
 private:

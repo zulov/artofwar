@@ -3,21 +3,18 @@
 
 #include "UnitOrder.h"
 
-enum class UnitActionType : char;
-enum class UnitAction : char;
+enum class UnitActionType : unsigned char;
+enum class UnitAction : unsigned char;
 class Unit;
 
 class GroupOrder : public UnitOrder {
 public:
 	void addUnits(const std::vector<Physical*>& entities);
-	GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, short id, Physical* toUse,
-			   bool append = false);
+	GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, short id, Physical* toUse, bool append = false);
 
-	GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, short id, Urho3D::Vector2 vector,
-			   bool append = false);
+	GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, short id, Urho3D::Vector2 vector, bool append = false);
 
-	GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, short id, Urho3D::Vector2 vector,
-			   bool append = false);
+	GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, short id, Urho3D::Vector2 vector, bool append = false);
 
 	GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, short id, Physical* toUse, bool append = false);
 
@@ -25,7 +22,6 @@ public:
 
 	bool add() override;
 	bool expired() override;
-	short getSize() const override;
 	PendingCommandSaveData saveState(unsigned short order) const override;
 
 private:

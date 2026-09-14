@@ -19,7 +19,7 @@
 #include "objects/ObjectEnums.h"
 
 struct MouseHeld;
-enum class CenterType:char;
+enum class CenterType : unsigned char;
 
 namespace Urho3D {
 	class Terrain;

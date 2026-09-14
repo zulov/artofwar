@@ -11,7 +11,7 @@ class Player;
 struct db_unit;
 struct db_building;
 struct db_building_level;
-enum class ParentBuildingType : char;
+enum class ParentBuildingType : unsigned char;
 enum class BuildPlacementClass : unsigned char;
 
 template <typename E>

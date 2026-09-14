@@ -2,7 +2,7 @@
 #include "UnitOrder.h"
 
 class Unit;
-enum class UnitAction : char;
+enum class UnitAction : unsigned char;
 
 class IndividualOrder : public UnitOrder {
 public:
@@ -12,7 +12,6 @@ public:
 
 	bool expired() override;
 	bool add() override;
-	short getSize() const override;
 	PendingCommandSaveData saveState(unsigned short order) const override;
 
 private:

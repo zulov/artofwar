@@ -8,10 +8,10 @@
 #include "scene/load/RuntimeSaveData.h"
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, const Urho3D::Vector2& vector, bool append) :
-	UnitOrder(static_cast<short>(action), append, vector), unit(unit) {}
+	UnitOrder(static_cast<unsigned char>(action), append, vector), unit(unit) {}
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, Physical* toUse, bool append) :
-	UnitOrder(static_cast<short>(action), append, toUse), unit(unit) { assert(toUse->isAlive()); }
+	UnitOrder(static_cast<unsigned char>(action), append, toUse), unit(unit) { assert(toUse->isAlive()); }
 
 bool IndividualOrder::expired() { return toUse != nullptr && !toUse->isAlive(); }
 
@@ -19,8 +19,6 @@ bool IndividualOrder::add() {
 	unit->addOrder(this);
 	return false;
 }
-
-short IndividualOrder::getSize() const { return 1; }
 
 PendingCommandSaveData IndividualOrder::saveState(unsigned short order) const {
 	auto state = createSaveState(order, PendingCommandKind::INDIVIDUAL_ORDER);

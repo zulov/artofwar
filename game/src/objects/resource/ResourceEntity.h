@@ -9,7 +9,7 @@ namespace Urho3D {
 
 struct dbload_resource;
 struct db_resource;
-enum class ResourceActionType : char;
+enum class ResourceActionType : unsigned char;
 
 class ResourceEntity : public Static {//TODO rename to resource
 	friend void bindRow<ResourceEntity>(sqlite3_stmt*, int, const ResourceEntity*);

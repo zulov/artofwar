@@ -1,6 +1,5 @@
 #pragma once
-enum class SimColorMode : char
-{
+enum class SimColorMode : unsigned char {
 	BASIC,
 	VELOCITY,
 	STATE,

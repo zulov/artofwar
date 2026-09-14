@@ -7,13 +7,11 @@
 #include "env/Environment.h"
 #include "scene/load/RuntimeSaveData.h"
 
-FormationOrder::FormationOrder(Formation* formation, short action,
-                               Urho3D::Vector2& vector, bool append):
+FormationOrder::FormationOrder(Formation* formation, unsigned char action, Urho3D::Vector2& vector, bool append):
 	UnitOrder(action, append, vector), formation(formation) {
 }
 
-FormationOrder::FormationOrder(Formation* formation, short action,
-                               Physical* toUse, bool append):
+FormationOrder::FormationOrder(Formation* formation, unsigned char action, Physical* toUse, bool append):
 	UnitOrder(action, append, toUse), formation(formation) {
 }
 
@@ -26,10 +24,6 @@ bool FormationOrder::expired() {
 	return formation == nullptr
 		|| formation->getSize() <= 0
 		|| (toUse != nullptr && !toUse->isAlive());
-}
-
-short FormationOrder::getSize() const {
-	return formation->getSize();
 }
 
 PendingCommandSaveData FormationOrder::saveState(unsigned short order) const {

@@ -9,9 +9,9 @@
 #include "debug/EnvironmentDebugMode.h"
 #include "objects/resource/ResourceType.h"
 
-enum class ParentBuildingType : char;
-enum class CenterType : char;
-enum class CellState : char;
+enum class ParentBuildingType : unsigned char;
+enum class CenterType : unsigned char;
+enum class CellState : unsigned char;
 struct GridCalculator;
 struct content_info;
 class Building;

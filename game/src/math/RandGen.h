@@ -5,7 +5,7 @@
 
 constexpr short RAND_TAB_SIZE = 1024 * 2;
 
-enum class RandType : char;
+enum class RandType : unsigned char;
 
 class RandGen {
 public:

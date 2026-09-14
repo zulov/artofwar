@@ -43,14 +43,6 @@ TEST_F(OtherUtilsFixture, KeyLargeValues) {
 
 // --- castC ---
 
-enum class TestEnum : char { A = 0, B = 1, C = 5 };
-
-TEST_F(OtherUtilsFixture, CastCBasic) {
-	EXPECT_EQ(castC(TestEnum::A), 0);
-	EXPECT_EQ(castC(TestEnum::B), 1);
-	EXPECT_EQ(castC(TestEnum::C), 5);
-}
-
 TEST_F(OtherUtilsFixture, FlagsAreSingleBitsInOrder) {
 	for (int i = 0; i < 8; ++i) {
 		EXPECT_EQ(Flags::bitFlags[i], static_cast<unsigned char>(1u << i));

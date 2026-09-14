@@ -10,10 +10,10 @@
 #include "utils/consts.h"
 
 UnitOrder::UnitOrder(short id, bool append, const Urho3D::Vector2& vector):
-	id(id), append(append), toUse(nullptr), vector(new Urho3D::Vector2(vector)) {}
+	toUse(nullptr), vector(new Urho3D::Vector2(vector)), id(id), append(append) {}
 
 UnitOrder::UnitOrder(short id, bool append, Physical* toUse):
-	id(id), append(append), toUse(toUse), vector(nullptr) {}
+	toUse(toUse), vector(nullptr), id(id), append(append) {}
 
 UnitOrder::~UnitOrder() {
 	delete vector;

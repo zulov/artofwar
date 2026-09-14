@@ -8,7 +8,7 @@ namespace Urho3D {
 class Physical;
 class TargetAim;
 struct ActionParameter;
-enum class UnitAction : char;
+enum class UnitAction : unsigned char;
 enum class PendingCommandKind : char;
 struct UnitOrderSaveData;
 struct PendingCommandSaveData;
@@ -22,7 +22,6 @@ public:
 
 	virtual bool expired() = 0;
 	virtual bool add() = 0;
-	virtual short getSize() const = 0;
 	virtual PendingCommandSaveData saveState(unsigned short order) const = 0;
 	UnitOrderSaveData saveOrder(unsigned unitUid) const;
 
@@ -30,10 +29,11 @@ public:
 	UnitAction getAction() const { return static_cast<UnitAction>(id); }
 
 protected:
+	//TODO union or variant
 	Physical* toUse = nullptr;
 	Urho3D::Vector2* vector = nullptr;
 
-	const short id;
+	const unsigned char id;
 	const bool append;
 
 	ActionParameter getTargetAim(int startInx, Urho3D::Vector2& to);

@@ -1,5 +1,5 @@
 #pragma once
-enum class EnvironmentDebugMode : char {
+enum class EnvironmentDebugMode : unsigned char {
 	NONE = 0,
 	MAIN_GRID,
 	

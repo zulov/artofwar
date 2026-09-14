@@ -1,5 +1,5 @@
 #pragma once
-enum class StaticState : char {
+enum class StaticState : unsigned char {
 	CREATING=-1,
 	ALIVE,
 	DEAD,
