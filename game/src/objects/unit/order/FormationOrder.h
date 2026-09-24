@@ -16,7 +16,7 @@ public:
 	FormationOrder(Formation* formation, unsigned char action, Physical* toUse, bool append = false);
 	~FormationOrder() override = default;
 	bool add() override;
-	bool expired() override;
+	bool expired() const override;
 	PendingCommandSaveData saveState(unsigned short order) const override;
 
 private:

@@ -10,7 +10,7 @@ public:
 	IndividualOrder(Unit* unit, UnitAction action, Physical* toUse, bool append = false);
 	~IndividualOrder() override = default;
 
-	bool expired() override;
+	bool expired() const override;
 	bool add() override;
 	PendingCommandSaveData saveState(unsigned short order) const override;
 

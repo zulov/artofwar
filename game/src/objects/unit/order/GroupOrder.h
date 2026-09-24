@@ -18,7 +18,7 @@ public:
 	~GroupOrder() = default;
 
 	bool add() override;
-	bool expired() override;
+	bool expired() const override;
 	PendingCommandSaveData saveState(unsigned short order) const override;
 
 private:

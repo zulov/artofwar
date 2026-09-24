@@ -20,7 +20,7 @@ public:
 	virtual ~UnitOrder();
 	virtual void execute();
 
-	virtual bool expired() = 0;
+	virtual bool expired() const = 0;
 	virtual bool add() = 0;
 	virtual PendingCommandSaveData saveState(unsigned short order) const = 0;
 	UnitOrderSaveData saveOrder(unsigned unitUid) const;

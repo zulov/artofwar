@@ -13,7 +13,7 @@ IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, const Urho3D::Ve
 IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, Physical* toUse, bool append) :
 	UnitOrder(static_cast<unsigned char>(action), append, toUse), unit(unit) { assert(toUse->isAlive()); }
 
-bool IndividualOrder::expired() { return toUse != nullptr && !toUse->isAlive(); }
+bool IndividualOrder::expired() const { return toUse != nullptr && !toUse->isAlive(); }
 
 bool IndividualOrder::add() {
 	unit->addOrder(this);
