@@ -200,7 +200,7 @@ void Controls::releaseLeft() {
 		left.setSecond(hitData.position);
 		const float dist = left.sq2DDist();
 
-		if (left.timeUpDiff() < 0.2f && dist < clickDistance) { leftDoubleClick(hitData); } else if (dist >
+		if (left.hasPreviousRelease() && left.timeUpDiff() < 0.2f && dist < clickDistance) { leftDoubleClick(hitData); } else if (dist >
 			clickDistance) { leftHold(left.held); } else if (hitData.isSth()) { leftClick(hitData); }
 	}
 	Game::getEnvironment()->setTerrainShaderParam("SelectionEnable", false);

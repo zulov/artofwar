@@ -358,9 +358,8 @@ void AiOrchestrator::tryUnitWant(WantItemType type, float priority, unsigned sho
 		wantList.addRequest(type, priority, unitId, count);
 		return;
 	}
-	const auto buildingId = findBuildingToBuild(unitId);
-	if (buildingId >= 0) {
-		wantList.addRequest(WantItemType::BUILDING, priority, buildingId);
+	if (const auto buildingId = findBuildingToBuild(unitId)) {
+		wantList.addRequest(WantItemType::BUILDING, priority, *buildingId);
 	}
 }
 
@@ -440,8 +439,7 @@ void AiOrchestrator::issueHold(std::vector<std::pair<Unit*, MilitaryCenterIdx>>&
 }
 
 bool AiOrchestrator::tryIssueNearbyAttack(Unit* unit, float priority, MilitaryCenterIdx center) const {
-	auto& things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit->getPosition(), SEMI_CLOSE,
-	                                                                  unit->getPlayer());
+	auto& things = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit->getPosition(), SEMI_CLOSE, unit->getTeam());
 	if (things.empty()) { return false; }
 	const auto closest = Game::getEnvironment()->
 			closestPhysical(unit->getMainGridIndex(), things, belowClose, true);
@@ -576,14 +574,14 @@ db_building* AiOrchestrator::resolveResBuildingUpgrade(const std::vector<ResBuil
 	}
 	return candidates[sampleWeighted(weights, totalWeight)];
 }
-short AiOrchestrator::findBuildingToBuild(unsigned short unitId) const {
+std::optional<unsigned short> AiOrchestrator::findBuildingToBuild(unsigned short unitId) const {
 	// std::vector <canditeds>//TODO potencjalnie moze byc wiecej niz jeden
 	for (const auto building : nation->buildings) {
 		if (building->canEverProduceUnit(player->getNation(), unitId)) {
 			return building->id;
 		}
 	}
-	return -1;
+	return {};
 }
 
 bool AiOrchestrator::hasAnyBuildingThatDeploy(unsigned short unitId) const {

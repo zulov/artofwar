@@ -283,12 +283,11 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 
 const std::vector<unsigned>&
 InfluenceManager::getAreas(std::span<const float> result, unsigned char player) const {
-	std::array<InfluenceMap*, AI_MAP_COUNT> maps = buildPlacementByPlayer[player];
-	return getBestVisibleIndexes(maps, result, player);
+	return getBestVisibleIndexes(buildPlacementByPlayer[player], result, player);
 }
 
 const std::vector<unsigned>&
-InfluenceManager::getBestVisibleIndexes(std::span<InfluenceMap*> maps, std::span<const float> result, unsigned char player) const {
+InfluenceManager::getBestVisibleIndexes(std::span<InfluenceMap* const> maps, std::span<const float> result, unsigned char player) const {
 	assert(result.size() == maps.size());
 
 	//unseen means max float max error

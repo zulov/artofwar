@@ -167,6 +167,7 @@ public:
 
 	unsigned char getMaxRangeUsers() const { return 16; }
 	void resetStateChangePending();
+	void resetRejectedStateChange();
 	Physical* getThingToInteract() const { return thingToInteract; }
 	void setInCellPos(Urho3D::Vector2 pos) { inCellPos = pos; }
 	Urho3D::Vector2& setInCellPos() { return inCellPos; }

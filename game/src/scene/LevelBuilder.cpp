@@ -41,7 +41,7 @@ void LevelBuilder::createMap(unsigned short mapId, int size) {
 	createGround(map->xmlName, size);
 }
 
-void LevelBuilder::createScene(NewGameForm* form) { createMap(form->map, form->size / 256.f); }
+void LevelBuilder::createScene(NewGameForm* form) { createMap(form->map, form->size); }
 
 Urho3D::Terrain* LevelBuilder::getTerrain() const { return terrain; }
 

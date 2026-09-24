@@ -29,7 +29,9 @@ public:
 	static void executeChange(const std::vector<Unit*>* units);
 	static void reset();
 	static void restoreUnitStateChangePending();
+	static void restoreUnitLifecycle(Unit* unit);
 	static void restoreStaticStateChangePending(Static* obj);
+	static void restoreStaticLifecycle(Static* obj);
 	static const std::vector<Unit*>& getDeadUnits() { return instance->deadUnits; }
 	static const std::vector<Building*>& getDeadBuildings() { return instance->deadBuildings; }
 	static const std::vector<ResourceEntity*>& getDeadResources() { return instance->deadResources; }
@@ -79,6 +81,12 @@ private:
 	std::vector<Unit*> deadUnits;
 	std::vector<Building*> deadBuildings;
 	std::vector<ResourceEntity*> deadResources;
+	std::vector<Unit*> restoredDeadUnits;
+	std::vector<Building*> restoredDeadBuildings;
+	std::vector<ResourceEntity*> restoredDeadResources;
+	bool restoredUnitToDispose = false;
+	bool restoredBuildingToDispose = false;
+	bool restoredResourceToDispose = false;
 };
 
 inline bool isInStates(UnitState state, std::initializer_list<UnitState> states) {

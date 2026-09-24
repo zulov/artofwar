@@ -338,6 +338,13 @@ void Unit::setVisibility(VisibilityType type) {
 
 void Unit::resetStateChangePending() { stateChangePending = false; }
 
+void Unit::resetRejectedStateChange() {
+	const bool mayHaveAim = nextState == UnitState::GO || nextState == UnitState::CHARGE || nextState == UnitState::FOLLOW;
+	nextActionParameter.reset(mayHaveAim);
+	nextState = state;
+	stateChangePending = false;
+}
+
 void Unit::changeColor(SimColorMode mode) {
 	switch (mode) {
 	case SimColorMode::BASIC:

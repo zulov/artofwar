@@ -101,11 +101,9 @@ void StateManager::executeChange(const std::vector<Unit*>* units) {
 					toState->onStart(unit, unit->getNextActionParameter());
 					unit->getNextActionParameter().resetUsed();
 				} else {
-					const bool mayHaveAim = nextState == UnitState::GO || nextState == UnitState::CHARGE ||
-							nextState == UnitState::FOLLOW;
-					unit->getNextActionParameter().reset(mayHaveAim);
+					unit->resetRejectedStateChange();
 				}
-				unit->resetStateChangePending();
+				if (unit->hasStateChangePending()) { unit->resetStateChangePending(); }
 			}
 		}
 	}
@@ -116,18 +114,57 @@ void StateManager::reset() {
 	instance->deadBuildings.clear();
 	instance->deadResources.clear();
 
-	instance->unitIsInDisposeState = false;
-	instance->buildingIsInDisposeState = false;
-	instance->resourceIsInDisposeState = false;
+	instance->deadUnits = std::move(instance->restoredDeadUnits);
+	instance->deadBuildings = std::move(instance->restoredDeadBuildings);
+	instance->deadResources = std::move(instance->restoredDeadResources);
+	instance->unitIsInDisposeState = instance->restoredUnitToDispose;
+	instance->buildingIsInDisposeState = instance->restoredBuildingToDispose;
+	instance->resourceIsInDisposeState = instance->restoredResourceToDispose;
+	instance->restoredUnitToDispose = false;
+	instance->restoredBuildingToDispose = false;
+	instance->restoredResourceToDispose = false;
 }
 
 void StateManager::restoreUnitStateChangePending() { instance->unitStateChangePending = true; }
+
+void StateManager::restoreUnitLifecycle(Unit* unit) {
+	if (unit->getState() != UnitState::DEAD && unit->getState() != UnitState::DISPOSE) { return; }
+
+	if (std::ranges::find(instance->restoredDeadUnits, unit) == instance->restoredDeadUnits.end()) {
+		instance->restoredDeadUnits.push_back(unit);
+	}
+	if (unit->getState() == UnitState::DISPOSE) {
+		instance->restoredUnitToDispose = true;
+	} else {
+		unit->setNextState(UnitState::DISPOSE);
+		instance->unitStateChangePending = true;
+	}
+}
 
 void StateManager::restoreStaticStateChangePending(Static* obj) {
 	if (obj->getType() == ObjectType::BUILDING) {
 		instance->buildingStateChangePending = true;
 	} else {
 		instance->resourceStateChangePending = true;
+	}
+}
+
+void StateManager::restoreStaticLifecycle(Static* obj) {
+	if (obj->getState() != StaticState::DEAD && obj->getState() != StaticState::DISPOSE) { return; }
+
+	if (obj->getType() == ObjectType::BUILDING) {
+		auto& dead = instance->restoredDeadBuildings;
+		if (std::ranges::find(dead, static_cast<Building*>(obj)) == dead.end()) { dead.push_back(static_cast<Building*>(obj)); }
+		if (obj->getState() == StaticState::DISPOSE) { instance->restoredBuildingToDispose = true; }
+	} else {
+		auto& dead = instance->restoredDeadResources;
+		if (std::ranges::find(dead, static_cast<ResourceEntity*>(obj)) == dead.end()) { dead.push_back(static_cast<ResourceEntity*>(obj)); }
+		if (obj->getState() == StaticState::DISPOSE) { instance->restoredResourceToDispose = true; }
+	}
+
+	if (obj->getState() == StaticState::DEAD) {
+		obj->setNextState(StaticState::DISPOSE);
+		restoreStaticStateChangePending(obj);
 	}
 }
 
@@ -182,6 +219,9 @@ void StateManager::startState(Building* building) {
 	building->setState(building->getNextState());
 	switch (building->getNextState()) {
 	case StaticState::ALIVE: {
+		if (building->getState() == StaticState::ALIVE) {
+			Game::getEnvironment()->addResourceBonuses(building);
+		}
 		auto [data, level] = building->getData();
 
 		if (data->spawnsResourceInPlace(level)) {

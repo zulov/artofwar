@@ -46,7 +46,7 @@ private:
 	void addToCache(int startIdx, int endIdx, const std::vector<int>* vector);
 
 	Urho3D::UShortVector2 getCords(int index) const { return calculator->getCords(index); }
-	std::vector<Urho3D::UShortVector2> getCords(std::span<const int> endIndexes) const;
+	std::span<const Urho3D::UShortVector2> getCords(std::span<const int> endIndexes) const;
 	void resetPathArrays();
 	bool isInLocalArea(int center, int indexOfAim) const;
 	bool isInLocal2Area(int center, int indexOfAim) const;
@@ -63,6 +63,7 @@ private:
 
 	std::vector<int>* tempPath = new std::vector<int>();
 	std::vector<int>* closePath = new std::vector<int>();
+	mutable std::vector<Urho3D::UShortVector2> endCoordinates;
 
 	PathCache* cache;
 	char cacheIdx = 0;

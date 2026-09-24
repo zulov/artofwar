@@ -85,7 +85,7 @@ void PathFinder::prepareToStart(int startIdx) {
 const std::vector<int>* PathFinder::realFindPath(int startIdx, std::span<const int> endIndexes) {
 	//performance wersja bez vectora
 	prepareToStart(startIdx);
-	auto endCoordinates = getCords(endIndexes);
+	const auto endCoordinates = getCords(endIndexes);
 	assert(!endCoordinates.empty());
 	const int limit = std::max(calculator->getBiggestManhattan(startIdx, endCoordinates), 4) * 16;
 	int steps = 0;
@@ -257,13 +257,13 @@ void PathFinder::update(int idx, int cost, int cameForm, int heuristicCost) {
 	}
 }
 
-std::vector<Urho3D::UShortVector2> PathFinder::getCords(std::span<const int> endIndexes) const {
-	std::vector<Urho3D::UShortVector2> cords;
-	cords.reserve(endIndexes.size());
+std::span<const Urho3D::UShortVector2> PathFinder::getCords(std::span<const int> endIndexes) const {
+	endCoordinates.clear();
+	endCoordinates.reserve(endIndexes.size());
 	for (auto idx : endIndexes) {
-		cords.emplace_back(getCords(idx));
+		endCoordinates.emplace_back(getCords(idx));
 	}
-	return cords;
+	return endCoordinates;
 }
 
 void PathFinder::resetPathArrays() {

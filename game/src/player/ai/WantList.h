@@ -34,21 +34,21 @@ struct WantItem {
 	float basePriority{};
 	WantItemType type{};
 	unsigned char count{};
-	short specificId{};
+	unsigned short specificId{};
 	unsigned short age{};
 	unsigned char reserveTicks{};
 	bool active{};
 
 	WantItem() = default;
 
-	WantItem(float priority, float basePriority, WantItemType type, unsigned char count, short specificId,
+	WantItem(float priority, float basePriority, WantItemType type, unsigned char count, unsigned short specificId,
 	         unsigned short age, unsigned char reserveTicks, bool active) :
 		priority(priority), basePriority(basePriority),
 		type(type),
 		count(count),
 		specificId(specificId), age(age), reserveTicks(reserveTicks), active(active) {}
 
-	WantItem(float priority, WantItemType type, unsigned char count, short specificId) :
+	WantItem(float priority, WantItemType type, unsigned char count, unsigned short specificId) :
 		priority(priority), basePriority(priority),
 		type(type),
 		count(count),

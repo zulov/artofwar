@@ -37,6 +37,7 @@ VisibilityMap::VisibilityMap(unsigned short resolution, float size, float valueT
 	std::fill_n(values, arraySize, VisibilityType::NONE);
 	ranges = new float[arraySize];
 	std::fill_n(ranges, arraySize, 0.f);
+	changedIndexes.reserve(CHANGED_INDEXES_MAX_SIZE);
 	unseenIntersection.resize(influenceArraySize, 0.f);
 }
 

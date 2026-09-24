@@ -40,11 +40,11 @@ public:
 	bool execute(WantItem& item) override;
 
 private:
-	bool executeWorker(short unitId);
-	bool executeUnit(short unitId);
-	bool executeBuilding(short buildingId);
-	bool executeUnitUpgrade(short unitId);
-	bool executeBuildingUpgrade(short buildingId);
+	bool executeWorker(unsigned short unitId);
+	bool executeUnit(unsigned short unitId);
+	bool executeBuilding(unsigned short buildingId);
+	bool executeUnitUpgrade(unsigned short unitId);
+	bool executeBuildingUpgrade(unsigned short buildingId);
 
 	// Pick the ready building (that can produce 'unit') closest to the given center.
 	Building* pickDeployBuilding(db_unit* unit, CenterType center) const;

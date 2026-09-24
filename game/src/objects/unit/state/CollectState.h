@@ -19,11 +19,12 @@ public:
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
 		return parameter.isThingAlive()
+			&& parameter.thingToInteract->belowCloseLimit() > 0
 			&& parameter.thingToInteract->indexCanBeUse(unit->getMainGridIndex());
-		//sprawdzic cell limit
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
+		assert(parameter.thingToInteract->belowCloseLimit() > 0);
 		assert(parameter.thingToInteract->indexCanBeUse(unit->getMainGridIndex()));
 		unit->currentFrameState = 0;
 
@@ -49,7 +50,7 @@ public:
 		if (unit->indexChanged()) {
 			reduce(unit);
 
-			if (first->indexCanBeUse(unit->getMainGridIndex())) {
+			if (first->belowCloseLimit() > 0 && first->indexCanBeUse(unit->getMainGridIndex())) {
 				setStartData(unit, first, CellState::COLLECT);
 			} else {
 				StateManager::toDefaultState(unit);

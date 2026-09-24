@@ -304,7 +304,7 @@ std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector2& center, floa
 void MainGrid::addResBonuses(std::span<Building* const> resourceBuildings) const {
 	std::vector<int> changedIndexes;
 	for (const auto building : resourceBuildings) {
-		addResourceBonuses(building, changedIndexes);
+		if (building->isReady()) { addResourceBonuses(building, changedIndexes); }
 	}
 
 	std::vector<ResourceEntity*> withBonus;

@@ -63,7 +63,7 @@ public:
 
 private:
 	// --- Private helpers ---
-	const std::vector<unsigned>& getBestVisibleIndexes(std::span<InfluenceMap*> maps, std::span<const float> result,
+	const std::vector<unsigned>& getBestVisibleIndexes(std::span<InfluenceMap* const> maps, std::span<const float> result,
 	                                unsigned char player) const;
 	int getIndexInInfluence(Unit* unit) const;
 

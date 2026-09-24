@@ -34,6 +34,8 @@ Formation::Formation(short _id, const std::vector<Unit*>& _units, FormationType 
 }
 
 Formation::~Formation() {
+	clear_vector(unitOrders);
+	delete pendingOrder;
 	delete[] levelOfReach;
 }
 

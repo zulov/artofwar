@@ -1,5 +1,6 @@
 #pragma once
 #include <Urho3D/Math/Vector2.h>
+#include <span>
 #include <vector>
 
 struct GridCalculator {
@@ -98,7 +99,7 @@ struct GridCalculator {
 		return (dx * dx + dy * dy) * sqFieldSize;
 	}
 
-	int getBiggestManhattan(int first, const std::vector<Urho3D::UShortVector2>& endCords) const {
+	int getBiggestManhattan(int first, std::span<const Urho3D::UShortVector2> endCords) const {
 		const auto a = getCords(first);
 		int max = 0;
 		for (const auto& b : endCords) {

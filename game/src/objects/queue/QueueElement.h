@@ -19,7 +19,7 @@ public:
 	short getMaxCapacity() const { return maxCapacity; }
 	unsigned short getTicksToComplete() const { return ticksToComplete; }
 	unsigned short getElapsedTicks() const { return elapsedTicks; }
-	float getProgress() const { return ((float)elapsedTicks) / ticksToComplete; }
+	float getProgress() const { return ticksToComplete == 0 ? 1.f : ((float)elapsedTicks) / ticksToComplete; }
 	void restore(unsigned short savedElapsedTicks);
 
 private:

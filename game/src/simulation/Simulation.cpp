@@ -226,6 +226,7 @@ void Simulation::restoreRuntimeState(dbload_container* data) const {
 		if (unit->hasStateChangePending()) {
 			StateManager::restoreUnitStateChangePending();
 		}
+		StateManager::restoreUnitLifecycle(unit);
 		if (unit->getFormation() >= 0 && !Game::getFormationManager()->getFormation(unit->getFormation())) {
 			unit->resetFormation();
 		}
@@ -244,6 +245,12 @@ void Simulation::restoreRuntimeState(dbload_container* data) const {
 		if (resource->getState() != resource->getNextState()) {
 			StateManager::restoreStaticStateChangePending(resource);
 		}
+	}
+	for (auto* building : *buildings) {
+		StateManager::restoreStaticLifecycle(building);
+	}
+	for (auto* resource : *resources) {
+		StateManager::restoreStaticLifecycle(resource);
 	}
 	for (const auto& saved : data->playerLevels) {
 		auto* player = Game::getPlayersMan()->getPlayer(saved.player);
@@ -363,6 +370,7 @@ void Simulation::levelUp(QueueElement* done, char player) const {
 
 void Simulation::updateBuildingQueues() const {
 	for (const auto build : *buildings) {
+		if (!build->isAlive()) { continue; }
 		if (const auto done = build->updateQueue()) {
 			switch (done->getType()) {
 			case QueueActionType::UNIT_CREATE: {

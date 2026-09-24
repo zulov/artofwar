@@ -70,6 +70,12 @@ TEST_F(VectorUtilsFixture, SumArrayAndResetArrayOperateOnAllElements) {
 	EXPECT_EQ(values, expected);
 }
 
+TEST_F(VectorUtilsFixture, SumArrayAcceptsConstArray) {
+	const std::array<int, 3> values = { 1, 2, 3 };
+
+	EXPECT_EQ(sumArray(values), 6);
+}
+
 TEST_F(VectorUtilsFixture, MoveNLastElementsReturnsTailAndShrinksSource) {
 	std::vector<int> source = { 1, 2, 3, 4, 5 };
 	auto destination = moveNLastElements(source, 2);

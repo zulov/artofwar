@@ -59,6 +59,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="MathUtilsTest.cpp" />
+	<ClCompile Include="MouseButtonTest.cpp" />
     <ClCompile Include="MiscHelpersTest.cpp" />
     <ClCompile Include="OtherUtilsTest.cpp" />
     <ClCompile Include="PathFinderTest.cpp" />

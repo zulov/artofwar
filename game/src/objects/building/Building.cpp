@@ -152,7 +152,7 @@ void Building::updateAi(bool ifBuildingAction) {
 			}
 		} else if (ifBuildingAction) {
 			const auto& thingsToInteract = Game::getEnvironment()->getNeighboursFromTeamNotEq(
-					getPosition(), dbLevel->attackRange, getPlayer());
+					getPosition(), dbLevel->attackRange, getTeam());
 			const auto closest = Game::getEnvironment()->closestPhysicalSimple(getPosition(), thingsToInteract, dbLevel->attackRange);
 			thingToInteract = closest;
 		}

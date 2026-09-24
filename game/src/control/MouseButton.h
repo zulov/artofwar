@@ -51,6 +51,8 @@ struct MouseButton {
 		return lastUp - prevUp;
 	}
 
+	bool hasPreviousRelease() const { return prevUp >= 0.f; }
+
 	float sq2DDist() const {
 		return held.sq2DDist();
 	}

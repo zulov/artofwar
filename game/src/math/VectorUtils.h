@@ -5,6 +5,7 @@
 #include <vector>
 #include <span>
 #include "objects/Physical.h"
+#include "utils/DeleteUtils.h"
 
 
 inline auto notAlive = [](const Physical* physical) {
@@ -13,14 +14,6 @@ inline auto notAlive = [](const Physical* physical) {
 
 inline auto isNotToDispose = [](const Physical* p) { return !p->isToDispose(); };
 
-
-inline auto dispose = [](const Physical* p) {
-	const auto flag= p->isToDispose();
-	if(flag) {
-		delete p;
-	}
-	return flag;
-};
 
 template <typename T>
 static void cleanDead(std::vector<T*>& vector, bool sthDead = true) {
@@ -34,9 +27,7 @@ static void cleanDead(std::vector<T*>& vector, bool sthDead = true) {
 template <typename T>
 static void cleanAndDispose(std::vector<T*>* vector, bool sthDead = true) {
 	if (sthDead) {
-		vector->erase(
-			std::remove_if(vector->begin(), vector->end(), dispose),
-			vector->end());
+		eraseAndDeleteIf(*vector, [](const T* object) { return object->isToDispose(); });
 	}
 }
 
@@ -121,7 +112,7 @@ static std::vector<T> intersection(std::vector<std::vector<T>*>& ids) {
 }
 
 template <typename T, std::size_t N>
-T sumArray(std::array<T, N>& arr) {
+T sumArray(const std::array<T, N>& arr) {
 	T sum = 0;
 	for (const auto& value : arr) {
 		sum += value;

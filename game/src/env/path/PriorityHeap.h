@@ -19,9 +19,7 @@ public:
 	PriorityHeap(const PriorityHeap& obj) = delete;
 
 
-	void clear() {
-		pq = std::priority_queue<HeapNode, std::vector<HeapNode>, std::greater<>>();
-	}
+	void clear() { pq.clear(); }
 
 	bool empty() const {
 		return pq.empty();
@@ -39,5 +37,10 @@ public:
 	}
 
 private:
-	std::priority_queue<HeapNode, std::vector<HeapNode>, std::greater<>> pq;
+	class Queue : public std::priority_queue<HeapNode, std::vector<HeapNode>, std::greater<>> {
+	public:
+		void clear() { this->c.clear(); }
+	};
+
+	Queue pq;
 };

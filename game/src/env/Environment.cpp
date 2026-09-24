@@ -36,10 +36,9 @@ const std::vector<Physical*>& Environment::getNeighboursFromSparseSamePlayer(con
 	});
 }
 
-const std::vector<Physical*>& Environment::getNeighboursFromTeamNotEq(const Urho3D::Vector2& center, float radius,
-																	  char playerId) {
-	return getNeighbours(center, radius, sparseUnitGrid, [playerId](const Physical* neighbor) {
-		return neighbor->getPlayer() != playerId && neighbor->isAlive();
+const std::vector<Physical*>& Environment::getNeighboursFromTeamNotEq(const Urho3D::Vector2& center, float radius, char teamId) {
+	return getNeighbours(center, radius, sparseUnitGrid, [teamId](const Physical* neighbor) {
+		return neighbor->getTeam() != teamId && neighbor->isAlive();
 	});
 }
 
@@ -73,9 +72,12 @@ void Environment::flipTerrainShaderParam(const Urho3D::String& name) const {
 
 void Environment::nextVisibilityType() const { influenceManager.nextVisibilityType(); }
 
-void Environment::reAddBonuses(std::span<Building* const> resourceBuildings,
-							   std::span<ResourceEntity* const> resources) const {
+void Environment::reAddBonuses(std::span<Building* const> resourceBuildings, std::span<ResourceEntity* const> resources) const {
 	mainGrid.reAddBonuses(resourceBuildings, resources);
+}
+
+void Environment::addResourceBonuses(Building* building) const {
+	mainGrid.addResBonuses(std::span<Building* const>(&building, 1));
 }
 
 void Environment::refreshAllStatic(std::span<ResourceEntity* const> resources, std::span<Building* const> buildings) {

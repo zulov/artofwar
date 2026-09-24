@@ -7,8 +7,10 @@
 namespace {
 struct TrackedDelete {
 	inline static int destructed = 0;
+	const int value;
+	const bool marked;
 
-	TrackedDelete() = default;
+	TrackedDelete(int value = 0, bool marked = false) : value(value), marked(marked) {}
 	~TrackedDelete() {
 		++destructed;
 	}
@@ -42,6 +44,47 @@ TEST_F(DeleteUtilsFixture, ClearVectorPointerDeletesAllObjectsAndClearsContainer
 
 	EXPECT_TRUE(items.empty());
 	EXPECT_EQ(TrackedDelete::destructed, 3);
+}
+
+TEST_F(DeleteUtilsFixture, ClearAndDeleteEmptyVectorIsSafe) {
+	auto* items = new std::vector<TrackedDelete*>();
+
+	clear_and_delete_vector(items);
+
+	EXPECT_EQ(TrackedDelete::destructed, 0);
+}
+
+TEST_F(DeleteUtilsFixture, EraseAndDeleteIfRemovesMatchesAndPreservesOrder) {
+	std::vector<TrackedDelete*> items = {
+		new TrackedDelete(1), new TrackedDelete(2, true), new TrackedDelete(3), new TrackedDelete(4, true)
+	};
+
+	eraseAndDeleteIf(items, [](const TrackedDelete* item) { return item->marked; });
+
+	ASSERT_EQ(items.size(), 2);
+	EXPECT_EQ(items[0]->value, 1);
+	EXPECT_EQ(items[1]->value, 3);
+	EXPECT_EQ(TrackedDelete::destructed, 2);
+	clear_vector(items);
+}
+
+TEST_F(DeleteUtilsFixture, EraseAndDeleteIfLeavesUnmatchedItems) {
+	std::vector<TrackedDelete*> items = { new TrackedDelete(1), new TrackedDelete(2) };
+
+	eraseAndDeleteIf(items, [](const TrackedDelete* item) { return item->marked; });
+
+	EXPECT_EQ(items.size(), 2);
+	EXPECT_EQ(TrackedDelete::destructed, 0);
+	clear_vector(items);
+}
+
+TEST_F(DeleteUtilsFixture, EraseAndDeleteIfRemovesAllMatches) {
+	std::vector<TrackedDelete*> items = { new TrackedDelete(1, true), new TrackedDelete(2, true) };
+
+	eraseAndDeleteIf(items, [](const TrackedDelete* item) { return item->marked; });
+
+	EXPECT_TRUE(items.empty());
+	EXPECT_EQ(TrackedDelete::destructed, 2);
 }
 
 TEST_F(DeleteUtilsFixture, ClearStdArrayDeletesAllStoredPointers) {

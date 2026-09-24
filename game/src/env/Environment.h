@@ -37,8 +37,7 @@ public:
 
 	const std::vector<Physical*>& getNeighboursFromSparseSamePlayer(const Urho3D::Vector2& center, float radius,
 	                                                               char playerId);
-	const std::vector<Physical*>& getNeighboursFromTeamNotEq(const Urho3D::Vector2& center, float radius,
-	                                                        char playerId);
+	const std::vector<Physical*>& getNeighboursFromTeamNotEq(const Urho3D::Vector2& center, float radius, char teamId);
 
 	const std::vector<Physical*>& getNeighbours(const Urho3D::Vector2& center, float radius);
 	const std::vector<Physical*>& getNeighboursSimilarAs(const Urho3D::Vector2& center, ObjectType objectType,
@@ -149,6 +148,7 @@ public:
 	void nextVisibilityType() const;
 	void reAddBonuses(std::span<Building* const> resourceBuildings,
 	                  std::span<ResourceEntity* const> resources) const;
+	void addResourceBonuses(Building* building) const;
 
 	const std::vector<std::pair<unsigned char, short>>& getCloseTabIndexesWithValue(int center) const {
 		return mainGrid.getCloseTabIndexesWithValue(center);

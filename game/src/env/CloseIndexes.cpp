@@ -175,8 +175,8 @@ std::pair<unsigned char, unsigned char> CloseIndexes::getBothIndexes(int center)
 
 	const bool lastColumn = center % resolution == resolution - 1;
 	const bool almostLastColumn = center % resolution == resolution - 2;
-	char indexLv2 = 0;
-	char indexLv1 = 0;
+	unsigned char indexLv2 = 0;
+	unsigned char indexLv1 = 0;
 	if (firstRow) {} else if (secondRow) {
 		indexLv2 += 5;
 		indexLv1 += 3;

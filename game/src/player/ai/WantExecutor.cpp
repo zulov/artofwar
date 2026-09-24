@@ -67,8 +67,6 @@ bool WantExecutor::execute(WantItem& item) {
 }
 
 const db_with_cost* WantExecutor::cost(const WantItem& item) const {
-	if (item.specificId < 0) { return nullptr; }
-
 	switch (item.type) {
 	case WantItemType::WORKER:
 		return Game::getDatabase()->getUnit(item.specificId);
@@ -90,14 +88,13 @@ void WantExecutor::onNotEnoughResources(const WantItem& item) {
 	const auto actionType = actionTypeFor(item);
 	if (actionType == AiActionType::NONE) { return; }
 
-	const auto chosenId = item.specificId < 0 ? 0 : static_cast<uint8_t>(item.specificId);
+	const auto chosenId = static_cast<uint8_t>(item.specificId);
 	history->addAction(actionType, AiActionResult::NO_ENOUGH_RESOURCES, chosenId);
 }
 
 // --- Execution ---
 
-bool WantExecutor::executeWorker(short unitId) {
-	if (unitId < 0) { return false; }
+bool WantExecutor::executeWorker(unsigned short unitId) {
 	auto* unit = Game::getDatabase()->getUnit(unitId);
 	if (Building* building = pickDeployBuilding(unit, CenterType::ECON)) {
 		Game::getActionCenter()->add(
@@ -109,8 +106,7 @@ bool WantExecutor::executeWorker(short unitId) {
 	return false;
 }
 
-bool WantExecutor::executeUnit(short unitId) {
-	if (unitId < 0) { return false; }
+bool WantExecutor::executeUnit(unsigned short unitId) {
 	auto* unit = Game::getDatabase()->getUnit(unitId);
 	if (Building* building = pickDeployBuilding(unit, CenterType::ARMY)) {
 		Game::getActionCenter()->add(
@@ -122,8 +118,7 @@ bool WantExecutor::executeUnit(short unitId) {
 	return false;
 }
 
-bool WantExecutor::executeBuilding(short buildingId) {
-	if (buildingId < 0) { return false; }
+bool WantExecutor::executeBuilding(unsigned short buildingId) {
 	auto* building = Game::getDatabase()->getBuilding(buildingId);
 	
 	auto pos = findPosToBuild(building);
@@ -139,8 +134,7 @@ bool WantExecutor::executeBuilding(short buildingId) {
 	return false;
 }
 
-bool WantExecutor::executeUnitUpgrade(short unitId) {
-	if (unitId < 0) { return false; }
+bool WantExecutor::executeUnitUpgrade(unsigned short unitId) {
 	auto nextLevel = player->getNextUnitLevel(unitId);
 	if (!nextLevel.has_value()) {
 		history->addAction(AiActionType::UPGRADE_UNIT, AiActionResult::NO_UPGRADE_AVAILABLE);
@@ -161,8 +155,7 @@ bool WantExecutor::executeUnitUpgrade(short unitId) {
 	return false;
 }
 
-bool WantExecutor::executeBuildingUpgrade(short buildingId) {
-	if (buildingId < 0) { return false; }
+bool WantExecutor::executeBuildingUpgrade(unsigned short buildingId) {
 	auto nextLevel = player->getNextBuildingLevel(buildingId);
 	if (!nextLevel.has_value()) {
 		history->addAction(AiActionType::UPGRADE_BUILDING, AiActionResult::NO_UPGRADE_AVAILABLE);

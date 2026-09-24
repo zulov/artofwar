@@ -4,6 +4,7 @@
 #include "env/Environment.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/resource/ResourceEntity.h"
+#include "utils/DeleteUtils.h"
 
 inline bool isAttackAction(UnitAction action) {
 	return action == UnitAction::ATTACK || action == UnitAction::CHARGE;
@@ -16,15 +17,7 @@ inline bool isDefendAction(UnitAction action) {
 template <typename T>
 void removeExpired(std::vector<T*>& orders) {
 	//TODO use std::stable partition
-	orders.erase(std::remove_if(orders.begin(), orders.end(),
-	                            [](T* uo) {
-		                            const bool expired = uo->expired();
-		                            if (expired) {
-			                            delete uo;
-		                            }
-		                            return expired;
-	                            }),
-	             orders.end());
+	eraseAndDeleteIf(orders, [](const T* order) { return order->expired(); });
 }
 
 inline bool toAction(Unit* unit, const std::vector<Physical*>& list, UnitAction order,
@@ -36,8 +29,7 @@ inline bool toAction(Unit* unit, const std::vector<Physical*>& list, UnitAction 
 inline void tryToAttack(Unit* unit,
                         const std::function<bool(Physical*)>& condition) {
 	const bool result = toAction(
-		unit, Game::getEnvironment()->getNeighboursFromTeamNotEq(unit->getPosition(), unit->getLevel()->interestRange,
-		                                                         unit->getPlayer()),
+		unit, Game::getEnvironment()->getNeighboursFromTeamNotEq(unit->getPosition(), unit->getLevel()->interestRange, unit->getTeam()),
 		UnitAction::ATTACK, condition, true);
 	if (!result) {
 		toAction(

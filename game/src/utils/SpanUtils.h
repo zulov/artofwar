@@ -96,7 +96,7 @@ inline bool allPositive(int line, std::string file, std::span<const float> vec) 
 	return valid;
 }
 
-inline bool validateSpan(int line, std::string file, std::vector<float> vec) {
+inline bool validateSpan(int line, std::string file, const std::vector<float>& vec) {
 	return validateSpan(line, file, std::span(vec.begin(), vec.size()));
 }
 
@@ -124,7 +124,7 @@ inline void resetSpan(std::span<float> vec, float val = 0.f) {
 }
 
 template <typename T>
-const std::span<const T> asSpan(const std::vector<T>& arr) {
+std::span<const T> asSpan(const std::vector<T>& arr) {
 	return std::span(arr.data(), arr.size());
 }
 

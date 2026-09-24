@@ -70,7 +70,7 @@ private:
 	bool hasOwnedBuildingInstance(unsigned short buildingId) const;
 	void submitBuildingRequest(float urgency, ParentBuildingType type);
 	void submitBuildingUpgradeRequest(float urgency, ParentBuildingType type);
-	short findBuildingToBuild(unsigned short unitId) const;
+	std::optional<unsigned short> findBuildingToBuild(unsigned short unitId) const;
 	bool hasAnyBuildingThatDeploy(unsigned short unitId) const;
 	void tryToUpgradeBuilding(unsigned short id, float priority);
 
