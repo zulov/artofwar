@@ -42,21 +42,21 @@ ALTER TABLE units ADD COLUMN state_pending INT NOT NULL DEFAULT 0;
 ALTER TABLE units ADD COLUMN frame_state INT NOT NULL DEFAULT 0;
 ALTER TABLE units ADD COLUMN formation INT NOT NULL DEFAULT -1;
 ALTER TABLE units ADD COLUMN pos_in_state INT NOT NULL DEFAULT -1;
-ALTER TABLE units ADD COLUMN command_priority REAL NOT NULL DEFAULT 0.0;
+ALTER TABLE units ADD COLUMN command_priority INT NOT NULL DEFAULT 0;
 ALTER TABLE units ADD COLUMN command_center INT NOT NULL DEFAULT 0;
-ALTER TABLE units ADD COLUMN charge_energy REAL NOT NULL DEFAULT 0.0;
+ALTER TABLE units ADD COLUMN charge_energy INT NOT NULL DEFAULT 0;
 ALTER TABLE units ADD COLUMN target_uid INT NOT NULL DEFAULT 0;
 ALTER TABLE units ADD COLUMN pending_target_uid INT NOT NULL DEFAULT 0;
 ALTER TABLE units ADD COLUMN aim_kind INT NOT NULL DEFAULT 0;
 ALTER TABLE units ADD COLUMN aim_target_uid INT NOT NULL DEFAULT 0;
 ALTER TABLE units ADD COLUMN aim_current INT NOT NULL DEFAULT 0;
-ALTER TABLE units ADD COLUMN aim_direction_x REAL NOT NULL DEFAULT 0.0;
-ALTER TABLE units ADD COLUMN aim_direction_z REAL NOT NULL DEFAULT 0.0;
+ALTER TABLE units ADD COLUMN aim_direction_x INT NOT NULL DEFAULT 0;
+ALTER TABLE units ADD COLUMN aim_direction_z INT NOT NULL DEFAULT 0;
 ALTER TABLE units ADD COLUMN pending_aim_kind INT NOT NULL DEFAULT 0;
 ALTER TABLE units ADD COLUMN pending_aim_target_uid INT NOT NULL DEFAULT 0;
 ALTER TABLE units ADD COLUMN pending_aim_current INT NOT NULL DEFAULT 0;
-ALTER TABLE units ADD COLUMN pending_aim_direction_x REAL NOT NULL DEFAULT 0.0;
-ALTER TABLE units ADD COLUMN pending_aim_direction_z REAL NOT NULL DEFAULT 0.0;
+ALTER TABLE units ADD COLUMN pending_aim_direction_x INT NOT NULL DEFAULT 0;
+ALTER TABLE units ADD COLUMN pending_aim_direction_z INT NOT NULL DEFAULT 0;
 
 -- Keep the old current state as the continuation state. state_pending remains 0,
 -- so the loader will not apply a movement, target, or pending state transition.
@@ -68,30 +68,30 @@ ALTER TABLE buildings ADD COLUMN target_uid INT NOT NULL DEFAULT 0;
 ALTER TABLE buildings ADD COLUMN frame_state INT NOT NULL DEFAULT 0;
 
 -- Old players had 12 columns. Append mutable resource statistics.
-ALTER TABLE players ADD COLUMN gather_food REAL NOT NULL DEFAULT 0.0;
-ALTER TABLE players ADD COLUMN gather_wood REAL NOT NULL DEFAULT 0.0;
-ALTER TABLE players ADD COLUMN gather_stone REAL NOT NULL DEFAULT 0.0;
-ALTER TABLE players ADD COLUMN gather_gold REAL NOT NULL DEFAULT 0.0;
-ALTER TABLE players ADD COLUMN pending_gather_food REAL NOT NULL DEFAULT 0.0;
-ALTER TABLE players ADD COLUMN pending_gather_wood REAL NOT NULL DEFAULT 0.0;
-ALTER TABLE players ADD COLUMN pending_gather_stone REAL NOT NULL DEFAULT 0.0;
-ALTER TABLE players ADD COLUMN pending_gather_gold REAL NOT NULL DEFAULT 0.0;
-ALTER TABLE players ADD COLUMN sum_food REAL NOT NULL DEFAULT 0.0;
-ALTER TABLE players ADD COLUMN sum_wood REAL NOT NULL DEFAULT 0.0;
-ALTER TABLE players ADD COLUMN sum_stone REAL NOT NULL DEFAULT 0.0;
-ALTER TABLE players ADD COLUMN sum_gold REAL NOT NULL DEFAULT 0.0;
+ALTER TABLE players ADD COLUMN gather_food INT NOT NULL DEFAULT 0;
+ALTER TABLE players ADD COLUMN gather_wood INT NOT NULL DEFAULT 0;
+ALTER TABLE players ADD COLUMN gather_stone INT NOT NULL DEFAULT 0;
+ALTER TABLE players ADD COLUMN gather_gold INT NOT NULL DEFAULT 0;
+ALTER TABLE players ADD COLUMN pending_gather_food INT NOT NULL DEFAULT 0;
+ALTER TABLE players ADD COLUMN pending_gather_wood INT NOT NULL DEFAULT 0;
+ALTER TABLE players ADD COLUMN pending_gather_stone INT NOT NULL DEFAULT 0;
+ALTER TABLE players ADD COLUMN pending_gather_gold INT NOT NULL DEFAULT 0;
+ALTER TABLE players ADD COLUMN sum_food INT NOT NULL DEFAULT 0;
+ALTER TABLE players ADD COLUMN sum_wood INT NOT NULL DEFAULT 0;
+ALTER TABLE players ADD COLUMN sum_stone INT NOT NULL DEFAULT 0;
+ALTER TABLE players ADD COLUMN sum_gold INT NOT NULL DEFAULT 0;
 
 -- Old config had 3 columns. Start simulation time at tick zero.
 ALTER TABLE config ADD COLUMN total_ticks INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_present INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_seed INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_float_ai_index INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_float_resource_rotation_index INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_float_collision_force_index INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_float_other_index INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_int_save_index INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_int_player_name_index INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_int_resource_node_index INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_present INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_seed INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_ai_idx INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_resource_rotation_idx INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_collision_force_idx INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_other_idx INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_save_idx INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_player_name_idx INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_resource_node_idx INT NOT NULL DEFAULT 0;
 
 COMMIT;
 

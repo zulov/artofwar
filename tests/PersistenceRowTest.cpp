@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include <array>
+#include <utility>
 
 #include "database/db_insert_defs.h"
 #include "database/db_read_defs.h"
@@ -8,8 +9,11 @@
 #include "scene/save/SaveTable.h"
 
 namespace {
+	constexpr int SAVE_PRECISION = 100;
+
 	template <typename Col>
 	void checkSaveTableContract(sqlite3* database) {
+		EXPECT_EQ(std::string::npos, std::string(SaveTable<Col>::schema).find("REAL"));
 		const auto createSql = std::string("CREATE TABLE ") + SaveTable<Col>::name + SaveTable<Col>::schema;
 		ASSERT_TRUE(execSql(database, createSql.c_str()));
 		sqlite3_stmt* statement = nullptr;
@@ -34,14 +38,15 @@ namespace {
 		}
 		const auto sql = make_insert_sql(SaveTable<Col>::name, saveColumns<Col>());
 		const bool inserted = executeBatch(database, sql.c_str(), [&](sqlite3_stmt* stmt, const char* insertSql) {
-			bindRow(stmt, 1, &expected);
+			bindRow(stmt, SAVE_PRECISION, &expected);
 			return stepAndReset(stmt, insertSql);
 		});
 		EXPECT_TRUE(inserted);
 
 		Row actual{};
 		if (inserted) {
-			loadFromTable(database, saveSelectSql<Col>(), [&](sqlite3_stmt* stmt) { actual = readRow<Row>(stmt, 1); });
+			loadFromTable(database, saveSelectSql<Col>(),
+					[&](sqlite3_stmt* stmt) { actual = readRow<Row>(stmt, SAVE_PRECISION); });
 		}
 		sqlite3_close(database);
 		return actual;
@@ -210,6 +215,15 @@ TEST(PersistenceRowTest, GeneratedOrderIndexIsStoredInTheRow) {
 	EXPECT_FLOAT_EQ(expected.data.z, actual.data.z);
 }
 
+TEST(PersistenceRowTest, AimPathsRoundTripAsFlatStrings) {
+	const AimPathSaveData expected{42, "10,11,12,13", "20,21"};
+	const auto actual = roundTrip<AimPathCol>(expected);
+
+	EXPECT_EQ(expected.unitUid, actual.unitUid);
+	EXPECT_EQ(expected.path, actual.path);
+	EXPECT_EQ(expected.pendingPath, actual.pendingPath);
+}
+
 TEST(PersistenceRowTest, ReportsMissingSaveColumnsWithTheQuery) {
 	sqlite3* database = nullptr;
 	ASSERT_EQ(SQLITE_OK, sqlite3_open(":memory:", &database));
@@ -223,7 +237,26 @@ TEST(PersistenceRowTest, ReportsMissingSaveColumnsWithTheQuery) {
 	EXPECT_NE(std::string::npos, error.find("prepare failed"));
 	EXPECT_NE(std::string::npos, error.find("total_ticks"));
 	EXPECT_NE(std::string::npos,
-			error.find("SELECT precision, map, size, total_ticks, random_present, random_seed, "
-				"random_float_ai_index"));
+			error.find("SELECT precision, map, size, total_ticks, rdn_present, rdn_seed, "
+				"rdn_ai_idx"));
+	sqlite3_close(database);
+}
+
+TEST(PersistenceRowTest, ScaledFloatReaderSupportsCurrentAndLegacyCells) {
+	sqlite3* database = nullptr;
+	ASSERT_EQ(SQLITE_OK, sqlite3_open(":memory:", &database));
+	ASSERT_TRUE(database);
+	ASSERT_TRUE(execSql(database, "CREATE TABLE values_int (value INT NOT NULL); INSERT INTO values_int VALUES (125);"));
+	ASSERT_TRUE(execSql(database, "CREATE TABLE values_real (value REAL NOT NULL); INSERT INTO values_real VALUES (1.25);"));
+
+	for (const auto& [table, expected] : {std::pair{"values_int", 1.25f}, std::pair{"values_real", 1.25f}}) {
+		sqlite3_stmt* statement = nullptr;
+		ASSERT_EQ(SQLITE_OK, sqlite3_prepare_v2(database, ("SELECT value FROM " + std::string(table)).c_str(), -1,
+				&statement, nullptr));
+		ASSERT_EQ(SQLITE_ROW, sqlite3_step(statement));
+		EXPECT_FLOAT_EQ(expected, asScaledFloat(statement, 0, SAVE_PRECISION));
+		sqlite3_finalize(statement);
+	}
+
 	sqlite3_close(database);
 }

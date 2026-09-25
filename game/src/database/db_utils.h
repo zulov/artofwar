@@ -83,6 +83,9 @@ template <typename T> inline bool asBool(sqlite3_stmt* stmt, T iCol) { return sq
 template <typename T> inline float asFloat(sqlite3_stmt* stmt, T iCol) { return static_cast<float>(sqlite3_column_double(stmt, col(iCol))); }
 template <typename T> inline int asInt(sqlite3_stmt* stmt, T iCol) { return sqlite3_column_int(stmt, col(iCol)); }
 template <typename T> inline float asItoF(sqlite3_stmt* stmt, T iCol, int precision) { return static_cast<float>(asInt(stmt, iCol)) / precision; }
+template <typename T> inline float asScaledFloat(sqlite3_stmt* stmt, T iCol, int precision) {
+	return sqlite3_column_type(stmt, col(iCol)) == SQLITE_FLOAT ? asFloat(stmt, iCol) : asItoF(stmt, iCol, precision);
+}
 template <typename T> inline unsigned asUI(sqlite3_stmt* stmt, T iCol) { return static_cast<unsigned>(sqlite3_column_int64(stmt, col(iCol))); }
 template <typename T> inline short asShort(sqlite3_stmt* stmt, T iCol) { return static_cast<int16_t>(sqlite3_column_int(stmt, col(iCol))); }
 template <typename T> inline unsigned short asUShort(sqlite3_stmt* stmt, T iCol) { return static_cast<uint16_t>(sqlite3_column_int(stmt, col(iCol))); }

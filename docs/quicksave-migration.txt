@@ -1,0 +1,271 @@
+-- Art of War - checked-in quicksave migration
+-- ============================================
+
+-- Purpose
+-- -------
+-- Upgrade a checked-in quicksave.db or quicksave512.db from the previous save
+-- format to the current save-table contract. This is different from
+-- old-save-migration.txt: these saves already have the appended continuation
+-- columns, but their config
+-- table uses the previous random_* names, its legacy floating-point
+-- continuation/resource values are REAL cells, and it still has GUI/deployment
+-- columns that the current saver no longer writes.
+
+-- Assumptions
+-- -----------
+-- The input is a checked-in game/saves/quicksave.db or
+-- game/saves/quicksave512.db. It contains exactly one config row, and
+-- config.precision is the precision used by the current save format. The old
+-- random_* config columns are renamed to the current rdn_* names. The REAL
+-- values in units and players are legacy unscaled values. Existing resource
+-- rows, if present, are left unchanged.
+-- Run this once against a SQLite backup while the game is not using the file.
+-- The legacy column rename is intentionally not repeatable.
+
+-- Usage with sqlite3.exe
+-- ----------------------
+-- Stop the game first. Use SQLite's backup command rather than copying only
+-- the main file when a .db-wal or .db-shm sidecar is present:
+-- sqlite3.exe -readonly game\saves\<save>.db ".backup 'game\saves\<save>-migrated.db'"
+-- sqlite3.exe -bail game\saves\<save>-migrated.db < docs\quicksave-migration.txt
+
+PRAGMA foreign_keys = OFF;
+BEGIN IMMEDIATE;
+
+-- Rebuild config to rename the legacy RNG columns. Rebuilding instead of
+-- ALTER TABLE ... RENAME COLUMN keeps this script compatible with older SQLite
+-- command-line binaries.
+CREATE TABLE config_current (
+    precision INT NOT NULL,
+    map INT NOT NULL,
+    size INT NOT NULL,
+    total_ticks INT NOT NULL,
+    rdn_present INT NOT NULL,
+    rdn_seed INT NOT NULL,
+    rdn_ai_idx INT NOT NULL,
+    rdn_resource_rotation_idx INT NOT NULL,
+    rdn_collision_force_idx INT NOT NULL,
+    rdn_other_idx INT NOT NULL,
+    rdn_save_idx INT NOT NULL,
+    rdn_player_name_idx INT NOT NULL,
+    rdn_resource_node_idx INT NOT NULL
+);
+
+INSERT INTO config_current (
+    precision, map, size, total_ticks, rdn_present, rdn_seed, rdn_ai_idx,
+    rdn_resource_rotation_idx, rdn_collision_force_idx, rdn_other_idx,
+    rdn_save_idx, rdn_player_name_idx, rdn_resource_node_idx
+)
+SELECT
+    precision, map, size, total_ticks, random_present, random_seed,
+    random_float_ai_index, random_float_resource_rotation_index,
+    random_float_collision_force_index, random_float_other_index,
+    random_int_save_index, random_int_player_name_index,
+    random_int_resource_node_index
+FROM config;
+
+DROP TABLE config;
+ALTER TABLE config_current RENAME TO config;
+
+-- Rebuild units so legacy REAL continuation values become precision-scaled
+-- integers. The current loader reads these columns by name, but rebuilding
+-- also makes the physical schema match SQLConsts::UNIT_COL.
+CREATE TABLE units_current (
+    id_db INT NOT NULL,
+    hp_coef INT NOT NULL,
+    uid INT PRIMARY KEY,
+    player INT NOT NULL,
+    level INT NOT NULL,
+    position_x INT NOT NULL,
+    position_z INT NOT NULL,
+    state INT NOT NULL,
+    velocity_x INT NOT NULL,
+    velocity_z INT NOT NULL,
+    next_state INT NOT NULL,
+    state_pending INT NOT NULL,
+    frame_state INT NOT NULL,
+    formation INT NOT NULL,
+    pos_in_state INT NOT NULL,
+    command_priority INT NOT NULL,
+    command_center INT NOT NULL,
+    charge_energy INT NOT NULL,
+    target_uid INT NOT NULL,
+    pending_target_uid INT NOT NULL,
+    aim_kind INT NOT NULL,
+    aim_target_uid INT NOT NULL,
+    aim_current INT NOT NULL,
+    aim_direction_x INT NOT NULL,
+    aim_direction_z INT NOT NULL,
+    pending_aim_kind INT NOT NULL,
+    pending_aim_target_uid INT NOT NULL,
+    pending_aim_current INT NOT NULL,
+    pending_aim_direction_x INT NOT NULL,
+    pending_aim_direction_z INT NOT NULL
+) WITHOUT ROWID;
+
+INSERT INTO units_current (
+    id_db, hp_coef, uid, player, level, position_x, position_z, state,
+    velocity_x, velocity_z, next_state, state_pending, frame_state, formation,
+    pos_in_state, command_priority, command_center, charge_energy, target_uid,
+    pending_target_uid, aim_kind, aim_target_uid, aim_current, aim_direction_x,
+    aim_direction_z, pending_aim_kind, pending_aim_target_uid,
+    pending_aim_current, pending_aim_direction_x, pending_aim_direction_z
+)
+SELECT
+    id_db, hp_coef, uid, player, level, position_x, position_z, state,
+    velocity_x, velocity_z, next_state, state_pending, frame_state, formation,
+    pos_in_state,
+    CAST(CASE WHEN typeof(command_priority) = 'real'
+              THEN command_priority * (SELECT precision FROM config)
+              ELSE command_priority END AS INT),
+    command_center,
+    CAST(CASE WHEN typeof(charge_energy) = 'real'
+              THEN charge_energy * (SELECT precision FROM config)
+              ELSE charge_energy END AS INT),
+    target_uid, pending_target_uid, aim_kind, aim_target_uid, aim_current,
+    CAST(CASE WHEN typeof(aim_direction_x) = 'real'
+              THEN aim_direction_x * (SELECT precision FROM config)
+              ELSE aim_direction_x END AS INT),
+    CAST(CASE WHEN typeof(aim_direction_z) = 'real'
+              THEN aim_direction_z * (SELECT precision FROM config)
+              ELSE aim_direction_z END AS INT),
+    pending_aim_kind, pending_aim_target_uid, pending_aim_current,
+    CAST(CASE WHEN typeof(pending_aim_direction_x) = 'real'
+              THEN pending_aim_direction_x * (SELECT precision FROM config)
+              ELSE pending_aim_direction_x END AS INT),
+    CAST(CASE WHEN typeof(pending_aim_direction_z) = 'real'
+              THEN pending_aim_direction_z * (SELECT precision FROM config)
+              ELSE pending_aim_direction_z END AS INT)
+FROM units;
+
+DROP TABLE units;
+ALTER TABLE units_current RENAME TO units;
+
+-- Rebuild buildings without the legacy deployment-cell column. Deployment
+-- cells are derived from the loaded map in the current runtime.
+CREATE TABLE buildings_current (
+    id_db INT NOT NULL,
+    hp_coef INT NOT NULL,
+    uid INT PRIMARY KEY,
+    player INT NOT NULL,
+    level INT NOT NULL,
+    bucket_x INT NOT NULL,
+    bucket_y INT NOT NULL,
+    state INT NOT NULL,
+    next_state INT NOT NULL,
+    target_uid INT NOT NULL,
+    frame_state INT NOT NULL
+) WITHOUT ROWID;
+
+INSERT INTO buildings_current (
+    id_db, hp_coef, uid, player, level, bucket_x, bucket_y, state, next_state,
+    target_uid, frame_state
+)
+SELECT
+    id_db, hp_coef, uid, player, level, bucket_x, bucket_y, state, next_state,
+    target_uid, frame_state
+FROM buildings;
+
+DROP TABLE buildings;
+ALTER TABLE buildings_current RENAME TO buildings;
+
+-- Rebuild players without display name/color and convert the legacy REAL
+-- resource statistics to precision-scaled integers. unitUid was stored as
+-- numeric text in the old table, so convert it to the current integer field.
+CREATE TABLE players_current (
+    id INT PRIMARY KEY,
+    is_active INT NOT NULL,
+    team INT NOT NULL,
+    nation INT NOT NULL,
+    buildingUid INT NOT NULL,
+    unitUid INT NOT NULL,
+    food INT NOT NULL,
+    wood INT NOT NULL,
+    stone INT NOT NULL,
+    gold INT NOT NULL,
+    gather_food INT NOT NULL,
+    gather_wood INT NOT NULL,
+    gather_stone INT NOT NULL,
+    gather_gold INT NOT NULL,
+    pending_gather_food INT NOT NULL,
+    pending_gather_wood INT NOT NULL,
+    pending_gather_stone INT NOT NULL,
+    pending_gather_gold INT NOT NULL,
+    sum_food INT NOT NULL,
+    sum_wood INT NOT NULL,
+    sum_stone INT NOT NULL,
+    sum_gold INT NOT NULL
+) WITHOUT ROWID;
+
+INSERT INTO players_current (
+    id, is_active, team, nation, buildingUid, unitUid, food, wood, stone, gold,
+    gather_food, gather_wood, gather_stone, gather_gold, pending_gather_food,
+    pending_gather_wood, pending_gather_stone, pending_gather_gold, sum_food,
+    sum_wood, sum_stone, sum_gold
+)
+SELECT
+    id, is_active, team, nation, buildingUid, CAST(unitUid AS INTEGER), food,
+    wood, stone, gold,
+    CAST(CASE WHEN typeof(gather_food) = 'real'
+              THEN gather_food * (SELECT precision FROM config)
+              ELSE gather_food END AS INT),
+    CAST(CASE WHEN typeof(gather_wood) = 'real'
+              THEN gather_wood * (SELECT precision FROM config)
+              ELSE gather_wood END AS INT),
+    CAST(CASE WHEN typeof(gather_stone) = 'real'
+              THEN gather_stone * (SELECT precision FROM config)
+              ELSE gather_stone END AS INT),
+    CAST(CASE WHEN typeof(gather_gold) = 'real'
+              THEN gather_gold * (SELECT precision FROM config)
+              ELSE gather_gold END AS INT),
+    CAST(CASE WHEN typeof(pending_gather_food) = 'real'
+              THEN pending_gather_food * (SELECT precision FROM config)
+              ELSE pending_gather_food END AS INT),
+    CAST(CASE WHEN typeof(pending_gather_wood) = 'real'
+              THEN pending_gather_wood * (SELECT precision FROM config)
+              ELSE pending_gather_wood END AS INT),
+    CAST(CASE WHEN typeof(pending_gather_stone) = 'real'
+              THEN pending_gather_stone * (SELECT precision FROM config)
+              ELSE pending_gather_stone END AS INT),
+    CAST(CASE WHEN typeof(pending_gather_gold) = 'real'
+              THEN pending_gather_gold * (SELECT precision FROM config)
+              ELSE pending_gather_gold END AS INT),
+    CAST(CASE WHEN typeof(sum_food) = 'real'
+              THEN sum_food * (SELECT precision FROM config)
+              ELSE sum_food END AS INT),
+    CAST(CASE WHEN typeof(sum_wood) = 'real'
+              THEN sum_wood * (SELECT precision FROM config)
+              ELSE sum_wood END AS INT),
+    CAST(CASE WHEN typeof(sum_stone) = 'real'
+              THEN sum_stone * (SELECT precision FROM config)
+              ELSE sum_stone END AS INT),
+    CAST(CASE WHEN typeof(sum_gold) = 'real'
+              THEN sum_gold * (SELECT precision FROM config)
+              ELSE sum_gold END AS INT)
+FROM players;
+
+DROP TABLE players;
+ALTER TABLE players_current RENAME TO players;
+
+COMMIT;
+PRAGMA foreign_keys = ON;
+
+-- Validation
+-- ----------
+-- The current required table column counts are:
+-- units: 30, buildings: 11, players: 22, config: 13.
+-- The following commands should show those schemas and no legacy GUI columns.
+PRAGMA table_info(units);
+PRAGMA table_info(buildings);
+PRAGMA table_info(players);
+PRAGMA table_info(config);
+
+-- Optional runtime tables remain absent in this quicksave; this migration does
+-- not synthesize empty continuation state. A normal current save also creates
+-- ai_state even when the other optional runtime tables have no rows.
+SELECT name FROM sqlite_master
+WHERE type = 'table'
+  AND name IN ('unit_orders', 'aim_paths', 'queues', 'player_levels',
+               'ai_state', 'ai_wants', 'ai_history', 'projectiles',
+               'formations', 'formation_orders', 'pending_commands',
+               'pending_command_entities');

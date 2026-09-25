@@ -84,20 +84,20 @@ enum class ConfigCol : unsigned char {
 	map,
 	size,
 	total_ticks,
-	random_present,
-	random_seed,
-	random_float_ai_index,
-	random_float_resource_rotation_index,
-	random_float_collision_force_index,
-	random_float_other_index,
-	random_int_save_index,
-	random_int_player_name_index,
-	random_int_resource_node_index
+	rdn_present,
+	rdn_seed,
+	rdn_ai_idx,
+	rdn_resource_rotation_idx,
+	rdn_collision_force_idx,
+	rdn_other_idx,
+	rdn_save_idx,
+	rdn_player_name_idx,
+	rdn_resource_node_idx
 };
 
 enum class UnitOrderCol : unsigned char { unit_uid, order_idx, action, append, has_target, target_uid, x, z };
 
-enum class AimPathCol : unsigned char { unit_uid, pending, order_idx, cell };
+enum class AimPathCol : unsigned char { unit_uid, path, pending_path };
 
 enum class QueueCol : unsigned char {
 	owner_id,
@@ -387,8 +387,8 @@ static_assert(magic_enum::enum_count<ConfigCol>() == 13,
 			  "ConfigCol must match the 13 columns in SQLConsts::CONFIG_COL");
 static_assert(magic_enum::enum_count<UnitOrderCol>() == 8,
 			  "UnitOrderCol must match the 8 columns in SQLConsts::UNIT_ORDER_COL");
-static_assert(magic_enum::enum_count<AimPathCol>() == 4,
-			  "AimPathCol must match the 4 columns in SQLConsts::AIM_PATH_COL");
+static_assert(magic_enum::enum_count<AimPathCol>() == 3,
+			  "AimPathCol must match the 3 columns in SQLConsts::AIM_PATH_COL");
 static_assert(magic_enum::enum_count<QueueCol>() == 8, "QueueCol must match the 8 columns in SQLConsts::QUEUE_COL");
 static_assert(magic_enum::enum_count<PlayerLevelCol>() == 4,
 			  "PlayerLevelCol must match the 4 columns in SQLConsts::PLAYER_LEVEL_COL");

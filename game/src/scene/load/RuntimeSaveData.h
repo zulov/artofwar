@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <string>
 #include <vector>
 
 #include "objects/resource/ResourceType.h"
@@ -46,11 +47,10 @@ struct UnitOrderRow {
 	unsigned short orderIndex{};
 };
 
-struct AimPathRow {
+struct AimPathSaveData {
 	unsigned unitUid{};
-	bool pending{};
-	unsigned short orderIndex{};
-	int cell{};
+	std::string path;
+	std::string pendingPath;
 };
 
 struct PlayerLevelSaveData {

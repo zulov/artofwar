@@ -43,7 +43,9 @@ template <typename E> void bindI(sqlite3_stmt* stmt, E col, int value) { sqlite3
 template <typename E> void bindC(sqlite3_stmt* stmt, E col, char value) { sqlite3_bind_int(stmt, bindIdx(col), value); }
 template <typename E> void bindUC(sqlite3_stmt* stmt, E col, unsigned char value) { sqlite3_bind_int(stmt, bindIdx(col), value); }
 template <typename E> void bindB(sqlite3_stmt* stmt, E col, bool value) { sqlite3_bind_int(stmt, bindIdx(col), value); }
-template <typename E> void bindF(sqlite3_stmt* stmt, E col, float value) { sqlite3_bind_double(stmt, bindIdx(col), value); }
+template <typename E> void bindScaledI(sqlite3_stmt* stmt, E col, float value, int precision) {
+	sqlite3_bind_int(stmt, bindIdx(col), static_cast<int>(value * precision));
+}
 template <typename E> void bindT(sqlite3_stmt* stmt, E col, const std::string& value) {
 	sqlite3_bind_text(stmt, bindIdx(col), value.c_str(), -1, SQLITE_TRANSIENT);
 }

@@ -32,21 +32,21 @@ inline void bindRow<Unit>(sqlite3_stmt* stmt, int precision, const Unit* x) {
 	bindI(stmt, UnitCol::frame_state, runtime.currentFrameState);
 	bindI(stmt, UnitCol::formation, runtime.formation);
 	bindI(stmt, UnitCol::pos_in_state, runtime.posInState);
-	bindF(stmt, UnitCol::command_priority, runtime.commandPriority);
+	bindScaledI(stmt, UnitCol::command_priority, runtime.commandPriority, precision);
 	bindUC(stmt, UnitCol::command_center, runtime.commandCenter);
-	bindF(stmt, UnitCol::charge_energy, runtime.chargeEnergy);
+	bindScaledI(stmt, UnitCol::charge_energy, runtime.chargeEnergy, precision);
 	bindU(stmt, UnitCol::target_uid, runtime.targetUid);
 	bindU(stmt, UnitCol::pending_target_uid, runtime.pendingTargetUid);
 	bindC(stmt, UnitCol::aim_kind, static_cast<char>(runtime.aim.kind));
 	bindU(stmt, UnitCol::aim_target_uid, runtime.aim.targetUid);
 	bindI(stmt, UnitCol::aim_current, runtime.aim.current);
-	bindF(stmt, UnitCol::aim_direction_x, runtime.aim.directionX);
-	bindF(stmt, UnitCol::aim_direction_z, runtime.aim.directionZ);
+	bindScaledI(stmt, UnitCol::aim_direction_x, runtime.aim.directionX, precision);
+	bindScaledI(stmt, UnitCol::aim_direction_z, runtime.aim.directionZ, precision);
 	bindC(stmt, UnitCol::pending_aim_kind, static_cast<char>(runtime.pendingAim.kind));
 	bindU(stmt, UnitCol::pending_aim_target_uid, runtime.pendingAim.targetUid);
 	bindI(stmt, UnitCol::pending_aim_current, runtime.pendingAim.current);
-	bindF(stmt, UnitCol::pending_aim_direction_x, runtime.pendingAim.directionX);
-	bindF(stmt, UnitCol::pending_aim_direction_z, runtime.pendingAim.directionZ);
+	bindScaledI(stmt, UnitCol::pending_aim_direction_x, runtime.pendingAim.directionX, precision);
+	bindScaledI(stmt, UnitCol::pending_aim_direction_z, runtime.pendingAim.directionZ, precision);
 }
 
 template <>
@@ -91,18 +91,18 @@ inline void bindRow<Player>(sqlite3_stmt* stmt, int precision, const Player* x) 
 	bindI(stmt, PlayerCol::wood, resVals[cast(ResourceType::WOOD)] * precision);
 	bindI(stmt, PlayerCol::stone, resVals[cast(ResourceType::STONE)] * precision);
 	bindI(stmt, PlayerCol::gold, resVals[cast(ResourceType::GOLD)] * precision);
-	bindF(stmt, PlayerCol::gather_food, resourceState.gatherSpeeds1s[0]);
-	bindF(stmt, PlayerCol::gather_wood, resourceState.gatherSpeeds1s[1]);
-	bindF(stmt, PlayerCol::gather_stone, resourceState.gatherSpeeds1s[2]);
-	bindF(stmt, PlayerCol::gather_gold, resourceState.gatherSpeeds1s[3]);
-	bindF(stmt, PlayerCol::pending_gather_food, resourceState.sumGatherSpeed[0]);
-	bindF(stmt, PlayerCol::pending_gather_wood, resourceState.sumGatherSpeed[1]);
-	bindF(stmt, PlayerCol::pending_gather_stone, resourceState.sumGatherSpeed[2]);
-	bindF(stmt, PlayerCol::pending_gather_gold, resourceState.sumGatherSpeed[3]);
-	bindF(stmt, PlayerCol::sum_food, resourceState.sumValues[0]);
-	bindF(stmt, PlayerCol::sum_wood, resourceState.sumValues[1]);
-	bindF(stmt, PlayerCol::sum_stone, resourceState.sumValues[2]);
-	bindF(stmt, PlayerCol::sum_gold, resourceState.sumValues[3]);
+	bindScaledI(stmt, PlayerCol::gather_food, resourceState.gatherSpeeds1s[0], precision);
+	bindScaledI(stmt, PlayerCol::gather_wood, resourceState.gatherSpeeds1s[1], precision);
+	bindScaledI(stmt, PlayerCol::gather_stone, resourceState.gatherSpeeds1s[2], precision);
+	bindScaledI(stmt, PlayerCol::gather_gold, resourceState.gatherSpeeds1s[3], precision);
+	bindScaledI(stmt, PlayerCol::pending_gather_food, resourceState.sumGatherSpeed[0], precision);
+	bindScaledI(stmt, PlayerCol::pending_gather_wood, resourceState.sumGatherSpeed[1], precision);
+	bindScaledI(stmt, PlayerCol::pending_gather_stone, resourceState.sumGatherSpeed[2], precision);
+	bindScaledI(stmt, PlayerCol::pending_gather_gold, resourceState.sumGatherSpeed[3], precision);
+	bindScaledI(stmt, PlayerCol::sum_food, resourceState.sumValues[0], precision);
+	bindScaledI(stmt, PlayerCol::sum_wood, resourceState.sumValues[1], precision);
+	bindScaledI(stmt, PlayerCol::sum_stone, resourceState.sumValues[2], precision);
+	bindScaledI(stmt, PlayerCol::sum_gold, resourceState.sumValues[3], precision);
 }
 
 template <>
@@ -111,35 +111,34 @@ inline void bindRow<ConfigSaveData>(sqlite3_stmt* stmt, int, const ConfigSaveDat
 	bindI(stmt, ConfigCol::map, x->map);
 	bindI(stmt, ConfigCol::size, x->size);
 	bindU(stmt, ConfigCol::total_ticks, x->totalTicks);
-	bindB(stmt, ConfigCol::random_present, x->randomPresent);
-	bindU(stmt, ConfigCol::random_seed, x->random.seed);
-	bindI(stmt, ConfigCol::random_float_ai_index, x->random.floatIndexes[0]);
-	bindI(stmt, ConfigCol::random_float_resource_rotation_index, x->random.floatIndexes[1]);
-	bindI(stmt, ConfigCol::random_float_collision_force_index, x->random.floatIndexes[2]);
-	bindI(stmt, ConfigCol::random_float_other_index, x->random.floatIndexes[3]);
-	bindI(stmt, ConfigCol::random_int_save_index, x->random.intIndexes[0]);
-	bindI(stmt, ConfigCol::random_int_player_name_index, x->random.intIndexes[1]);
-	bindI(stmt, ConfigCol::random_int_resource_node_index, x->random.intIndexes[2]);
+	bindB(stmt, ConfigCol::rdn_present, x->randomPresent);
+	bindU(stmt, ConfigCol::rdn_seed, x->random.seed);
+	bindI(stmt, ConfigCol::rdn_ai_idx, x->random.floatIndexes[0]);
+	bindI(stmt, ConfigCol::rdn_resource_rotation_idx, x->random.floatIndexes[1]);
+	bindI(stmt, ConfigCol::rdn_collision_force_idx, x->random.floatIndexes[2]);
+	bindI(stmt, ConfigCol::rdn_other_idx, x->random.floatIndexes[3]);
+	bindI(stmt, ConfigCol::rdn_save_idx, x->random.intIndexes[0]);
+	bindI(stmt, ConfigCol::rdn_player_name_idx, x->random.intIndexes[1]);
+	bindI(stmt, ConfigCol::rdn_resource_node_idx, x->random.intIndexes[2]);
 }
 
 template <>
-inline void bindRow<UnitOrderRow>(sqlite3_stmt* stmt, int, const UnitOrderRow* x) {
+inline void bindRow<UnitOrderRow>(sqlite3_stmt* stmt, int precision, const UnitOrderRow* x) {
 	bindU(stmt, UnitOrderCol::unit_uid, x->data.unitUid);
 	bindI(stmt, UnitOrderCol::order_idx, x->orderIndex);
 	bindC(stmt, UnitOrderCol::action, x->data.action);
 	bindB(stmt, UnitOrderCol::append, x->data.append);
 	bindB(stmt, UnitOrderCol::has_target, x->data.hasTarget);
 	bindU(stmt, UnitOrderCol::target_uid, x->data.targetUid);
-	bindF(stmt, UnitOrderCol::x, x->data.x);
-	bindF(stmt, UnitOrderCol::z, x->data.z);
+	bindScaledI(stmt, UnitOrderCol::x, x->data.x, precision);
+	bindScaledI(stmt, UnitOrderCol::z, x->data.z, precision);
 }
 
 template <>
-inline void bindRow<AimPathRow>(sqlite3_stmt* stmt, int, const AimPathRow* x) {
+inline void bindRow<AimPathSaveData>(sqlite3_stmt* stmt, int, const AimPathSaveData* x) {
 	bindU(stmt, AimPathCol::unit_uid, x->unitUid);
-	bindB(stmt, AimPathCol::pending, x->pending);
-	bindI(stmt, AimPathCol::order_idx, x->orderIndex);
-	bindI(stmt, AimPathCol::cell, x->cell);
+	bindT(stmt, AimPathCol::path, x->path);
+	bindT(stmt, AimPathCol::pending_path, x->pendingPath);
 }
 
 template <>
@@ -163,50 +162,50 @@ inline void bindRow<PlayerLevelSaveData>(sqlite3_stmt* stmt, int, const PlayerLe
 }
 
 template <>
-inline void bindRow<AiSaveData>(sqlite3_stmt* stmt, int, const AiSaveData* x) {
+inline void bindRow<AiSaveData>(sqlite3_stmt* stmt, int precision, const AiSaveData* x) {
 	bindUC(stmt, AiStateCol::player, x->player);
 	bindI(stmt, AiStateCol::prev_score, x->prevScore);
 	bindI(stmt, AiStateCol::prev_enemy_score, x->prevEnemyScore);
 	bindU(stmt, AiStateCol::prev_units, x->prevUnits);
-	bindF(stmt, AiStateCol::prev_res_sum, x->prevResSum);
-	bindF(stmt, AiStateCol::prev_gather_sum, x->prevGatherSum);
-	bindF(stmt, AiStateCol::food_priority, x->foodPriority);
-	bindF(stmt, AiStateCol::wood_priority, x->woodPriority);
-	bindF(stmt, AiStateCol::stone_priority, x->stonePriority);
-	bindF(stmt, AiStateCol::gold_priority, x->goldPriority);
-	bindF(stmt, AiStateCol::pressure_our_army_our_econ, x->militaryPressure[0]);
-	bindF(stmt, AiStateCol::pressure_our_army_our_building, x->militaryPressure[1]);
-	bindF(stmt, AiStateCol::pressure_our_army_enemy_army, x->militaryPressure[2]);
-	bindF(stmt, AiStateCol::pressure_our_army_enemy_econ, x->militaryPressure[3]);
-	bindF(stmt, AiStateCol::pressure_our_army_enemy_building, x->militaryPressure[4]);
-	bindF(stmt, AiStateCol::pressure_our_army_battle, x->militaryPressure[5]);
-	bindF(stmt, AiStateCol::pressure_our_econ_our_building, x->militaryPressure[6]);
-	bindF(stmt, AiStateCol::pressure_our_econ_enemy_army, x->militaryPressure[7]);
-	bindF(stmt, AiStateCol::pressure_our_econ_enemy_econ, x->militaryPressure[8]);
-	bindF(stmt, AiStateCol::pressure_our_econ_enemy_building, x->militaryPressure[9]);
-	bindF(stmt, AiStateCol::pressure_our_econ_battle, x->militaryPressure[10]);
-	bindF(stmt, AiStateCol::pressure_our_building_enemy_army, x->militaryPressure[11]);
-	bindF(stmt, AiStateCol::pressure_our_building_enemy_econ, x->militaryPressure[12]);
-	bindF(stmt, AiStateCol::pressure_our_building_enemy_building, x->militaryPressure[13]);
-	bindF(stmt, AiStateCol::pressure_our_building_battle, x->militaryPressure[14]);
-	bindF(stmt, AiStateCol::pressure_enemy_army_enemy_econ, x->militaryPressure[15]);
-	bindF(stmt, AiStateCol::pressure_enemy_army_enemy_building, x->militaryPressure[16]);
-	bindF(stmt, AiStateCol::pressure_enemy_army_battle, x->militaryPressure[17]);
-	bindF(stmt, AiStateCol::pressure_enemy_econ_enemy_building, x->militaryPressure[18]);
-	bindF(stmt, AiStateCol::pressure_enemy_econ_battle, x->militaryPressure[19]);
-	bindF(stmt, AiStateCol::pressure_enemy_building_battle, x->militaryPressure[20]);
-	bindF(stmt, AiStateCol::lacking_food, x->lackingPerResource[0]);
-	bindF(stmt, AiStateCol::lacking_wood, x->lackingPerResource[1]);
-	bindF(stmt, AiStateCol::lacking_stone, x->lackingPerResource[2]);
-	bindF(stmt, AiStateCol::lacking_gold, x->lackingPerResource[3]);
+	bindScaledI(stmt, AiStateCol::prev_res_sum, x->prevResSum, precision);
+	bindScaledI(stmt, AiStateCol::prev_gather_sum, x->prevGatherSum, precision);
+	bindScaledI(stmt, AiStateCol::food_priority, x->foodPriority, precision);
+	bindScaledI(stmt, AiStateCol::wood_priority, x->woodPriority, precision);
+	bindScaledI(stmt, AiStateCol::stone_priority, x->stonePriority, precision);
+	bindScaledI(stmt, AiStateCol::gold_priority, x->goldPriority, precision);
+	bindScaledI(stmt, AiStateCol::pressure_our_army_our_econ, x->militaryPressure[0], precision);
+	bindScaledI(stmt, AiStateCol::pressure_our_army_our_building, x->militaryPressure[1], precision);
+	bindScaledI(stmt, AiStateCol::pressure_our_army_enemy_army, x->militaryPressure[2], precision);
+	bindScaledI(stmt, AiStateCol::pressure_our_army_enemy_econ, x->militaryPressure[3], precision);
+	bindScaledI(stmt, AiStateCol::pressure_our_army_enemy_building, x->militaryPressure[4], precision);
+	bindScaledI(stmt, AiStateCol::pressure_our_army_battle, x->militaryPressure[5], precision);
+	bindScaledI(stmt, AiStateCol::pressure_our_econ_our_building, x->militaryPressure[6], precision);
+	bindScaledI(stmt, AiStateCol::pressure_our_econ_enemy_army, x->militaryPressure[7], precision);
+	bindScaledI(stmt, AiStateCol::pressure_our_econ_enemy_econ, x->militaryPressure[8], precision);
+	bindScaledI(stmt, AiStateCol::pressure_our_econ_enemy_building, x->militaryPressure[9], precision);
+	bindScaledI(stmt, AiStateCol::pressure_our_econ_battle, x->militaryPressure[10], precision);
+	bindScaledI(stmt, AiStateCol::pressure_our_building_enemy_army, x->militaryPressure[11], precision);
+	bindScaledI(stmt, AiStateCol::pressure_our_building_enemy_econ, x->militaryPressure[12], precision);
+	bindScaledI(stmt, AiStateCol::pressure_our_building_enemy_building, x->militaryPressure[13], precision);
+	bindScaledI(stmt, AiStateCol::pressure_our_building_battle, x->militaryPressure[14], precision);
+	bindScaledI(stmt, AiStateCol::pressure_enemy_army_enemy_econ, x->militaryPressure[15], precision);
+	bindScaledI(stmt, AiStateCol::pressure_enemy_army_enemy_building, x->militaryPressure[16], precision);
+	bindScaledI(stmt, AiStateCol::pressure_enemy_army_battle, x->militaryPressure[17], precision);
+	bindScaledI(stmt, AiStateCol::pressure_enemy_econ_enemy_building, x->militaryPressure[18], precision);
+	bindScaledI(stmt, AiStateCol::pressure_enemy_econ_battle, x->militaryPressure[19], precision);
+	bindScaledI(stmt, AiStateCol::pressure_enemy_building_battle, x->militaryPressure[20], precision);
+	bindScaledI(stmt, AiStateCol::lacking_food, x->lackingPerResource[0], precision);
+	bindScaledI(stmt, AiStateCol::lacking_wood, x->lackingPerResource[1], precision);
+	bindScaledI(stmt, AiStateCol::lacking_stone, x->lackingPerResource[2], precision);
+	bindScaledI(stmt, AiStateCol::lacking_gold, x->lackingPerResource[3], precision);
 }
 
 template <>
-inline void bindRow<AiWantRow>(sqlite3_stmt* stmt, int, const AiWantRow* x) {
+inline void bindRow<AiWantRow>(sqlite3_stmt* stmt, int precision, const AiWantRow* x) {
 	bindUC(stmt, AiWantCol::player, x->data.player);
 	bindI(stmt, AiWantCol::order_idx, x->orderIndex);
-	bindF(stmt, AiWantCol::priority, x->data.priority);
-	bindF(stmt, AiWantCol::base_priority, x->data.basePriority);
+	bindScaledI(stmt, AiWantCol::priority, x->data.priority, precision);
+	bindScaledI(stmt, AiWantCol::base_priority, x->data.basePriority, precision);
 	bindUC(stmt, AiWantCol::type, x->data.type);
 	bindUC(stmt, AiWantCol::count, x->data.count);
 	bindI(stmt, AiWantCol::specific_id, x->data.specificId);
@@ -216,7 +215,7 @@ inline void bindRow<AiWantRow>(sqlite3_stmt* stmt, int, const AiWantRow* x) {
 }
 
 template <>
-inline void bindRow<PendingCommandSaveData>(sqlite3_stmt* stmt, int, const PendingCommandSaveData* x) {
+inline void bindRow<PendingCommandSaveData>(sqlite3_stmt* stmt, int precision, const PendingCommandSaveData* x) {
 	bindI(stmt, PendingCommandCol::order_idx, x->order);
 	bindC(stmt, PendingCommandCol::kind, static_cast<char>(x->kind));
 	bindC(stmt, PendingCommandCol::action, x->action);
@@ -225,9 +224,9 @@ inline void bindRow<PendingCommandSaveData>(sqlite3_stmt* stmt, int, const Pendi
 	bindC(stmt, PendingCommandCol::player, x->player);
 	bindC(stmt, PendingCommandCol::level, x->level);
 	bindU(stmt, PendingCommandCol::number, x->number);
-	bindF(stmt, PendingCommandCol::x, x->x);
-	bindF(stmt, PendingCommandCol::z, x->z);
-	bindF(stmt, PendingCommandCol::hp, x->hp);
+	bindScaledI(stmt, PendingCommandCol::x, x->x, precision);
+	bindScaledI(stmt, PendingCommandCol::z, x->z, precision);
+	bindScaledI(stmt, PendingCommandCol::hp, x->hp, precision);
 	bindU(stmt, PendingCommandCol::target_uid, x->targetUid);
 	bindI(stmt, PendingCommandCol::formation_id, x->formationId);
 	bindB(stmt, PendingCommandCol::append, x->append);
@@ -245,25 +244,25 @@ inline void bindRow<AiHistoryRow>(sqlite3_stmt* stmt, int, const AiHistoryRow* x
 }
 
 template <>
-inline void bindRow<ProjectileSaveData>(sqlite3_stmt* stmt, int, const ProjectileSaveData* x) {
+inline void bindRow<ProjectileSaveData>(sqlite3_stmt* stmt, int precision, const ProjectileSaveData* x) {
 	bindU(stmt, ProjectileCol::aim_uid, x->aimUid);
-	bindF(stmt, ProjectileCol::percent_to_go, x->percentToGo);
-	bindF(stmt, ProjectileCol::speed, x->speed);
-	bindF(stmt, ProjectileCol::attack_val, x->attackVal);
+	bindScaledI(stmt, ProjectileCol::percent_to_go, x->percentToGo, precision);
+	bindScaledI(stmt, ProjectileCol::speed, x->speed, precision);
+	bindScaledI(stmt, ProjectileCol::attack_val, x->attackVal, precision);
 	bindC(stmt, ProjectileCol::player, x->player);
 }
 
 template <>
-inline void bindRow<FormationSaveData>(sqlite3_stmt* stmt, int, const FormationSaveData* x) {
+inline void bindRow<FormationSaveData>(sqlite3_stmt* stmt, int precision, const FormationSaveData* x) {
 	bindI(stmt, FormationCol::id, x->id);
 	bindC(stmt, FormationCol::state, x->state);
 	bindC(stmt, FormationCol::type, x->type);
-	bindF(stmt, FormationCol::direction_x, x->directionX);
-	bindF(stmt, FormationCol::direction_z, x->directionZ);
+	bindScaledI(stmt, FormationCol::direction_x, x->directionX, precision);
+	bindScaledI(stmt, FormationCol::direction_z, x->directionZ, precision);
 }
 
 template <>
-inline void bindRow<FormationOrderRow>(sqlite3_stmt* stmt, int, const FormationOrderRow* x) {
+inline void bindRow<FormationOrderRow>(sqlite3_stmt* stmt, int precision, const FormationOrderRow* x) {
 	bindI(stmt, FormationOrderCol::formation_id, x->data.formationId);
 	bindI(stmt, FormationOrderCol::order_idx, x->orderIndex);
 	bindB(stmt, FormationOrderCol::pending, x->pending);
@@ -271,8 +270,8 @@ inline void bindRow<FormationOrderRow>(sqlite3_stmt* stmt, int, const FormationO
 	bindB(stmt, FormationOrderCol::append, x->data.append);
 	bindB(stmt, FormationOrderCol::has_target, x->data.hasTarget);
 	bindU(stmt, FormationOrderCol::target_uid, x->data.targetUid);
-	bindF(stmt, FormationOrderCol::x, x->data.x);
-	bindF(stmt, FormationOrderCol::z, x->data.z);
+	bindScaledI(stmt, FormationOrderCol::x, x->data.x, precision);
+	bindScaledI(stmt, FormationOrderCol::z, x->data.z, precision);
 }
 
 template <>

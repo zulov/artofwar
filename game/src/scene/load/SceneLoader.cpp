@@ -1,7 +1,10 @@
 #include "SceneLoader.h"
 
 #include <algorithm>
+#include <charconv>
 #include <sstream>
+#include <system_error>
+#include <string_view>
 
 #include "RuntimeSaveData.h"
 #include "database/db_read_defs.h"
@@ -73,6 +76,37 @@ namespace {
 		}
 		detail = message.str();
 		return false;
+	}
+
+	bool parsePath(std::string_view value, std::vector<int>& path, std::string& detail) {
+		path.clear();
+		if (value.empty()) {
+			return true;
+		}
+
+		size_t begin = 0;
+		while (begin <= value.size()) {
+			const auto end = value.find(',', begin);
+			const auto tokenEnd = end == std::string_view::npos ? value.size() : end;
+			if (begin == tokenEnd) {
+				detail = "empty cell index";
+				return false;
+			}
+
+			int cell{};
+			const auto [parsedEnd, error] = std::from_chars(value.data() + begin, value.data() + tokenEnd, cell);
+			if (error != std::errc{} || parsedEnd != value.data() + tokenEnd || cell < 0) {
+				detail = "invalid cell index '" + std::string(value.substr(begin, tokenEnd - begin)) + "'";
+				return false;
+			}
+			path.push_back(cell);
+
+			if (end == std::string_view::npos) {
+				return true;
+			}
+			begin = end + 1;
+		}
+		return true;
 	}
 } // namespace
 
@@ -279,24 +313,23 @@ void SceneLoader::reportError(const std::string& message) const {
 }
 
 void SceneLoader::loadRuntimeState() const {
-	loadOptionalSaveTable<UnitOrderCol>(" ORDER BY unit_uid, order_idx", [this](sqlite3_stmt* s) {
-		const auto order = readRow<UnitOrderSaveData>(s, 1);
+	const int precision = dbLoad->config->precision;
+	loadOptionalSaveTable<UnitOrderCol>(" ORDER BY unit_uid, order_idx", [this, precision](sqlite3_stmt* s) {
+		const auto order = readRow<UnitOrderSaveData>(s, precision);
 		dbLoad->unitVariable[order.unitUid].orders.push_back(order);
 	});
 
-	loadOptionalSaveTable<AimPathCol>(" ORDER BY unit_uid, pending, order_idx", [this](sqlite3_stmt* s) {
-		const auto row = readRow<AimPathRow>(s, 1);
-		auto& state = dbLoad->unitVariable[row.unitUid];
-		auto& path = row.pending ? state.pendingAimPath : state.aimPath;
-		path.push_back(row.cell);
+	loadAimPaths();
+	if (hasError()) {
+		return;
+	}
+
+	loadOptionalSaveTable<QueueCol>(" ORDER BY owner_type, owner_id, order_idx", [this, precision](sqlite3_stmt* s) {
+		dbLoad->queues.push_back(readRow<QueueRow>(s, precision).data);
 	});
 
-	loadOptionalSaveTable<QueueCol>(" ORDER BY owner_type, owner_id, order_idx", [this](sqlite3_stmt* s) {
-		dbLoad->queues.push_back(readRow<QueueRow>(s, 1).data);
-	});
-
-	loadOptionalSaveTable<PlayerLevelCol>("", [this](sqlite3_stmt* s) {
-		dbLoad->playerLevels.push_back(readRow<PlayerLevelSaveData>(s, 1));
+	loadOptionalSaveTable<PlayerLevelCol>("", [this, precision](sqlite3_stmt* s) {
+		dbLoad->playerLevels.push_back(readRow<PlayerLevelSaveData>(s, precision));
 	});
 
 	if (dbLoad->random) {
@@ -314,20 +347,20 @@ void SceneLoader::loadRuntimeState() const {
 		}
 	}
 
-	loadOptionalSaveTable<ProjectileCol>("", [this](sqlite3_stmt* s) {
-		dbLoad->projectiles.push_back(readRow<ProjectileSaveData>(s, 1));
+	loadOptionalSaveTable<ProjectileCol>("", [this, precision](sqlite3_stmt* s) {
+		dbLoad->projectiles.push_back(readRow<ProjectileSaveData>(s, precision));
 	});
 
-	loadOptionalSaveTable<FormationCol>("", [this](sqlite3_stmt* s) {
-		dbLoad->formations.push_back(readRow<FormationSaveData>(s, 1));
+	loadOptionalSaveTable<FormationCol>("", [this, precision](sqlite3_stmt* s) {
+		dbLoad->formations.push_back(readRow<FormationSaveData>(s, precision));
 	});
 
-	loadOptionalSaveTable<FormationOrderCol>(" ORDER BY formation_id, pending, order_idx", [this](sqlite3_stmt* s) {
-		dbLoad->formationOrders.push_back(readRow<FormationOrderRow>(s, 1));
+	loadOptionalSaveTable<FormationOrderCol>(" ORDER BY formation_id, pending, order_idx", [this, precision](sqlite3_stmt* s) {
+		dbLoad->formationOrders.push_back(readRow<FormationOrderRow>(s, precision));
 	});
 
-	loadOptionalSaveTable<PendingCommandCol>(" ORDER BY order_idx", [this](sqlite3_stmt* s) {
-		dbLoad->pendingCommands.push_back(readRow<PendingCommandSaveData>(s, 1));
+	loadOptionalSaveTable<PendingCommandCol>(" ORDER BY order_idx", [this, precision](sqlite3_stmt* s) {
+		dbLoad->pendingCommands.push_back(readRow<PendingCommandSaveData>(s, precision));
 	});
 
 	loadOptionalSaveTable<PendingCommandEntityCol>(" ORDER BY command_idx, order_idx", [this](sqlite3_stmt* s) {
@@ -340,15 +373,59 @@ void SceneLoader::loadRuntimeState() const {
 		}
 	});
 
-	loadOptionalSaveTable<AiStateCol>("", [this](sqlite3_stmt* s) {
-		dbLoad->aiStates.push_back(readRow<AiSaveData>(s, 1));
+	loadOptionalSaveTable<AiStateCol>("", [this, precision](sqlite3_stmt* s) {
+		dbLoad->aiStates.push_back(readRow<AiSaveData>(s, precision));
 	});
-	loadOptionalSaveTable<AiWantCol>(" ORDER BY player, order_idx", [this](sqlite3_stmt* s) {
-		dbLoad->aiWants.push_back(readRow<AiWantRow>(s, 1).data);
+	loadOptionalSaveTable<AiWantCol>(" ORDER BY player, order_idx", [this, precision](sqlite3_stmt* s) {
+		dbLoad->aiWants.push_back(readRow<AiWantRow>(s, precision).data);
 	});
 
 	loadOptionalSaveTable<AiHistoryCol>(" ORDER BY player, action, order_idx", [this](sqlite3_stmt* s) {
 		dbLoad->aiHistory.push_back(readRow<AiHistoryRow>(s, 1).data);
 	});
 
+}
+
+void SceneLoader::loadAimPaths() const {
+	if (!hasTable(SaveTable<AimPathCol>::name)) {
+		return;
+	}
+
+	std::string detail;
+	if (inspectTable(database, SaveTable<AimPathCol>::name, saveColumns<AimPathCol>(), detail)) {
+		loadSaveTable<AimPathCol>("", [this](sqlite3_stmt* s) {
+			const auto row = readRow<AimPathSaveData>(s, 1);
+			auto& state = dbLoad->unitVariable[row.unitUid];
+			std::string pathError;
+			if (!parsePath(row.path, state.aimPath, pathError)) {
+				reportError("load '" + path + "' failed: invalid aim_paths.path for unit " +
+						std::to_string(row.unitUid) + ": " + pathError);
+				return;
+			}
+			if (!parsePath(row.pendingPath, state.pendingAimPath, pathError)) {
+				reportError("load '" + path + "' failed: invalid aim_paths.pending_path for unit " +
+						std::to_string(row.unitUid) + ": " + pathError);
+			}
+		});
+		return;
+	}
+
+	const std::vector<std::string> legacyColumns{"unit_uid", "pending", "order_idx", "cell"};
+	if (!inspectTable(database, SaveTable<AimPathCol>::name, legacyColumns, detail)) {
+		reportError("load '" + path + "' failed: table '" + SaveTable<AimPathCol>::name +
+				" schema mismatch: " + detail);
+		return;
+	}
+
+	const std::string sql = "SELECT unit_uid, pending, order_idx, cell FROM aim_paths ORDER BY unit_uid, pending, order_idx";
+	std::string queryError;
+	if (!loadFromTable(database, sql, [this](sqlite3_stmt* s) {
+		const auto unitUid = asUI(s, 0);
+		const bool pending = asBool(s, 1);
+		const auto cell = asInt(s, 3);
+		auto& state = dbLoad->unitVariable[unitUid];
+		(pending ? state.pendingAimPath : state.aimPath).push_back(cell);
+	}, &queryError)) {
+		reportError("load '" + path + "': table 'aim_paths' failed: " + queryError);
+	}
 }

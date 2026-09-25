@@ -24,15 +24,15 @@
 PRAGMA foreign_keys = OFF;
 BEGIN TRANSACTION;
 
-ALTER TABLE config ADD COLUMN random_present INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_seed INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_float_ai_index INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_float_resource_rotation_index INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_float_collision_force_index INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_float_other_index INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_int_save_index INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_int_player_name_index INT NOT NULL DEFAULT 0;
-ALTER TABLE config ADD COLUMN random_int_resource_node_index INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_present INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_seed INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_ai_idx INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_resource_rotation_idx INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_collision_force_idx INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_other_idx INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_save_idx INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_player_name_idx INT NOT NULL DEFAULT 0;
+ALTER TABLE config ADD COLUMN rdn_resource_node_idx INT NOT NULL DEFAULT 0;
 
 -- Make absent singleton tables behave like an empty source for the copy step.
 CREATE TABLE IF NOT EXISTS random (
@@ -54,15 +54,15 @@ CREATE TABLE IF NOT EXISTS camera (
 ) WITHOUT ROWID;
 
 UPDATE config SET
-    random_present = EXISTS (SELECT 1 FROM random WHERE id = 0),
-    random_seed = COALESCE((SELECT seed FROM random WHERE id = 0), 0),
-    random_float_ai_index = COALESCE((SELECT float_ai_index FROM random WHERE id = 0), 0),
-    random_float_resource_rotation_index = COALESCE((SELECT float_resource_rotation_index FROM random WHERE id = 0), 0),
-    random_float_collision_force_index = COALESCE((SELECT float_collision_force_index FROM random WHERE id = 0), 0),
-    random_float_other_index = COALESCE((SELECT float_other_index FROM random WHERE id = 0), 0),
-    random_int_save_index = COALESCE((SELECT int_save_index FROM random WHERE id = 0), 0),
-    random_int_player_name_index = COALESCE((SELECT int_player_name_index FROM random WHERE id = 0), 0),
-    random_int_resource_node_index = COALESCE((SELECT int_resource_node_index FROM random WHERE id = 0), 0);
+    rdn_present = EXISTS (SELECT 1 FROM random WHERE id = 0),
+    rdn_seed = COALESCE((SELECT seed FROM random WHERE id = 0), 0),
+    rdn_ai_idx = COALESCE((SELECT float_ai_index FROM random WHERE id = 0), 0),
+    rdn_resource_rotation_idx = COALESCE((SELECT float_resource_rotation_index FROM random WHERE id = 0), 0),
+    rdn_collision_force_idx = COALESCE((SELECT float_collision_force_index FROM random WHERE id = 0), 0),
+    rdn_other_idx = COALESCE((SELECT float_other_index FROM random WHERE id = 0), 0),
+    rdn_save_idx = COALESCE((SELECT int_save_index FROM random WHERE id = 0), 0),
+    rdn_player_name_idx = COALESCE((SELECT int_player_name_index FROM random WHERE id = 0), 0),
+    rdn_resource_node_idx = COALESCE((SELECT int_resource_node_index FROM random WHERE id = 0), 0);
 
 DROP TABLE random;
 DROP TABLE camera;

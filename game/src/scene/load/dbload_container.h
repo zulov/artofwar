@@ -63,19 +63,19 @@ struct dbload_unit : dbload_physical {
 		runtime.currentFrameState = asUShort(stmt, C::frame_state);
 		runtime.formation = asShort(stmt, C::formation);
 		runtime.posInState = asShort(stmt, C::pos_in_state);
-		runtime.commandPriority = asFloat(stmt, C::command_priority);
+		runtime.commandPriority = asScaledFloat(stmt, C::command_priority, p);
 		runtime.commandCenter = asUByte(stmt, C::command_center);
-		runtime.chargeEnergy = asFloat(stmt, C::charge_energy);
+		runtime.chargeEnergy = asScaledFloat(stmt, C::charge_energy, p);
 	runtime.aim.kind = static_cast<AimSaveKind>(asByte(stmt, C::aim_kind));
 	runtime.aim.targetUid = asUI(stmt, C::aim_target_uid);
 	runtime.aim.current = asShort(stmt, C::aim_current);
-	runtime.aim.directionX = asFloat(stmt, C::aim_direction_x);
-	runtime.aim.directionZ = asFloat(stmt, C::aim_direction_z);
+	runtime.aim.directionX = asScaledFloat(stmt, C::aim_direction_x, p);
+	runtime.aim.directionZ = asScaledFloat(stmt, C::aim_direction_z, p);
 	runtime.pendingAim.kind = static_cast<AimSaveKind>(asByte(stmt, C::pending_aim_kind));
 	runtime.pendingAim.targetUid = asUI(stmt, C::pending_aim_target_uid);
 	runtime.pendingAim.current = asShort(stmt, C::pending_aim_current);
-	runtime.pendingAim.directionX = asFloat(stmt, C::pending_aim_direction_x);
-	runtime.pendingAim.directionZ = asFloat(stmt, C::pending_aim_direction_z);
+	runtime.pendingAim.directionX = asScaledFloat(stmt, C::pending_aim_direction_x, p);
+	runtime.pendingAim.directionZ = asScaledFloat(stmt, C::pending_aim_direction_z, p);
 	}
 
 	dbload_unit(unsigned short idDb, float hp, unsigned uid, char player, char level, float posX, float posZ,
@@ -135,12 +135,13 @@ struct dbload_player {
 					  asUI(stmt, C::buildingUid), asUI(stmt, C::unitUid), asItoF(stmt, C::food, p),
 					  asItoF(stmt, C::wood, p), asItoF(stmt, C::stone, p), asItoF(stmt, C::gold, p)) {
 		resources.player = id;
-		resources.gatherSpeeds1s = {asFloat(stmt, C::gather_food), asFloat(stmt, C::gather_wood),
-				asFloat(stmt, C::gather_stone), asFloat(stmt, C::gather_gold)};
-		resources.sumGatherSpeed = {asFloat(stmt, C::pending_gather_food), asFloat(stmt, C::pending_gather_wood),
-				asFloat(stmt, C::pending_gather_stone), asFloat(stmt, C::pending_gather_gold)};
-		resources.sumValues = {asFloat(stmt, C::sum_food), asFloat(stmt, C::sum_wood),
-				asFloat(stmt, C::sum_stone), asFloat(stmt, C::sum_gold)};
+		resources.gatherSpeeds1s = {asScaledFloat(stmt, C::gather_food, p), asScaledFloat(stmt, C::gather_wood, p),
+				asScaledFloat(stmt, C::gather_stone, p), asScaledFloat(stmt, C::gather_gold, p)};
+		resources.sumGatherSpeed = {asScaledFloat(stmt, C::pending_gather_food, p),
+				asScaledFloat(stmt, C::pending_gather_wood, p), asScaledFloat(stmt, C::pending_gather_stone, p),
+				asScaledFloat(stmt, C::pending_gather_gold, p)};
+		resources.sumValues = {asScaledFloat(stmt, C::sum_food, p), asScaledFloat(stmt, C::sum_wood, p),
+				asScaledFloat(stmt, C::sum_stone, p), asScaledFloat(stmt, C::sum_gold, p)};
 	}
 
 	dbload_player(unsigned char id, bool isActive, unsigned char team, unsigned char nation, unsigned buildingUid,

@@ -23,6 +23,19 @@
 #include "simulation/formation/Formation.h"
 #include "simulation/formation/FormationManager.h"
 
+namespace {
+	std::string serializePath(const std::vector<int>& path) {
+		std::string result;
+		for (size_t i = 0; i < path.size(); ++i) {
+			if (i > 0) {
+				result += ',';
+			}
+			result += std::to_string(path[i]);
+		}
+		return result;
+	}
+} // namespace
+
 SceneSaver::SceneSaver(int precision) : precision(precision), savingProgress(17) {
 	// TODO zapisywanie powinno byc tylko miedzy klatkami
 }
@@ -213,17 +226,12 @@ bool SceneSaver::saveAimPaths(const std::vector<UnitRuntimeSaveData>& unitStates
 	}
 	return saveRows<AimPathCol>([&](sqlite3_stmt* stmt, const char* sql) {
 		for (const auto& state : unitStates) {
-			auto savePath = [&](const AimSaveData& aim, bool pending) {
-				bool success = true;
-				for (unsigned short i = 0; i < aim.path.size(); ++i) {
-					const AimPathRow row{state.uid, pending, i, aim.path[i]};
-					bindRow(stmt, precision, &row);
-					success = stepAndReset(stmt, sql);
-					if (!success) { break; }
-				}
-				return success;
-			};
-			if (!savePath(state.aim, false) || !savePath(state.pendingAim, true)) { return false; }
+			if (state.aim.path.empty() && state.pendingAim.path.empty()) {
+				continue;
+			}
+			const AimPathSaveData row{state.uid, serializePath(state.aim.path), serializePath(state.pendingAim.path)};
+			bindRow(stmt, precision, &row);
+			if (!stepAndReset(stmt, sql)) { return false; }
 		}
 		return true;
 	});

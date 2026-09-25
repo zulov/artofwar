@@ -871,7 +871,7 @@
           <thead><tr><th>Group</th><th>Tables</th><th>Important contract</th></tr></thead>
           <tbody>
             <tr><td>Mandatory base</td><td><code>units</code>, <code>buildings</code>, <code>resources</code>, <code>players</code>, <code>config</code></td><td>Required tables and current required columns must exist before map or simulation construction.</td></tr>
-            <tr><td>Entity continuation</td><td><code>unit_orders</code>, <code>aim_paths</code>, building combat fields</td><td>UID links resolve only after all base entities and static grids exist.</td></tr>
+            <tr><td>Entity continuation</td><td><code>unit_orders</code>, flat <code>aim_paths</code>, building combat fields</td><td>UID links resolve only after all base entities and static grids exist.</td></tr>
             <tr><td>AI continuation</td><td><code>ai_state</code>, <code>ai_wants</code>, <code>ai_history</code></td><td>Persisted state affects behavior after loading; legacy saves can lose this continuity.</td></tr>
             <tr><td>World continuation</td><td><code>queues</code>, <code>player_levels</code>, <code>formations</code>, <code>projectiles</code></td><td>Empty variable-length tables may be omitted. Derived values are rebuilt from loaded definitions.</td></tr>
             <tr><td>Deferred actions</td><td><code>pending_commands</code>, <code>pending_command_entities</code></td><td>Commands remain deferred and must not be resolved before referenced entities exist.</td></tr>
@@ -975,7 +975,7 @@
             <div><div class="mini-title">Reliability choices</div><p>Decide whether saving replaces files atomically, whether it is restricted to safe simulation boundaries, and how broken UID references are diagnosed.</p></div>
             <div><div class="mini-title">First experiment</div><p>Add a version value to a copy of the config contract and write a migration test for one documented legacy format. Do not alter live saves until policy is agreed.</p></div>
           </div>
-          <p class="refs">References: <a class="file" href="../game/src/scene/save/SQLConsts.h">SQLConsts.h</a>, <a class="file" href="../game/src/scene/load/SceneLoader.cpp">SceneLoader.cpp</a>, <a href="old-save-migration.txt">old-save-migration.txt</a>, and <a href="config-table-migration.txt">config-table-migration.txt</a>.</p>
+          <p class="refs">References: <a class="file" href="../game/src/scene/save/SQLConsts.h">SQLConsts.h</a>, <a class="file" href="../game/src/scene/load/SceneLoader.cpp">SceneLoader.cpp</a>, <a href="quicksave-migration.txt">quicksave-migration.txt</a>, <a href="old-save-migration.txt">old-save-migration.txt</a>, and <a href="config-table-migration.txt">config-table-migration.txt</a>.</p>
         </article>
 
         <article class="initiative" id="initiative-ffa">

@@ -68,6 +68,7 @@ private:
 	}
 
 	bool hasTable(const char* tableName) const;
+	void loadAimPaths() const;
 	void loadRuntimeState() const;
 	void reportError(const std::string& message) const;
 
