@@ -71,7 +71,7 @@ void Grid::addAt(int index, Physical* entity) const {
 	buckets[index].add(entity);
 }
 
-std::span<Physical* const> Grid::getContentAt(int index) const {
+std::span<Physical* const> Grid::getContentAt(unsigned int index) const {
 	assert(calculator->isValidIndex(index)); 
 	return buckets[index].getContent();
 }
@@ -87,7 +87,7 @@ std::span<Physical* const> Grid::getNotSafeContentAt(short x, short z) const {
 	return getContentAt(calculator->getNotSafeIndex(x, z));
 }
 
-std::vector<Physical*>* Grid::getArrayNeight(MouseHeld& held, char player) {
+std::vector<Physical*>* Grid::getArrayNeight(MouseHeld& held, char player) const {
 	auto [minX, maxX] = calculator->getIndex(held.minMaxX());
 	auto [minZ, maxZ] = calculator->getIndex(held.minMaxZ());
 	tempSelected->clear();
@@ -104,7 +104,7 @@ std::vector<Physical*>* Grid::getArrayNeight(MouseHeld& held, char player) {
 	return tempSelected;
 }
 
-std::vector<int> Grid::getCloseCenters(Urho3D::Vector2& center, float radius) const {
+std::vector<unsigned int> Grid::getCloseCenters(const Urho3D::Vector2& center, float radius) const {
 	//TODO clean prawie to samo co wy�ej
 	radius *= calculator->getFieldSize();
 	radius *= 0.5f;
@@ -114,11 +114,11 @@ std::vector<int> Grid::getCloseCenters(Urho3D::Vector2& center, float radius) co
 	const auto posBeginZ = calculator->getIndex(center.y_ - radius);
 	const auto posEndX = calculator->getIndex(center.x_ + radius);
 	const auto posEndZ = calculator->getIndex(center.y_ + radius);
-	std::vector<int> indexes; //TODO performance
+	std::vector<unsigned int> indexes; //TODO performance
 	indexes.reserve((abs(posEndX - posBeginX) + 1) * (abs(posEndZ - posBeginZ) + 1));
-	for (short i = posBeginX; i <= posEndX; ++i) {
+	for (auto i = posBeginX; i <= posEndX; ++i) {
 		auto index = calculator->getNotSafeIndex(i, posBeginZ);
-		for (short j = posBeginZ; j <= posEndZ; ++j) {
+		for (auto j = posBeginZ; j <= posEndZ; ++j) {
 			indexes.push_back(index);
 			++index;
 		}
@@ -128,7 +128,7 @@ std::vector<int> Grid::getCloseCenters(Urho3D::Vector2& center, float radius) co
 }
 
 std::vector<Physical*>* Grid::getArrayNeightSimilarAs(const Urho3D::Vector2& center,
-                                                      unsigned short databaseId, char playerId, float radius) {
+                                                      unsigned short databaseId, char playerId, float radius) const {
 	//TODO clean prawie to samo co wy�ej
 	const auto posBeginX = calculator->getIndex(center.x_ - radius);
 	const auto posBeginZ = calculator->getIndex(center.y_ - radius);

@@ -32,13 +32,13 @@ public:
 
 	virtual int updateNew(Physical* physical) const;
 
-	std::span<Physical* const> getContentAt(int index) const;
+	std::span<Physical* const> getContentAt(unsigned int index) const;
 	void appendIndexesInRange(const Urho3D::Vector2& center, float radius, std::vector<int>& indexes) const;
 
-	std::vector<Physical*>* getArrayNeight(MouseHeld& held, char player);
+	std::vector<Physical*>* getArrayNeight(MouseHeld& held, char player) const;
 	std::vector<Physical*>* getArrayNeightSimilarAs(const Urho3D::Vector2& center, unsigned short databaseId,
-	                                               char playerId, float radius);
-	std::vector<int> getCloseCenters(Urho3D::Vector2& center, float radius) const;
+	                                               char playerId, float radius) const;
+	std::vector<unsigned int> getCloseCenters(const Urho3D::Vector2& center, float radius) const;
 	BucketIterator& getArrayNeight(const Urho3D::Vector2& position, float radius);
 	BucketIterator& getArrayNeight(int center, float radius);
 
