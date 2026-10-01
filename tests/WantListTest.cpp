@@ -70,6 +70,18 @@ namespace {
 	}
 }
 
+TEST(DatabaseValueTypeTest, CostSumPreservesValuesBeyondSixteenBits) {
+	const db_with_cost cost(30000, 30000, 30000, 30000);
+
+	EXPECT_EQ(cost.getSumCost(), 120000u);
+}
+
+TEST(DatabaseValueTypeTest, SquaredAttackRangeDoesNotOverflowShort) {
+	const db_common_attack attack(0.f, 0.f, 0, 200);
+
+	EXPECT_FLOAT_EQ(attack.sqAttackRange, 40000.f);
+}
+
 // --- addRequest / resetRequests basics ---
 
 TEST_F(WantListFixture, EmptyByDefault) {

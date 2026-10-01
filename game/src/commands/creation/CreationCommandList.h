@@ -15,9 +15,9 @@ class CreationCommandList {
 public:
 	explicit CreationCommandList(SimulationObjectManager* simulationObjectManager);
 	~CreationCommandList() = default;
-	CreationCommand* addUnits(unsigned number, unsigned short id, Urho3D::Vector2& position, char player, int level) const;
-	CreationCommand* addBuilding(unsigned short id, Urho3D::Vector2& position, char player, int level) const;
-	CreationCommand* addBuildingForce(unsigned short id, Urho3D::Vector2& position, char player, int level) const;
+	CreationCommand* addUnits(unsigned number, unsigned short id, const Urho3D::Vector2& position, char player, int level) const;
+	CreationCommand* addBuilding(unsigned short id, const Urho3D::Vector2& position, char player, int level) const;
+	CreationCommand* addBuildingForce(unsigned short id, const Urho3D::Vector2& position, char player, int level) const;
 	CreationCommand* addResource(unsigned short id, const Urho3D::UShortVector2& cords) const;
 
 	void add(CreationCommand* command);

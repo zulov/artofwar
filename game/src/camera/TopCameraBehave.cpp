@@ -29,6 +29,6 @@ bool TopCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, fl
 	return hasMoved;
 }
 
-Urho3D::MouseMode TopCameraBehave::getMouseMode() {
+Urho3D::MouseMode TopCameraBehave::getMouseMode() const {
 	return Urho3D::MM_RELATIVE;
 }

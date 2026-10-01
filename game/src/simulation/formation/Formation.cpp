@@ -341,7 +341,7 @@ bool Formation::hasLeader() const {
 	return state != FormationState::REACHED && units.size() > leader->getPositionInState();
 }
 
-std::optional<Unit*> Formation::getLeader() {
+std::optional<Unit*> Formation::getLeader() const {
 	if (hasLeader()) {
 		return leader;
 	}

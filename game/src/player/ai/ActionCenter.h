@@ -36,15 +36,15 @@ public:
 	void createAndUpgrade();
 
 	bool addUnits(unsigned number, short id, Urho3D::Vector2 position, char player);
-	bool addBuilding(short id, Urho3D::Vector2& position, char player, bool force);
+	bool addBuilding(short id, const Urho3D::Vector2& position, char player, bool force);
 	bool addResource(short id, int index, float hp = -1.f);
 	std::vector<PendingCommandSaveData> saveState() const;
 	void loadState(const std::vector<PendingCommandSaveData>& state,
 				   const std::unordered_map<unsigned, Physical*>& byUid);
 
 private:
-	bool addUnits(unsigned number, short id, Urho3D::Vector2& position, char player, int level);
-	bool addBuilding(short id, Urho3D::Vector2& position, char player, int level, bool force);
+	bool addUnits(unsigned number, short id, const Urho3D::Vector2& position, char player, int level);
+	bool addBuilding(short id, const Urho3D::Vector2& position, char player, int level, bool force);
 
 	CreationCommandList creation;
 	UpgradeCommandList upgrade;

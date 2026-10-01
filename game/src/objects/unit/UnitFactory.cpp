@@ -16,7 +16,7 @@ UnitFactory::~UnitFactory() {
 	StateManager::dispose();
 }
 
-std::vector<Unit*>& UnitFactory::create(unsigned number, unsigned short id, Urho3D::Vector2& center, short playerId, short level) {
+std::vector<Unit*>& UnitFactory::create(unsigned number, unsigned short id, const Urho3D::Vector2& center, short playerId, short level) {
 	units.clear();
 	units.reserve(number);
 	int y = 0;

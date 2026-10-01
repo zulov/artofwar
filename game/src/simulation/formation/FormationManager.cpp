@@ -59,7 +59,7 @@ void FormationManager::update() {
 	}
 }
 
-float FormationManager::getPriority(Unit* unit) {
+float FormationManager::getPriority(Unit* unit) const {
 	auto formation = getFormation(unit);
 	if (formation) {
 		return formation->getPriority(unit->getPositionInState());

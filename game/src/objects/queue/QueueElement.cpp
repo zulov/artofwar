@@ -2,7 +2,7 @@
 #include "QueueActionType.h"
 #include "QueueUtils.h"
 
-QueueElement::QueueElement(QueueActionType type, short id, short secondId, unsigned char maxCapacity) :
+QueueElement::QueueElement(QueueActionType type, unsigned short id, unsigned short secondId, unsigned char maxCapacity) :
 	type(type), maxCapacity(maxCapacity), id(id), levelId(secondId), amount(0),
 	ticksToComplete(getSecToComplete(type, id, secondId)), elapsedTicks(0),
 	ticksToCompletePerInstance(getSecPerInstance(type, id, secondId)) {}

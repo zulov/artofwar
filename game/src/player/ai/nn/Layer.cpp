@@ -3,9 +3,9 @@
 #include <span>
 
 
-Layer::Layer(std::vector<float>& w, std::vector<float>& b) {
-	weights = Eigen::Map<Eigen::MatrixXf>(w.data(), w.size() / b.size(), b.size()).transpose();
-	bias = Eigen::Map<Eigen::VectorXf>(b.data(), b.size());
+Layer::Layer(const std::vector<float>& w, const std::vector<float>& b) {
+	weights = Eigen::Map<const Eigen::MatrixXf>(w.data(), w.size() / b.size(), b.size()).transpose();
+	bias = Eigen::Map<const Eigen::VectorXf>(b.data(), b.size());
 }
 
 bool Layer::setInput(std::span<const float> data) {

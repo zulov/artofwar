@@ -29,7 +29,7 @@ public:
 
 	bool isDeadOrTooFar() const;
 
-	std::optional<int> getDeploy();
+	std::optional<int> getDeploy() const;
 
 	// TODO target to nie to samo co gdzie sie maja pojawiac!
 	QueueManager& getQueue() { return queue; }

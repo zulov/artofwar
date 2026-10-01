@@ -40,8 +40,8 @@ public:
 
 	static void executeChange(Building* building);
 	static void executeChange(ResourceEntity* resource);
-	static void executeChange(std::vector<Building*>* buildings);
-	static void executeChange(std::vector<ResourceEntity*>* resources);
+	static void executeChange(const std::vector<Building*>* buildings);
+	static void executeChange(const std::vector<ResourceEntity*>* resources);
 	static void startState(Building* building);
 	static void startState(ResourceEntity* resource);
 

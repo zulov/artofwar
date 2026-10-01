@@ -137,7 +137,7 @@ float Possession::getResWithOutBonus(ResourceType rt) {
 	return metric->resWithoutBonus[cast(rt)];
 }
 
-std::vector<Building*>* Possession::getBuildings(unsigned short id) {
+const std::vector<Building*>* Possession::getBuildings(unsigned short id) const {
 	return buildingsPerId[id];
 }
 

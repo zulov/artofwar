@@ -181,7 +181,7 @@ bool StateManager::changeState(Static* obj, StaticState stateTo) {
 	return false;
 }
 
-void StateManager::executeChange(std::vector<Building*>* buildings) {
+void StateManager::executeChange(const std::vector<Building*>* buildings) {
 	if (instance->buildingStateChangePending) {
 		instance->buildingStateChangePending = false;
 		for (const auto building : *buildings) {
@@ -191,7 +191,7 @@ void StateManager::executeChange(std::vector<Building*>* buildings) {
 	}
 }
 
-void StateManager::executeChange(std::vector<ResourceEntity*>* resources) {
+void StateManager::executeChange(const std::vector<ResourceEntity*>* resources) {
 	if (instance->resourceStateChangePending) {
 		instance->resourceStateChangePending = false;
 		for (const auto resource : *resources) {

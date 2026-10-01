@@ -38,7 +38,7 @@ public:
 	std::vector<Physical*>* getArrayNeight(MouseHeld& held, char player);
 	std::vector<Physical*>* getArrayNeightSimilarAs(const Urho3D::Vector2& center, unsigned short databaseId,
 	                                               char playerId, float radius);
-	std::vector<int> getCloseCenters(Urho3D::Vector2& center, float radius) const;
+	std::vector<int> getCloseCenters(const Urho3D::Vector2& center, float radius) const;
 	BucketIterator& getArrayNeight(const Urho3D::Vector2& position, float radius);
 	BucketIterator& getArrayNeight(int center, float radius);
 

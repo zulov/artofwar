@@ -45,7 +45,7 @@ bool RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, fl
 }
 
 
-Urho3D::MouseMode RtsCameraBehave::getMouseMode() {
+Urho3D::MouseMode RtsCameraBehave::getMouseMode() const {
 	return Urho3D::MM_RELATIVE;
 }
 

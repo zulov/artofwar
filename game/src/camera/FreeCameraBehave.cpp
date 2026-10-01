@@ -24,6 +24,6 @@ bool FreeCameraBehave::rotate(const Urho3D::IntVector2& mouseMove, const float m
 	return false;
 }
 
-Urho3D::MouseMode FreeCameraBehave::getMouseMode() {
+Urho3D::MouseMode FreeCameraBehave::getMouseMode() const {
 	return Urho3D::MM_RELATIVE;
 }

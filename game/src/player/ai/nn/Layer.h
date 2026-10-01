@@ -5,7 +5,7 @@
 
 class Layer {
 public:
-	Layer(std::vector<float>& w, std::vector<float>& bias);
+	Layer(const std::vector<float>& w, const std::vector<float>& bias);
 	Layer(const Layer& rhs) = delete;
 	~Layer() = default;
 	bool setInput(std::span<const float> data);

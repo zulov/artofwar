@@ -7,7 +7,7 @@
 #include "env/Environment.h"
 #include "scene/load/RuntimeSaveData.h"
 
-FormationOrder::FormationOrder(Formation* formation, unsigned char action, Urho3D::Vector2& vector, bool append):
+FormationOrder::FormationOrder(Formation* formation, unsigned char action, const Urho3D::Vector2& vector, bool append):
 	UnitOrder(action, append, vector), formation(formation) {
 }
 

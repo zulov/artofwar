@@ -9,12 +9,12 @@ struct LayerData;
 //TODO remember AVX2 set
 class Brain {
 public:
-	explicit Brain(const std::string& filename, std::vector<LayerData>& layers);
+	explicit Brain(std::string filename, const std::vector<LayerData>& layers);
 	Brain(const Brain& rhs) = delete;
 	~Brain();
 
 	std::span<const float> decide(std::span<const float> data);
-	std::string getName() const;
+	const std::string& getName() const;
 	int getInputSize() const;
 	int getOutputSize() const;
 private:

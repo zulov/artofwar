@@ -12,7 +12,7 @@ class Formation;
 
 class FormationOrder : public UnitOrder {
 public:
-	FormationOrder(Formation* formation, unsigned char action, Urho3D::Vector2& vector, bool append = false);
+	FormationOrder(Formation* formation, unsigned char action, const Urho3D::Vector2& vector, bool append = false);
 	FormationOrder(Formation* formation, unsigned char action, Physical* toUse, bool append = false);
 	~FormationOrder() override = default;
 	bool add() override;

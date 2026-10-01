@@ -19,13 +19,13 @@ class ColorPaletteRepo {
 public:
 	ColorPaletteRepo();
 	~ColorPaletteRepo() = default;
-	Urho3D::Color& getColor(float value, float maxValue);
-	Urho3D::Color& getSolidColor(float value, float maxValue);
+	const Urho3D::Color& getColor(float value, float maxValue) const;
+	const Urho3D::Color& getSolidColor(float value, float maxValue) const;
 	Urho3D::Material* getLineMaterial() const;
 	Urho3D::Material* getInfluenceMaterial() const;
 	Urho3D::Color getInfoForGrid(CellState state) const;
-	Urho3D::Color getCircleColor(db_building* dbBuilding) const;
-	Urho3D::Color getColorForValidation(const db_building* building, Urho3D::Vector2& hitPos) const;
+	Urho3D::Color getCircleColor(const db_building* dbBuilding) const;
+	Urho3D::Color getColorForValidation(const db_building* building, const Urho3D::Vector2& hitPos) const;
 private:
 	Urho3D::Material* lineMaterial;
 	Urho3D::Material* influenceMaterial;

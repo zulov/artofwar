@@ -104,7 +104,7 @@ std::vector<Physical*>* Grid::getArrayNeight(MouseHeld& held, char player) {
 	return tempSelected;
 }
 
-std::vector<int> Grid::getCloseCenters(Urho3D::Vector2& center, float radius) const {
+std::vector<int> Grid::getCloseCenters(const Urho3D::Vector2& center, float radius) const {
 	//TODO clean prawie to samo co wy�ej
 	radius *= calculator->getFieldSize();
 	radius *= 0.5f;
