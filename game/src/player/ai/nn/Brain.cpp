@@ -1,16 +1,18 @@
 #include "Brain.h"
 
+#include <utility>
+
 #include "Layer.h"
 #include "utils/SpanUtils.h"
 #include "utils/DeleteUtils.h"
 #include "utils/FileUtils.h"
 
 
-Brain::Brain(const std::string& filename, std::vector<LayerData>& layers) :
-	filename(filename) {
+Brain::Brain(std::string filename, const std::vector<LayerData>& layers) :
+	filename(std::move(filename)) {
 	allLayers.reserve(layers.size());
 
-	for (auto& layer : layers) {
+	for (const auto& layer : layers) {
 		allLayers.push_back(new Layer(layer.weights, layer.biases));
 	}
 }
@@ -31,7 +33,7 @@ std::span<const float> Brain::decide(std::span<const float> data) {
 	return res1;
 }
 
-std::string Brain::getName() const { return filename; }
+const std::string& Brain::getName() const { return filename; }
 
 int Brain::getInputSize() const { return allLayers.front()->getInputSize(); }
 

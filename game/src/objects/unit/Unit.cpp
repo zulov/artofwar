@@ -114,7 +114,7 @@ bool Unit::ifVisible(bool hasMoved, const CameraInfo* camInfo) const {
 		&& (position.y_ < boundary.w_ || node->GetPosition().z_ < boundary.w_);
 }
 
-void Unit::setAcceleration(Urho3D::Vector2& _acceleration) {
+void Unit::setAcceleration(const Urho3D::Vector2& _acceleration) {
 	acceleration = _acceleration;
 	assert(!_acceleration.IsNaN());
 	acceleration.LimitTo(dbLevel->maxForce);
@@ -544,17 +544,17 @@ void Unit::clean() {
 
 float Unit::getSightRadius() const { return dbLevel->sightRadius; }
 
-Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
+Urho3D::Vector2 Unit::getSocketPos(const Unit* toFollow, int i) const {
 	// TODO bug co to za dziwna funkcja
 	const auto vector = Consts::circleCords[i] * (dbLevel->minDist + toFollow->getMinimalDistance()) * 2;
 	return {toFollow->getPosition().x_ + vector.x_, toFollow->getPosition().y_ + vector.y_};
 }
 
-short Unit::getCostSum() const { return getDbUnit()->getSumCost(); }
+std::uint32_t Unit::getCostSum() const { return getDbUnit()->getSumCost(); }
 
 bool Unit::isInCloseRange(int index) const { return Game::getEnvironment()->isInLocalArea(getMainGridIndex(), index); }
 
-std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(Unit* user) {
+std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(const Unit* user) const {
 	float minDistance = 99999;
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
@@ -616,7 +616,7 @@ bool Unit::indexCanBeUse(int index) const {
 	return false;
 }
 
-std::vector<int> Unit::getIndexesForRangeUse(Unit* user) const {
+std::vector<int> Unit::getIndexesForRangeUse(const Unit* user) const {
 	std::vector<int> indexes;
 	if (belowRangeLimit() <= 0) { return indexes; }
 	const auto env = Game::getEnvironment();

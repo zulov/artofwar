@@ -383,6 +383,7 @@
     <ClCompile Include="src\objects\unit\Unit.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\simulation\Simulation.cpp" />
+	<ClCompile Include="src\simulation\WorldAgeController.cpp" />
     <ClCompile Include="src\commands\upgrade\UpgradeCommand.cpp" />
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
     <ClCompile Include="src\hud\window\top\info\TopInfoPanel.cpp" />
@@ -613,6 +614,8 @@
     <ClInclude Include="src\objects\unit\Unit.h" />
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\simulation\Simulation.h" />
+	<ClInclude Include="src\simulation\WorldAgeController.h" />
+	<ClInclude Include="src\database\db_world_age_struct.h" />
     <ClInclude Include="src\objects\unit\state\UnitState.h" />
     <ClInclude Include="src\utils\DeleteUtils.h" />
     <ClInclude Include="src\commands\upgrade\UpgradeCommand.h" />

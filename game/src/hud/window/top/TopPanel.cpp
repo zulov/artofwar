@@ -10,9 +10,11 @@
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
 #include "player/Player.h"
+#include "player/PlayersManager.h"
 #include "player/Possession.h"
 #include "player/Resources.h"
 #include "simulation/FrameInfo.h"
+#include "simulation/WorldAgeController.h"
 
 const Urho3D::String monthsRoman[] = {
 	"   I", "  II", " III", "  IV", "   V", "  VI", " VII", "VIII", "  IX", "   X", "  XI", " XII"
@@ -54,6 +56,7 @@ void TopPanel::createBody() {
 
 void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	auto poss = player->getPossession();
+	infoPanel->update(Game::getWorldAgeController(), Game::getPlayersMan()->getAllPlayers());
 
 	name->setText(player->getName(), Urho3D::String((int)player->getId()))
 	    ->setToolTip(l10nFormat("top_name_tooltip", (int)player->getTeam()));

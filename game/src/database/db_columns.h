@@ -206,6 +206,9 @@ enum class PendingCommandCol : unsigned char {
 
 enum class PendingCommandEntityCol : unsigned char { command_idx, order_idx, uid };
 
+enum class WorldAgeStateCol : unsigned char { current_age, age_started_tick, history };
+
+
 // --- Data tables (data.db) ---
 
 enum class DbUnitCol : unsigned char {
@@ -259,7 +262,8 @@ enum class DbUnitLevelCol : unsigned char {
 	bonus_melee,
 	bonus_heavy,
 	bonus_light,
-	bonus_building
+	bonus_building,
+	age_stage
 };
 
 enum class DbBuildingCol : unsigned char {
@@ -311,7 +315,8 @@ enum class DbBuildingLevelCol : unsigned char {
 	stone_refine_capacity,
 	gold_refine_capacity,
 	spawn_resource_time,
-	spawn_resource_range
+	spawn_resource_range,
+	age_stage
 };
 
 enum class DbNationCol : unsigned char { id, name, brain_prefix };
@@ -330,6 +335,12 @@ enum class DbResourceCol : unsigned char {
 	collect_speed,
 	rotatable
 };
+
+enum class DbWorldAgeCol : unsigned char { id, stage, name };
+
+enum class DbWorldAgeConditionCol : unsigned char { id, metric, target };
+
+enum class DbWorldAgeJoinCol : unsigned char { age_id, condition_id };
 
 // --- Base.db tables ---
 
@@ -356,7 +367,7 @@ enum class HudVarsCol : unsigned char { id, hud_size, name, value };
 
 // --- Map table ---
 
-enum class MapCol : unsigned char { id, xml_name, name };
+enum class MapCol : unsigned char { id, xml_name, name, age_ids };
 
 // --- Other data tables ---
 
@@ -408,3 +419,5 @@ static_assert(magic_enum::enum_count<PendingCommandCol>() == 14,
 			  "PendingCommandCol must match the 14 columns in SQLConsts::PENDING_COMMAND_COL");
 static_assert(magic_enum::enum_count<PendingCommandEntityCol>() == 3,
 			  "PendingCommandEntityCol must match the 3 columns in SQLConsts::PENDING_COMMAND_ENTITY_COL");
+static_assert(magic_enum::enum_count<WorldAgeStateCol>() == 3,
+			  "WorldAgeStateCol must match the 3 columns in SQLConsts::WORLD_AGE_COL");

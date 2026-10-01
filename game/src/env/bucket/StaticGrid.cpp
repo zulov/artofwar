@@ -3,6 +3,7 @@
 #include <cassert>
 #include <iostream>
 #include <ranges>
+#include <utility>
 
 #include "Bucket.h"
 #include "ArrayProviderUtils.h"
@@ -10,11 +11,11 @@
 #include "objects/Physical.h"
 
 StaticGrid::StaticGrid(unsigned short resolution, float size, std::vector<float> queryRadius): Grid(resolution, size,
-			 queryRadius.back()), queryRadius(queryRadius) {
-	assert(queryRadius.size()>1);
-	bucketsPerRadius.reserve(queryRadius.size());
+			 queryRadius.back()), queryRadius(std::move(queryRadius)) {
+	assert(this->queryRadius.size()>1);
+	bucketsPerRadius.reserve(this->queryRadius.size());
 
-	for (int i = 0; i < queryRadius.size(); ++i) {
+	for (std::size_t i = 0; i < this->queryRadius.size(); ++i) {
 		bucketsPerRadius.push_back(ArrayProvider<Bucket>::get(sqResolution));
 		inited.push_back(PrimitiveArrayProvider<bool>::get(sqResolution, false));
 	}

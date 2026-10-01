@@ -23,7 +23,7 @@ public:
 	Urho3D::Camera* getComponent() const;
 	virtual CameraBehaviorType getType() const = 0;
 	Urho3D::String getInfo() const;
-	virtual Urho3D::MouseMode getMouseMode() = 0;
+	virtual Urho3D::MouseMode getMouseMode() const = 0;
 	const Urho3D::Vector3& getPosition() const;
 	void changeTargetInPercent(float percentX, float percentY) const;
 	void changeTarget(const Urho3D::Vector2& pos) const;

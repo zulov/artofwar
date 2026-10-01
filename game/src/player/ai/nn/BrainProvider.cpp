@@ -1,5 +1,7 @@
 #include "BrainProvider.h"
 
+#include <utility>
+
 #include <Urho3D/IO/Log.h>
 
 #include "Brain.h"
@@ -15,7 +17,7 @@ BrainProvider::~BrainProvider() {
 	clear_vector(brains);
 }
 
-Brain* BrainProvider::get(const std::string name) {
+Brain* BrainProvider::get(std::string name) {
 	for (const auto brain : brains) {
 		if (brain->getName() == name) {
 			return brain;
@@ -29,7 +31,7 @@ Brain* BrainProvider::get(const std::string name) {
 		assert(false);
 		return nullptr;
 	}
-	auto* const brain = new Brain(name, tempLayers);
+	auto* const brain = new Brain(std::move(name), tempLayers);
 	brains.push_back(brain);
 	return brain;
 }

@@ -9,9 +9,11 @@
 #include "FrameInfo.h"
 #include "Game.h"
 #include "SimulationObjectManager.h"
+#include "WorldAgeController.h"
 #include "camera/CameraManager.h"
 #include "commands/upgrade/UpgradeCommand.h"
 #include "database/DatabaseCache.h"
+#include "database/db_other_struct.h"
 #include "debug/DebugLineRepo.h"
 #include "debug/DebugUnitType.h"
 #include "env/Environment.h"
@@ -38,8 +40,10 @@
 #include "scene/load/dbload_container.h"
 #include "simulation/formation/FormationManager.h"
 
-Simulation::Simulation(Environment* environment) : env(environment), colorScheme(SimColorMode::BASIC) {
+Simulation::Simulation(Environment* environment, const db_map* map) : env(environment), colorScheme(SimColorMode::BASIC) {
 	simObjectManager = new SimulationObjectManager();
+	worldAgeController = new WorldAgeController(Game::getDatabase()->getWorldAgeCatalog(), map);
+	Game::setWorldAgeController(worldAgeController);
 	Game::setActionCenter(new ActionCenter(simObjectManager));
 
 	units = simObjectManager->getUnits();
@@ -49,9 +53,11 @@ Simulation::Simulation(Environment* environment) : env(environment), colorScheme
 }
 
 Simulation::~Simulation() {
-	delete simObjectManager;
 	delete Game::getActionCenter();
 	Game::setActionCenter(nullptr);
+	Game::setWorldAgeController(nullptr);
+	delete worldAgeController;
+	delete simObjectManager;
 }
 
 void Simulation::clearNodesWithoutDelete() const {
@@ -109,6 +115,7 @@ FrameInfo* Simulation::update(float timeStep) {
 		Game::getFormationManager()->update();
 
 		frameInfo->countFrame();
+		worldAgeController->update(Game::getPlayersMan()->getAllPlayers(), frameInfo->getTotalTicks());
 	}
 
 	return frameInfo;
@@ -170,6 +177,10 @@ void Simulation::loadEntities(dbload_container* data) const {
 }
 
 void Simulation::restoreRuntimeState(dbload_container* data) const {
+	if (!worldAgeController->restore(*data)) {
+		assert(false && "saved world age state is incompatible with the selected map");
+		return;
+	}
 	for (auto* player : Game::getPlayersMan()->getAllPlayers()) {
 		player->getResources()->recalculateBuildingState(player->getPossession());
 	}

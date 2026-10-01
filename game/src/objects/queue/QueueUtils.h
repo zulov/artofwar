@@ -3,7 +3,7 @@
 #include "QueueActionType.h"
 #include "database/DatabaseCache.h"
 
-inline float getSecToComplete(QueueActionType type, short id, short levelId) {
+inline float getSecToComplete(QueueActionType type, unsigned short id, unsigned short levelId) {
 	switch (type) {
 	case QueueActionType::UNIT_CREATE:
 		return Game::getDatabase()->getUnitLevels()[levelId]->buildTime;
@@ -20,7 +20,7 @@ inline float getSecToComplete(QueueActionType type, short id, short levelId) {
 	}
 }
 
-inline float getSecPerInstance(QueueActionType type, short id, int level) {
+inline float getSecPerInstance(QueueActionType type, unsigned short id, unsigned short level) {
 	//TODO performance przerobic na tablice
 	switch (type) {
 	case QueueActionType::UNIT_CREATE:

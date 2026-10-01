@@ -90,3 +90,8 @@ Game* Game::setActionCenter(ActionCenter* _actionCenter) {
 	instance->actionCenter = _actionCenter;
 	return instance;
 }
+
+Game* Game::setWorldAgeController(WorldAgeController* _worldAgeController) {
+	instance->worldAgeController = _worldAgeController;
+	return instance;
+}

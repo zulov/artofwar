@@ -11,7 +11,7 @@ public:
 	~FormationManager();
 	std::optional<Formation*> createFormation(const std::vector<Unit*>& _units, FormationType _type = FormationType::SQUERE);
 	void update();
-	float getPriority(Unit* unit);
+	float getPriority(Unit* unit) const;
 	bool isLeader(Unit* unit) const;
 	bool isMoving(Unit* unit) const;
 	Formation* getFormation(Unit* unit) const { return getFormation(unit->getFormation()); }

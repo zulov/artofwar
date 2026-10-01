@@ -60,6 +60,12 @@ struct PlayerLevelSaveData {
 	char level{};
 };
 
+struct WorldAgeStateSaveData {
+	unsigned short currentAge{};
+	unsigned ageStartedTick{};
+	std::string history;
+};
+
 enum class PendingCommandKind : char {
 	CREATION,
 	UPGRADE,

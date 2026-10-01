@@ -181,6 +181,7 @@ struct dbload_container {
 	std::vector<AiSaveData> aiStates;
 	std::vector<AiWantSaveData> aiWants;
 	std::vector<AiHistorySaveData> aiHistory;
+	std::optional<WorldAgeStateSaveData> worldAgeState;
 	std::optional<FrameSaveData> frame;
 	std::optional<RandSaveData> random;
 };

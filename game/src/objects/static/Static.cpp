@@ -125,7 +125,7 @@ int Static::hasFreeSpace() const {
 	return std::ranges::count_if(getSurroundCells(), [this](int index) { return canUse(index); });
 }
 
-std::optional<std::tuple<Urho3D::Vector2, float>> Static::getPosToUseWithDist(Unit* user) {
+std::optional<std::tuple<Urho3D::Vector2, float>> Static::getPosToUseWithDist(const Unit* user) const {
 	float minDistance = 9999999;
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
@@ -165,7 +165,7 @@ bool Static::indexCanBeUse(int index) const {
 	return std::ranges::any_of(getSurroundCells(), [&](const auto& i) { return index == i; });
 }
 
-std::vector<int> Static::getIndexesForRangeUse(Unit* user) const {
+std::vector<int> Static::getIndexesForRangeUse(const Unit* user) const {
 	std::vector<int> indexes;
 	if (belowRangeLimit() <= 0) { return indexes; }
 

@@ -316,13 +316,13 @@ void Main::InitLocalizationSystem() const {
 void Main::save(const Urho3D::String& name) {
 	if (!saver.createSave(name, simulation->getUnits(), simulation->getBuildings(), simulation->getResources(),
 					  Game::getPlayersMan()->getAllPlayers(), levelBuilder->getMapId(),
-					  Game::getEnvironment()->getResolution())) {
+					  Game::getEnvironment()->getResolution(), simulation->getWorldAgeController())) {
 		std::cerr << "[Save Error] " << saver.getError() << "\n";
 		URHO3D_LOGERROR("{}", saver.getError());
 	}
 }
 
-void Main::createSimulation() { simulation = new Simulation(Game::getEnvironment()); }
+void Main::createSimulation() { simulation = new Simulation(Game::getEnvironment(), levelBuilder->getMap()); }
 
 void Main::setSimpleManagers() {
 	Game::setCameraManager(new CameraManager())

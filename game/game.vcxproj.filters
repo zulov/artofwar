@@ -40,6 +40,9 @@
     <ClCompile Include="src\simulation\Simulation.cpp">
       <Filter>simulation</Filter>
     </ClCompile>
+	<ClCompile Include="src\simulation\WorldAgeController.cpp">
+	  <Filter>simulation</Filter>
+	</ClCompile>
     <ClCompile Include="src\simulation\SimulationObjectManager.cpp">
       <Filter>objects\collection\manager</Filter>
     </ClCompile>

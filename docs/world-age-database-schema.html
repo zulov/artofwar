@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>World Age Database Schema</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #111827; color: #e5e7eb; }
+    body { max-width: 1000px; margin: 0 auto; padding: 32px 20px 64px; line-height: 1.55; }
+    h1, h2 { color: #f9fafb; }
+    h2 { border-bottom: 1px solid #374151; padding-bottom: 6px; margin-top: 36px; }
+    code, pre { background: #1f2937; border-radius: 4px; }
+    code { padding: 2px 5px; }
+    pre { overflow-x: auto; padding: 14px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #374151; padding: 9px; text-align: left; vertical-align: top; }
+    th { background: #1f2937; }
+    .note { border-left: 4px solid #60a5fa; background: #172554; padding: 12px 16px; }
+  </style>
+</head>
+<body>
+  <h1>World Age Database Schema</h1>
+  <p>The map-owned world age catalog is stored in <code>Data/map/maps.db</code>. A match follows one route through the selected map's age candidates. Age IDs are stable runtime and save-game keys; level gates use logical stages. The active schema is staged rather than edge-based: the map's ordered <code>age_ids</code> list supplies candidates, and the next stage is inferred from <code>age.stage</code>.</p>
+
+  <h2>Static Content</h2>
+   <pre>map(
+    id PRIMARY KEY,
+    xmlName,
+    name,
+    age_ids TEXT
+)
+
+age(
+    id PRIMARY KEY,
+    stage,
+    name
+)
+
+condition(
+    id PRIMARY KEY,
+    metric,  -- 0: workers, 1: army
+    target
+)
+
+age_condition(
+    age_id REFERENCES age(id),
+    condition_id REFERENCES condition(id),
+    PRIMARY KEY(age_id, condition_id)
+)</pre>
+  <table>
+    <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+    <tbody>
+       <tr><td><code>age.id</code></td><td>Stable age ID. Age <code>0</code> is the root.</td></tr>
+       <tr><td><code>age.stage</code></td><td>Logical progression stage used by level gates. Multiple candidate ages can share a stage.</td></tr>
+       <tr><td><code>condition.id</code></td><td>Stable reusable condition ID. A condition may be joined to multiple ages.</td></tr>
+      <tr><td><code>metric</code></td><td><code>0</code> counts workers; <code>1</code> counts non-worker army units.</td></tr>
+      <tr><td><code>target</code></td><td>Required average metric across all configured players.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <strong>Progression policy:</strong> all conditions joined to one candidate age must be met on the same simulation tick. The first qualifying candidate in the map's ordered <code>age_ids</code> list wins. After 18,000 simulation ticks, the candidate with the greatest condition progress wins; ties use map order.
+  </div>
+
+  <h2>Canonical Age Sequence</h2>
+  <p>The canonical content has seven age IDs grouped into four logical stages. These are candidate ages, not explicit graph edges:</p>
+   <pre>stage 0: 0  Age of Settlement
+
+stage 1: 1  Age of Growth       workers 10
+          2  Age of Mobilization army 20
+
+stage 2: 3  Age of Consolidation workers 20
+          4  Age of Fortification army 30
+
+stage 3: 5  Age of Industry      workers 40
+          6  Age of Conquest      army 70</pre>
+  <p>When multiple candidates in the next stage complete on the same tick, the order in the selected map's <code>age_ids</code> list is the deterministic tie-break.</p>
+
+  <table>
+    <thead><tr><th>Map ID</th><th>XML map</th><th>Age candidates in order</th></tr></thead>
+    <tbody>
+      <tr><td><code>0</code></td><td><code>map/map0.xml</code></td><td><code>0,1</code></td></tr>
+      <tr><td><code>1</code></td><td><code>map/map1.xml</code></td><td><code>0,1,2,3,4,5,6</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Level Gates</h2>
+  <p><code>unit_level.age_stage</code> and <code>building_level.age_stage</code> are part of the normal level tables. A level is available after the current selected age reaches at least that logical stage, regardless of which candidate age won at that stage.</p>
+  <table>
+    <thead><tr><th>Requirement</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>0</code></td><td>Base content available at match start.</td></tr>
+       <tr><td><code>1</code></td><td>Available after the first age stage.</td></tr>
+       <tr><td><code>2</code></td><td>Available after the second age stage.</td></tr>
+       <tr><td><code>3</code></td><td>Available after the third age stage.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Save Data</h2>
+  <p>Scene saves do not duplicate static age content. They preserve the current state for the map selected by <code>config.map</code>:</p>
+  <table>
+    <thead><tr><th>Table</th><th>Stored data</th></tr></thead>
+    <tbody>
+       <tr><td><code>world_age</code></td><td>One row containing <code>current_age</code>, <code>age_started_tick</code>, and <code>history</code>.</td></tr>
+       <tr><td><code>world_age.history</code></td><td>Comma-separated age IDs reached on the selected map route, for example <code>0,2,3,4</code>. The final ID must equal <code>current_age</code>.</td></tr>
+    </tbody>
+  </table>
+  <p>Changing age IDs requires a compatibility decision and a save migration. The age start tick must be preserved when migrating a save so the timeout does not reset unexpectedly.</p>
+
+  <h2>Implementation</h2>
+  <p><code>DatabaseCache</code> validates age references, condition targets, map candidate IDs, stage ordering, and level-stage bounds. <code>WorldAgeController</code> evaluates worker and army averages across the configured players, applies the 18,000-tick timeout fallback, and persists the selected route and age start tick. The current save schema has no separate transition, hold, or history table.</p>
+</body>
+</html>

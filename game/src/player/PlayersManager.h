@@ -27,7 +27,7 @@ public:
 	Player* getEnemyFor(unsigned char player) const;
 	unsigned char getEnemyIdFor(unsigned char player) const;
 
-	std::vector<Player*>& getAllPlayers();
+	const std::vector<Player*>& getAllPlayers() const;
 private:
 	Player* activePlayer;
 	std::vector<Player*> allPlayers;

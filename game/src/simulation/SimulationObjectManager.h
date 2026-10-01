@@ -19,11 +19,11 @@ public:
 	~SimulationObjectManager();
 	void clearNodesWithoutDelete();
 
-	std::vector<Unit*>* getUnits() const { return units; }
-	std::vector<Building*>* getBuildings() const { return buildings; }
-	std::vector<ResourceEntity*>* getResources() const { return resources; }
+	const std::vector<Unit*>* getUnits() const { return units; }
+	const std::vector<Building*>* getBuildings() const { return buildings; }
+	const std::vector<ResourceEntity*>* getResources() const { return resources; }
 
-	void addUnits(unsigned number, unsigned short id, Urho3D::Vector2& center, char level, char player);
+	void addUnits(unsigned number, unsigned short id, const Urho3D::Vector2& center, char level, char player);
 	void addBuilding(unsigned short id, const Urho3D::UShortVector2& _bucketCords, char level, char player) const;
 	ResourceEntity* addResource(unsigned short id, const Urho3D::UShortVector2& _bucketCords);
 

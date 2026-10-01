@@ -59,7 +59,7 @@ TEST_F(LayerFixture, SetValuesAppliesMappedWeightsBiasAndTanh) {
 }
 
 TEST_F(BrainFixture, DecideUsesInputHolderAndPropagatesThroughNextLayer) {
-	auto layers = makeSimpleBrainLayers();
+	const auto layers = makeSimpleBrainLayers();
 	Brain brain("unit-test", layers);
 
 	const std::array<float, 2> input{ 0.1f, -0.2f };

@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Art of War - World Age Mission Storage Options</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --page: #101827;
+      --surface: #172235;
+      --surface-2: #1d2c43;
+      --surface-3: #111b2d;
+      --border: #30445f;
+      --text: #dbe7f5;
+      --muted: #9aabc0;
+      --heading: #86efac;
+      --accent: #34d399;
+      --blue: #7dd3fc;
+      --gold: #fcd34d;
+      --red: #fda4af;
+      --purple: #c4b5fd;
+      --code: #fde68a;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 42px 28px 72px;
+      background: var(--page);
+      color: var(--text);
+      font: 16px/1.62 "Segoe UI", Tahoma, sans-serif;
+    }
+    header { border-bottom: 1px solid var(--border); margin-bottom: 30px; padding-bottom: 24px; }
+    h1, h2, h3, h4 { line-height: 1.2; }
+    h1 { margin: 0 0 10px; color: #f8fafc; font-size: clamp(2rem, 5vw, 3.25rem); }
+    h2 { margin: 48px 0 15px; color: var(--heading); font-size: 1.65rem; }
+    h3 { margin: 30px 0 12px; color: #bbf7d0; font-size: 1.2rem; }
+    h4 { margin: 20px 0 8px; color: var(--blue); font-size: 1rem; }
+    p { margin: 0 0 16px; }
+    .subtitle { margin: 0; color: var(--muted); font-size: 1.08rem; }
+    .meta { margin-top: 14px; color: var(--muted); font-size: 0.86rem; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 0; }
+    .links a { border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px; }
+    a { color: #a7f3d0; }
+    code {
+      color: var(--code);
+      font: 0.9em Consolas, "Courier New", monospace;
+      background: #0c1422;
+      border-radius: 4px;
+      padding: 1px 5px;
+    }
+    pre {
+      margin: 14px 0 18px;
+      padding: 15px 18px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #0b1320;
+      color: #d9f99d;
+      font: 0.87rem/1.55 Consolas, "Courier New", monospace;
+    }
+    .toc, .card, .diagram, .callout, .example, .phase {
+      margin: 18px 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .toc, .card, .callout, .example, .phase { padding: 18px 22px; background: var(--surface); }
+    .toc { background: #142238; }
+    .toc h3 { margin-top: 0; }
+    .toc ol { columns: 2; margin: 8px 0 0; padding-left: 22px; }
+    .toc li { margin: 5px 0; }
+    .callout { border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; }
+    .callout.warning { border-left-color: var(--gold); background: #29251a; }
+    .callout.danger { border-left-color: var(--red); background: #291b27; }
+    .callout.info { border-left-color: var(--blue); background: #182b3d; }
+    .callout strong { color: #f8fafc; }
+    .diagram { padding: 12px; overflow-x: auto; background: var(--surface-3); }
+    .diagram svg { display: block; width: 100%; min-width: 900px; height: auto; }
+    .diagram-caption { margin: 10px 3px 1px; color: var(--muted); font-size: 0.87rem; }
+    svg text { font-family: "Segoe UI", Tahoma, sans-serif; }
+    table { width: 100%; margin: 18px 0; border-collapse: collapse; border: 1px solid var(--border); }
+    th, td { padding: 10px 12px; border: 1px solid var(--border); text-align: left; vertical-align: top; }
+    th { background: #1d3b37; color: #dcfce7; }
+    td:first-child { color: #bbf7d0; font-weight: 700; }
+    td:nth-child(2) { color: #fef3c7; }
+    .tag {
+      display: inline-block;
+      margin: 0 4px 4px 0;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #263a55;
+      color: #bae6fd;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .tag.green { background: #1b493c; color: #bbf7d0; }
+    .tag.gold { background: #4a3c1b; color: #fde68a; }
+    .tag.red { background: #4a2633; color: #fecdd3; }
+    .tag.purple { background: #3e315d; color: #ddd6fe; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .grid > .card, .grid > .example { margin: 0; }
+    .example { background: #1a2a43; }
+    .example h3 { margin-top: 0; color: var(--gold); }
+    .example .result { color: #86efac; }
+    .example .tradeoff { color: #fda4af; }
+    .phase { position: relative; padding-left: 74px; }
+    .phase-number {
+      position: absolute;
+      top: 18px;
+      left: 20px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #082016;
+      font-weight: 800;
+      line-height: 34px;
+      text-align: center;
+    }
+    .phase h3 { margin-top: 0; }
+    .formula { color: #d9f99d; font: 0.95rem/1.6 Consolas, "Courier New", monospace; }
+    .small { color: var(--muted); font-size: 0.88rem; }
+    .checklist { padding-left: 23px; }
+    .checklist li { margin: 7px 0; }
+    .source { margin-top: 30px; color: var(--muted); font-size: 0.86rem; }
+    @media (max-width: 800px) {
+      body { padding: 28px 16px 52px; font-size: 15px; }
+      .toc ol { columns: 1; }
+      .grid { grid-template-columns: 1fr; }
+      table { display: block; overflow-x: auto; }
+    }
+    @media print {
+      :root { color-scheme: light; }
+      body { max-width: none; padding: 0; background: #fff; color: #111; font-size: 9pt; }
+      header { border-color: #aaa; }
+      h1, h2, h3, h4, a, td:first-child, td:nth-child(2) { color: #111; }
+      .subtitle, .meta, .small, .diagram-caption, .source { color: #444; }
+      .links, .toc, .card, .callout, .example, .phase, .diagram, pre { background: #fff; border-color: #999; }
+      th, td { border-color: #999; color: #111; }
+      th { background: #eee; }
+      .diagram, table, .callout, .phase, .example { break-inside: avoid; page-break-inside: avoid; }
+      .diagram svg { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>World Age Mission Storage Options</h1>
+    <p class="subtitle">Choices for defining different age graphs, conditions, and unlocks per map or mission without duplicating static content into save files.</p>
+    <p class="meta">Status: design decision guide | Scope: data ownership, age graph selection, level gates, save/load, and migration | Current implementation is identified separately from proposed schemas.</p>
+    <nav class="links" aria-label="Related documentation">
+      <a href="data-development.md">Data Development</a>
+      <a href="world-age-database-schema.html">Current World Age Schema</a>
+      <a href="era-progression-design.html">Era Progression Design</a>
+      <a href="simulation-development.md">Simulation Development</a>
+      <a href="save-development.html">Save Development</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#short-version">Short version</a></li>
+        <li><a href="#current-system">Current system</a></li>
+        <li><a href="#ownership">Static content and save state</a></li>
+        <li><a href="#options">Storage options</a></li>
+        <li><a href="#comparison">Comparison</a></li>
+        <li><a href="#recommended-schema">Recommended profile schema</a></li>
+        <li><a href="#mission-schema">Mission schema</a></li>
+        <li><a href="#mission-content">Future mission content</a></li>
+        <li><a href="#conditions">Conditions and timing</a></li>
+        <li><a href="#level-gates">Level gates</a></li>
+        <li><a href="#save-contract">Save contract</a></li>
+        <li><a href="#migration">Migration and implementation</a></li>
+      </ol>
+    </div>
+
+    <section id="short-version">
+      <h2>1. Short Version</h2>
+      <div class="callout">
+        <strong>Recommendation:</strong> keep <code>data.db</code> for globally shared units, buildings, resources, and base levels. Put map-owned age definitions and reusable conditions in <code>maps.db</code>. Save only the selected map and live world-age progress.
+      </div>
+      <p>Do not merge <code>data.db</code> and <code>maps.db</code> solely because age rules become mission-specific. The files have useful, separate responsibilities: the former is the shared gameplay catalogue; the latter is map and mission configuration.</p>
+      <p>If one physical map always has exactly one game mode, map-owned age data is enough. If several maps should share the same progression, use an <strong>age profile</strong>. If one terrain map can host several scenarios with different progression, add a <strong>mission</strong> that selects both a map and an age profile.</p>
+      <div class="grid">
+        <div class="card"><span class="tag green">STATIC</span><h3>Content definition</h3><p>Ages, logical stages, reusable conditions, and map age order define the rules of a mission map.</p></div>
+        <div class="card"><span class="tag blue">RUNTIME</span><h3>Save continuation</h3><p>Current age and reached-age history describe one in-progress match.</p></div>
+      </div>
+    </section>
+
+    <section id="current-system">
+      <h2>2. Current System</h2>
+      <p>The implementation loads map-owned world-age content from <code>Data/map/maps.db</code>. Each map selects an ordered list of candidate age IDs. A candidate has a logical stage and one or more reusable conditions; candidates in the next stage are checked in map-list order.</p>
+      <p><code>data.db</code> stores shared level gates as <code>age_stage</code>. Saves persist the selected map in <code>config.map</code>, then restore current age and reached-age history against that map's catalog.</p>
+       <pre>Current static content
+
+data.db
+  unit_level(..., age_stage)
+  building_level(..., age_stage)
+
+maps.db
+  map(id, xmlName, name, age_ids)
+  age(id, stage, name)
+  condition(id, metric, target)
+  age_condition(age_id, condition_id)
+
+ saves/&lt;name&gt;.db
+  config(map, ...)
+  world_age(current_age, age_started_tick, history)</pre>
+      <div class="callout info">
+          <strong>Current behavior:</strong> <code>WorldAgeController</code> records the selected age route and exposes its logical stage. A level requiring stage <code>2</code> is available after any candidate age at stage 2 is reached.
+      </div>
+    </section>
+
+    <section id="ownership">
+      <h2>3. Static Content And Save State</h2>
+       <p>Static definitions answer what the match <em>can</em> do. Save state answers what this specific match <em>has already done</em>. They must remain separate. This keeps balance edits centralized, avoids embedding a copy of the age catalog in every save, and preserves one validation path for all maps using the catalog.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 1180 400" role="img" aria-labelledby="ownership-title ownership-desc">
+          <title id="ownership-title">Static content and saved world-age progress</title>
+          <desc id="ownership-desc">Data database owns global entities, maps database owns an age profile selected by a map, and a save stores only the selected map and current progress through that profile.</desc>
+          <defs>
+            <marker id="arrow-ownership-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#7dd3fc"/></marker>
+            <marker id="arrow-ownership-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#86efac"/></marker>
+            <marker id="arrow-ownership-gold" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#fcd34d"/></marker>
+          </defs>
+          <rect width="1180" height="400" rx="8" fill="#111b2d"/>
+
+          <rect x="45" y="66" width="280" height="220" rx="12" fill="#18324a" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="185" y="105" text-anchor="middle" fill="#fff" font-size="20" font-weight="700">data.db</text>
+          <text x="185" y="140" text-anchor="middle" fill="#bae6fd" font-size="14">shared gameplay catalogue</text>
+          <text x="185" y="174" text-anchor="middle" fill="#dbe7f5" font-size="13">units and unit levels</text>
+          <text x="185" y="200" text-anchor="middle" fill="#dbe7f5" font-size="13">buildings and building levels</text>
+          <text x="185" y="226" text-anchor="middle" fill="#dbe7f5" font-size="13">resources and nations</text>
+          <text x="185" y="260" text-anchor="middle" fill="#9acbe8" font-size="12">not copied per mission</text>
+
+          <rect x="450" y="42" width="305" height="270" rx="12" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="602" y="81" text-anchor="middle" fill="#fff" font-size="20" font-weight="700">maps.db</text>
+          <text x="602" y="115" text-anchor="middle" fill="#bbf7d0" font-size="14">selected static mission content</text>
+          <rect x="480" y="142" width="245" height="46" rx="8" fill="#224e42" stroke="#86efac"/>
+           <text x="602" y="170" text-anchor="middle" fill="#d9f99d" font-size="13">map 1 -&gt; ordered age IDs</text>
+          <rect x="480" y="207" width="112" height="66" rx="8" fill="#18324a" stroke="#7dd3fc"/>
+           <text x="536" y="234" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">ages</text>
+           <text x="536" y="255" text-anchor="middle" fill="#bae6fd" font-size="11">IDs and stages</text>
+          <rect x="613" y="207" width="112" height="66" rx="8" fill="#3e315d" stroke="#c4b5fd"/>
+           <text x="669" y="234" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">conditions</text>
+           <text x="669" y="255" text-anchor="middle" fill="#ddd6fe" font-size="11">metrics and targets</text>
+
+          <rect x="875" y="66" width="260" height="220" rx="12" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
+          <text x="1005" y="105" text-anchor="middle" fill="#fff" font-size="20" font-weight="700">save.db</text>
+          <text x="1005" y="140" text-anchor="middle" fill="#fef3c7" font-size="14">one match continuation</text>
+          <text x="1005" y="174" text-anchor="middle" fill="#fef3c7" font-size="13">selected map or mission</text>
+          <text x="1005" y="200" text-anchor="middle" fill="#fef3c7" font-size="13">current age and start tick</text>
+           <text x="1005" y="226" text-anchor="middle" fill="#fef3c7" font-size="13">current age and reached route</text>
+          <text x="1005" y="260" text-anchor="middle" fill="#ead99d" font-size="12">no copied graph definition</text>
+
+          <line x1="325" y1="176" x2="450" y2="176" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arrow-ownership-blue)"/>
+          <text x="387" y="158" text-anchor="middle" fill="#7dd3fc" font-size="11">shared entities</text>
+          <line x1="755" y1="176" x2="875" y2="176" stroke="#fcd34d" stroke-width="3" marker-end="url(#arrow-ownership-gold)"/>
+          <text x="815" y="158" text-anchor="middle" fill="#fcd34d" font-size="11">selected identity</text>
+          <path d="M875 245 C825 330, 795 335, 725 284" fill="none" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-ownership-green)"/>
+          <text x="817" y="334" text-anchor="middle" fill="#86efac" font-size="11">restore against profile</text>
+        </svg>
+        <p class="diagram-caption">The save references content that already exists in the installed map database. It stores only enough state to continue the same route deterministically.</p>
+      </div>
+    </section>
+
+       <section id="options">
+       <h2>4. Storage Options</h2>
+       <p>The active map-owned catalog is the current implementation. The alternatives below are retained as future design options only; they are not tables present in the checked-in databases.</p>
+      <h3>4.1 Option A: One Global Graph In data.db</h3>
+      <div class="grid">
+        <div class="example">
+          <h3>Schema shape</h3>
+          <pre>data.db
+  world_age_node(id, name)
+  world_age_transition(
+      id, from_node, to_node,
+      metric, target
+  )</pre>
+           <p class="result">Legacy proposal; this is not the active implementation.</p>
+        </div>
+        <div class="card">
+          <h3>Use when</h3>
+           <p>Every map would deliberately use the same graph, the same conditions, the same node IDs, and the same level-unlock meaning.</p>
+          <p class="tradeoff">It cannot represent a short tutorial with three ages and a standard map with a branching seven-node graph without special-case code.</p>
+        </div>
+      </div>
+
+      <h3>4.2 Option B: Graph Directly Owned By Each Map</h3>
+      <div class="grid">
+        <div class="example">
+          <h3>Schema shape</h3>
+          <pre>maps.db
+  map(id, xml_name, name)
+  map_age_node(map_id, id, name)
+  map_age_transition(
+      map_id, id, from_node, to_node,
+      metric, target
+  )</pre>
+          <p class="result">Each map can have any graph shape.</p>
+        </div>
+        <div class="card">
+          <h3>Use when</h3>
+          <p>One terrain map permanently represents one mission and no two maps need to share the same progression definition.</p>
+          <p class="tradeoff">Two maps with the same age rules duplicate all profile rows. Map ownership also becomes misleading if one terrain map later gains a tutorial and a skirmish mode.</p>
+        </div>
+      </div>
+
+      <h3>4.3 Option C: Reusable Age Profiles In maps.db</h3>
+      <div class="grid">
+        <div class="example">
+          <h3>Schema shape</h3>
+          <pre>maps.db
+  map(..., age_profile_id)
+  age_profile(id, name, ...)
+  age_node(profile_id, id, name)
+  age_transition(profile_id, id, ...)</pre>
+          <p class="result">Maps select reusable, validated progression content.</p>
+        </div>
+        <div class="card">
+          <h3>Use when</h3>
+          <p>Maps can differ in ages, while several maps may still share a standard, tutorial, or long-match progression profile.</p>
+          <p class="tradeoff">This adds one concept and one foreign key, but avoids duplicated graphs. This is the recommended default.</p>
+        </div>
+      </div>
+
+      <h3>4.4 Option D: Separate Missions Select Map And Profile</h3>
+      <div class="grid">
+        <div class="example">
+          <h3>Schema shape</h3>
+          <pre>maps.db
+  map(id, xml_name, name)
+  mission(id, map_id, age_profile_id, name)
+  age_profile(...)
+  age_node(...)
+  age_transition(...)</pre>
+          <p class="result">One terrain map can host several scenarios.</p>
+        </div>
+        <div class="card">
+          <h3>Use when</h3>
+          <p>A terrain map may support a tutorial, a normal skirmish, a survival scenario, or campaign missions with different progression.</p>
+          <p class="tradeoff">New-game UI, save configuration, and loading must select and persist <code>mission_id</code>, not just <code>map_id</code>.</p>
+        </div>
+      </div>
+
+      <h3>4.5 Rejected: Copying The Graph Into Every Save</h3>
+      <div class="callout danger">
+        <strong>Do not use saves as the normal owner of node and transition definitions.</strong> It duplicates static data, makes balancing edits invisible to existing saves, permits malformed copies of a graph, and makes one profile difficult to validate and reuse. A save should refer to an installed profile and preserve only runtime continuation state.
+      </div>
+    </section>
+
+    <section id="comparison">
+      <h2>5. Comparison</h2>
+      <table>
+        <thead><tr><th>Option</th><th>Best fit</th><th>Strengths</th><th>Costs and limits</th></tr></thead>
+        <tbody>
+          <tr><td>A. Global data.db graph</td><td>One universal progression for all maps.</td><td>Smallest implementation; one global set of level gate IDs.</td><td>No mission-specific graph shape, targets, or timing without changing global content. This is a rejected legacy option; the active implementation is map-owned.</td></tr>
+          <tr><td>B. Map-owned graph</td><td>Map always equals mission.</td><td>Easy selection through the already saved map ID; each map can have independent nodes and transitions.</td><td>Duplicate profiles across maps; terrain cannot be reused cleanly for different scenarios.</td></tr>
+          <tr><td>C. Reusable profile</td><td>Different maps and reusable progression types.</td><td>No graph duplication; profile-specific timing and gates; content authors can reuse standard profiles.</td><td>Requires profile loading, selection, and validation. Map-to-profile assignment must remain stable for saves.</td></tr>
+          <tr><td>D. Mission selects map and profile</td><td>Multiple gameplay modes on one terrain map.</td><td>Most expressive ownership; map art and scenario rules remain independent; profiles are reusable.</td><td>More UI and save/load work; every new game needs an explicit mission selection.</td></tr>
+        </tbody>
+      </table>
+      <div class="diagram">
+        <svg viewBox="0 0 1220 400" role="img" aria-labelledby="options-title options-desc">
+          <title id="options-title">Ownership diagrams for four world-age storage options</title>
+          <desc id="options-desc">Four columns compare a global data graph, a map-owned graph, a reusable profile selected by map, and a mission that selects both map and profile.</desc>
+          <defs>
+            <marker id="arrow-options" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#86efac"/></marker>
+          </defs>
+          <rect width="1220" height="400" rx="8" fill="#111b2d"/>
+
+          <text x="150" y="40" text-anchor="middle" fill="#bae6fd" font-size="17" font-weight="700">A. Global</text>
+          <rect x="40" y="70" width="220" height="82" rx="10" fill="#18324a" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="150" y="103" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">data.db</text>
+          <text x="150" y="128" text-anchor="middle" fill="#bae6fd" font-size="12">one age graph</text>
+          <rect x="40" y="220" width="220" height="82" rx="10" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
+          <text x="150" y="253" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">all maps</text>
+          <text x="150" y="278" text-anchor="middle" fill="#fef3c7" font-size="12">share the graph</text>
+          <line x1="150" y1="152" x2="150" y2="220" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-options)"/>
+
+          <text x="455" y="40" text-anchor="middle" fill="#bae6fd" font-size="17" font-weight="700">B. Map Owned</text>
+          <rect x="345" y="70" width="220" height="82" rx="10" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="455" y="103" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">map 1</text>
+          <text x="455" y="128" text-anchor="middle" fill="#bbf7d0" font-size="12">terrain and graph</text>
+          <rect x="345" y="220" width="220" height="82" rx="10" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="455" y="253" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">nodes and edges</text>
+          <text x="455" y="278" text-anchor="middle" fill="#ddd6fe" font-size="12">owned by map 1</text>
+          <line x1="455" y1="152" x2="455" y2="220" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-options)"/>
+
+          <text x="760" y="40" text-anchor="middle" fill="#bae6fd" font-size="17" font-weight="700">C. Profile</text>
+          <rect x="650" y="70" width="220" height="82" rx="10" fill="#18324a" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="760" y="103" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">map 1</text>
+          <text x="760" y="128" text-anchor="middle" fill="#bae6fd" font-size="12">age_profile_id = 4</text>
+          <rect x="650" y="220" width="220" height="82" rx="10" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="760" y="253" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">profile 4</text>
+          <text x="760" y="278" text-anchor="middle" fill="#bbf7d0" font-size="12">reused by many maps</text>
+          <line x1="760" y1="152" x2="760" y2="220" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-options)"/>
+
+          <text x="1065" y="40" text-anchor="middle" fill="#bae6fd" font-size="17" font-weight="700">D. Mission</text>
+          <rect x="955" y="70" width="220" height="82" rx="10" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
+          <text x="1065" y="103" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">mission 9</text>
+          <text x="1065" y="128" text-anchor="middle" fill="#fef3c7" font-size="12">scenario selection</text>
+          <rect x="915" y="220" width="130" height="82" rx="10" fill="#18324a" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="980" y="253" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">map 1</text>
+          <text x="980" y="278" text-anchor="middle" fill="#bae6fd" font-size="12">terrain</text>
+          <rect x="1085" y="220" width="130" height="82" rx="10" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="1150" y="253" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">profile 4</text>
+          <text x="1150" y="278" text-anchor="middle" fill="#bbf7d0" font-size="12">age rules</text>
+          <line x1="1045" y1="152" x2="990" y2="220" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-options)"/>
+          <line x1="1085" y1="152" x2="1140" y2="220" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-options)"/>
+
+          <text x="610" y="360" text-anchor="middle" fill="#9aabc0" font-size="13">Choose the owner that matches what content authors actually select: a universal game, a map, a reusable profile, or an explicit mission.</text>
+        </svg>
+        <p class="diagram-caption">The profile option separates terrain selection from progression reuse. The mission option additionally separates a scenario from its terrain.</p>
+      </div>
+    </section>
+
+    <section id="recommended-schema">
+      <h2>6. Recommended Profile Schema</h2>
+      <p>Use this model when a selected map normally determines the progression profile, but profiles should be reusable. The following is a proposed schema for <code>maps.db</code>, not a description of current tables.</p>
+      <pre>-- Existing map row gains one profile selector.
+map (
+    id PRIMARY KEY,
+    xml_name NOT NULL,
+    name NOT NULL,
+    age_profile_id NOT NULL
+)
+
+age_profile (
+    id PRIMARY KEY,
+    name NOT NULL,
+    hold_ticks INT NOT NULL,
+    timeout_ticks INT NOT NULL
+)
+
+age_node (
+    profile_id INT NOT NULL,
+    id INT NOT NULL,
+    name TEXT NOT NULL,
+    PRIMARY KEY (profile_id, id),
+    FOREIGN KEY (profile_id) REFERENCES age_profile(id)
+)
+
+age_transition (
+    profile_id INT NOT NULL,
+    id INT NOT NULL,
+    from_node INT NOT NULL,
+    to_node INT NOT NULL,
+    metric INT NOT NULL,
+    target REAL NOT NULL,
+    PRIMARY KEY (profile_id, id),
+    FOREIGN KEY (profile_id) REFERENCES age_profile(id)
+)</pre>
+      <p>The composite keys mean node ID <code>3</code> is unique only within one profile. This is valid because the active profile identifies the graph in which a node or transition is resolved. Keep IDs stable within a released profile whenever existing saves must remain loadable.</p>
+      <div class="callout warning">
+        <strong>Validation remains required:</strong> SQLite foreign keys alone do not prove that a transition's <code>from_node</code> and <code>to_node</code> belong to its <code>profile_id</code>. Runtime validation must reject missing endpoints, self-edges, invalid metrics, non-positive targets, unreachable nodes, and cycles.
+      </div>
+      <div class="diagram">
+        <svg viewBox="0 0 1180 480" role="img" aria-labelledby="profile-title profile-desc">
+          <title id="profile-title">Recommended reusable age profile relationship diagram</title>
+          <desc id="profile-desc">A map selects one age profile, which owns nodes, transitions, timing, and optional profile-specific level gates. The transition graph branches and converges inside the profile.</desc>
+          <defs>
+            <marker id="arrow-profile" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#86efac"/></marker>
+            <marker id="arrow-profile-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#7dd3fc"/></marker>
+          </defs>
+          <rect width="1180" height="480" rx="8" fill="#111b2d"/>
+
+          <rect x="45" y="178" width="185" height="102" rx="12" fill="#18324a" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="137" y="215" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">map</text>
+          <text x="137" y="242" text-anchor="middle" fill="#bae6fd" font-size="13">id = 1</text>
+          <text x="137" y="263" text-anchor="middle" fill="#bae6fd" font-size="12">age_profile_id = 4</text>
+
+          <rect x="350" y="135" width="250" height="186" rx="12" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="475" y="174" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">age_profile</text>
+          <text x="475" y="204" text-anchor="middle" fill="#bbf7d0" font-size="13">id = 4, Standard Branching</text>
+          <text x="475" y="236" text-anchor="middle" fill="#bbf7d0" font-size="13">hold_ticks = 30</text>
+          <text x="475" y="262" text-anchor="middle" fill="#bbf7d0" font-size="13">timeout_ticks = 18000</text>
+          <text x="475" y="291" text-anchor="middle" fill="#a8d8bb" font-size="12">one validated graph definition</text>
+
+          <rect x="750" y="48" width="175" height="100" rx="12" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="837" y="85" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">age_node</text>
+          <text x="837" y="111" text-anchor="middle" fill="#ddd6fe" font-size="12">(profile_id, id)</text>
+          <text x="837" y="132" text-anchor="middle" fill="#ddd6fe" font-size="12">name</text>
+
+          <rect x="750" y="190" width="175" height="118" rx="12" fill="#4a2633" stroke="#fda4af" stroke-width="2"/>
+          <text x="837" y="227" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">age_transition</text>
+          <text x="837" y="252" text-anchor="middle" fill="#fecdd3" font-size="12">from, to, metric</text>
+          <text x="837" y="274" text-anchor="middle" fill="#fecdd3" font-size="12">target, stable edge ID</text>
+
+          <rect x="750" y="352" width="175" height="85" rx="12" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
+          <text x="837" y="385" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">age_level_gate</text>
+          <text x="837" y="410" text-anchor="middle" fill="#fef3c7" font-size="12">optional profile gates</text>
+
+          <line x1="230" y1="229" x2="350" y2="229" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-profile)"/>
+          <line x1="600" y1="190" x2="750" y2="104" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-profile)"/>
+          <line x1="600" y1="228" x2="750" y2="248" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-profile)"/>
+          <line x1="600" y1="275" x2="750" y2="391" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-profile)"/>
+
+          <text x="1045" y="56" text-anchor="middle" fill="#9aabc0" font-size="13">profile 4 graph</text>
+          <circle cx="970" cy="152" r="25" fill="#18324a" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="970" y="158" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">0</text>
+          <circle cx="1045" cy="100" r="25" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="1045" y="106" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">1</text>
+          <circle cx="1045" cy="204" r="25" fill="#4a2633" stroke="#fda4af" stroke-width="2"/>
+          <text x="1045" y="210" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">2</text>
+          <circle cx="1120" cy="152" r="25" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="1120" y="158" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">3</text>
+          <line x1="992" y1="137" x2="1024" y2="114" stroke="#7dd3fc" stroke-width="2.5" marker-end="url(#arrow-profile-blue)"/>
+          <line x1="992" y1="167" x2="1024" y2="190" stroke="#7dd3fc" stroke-width="2.5" marker-end="url(#arrow-profile-blue)"/>
+          <line x1="1070" y1="108" x2="1097" y2="140" stroke="#86efac" stroke-width="2.5" marker-end="url(#arrow-profile)"/>
+          <line x1="1070" y1="196" x2="1097" y2="164" stroke="#86efac" stroke-width="2.5" marker-end="url(#arrow-profile)"/>
+          <text x="1045" y="252" text-anchor="middle" fill="#9aabc0" font-size="11">IDs identify graph states,</text>
+          <text x="1045" y="269" text-anchor="middle" fill="#9aabc0" font-size="11">not age ordinal numbers.</text>
+        </svg>
+        <p class="diagram-caption">A profile may contain a different number of nodes, branch points, convergence points, conditions, and timing policy than any other profile.</p>
+      </div>
+    </section>
+
+    <section id="mission-schema">
+      <h2>7. Mission Schema</h2>
+      <p>Use an explicit mission when the terrain choice and the progression choice must vary independently. For example, the same terrain may be used by a short onboarding mission, a normal skirmish, and an extended campaign scenario.</p>
+      <pre>map (
+    id PRIMARY KEY,
+    xml_name NOT NULL,
+    name NOT NULL
+)
+
+mission (
+    id PRIMARY KEY,
+    map_id INT NOT NULL,
+    age_profile_id INT NOT NULL,
+    name NOT NULL,
+    description TEXT NOT NULL,
+    scenario_kind INT NOT NULL,
+    FOREIGN KEY (map_id) REFERENCES map(id),
+    FOREIGN KEY (age_profile_id) REFERENCES age_profile(id)
+)
+
+age_profile (...)
+age_node (...)
+age_transition (...)</pre>
+      <p>With this model the save should identify <code>mission_id</code>. The mission resolves the terrain map and age profile. Saving only <code>map_id</code> would be ambiguous because one map can now select multiple profiles.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 1180 345" role="img" aria-labelledby="mission-title mission-desc">
+          <title id="mission-title">Mission selects both terrain and age profile</title>
+          <desc id="mission-desc">A save identifies a mission. The mission selects a terrain map and a reusable age profile. Its runtime age state is restored against that profile.</desc>
+          <defs>
+            <marker id="arrow-mission" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#86efac"/></marker>
+            <marker id="arrow-mission-gold" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#fcd34d"/></marker>
+          </defs>
+          <rect width="1180" height="345" rx="8" fill="#111b2d"/>
+
+          <rect x="45" y="122" width="200" height="102" rx="12" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
+          <text x="145" y="159" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">save.db</text>
+          <text x="145" y="186" text-anchor="middle" fill="#fef3c7" font-size="13">mission_id = 9</text>
+          <text x="145" y="207" text-anchor="middle" fill="#fef3c7" font-size="12">current age progress</text>
+
+          <rect x="405" y="100" width="255" height="145" rx="12" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="532" y="140" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">mission 9</text>
+          <text x="532" y="171" text-anchor="middle" fill="#bbf7d0" font-size="13">"River Crossing Tutorial"</text>
+          <text x="532" y="202" text-anchor="middle" fill="#bbf7d0" font-size="13">map_id = 1</text>
+          <text x="532" y="224" text-anchor="middle" fill="#bbf7d0" font-size="13">age_profile_id = 2</text>
+
+          <rect x="875" y="48" width="235" height="100" rx="12" fill="#18324a" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="992" y="85" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">map 1</text>
+          <text x="992" y="111" text-anchor="middle" fill="#bae6fd" font-size="13">terrain XML and size</text>
+          <text x="992" y="132" text-anchor="middle" fill="#bae6fd" font-size="12">shared physical world</text>
+
+          <rect x="875" y="200" width="235" height="100" rx="12" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="992" y="237" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">profile 2</text>
+          <text x="992" y="263" text-anchor="middle" fill="#ddd6fe" font-size="13">short tutorial graph</text>
+          <text x="992" y="284" text-anchor="middle" fill="#ddd6fe" font-size="12">nodes, edges, timing, gates</text>
+
+          <line x1="245" y1="173" x2="405" y2="173" stroke="#fcd34d" stroke-width="3" marker-end="url(#arrow-mission-gold)"/>
+          <text x="325" y="155" text-anchor="middle" fill="#fcd34d" font-size="11">selected scenario</text>
+          <line x1="660" y1="144" x2="875" y2="99" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-mission)"/>
+          <line x1="660" y1="205" x2="875" y2="248" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-mission)"/>
+        </svg>
+        <p class="diagram-caption">A different mission can reference the same terrain map and select another profile without duplicating the terrain or pretending that one map has only one scenario.</p>
+      </div>
+    </section>
+
+    <section id="mission-content">
+      <h2>8. Future Mission Content</h2>
+      <div class="callout info">
+        <strong>Future design only:</strong> missions, scenarios, objectives, victory, and failure rules are not implemented by the current game. This section identifies the appropriate ownership boundary without committing the runtime to a complete objective system yet.
+      </div>
+      <p>A mission is the natural static owner for scenario-specific content. It already identifies the terrain map and age profile, so it should also define the information that distinguishes a tutorial, skirmish, survival scenario, campaign level, or challenge on that terrain.</p>
+      <table>
+        <thead><tr><th>Content</th><th>Recommended owner</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Mission name, description, briefing, scenario kind</td><td><code>mission</code> in <code>maps.db</code>.</td><td>Static authoring content selected before a match starts.</td></tr>
+          <tr><td>Terrain, terrain XML, resolution, terrain-specific placements</td><td><code>map</code> in <code>maps.db</code>.</td><td>Reusable physical world data; several missions may share it.</td></tr>
+          <tr><td>Age graph, timing, and profile-specific unlock gates</td><td><code>age_profile</code> and child tables in <code>maps.db</code>.</td><td>Reusable progression rules; they need not be tied to one terrain or objective set.</td></tr>
+          <tr><td>Starting players, teams, nations, resources, and scripted starting entities</td><td>Mission-owned scenario tables in <code>maps.db</code>.</td><td>These are scenario setup rules, not universal unit or building definitions.</td></tr>
+          <tr><td>Objective definitions and success/failure conditions</td><td>Mission-owned objective tables in <code>maps.db</code>.</td><td>They describe what the mission asks the player to do, independent of current progress.</td></tr>
+          <tr><td>Current objective completion, counters, timers, and triggered script state</td><td>Save runtime tables, only when a mission can be saved mid-progress.</td><td>These values change during a specific match and must survive save/load.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>8.1 Minimal Future Schema Direction</h3>
+      <p>Keep the initial schema descriptive and specific. Do not create a generic scripting language or an unbounded key/value table before objective types are known. A future vertical slice can begin with a small, explicitly supported set of objective kinds.</p>
+      <pre>-- Static content in maps.db. Proposed; not implemented.
+mission (
+    id PRIMARY KEY,
+    map_id INT NOT NULL,
+    age_profile_id INT NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL,
+    scenario_kind INT NOT NULL
+)
+
+mission_player (
+    mission_id INT NOT NULL,
+    slot INT NOT NULL,
+    team INT NOT NULL,
+    nation_id INT NOT NULL,
+    controller_kind INT NOT NULL,
+    starting_food INT NOT NULL,
+    starting_wood INT NOT NULL,
+    starting_stone INT NOT NULL,
+    starting_gold INT NOT NULL,
+    PRIMARY KEY (mission_id, slot)
+)
+
+mission_objective (
+    mission_id INT NOT NULL,
+    id INT NOT NULL,
+    objective_kind INT NOT NULL,
+    subject_kind INT NOT NULL,
+    subject_id INT NOT NULL,
+    target_value INT NOT NULL,
+    target_player_slot INT NOT NULL,
+    order_idx INT NOT NULL,
+    is_required INT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    PRIMARY KEY (mission_id, id)
+)</pre>
+      <p>Possible first objective kinds are deliberately narrow: reach an age node, own a unit or building count, accumulate a resource, survive for a tick duration, or eliminate a target player. The <code>subject_kind</code> and <code>subject_id</code> pair identifies what is measured: an age node, database unit/building/resource, or player slot. <code>target_value</code> is the required amount, duration, or boolean threshold. This remains a finite enum-based contract, not an unbounded key/value scripting format.</p>
+      <p>Mission-owned starting entities should reference globally defined unit and building IDs in <code>data.db</code>; the mission decides <em>which</em> entities are present, while <code>data.db</code> still defines their base properties. Initial placement may later be stored as a mission spawn table or authored through an existing scene/map format, but the mission should remain the logical owner of the rule.</p>
+
+      <h3>8.2 Runtime State For Future Objectives</h3>
+      <p>Many basic objectives can be recalculated from authoritative game state after loading. Persist objective runtime state only when it cannot be derived, such as a timer already spent, a one-time trigger that fired, a sequential objective stage, or a counter that records historical events.</p>
+      <pre>-- Save data only when objective continuation needs it. Proposed; not implemented.
+mission_state (
+    mission_id INT PRIMARY KEY,
+    outcome INT NOT NULL,
+    active_objective_id INT NOT NULL
+)
+
+mission_objective_state (
+    mission_id INT NOT NULL,
+    objective_id INT NOT NULL,
+    state INT NOT NULL,
+    progress INT NOT NULL,
+    started_tick INT NOT NULL,
+    completed_tick INT NOT NULL,
+    PRIMARY KEY (mission_id, objective_id)
+)</pre>
+      <div class="diagram">
+        <svg viewBox="0 0 1180 390" role="img" aria-labelledby="mission-content-title mission-content-desc">
+          <title id="mission-content-title">Future mission content ownership</title>
+          <desc id="mission-content-desc">A mission selects terrain, an age profile, scenario setup, and objective definitions from static map content. A save keeps mutable objective progress only when it cannot be derived from ordinary game state.</desc>
+          <defs>
+            <marker id="arrow-mission-content" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#86efac"/></marker>
+            <marker id="arrow-mission-content-gold" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#fcd34d"/></marker>
+          </defs>
+          <rect width="1180" height="390" rx="8" fill="#111b2d"/>
+
+          <rect x="45" y="122" width="225" height="146" rx="12" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="157" y="162" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">mission</text>
+          <text x="157" y="192" text-anchor="middle" fill="#bbf7d0" font-size="13">name and briefing</text>
+          <text x="157" y="216" text-anchor="middle" fill="#bbf7d0" font-size="13">scenario kind</text>
+          <text x="157" y="240" text-anchor="middle" fill="#a8d8bb" font-size="12">static maps.db content</text>
+
+          <rect x="405" y="45" width="240" height="82" rx="12" fill="#18324a" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="525" y="78" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">map</text>
+          <text x="525" y="103" text-anchor="middle" fill="#bae6fd" font-size="12">terrain and placements</text>
+          <rect x="405" y="154" width="240" height="82" rx="12" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="525" y="187" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">age profile</text>
+          <text x="525" y="212" text-anchor="middle" fill="#ddd6fe" font-size="12">graph, timing, gates</text>
+          <rect x="405" y="263" width="240" height="82" rx="12" fill="#4a2633" stroke="#fda4af" stroke-width="2"/>
+          <text x="525" y="296" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">scenario and objectives</text>
+          <text x="525" y="321" text-anchor="middle" fill="#fecdd3" font-size="12">players, setup, success, failure</text>
+
+          <rect x="845" y="122" width="290" height="146" rx="12" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
+          <text x="990" y="162" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">save runtime state</text>
+          <text x="990" y="192" text-anchor="middle" fill="#fef3c7" font-size="13">world-age route and holds</text>
+          <text x="990" y="216" text-anchor="middle" fill="#fef3c7" font-size="13">objective timers and triggers</text>
+          <text x="990" y="240" text-anchor="middle" fill="#ead99d" font-size="12">only mutable continuation data</text>
+
+          <line x1="270" y1="155" x2="405" y2="92" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-mission-content)"/>
+          <line x1="270" y1="194" x2="405" y2="195" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-mission-content)"/>
+          <line x1="270" y1="235" x2="405" y2="304" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-mission-content)"/>
+          <line x1="645" y1="195" x2="845" y2="195" stroke="#fcd34d" stroke-width="3" marker-end="url(#arrow-mission-content-gold)"/>
+          <text x="745" y="177" text-anchor="middle" fill="#fcd34d" font-size="11">selected static rules</text>
+        </svg>
+        <p class="diagram-caption">Static mission tables define the scenario. Save tables contain only the changing state that is required to resume that scenario.</p>
+      </div>
+    </section>
+
+    <section id="conditions">
+      <h2>9. Conditions And Timing</h2>
+      <p>The active model uses map-owned age candidates. Each age joins one or more reusable conditions, and all joined conditions must be true on the same simulation tick.</p>
+      <table>
+        <thead><tr><th>Requirement</th><th>Simplest representation</th><th>When to add more structure</th></tr></thead>
+        <tbody>
+          <tr><td>Worker or army average threshold</td><td><code>condition.metric</code> plus <code>target</code>.</td><td>Reuse one condition row whenever the threshold is shared.</td></tr>
+          <tr><td>Several conditions must all be true</td><td>Several <code>age_condition</code> rows for one age.</td><td>All joined rows are evaluated in the same tick.</td></tr>
+          <tr><td>Alternative candidates at one stage</td><td>Several age IDs with the same <code>age.stage</code>.</td><td>Map <code>age_ids</code> order resolves same-tick ties.</td></tr>
+        </tbody>
+      </table>
+      <pre>condition(id, metric, target)
+age_condition(age_id, condition_id)</pre>
+      <p>Conditions are shared static rows. The join is deliberately separate so the same worker or army threshold can be attached to several age candidates.</p>
+    </section>
+
+    <section id="level-gates">
+      <h2>10. Level Gates</h2>
+      <p>The existing fields <code>unit_level.age_stage</code> and <code>building_level.age_stage</code> are shared logical stage gates in <code>data.db</code>. They remain independent of which map age candidate wins within a stage.</p>
+      <p>When profiles differ, choose one of two valid contracts. Do not accidentally mix them.</p>
+      <div class="grid">
+        <div class="example">
+          <h3>Shared logical stages</h3>
+          <p>Keep level gates meaningful by stage. Candidate age IDs may differ by map, while stage 1, stage 2, and stage 3 keep the same progression meaning.</p>
+          <p class="result">The shared <code>age_stage</code> columns remain in <code>data.db</code>.</p>
+          <p class="tradeoff">Profiles have less freedom because their IDs and milestone meanings are partly global.</p>
+        </div>
+        <div class="example">
+          <h3>Profile-specific gates</h3>
+          <p>Let every profile define IDs independently. Resolve unit and building availability through the selected profile's gate rows.</p>
+          <pre>age_level_gate (
+    profile_id INT NOT NULL,
+    entity_kind INT NOT NULL,
+    level_id INT NOT NULL,
+    required_node_id INT NOT NULL,
+    PRIMARY KEY (
+        profile_id, entity_kind, level_id
+    )
+)</pre>
+          <p class="result">Maximum mission flexibility.</p>
+          <p class="tradeoff">Availability lookup, data loading, and validation become profile-aware.</p>
+        </div>
+      </div>
+      <div class="callout warning">
+        <strong>Node IDs are identifiers, not age numbers.</strong> A gate requiring node <code>3</code> asks whether the exact node with ID <code>3</code> was reached on the selected route. It does not mean “the third age.” A graph may branch, converge, skip an ID, or have more/fewer nodes than another profile.
+      </div>
+      <div class="diagram">
+        <svg viewBox="0 0 1180 310" role="img" aria-labelledby="gates-title gates-desc">
+          <title id="gates-title">Exact age-node IDs and branch convergence</title>
+          <desc id="gates-desc">A branching profile begins at node zero, splits through nodes one and two, then converges on node three. A level gate requiring node three unlocks after either route reaches the convergence node.</desc>
+          <defs>
+            <marker id="arrow-gates" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#86efac"/></marker>
+          </defs>
+          <rect width="1180" height="310" rx="8" fill="#111b2d"/>
+          <text x="160" y="47" text-anchor="middle" fill="#bae6fd" font-size="16" font-weight="700">profile graph</text>
+          <circle cx="130" cy="158" r="38" fill="#18324a" stroke="#7dd3fc" stroke-width="3"/>
+          <text x="130" y="164" text-anchor="middle" fill="#fff" font-size="21" font-weight="700">0</text>
+          <circle cx="350" cy="92" r="38" fill="#1d493b" stroke="#86efac" stroke-width="3"/>
+          <text x="350" y="98" text-anchor="middle" fill="#fff" font-size="21" font-weight="700">1</text>
+          <circle cx="350" cy="224" r="38" fill="#4a2633" stroke="#fda4af" stroke-width="3"/>
+          <text x="350" y="230" text-anchor="middle" fill="#fff" font-size="21" font-weight="700">2</text>
+          <circle cx="595" cy="158" r="38" fill="#3e315d" stroke="#c4b5fd" stroke-width="3"/>
+          <text x="595" y="164" text-anchor="middle" fill="#fff" font-size="21" font-weight="700">3</text>
+          <line x1="165" y1="139" x2="314" y2="106" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-gates)"/>
+          <line x1="165" y1="177" x2="314" y2="210" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-gates)"/>
+          <line x1="387" y1="104" x2="558" y2="145" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-gates)"/>
+          <line x1="387" y1="212" x2="558" y2="171" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-gates)"/>
+          <text x="130" y="219" text-anchor="middle" fill="#9acbe8" font-size="12">root</text>
+          <text x="350" y="43" text-anchor="middle" fill="#bbf7d0" font-size="12">workers branch</text>
+          <text x="350" y="280" text-anchor="middle" fill="#fecdd3" font-size="12">army branch</text>
+          <text x="595" y="219" text-anchor="middle" fill="#ddd6fe" font-size="12">convergence</text>
+
+          <rect x="805" y="80" width="310" height="157" rx="12" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
+          <text x="960" y="121" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">Unit level gate</text>
+          <text x="960" y="153" text-anchor="middle" fill="#fef3c7" font-size="14">age_stage = 1..3</text>
+          <line x1="633" y1="158" x2="805" y2="158" stroke="#fcd34d" stroke-width="3" marker-end="url(#arrow-gates)"/>
+          <text x="960" y="188" text-anchor="middle" fill="#fef3c7" font-size="13">unlocks after 0 -&gt; 1 -&gt; 3</text>
+          <text x="960" y="211" text-anchor="middle" fill="#fef3c7" font-size="13">or after 0 -&gt; 2 -&gt; 3</text>
+        </svg>
+        <p class="diagram-caption">The graph route matters. An exact convergence node can unlock shared content after more than one branch without treating node ID as an ordinal age position.</p>
+      </div>
+    </section>
+
+    <section id="save-contract">
+      <h2>11. Save Contract</h2>
+      <p>A save must identify enough static content to reconstruct the same graph, then retain only the mutable state needed to continue it. Which identity it stores depends on the selected option.</p>
+      <table>
+        <thead><tr><th>Content owner</th><th>Static identity persisted by save</th><th>World-age continuation persisted by save</th></tr></thead>
+        <tbody>
+          <tr><td>Map-owned ages</td><td><code>config.map</code>.</td><td>Current age, age start tick, and reached-age history.</td></tr>
+        </tbody>
+      </table>
+      <pre>Map-selected profile save shape
+
+config
+  map = 1
+
+  world_age
+  current_age = 3
+  age_started_tick = 1820
+  history = '0,1,3'</pre>
+      <div class="callout warning">
+        <strong>Compatibility rule:</strong> age IDs are saved references. Keep them stable within the selected map catalog. If a release changes or removes them, make an explicit choice to migrate affected saves, keep the old catalog available, or reject old saves with a clear incompatibility error.
+      </div>
+      <p>Saving <code>age_profile_id</code> as an additional diagnostic field is optional for map-selected profiles because the map already determines it. It can still improve error messages if map content changed since the save was made. It is mandatory in spirit, though not necessarily as a separate column, that loading verifies the route against the graph selected by the saved map or mission.</p>
+    </section>
+
+    <section id="migration">
+      <h2>12. Migration And Implementation</h2>
+      <p>The active design is a map-owned catalog, not a global graph. Load and validate ages, reusable conditions, map order, and stage gates before constructing the controller. Preserve deterministic average-metric evaluation, candidate order, history, and route restoration.</p>
+       <div class="phase"><span class="phase-number">1</span><h3>Keep the owner</h3><p>The active implementation keeps the age catalog in <code>maps.db</code>, with each map selecting ordered candidate IDs through <code>map.age_ids</code>.</p></div>
+       <div class="phase"><span class="phase-number">2</span><h3>Maintain static map content</h3><p>Create age, condition, and age-condition rows in <code>maps.db</code>. Keep age IDs stable and place candidate IDs in each map's ordered <code>age_ids</code> list.</p></div>
+       <div class="phase"><span class="phase-number">3</span><h3>Validate catalogs</h3><p><code>DatabaseCache</code> loads reusable conditions and age joins. It validates age references, condition metrics and targets, ordered stage progression, and level-stage bounds.</p></div>
+       <div class="phase"><span class="phase-number">4</span><h3>Select at simulation creation</h3><p><code>LevelBuilder</code> resolves the selected map before <code>Simulation</code> is created. <code>WorldAgeController</code> receives that map's catalog and ordered age list.</p></div>
+       <div class="phase"><span class="phase-number">5</span><h3>Resolve level availability</h3><p>Unit and building levels use shared <code>age_stage</code> gates. A level is available when the selected age reaches at least its required logical stage.</p></div>
+       <div class="phase"><span class="phase-number">6</span><h3>Protect save loading</h3><p>Load the map first, then restore <code>world_age</code> and validate its current ID and history against that map. Add an explicit migration or incompatibility error if age IDs change.</p></div>
+      <h3>Focused Verification</h3>
+      <ul class="checklist">
+        <li>Load a short linear profile, a branching profile, and a terminal single-node profile.</li>
+        <li>Verify all configured players contribute to transition averages under the current implementation.</li>
+         <li>Save and load while the current age timeout is in progress.</li>
+         <li>Save and load after each candidate age route reaches a later stage.</li>
+         <li>Reject a save whose current age or history route does not belong to its selected map catalog.</li>
+         <li>Verify shared logical level gates after both candidate ages in a stage.</li>
+      </ul>
+      <p class="source"><strong>Current implementation anchors:</strong> <code>game/src/database/DatabaseCache.cpp</code>, <code>game/src/database/db_world_age_struct.h</code>, <code>game/src/simulation/WorldAgeController.cpp</code>, <code>game/src/simulation/Simulation.cpp</code>, <code>game/src/scene/LevelBuilder.cpp</code>, <code>game/src/scene/save/SQLConsts.h</code>, <code>game/src/scene/load/SceneLoader.cpp</code>, <code>docs/world-age-database-schema.html</code>, and <code>docs/data-development.md</code>.</p>
+    </section>
+  </main>
+</body>
+</html>

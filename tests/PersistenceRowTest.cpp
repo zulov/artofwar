@@ -75,6 +75,7 @@ TEST(PersistenceRowTest, AllSaveTableContractsCreateAndSelect) {
 	checkSaveTableContract<FormationOrderCol>(database);
 	checkSaveTableContract<PendingCommandCol>(database);
 	checkSaveTableContract<PendingCommandEntityCol>(database);
+	checkSaveTableContract<WorldAgeStateCol>(database);
 
 	sqlite3_close(database);
 }
@@ -166,6 +167,16 @@ TEST(PersistenceRowTest, ConfigRoundTripsGlobalContinuationState) {
 	EXPECT_EQ(expected.random.seed, actual.random.seed);
 	EXPECT_EQ(expected.random.floatIndexes, actual.random.floatIndexes);
 	EXPECT_EQ(expected.random.intIndexes, actual.random.intIndexes);
+}
+
+TEST(PersistenceRowTest, WorldAgeRowsRoundTripContinuationState) {
+	const WorldAgeStateSaveData expectedState{3, 1820, "0,2,3,7"};
+
+	const auto actualState = roundTrip<WorldAgeStateCol>(expectedState);
+
+	EXPECT_EQ(expectedState.currentAge, actualState.currentAge);
+	EXPECT_EQ(expectedState.ageStartedTick, actualState.ageStartedTick);
+	EXPECT_EQ(expectedState.history, actualState.history);
 }
 
 TEST(PersistenceRowTest, PendingCommandRoundTripsScalarFields) {

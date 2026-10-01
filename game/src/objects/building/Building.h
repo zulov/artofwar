@@ -29,7 +29,7 @@ public:
 
 	bool isDeadOrTooFar() const;
 
-	std::optional<int> getDeploy();
+	std::optional<int> getDeploy() const;
 
 	// TODO target to nie to samo co gdzie sie maja pojawiac!
 	QueueManager& getQueue() { return queue; }
@@ -54,7 +54,7 @@ public:
 	void loadRuntimeState(Physical* target);
 
 	float getSightRadius() const override;
-	short getCostSum() const override;
+	std::uint32_t getCostSum() const override;
 
 	bool canUse(int index) const override;
 	db_building_level* getLevel() const;

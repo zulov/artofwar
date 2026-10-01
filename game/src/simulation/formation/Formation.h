@@ -26,7 +26,7 @@ public:
 	void restoreState(FormationState savedState) { state = savedState; }
 	bool isInAttack() const;
 	bool isInDefend() const;
-	std::optional<Unit*> getLeader();
+	std::optional<Unit*> getLeader() const;
 
 	void addOrder(FormationOrder* order);
 	void restoreOrder(FormationOrder* order, bool pending);
@@ -34,7 +34,7 @@ public:
 	const FormationOrder* getPendingOrder() const { return pendingOrder; }
 	size_t getSize() const;
 	void semiReset();
-	std::vector<Unit*>& getUnits() { return units; }
+	const std::vector<Unit*>& getUnits() const { return units; }
 	void stopAllBesideLeader();
 	bool isLeader(Unit* unit) const;
 	bool isMoving(Unit* unit) const;

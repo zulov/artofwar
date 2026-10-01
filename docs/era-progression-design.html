@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Art of War - Global Era Progression Design</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --page: #101827;
+      --surface: #172235;
+      --surface-2: #1d2c43;
+      --surface-3: #111b2d;
+      --border: #30445f;
+      --text: #dbe7f5;
+      --muted: #9aabc0;
+      --heading: #86efac;
+      --accent: #34d399;
+      --blue: #7dd3fc;
+      --gold: #fcd34d;
+      --red: #fda4af;
+      --purple: #c4b5fd;
+      --code: #fde68a;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 42px 28px 72px;
+      background: var(--page);
+      color: var(--text);
+      font: 16px/1.62 "Segoe UI", Tahoma, sans-serif;
+    }
+    header { border-bottom: 1px solid var(--border); margin-bottom: 30px; padding-bottom: 24px; }
+    h1, h2, h3, h4 { line-height: 1.2; }
+    h1 { margin: 0 0 10px; color: #f8fafc; font-size: clamp(2rem, 5vw, 3.25rem); }
+    h2 { margin: 48px 0 15px; color: var(--heading); font-size: 1.65rem; }
+    h3 { margin: 30px 0 12px; color: #bbf7d0; font-size: 1.2rem; }
+    h4 { margin: 20px 0 8px; color: var(--blue); font-size: 1rem; }
+    p { margin: 0 0 16px; }
+    .subtitle { margin: 0; color: var(--muted); font-size: 1.08rem; }
+    .meta { margin-top: 14px; color: var(--muted); font-size: 0.86rem; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 0; }
+    .links a { border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px; }
+    a { color: #a7f3d0; }
+    code {
+      color: var(--code);
+      font: 0.9em Consolas, "Courier New", monospace;
+      background: #0c1422;
+      border-radius: 4px;
+      padding: 1px 5px;
+    }
+    pre {
+      margin: 14px 0 18px;
+      padding: 15px 18px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #0b1320;
+      color: #d9f99d;
+      font: 0.87rem/1.55 Consolas, "Courier New", monospace;
+    }
+    .toc, .card, .diagram, .callout, .example, .phase {
+      margin: 18px 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .toc, .card, .callout, .example, .phase { padding: 18px 22px; background: var(--surface); }
+    .toc { background: #142238; }
+    .toc h3 { margin-top: 0; }
+    .toc ol { columns: 2; margin: 8px 0 0; padding-left: 22px; }
+    .toc li { margin: 5px 0; }
+    .callout { border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; }
+    .callout.warning { border-left-color: var(--gold); background: #29251a; }
+    .callout.danger { border-left-color: var(--red); background: #291b27; }
+    .callout.info { border-left-color: var(--blue); background: #182b3d; }
+    .callout strong { color: #f8fafc; }
+    .diagram { padding: 12px; overflow-x: auto; background: var(--surface-3); }
+    .diagram svg { display: block; width: 100%; min-width: 900px; height: auto; }
+    .diagram-caption { margin: 10px 3px 1px; color: var(--muted); font-size: 0.87rem; }
+    svg text { font-family: "Segoe UI", Tahoma, sans-serif; }
+    table { width: 100%; margin: 18px 0; border-collapse: collapse; border: 1px solid var(--border); }
+    th, td { padding: 10px 12px; border: 1px solid var(--border); text-align: left; vertical-align: top; }
+    th { background: #1d3b37; color: #dcfce7; }
+    td:first-child { color: #bbf7d0; font-weight: 700; }
+    td:nth-child(2) { color: #fef3c7; }
+    .tag {
+      display: inline-block;
+      margin: 0 4px 4px 0;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #263a55;
+      color: #bae6fd;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .tag.green { background: #1b493c; color: #bbf7d0; }
+    .tag.gold { background: #4a3c1b; color: #fde68a; }
+    .tag.red { background: #4a2633; color: #fecdd3; }
+    .tag.purple { background: #3e315d; color: #ddd6fe; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .grid > .card, .grid > .example { margin: 0; }
+    .example { background: #1a2a43; }
+    .example h3 { margin-top: 0; color: var(--gold); }
+    .example .result { color: #86efac; }
+    .example .tradeoff { color: #fda4af; }
+    .phase { position: relative; padding-left: 74px; }
+    .phase-number {
+      position: absolute;
+      top: 18px;
+      left: 20px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #082016;
+      font-weight: 800;
+      line-height: 34px;
+      text-align: center;
+    }
+    .phase h3 { margin-top: 0; }
+    .formula { color: #d9f99d; font: 0.95rem/1.6 Consolas, "Courier New", monospace; }
+    .small { color: var(--muted); font-size: 0.88rem; }
+    .checklist { padding-left: 23px; }
+    .checklist li { margin: 7px 0; }
+    .source { margin-top: 30px; color: var(--muted); font-size: 0.86rem; }
+    @media (max-width: 800px) {
+      body { padding: 28px 16px 52px; font-size: 15px; }
+      .toc ol { columns: 1; }
+      .grid { grid-template-columns: 1fr; }
+      table { display: block; overflow-x: auto; }
+    }
+    @media print {
+      :root { color-scheme: light; }
+      body { max-width: none; padding: 0; background: #fff; color: #111; font-size: 9pt; }
+      header { border-color: #aaa; }
+      h1, h2, h3, h4, a, td:first-child, td:nth-child(2) { color: #111; }
+      .subtitle, .meta, .small, .diagram-caption, .source { color: #444; }
+      .links, .toc, .card, .callout, .example, .phase, .diagram, pre { background: #fff; border-color: #999; }
+      th, td { border-color: #999; color: #111; }
+      th { background: #eee; }
+      .diagram, table, .callout, .phase, .example { break-inside: avoid; page-break-inside: avoid; }
+      .diagram svg { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Global Era Progression Design</h1>
+    <p class="subtitle">A shared five-era world progression driven by the average development of living civilizations, a passive time safety valve, branching historical outcomes, and catch-up technology costs.</p>
+    <p class="meta">Status: design proposal | Scope: world state, progression, technology availability, UI, save/load, and AI | Exact era conditions remain balance data to be defined later.</p>
+    <nav class="links" aria-label="Related documentation">
+      <a href="technology-and-upgrade-design.html">Technology and Upgrade Design</a>
+      <a href="data-development.md">Data Development</a>
+      <a href="simulation-development.md">Simulation Development</a>
+      <a href="ai-development.md">AI Development</a>
+      <a href="save-development.html">Save Development</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#short-version">Short version</a></li>
+        <li><a href="#core-rules">Core rules</a></li>
+        <li><a href="#era-structure">Five-era structure</a></li>
+        <li><a href="#average">Living-civilization average</a></li>
+        <li><a href="#active-passive">Active progress and time safety valve</a></li>
+        <li><a href="#branches">Branching historical outcomes</a></li>
+        <li><a href="#technology">Technology availability and depreciation</a></li>
+        <li><a href="#levels">Entity levels versus technologies</a></li>
+        <li><a href="#ui">UI and information visibility</a></li>
+        <li><a href="#runtime">Runtime and save/load implications</a></li>
+        <li><a href="#balance">Balance risks and open decisions</a></li>
+        <li><a href="#vertical-slice">Recommended vertical slice</a></li>
+      </ol>
+    </div>
+
+    <section id="short-version">
+      <h2>1. Short Version</h2>
+      <div class="callout">
+        <strong>Design statement:</strong> the world advances through five shared eras. For every era condition, the game calculates the average value across civilizations that are still alive. A civilization destroyed before the check is immediately removed from both the sum and the divisor. Active development can accelerate the transition, but every era also has a time limit so a damaged civilization cannot freeze the whole match.
+      </div>
+      <p>The era is global, but the route through history is not fixed. Some transitions have two competing branches, such as an agrarian branch and a military branch. The branch whose condition is resolved first becomes the history of this match. Technologies belonging to the branch that was not selected are unavailable for the rest of the match.</p>
+      <p>Basic unit and building levels remain shared progression content. Branch-specific technologies are a separate system: they change functionality, production, economy, or strategic identity rather than replacing the ordinary level ladder.</p>
+      <div class="grid">
+        <div class="card"><span class="tag green">GLOBAL</span><h3>One world era</h3><p>All living players enter the next era at the same time. A player cannot privately advance to a separate world era.</p></div>
+        <div class="card"><span class="tag blue">AVERAGE</span><h3>Living civilizations only</h3><p>Each condition uses the mean of the civilizations currently alive. Elimination changes the divisor immediately.</p></div>
+        <div class="card"><span class="tag gold">CATCH-UP</span><h3>Old research becomes cheaper</h3><p>Older available technologies cost and research faster, but never below 30% of their base values.</p></div>
+        <div class="card"><span class="tag purple">CHOICE</span><h3>History locks the omitted branch</h3><p>A branch not selected in this match is not a late-game checklist. Its technologies remain unavailable.</p></div>
+      </div>
+    </section>
+
+    <section id="core-rules">
+      <h2>2. Core Rules</h2>
+      <table>
+        <thead><tr><th>Rule</th><th>Definition</th><th>Design consequence</th></tr></thead>
+        <tbody>
+          <tr><td>Shared era</td><td>The world has one current era, stored as global simulation state.</td><td>Players race around one timeline instead of progressing on isolated personal tracks.</td></tr>
+          <tr><td>Living average</td><td>For each condition, sum the values of living civilizations and divide by the number of living civilizations.</td><td>A strong player can contribute more, but destroyed civilizations no longer hold the average down.</td></tr>
+          <tr><td>Immediate elimination</td><td>A destroyed civilization is removed from the average as soon as its defeat is recognized.</td><td>Elimination can accelerate a transition as well as remove an opponent's military and economy.</td></tr>
+          <tr><td>Active contribution</td><td>Players influence progress by creating the units, buildings, economy, or military presence required by the current condition.</td><td>Players can intentionally push the world toward an earlier transition or branch.</td></tr>
+          <tr><td>Passive safety valve</td><td>Every era has a maximum duration and advances automatically when that limit is reached.</td><td>A stagnant or crippled civilization cannot lock the match forever.</td></tr>
+          <tr><td>Branch commitment</td><td>When competing branch conditions are resolved, the winning branch becomes the history of this match.</td><td>Players must react to the direction of the world rather than assuming every technology will eventually be available.</td></tr>
+          <tr><td>Minimum technology multiplier</td><td>Available older technologies use a cost and time multiplier no lower than 30%.</td><td>Catch-up is strong, but research still has a real resource and opportunity cost.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="era-structure">
+      <h2>3. Five-Era Structure</h2>
+      <p>The initial structure uses two branch points and one convergence point. It creates four broad historical combinations without requiring a full tree of unrelated content.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 1240 470" role="img" aria-labelledby="era-flow-title era-flow-desc">
+          <title id="era-flow-title">Five-era global progression with two branch points</title>
+          <desc id="era-flow-desc">The world starts in Era 1, chooses either the agrarian or military branch for Era 2, converges into Era 3, branches again in Era 4, and ends in Era 5.</desc>
+          <defs>
+            <marker id="arrow-era-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#86efac"/></marker>
+            <marker id="arrow-era-gold" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#fcd34d"/></marker>
+          </defs>
+          <rect width="1240" height="470" rx="8" fill="#111b2d"/>
+
+          <rect x="40" y="184" width="175" height="105" rx="12" fill="#18324a" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="127" y="220" text-anchor="middle" fill="#fff" font-size="20" font-weight="700">Era 1</text>
+          <text x="127" y="246" text-anchor="middle" fill="#bae6fd" font-size="13">shared starting era</text>
+          <text x="127" y="268" text-anchor="middle" fill="#9acbe8" font-size="12">one condition set</text>
+
+          <rect x="310" y="65" width="230" height="105" rx="12" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="425" y="101" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">Era 2A</text>
+          <text x="425" y="127" text-anchor="middle" fill="#bbf7d0" font-size="13">Agrarian / trade</text>
+          <text x="425" y="149" text-anchor="middle" fill="#a8d8bb" font-size="12">economy and defense focus</text>
+
+          <rect x="310" y="300" width="230" height="105" rx="12" fill="#4a2633" stroke="#fda4af" stroke-width="2"/>
+          <text x="425" y="336" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">Era 2B</text>
+          <text x="425" y="362" text-anchor="middle" fill="#fecdd3" font-size="13">Military / iron</text>
+          <text x="425" y="384" text-anchor="middle" fill="#e8aebb" font-size="12">army and production focus</text>
+
+          <rect x="650" y="184" width="175" height="105" rx="12" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="737" y="220" text-anchor="middle" fill="#fff" font-size="20" font-weight="700">Era 3</text>
+          <text x="737" y="246" text-anchor="middle" fill="#ddd6fe" font-size="13">consolidation</text>
+          <text x="737" y="268" text-anchor="middle" fill="#c4b5e4" font-size="12">previous branch remains known</text>
+
+          <rect x="920" y="65" width="220" height="105" rx="12" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="1030" y="101" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">Era 4A</text>
+          <text x="1030" y="127" text-anchor="middle" fill="#bbf7d0" font-size="13">science / industry</text>
+          <text x="1030" y="149" text-anchor="middle" fill="#a8d8bb" font-size="12">information and economy</text>
+
+          <rect x="920" y="300" width="220" height="105" rx="12" fill="#4a2633" stroke="#fda4af" stroke-width="2"/>
+          <text x="1030" y="336" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">Era 4B</text>
+          <text x="1030" y="362" text-anchor="middle" fill="#fecdd3" font-size="13">expansion / siege</text>
+          <text x="1030" y="384" text-anchor="middle" fill="#e8aebb" font-size="12">territory and heavy warfare</text>
+
+          <rect x="1120" y="184" width="105" height="105" rx="12" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
+          <text x="1172" y="220" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">Era 5</text>
+          <text x="1172" y="246" text-anchor="middle" fill="#fef3c7" font-size="12">apex</text>
+          <text x="1172" y="268" text-anchor="middle" fill="#ead99d" font-size="11">final era</text>
+
+          <line x1="215" y1="224" x2="310" y2="118" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-era-green)"/>
+          <line x1="215" y1="250" x2="310" y2="352" stroke="#fda4af" stroke-width="3" marker-end="url(#arrow-era-gold)"/>
+          <line x1="540" y1="118" x2="650" y2="224" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-era-green)"/>
+          <line x1="540" y1="352" x2="650" y2="250" stroke="#fda4af" stroke-width="3" marker-end="url(#arrow-era-gold)"/>
+          <line x1="825" y1="224" x2="920" y2="118" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-era-green)"/>
+          <line x1="825" y1="250" x2="920" y2="352" stroke="#fda4af" stroke-width="3" marker-end="url(#arrow-era-gold)"/>
+          <line x1="1140" y1="118" x2="1172" y2="184" stroke="#fcd34d" stroke-width="3" marker-end="url(#arrow-era-gold)"/>
+          <line x1="1140" y1="352" x2="1172" y2="289" stroke="#fcd34d" stroke-width="3" marker-end="url(#arrow-era-gold)"/>
+
+          <text x="620" y="36" text-anchor="middle" fill="#9aabc0" font-size="12">The exact conditions and names are content data to be balanced later.</text>
+        </svg>
+        <p class="diagram-caption">The branch changes the world-wide technology set. It does not create a separate private era for each player.</p>
+      </div>
+      <table>
+        <thead><tr><th>Transition</th><th>Structure</th><th>Example direction</th></tr></thead>
+        <tbody>
+          <tr><td>Era 1 to Era 2</td><td>First branch point; one of two conditions resolves first.</td><td>Agrarian development versus military mobilization.</td></tr>
+          <tr><td>Era 2 to Era 3</td><td>Convergence into a common era.</td><td>Both histories gain access to the shared consolidation layer.</td></tr>
+          <tr><td>Era 3 to Era 4</td><td>Second branch point; a new pair of conditions competes.</td><td>Science/industry versus expansion/siege.</td></tr>
+          <tr><td>Era 4 to Era 5</td><td>Convergence into the final apex era.</td><td>The selected history determines which earlier technologies were available.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="average">
+      <h2>4. Living-Civilization Average</h2>
+      <p>The central progression rule is an average, not a fixed global total. Each condition has its own metric and target. The denominator contains only civilizations that are currently alive.</p>
+      <p class="formula">condition average = sum(condition value for living civilizations) / number of living civilizations</p>
+      <p>The conditions themselves are deliberately not fixed in this document. A future data definition may use workers, completed military buildings, army value, resource production, territory, or another measurable state. The averaging rule stays the same.</p>
+
+      <div class="grid">
+        <div class="example">
+          <h3>Example A: three living civilizations</h3>
+          <pre>Condition: 20 workers per living civilization
+          <p class="result">A player above the target can compensate for another player below it, because the rule evaluates the living world average.</p>
+        </div>
+        <div class="example">
+          <h3>Example B: one civilization is destroyed</h3>
+          <pre>Condition: 20 workers per living civilization
+          <p class="tradeoff">Player C is removed immediately from the sum and divisor. Elimination can therefore accelerate the era transition as well as weaken the defeated side.</p>
+        </div>
+      </div>
+
+      <div class="callout warning">
+        <strong>Intentional snowball interaction:</strong> the living-only denominator makes elimination a progression event. This is a deliberate consequence of the rule, not a hidden exception. Balance data should account for the possibility that a winning player can both remove an opponent and bring the world closer to the next era.
+      </div>
+
+      <h3>4.1 What counts as alive?</h3>
+      <p>A civilization is included until the game recognizes it as destroyed according to the normal defeat rule. The transition should happen at a deterministic simulation point, not during rendering. Once the defeat state is committed, later condition calculations in that tick use the updated living-player set.</p>
+      <p>The implementation should not infer life from a single unit or building count unless that is already the game's authoritative defeat rule. The world progression system should consume a clear player status such as <code>active</code>, <code>defeated</code>, or an equivalent runtime state.</p>
+
+      <h3>4.2 Multiple conditions</h3>
+      <p>Conditions are evaluated independently. A transition may require several averages to be satisfied at the same time, or a branch may have alternative condition sets. The exact combination is future balance data.</p>
+      <pre>Era 2A candidate condition set
+      <p>The example above shows the type of rule the system can express. It is not a final condition list.</p>
+    </section>
+
+    <section id="active-passive">
+      <h2>5. Active Progress and the Time Safety Valve</h2>
+      <p>Era progress has two cooperating sources. The active source reflects what civilizations are doing. The passive source is a bounded automatic transition that prevents a damaged match from becoming permanently stuck.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 1180 430" role="img" aria-labelledby="progress-title progress-desc">
+          <title id="progress-title">Active and passive era progress</title>
+          <desc id="progress-desc">Living civilization metrics and a passive timer feed an era progress controller. The controller resolves the next era or branch when the active threshold or time limit is reached.</desc>
+          <defs>
+            <marker id="arrow-progress-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#7dd3fc"/></marker>
+            <marker id="arrow-progress-gold" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#fcd34d"/></marker>
+            <marker id="arrow-progress-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#86efac"/></marker>
+          </defs>
+          <rect width="1180" height="430" rx="8" fill="#111b2d"/>
+
+          <rect x="45" y="55" width="280" height="135" rx="12" fill="#18324a" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="185" y="91" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">Living civilizations</text>
+          <text x="185" y="119" text-anchor="middle" fill="#bae6fd" font-size="13">workers, buildings, army, economy</text>
+          <text x="185" y="143" text-anchor="middle" fill="#bae6fd" font-size="13">condition values per player</text>
+          <text x="185" y="168" text-anchor="middle" fill="#9acbe8" font-size="12">destroyed players excluded</text>
+
+          <rect x="45" y="250" width="280" height="120" rx="12" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
+          <text x="185" y="286" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">Era timer</text>
+          <text x="185" y="314" text-anchor="middle" fill="#fef3c7" font-size="13">passive safety valve</text>
+          <text x="185" y="338" text-anchor="middle" fill="#ead99d" font-size="12">maximum duration for the era</text>
+
+          <rect x="455" y="120" width="285" height="190" rx="12" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="597" y="160" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">Era progress controller</text>
+          <text x="597" y="194" text-anchor="middle" fill="#bbf7d0" font-size="13">calculate living average</text>
+          <text x="597" y="218" text-anchor="middle" fill="#bbf7d0" font-size="13">evaluate active conditions</text>
+          <text x="597" y="242" text-anchor="middle" fill="#bbf7d0" font-size="13">evaluate branch progress</text>
+          <text x="597" y="266" text-anchor="middle" fill="#a8d8bb" font-size="12">apply timer fallback if needed</text>
+
+          <rect x="890" y="120" width="245" height="190" rx="12" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="1012" y="160" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">World transition</text>
+          <text x="1012" y="194" text-anchor="middle" fill="#ddd6fe" font-size="13">advance all living players</text>
+          <text x="1012" y="218" text-anchor="middle" fill="#ddd6fe" font-size="13">lock selected branch</text>
+          <text x="1012" y="242" text-anchor="middle" fill="#ddd6fe" font-size="13">reprice available research</text>
+          <text x="1012" y="266" text-anchor="middle" fill="#c4b5e4" font-size="12">publish UI event</text>
+
+          <line x1="325" y1="122" x2="455" y2="180" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arrow-progress-blue)"/>
+          <line x1="325" y1="310" x2="455" y2="250" stroke="#fcd34d" stroke-width="3" marker-end="url(#arrow-progress-gold)"/>
+          <line x1="740" y1="215" x2="890" y2="215" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-progress-green)"/>
+          <text x="390" y="142" text-anchor="middle" fill="#7dd3fc" font-size="11">active input</text>
+          <text x="390" y="290" text-anchor="middle" fill="#fcd34d" font-size="11">passive input</text>
+          <text x="815" y="198" text-anchor="middle" fill="#86efac" font-size="11">threshold or timeout</text>
+        </svg>
+        <p class="diagram-caption">Both sources feed one deterministic controller. The timer is a fallback, not a second player-controlled progression track.</p>
+      </div>
+      <table>
+        <thead><tr><th>Progress source</th><th>What it represents</th><th>Why it exists</th></tr></thead>
+        <tbody>
+          <tr><td>Active contribution</td><td>Current condition averages and branch-specific thresholds.</td><td>Rewards development, military pressure, and deliberate world shaping.</td></tr>
+          <tr><td>Passive timer</td><td>Elapsed fixed-step simulation time since the current era began.</td><td>Guarantees eventual movement when war or economic collapse prevents normal development.</td></tr>
+        </tbody>
+      </table>
+      <p>All timing must use fixed simulation ticks. The current simulation runs at approximately 30 updates per second, so era timers should be represented in simulation time rather than renderer frames.</p>
+    </section>
+
+    <section id="branches">
+      <h2>6. Branching Historical Outcomes</h2>
+      <p>A branch point presents two or more possible histories. Each candidate has its own condition set and progress. The first candidate to resolve wins the branch for the match.</p>
+      <div class="grid">
+        <div class="example">
+          <h3>Era 2A: Agrarian path</h3>
+          <p><span class="tag green">Example only</span> This path could require a high living average of workers and farms before the military condition resolves.</p>
+          <ul>
+            <li>Unlocks farming, logistics, trade, and defensive technologies.</li>
+            <li>Encourages a player to grow the economy and protect infrastructure.</li>
+            <li>Can be accelerated by producing the required economic assets across living civilizations.</li>
+          </ul>
+        </div>
+        <div class="example">
+          <h3>Era 2B: Military path</h3>
+          <p><span class="tag red">Example only</span> This path could require a high living average of army value and completed military buildings.</p>
+          <ul>
+            <li>Unlocks mobilization, forging, recruitment, and offensive technologies.</li>
+            <li>Encourages visible military investment and map pressure.</li>
+            <li>Can be accelerated by building and maintaining a meaningful army.</li>
+          </ul>
+        </div>
+      </div>
+      <p>Once a branch resolves, the losing branch is not converted into a late-game shopping list. Its technologies are unavailable in that match. This makes the global race consequential: players are competing not only over when the world advances, but also over which content the world will receive.</p>
+      <div class="callout info">
+        <strong>Branch scope:</strong> the lock is match-local. A new match can select the other history. The rule does not permanently delete the omitted technology from the game's data or from future matches.
+      </div>
+      <h3>6.1 Timeout behavior</h3>
+      <p>If no branch has resolved when the era timer expires, the transition needs a deterministic fallback. The recommended first rule is to select the candidate with the greater normalized progress at timeout. If the candidates are tied, use a neutral fallback or a stable map-defined tie-breaker.</p>
+      <pre>At branch timeout:
+      <p>This prevents a random renderer or iteration order from deciding the history.</p>
+    </section>
+
+    <section id="technology">
+      <h2>7. Technology Availability and Depreciation</h2>
+      <p>Technology has two independent dimensions: whether it is available in this match, and how expensive it is at the current world era.</p>
+      <table>
+        <thead><tr><th>Technology category</th><th>Availability</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>Shared entity levels</td><td>Available through the normal unit/building level ladder.</td><td>Common improvements such as attack, armor, HP, production, or other level-defined statistics.</td></tr>
+          <tr><td>Selected branch technology</td><td>Available when its era and prerequisites are reached.</td><td>Defines the chosen global history through functional and strategic effects.</td></tr>
+          <tr><td>Omitted branch technology</td><td>Unavailable for the rest of the current match.</td><td>Preserves the consequence of the global historical choice.</td></tr>
+          <tr><td>Older available technology</td><td>Still available if it belongs to the selected history and prerequisites are met.</td><td>Enables catch-up without reopening the omitted branch.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>7.1 Depreciation schedule</h3>
+      <p>When a technology becomes older than the current world era, its base resource cost and research time are multiplied by the schedule below. The lower the multiplier, the stronger the catch-up. The multiplier never falls below 30%.</p>
+      <table>
+        <thead><tr><th>Era difference</th><th>Resource cost</th><th>Research time</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>0 - current era</td><td>100% of base</td><td>100% of base</td><td>Contemporary research is full price and full time.</td></tr>
+          <tr><td>1 era behind</td><td>80% of base</td><td>80% of base</td><td>Recently old research is easier to recover.</td></tr>
+          <tr><td>2 eras behind</td><td>60% of base</td><td>60% of base</td><td>Mid-game catch-up becomes meaningful.</td></tr>
+          <tr><td>3 eras behind</td><td>40% of base</td><td>40% of base</td><td>Old research is cheap and quick, but not free.</td></tr>
+          <tr><td>4 or more eras behind</td><td>30% of base</td><td>30% of base</td><td>Maximum depreciation; the 30% floor applies.</td></tr>
+        </tbody>
+      </table>
+      <p class="formula">effective cost = base cost x depreciation multiplier</p>
+      <p class="formula">effective research time = base time x depreciation multiplier</p>
+      <p>Values should be rounded using one shared rule before resources are deducted or a queue is created. The technology definition in the static database remains unchanged; depreciation is a runtime resolution layer based on the current world era.</p>
+
+      <div class="grid">
+        <div class="example">
+          <h3>Example: two eras behind</h3>
+          <pre>Technology base cost: 100 wood + 50 gold
+          <p class="result">The player can recover selected older research without making the research completely free.</p>
+        </div>
+        <div class="example">
+          <h3>Example: maximum difference</h3>
+          <pre>Technology base cost: 200 wood + 100 gold
+          <p class="result">The strongest catch-up still consumes resources and queue time. It cannot drop to zero.</p>
+        </div>
+      </div>
+
+      <div class="callout warning">
+        <strong>Important distinction:</strong> depreciation applies only to technologies that belong to the selected history. A technology from the omitted branch is not an old technology at 30%; it is unavailable at 0% availability.
+      </div>
+    </section>
+
+    <section id="levels">
+      <h2>8. Entity Levels versus Technologies</h2>
+      <p>The system should keep two progression layers separate so that global history does not remove the predictable basic improvement ladder.</p>
+      <table>
+        <thead><tr><th>Layer</th><th>Scope</th><th>Branch dependence</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>Unit/building level</td><td>One database unit or building definition.</td><td>Shared and stable across branch choices.</td><td>Infantry level 2 gains HP, armor, and attack from its next level record.</td></tr>
+          <tr><td>Functional technology</td><td>Player-wide filters, production rules, economy, or capabilities.</td><td>Usually belongs to a selected era branch.</td><td>Farms gather more efficiently or military buildings train faster.</td></tr>
+          <tr><td>Historical doctrine</td><td>Player-wide strategic identity or a global branch effect.</td><td>May be locked by the world's selected history.</td><td>A military path improves mobilization while imposing an economic trade-off.</td></tr>
+        </tbody>
+      </table>
+      <div class="diagram">
+        <svg viewBox="0 0 1180 340" role="img" aria-labelledby="layer-title layer-desc">
+          <title id="layer-title">Separate progression layers</title>
+          <desc id="layer-desc">Shared entity levels, selected historical technologies, and the global world era combine into final gameplay behavior.</desc>
+          <defs>
+            <marker id="arrow-layer" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#86efac"/></marker>
+          </defs>
+          <rect width="1180" height="340" rx="8" fill="#111b2d"/>
+          <rect x="45" y="55" width="275" height="145" rx="12" fill="#18324a" stroke="#7dd3fc" stroke-width="2"/>
+          <text x="182" y="92" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">Shared level ladder</text>
+          <text x="182" y="123" text-anchor="middle" fill="#bae6fd" font-size="13">unit/building level 0, 1, 2...</text>
+          <text x="182" y="148" text-anchor="middle" fill="#bae6fd" font-size="13">basic statistics</text>
+          <text x="182" y="176" text-anchor="middle" fill="#9acbe8" font-size="12">same in every selected branch</text>
+
+          <rect x="452" y="55" width="275" height="145" rx="12" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
+          <text x="589" y="92" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">Selected technology</text>
+          <text x="589" y="123" text-anchor="middle" fill="#bbf7d0" font-size="13">functional rule or capability</text>
+          <text x="589" y="148" text-anchor="middle" fill="#bbf7d0" font-size="13">available only in chosen history</text>
+          <text x="589" y="176" text-anchor="middle" fill="#a8d8bb" font-size="12">depreciates when older</text>
+
+          <rect x="859" y="55" width="275" height="145" rx="12" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
+          <text x="996" y="92" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">World era state</text>
+          <text x="996" y="123" text-anchor="middle" fill="#ddd6fe" font-size="13">current era and branch</text>
+          <text x="996" y="148" text-anchor="middle" fill="#ddd6fe" font-size="13">controls availability and price</text>
+          <text x="996" y="176" text-anchor="middle" fill="#c4b5e4" font-size="12">shared by all players</text>
+
+          <rect x="365" y="260" width="450" height="45" rx="9" fill="#4a3c1b" stroke="#fcd34d"/>
+          <text x="590" y="288" text-anchor="middle" fill="#fef3c7" font-size="13">final gameplay value = base data + level + active technology effects</text>
+          <line x1="182" y1="200" x2="465" y2="260" stroke="#7dd3fc" stroke-width="3" marker-end="url(#arrow-layer)"/>
+          <line x1="589" y1="200" x2="589" y2="260" stroke="#86efac" stroke-width="3" marker-end="url(#arrow-layer)"/>
+          <line x1="996" y1="200" x2="715" y2="260" stroke="#c4b5fd" stroke-width="3" marker-end="url(#arrow-layer)"/>
+        </svg>
+        <p class="diagram-caption">The world era controls what can be researched and how much it costs; it does not rewrite every unit level record.</p>
+      </div>
+    </section>
+
+    <section id="ui">
+      <h2>9. UI and Information Visibility</h2>
+      <p>The top-of-screen era bar should communicate the direction of the world without exposing exact enemy state through the fog of war.</p>
+      <table>
+        <thead><tr><th>UI element</th><th>Recommended information</th></tr></thead>
+        <tbody>
+          <tr><td>Current era</td><td>Era name, number, and time remaining before the passive safety valve.</td></tr>
+          <tr><td>Global progress</td><td>Normalized progress for the active condition set.</td></tr>
+          <tr><td>Player contribution</td><td>The local player's share or normalized contribution to each visible condition.</td></tr>
+          <tr><td>Branch split</td><td>Progress toward each candidate branch, with the leading direction visually emphasized.</td></tr>
+          <tr><td>Enemy information</td><td>Aggregate direction or a coarse progress range, not exact hidden unit and building counts.</td></tr>
+          <tr><td>Technology lock reason</td><td>Selected branch, omitted branch, missing prerequisite, missing building, insufficient resources, or already researched.</td></tr>
+        </tbody>
+      </table>
+      <div class="diagram">
+        <svg viewBox="0 0 1180 300" role="img" aria-labelledby="ui-title ui-desc">
+          <title id="ui-title">Conceptual era progress bar</title>
+          <desc id="ui-desc">A top bar shows the current era, time safety valve, local contribution, and two competing branch progress tracks without revealing exact enemy counts.</desc>
+          <rect width="1180" height="300" rx="8" fill="#111b2d"/>
+          <rect x="45" y="38" width="1090" height="66" rx="12" fill="#172235" stroke="#30445f" stroke-width="2"/>
+          <text x="75" y="79" fill="#f8fafc" font-size="19" font-weight="700">ERA 2</text>
+          <text x="75" y="96" fill="#9aabc0" font-size="11">current world age</text>
+          <rect x="230" y="57" width="575" height="22" rx="11" fill="#263a55"/>
+          <rect x="230" y="57" width="380" height="22" rx="11" fill="#34d399"/>
+          <text x="517" y="73" text-anchor="middle" fill="#082016" font-size="12" font-weight="700">GLOBAL ACTIVE PROGRESS 66%</text>
+          <text x="840" y="71" fill="#fcd34d" font-size="13">12:40 until safety transition</text>
+          <text x="840" y="91" fill="#9aabc0" font-size="11">timer uses simulation time</text>
+
+          <text x="75" y="153" fill="#bbf7d0" font-size="15" font-weight="700">Era 2A - Agrarian</text>
+          <rect x="270" y="139" width="535" height="20" rx="10" fill="#263a55"/>
+          <rect x="270" y="139" width="390" height="20" rx="10" fill="#86efac"/>
+          <text x="825" y="154" fill="#bbf7d0" font-size="12">73% direction</text>
+          <text x="965" y="154" fill="#9aabc0" font-size="11">enemy values hidden</text>
+
+          <text x="75" y="211" fill="#fecdd3" font-size="15" font-weight="700">Era 2B - Military</text>
+          <rect x="270" y="197" width="535" height="20" rx="10" fill="#263a55"/>
+          <rect x="270" y="197" width="285" height="20" rx="10" fill="#fda4af"/>
+          <text x="825" y="212" fill="#fecdd3" font-size="12">53% direction</text>
+
+          <rect x="75" y="245" width="350" height="30" rx="8" fill="#18324a" stroke="#7dd3fc"/>
+          <text x="250" y="265" text-anchor="middle" fill="#bae6fd" font-size="12">your contribution: 30% of active progress</text>
+          <rect x="450" y="245" width="355" height="30" rx="8" fill="#29251a" stroke="#fcd34d"/>
+          <text x="627" y="265" text-anchor="middle" fill="#fef3c7" font-size="12">branch locks when one candidate resolves</text>
+        </svg>
+        <p class="diagram-caption">The player sees actionable direction and personal contribution, while hidden enemy details remain aggregated.</p>
+      </div>
+      <p>Exact wording and whether the player sees a percentage, range, or qualitative label are UI balance decisions. The underlying global controller still uses precise simulation values.</p>
+    </section>
+
+    <section id="runtime">
+      <h2>10. Runtime and Save/Load Implications</h2>
+      <p>Era progression is global simulation state, not a UI-only calculation. It must be updated at a deterministic simulation phase and persisted in scene saves.</p>
+      <h3>10.1 World state</h3>
+      <pre>WorldEraState
+  currentEra
+  eraStartedTick
+  livingCivilizationCount
+  activeConditionProgress
+  branchProgress[]
+  selectedBranch[]
+  branchResolutionState[]
+  passiveTransitionLimit</pre>
+      <p>The exact field names are illustrative. The important boundary is that the state belongs to the world, while completed technologies belong to individual players.</p>
+      <h3>10.2 Deterministic update point</h3>
+      <p>The controller should read updated player possession and defeat state after the simulation has applied the changes relevant to that tick. It should publish a transition command rather than mutating every player's technology state during a collection iteration.</p>
+      <ul class="checklist">
+        <li>Use fixed simulation ticks for the timer.</li>
+        <li>Evaluate defeat status before calculating the next living-player average.</li>
+        <li>Read completed buildings and units from authoritative possession state.</li>
+        <li>Resolve a branch only once and keep the decision stable after it is committed.</li>
+        <li>Apply the new era before the next technology availability and depreciation query.</li>
+      </ul>
+      <h3>10.3 Save/load</h3>
+      <p>Save files need both the global era state and player-specific research state. A save taken during a transition must restore the era timer, branch progress, selected branches, defeated players, completed technologies, and any active research queue consistently.</p>
+      <pre>world_era
+  current_era INT NOT NULL
+  era_started_tick INT NOT NULL
+  branch_state TEXT NOT NULL
+  progress_state TEXT NOT NULL
+
+player_technologies
+  player INT NOT NULL
+  technology INT NOT NULL
+  state INT NOT NULL
+  completed_tick INT NOT NULL
+  PRIMARY KEY (player, technology)</pre>
+      <p>This is a design shape, not a final schema. Existing save development rules still apply: schema definitions, column enums, DTOs, saver bindings, loader bindings, and migrations must remain aligned.</p>
+    </section>
+
+    <section id="balance">
+      <h2>11. Balance Risks and Open Decisions</h2>
+      <p>The core rules are decided. The following items are intentionally left as balance or content decisions rather than hidden assumptions.</p>
+      <div class="grid">
+        <div class="card"><h3>Active progress falling</h3><p>Decide whether losing workers or buildings reduces the current progress bar, or whether progress records the best achieved value. A live-value model makes raids meaningful; a best-value model prevents progress from oscillating.</p></div>
+        <div class="card"><h3>Branch threshold format</h3><p>Decide whether a branch resolves immediately at a threshold or must remain above it for a short fixed duration. A hold duration prevents one temporary production spike from deciding history.</p></div>
+        <div class="card"><h3>Timeout tie-breaker</h3><p>Choose the deterministic fallback when branch progress is tied at the passive timer limit: neutral outcome, map data, or a stable branch priority.</p></div>
+        <div class="card"><h3>Elimination timing</h3><p>The living-only rule is fixed, but the exact tick at which defeat is committed must match the game's authoritative defeat flow.</p></div>
+        <div class="card"><h3>Technology rounding</h3><p>Choose one rounding policy for multiplied integer costs and queue durations. The same policy must be used by UI previews, resource deduction, and queue completion.</p></div>
+        <div class="card"><h3>Branch power budget</h3><p>Each selected branch should have a distinct identity, but its exclusive technologies must not make the omitted branch an automatic losing outcome on every map.</p></div>
+      </div>
+      <div class="callout danger">
+        <strong>Primary risk:</strong> because elimination removes a divisor, a winning player may accelerate the next era by defeating a weak opponent. This is acceptable if it is visible and balanced, but it should be tested deliberately in scenarios where one player is close to defeat and the world is close to a threshold.
+      </div>
+    </section>
+
+    <section id="vertical-slice">
+      <h2>12. Recommended First Vertical Slice</h2>
+      <div class="callout">
+        <strong>Build one complete transition before adding the full tree:</strong> Era 1 to Era 2 with one ordinary condition, two branch candidates, living-player averaging, a passive timeout, branch locking, and one technology cost preview.
+      </div>
+      <div class="phase"><span class="phase-number">1</span><h3>Global era state</h3><p>Add a world-owned current era, era start tick, living-player filter, and deterministic update function. Test the average with two, three, and four living civilizations.</p></div>
+      <div class="phase"><span class="phase-number">2</span><h3>Branch progress</h3><p>Add two data-defined candidate condition sets. Resolve the first completed candidate and permanently lock the omitted branch for the match.</p></div>
+      <div class="phase"><span class="phase-number">3</span><h3>Passive timeout</h3><p>Advance the world when the active condition is not completed before the fixed maximum duration. Test the timeout tie-breaker deterministically.</p></div>
+      <div class="phase"><span class="phase-number">4</span><h3>Technology depreciation</h3><p>Implement the 100/80/60/40/30 schedule for both resource cost and research time. Verify that omitted-branch technologies remain unavailable even when old enough for the 30% floor.</p></div>
+      <div class="phase"><span class="phase-number">5</span><h3>UI and save/load</h3><p>Display current era, timer, local contribution, and branch direction. Save and restore the world state around a transition and around a player elimination.</p></div>
+      <ul class="checklist">
+        <li>Unit and building level progression remains available on every path.</li>
+        <li>Research cost and time previews match the queue values exactly.</li>
+        <li>Eliminated civilizations disappear from the average at the intended simulation tick.</li>
+        <li>Selected branch state survives save/load and cannot be reset by loading player technology rows.</li>
+        <li>The UI never presents an omitted-branch technology as merely expensive or outdated; it shows it as unavailable.</li>
+      </ul>
+    </section>
+
+    <p class="source"><strong>Relevant implementation anchors:</strong> <code>game/src/player/Player.h</code>, <code>game/src/player/Possession.h</code>, <code>game/src/player/PlayersManager.h</code>, <code>game/src/player/Resources.h</code>, <code>game/src/database/db_struct.h</code>, <code>game/src/objects/queue/QueueActionType.h</code>, <code>game/src/simulation/Simulation.cpp</code>, <code>game/src/scene/save/SQLConsts.h</code>, <code>game/src/scene/load/RuntimeSaveData.h</code>, and <code>docs/technology-and-upgrade-design.html</code>.</p>
+  </main>
+</body>
+</html>

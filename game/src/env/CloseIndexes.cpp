@@ -121,7 +121,7 @@ const std::vector<short>& CloseIndexes::getLv2(const ComplexBucketData& data) co
 	return closeSecondVals[data.getIndexSecondOfCloseIndexes()];
 }
 
-const std::vector<unsigned char>& CloseIndexes::getTabIndexes(const ComplexBucketData& data) {
+const std::vector<unsigned char>& CloseIndexes::getTabIndexes(const ComplexBucketData& data) const {
 	return tabIndexes[data.getIndexOfCloseIndexes()];
 }
 

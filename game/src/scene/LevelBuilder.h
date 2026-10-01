@@ -9,6 +9,7 @@ namespace Urho3D {
 }
 
 class SceneLoader;
+struct db_map;
 struct NewGameForm;
 
 class LevelBuilder {
@@ -20,6 +21,7 @@ public:
 	void createScene(NewGameForm* form);
 	Urho3D::Terrain* getTerrain() const;
 	unsigned short getMapId() const { return mapId; }
+	const db_map* getMap() const;
 
 private:
 	Urho3D::Scene* scene;

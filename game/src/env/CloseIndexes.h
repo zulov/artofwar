@@ -17,7 +17,7 @@ public:
 	const std::vector<short>& getLv2(int center) const { return closeSecondVals[getSecondIndex(center)]; }
 	const std::vector<short>& getLv2(const ComplexBucketData& data) const;
 
-	const std::vector<unsigned char>& getTabIndexes(const ComplexBucketData& data);
+	const std::vector<unsigned char>& getTabIndexes(const ComplexBucketData& data) const;
 	const std::vector<std::pair<unsigned char, short>>& getTabIndexesWithValue(const ComplexBucketData& data) const;
 
 	const std::vector<std::pair<unsigned char, short>>& getTabIndexesWithValueFreeOnly(const ComplexBucketData& data) const;

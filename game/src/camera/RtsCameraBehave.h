@@ -12,7 +12,7 @@ public:
 	void setRotation(const Urho3D::Quaternion& rotation) override {}
 
 	CameraBehaviorType getType() const override { return CameraBehaviorType::RTS; }
-	Urho3D::MouseMode getMouseMode() override;
+	Urho3D::MouseMode getMouseMode() const override;
 	Urho3D::Vector2 getTargetPos() const override;
 private:
 	float maxY = 200;

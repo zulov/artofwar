@@ -9,6 +9,7 @@
 #include "RuntimeSaveData.h"
 #include "database/db_read_defs.h"
 #include "database/db_utils.h"
+#include "scene/save/SaveTable.h"
 #include "dbload_container.h"
 #include "math/RandGen.h"
 #include "utils/StringUtils.h"
@@ -314,6 +315,22 @@ void SceneLoader::reportError(const std::string& message) const {
 
 void SceneLoader::loadRuntimeState() const {
 	const int precision = dbLoad->config->precision;
+	const bool hasWorldAgeTable = hasTable(SaveTable<WorldAgeStateCol>::name);
+	bool hasWorldAgeState = false;
+	if (!loadOptionalSaveTable<WorldAgeStateCol>("", [this, &hasWorldAgeState](sqlite3_stmt* s) {
+		if (hasWorldAgeState) {
+			reportError("load '" + path + "' failed: world_age table must contain exactly one row");
+			return;
+		}
+		dbLoad->worldAgeState = readRow<WorldAgeStateSaveData>(s, 1);
+		hasWorldAgeState = true;
+	}) || hasError()) {
+		return;
+	}
+	if (hasWorldAgeTable && !hasWorldAgeState) {
+		reportError("load '" + path + "' failed: world_age table must contain exactly one row");
+		return;
+	}
 	loadOptionalSaveTable<UnitOrderCol>(" ORDER BY unit_uid, order_idx", [this, precision](sqlite3_stmt* s) {
 		const auto order = readRow<UnitOrderSaveData>(s, precision);
 		dbLoad->unitVariable[order.unitUid].orders.push_back(order);

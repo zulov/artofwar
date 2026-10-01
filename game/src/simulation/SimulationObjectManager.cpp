@@ -48,7 +48,8 @@ void SimulationObjectManager::clearNodesWithoutDelete() {
 	}
 }
 
-void SimulationObjectManager::addUnits(unsigned number, unsigned short id, Urho3D::Vector2& center, char level, char player) {
+void SimulationObjectManager::addUnits(unsigned number, unsigned short id, const Urho3D::Vector2& center, char level,
+                                      char player) {
 	addUnits(unitFactory.create(number, id, center, player, level));
 }
 

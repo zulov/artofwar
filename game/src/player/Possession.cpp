@@ -48,7 +48,7 @@ Possession::~Possession() {
 unsigned Possession::getScore() const {
 	float buildingScore = 0.f;
 	for (const auto building : buildings) {
-		auto cost = building->getCostSum();
+		float cost = static_cast<float>(building->getCostSum());
 
 		if (!building->isReady()) {
 			cost *= 0.5;
@@ -137,7 +137,7 @@ float Possession::getResWithOutBonus(ResourceType rt) {
 	return metric->resWithoutBonus[cast(rt)];
 }
 
-std::vector<Building*>* Possession::getBuildings(unsigned short id) {
+const std::vector<Building*>* Possession::getBuildings(unsigned short id) const {
 	return buildingsPerId[id];
 }
 

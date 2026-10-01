@@ -6,6 +6,7 @@
 #include "database/DatabaseCache.h"
 #include "env/Environment.h"
 #include "objects/queue/QueueActionType.h"
+#include "simulation/WorldAgeController.h"
 
 Player::Player(unsigned char nationId, unsigned char team, unsigned char id, unsigned char color, Urho3D::String name,
 			   bool active, unsigned currentBuildingUId, unsigned currentUnitUId) :
@@ -36,13 +37,15 @@ void Player::setResourceAmount(float amount) const { resources->init(amount); }
 char Player::upgradeLevel(QueueActionType type, int id) const {
 	switch (type) {
 	case QueueActionType::UNIT_LEVEL:
-		if (Game::getDatabase()->getUnit(id)->levels.size() - 1 > unitLevels[id]) {
+		if (Game::getDatabase()->getUnit(id)->levels.size() - 1 > unitLevels[id] &&
+			Game::getWorldAgeController()->isLevelAvailable(getNextUnitLevel(id).value()->ageStage)) {
 			unitLevels[id]++;
 			return unitLevels[id];
 		}
 		break;
 	case QueueActionType::BUILDING_LEVEL:
-		if (Game::getDatabase()->getBuilding(id)->levels.size() - 1 > buildingLevels[id]) {
+		if (Game::getDatabase()->getBuilding(id)->levels.size() - 1 > buildingLevels[id] &&
+			Game::getWorldAgeController()->isLevelAvailable(getNextBuildingLevel(id).value()->ageStage)) {
 			buildingLevels[id]++;
 			return buildingLevels[id];
 		}

@@ -105,6 +105,6 @@ Player* PlayersManager::getEnemyFor(unsigned char player) const {
 	return allPlayers[getEnemyIdFor(player)];
 }
 
-std::vector<Player*>& PlayersManager::getAllPlayers() {
+const std::vector<Player*>& PlayersManager::getAllPlayers() const {
 	return allPlayers; //TODO bug id playera a jego index to cz�sto nie to samo
 }

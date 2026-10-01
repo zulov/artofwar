@@ -40,7 +40,7 @@ bool Physical::isAlive() const {
 	return true;
 }
 
-std::optional<Urho3D::Vector2> Physical::getPosToUseBy(Unit* follower) {
+std::optional<Urho3D::Vector2> Physical::getPosToUseBy(const Unit* follower) const {
 	auto a = getPosToUseWithDist(follower);
 	if (a.has_value()) {
 		return std::get<0>(a.value());

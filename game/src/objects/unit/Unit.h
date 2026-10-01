@@ -65,7 +65,7 @@ public:
 	bool move(float timeStep, const CameraInfo* camInfo);
 	bool ifVisible(bool hasMoved, const CameraInfo* camInfo) const;
 	void applyForce(float timeStep);
-	void setAcceleration(Urho3D::Vector2& _acceleration);
+	void setAcceleration(const Urho3D::Vector2& _acceleration);
 
 	void forceGo(float boostCoef, float aimCoef, Urho3D::Vector2& force) const;
 	Urho3D::Vector2 getDestination(float boostCoef, float aimCoef);
@@ -131,9 +131,9 @@ public:
 	void setOccupiedIndexSlot(char index, bool value) override;
 	bool ifSlotFree(unsigned char index) const;
 
-	std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(Unit* user) override;
+	std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(const Unit* user) const override;
 	std::vector<int> getIndexesForUse() const override;
-	std::vector<int> getIndexesForRangeUse(Unit* user) const override;
+	std::vector<int> getIndexesForRangeUse(const Unit* user) const override;
 	void addIndexesForUse(std::vector<int>& indexes) const override;
 	bool indexCanBeUse(int index) const override;
 
@@ -149,8 +149,8 @@ public:
 	void clean();
 
 	float getSightRadius() const override;
-	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;
-	short getCostSum() const override;
+	Urho3D::Vector2 getSocketPos(const Unit* toFollow, int i) const;
+	std::uint32_t getCostSum() const override;
 	bool isInCloseRange(int index) const override;
 	void setSlotToInteract(char slot) { slotToInteract = slot; }
 	char getSlotToInteract() const { return slotToInteract; }

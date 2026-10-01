@@ -29,14 +29,14 @@ struct MouseButton {
 	MouseButton() = default;
 	MouseButton(const MouseButton&) = delete;
 
-	void setFirst(Urho3D::Vector3& hitPos) {
+	void setFirst(const Urho3D::Vector3& hitPos) {
 		held.first = hitPos;
 		isHeld = true;
 		prevDown = lastDown;
 		lastDown = Game::getFrameInfo()->getWallTime();
 	}
 
-	void setSecond(Urho3D::Vector3& hitPos) {
+	void setSecond(const Urho3D::Vector3& hitPos) {
 		held.second = hitPos;
 		isHeld = false;
 		prevUp = lastUp;

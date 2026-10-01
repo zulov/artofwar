@@ -8,6 +8,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
+#include "simulation/WorldAgeController.h"
 
 GeneralActionCommand::GeneralActionCommand(short id, GeneralActionType action, char player)
 	: id(id), action(action), player(player) {
@@ -19,7 +20,8 @@ void GeneralActionCommand::execute() {
 
 		auto opt = playerEnt->getNextBuildingLevel(id); //TODO ten id to powinien byc id levelu konkretnego
 		if (opt.has_value()) {
-			if (playerEnt->getResources()->reduce(opt.value())) {
+			if (Game::getWorldAgeController()->isLevelAvailable(opt.value()->ageStage) &&
+				playerEnt->getResources()->reduce(opt.value())) {
 				playerEnt->getQueue().add(QueueActionType::BUILDING_LEVEL, id, opt.value()->id);
 			}
 		}

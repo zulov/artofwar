@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm>
+#include <cstdint>
 #include <magic_enum.hpp>
 #include <span>
 #include <vector>
@@ -39,11 +40,11 @@ struct db_common_attack {
 	const float attack;
 	const short attackReload;
 	const short attackRange;
-	const short sqAttackRange;
+	const float sqAttackRange;
 
 	db_common_attack(float collect, float attack, short attackReload, short attackRange)
 		: collect(collect), attack(attack), attackReload(attackReload), attackRange(attackRange),
-		  sqAttackRange(attackRange * attackRange) {}
+		  sqAttackRange(static_cast<float>(attackRange) * attackRange) {}
 
 	bool initFlag(float val) const {
 		return val > 0.f;
@@ -97,16 +98,16 @@ struct db_with_cost {
 	const std::array<unsigned short, 4> values;
 
 	const unsigned short maxFromWoodOrStone;
-	const unsigned short sum = 0;
+	const std::uint32_t sum = 0;
 	const bool moreWoodThanStone;
 
 	db_with_cost(unsigned short food, unsigned short wood, unsigned short stone, unsigned short gold) :
 		values({food, wood, stone, gold}),
 		maxFromWoodOrStone(std::max(values[cast(ResourceType::WOOD)], values[cast(ResourceType::STONE)])),
-		sum(food + wood + stone + gold),
+		sum(static_cast<std::uint32_t>(food) + wood + stone + gold),
 		moreWoodThanStone(wood > stone) {}
 
-	unsigned short getSumCost() const { return sum; }
+	std::uint32_t getSumCost() const { return sum; }
 };
 
 struct db_basic_metric {
@@ -218,8 +219,9 @@ struct db_unit_metric : db_basic_metric {
 };
 
 struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_base, db_with_model,
-                       db_build_upgrade {
+                        db_build_upgrade {
 	const unsigned short unit;
+	const unsigned char ageStage;
 
 	const float minDist;
 	const float maxSep;
@@ -251,6 +253,7 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 		  db_base(asUShort(s, C::max_hp), asFloat(s, C::armor), asFloat(s, C::sight_range)),
 		  db_build_upgrade(asShort(s, C::build_time), asShort(s, C::upgrade_time)),
 		  unit(asUShort(s, C::unit)),
+		  ageStage(asUByte(s, C::age_stage)),
 		  minDist(asFloat(s, C::min_dist)),
 		  maxSep(1.f),
 		  mass(asFloat(s, C::mass)),
@@ -416,6 +419,7 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_building_attack,
                            db_with_model, db_build_upgrade {
 	const short building;
+	const unsigned char ageStage;
 	const short queueMaxCapacity;
 	const float resourceRange;
 	const short foodStorage;
@@ -444,6 +448,7 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 		                     asShort(s, C::attack_reload), asShort(s, C::attack_range)),
 		  db_build_upgrade(asShort(s, C::build_speed), asShort(s, C::upgrade_speed)),
 		  building(asShort(s, C::building)),
+		  ageStage(asUByte(s, C::age_stage)),
 		  queueMaxCapacity(asShort(s, C::queue_max_capacity)),
 		  resourceRange(asFloat(s, C::resource_range)),
 		  foodStorage(asShort(s, C::food_storage)),

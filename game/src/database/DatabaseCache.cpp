@@ -2,8 +2,11 @@
 
 #include "db_grah_structs.h"
 #include "db_other_struct.h"
+#include "db_world_age_struct.h"
 #include "db_update_utils.h"
 #include "db_utils.h"
+
+#include <cassert>
 
 bool DatabaseCache::openDatabase(const std::string& name, bool readOnly) {
 	database = openDb(pathStr + name, readOnly);
@@ -92,7 +95,6 @@ void DatabaseCache::loadData(const std::string& name) {
 			level->unitsPerNationIds[nation->id]->push_back(unit->id);
 		}
 	});
-	//TODO make sure its sorted set_intersection
 
 	container->finish();
 
@@ -102,9 +104,66 @@ void DatabaseCache::loadData(const std::string& name) {
 void DatabaseCache::loadMaps(const std::string& name) {
 	if (!openDatabase(name)) { return; }
 
+	load("\"condition\" order by id desc", [this](auto* s) {
+		setEntity(container->worldAgeCatalog.conditions, new db_world_age_condition(s));
+	});
+	load("age order by id desc", [this](auto* s) {
+		setEntity(container->worldAgeCatalog.ages, new db_world_age(s));
+	});
+	load("age_condition order by age_id, condition_id", [this](auto* s) {
+		const auto ageId = asUShort(s, DbWorldAgeJoinCol::age_id);
+		auto* age = container->worldAgeCatalog.getAge(ageId);
+		assert(age != nullptr && "age_condition must reference an existing age");
+		const auto conditionId = asUShort(s, DbWorldAgeJoinCol::condition_id);
+		const auto* condition = container->worldAgeCatalog.getCondition(conditionId);
+		assert(condition != nullptr && "age_condition must reference an existing condition");
+		age->conditions.push_back(condition);
+	});
 	load("map order by id desc", [this](auto* s) { setEntity(container->maps, new db_map(s)); });
+	validateWorldAgeCatalog();
 
 	sqlite3_close_v2(database);
+}
+
+void DatabaseCache::validateWorldAgeCatalog() const {
+	const auto& catalog = container->worldAgeCatalog;
+	assert(!catalog.ages.empty() && catalog.getAge(0) != nullptr && "age catalog must define age 0");
+	assert(catalog.getAge(0)->stage == 0 && "age 0 must be the starting age");
+	for (const auto* age : catalog.ages) {
+		if (!age) {
+			continue;
+		}
+		assert(!age->name.Empty());
+		assert(age->stage == 0 || !age->conditions.empty());
+		for (const auto* condition : age->conditions) {
+			assert(condition != nullptr);
+			assert(static_cast<unsigned char>(condition->metric) <= static_cast<unsigned char>(WorldAgeMetric::ARMY_COUNT));
+			assert(condition->target > 0.f);
+		}
+	}
+	for (const auto* map : container->maps) {
+		if (!map) {
+			continue;
+		}
+		assert(!map->ageIds.empty() && "map must define at least one age");
+		assert(map->ageIds.front() == 0 && "map age list must start at age 0");
+		std::vector<bool> seen(catalog.ages.size(), false);
+		unsigned char lastStage = 0;
+		for (const auto ageId : map->ageIds) {
+			assert(ageId < seen.size() && catalog.getAge(ageId) != nullptr);
+			assert(!seen[ageId] && "map age list must not contain duplicate IDs");
+			seen[ageId] = true;
+			const auto stage = catalog.getAge(ageId)->stage;
+			assert(stage >= lastStage && stage <= lastStage + 1 && "map age stages must be ordered without gaps");
+			lastStage = stage;
+		}
+	}
+	for (const auto* level : container->unitsLevels) {
+		assert(level != nullptr && level->ageStage <= catalog.maxStage());
+	}
+	for (const auto* level : container->buildingsLevels) {
+		assert(level != nullptr && level->ageStage <= catalog.maxStage());
+	}
 }
 
 

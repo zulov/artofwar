@@ -16,6 +16,8 @@
     <ClCompile Include="ResourcesTest.cpp" />
     <ClCompile Include="PersistenceRowTest.cpp" />
     <ClCompile Include="PersistenceStateTest.cpp" />
+    <ClCompile Include="WorldAgeDataTest.cpp" />
+	<ClCompile Include="WorldAgeControllerTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

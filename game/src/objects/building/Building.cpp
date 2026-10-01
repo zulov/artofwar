@@ -17,6 +17,7 @@
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
 #include "scene/load/dbload_container.h"
+#include "simulation/WorldAgeController.h"
 #include "utils/StringUtils.h"
 
 Building::Building(const Urho3D::Vector3& _position, db_building* db_building, unsigned char playerId,
@@ -101,7 +102,9 @@ void Building::action(BuildingActionType type, unsigned short id) {
 	case BuildingActionType::UNIT_LEVEL: {
 		// TODO bug czy to dobre uzycie optionala
 		if (auto nextLevel = player->getNextUnitLevel(id)) {
-			if (resources->reduce(*nextLevel)) { queue.add(QueueActionType::UNIT_LEVEL, id, (*nextLevel)->id); }
+			if (Game::getWorldAgeController()->isLevelAvailable((*nextLevel)->ageStage) && resources->reduce(*nextLevel)) {
+				queue.add(QueueActionType::UNIT_LEVEL, id, (*nextLevel)->id);
+			}
 		}
 	}
 	break;
@@ -167,7 +170,7 @@ bool Building::isDeadOrTooFar() const {
 	return !thingToInteract->isAlive() || thingToInteract->getPosition().SqDistXZ(position) > dbLevel->sqAttackRange;
 }
 
-std::optional<int> Building::getDeploy() {
+std::optional<int> Building::getDeploy() const {
 	if (deployIndex > -1) { return deployIndex; }
 	return {};
 }
@@ -195,7 +198,7 @@ void Building::complete() {
 
 float Building::getSightRadius() const { return dbLevel->sightRadius * (1 - 0.7f * !isReady()); }
 
-short Building::getCostSum() const { return getDbBuilding()->getSumCost(); }
+std::uint32_t Building::getCostSum() const { return getDbBuilding()->getSumCost(); }
 
 bool Building::canUse(int index) const { return Game::getEnvironment()->cellIsAttackable(index); }
 

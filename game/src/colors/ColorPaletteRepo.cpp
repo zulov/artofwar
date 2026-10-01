@@ -25,12 +25,12 @@ ColorPaletteRepo::ColorPaletteRepo() {
 	}
 }
 
-Urho3D::Color& ColorPaletteRepo::getColor(float value, float maxValue) {
+const Urho3D::Color& ColorPaletteRepo::getColor(float value, float maxValue) const {
 	value = fixValue(value, maxValue);
 	const int index = value / maxValue * SPECTRUM_RESOLUTION;
 	return basicSpectrum[index];
 }
-Urho3D::Color& ColorPaletteRepo::getSolidColor(float value, float maxValue) {
+const Urho3D::Color& ColorPaletteRepo::getSolidColor(float value, float maxValue) const {
 	value = fixValue(value, maxValue);
 	const int index = value / maxValue * SPECTRUM_RESOLUTION;
 	return basicSpectrumSolid[index];
@@ -57,7 +57,7 @@ Urho3D::Color ColorPaletteRepo::getInfoForGrid(CellState state) const {
 	return Urho3D::Color(0, 0, 0, 0);
 }
 
-Urho3D::Color ColorPaletteRepo::getCircleColor(db_building* dbBuilding) const {
+Urho3D::Color ColorPaletteRepo::getCircleColor(const db_building* dbBuilding) const {
 	if (dbBuilding->typeDefence) {
 		return Urho3D::Color::BLACK;
 	}
@@ -73,7 +73,7 @@ Urho3D::Color ColorPaletteRepo::getCircleColor(db_building* dbBuilding) const {
 	return Urho3D::Color::CYAN;
 }
 
-Urho3D::Color ColorPaletteRepo::getColorForValidation(const db_building* building, Urho3D::Vector2& hitPos) const{
+Urho3D::Color ColorPaletteRepo::getColorForValidation(const db_building* building, const Urho3D::Vector2& hitPos) const {
 	const Environment* env = Game::getEnvironment();
 	if (env->validateStatic(building->size, hitPos, true)) {
 		if (env->isVisible(Game::getPlayersMan()->getActivePlayerID(), hitPos)) {

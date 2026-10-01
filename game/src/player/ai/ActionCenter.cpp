@@ -54,7 +54,7 @@ bool ActionCenter::addUnits(unsigned number, short id, Urho3D::Vector2 position,
 	return addUnits(number, id, position, player, level);
 }
 
-bool ActionCenter::addUnits(unsigned number, short id, Urho3D::Vector2& position, char player, int level) {
+bool ActionCenter::addUnits(unsigned number, short id, const Urho3D::Vector2& position, char player, int level) {
 	auto command = creation.addUnits(number, id, position, player, level);
 	if (command) {
 		creation.add(command);
@@ -63,12 +63,12 @@ bool ActionCenter::addUnits(unsigned number, short id, Urho3D::Vector2& position
 	return false;
 }
 
-bool ActionCenter::addBuilding(short id, Urho3D::Vector2& position, char player, bool force) {
+bool ActionCenter::addBuilding(short id, const Urho3D::Vector2& position, char player, bool force) {
 	auto level = Game::getPlayersMan()->getPlayer(player)->getBuildingLevel(id)->level;
 	return addBuilding(id, position, player, level, force);
 }
 
-bool ActionCenter::addBuilding(short id, Urho3D::Vector2& position, char player, int level, bool force) {
+bool ActionCenter::addBuilding(short id, const Urho3D::Vector2& position, char player, int level, bool force) {
 	CreationCommand* command{};
 	if (force) {
 		command = creation.addBuildingForce(id, position, player, level);

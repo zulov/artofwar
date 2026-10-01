@@ -1,4 +1,6 @@
 #include "QueuePanel.h"
+#include <algorithm>
+
 #include <Urho3D/Input/InputEvents.h>
 #include <Urho3D/ui/button.h>
 #include <Urho3D/UI/UIEvents.h>
@@ -25,8 +27,8 @@ QueuePanel::~QueuePanel() {
 }
 
 void QueuePanel::update(const QueueManager& queue, short& j) const {
-	const short size = Urho3D::Min(queue.getSize(), MAX_ICON_SELECTION);
-	for (int i = 0; i < size; ++i) {
+	const auto size = std::min(static_cast<std::size_t>(queue.getSize()), static_cast<std::size_t>(MAX_ICON_SELECTION));
+	for (std::size_t i = 0; i < size; ++i) {
 		QueueElement* element = queue.getAt(i);
 		elements[j]->show();
 		auto name = getIconName(element->getType(), element->getLevelId(), element->getId());

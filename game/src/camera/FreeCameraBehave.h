@@ -10,7 +10,7 @@ public:
 	bool rotate(const Urho3D::IntVector2& mouseMove, float mouse_sensitivity) override;
 
 	CameraBehaviorType getType() const override { return CameraBehaviorType::FREE; }
-	Urho3D::MouseMode getMouseMode() override;
+	Urho3D::MouseMode getMouseMode() const override;
 private:
 	float yaw = 0.f;
 	float pitch = 0.f;
