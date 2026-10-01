@@ -3,6 +3,7 @@
 #include "db_grah_structs.h"
 #include "db_struct.h"
 #include "db_other_struct.h"
+#include "db_world_age_struct.h"
 #include "utils/DeleteUtils.h"
 
 struct db_hud_vars;
@@ -27,6 +28,7 @@ struct db_container {
 	std::vector<db_nation*> nations;
 	std::vector<db_resource*> resources;
 	std::vector<db_player_colors*> playerColors;
+	db_world_age_catalog worldAgeCatalog;
 
 	explicit db_container() = default;
 

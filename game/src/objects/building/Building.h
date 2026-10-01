@@ -54,7 +54,7 @@ public:
 	void loadRuntimeState(Physical* target);
 
 	float getSightRadius() const override;
-	short getCostSum() const override;
+	std::uint32_t getCostSum() const override;
 
 	bool canUse(int index) const override;
 	db_building_level* getLevel() const;

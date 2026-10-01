@@ -143,6 +143,9 @@ struct SQLConsts {
 	inline static constexpr const char* PENDING_COMMAND_ENTITY_COL =
 			"(command_idx INT NOT NULL, order_idx INT NOT NULL, uid INT NOT NULL, PRIMARY KEY(command_idx, order_idx)) "
 			"WITHOUT ROWID;";
+	inline static constexpr const char* WORLD_AGE_NAME = "world_age";
+	inline static constexpr const char* WORLD_AGE_COL =
+			"(current_age INT NOT NULL, age_started_tick INT NOT NULL, history TEXT NOT NULL);";
 
 	inline const static std::string CREATE_TABLE = "CREATE TABLE ";
 

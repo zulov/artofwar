@@ -37,7 +37,7 @@ public:
 
 	ObjectType getType() const override { return ObjectType::RESOURCE; }
 	unsigned char getMaxCloseUsers() const override;
-	short getCostSum() const override { return 0; }
+	std::uint32_t getCostSum() const override { return 0; }
 	float getBonus(unsigned char player) const { return bonuses[player]; }
 	void resetBonus() { std::fill_n(bonuses, MAX_PLAYERS, 1.f); }
 	void setBonus(unsigned char player, float value) { bonuses[player] = value; }

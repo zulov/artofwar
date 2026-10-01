@@ -27,7 +27,7 @@ QueuePanel::~QueuePanel() {
 }
 
 void QueuePanel::update(const QueueManager& queue, short& j) const {
-	const auto size = std::min(queue.getSize(), static_cast<std::size_t>(MAX_ICON_SELECTION));
+	const auto size = std::min(static_cast<std::size_t>(queue.getSize()), static_cast<std::size_t>(MAX_ICON_SELECTION));
 	for (std::size_t i = 0; i < size; ++i) {
 		QueueElement* element = queue.getAt(i);
 		elements[j]->show();

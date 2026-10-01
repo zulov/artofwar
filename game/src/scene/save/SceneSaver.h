@@ -14,6 +14,7 @@ class Unit;
 class ResourceEntity;
 class Building;
 class Player;
+class WorldAgeController;
 struct PendingCommandSaveData;
 struct UnitRuntimeSaveData;
 
@@ -24,7 +25,7 @@ public:
 
 	bool createSave(const Urho3D::String& fileName, const std::vector<Unit*>* units,
 					const std::vector<Building*>* buildings, const std::vector<ResourceEntity*>* resources,
-					const std::vector<Player*>& players, int mapId, int size);
+					const std::vector<Player*>& players, int mapId, int size, const WorldAgeController* worldAgeController);
 	const std::string& getError() const { return error; }
 
 private:
@@ -36,7 +37,8 @@ private:
 	bool savePlayers(const std::vector<Player*>& players);
 	bool saveConfig(int mapId, int size);
 	bool saveRuntimeState(const std::vector<Unit*>* units, const std::vector<Building*>* buildings,
-						  const std::vector<Player*>& players);
+						  const std::vector<Player*>& players, const WorldAgeController* worldAgeController);
+	bool saveWorldAgeState(const WorldAgeController* worldAgeController);
 	bool saveUnitOrders(const std::vector<UnitRuntimeSaveData>& unitStates);
 	bool saveAimPaths(const std::vector<UnitRuntimeSaveData>& unitStates);
 	bool saveQueues(const std::vector<Building*>* buildings, const std::vector<Player*>& players);

@@ -50,6 +50,12 @@ inline PlayerLevelSaveData readRow<PlayerLevelSaveData>(sqlite3_stmt* stmt, int)
 }
 
 template <>
+inline WorldAgeStateSaveData readRow<WorldAgeStateSaveData>(sqlite3_stmt* stmt, int) {
+	return {asUShort(stmt, WorldAgeStateCol::current_age), asUI(stmt, WorldAgeStateCol::age_started_tick),
+			asText(stmt, WorldAgeStateCol::history)};
+}
+
+template <>
 inline AiSaveData readRow<AiSaveData>(sqlite3_stmt* stmt, int precision) {
 	AiSaveData state;
 	state.player = asUByte(stmt, AiStateCol::player);

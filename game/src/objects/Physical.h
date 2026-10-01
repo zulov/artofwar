@@ -89,7 +89,7 @@ public:
 	void clearSelection();
 	void unSelect();
 
-	virtual short getCostSum() const = 0;
+	virtual std::uint32_t getCostSum() const = 0;
 
 	virtual float getSightRadius() const { return -1.f; }
 	virtual Urho3D::String getInfo() const = 0;

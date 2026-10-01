@@ -6,7 +6,7 @@ All paths are relative to the game runtime directory, not the repository root. `
 
 - `Data/Database/base.db`: UI, graphics, and settings data. It is skipped in headless mode.
 - `Data/Database/data.db`: nations, units, buildings, resources, levels, and their relationships.
-- `Data/map/maps.db`: map metadata.
+- `Data/map/maps.db`: map/mission metadata and the map-owned age catalog.
 - `saves/<name>.db`: a scene save created by `SceneSaver`; `SceneLoader` receives the filename, including its `.db` suffix.
 
 The loading implementation is `game/src/database/DatabaseCache.cpp`; save loading is `game/src/scene/load/SceneLoader.cpp`. Every floating-point value written by the current save format is stored as an integer multiplied by `config.precision` and divided by that precision during load; runtime DTOs remain floating-point values. The loader also reads legacy `REAL` cells as already-unscaled values.
@@ -14,6 +14,46 @@ The loading implementation is `game/src/database/DatabaseCache.cpp`; save loadin
 The runtime data databases and save tables use different query contracts. `DatabaseCache` still reads data tables with `SELECT *` and decodes result columns through ordinal enums. Save writes use named-column `INSERT`s generated from the save enums, while save loads validate required column names and generate explicit `SELECT` lists from those enums. For saves, SQLite physical column order and extra columns do not matter, but expected column names, enum order, and bindings must stay aligned. For `DatabaseCache` tables, inserting, removing, or reordering a column still requires updating the matching enum and binding.
 
 `DatabaseCache` reads `Data/Database/base.db`, but its current settings-write paths open `Data/base.db` and target `graphics_settings` while the loaded table is `graph_settings`. Treat graphics/settings persistence as a known limitation until those paths are corrected; do not rely on UI changes being written back to the loaded database.
+
+## Age-Related Database Structure
+
+World-age content is split by ownership. Static definitions are loaded from the installed databases; a save contains only the mutable age state for one match.
+
+```text
+Data/Database/data.db                 shared gameplay definitions
+  unit_level(..., age_stage)          minimum logical stage for a unit level
+  building_level(..., age_stage)      minimum logical stage for a building level
+
+Data/map/maps.db                      map-owned progression catalog
+  map(id, xmlName, name, age_ids)     ordered candidate age IDs for each map
+  age(id, stage, name)                age identity and logical stage
+  condition(id, metric, target)       reusable worker/army threshold
+  age_condition(age_id, condition_id) age-to-condition join; all joins are ANDed
+
+saves/<name>.db                       one scene and its continuation state
+  config(..., map, total_ticks, ...)  selected map and simulation clock
+  world_age(current_age,              selected age, entry tick, reached route
+            age_started_tick, history)
+```
+
+The current checked-in age catalog is a staged candidate sequence, not an edge table:
+
+```text
+stage 0: age 0  Age of Settlement
+             |
+stage 1: age 1  Age of Growth       (workers >= 10)
+         age 2  Age of Mobilization  (army >= 20)
+             |
+stage 2: age 3  Age of Consolidation (workers >= 20)
+         age 4  Age of Fortification  (army >= 30)
+             |
+stage 3: age 5  Age of Industry      (workers >= 40)
+         age 6  Age of Conquest       (army >= 70)
+```
+
+`map.age_ids` supplies the candidate order and deterministic tie-break. The controller only evaluates candidates whose `stage` is one greater than the current age's stage. There is no `world_age_node`, `world_age_transition`, hold, or transition table in the active schema.
+
+The checked-in map rows are `map 0 -> 0,1` and `map 1 -> 0,1,2,3,4,5,6`. The runtime `data.db` currently contains nine unit-level rows and 18 building-level rows at each of `age_stage` 0, 1, and 2. `age_stage` is a shared logical gate: a level is available when the selected map age reaches at least that stage, regardless of which candidate ID won within the stage. See [Map-Owned Age System](map-age-system.md) and [World Age Database Schema](world-age-database-schema.html) for the complete age table and save examples.
 
 ## ID And Relationship Invariants
 
@@ -46,11 +86,13 @@ Changing a unit or building stat can change AI matching and aggregate possession
 
 Save files use SQLite tables defined in `game/src/scene/save/SQLConsts.h`. `SaveTable.h` maps those definitions to the column enums in `game/src/database/db_columns.h`. `SceneSaver` writes named columns, and `SceneLoader` validates required columns before reading explicit enum-generated column lists. The loader checks whether optional runtime tables exist before restoring them.
 
+Age continuation is the `world_age` runtime table. It has one row with `current_age`, `age_started_tick`, and `history`; `config.map` identifies the map whose catalog must validate those IDs. Static age rows are never copied into a save. `world_age` is written by the active controller, while empty variable-length runtime tables are normally omitted.
+
 Saves are scene snapshots. The current saver persists mandatory unit continuation fields in `units` (including each unit's formation ID and layout slot, but not the transient acceleration result), mutable player resource statistics in `players`, player and building queues, player-wide upgrade levels, unit paths/orders, building combat state, pending commands, formations and formation orders, logical projectile state, simulation tick timing, RNG seed and named stream indexes, AI history, AI scheduler wants and lacking feedback, and consolidated MasterBrain/economy/military cached state in `ai_state`. Aim paths use one `aim_paths` row per unit with comma-separated `path` and `pending_path` cell lists; the path progress indexes remain in `units`. Player display name/color, camera position/mode, and last-period resource report values are intentionally not saved; they are GUI state and are recreated with defaults. Building deployment cells and queue capacity/nominal duration are derived from the loaded map/building definitions; queue amount and elapsed progress remain persisted. Cumulative resource totals remain because headless benchmark output uses them. Projectile rows store only target UID, remaining travel, speed, attack value, and player attribution; graphical nodes and trajectories are recreated during load. Global singleton state is stored in the one-row `config` table. Storage and refinement capacities are derived from loaded buildings and rebuilt after entity loading. Runtime tables are omitted when they have no rows. Simulation frame and seconds are derived from the persisted total tick count; wall time and the render accumulator are transient runtime state and are reset when loading. Cross-entity runtime links are stored by UID and resolved only after all entities and static grids have been rebuilt. Each unit belongs to at most one formation, so formation membership is reconstructed from `units.formation`; the runtime `Formation::units` vector is not separately persisted.
 
 See [Save System Development](save-development.html) for the complete table reference, representative data, relationship diagram, and restoration sequence.
 
-The checked-in `quicksave.db` and `quicksave512.db` files use the current five-table schema. The intermediate copies can be upgraded with `docs/quicksave-migration.txt`, which renames the RNG columns to `rdn_*`, normalizes the numeric schema, and removes ignored columns. Migrate a genuinely older five-table save with `docs/old-save-migration.txt`, or regenerate the save. Saves from the immediately previous pre-consolidation format, with a four-column `config` table plus `random` and `camera` singleton tables, need `docs/config-table-migration.txt`. The loader accepts both the current flat `aim_paths` format and the previous per-cell format. The save format is currently work in progress and has no active schema-version field; extra columns in older saves, including removed GUI/reconstructable fields, are ignored by named-column reads.
+The current runtime databases and checked-in quicksaves already use the current age schema. The intermediate copies can be upgraded with `docs/quicksave-migration.txt`, which renames the RNG columns to `rdn_*`, normalizes the numeric schema, and removes ignored columns. Migrate a genuinely older five-table save with `docs/old-save-migration.txt`, or regenerate the save. Saves from the immediately previous pre-consolidation format, with a four-column `config` table plus `random` and `camera` singleton tables, need `docs/config-table-migration.txt`. The loader accepts both the current flat `aim_paths` format and the previous per-cell format. The save format is currently work in progress and has no active schema-version field; extra columns in older saves, including removed GUI/reconstructable fields, are ignored by named-column reads.
 
 For a save-format change:
 

@@ -150,7 +150,7 @@ public:
 
 	float getSightRadius() const override;
 	Urho3D::Vector2 getSocketPos(const Unit* toFollow, int i) const;
-	short getCostSum() const override;
+	std::uint32_t getCostSum() const override;
 	bool isInCloseRange(int index) const override;
 	void setSlotToInteract(char slot) { slotToInteract = slot; }
 	char getSlotToInteract() const { return slotToInteract; }

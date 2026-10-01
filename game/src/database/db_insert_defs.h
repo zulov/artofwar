@@ -162,6 +162,13 @@ inline void bindRow<PlayerLevelSaveData>(sqlite3_stmt* stmt, int, const PlayerLe
 }
 
 template <>
+inline void bindRow<WorldAgeStateSaveData>(sqlite3_stmt* stmt, int, const WorldAgeStateSaveData* x) {
+	bindI(stmt, WorldAgeStateCol::current_age, x->currentAge);
+	bindU(stmt, WorldAgeStateCol::age_started_tick, x->ageStartedTick);
+	bindT(stmt, WorldAgeStateCol::history, x->history);
+}
+
+template <>
 inline void bindRow<AiSaveData>(sqlite3_stmt* stmt, int precision, const AiSaveData* x) {
 	bindUC(stmt, AiStateCol::player, x->player);
 	bindI(stmt, AiStateCol::prev_score, x->prevScore);

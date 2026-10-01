@@ -7,6 +7,7 @@
 #include "database/db_struct.h"
 
 struct dbload_container;
+struct db_map;
 struct FrameInfo;
 enum class UnitAction : unsigned char;
 enum class UnitState : unsigned char;
@@ -23,6 +24,7 @@ class CreationCommandList;
 class SimulationObjectManager;
 class UpgradeCommandList;
 class CommandList;
+class WorldAgeController;
 
 namespace Urho3D {
 	class Node;
@@ -31,7 +33,7 @@ namespace Urho3D {
 
 class Simulation {
 public:
-	explicit Simulation(Environment* environment);
+	Simulation(Environment* environment, const db_map* map);
 	~Simulation();
 	void clearNodesWithoutDelete() const;
 
@@ -47,6 +49,7 @@ public:
 	const std::vector<Unit*>* getUnits() const { return units; }
 	const std::vector<Building*>* getBuildings() const { return buildings; }
 	const std::vector<ResourceEntity*>* getResources() const { return resources; }
+	const WorldAgeController* getWorldAgeController() const { return worldAgeController; }
 
 private:
 	void aiPlayers() const;
@@ -71,10 +74,11 @@ private:
 	bool colorSchemeChanged = true;
 	Force force;
 
-	std::vector<Unit*>* units;
-	std::vector<Building*>* buildings;
-	std::vector<ResourceEntity*>* resources;
+	const std::vector<Unit*>* units;
+	const std::vector<Building*>* buildings;
+	const std::vector<ResourceEntity*>* resources;
 
 	Environment* env;
 	SimulationObjectManager* simObjectManager;
+	WorldAgeController* worldAgeController;
 };

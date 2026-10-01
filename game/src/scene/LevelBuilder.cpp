@@ -45,6 +45,8 @@ void LevelBuilder::createScene(NewGameForm* form) { createMap(form->map, form->s
 
 Urho3D::Terrain* LevelBuilder::getTerrain() const { return terrain; }
 
+const db_map* LevelBuilder::getMap() const { return Game::getDatabase()->getMaps()[mapId]; }
+
 void LevelBuilder::createGround(const Urho3D::String& xmlName, int size) {
 	if (!SIM_GLOBALS.FAKE_TERRAIN) {
 		const auto hSpacing = size / 256.f;

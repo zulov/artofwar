@@ -1,4 +1,8 @@
 {
+	"top_age_title":{
+		"pl":"Wiek: ",
+		"en":"Age: "
+	},
 	"top_name_tooltip":{
 		"pl":"Drużyna: %d",
 		"en":"Team: %d"

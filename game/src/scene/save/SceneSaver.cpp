@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <format>
+#include <limits>
 
 #include "SQLConsts.h"
 #include "database/db_insert_defs.h"
@@ -20,6 +21,7 @@
 #include "player/ai/ActionCenter.h"
 #include "scene/load/RuntimeSaveData.h"
 #include "simulation/FrameInfo.h"
+#include "simulation/WorldAgeController.h"
 #include "simulation/formation/Formation.h"
 #include "simulation/formation/FormationManager.h"
 
@@ -36,7 +38,7 @@ namespace {
 	}
 } // namespace
 
-SceneSaver::SceneSaver(int precision) : precision(precision), savingProgress(17) {
+SceneSaver::SceneSaver(int precision) : precision(precision), savingProgress(20) {
 	// TODO zapisywanie powinno byc tylko miedzy klatkami
 }
 
@@ -86,7 +88,7 @@ bool SceneSaver::createTable(const std::string& name, const std::string& sql) {
 
 bool SceneSaver::createSave(const Urho3D::String& fileName, const std::vector<Unit*>* units,
 							const std::vector<Building*>* buildings, const std::vector<ResourceEntity*>* resources,
-							const std::vector<Player*>& players, int mapId, int size) {
+							const std::vector<Player*>& players, int mapId, int size, const WorldAgeController* worldAgeController) {
 	error.clear();
 	savingProgress.reset("create database");
 
@@ -100,7 +102,7 @@ bool SceneSaver::createSave(const Urho3D::String& fileName, const std::vector<Un
 	}
 
 	const bool saved = saveUnits(units) && saveBuildings(buildings) && saveResources(resources) && savePlayers(players) &&
-			saveConfig(mapId, size) && saveRuntimeState(units, buildings, players);
+			saveConfig(mapId, size) && saveRuntimeState(units, buildings, players, worldAgeController);
 	if (!saved || !execSql(database, "COMMIT;")) {
 		if (error.empty()) {
 			fail("save '" + path + "': " + (saved ? "commit failed: " : "write failed: ") + sqlite3_errmsg(database));
@@ -182,7 +184,7 @@ bool SceneSaver::saveConfig(int mapId, int size) {
 }
 
 bool SceneSaver::saveRuntimeState(const std::vector<Unit*>* units, const std::vector<Building*>* buildings,
-								  const std::vector<Player*>& players) {
+								  const std::vector<Player*>& players, const WorldAgeController* worldAgeController) {
 	std::vector<UnitRuntimeSaveData> unitStates;
 	if (units) {
 		unitStates.reserve(units->size());
@@ -192,7 +194,8 @@ bool SceneSaver::saveRuntimeState(const std::vector<Unit*>* units, const std::ve
 	}
 	if (!saveUnitOrders(unitStates) || !saveAimPaths(unitStates) || !saveQueues(buildings, players) ||
 			!savePlayerLevels(players) || !saveAiState(players) || !saveAiHistory(players) ||
-			!saveAiWants(players) || !saveProjectiles() || !saveFormations() || !saveFormationOrders()) {
+			!saveAiWants(players) || !saveProjectiles() || !saveFormations() || !saveFormationOrders() ||
+			!saveWorldAgeState(worldAgeController)) {
 		return false;
 	}
 	const auto pendingCommands = Game::getActionCenter()->saveState();
@@ -237,6 +240,17 @@ bool SceneSaver::saveAimPaths(const std::vector<UnitRuntimeSaveData>& unitStates
 	});
 }
 
+bool SceneSaver::saveWorldAgeState(const WorldAgeController* worldAgeController) {
+	if (!worldAgeController) {
+		return true;
+	}
+	const auto state = worldAgeController->saveState();
+	return saveRows<WorldAgeStateCol>([&](sqlite3_stmt* stmt, const char* sql) {
+		bindRow(stmt, precision, &state);
+		return stepAndReset(stmt, sql);
+	});
+}
+
 bool SceneSaver::saveQueues(const std::vector<Building*>* buildings, const std::vector<Player*>& players) {
 	const bool hasQueues = std::ranges::any_of(players, [](const auto* player) { return !player->getQueue().isEmpty(); }) ||
 			(buildings && std::ranges::any_of(*buildings, [](const auto* building) { return !building->getQueue().isEmpty(); }));
@@ -245,8 +259,14 @@ bool SceneSaver::saveQueues(const std::vector<Building*>* buildings, const std::
 	}
 	return saveRows<QueueCol>([&](sqlite3_stmt* stmt, const char* sql) {
 		auto saveQueue = [&](unsigned ownerId, unsigned char ownerType, const QueueManager& queue) {
+			constexpr auto maxQueueEntries = static_cast<std::size_t>(std::numeric_limits<unsigned short>::max()) + 1;
+			if (queue.getSize() > maxQueueEntries) {
+				fail("save '" + path + "': queue has more entries than the 16-bit order index can represent");
+				return false;
+			}
+
 			bool success = true;
-			for (short i = 0; i < queue.getSize(); ++i) {
+			for (std::size_t i = 0; i < queue.getSize(); ++i) {
 				const auto* element = queue.getAt(i);
 				const QueueRow row{{ownerId, ownerType, static_cast<char>(element->getType()), element->getId(),
 									element->getLevelId(), element->getAmount(), element->getElapsedTicks()},
