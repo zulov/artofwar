@@ -74,6 +74,7 @@ void TopInfoPanel::update(const WorldAgeController* controller, const std::vecto
 
 void TopInfoPanel::createBody() {
 	text = addChildText(window, "AgeTitle", style);
+	text->SetEnabled(true);
 	toolTip = createElement<Urho3D::ToolTip>(text, style, "TopAgeToolTip");
 	const auto textHolder = createElement<Urho3D::BorderImage>(toolTip, style, "ToolTipBorderImage");
 	tooltipText = createElement<Urho3D::Text>(textHolder, style, "ToolTipText");
