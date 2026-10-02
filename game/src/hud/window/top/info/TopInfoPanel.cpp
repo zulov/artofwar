@@ -41,6 +41,12 @@ void TopInfoPanel::update(const WorldAgeController* controller, const std::vecto
 	rows->RemoveAllChildren();
 	const auto ageProgress = controller->getNextAgeProgress(players);
 	tooltipText->SetText(createAgeTooltip(controller, ageProgress));
+	const auto* tooltipBorder = tooltipText->GetParent();
+	if (toolTip->GetParent() == window) {
+		toolTip->SetPosition(-tooltipBorder->GetWidth(), toolTip->GetPosition().y_);
+	} else {
+		toolTip->SetPosition(window->GetScreenPosition().x_ - tooltipBorder->GetWidth(), toolTip->GetPosition().y_);
+	}
 	if (ageProgress.empty()) {
 		timeoutText->SetVisible(false);
 		timeoutBar->SetVisible(false);
@@ -60,6 +66,7 @@ void TopInfoPanel::update(const WorldAgeController* controller, const std::vecto
 		const auto bar = createElement<Urho3D::ProgressBar>(row, style, "AgeProgressBar");
 		bar->SetRange(1.f);
 		bar->SetValue(progress.progress);
+		bar->SetEnabled(false);
 		bar->SetVisible(true);
 	}
 
@@ -74,13 +81,13 @@ void TopInfoPanel::update(const WorldAgeController* controller, const std::vecto
 
 void TopInfoPanel::createBody() {
 	text = addChildText(window, "AgeTitle", style);
-	text->SetEnabled(true);
-	toolTip = createElement<Urho3D::ToolTip>(text, style, "TopAgeToolTip");
+	toolTip = createElement<Urho3D::ToolTip>(window, style, "TopAgeToolTip");
 	const auto textHolder = createElement<Urho3D::BorderImage>(toolTip, style, "ToolTipBorderImage");
 	tooltipText = createElement<Urho3D::Text>(textHolder, style, "ToolTipText");
 	rows = createElement<Urho3D::UIElement>(window, style, "AgeProgressRows");
 	timeoutText = addChildText(window, "AgeTimeoutText", style);
 	timeoutBar = createElement<Urho3D::ProgressBar>(window, style, "AgeTimeoutBar");
+	timeoutBar->SetEnabled(false);
 }
 
 Urho3D::String TopInfoPanel::createAgeTooltip(const WorldAgeController* controller,
