@@ -26,6 +26,7 @@ struct db_world_age_condition : db_entity {
 struct db_world_age : db_with_name {
 	const unsigned char stage;
 	std::vector<const db_world_age_condition*> conditions;
+	std::vector<unsigned short> nextAgeIds;
 
 	using C = DbWorldAgeCol;
 	explicit db_world_age(sqlite3_stmt* stmt)

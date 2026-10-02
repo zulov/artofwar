@@ -16,14 +16,16 @@ The active world-age model is intentionally small:
 
 ```sql
 map(id, xmlName TEXT, name TEXT, age_ids TEXT)
-age(id INT PRIMARY KEY, stage INT, name TEXT)
+age(id INT PRIMARY KEY, stage INT, name TEXT) -- localization key, e.g. age_3
 condition(id INT PRIMARY KEY, metric INT, target REAL)
 age_condition(age_id INT, condition_id INT, PRIMARY KEY(age_id, condition_id))
+age_transition(age_id INT, next_age_id INT, PRIMARY KEY(age_id, next_age_id))
 ```
 
-`stage` groups alternative age IDs. For example, IDs `1` and `2` can both be
-stage 1, while IDs `5` and `6` can both be stage 3. The numeric ID remains a
-stable identifier used by level gates and save state.
+`stage` groups alternative age IDs. `age_transition` defines which candidates
+are available after the selected age. The first stage branches into ages `1`
+and `2`, but each branch continues through its own later ages. The numeric ID
+remains a stable identifier used by level gates and save state.
 
 Metric values are:
 
@@ -32,19 +34,19 @@ Metric values are:
 
 The current catalog rows are:
 
-| Age ID | Stage | Name | Condition |
-| ---: | ---: | --- | --- |
-| 0 | 0 | Age of Settlement | none |
-| 1 | 1 | Age of Growth | workers >= 10 |
-| 2 | 1 | Age of Mobilization | army >= 20 |
-| 3 | 2 | Age of Consolidation | workers >= 20 |
-| 4 | 2 | Age of Fortification | army >= 30 |
-| 5 | 3 | Age of Industry | workers >= 40 |
-| 6 | 3 | Age of Conquest | army >= 70 |
+| Age ID | Stage | Localization key | Display name (English) | Condition |
+| ---: | ---: | --- | --- | --- |
+| 0 | 0 | `age_0` | I - Settlement | none |
+| 1 | 1 | `age_1` | II - Growth | workers >= 10 |
+| 2 | 1 | `age_2` | II - Mobilization | army >= 20 |
+| 3 | 2 | `age_3` | III - Consolidation | workers >= 20 |
+| 4 | 2 | `age_4` | III - Fortification | army >= 30 |
+| 5 | 3 | `age_5` | IV - Industry | workers >= 40 |
+| 6 | 3 | `age_6` | IV - Conquest | army >= 70 |
 
-The starting age is ID `0`, stage `0`, and has no conditions. A map must list
-age `0` first. The runtime only considers ages in the map list whose stage is
-exactly one greater than the current age's stage.
+The starting age is ID `0`, stage `0`, and has no conditions. The `age.name` value is a localization key loaded from `Data/lang/top_language.json`; the localized text contains the display name and Roman stage number. A map must list
+age `0` first. The runtime only considers ages in the map list that are direct
+targets of the current age's `age_transition` rows.
 
 ## Current Data
 
@@ -55,11 +57,11 @@ map 0: 0,1
 map 1: 0,1,2,3,4,5,6
 ```
 
-The map database does not store explicit transition edges. The stage difference
-and the ordered `age_ids` list define the candidate transitions. A qualifying
-candidate is selected immediately in list order. If the 18,000-tick timeout is
-reached, the next-stage candidate with the greatest condition progress wins;
-the list order resolves equal progress.
+The map database stores explicit transition edges. The ordered `age_ids` list
+still supplies the deterministic tie-break when multiple direct targets qualify
+on the same tick. A qualifying candidate is selected immediately in list order.
+If the 18,000-tick timeout is reached, the direct target with the greatest
+condition progress wins; the map list order resolves equal progress.
 
 The checked-in databases are already migrated to this schema. Unit and building
 level rows store their minimum logical stage in the `age_stage` column.

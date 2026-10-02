@@ -1,28 +1,60 @@
 {
+	"age_0":{
+		"pl":"I - Osadnictwo",
+		"en":"I - Settlement"
+	},
+	"age_1":{
+		"pl":"II - Rozwój",
+		"en":"II - Growth"
+	},
+	"age_2":{
+		"pl":"II - Mobilizacja",
+		"en":"II - Mobilization"
+	},
+	"age_3":{
+		"pl":"III - Konsolidacja",
+		"en":"III - Consolidation"
+	},
+	"age_4":{
+		"pl":"III - Fortyfikacja",
+		"en":"III - Fortification"
+	},
+	"age_5":{
+		"pl":"IV - Przemysł",
+		"en":"IV - Industry"
+	},
+	"age_6":{
+		"pl":"IV - Podbój",
+		"en":"IV - Conquest"
+	},
 	"top_age_title":{
 		"pl":"Wiek: ",
 		"en":"Age: "
+	},
+	"top_age_timeout":{
+		"pl":"Czas do automatycznego wyboru:",
+		"en":"Time until automatic choice:"
 	},
 	"top_name_tooltip":{
 		"pl":"Drużyna: %d",
 		"en":"Team: %d"
 	},
 	"top_units_tooltip":{
-		"pl":"Bezczyni: %d, Wszyscy: %d\nPiechota: %d, Kawaleria: %d\nW zwarciu: %d, Na odległość: %d\nLekka: %d, Ciężka: %d",
+		"pl":"Bezczyni: %d, Wszyscy: %d\nPiechota: %d, Kawaleria: %d\nW zwarciu: %d, Na odległość: %d\nLekka: %d, Ciężka: %d"
 	},
 	"top_workers_tooltip":{
-		"pl":"Żywność: %d\nDrewno: %d\nKamień: %d\nZłoto: %d",
+		"pl":"Żywność: %d\nDrewno: %d\nKamień: %d\nZłoto: %d"
 	},
 	"top_food_tooltip":{
-		"pl":"Tempo: %s/s\nZ bonusem %d/%d\nW spirażniach: %d/%d\nOstatnia strata %s\nPrzyszła strata %s",
+		"pl":"Tempo: %s/s\nZ bonusem %d/%d\nW spirażniach: %d/%d\nOstatnia strata %s\nPrzyszła strata %s"
 	},
 	"top_wood_tooltip":{
-		"pl":"Tempo: %s/s\nZ bonusem %d/%d",
+		"pl":"Tempo: %s/s\nZ bonusem %d/%d"
 	},
 	"top_stone_tooltip":{
-		"pl":"Tempo: %s/s\nZ bonusem %d/%d\nObróbka: %d/s -> %d",
+		"pl":"Tempo: %s/s\nZ bonusem %d/%d\nObróbka: %d/s -> %d"
 	},
 	"top_gold_tooltip":{
-		"pl":"Tempo: %s/s\nZ bonusem %d/%d\nW bankach: %d/%d\nOstatni zysk %d\nPrzyszły zysk %d\nObróbka: %d/s -> %d",
-	},
+		"pl":"Tempo: %s/s\nZ bonusem %d/%d\nW bankach: %d/%d\nOstatni zysk %d\nPrzyszły zysk %d\nObróbka: %d/s -> %d"
+	}
 }

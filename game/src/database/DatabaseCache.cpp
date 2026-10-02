@@ -119,6 +119,15 @@ void DatabaseCache::loadMaps(const std::string& name) {
 		assert(condition != nullptr && "age_condition must reference an existing condition");
 		age->conditions.push_back(condition);
 	});
+	load("age_transition order by age_id, next_age_id", [this](auto* s) {
+		const auto ageId = asUShort(s, DbWorldAgeTransitionCol::age_id);
+		auto* age = container->worldAgeCatalog.getAge(ageId);
+		assert(age != nullptr && "age_transition must reference an existing age");
+		const auto nextAgeId = asUShort(s, DbWorldAgeTransitionCol::next_age_id);
+		assert(container->worldAgeCatalog.getAge(nextAgeId) != nullptr &&
+		       "age_transition must reference an existing target age");
+		age->nextAgeIds.push_back(nextAgeId);
+	});
 	load("map order by id desc", [this](auto* s) { setEntity(container->maps, new db_map(s)); });
 	validateWorldAgeCatalog();
 
@@ -139,6 +148,11 @@ void DatabaseCache::validateWorldAgeCatalog() const {
 			assert(condition != nullptr);
 			assert(static_cast<unsigned char>(condition->metric) <= static_cast<unsigned char>(WorldAgeMetric::ARMY_COUNT));
 			assert(condition->target > 0.f);
+		}
+		for (const auto nextAgeId : age->nextAgeIds) {
+			const auto* nextAge = catalog.getAge(nextAgeId);
+			assert(nextAge != nullptr);
+			assert(nextAge->stage == age->stage + 1 && "age transitions must advance one stage");
 		}
 	}
 	for (const auto* map : container->maps) {

@@ -20,7 +20,7 @@
 </head>
 <body>
   <h1>World Age Database Schema</h1>
-  <p>The map-owned world age catalog is stored in <code>Data/map/maps.db</code>. A match follows one route through the selected map's age candidates. Age IDs are stable runtime and save-game keys; level gates use logical stages. The active schema is staged rather than edge-based: the map's ordered <code>age_ids</code> list supplies candidates, and the next stage is inferred from <code>age.stage</code>.</p>
+  <p>The map-owned world age catalog is stored in <code>Data/map/maps.db</code>. A match follows one route through the selected map's age candidates. Age IDs are stable runtime and save-game keys; level gates use logical stages. The active schema combines stages with explicit <code>age_transition</code> edges: the map's ordered <code>age_ids</code> list supplies candidates and deterministic tie-breaking, while transition rows select the active branch.</p>
 
   <h2>Static Content</h2>
    <pre>map(
@@ -33,7 +33,7 @@
 age(
     id PRIMARY KEY,
     stage,
-    name
+    name  -- localization key, e.g. age_3
 )
 
 condition(
@@ -46,6 +46,12 @@ age_condition(
     age_id REFERENCES age(id),
     condition_id REFERENCES condition(id),
     PRIMARY KEY(age_id, condition_id)
+)
+
+age_transition(
+    age_id REFERENCES age(id),
+    next_age_id REFERENCES age(id),
+    PRIMARY KEY(age_id, next_age_id)
 )</pre>
   <table>
     <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
@@ -63,18 +69,18 @@ age_condition(
   </div>
 
   <h2>Canonical Age Sequence</h2>
-  <p>The canonical content has seven age IDs grouped into four logical stages. These are candidate ages, not explicit graph edges:</p>
-   <pre>stage 0: 0  Age of Settlement
+  <p>The canonical content has seven age IDs grouped into four logical stages. Explicit transition rows define the selected branch:</p>
+   <pre>stage 0: 0  I - Settlement
 
-stage 1: 1  Age of Growth       workers 10
-          2  Age of Mobilization army 20
+stage 1: 1  II - Growth       workers 10
+          2  II - Mobilization army 20
 
-stage 2: 3  Age of Consolidation workers 20
-          4  Age of Fortification army 30
+stage 2: 3  III - Consolidation workers 20
+          4  III - Fortification army 30
 
-stage 3: 5  Age of Industry      workers 40
-          6  Age of Conquest      army 70</pre>
-  <p>When multiple candidates in the next stage complete on the same tick, the order in the selected map's <code>age_ids</code> list is the deterministic tie-break.</p>
+stage 3: 5  IV - Industry      workers 40
+          6  IV - Conquest      army 70</pre>
+  <p>The transition rows are <code>0 -&gt; 1,2</code>, <code>1 -&gt; 3</code>, <code>2 -&gt; 4</code>, <code>3 -&gt; 5</code>, and <code>4 -&gt; 6</code>. When multiple direct candidates complete on the same tick, the order in the selected map's <code>age_ids</code> list is the deterministic tie-break.</p>
 
   <table>
     <thead><tr><th>Map ID</th><th>XML map</th><th>Age candidates in order</th></tr></thead>

@@ -5,6 +5,7 @@
 
 namespace Urho3D {
 	class UIElement;
+	class ProgressBar;
 	class Text;
 }
 
@@ -16,7 +17,7 @@ public:
 	explicit TopInfoPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style);
 	~TopInfoPanel() = default;
 
-	void update(const WorldAgeController* controller, const std::vector<Player*>& players) const;
+	void update(const WorldAgeController* controller, const std::vector<Player*>& players, unsigned totalTicks) const;
 	void hoverOn();
 	void hoverOff();
 
@@ -26,4 +27,6 @@ private:
 	bool hoverIsOn = false;
 	Urho3D::Text* text{};
 	Urho3D::UIElement* rows{};
+	Urho3D::Text* timeoutText{};
+	Urho3D::ProgressBar* timeoutBar{};
 };

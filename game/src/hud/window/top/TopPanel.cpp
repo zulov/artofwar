@@ -56,7 +56,7 @@ void TopPanel::createBody() {
 
 void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	auto poss = player->getPossession();
-	infoPanel->update(Game::getWorldAgeController(), Game::getPlayersMan()->getAllPlayers());
+	infoPanel->update(Game::getWorldAgeController(), Game::getPlayersMan()->getAllPlayers(), frameInfo->getTotalTicks());
 
 	name->setText(player->getName(), Urho3D::String((int)player->getId()))
 	    ->setToolTip(l10nFormat("top_name_tooltip", (int)player->getTeam()));

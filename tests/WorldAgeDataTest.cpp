@@ -3,17 +3,17 @@
 #include "database/db_other_struct.h"
 #include "database/db_world_age_struct.h"
 
-TEST(WorldAgeDataTest, AgeReadsStageAndNameInMapTableOrder) {
+TEST(WorldAgeDataTest, AgeReadsStageAndLocalizationKeyInMapTableOrder) {
 	sqlite3* database = nullptr;
 	sqlite3_stmt* statement = nullptr;
 	ASSERT_EQ(SQLITE_OK, sqlite3_open(":memory:", &database));
-	ASSERT_EQ(SQLITE_OK, sqlite3_prepare_v2(database, "SELECT 3, 2, 'Age of Consolidation';", -1, &statement, nullptr));
+	ASSERT_EQ(SQLITE_OK, sqlite3_prepare_v2(database, "SELECT 3, 2, 'age_3';", -1, &statement, nullptr));
 	ASSERT_EQ(SQLITE_ROW, sqlite3_step(statement));
 	const db_world_age age(statement);
 
 	EXPECT_EQ(3, age.id);
 	EXPECT_EQ(2, age.stage);
-	EXPECT_STREQ("Age of Consolidation", age.name.CString());
+	EXPECT_STREQ("age_3", age.name.CString());
 	sqlite3_finalize(statement);
 	sqlite3_close(database);
 }

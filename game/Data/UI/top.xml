@@ -48,7 +48,7 @@
 
 <element type="TopInfoPanel" style="MyWindow">
 	<attribute name="Min Size" value="{3*iconX} {1.5*iconY+3*spaceY}"/>
-	<attribute name="Max Size" value="{4*iconX+5*spaceX} {4*iconY+4*spaceY}"/>
+	<attribute name="Max Size" value="{4*iconX+5*spaceX} {5*iconY+5*spaceY}"/>
 	<attribute name="Vert Alignment" value="Top"/>
 	<attribute name="Horiz Alignment" value="Right"/>
 	<attribute name="Layout Mode" value="Vertical"/>
@@ -83,6 +83,25 @@
 </element>
 
 <element type="AgeProgressBar" style="ProgressBar">
+	<attribute name="Min Size" value="0 {spaceY*2}"/>
+	<attribute name="Max Size" value="10000 {spaceY*2}"/>
+	<attribute name="Show Percent Text" value="false"/>
+	<attribute name="Image Rect" value="48 0 64 16"/>
+	<attribute name="Border" value="2 2 2 2"/>
+	<element type="BorderImage" internal="true">
+		<attribute name="Image Rect" value="16 0 32 16"/>
+		<attribute name="Border" value="2 2 2 2"/>
+		<attribute name="Hover Image Offset" value="0 16"/>
+	</element>
+</element>
+
+<element type="AgeTimeoutText" style="MyText">
+	<attribute name="Font Size" value="{fontSize-1}"/>
+	<attribute name="Min Size" value="0 {iconY/3}"/>
+	<attribute name="Max Size" value="10000 {iconY/3}"/>
+</element>
+
+<element type="AgeTimeoutBar" style="ProgressBar">
 	<attribute name="Min Size" value="0 {spaceY*2}"/>
 	<attribute name="Max Size" value="10000 {spaceY*2}"/>
 	<attribute name="Show Percent Text" value="false"/>

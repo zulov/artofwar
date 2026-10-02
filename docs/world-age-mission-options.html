@@ -194,7 +194,7 @@
 
     <section id="current-system">
       <h2>2. Current System</h2>
-      <p>The implementation loads map-owned world-age content from <code>Data/map/maps.db</code>. Each map selects an ordered list of candidate age IDs. A candidate has a logical stage and one or more reusable conditions; candidates in the next stage are checked in map-list order.</p>
+      <p>The implementation loads map-owned world-age content from <code>Data/map/maps.db</code>. Each map selects an ordered list of candidate age IDs. A candidate has a logical stage and one or more reusable conditions; explicit <code>age_transition</code> rows select the direct candidates for the current branch, while map-list order resolves ties.</p>
       <p><code>data.db</code> stores shared level gates as <code>age_stage</code>. Saves persist the selected map in <code>config.map</code>, then restore current age and reached-age history against that map's catalog.</p>
        <pre>Current static content
 

@@ -26,9 +26,10 @@ Data/Database/data.db                 shared gameplay definitions
 
 Data/map/maps.db                      map-owned progression catalog
   map(id, xmlName, name, age_ids)     ordered candidate age IDs for each map
-  age(id, stage, name)                age identity and logical stage
+  age(id, stage, name)                 age identity, stage, and localization key
   condition(id, metric, target)       reusable worker/army threshold
   age_condition(age_id, condition_id) age-to-condition join; all joins are ANDed
+  age_transition(age_id, next_age_id) direct progression edges between ages
 
 saves/<name>.db                       one scene and its continuation state
   config(..., map, total_ticks, ...)  selected map and simulation clock
@@ -36,22 +37,20 @@ saves/<name>.db                       one scene and its continuation state
             age_started_tick, history)
 ```
 
-The current checked-in age catalog is a staged candidate sequence, not an edge table:
+The current checked-in age catalog uses logical stages plus explicit progression edges:
 
 ```text
 stage 0: age 0  Age of Settlement
-             |
+          /   \
 stage 1: age 1  Age of Growth       (workers >= 10)
-         age 2  Age of Mobilization  (army >= 20)
-             |
+          |     age 2  Age of Mobilization (army >= 20)
 stage 2: age 3  Age of Consolidation (workers >= 20)
-         age 4  Age of Fortification  (army >= 30)
-             |
+          |     age 4  Age of Fortification (army >= 30)
 stage 3: age 5  Age of Industry      (workers >= 40)
-         age 6  Age of Conquest       (army >= 70)
+                age 6  Age of Conquest (army >= 70)
 ```
 
-`map.age_ids` supplies the candidate order and deterministic tie-break. The controller only evaluates candidates whose `stage` is one greater than the current age's stage. There is no `world_age_node`, `world_age_transition`, hold, or transition table in the active schema.
+`map.age_ids` supplies the candidate order and deterministic tie-break. The controller only evaluates direct targets from `age_transition` that are listed by the selected map. There is no `world_age_node` or hold table in the active schema.
 
 The checked-in map rows are `map 0 -> 0,1` and `map 1 -> 0,1,2,3,4,5,6`. The runtime `data.db` currently contains nine unit-level rows and 18 building-level rows at each of `age_stage` 0, 1, and 2. `age_stage` is a shared logical gate: a level is available when the selected map age reaches at least that stage, regardless of which candidate ID won within the stage. See [Map-Owned Age System](map-age-system.md) and [World Age Database Schema](world-age-database-schema.html) for the complete age table and save examples.
 

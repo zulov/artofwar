@@ -342,6 +342,8 @@ enum class DbWorldAgeConditionCol : unsigned char { id, metric, target };
 
 enum class DbWorldAgeJoinCol : unsigned char { age_id, condition_id };
 
+enum class DbWorldAgeTransitionCol : unsigned char { age_id, next_age_id };
+
 // --- Base.db tables ---
 
 enum class HudSizeCol : unsigned char { id, name };

@@ -53,7 +53,8 @@ bool WorldAgeController::restore(const dbload_container& data) {
 		if (!age || std::ranges::find(*ageIds, ageId) == ageIds->end() ||
 			std::ranges::find(restoredReached, ageId) != restoredReached.end() ||
 			(restoredReached.empty() ? ageId != 0 || age->stage != 0 :
-				!previous || age->stage != previous->stage + 1)) {
+				!previous || age->stage != previous->stage + 1 ||
+				std::ranges::find(previous->nextAgeIds, ageId) == previous->nextAgeIds.end())) {
 			return false;
 		}
 		restoredReached.push_back(ageId);
@@ -86,7 +87,7 @@ void WorldAgeController::update(const std::vector<Player*>& players, unsigned to
 
 	for (const auto ageId : *ageIds) {
 		const auto* age = catalog->getAge(ageId);
-		if (age && age->stage == current->stage + 1 && ageMet(players, *age)) {
+		if (age && isNextAge(*current, ageId) && ageMet(players, *age)) {
 			advance(ageId, totalTicks);
 			return;
 		}
@@ -113,7 +114,7 @@ std::vector<WorldAgeProgress> WorldAgeController::getNextAgeProgress(const std::
 
 	for (const auto ageId : *ageIds) {
 		const auto* age = catalog->getAge(ageId);
-		if (!age || age->stage != current->stage + 1) {
+		if (!age || !isNextAge(*current, ageId)) {
 			continue;
 		}
 
@@ -121,6 +122,13 @@ std::vector<WorldAgeProgress> WorldAgeController::getNextAgeProgress(const std::
 		result.push_back({ageId, std::clamp(progress, 0.f, 1.f)});
 	}
 	return result;
+}
+
+float WorldAgeController::getTimeoutProgress(unsigned totalTicks) const {
+	if (totalTicks <= ageStartedTick) {
+		return 0.f;
+	}
+	return std::min(1.f, static_cast<float>(totalTicks - ageStartedTick) / AGE_TIMEOUT_TICKS);
 }
 
 bool WorldAgeController::hasReachedAge(unsigned short ageId) const {
@@ -190,7 +198,7 @@ unsigned short WorldAgeController::selectTimeoutAge(const std::vector<Player*>& 
 	float bestProgress = -1.f;
 	for (const auto ageId : *ageIds) {
 		const auto* age = catalog->getAge(ageId);
-		if (!age || age->stage != current.stage + 1) {
+		if (!age || !isNextAge(current, ageId)) {
 			continue;
 		}
 		const auto progress = ageProgress(players, *age);
@@ -200,6 +208,10 @@ unsigned short WorldAgeController::selectTimeoutAge(const std::vector<Player*>& 
 		}
 	}
 	return best ? best->id : current.id;
+}
+
+bool WorldAgeController::isNextAge(const db_world_age& current, unsigned short ageId) const {
+	return std::ranges::find(current.nextAgeIds, ageId) != current.nextAgeIds.end();
 }
 
 void WorldAgeController::advance(unsigned short ageId, unsigned totalTicks) {
