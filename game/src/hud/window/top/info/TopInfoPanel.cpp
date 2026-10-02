@@ -1,6 +1,7 @@
 #include "TopInfoPanel.h"
 
 #include <Urho3D/UI/ProgressBar.h>
+#include <Urho3D/UI/ToolTip.h>
 #include <Urho3D/UI/UIElement.h>
 #include <Urho3D/UI/Window.h>
 #include <Urho3D/Resource/Localization.h>
@@ -10,6 +11,7 @@
 #include "database/db_world_age_struct.h"
 #include "player/Player.h"
 #include "simulation/WorldAgeController.h"
+#include "utils/StringUtils.h"
 
 
 TopInfoPanel::TopInfoPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style) : SimplePanel(root, _style, "TopInfoPanel", {}) {
@@ -38,6 +40,7 @@ void TopInfoPanel::update(const WorldAgeController* controller, const std::vecto
 	text->SetText(localization->Get("top_age_title") + localization->Get(currentAge->name));
 	rows->RemoveAllChildren();
 	const auto ageProgress = controller->getNextAgeProgress(players);
+	tooltipText->SetText(createAgeTooltip(controller, ageProgress));
 	if (ageProgress.empty()) {
 		timeoutText->SetVisible(false);
 		timeoutBar->SetVisible(false);
@@ -71,7 +74,44 @@ void TopInfoPanel::update(const WorldAgeController* controller, const std::vecto
 
 void TopInfoPanel::createBody() {
 	text = addChildText(window, "AgeTitle", style);
+	toolTip = createElement<Urho3D::ToolTip>(text, style, "TopAgeToolTip");
+	const auto textHolder = createElement<Urho3D::BorderImage>(toolTip, style, "ToolTipBorderImage");
+	tooltipText = createElement<Urho3D::Text>(textHolder, style, "ToolTipText");
 	rows = createElement<Urho3D::UIElement>(window, style, "AgeProgressRows");
 	timeoutText = addChildText(window, "AgeTimeoutText", style);
 	timeoutBar = createElement<Urho3D::ProgressBar>(window, style, "AgeTimeoutBar");
+}
+
+Urho3D::String TopInfoPanel::createAgeTooltip(const WorldAgeController* controller,
+		const std::vector<WorldAgeProgress>& ageProgress) const {
+	Urho3D::String result = Game::getLocalization()->Get("top_age_conditions");
+	for (const auto& candidate : ageProgress) {
+		const auto* age = controller->getAge(candidate.ageId);
+		if (!age) {
+			continue;
+		}
+
+		result.Append("\n").Append(Game::getLocalization()->Get(age->name));
+		for (const auto& condition : candidate.conditions) {
+			const auto metricName = condition.metric == WorldAgeMetric::WORKER_COUNT
+				? Game::getLocalization()->Get("top_age_workers")
+				: Game::getLocalization()->Get("top_age_army");
+			result.Append("\n  ").Append(metricName).Append(": ")
+				.Append(Urho3D::String(static_cast<int>(condition.average)))
+				.Append("/").Append(Urho3D::String(static_cast<int>(condition.target)))
+				.Append(" (").Append(Urho3D::String(static_cast<int>(condition.progress * 100.f))).Append("%)");
+
+			for (const auto& contribution : condition.contributions) {
+				if (!contribution.player) {
+					continue;
+				}
+				result.Append("\n    ").Append(contribution.player->getName()).Append(": ")
+					.Append(Urho3D::String(static_cast<int>(contribution.value)))
+					.Append(" - ").Append(Game::getLocalization()->Get("top_age_contribution"))
+					.Append(" ")
+					.Append(Urho3D::String(static_cast<int>(contribution.share * 100.f))).Append("%");
+			}
+		}
+	}
+	return result;
 }

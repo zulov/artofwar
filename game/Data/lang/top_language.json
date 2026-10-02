@@ -35,6 +35,22 @@
 		"pl":"Czas do automatycznego wyboru:",
 		"en":"Time until automatic choice:"
 	},
+	"top_age_conditions":{
+		"pl":"Warunki przejścia:",
+		"en":"Transition conditions:"
+	},
+	"top_age_workers":{
+		"pl":"Robotnicy",
+		"en":"Workers"
+	},
+	"top_age_army":{
+		"pl":"Armia",
+		"en":"Army"
+	},
+	"top_age_contribution":{
+		"pl":"wkład w postęp",
+		"en":"progress contribution"
+	},
 	"top_name_tooltip":{
 		"pl":"Drużyna: %d",
 		"en":"Team: %d"

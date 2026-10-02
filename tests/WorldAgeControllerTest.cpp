@@ -1,14 +1,18 @@
 #include "pch.h"
 
 #include <sqlite3/sqlite3.h>
+#include <unordered_map>
 
 #include "database/db_other_struct.h"
 #include "database/db_world_age_struct.h"
 #include "simulation/WorldAgeController.h"
 #include "simulation/WorldAgeController.cpp"
 
+std::unordered_map<const Player*, int> workerCounts;
+
 int Player::getWorkersNumber() const {
-	return 0;
+	const auto it = workerCounts.find(this);
+	return it == workerCounts.end() ? 0 : it->second;
 }
 
 unsigned Possession::getArmyNumber() {
@@ -89,6 +93,42 @@ TEST(WorldAgeControllerTest, ReturnsOnlyCandidatesListedBySelectedMap) {
 
 	ASSERT_EQ(1u, progress.size());
 	EXPECT_EQ(1, progress.front().ageId);
+}
+
+TEST(WorldAgeControllerTest, ReportsConditionValuesAndPlayerShares) {
+	SqliteStatement age0Sql("SELECT 0, 0, 'age_0';");
+	SqliteStatement age1Sql("SELECT 1, 1, 'age_1';");
+	SqliteStatement conditionSql("SELECT 0, 0, 10.0;");
+	SqliteStatement mapSql("SELECT 0, 'map.xml', 'Map', '0,1';");
+
+	db_world_age_catalog catalog;
+	auto* age0 = new db_world_age(age0Sql.statement);
+	auto* age1 = new db_world_age(age1Sql.statement);
+	auto* condition = new db_world_age_condition(conditionSql.statement);
+	age0->nextAgeIds = {1};
+	age1->conditions = {condition};
+	catalog.ages = {age0, age1};
+	catalog.conditions = {condition};
+	const db_map map(mapSql.statement);
+	WorldAgeController controller(&catalog, &map);
+
+	const auto* firstPlayer = reinterpret_cast<const Player*>(1);
+	const auto* secondPlayer = reinterpret_cast<const Player*>(2);
+	workerCounts[firstPlayer] = 6;
+	workerCounts[secondPlayer] = 4;
+	const std::vector<Player*> players = {const_cast<Player*>(firstPlayer), const_cast<Player*>(secondPlayer)};
+
+	const auto progress = controller.getNextAgeProgress(players);
+	ASSERT_EQ(1u, progress.size());
+	ASSERT_EQ(1u, progress.front().conditions.size());
+	const auto& conditionProgress = progress.front().conditions.front();
+	EXPECT_FLOAT_EQ(5.f, conditionProgress.average);
+	EXPECT_FLOAT_EQ(0.5f, conditionProgress.progress);
+	ASSERT_EQ(2u, conditionProgress.contributions.size());
+	EXPECT_FLOAT_EQ(6.f, conditionProgress.contributions[0].value);
+	EXPECT_FLOAT_EQ(0.6f, conditionProgress.contributions[0].share);
+	EXPECT_FLOAT_EQ(4.f, conditionProgress.contributions[1].value);
+	EXPECT_FLOAT_EQ(0.4f, conditionProgress.contributions[1].share);
 }
 
 TEST(WorldAgeControllerTest, FollowsSelectedBranchInsteadOfShowingEveryAgeAtTheNextStage) {

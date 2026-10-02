@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "database/db_world_age_struct.h"
 #include "scene/load/RuntimeSaveData.h"
 
 struct db_map;
@@ -10,9 +11,24 @@ struct db_world_age_catalog;
 struct dbload_container;
 class Player;
 
+struct WorldAgePlayerContribution {
+	const Player* player{};
+	float value{};
+	float share{};
+};
+
+struct WorldAgeConditionProgress {
+	WorldAgeMetric metric{};
+	float target{};
+	float average{};
+	float progress{};
+	std::vector<WorldAgePlayerContribution> contributions;
+};
+
 struct WorldAgeProgress {
 	unsigned short ageId{};
 	float progress{};
+	std::vector<WorldAgeConditionProgress> conditions;
 };
 
 class WorldAgeController {
@@ -40,6 +56,8 @@ private:
 	float getMetric(const Player& player, const struct db_world_age_condition& condition) const;
 	bool ageMet(const std::vector<Player*>& players, const struct db_world_age& age) const;
 	float ageProgress(const std::vector<Player*>& players, const struct db_world_age& age) const;
+	std::vector<WorldAgeConditionProgress> getConditionProgress(const std::vector<Player*>& players,
+		const struct db_world_age& age) const;
 	bool isNextAge(const struct db_world_age& current, unsigned short ageId) const;
 	unsigned short selectTimeoutAge(const std::vector<Player*>& players, const struct db_world_age& current) const;
 	void advance(unsigned short ageId, unsigned totalTicks);

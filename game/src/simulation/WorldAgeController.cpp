@@ -119,7 +119,7 @@ std::vector<WorldAgeProgress> WorldAgeController::getNextAgeProgress(const std::
 		}
 
 		const auto progress = players.empty() ? 0.f : ageProgress(players, *age);
-		result.push_back({ageId, std::clamp(progress, 0.f, 1.f)});
+		result.push_back({ageId, std::clamp(progress, 0.f, 1.f), getConditionProgress(players, *age)});
 	}
 	return result;
 }
@@ -190,6 +190,37 @@ float WorldAgeController::ageProgress(const std::vector<Player*>& players, const
 		progress = std::min(progress, total / static_cast<float>(players.size()) / condition->target);
 	}
 	return progress;
+}
+
+std::vector<WorldAgeConditionProgress> WorldAgeController::getConditionProgress(
+		const std::vector<Player*>& players, const db_world_age& age) const {
+	std::vector<WorldAgeConditionProgress> result;
+	result.reserve(age.conditions.size());
+
+	for (const auto* condition : age.conditions) {
+		WorldAgeConditionProgress conditionProgress;
+		conditionProgress.metric = condition->metric;
+		conditionProgress.target = condition->target;
+
+		float total = 0.f;
+		for (const auto* player : players) {
+			const auto value = getMetric(*player, *condition);
+			total += value;
+			conditionProgress.contributions.push_back({player, value, 0.f});
+		}
+
+		conditionProgress.average = players.empty() ? 0.f : total / static_cast<float>(players.size());
+		conditionProgress.progress = conditionProgress.target > 0.f
+			? std::clamp(conditionProgress.average / conditionProgress.target, 0.f, 1.f) : 0.f;
+		if (total > 0.f) {
+			for (auto& contribution : conditionProgress.contributions) {
+				contribution.share = contribution.value / total;
+			}
+		}
+		result.push_back(std::move(conditionProgress));
+	}
+
+	return result;
 }
 
 unsigned short WorldAgeController::selectTimeoutAge(const std::vector<Player*>& players,

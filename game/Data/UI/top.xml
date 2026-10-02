@@ -119,3 +119,7 @@
 	<attribute name="Delay" value="0.1"/>
 	<attribute name="Position" value="0 {iconY/2+2*spaceY}"/>
 </element>
+
+<element type="TopAgeToolTip" style="TopToolTip">
+	<attribute name="Position" value="0 {iconY/2+spaceY}"/>
+</element>
