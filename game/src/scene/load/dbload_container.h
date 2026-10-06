@@ -174,6 +174,7 @@ struct dbload_container {
 	std::unordered_map<unsigned, UnitVariableSaveData> unitVariable;
 	std::vector<QueueSaveData> queues;
 	std::vector<PlayerLevelSaveData> playerLevels;
+	std::vector<PlayerTechnologySaveData> playerTechnologies;
 	std::vector<ProjectileSaveData> projectiles;
 	std::vector<FormationSaveData> formations;
 	std::vector<FormationOrderRow> formationOrders;

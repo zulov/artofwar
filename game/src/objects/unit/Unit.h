@@ -147,6 +147,8 @@ public:
 	bool isAlive() const override;
 	char getLevelNum() const override;
 	void clean();
+	void levelUp();
+	void refreshEffectiveLevel();
 
 	float getSightRadius() const override;
 	Urho3D::Vector2 getSocketPos(const Unit* toFollow, int i) const;

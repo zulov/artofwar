@@ -4,6 +4,8 @@
 #include "control/SelectedInfo.h"
 #include "control/SelectedInfoType.h"
 #include "database/db_other_struct.h"
+#include "database/db_struct.h"
+#include "database/db_technology_struct.h"
 #include "hud/HudData.h"
 #include "hud/UiUtils.h"
 #include "objects/ActionType.h"
@@ -85,6 +87,17 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 			auto dbLevel = opt.value();
 			return stringFrom(dbLevel->name, dbLevel);
 		}
+	}
+	case ActionType::TECH_RESEARCH: {
+		const auto technologyLevels = Game::getDatabase()->getTechnologyLevels();
+		if (id >= 0 && static_cast<size_t>(id) < technologyLevels.size()) {
+			const auto* level = technologyLevels[id];
+			if (level) {
+				const auto cost = Game::getPlayersMan()->getActivePlayer()->technologyResearchCost(level->id);
+				return stringFrom(level->name, &cost);
+			}
+		}
+		break;
 	}
 	case ActionType::ORDER: {
 		return Game::getLocalization()->Get(Urho3D::String("ord_") + magic_enum::enum_name(UnitOrderType(id)).data());

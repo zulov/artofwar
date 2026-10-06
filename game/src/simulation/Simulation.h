@@ -63,7 +63,7 @@ private:
 	void loadEntities(dbload_container* data) const;
 	void restoreRuntimeState(dbload_container* data) const;
 	void applyForce() const;
-	void levelUp(QueueElement* done, char player) const;
+	void levelUp(QueueElement* done, unsigned char playerId) const;
 	void updateBuildingQueues() const;
 	void updateQueues() const;
 	std::function<bool(Physical*)> ifAttack(db_unit* dbUnit) const;

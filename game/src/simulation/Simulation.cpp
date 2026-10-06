@@ -271,6 +271,13 @@ void Simulation::restoreRuntimeState(dbload_container* data) const {
 			player->restoreBuildingLevel(saved.id, saved.level);
 		}
 	}
+	for (const auto& saved : data->playerTechnologies) {
+		Game::getPlayersMan()->getPlayer(saved.player)->restoreTechnologyLevel(saved.technology, saved.level);
+	}
+	for (auto* player : Game::getPlayersMan()->getAllPlayers()) {
+		player->refreshEffectiveLevels();
+		simObjectManager->refreshPlayerEffectiveLevels(player->getId());
+	}
 	for (const auto& saved : data->queues) {
 		QueueManager* queue{};
 		if (saved.ownerType == 0) {
@@ -279,8 +286,13 @@ void Simulation::restoreRuntimeState(dbload_container* data) const {
 			queue = &static_cast<Building*>(owner)->getQueue();
 		}
 		if (queue) {
+			const auto duration = saved.durationTicks != 0
+				? saved.durationTicks
+				: saved.ownerType == 0 && saved.type == static_cast<char>(QueueActionType::TECH_RESEARCH)
+					? Game::getPlayersMan()->getPlayer(static_cast<unsigned char>(saved.ownerId))->technologyResearchDuration(saved.levelId)
+					: 0;
 			queue->restore(static_cast<QueueActionType>(saved.type), saved.id, saved.levelId, saved.amount,
-						   saved.elapsedTicks);
+						   saved.elapsedTicks, duration);
 		}
 	}
 	for (auto* unit : *units) {
@@ -375,8 +387,8 @@ void Simulation::applyForce() const {
 	}
 }
 
-void Simulation::levelUp(QueueElement* done, char player) const {
-	Game::getActionCenter()->add(new UpgradeCommand(player, done->getId(), done->getType()));
+void Simulation::levelUp(QueueElement* done, unsigned char playerId) const {
+	Game::getActionCenter()->add(new UpgradeCommand(playerId, done->getId(), done->getType(), done->getLevelId()));
 }
 
 void Simulation::updateBuildingQueues() const {
@@ -392,6 +404,7 @@ void Simulation::updateBuildingQueues() const {
 			case QueueActionType::UNIT_LEVEL:
 			case QueueActionType::BUILDING_LEVEL:
 			case QueueActionType::UNIT_UPGRADE:
+			case QueueActionType::TECH_RESEARCH:
 				levelUp(done, build->getPlayer());
 				break;
 			case QueueActionType::BUILDING_CREATE:
@@ -425,6 +438,7 @@ void Simulation::updateQueues() const {
 		if (done) {
 			switch (done->getType()) {
 			case QueueActionType::BUILDING_LEVEL:
+			case QueueActionType::TECH_RESEARCH:
 				levelUp(done, player->getId());
 				break;
 			}

@@ -5,7 +5,7 @@
 All paths are relative to the game runtime directory, not the repository root. `DatabaseCache` loads:
 
 - `Data/Database/base.db`: UI, graphics, and settings data. It is skipped in headless mode.
-- `Data/Database/data.db`: nations, units, buildings, resources, levels, and their relationships.
+- `Data/Database/data.db`: nations, units, buildings, resources, levels, technologies, and their relationships.
 - `Data/map/maps.db`: map/mission metadata and the map-owned age catalog.
 - `saves/<name>.db`: a scene save created by `SceneSaver`; `SceneLoader` receives the filename, including its `.db` suffix.
 
@@ -14,6 +14,8 @@ The loading implementation is `game/src/database/DatabaseCache.cpp`; save loadin
 The runtime data databases and save tables use different query contracts. `DatabaseCache` still reads data tables with `SELECT *` and decodes result columns through ordinal enums. Save writes use named-column `INSERT`s generated from the save enums, while save loads validate required column names and generate explicit `SELECT` lists from those enums. For saves, SQLite physical column order and extra columns do not matter, but expected column names, enum order, and bindings must stay aligned. For `DatabaseCache` tables, inserting, removing, or reordering a column still requires updating the matching enum and binding.
 
 `DatabaseCache` reads `Data/Database/base.db`, but its current settings-write paths open `Data/base.db` and target `graphics_settings` while the loaded table is `graph_settings`. Treat graphics/settings persistence as a known limitation until those paths are corrected; do not rely on UI changes being written back to the loaded database.
+
+The runtime `game/Data/Database/data.db` contains the technology tables and sample data. Each `technology` row owns one `research_building`; technology levels contain only level-specific age gates, costs, and research time. Technology level display keys are derived at load time as `<technology.code>_<level>`, `<technology.code>_<level>_description`, and `<technology.code>_<level>.png`; they are not duplicated in `technology_level`. The runtime database is ignored by Git; keep the local database aligned with the code before starting the game. `DatabaseCache` treats a missing technology table as a required data error and stops startup rather than silently running without research.
 
 ## Age-Related Database Structure
 

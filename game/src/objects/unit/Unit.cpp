@@ -16,8 +16,11 @@
 #include "math/MathUtils.h"
 #include "math/VectorUtils.h"
 #include "objects/NodeUtils.h"
+#include "objects/building/Building.h"
 #include "objects/unit/ChargeData.h"
 #include "objects/unit/SimColorMode.h"
+#include "player/PlayersManager.h"
+#include "player/Player.h"
 #include "order/IndividualOrder.h"
 #include "order/UnitConst.h"
 #include "scene/load/dbload_container.h"
@@ -33,7 +36,7 @@ Unit::Unit(const Urho3D::Vector3& _position, short dbId, char playerId, char tea
 	Physical(_position, uId), state(UnitState::STOP), nextState(UnitState::STOP) {
 	auto dbUnit = Game::getDatabase()->getUnit(dbId);
 	dbEntity = dbUnit;
-	dbLevel = dbUnit->getLevel(level).value(); // TODO bug value
+	dbLevel = Game::getPlayersMan()->getPlayer(playerId)->getUnitLevel(dbId);
 	setPlayerAndTeam(playerId, teamId);
 	loadXml("Objects/units/" + dbLevel->node);
 	populate();
@@ -345,6 +348,33 @@ void Unit::resetRejectedStateChange() {
 	stateChangePending = false;
 }
 
+void Unit::levelUp() {
+	const auto currentHp = hp;
+	dbLevel = Game::getPlayersMan()->getPlayer(player)->getUnitLevel(getDbId());
+	loadXml("Objects/units/" + dbLevel->node);
+	invMaxHp = dbLevel->invMaxHp;
+	hp = std::min(currentHp, static_cast<float>(dbLevel->maxHp));
+	maxSpeed = dbLevel->maxSpeed;
+	if (state == UnitState::ATTACK) {
+		maxSpeed /= 2.f;
+	} else if (state == UnitState::CHARGE) {
+		maxSpeed *= 2.f;
+	}
+}
+
+void Unit::refreshEffectiveLevel() {
+	const auto currentHp = hp;
+	dbLevel = Game::getPlayersMan()->getPlayer(player)->getUnitLevel(getDbId());
+	invMaxHp = dbLevel->invMaxHp;
+	hp = std::min(currentHp, static_cast<float>(dbLevel->maxHp));
+	maxSpeed = dbLevel->maxSpeed;
+	if (state == UnitState::ATTACK) {
+		maxSpeed /= 2.f;
+	} else if (state == UnitState::CHARGE) {
+		maxSpeed *= 2.f;
+	}
+}
+
 void Unit::changeColor(SimColorMode mode) {
 	switch (mode) {
 	case SimColorMode::BASIC:
@@ -378,13 +408,18 @@ char Unit::getLevelNum() const{
 }
 
 float Unit::getAttackVal(Physical* aim) {
+	auto attack = dbLevel->attack;
 	if (aim->getType() == ObjectType::BUILDING) {
-		return dbLevel->attack * (1.f + dbLevel->bonusBuilding);
+		const auto* target = static_cast<Building*>(aim);
+		attack *= 1.f + dbLevel->bonusBuilding;
+		return Game::getPlayersMan()->getPlayer(player)->applyTechnologyAttack(attack, getDb(), target->getDb());
 	}
 	if (aim->getType() == ObjectType::UNIT) {
-		return dbLevel->attack * (1.f + ((Unit*)aim)->getDb()->getBonuses(dbLevel));
+		const auto* target = static_cast<Unit*>(aim);
+		attack *= 1.f + target->getDb()->getBonuses(dbLevel);
+		return Game::getPlayersMan()->getPlayer(player)->applyTechnologyAttack(attack, getDb(), target->getDb());
 	}
-	return dbLevel->attack;
+	return attack;
 }
 
 void Unit::setFormation(short _formation) { formation = _formation; }

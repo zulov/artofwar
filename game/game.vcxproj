@@ -404,6 +404,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utils\CountUtils.h" />
+    <ClInclude Include="src\utils\TechnologyUtils.h" />
     <ClInclude Include="src\database\db_columns.h" />
     <ClInclude Include="src\database\db_update_utils.h" />
     <ClInclude Include="src\env\bucket\ArrayProviderUtils.h" />
@@ -564,6 +565,7 @@
     <ClInclude Include="src\camera\CameraManager.h" />
     <ClInclude Include="src\database\DatabaseCache.h" />
     <ClInclude Include="src\database\db_struct.h" />
+    <ClInclude Include="src\database\db_technology_struct.h" />
     <ClInclude Include="src\hud\window\debug\DebugPanel.h" />
     <ClInclude Include="src\objects\unit\state\FollowState.h" />
     <ClInclude Include="src\hud\HudData.h" />

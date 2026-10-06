@@ -6,7 +6,7 @@ struct PendingCommandSaveData;
 
 class GeneralActionCommand : public PhysicalCommand {
 public:
-	GeneralActionCommand(short id, GeneralActionType action, char player);
+	GeneralActionCommand(short id, GeneralActionType action, unsigned char playerId);
 
 	void execute() override;
 	PendingCommandSaveData saveState(unsigned short order) const override;
@@ -14,5 +14,5 @@ public:
 private:
 	short id;
 	GeneralActionType action;
-	char player;
+	unsigned char playerId;
 };

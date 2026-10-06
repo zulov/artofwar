@@ -13,6 +13,7 @@
 #include "scene/load/dbload_container.h"
 #include "env/Environment.h"
 #include "player/PlayersManager.h"
+#include "player/Player.h"
 
 
 db_resource* ResourceEntity::getDbResource() const { return static_cast<db_resource*>(dbEntity); }
@@ -43,7 +44,7 @@ void ResourceEntity::populate() {
 
 Urho3D::String ResourceEntity::getInfo() const {
 	const auto l10n = Game::getLocalization();
-	const auto bonus = bonuses[Game::getPlayersMan()->getActivePlayerID()] * getDbResource()->collectSpeed;
+	const auto bonus = getBonus(Game::getPlayersMan()->getActivePlayerID()) * getDbResource()->collectSpeed;
 	return l10nFormat("info_resource", getDbResource()->name.CString(), (int)hp, getDbResource()->maxHp,
 	                  asStringF(bonus, 1).c_str(), closeUsers, getMaxCloseUsers());
 }
@@ -57,6 +58,10 @@ unsigned char ResourceEntity::getMaxCloseUsers() const {
 }
 
 char ResourceEntity::getResourceId() const { return getDbResource()->resourceId; }
+
+float ResourceEntity::getBonus(unsigned char player) const {
+	return Game::getPlayersMan()->getPlayer(player)->applyTechnologyResourceBonus(bonuses[player], getResourceId());
+}
 
 void ResourceEntity::action(ResourceActionType type, char player) {
 	switch (type) {

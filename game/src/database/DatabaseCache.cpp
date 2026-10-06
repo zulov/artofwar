@@ -7,6 +7,7 @@
 #include "db_utils.h"
 
 #include <cassert>
+#include <stdexcept>
 
 bool DatabaseCache::openDatabase(const std::string& name, bool readOnly) {
 	database = openDb(pathStr + name, readOnly);
@@ -19,8 +20,14 @@ DatabaseCache::DatabaseCache() {
 	pathStr = std::string("Data/");
 	if (!SIM_GLOBALS.HEADLESS) { loadBasic("Database/base.db"); }
 
-	loadData("Database/data.db");
-	loadMaps("map/maps.db");
+	try {
+		loadData("Database/data.db");
+		loadMaps("map/maps.db");
+	} catch (...) {
+		delete container;
+		container = nullptr;
+		throw;
+	}
 }
 
 void DatabaseCache::loadBasic(const std::string& name) {
@@ -36,7 +43,9 @@ void DatabaseCache::loadBasic(const std::string& name) {
 }
 
 void DatabaseCache::loadData(const std::string& name) {
-	if (!openDatabase(name)) { return; }
+	if (!openDatabase(name)) {
+		throw std::runtime_error("Required data database failed to open: " + name);
+	}
 
 	load("nation order by id desc", [this](auto* s) { setEntity(container->nations, new db_nation(s)); });
 	load("unit order by id desc", [this](auto* s) { setEntity(container->units, new db_unit(s)); });
@@ -96,9 +105,45 @@ void DatabaseCache::loadData(const std::string& name) {
 		}
 	});
 
+	const auto loadRequired = [this](const char* table, auto createFn) {
+		if (!load(std::string(table) + " order by id", createFn)) {
+			const std::string message = "Required data table failed to load: " + std::string(table);
+			sqlite3_close_v2(database);
+			database = nullptr;
+			throw std::runtime_error(message);
+		}
+	};
+
+	loadRequired("technology", [this](auto* s) {
+		setEntity(container->technologies, new db_technology(s));
+	});
+	if (!load("technology_level order by technology,level", [this](auto* s) {
+		const auto technologyId = asUShort(s, DbTechnologyLevelCol::technology);
+		assert(technologyId < container->technologies.size() && container->technologies[technologyId]);
+		auto* level = new db_technology_level(s, container->technologies[technologyId]->code);
+		setEntity(container->technologyLevels, level);
+		assert(level->technology < container->technologies.size());
+		container->technologies[level->technology]->levels.push_back(level);
+	})) {
+		sqlite3_close_v2(database);
+		database = nullptr;
+		throw std::runtime_error("Required data table failed to load: technology_level");
+	}
+	if (!load("technology_level_effect order by technology_level,effect_order", [this](auto* s) {
+		auto* effect = new db_technology_effect(s);
+		container->technologyEffects.push_back(effect);
+		assert(effect->technologyLevel < container->technologyLevels.size());
+		container->technologyLevels[effect->technologyLevel]->effects.push_back(effect);
+	})) {
+		sqlite3_close_v2(database);
+		database = nullptr;
+		throw std::runtime_error("Required data table failed to load: technology_level_effect");
+	}
+
 	container->finish();
 
 	sqlite3_close_v2(database);
+	database = nullptr;
 }
 
 void DatabaseCache::loadMaps(const std::string& name) {

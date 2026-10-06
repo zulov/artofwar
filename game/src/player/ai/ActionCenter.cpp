@@ -49,13 +49,13 @@ void ActionCenter::createAndUpgrade() {
 	upgrade.execute();
 }
 
-bool ActionCenter::addUnits(unsigned number, short id, Urho3D::Vector2 position, char player) {
-	auto level = Game::getPlayersMan()->getPlayer(player)->getUnitLevel(id)->level;
-	return addUnits(number, id, position, player, level);
+bool ActionCenter::addUnits(unsigned number, short id, Urho3D::Vector2 position, unsigned char playerId) {
+	auto level = Game::getPlayersMan()->getPlayer(playerId)->getUnitLevel(id)->level;
+	return addUnits(number, id, position, playerId, level);
 }
 
-bool ActionCenter::addUnits(unsigned number, short id, const Urho3D::Vector2& position, char player, int level) {
-	auto command = creation.addUnits(number, id, position, player, level);
+bool ActionCenter::addUnits(unsigned number, short id, const Urho3D::Vector2& position, unsigned char playerId, int level) {
+	auto command = creation.addUnits(number, id, position, playerId, level);
 	if (command) {
 		creation.add(command);
 		return true;
@@ -63,17 +63,17 @@ bool ActionCenter::addUnits(unsigned number, short id, const Urho3D::Vector2& po
 	return false;
 }
 
-bool ActionCenter::addBuilding(short id, const Urho3D::Vector2& position, char player, bool force) {
-	auto level = Game::getPlayersMan()->getPlayer(player)->getBuildingLevel(id)->level;
-	return addBuilding(id, position, player, level, force);
+bool ActionCenter::addBuilding(short id, const Urho3D::Vector2& position, unsigned char playerId, bool force) {
+	auto level = Game::getPlayersMan()->getPlayer(playerId)->getBuildingLevel(id)->level;
+	return addBuilding(id, position, playerId, level, force);
 }
 
-bool ActionCenter::addBuilding(short id, const Urho3D::Vector2& position, char player, int level, bool force) {
+bool ActionCenter::addBuilding(short id, const Urho3D::Vector2& position, unsigned char playerId, int level, bool force) {
 	CreationCommand* command{};
 	if (force) {
-		command = creation.addBuildingForce(id, position, player, level);
+		command = creation.addBuildingForce(id, position, playerId, level);
 	} else {
-		command = creation.addBuilding(id, position, player, level);
+		command = creation.addBuilding(id, position, playerId, level);
 	}
 
 	if (command) {
@@ -115,18 +115,18 @@ void ActionCenter::loadState(const std::vector<PendingCommandSaveData>& state,
 			auto type = static_cast<ObjectType>(item.action);
 			CreationCommand* command{};
 			if (type == ObjectType::UNIT) {
-				command = new CreationCommand(type, item.id, Urho3D::Vector2(item.x, item.z), item.level, item.player,
+				command = new CreationCommand(type, item.id, Urho3D::Vector2(item.x, item.z), item.level, item.playerId,
 											  item.number);
 			} else {
 				command = new CreationCommand(type, item.id, Urho3D::UShortVector2(item.x, item.z), item.level,
-											  item.player);
+																  item.playerId);
 			}
 			command->setHp(item.hp);
 			creation.add(command);
 			break;
 		}
 		case PendingCommandKind::UPGRADE:
-			upgrade.add(new UpgradeCommand(item.player, item.id, static_cast<QueueActionType>(item.action)));
+			upgrade.add(new UpgradeCommand(item.playerId, item.id, static_cast<QueueActionType>(item.action), item.level));
 			break;
 		case PendingCommandKind::INDIVIDUAL_ORDER:
 			if (item.entityUids.empty()) {
@@ -193,11 +193,11 @@ void ActionCenter::loadState(const std::vector<PendingCommandSaveData>& state,
 					resources.push_back(entity);
 				}
 			}
-			add(new ResourceActionCommand(resources, static_cast<ResourceActionType>(item.action), item.player));
+			add(new ResourceActionCommand(resources, static_cast<ResourceActionType>(item.action), item.playerId));
 			break;
 		}
 		case PendingCommandKind::GENERAL_ACTION:
-			add(new GeneralActionCommand(item.id, static_cast<GeneralActionType>(item.action), item.player));
+			add(new GeneralActionCommand(item.id, static_cast<GeneralActionType>(item.action), item.playerId));
 			break;
 		}
 	}

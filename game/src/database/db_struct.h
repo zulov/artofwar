@@ -36,11 +36,11 @@ float inline safeDiv(float first, short second) {
 }
 
 struct db_common_attack {
-	const float collect;
-	const float attack;
-	const short attackReload;
-	const short attackRange;
-	const float sqAttackRange;
+	float collect;
+	float attack;
+	short attackReload;
+	short attackRange;
+	float sqAttackRange;
 
 	db_common_attack(float collect, float attack, short attackReload, short attackRange)
 		: collect(collect), attack(attack), attackReload(attackReload), attackRange(attackRange),
@@ -61,15 +61,15 @@ struct db_building_attack : db_common_attack {
 };
 
 struct db_unit_attack : db_common_attack {
-	const float bonusInfantry;
-	const float bonusRange;
-	const float bonusCavalry;
-	const float bonusWorker;
-	const float bonusSpecial;
-	const float bonusMelee;
-	const float bonusHeavy;
-	const float bonusLight;
-	const float bonusBuilding;
+	float bonusInfantry;
+	float bonusRange;
+	float bonusCavalry;
+	float bonusWorker;
+	float bonusSpecial;
+	float bonusMelee;
+	float bonusHeavy;
+	float bonusLight;
+	float bonusBuilding;
 
 	db_unit_attack(float collect, float attack, short attackReload, short attackRange,
 	               float bonusInfantry, float bonusRange, float bonusCavalry, float bonusWorker,
@@ -182,20 +182,20 @@ struct db_level {
 };
 
 struct db_with_hp {
-	const unsigned short maxHp;
-	const float invMaxHp;
-	const float armor;
+	unsigned short maxHp;
+	float invMaxHp;
+	float armor;
 
 	explicit db_with_hp(unsigned short maxHp, float armor)
 		: maxHp(maxHp), invMaxHp(1.f / maxHp), armor(armor) {}
 };
 
 struct db_base : db_with_hp {
-	const float sightRadius;
-	const float sqSightRadius;
+	float sightRadius;
+	float sqSightRadius;
 
-	const float interestRange;
-	const float sqInterestRange;
+	float interestRange;
+	float sqInterestRange;
 
 	db_base(unsigned short maxHp, float armor, float sightRadius)
 		: db_with_hp(maxHp, armor), sightRadius(sightRadius), sqSightRadius(sightRadius * sightRadius),
@@ -220,19 +220,19 @@ struct db_unit_metric : db_basic_metric {
 
 struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_base, db_with_model,
                         db_build_upgrade {
-	const unsigned short unit;
-	const unsigned char ageStage;
+	unsigned short unit;
+	unsigned char ageStage;
 
-	const float minDist;
-	const float maxSep;
-	const float mass;
-	const float invMass;
+	float minDist;
+	float maxSep;
+	float mass;
+	float invMass;
 
-	const float maxSpeed;
-	const float minSpeed;
+	float maxSpeed;
+	float minSpeed;
 
-	const float maxForce;
-	const float sqMinSpeed;
+	float maxForce;
+	float sqMinSpeed;
 
 	const Urho3D::String node;
 
@@ -263,6 +263,13 @@ struct db_unit_level : db_with_name, db_level, db_with_cost, db_unit_attack, db_
 		  maxForce(asUShort(s, C::max_force)),
 		  sqMinSpeed(minSpeed * minSpeed),
 		  node(asText(s, C::node)) {}
+
+	db_unit_level(const db_unit_level& other)
+		: db_with_name(other), db_level(other), db_with_cost(other), db_unit_attack(other), db_base(other),
+		  db_with_model(other), db_build_upgrade(other), unit(other.unit), ageStage(other.ageStage),
+		  minDist(other.minDist), maxSep(other.maxSep), mass(other.mass), invMass(other.invMass),
+		  maxSpeed(other.maxSpeed), minSpeed(other.minSpeed), maxForce(other.maxForce),
+		  sqMinSpeed(other.sqMinSpeed), node(other.node), dbUnitMetric(nullptr) {}
 
 	void finish(db_unit* dbUnit) {
 		dbUnitMetric = new db_unit_metric(dbUnit, this);
@@ -418,16 +425,16 @@ struct db_building : db_with_icon, db_with_cost, db_static {
 
 struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_building_attack,
                            db_with_model, db_build_upgrade {
-	const short building;
-	const unsigned char ageStage;
-	const short queueMaxCapacity;
-	const float resourceRange;
-	const short foodStorage;
-	const short goldStorage;
-	const float stoneRefineCapacity;
-	const float goldRefineCapacity;
-	const short spawnResourceTime;
-	const short spawnResourceRange;
+	short building;
+	unsigned char ageStage;
+	short queueMaxCapacity;
+	float resourceRange;
+	short foodStorage;
+	short goldStorage;
+	float stoneRefineCapacity;
+	float goldRefineCapacity;
+	short spawnResourceTime;
+	short spawnResourceRange;
 
 	const Urho3D::String nodeName;
 
@@ -459,9 +466,21 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 		  spawnResourceRange(asShort(s, C::spawn_resource_range)),
 		  nodeName(asText(s, C::node_name)) {}
 
+	db_building_level(const db_building_level& other)
+		: db_with_name(other), db_with_cost(other), db_level(other), db_base(other), db_building_attack(other),
+		  db_with_model(other), db_build_upgrade(other), building(other.building), ageStage(other.ageStage),
+		  queueMaxCapacity(other.queueMaxCapacity), resourceRange(other.resourceRange),
+		  foodStorage(other.foodStorage), goldStorage(other.goldStorage),
+		  stoneRefineCapacity(other.stoneRefineCapacity), goldRefineCapacity(other.goldRefineCapacity),
+		  spawnResourceTime(other.spawnResourceTime), spawnResourceRange(other.spawnResourceRange),
+		  nodeName(other.nodeName), allUnits(other.allUnits), unitsPerNation(other.unitsPerNation),
+		  unitsPerNationIds(other.unitsPerNationIds), dbBuildingMetric(nullptr), ownsRuntimeData(false) {}
+
 	~db_building_level() {
-		clear_vector(unitsPerNation);
-		clear_vector(unitsPerNationIds);
+		if (ownsRuntimeData) {
+			clear_vector(unitsPerNation);
+			clear_vector(unitsPerNationIds);
+		}
 		delete dbBuildingMetric;
 		//clear_vector(dbBuildingMetricPerNation);
 	}
@@ -469,6 +488,8 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 	void finish(db_building* dbBuilding) {
 		dbBuildingMetric = new db_building_metric(dbBuilding, this);
 	}
+
+	bool ownsRuntimeData = true;
 
 	bool isResourceBonus() const { return collect > 0.f && resourceRange > 0.f; }
 	bool storesFood() const { return foodStorage > 0; }

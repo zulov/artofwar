@@ -151,6 +151,7 @@ inline void bindRow<QueueRow>(sqlite3_stmt* stmt, int, const QueueRow* x) {
 	bindI(stmt, QueueCol::level_id, x->data.levelId);
 	bindI(stmt, QueueCol::amount, x->data.amount);
 	bindI(stmt, QueueCol::elapsed_ticks, x->data.elapsedTicks);
+	bindI(stmt, QueueCol::duration_ticks, x->data.durationTicks);
 }
 
 template <>
@@ -159,6 +160,13 @@ inline void bindRow<PlayerLevelSaveData>(sqlite3_stmt* stmt, int, const PlayerLe
 	bindUC(stmt, PlayerLevelCol::type, x->type);
 	bindI(stmt, PlayerLevelCol::id, x->id);
 	bindC(stmt, PlayerLevelCol::level, x->level);
+}
+
+template <>
+inline void bindRow<PlayerTechnologySaveData>(sqlite3_stmt* stmt, int, const PlayerTechnologySaveData* x) {
+	bindUC(stmt, PlayerTechnologyCol::player, x->player);
+	bindI(stmt, PlayerTechnologyCol::technology, x->technology);
+	bindUC(stmt, PlayerTechnologyCol::level, x->level);
 }
 
 template <>
@@ -228,7 +236,7 @@ inline void bindRow<PendingCommandSaveData>(sqlite3_stmt* stmt, int precision, c
 	bindC(stmt, PendingCommandCol::action, x->action);
 	bindC(stmt, PendingCommandCol::action_type, x->actionType);
 	bindI(stmt, PendingCommandCol::id_db, x->id);
-	bindC(stmt, PendingCommandCol::player, x->player);
+	bindUC(stmt, PendingCommandCol::player, x->playerId);
 	bindC(stmt, PendingCommandCol::level, x->level);
 	bindU(stmt, PendingCommandCol::number, x->number);
 	bindScaledI(stmt, PendingCommandCol::x, x->x, precision);

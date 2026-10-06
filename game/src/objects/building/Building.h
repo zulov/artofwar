@@ -20,7 +20,8 @@ public:
 	~Building() override;
 
 	void populate();
-	void levelUp(char level);
+	void levelUp();
+	void refreshEffectiveLevel();
 	void postCreate();
 	Building* load(dbload_building* dbloadBuilding);
 

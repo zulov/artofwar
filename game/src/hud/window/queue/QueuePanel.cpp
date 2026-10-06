@@ -30,9 +30,12 @@ void QueuePanel::update(const QueueManager& queue, short& j) const {
 	const auto size = std::min(static_cast<std::size_t>(queue.getSize()), static_cast<std::size_t>(MAX_ICON_SELECTION));
 	for (std::size_t i = 0; i < size; ++i) {
 		QueueElement* element = queue.getAt(i);
-		elements[j]->show();
+		 elements[j]->show();
 		auto name = getIconName(element->getType(), element->getLevelId(), element->getId());
 		auto texture = getTexture("textures/hud/icon/" + name);
+		if (!texture) {
+			texture = getTexture("textures/hud/icon/mock.png");
+		}
 		if (element->getMaxCapacity() > 1) {
 			elements[j]->setText(Urho3D::String(element->getAmount()) + "/" + Urho3D::String(element->getMaxCapacity()));
 		} else {

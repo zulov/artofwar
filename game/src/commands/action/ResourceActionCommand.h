@@ -9,8 +9,8 @@ struct PendingCommandSaveData;
 
 class ResourceActionCommand : public PhysicalCommand {
 public:
-	ResourceActionCommand(ResourceEntity* resource, ResourceActionType action, char player);
-	ResourceActionCommand(const std::vector<Physical*>& resources, ResourceActionType action, char player);
+	ResourceActionCommand(ResourceEntity* resource, ResourceActionType action, unsigned char playerId);
+	ResourceActionCommand(const std::vector<Physical*>& resources, ResourceActionType action, unsigned char playerId);
 
 	void execute() override;
 	PendingCommandSaveData saveState(unsigned short order) const override;
@@ -18,5 +18,5 @@ public:
 private:
 	std::vector<ResourceEntity*> resources;
 	ResourceActionType action;
-	char player;
+	unsigned char playerId;
 };

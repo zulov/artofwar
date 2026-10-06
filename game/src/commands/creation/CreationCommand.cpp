@@ -1,4 +1,7 @@
 #include "CreationCommand.h"
+
+#include <limits>
+
 #include "scene/load/RuntimeSaveData.h"
 #include "objects/ObjectEnums.h"
 #include "objects/resource/ResourceEntity.h"
@@ -6,23 +9,23 @@
 
 
 CreationCommand::CreationCommand(ObjectType type, unsigned short id, const Urho3D::UShortVector2& bucketCords)
-	: bucketCords(bucketCords), id(id), objectType(type), player(-1) {}
+	: bucketCords(bucketCords), id(id), objectType(type), playerId(std::numeric_limits<unsigned char>::max()) {}
 
 CreationCommand::CreationCommand(ObjectType type, unsigned short id, const Urho3D::UShortVector2& bucketCords, char level,
-                                 char player)
-	: bucketCords(bucketCords), id(id), objectType(type), level(level), player(player) {}
+                                 unsigned char playerId)
+	: bucketCords(bucketCords), id(id), objectType(type), level(level), playerId(playerId) {}
 
-CreationCommand::CreationCommand(ObjectType type, unsigned short id, const Urho3D::Vector2& position, char level, char player,
-                                 unsigned number) : position(position), number(number),
-                                                    id(id), objectType(type), level(level), player(player) {}
+CreationCommand::CreationCommand(ObjectType type, unsigned short id, const Urho3D::Vector2& position, char level,
+                                 unsigned char playerId, unsigned number) : position(position), number(number),
+                                                    id(id), objectType(type), level(level), playerId(playerId) {}
 
 void CreationCommand::execute(SimulationObjectManager* simulationObjectManager) {
 	switch (objectType) {
 	case ObjectType::UNIT:
-		simulationObjectManager->addUnits(number, id, position, level, player);
+		simulationObjectManager->addUnits(number, id, position, level, playerId);
 		break;
 	case ObjectType::BUILDING:
-		simulationObjectManager->addBuilding(id, bucketCords, level, player);
+		simulationObjectManager->addBuilding(id, bucketCords, level, playerId);
 		break;
 	case ObjectType::RESOURCE:
 		auto res = simulationObjectManager->addResource(id, bucketCords);
@@ -39,7 +42,7 @@ PendingCommandSaveData CreationCommand::saveState(unsigned short order) const {
 	state.kind = PendingCommandKind::CREATION;
 	state.action = static_cast<char>(objectType);
 	state.id = id;
-	state.player = player;
+	state.playerId = playerId;
 	state.level = level;
 	state.number = number;
 	state.hp = hp;

@@ -6,4 +6,5 @@ enum class QueueActionType : unsigned char {
 	BUILDING_LEVEL,
 	BUILDING_CREATE,
 	RESOURCE_CREATE,
+	TECH_RESEARCH,
 };

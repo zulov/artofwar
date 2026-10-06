@@ -147,6 +147,16 @@ void SimulationObjectManager::refreshResourceBonuses() const {
 	refreshResBonuses(true);
 }
 
+void SimulationObjectManager::refreshPlayerEffectiveLevels(unsigned char player) const {
+	for (auto* unit : *units) {
+		if (unit->getPlayer() == player) unit->refreshEffectiveLevel();
+	}
+	for (auto* building : *buildings) {
+		if (building->getPlayer() == player) building->refreshEffectiveLevel();
+	}
+	refreshResourceBonuses();
+}
+
 void SimulationObjectManager::dispose() const {
 	if (StateManager::isSthToDispose()) {
 		for (const auto unit : *units) {

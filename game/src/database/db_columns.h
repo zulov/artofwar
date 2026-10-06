@@ -107,10 +107,12 @@ enum class QueueCol : unsigned char {
 	id,
 	level_id,
 	amount,
-	elapsed_ticks
+	elapsed_ticks,
+	duration_ticks
 };
 
 enum class PlayerLevelCol : unsigned char { player, type, id, level };
+enum class PlayerTechnologyCol : unsigned char { player, technology, level };
 
 enum class AiStateCol : unsigned char {
 	player,
@@ -344,6 +346,34 @@ enum class DbWorldAgeJoinCol : unsigned char { age_id, condition_id };
 
 enum class DbWorldAgeTransitionCol : unsigned char { age_id, next_age_id };
 
+enum class DbTechnologyCol : unsigned char { id, code, research_building };
+
+enum class DbTechnologyLevelCol : unsigned char {
+	id,
+	technology,
+	level,
+	unlock_age_ids,
+	food,
+	wood,
+	stone,
+	gold,
+	research_time
+};
+
+enum class DbTechnologyEffectCol : unsigned char {
+	technology_level,
+	effect_order,
+	stat,
+	operation,
+	source_kind,
+	source_tag,
+	target_kind,
+	target_tag,
+	resource_type,
+	target_id,
+	value
+};
+
 // --- Base.db tables ---
 
 enum class HudSizeCol : unsigned char { id, name };
@@ -402,9 +432,11 @@ static_assert(magic_enum::enum_count<UnitOrderCol>() == 8,
 			  "UnitOrderCol must match the 8 columns in SQLConsts::UNIT_ORDER_COL");
 static_assert(magic_enum::enum_count<AimPathCol>() == 3,
 			  "AimPathCol must match the 3 columns in SQLConsts::AIM_PATH_COL");
-static_assert(magic_enum::enum_count<QueueCol>() == 8, "QueueCol must match the 8 columns in SQLConsts::QUEUE_COL");
+static_assert(magic_enum::enum_count<QueueCol>() == 9, "QueueCol must match the 9 columns in SQLConsts::QUEUE_COL");
 static_assert(magic_enum::enum_count<PlayerLevelCol>() == 4,
 			  "PlayerLevelCol must match the 4 columns in SQLConsts::PLAYER_LEVEL_COL");
+static_assert(magic_enum::enum_count<PlayerTechnologyCol>() == 3,
+			  "PlayerTechnologyCol must match the 3 columns in SQLConsts::PLAYER_TECHNOLOGY_COL");
 static_assert(magic_enum::enum_count<AiStateCol>() == 35,
 			  "AiStateCol must match the 35 columns in SQLConsts::AI_STATE_COL");
 static_assert(magic_enum::enum_count<AiWantCol>() == 10,

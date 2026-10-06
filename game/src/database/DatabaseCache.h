@@ -12,6 +12,8 @@ struct db_building;
 struct db_nation;
 struct db_resource;
 struct db_player_colors;
+struct db_technology;
+struct db_technology_level;
 
 class DatabaseCache {
 public:
@@ -49,6 +51,10 @@ public:
 
 	const std::vector<db_unit_level*>& getUnitLevels() const { return container->unitsLevels; }
 	const std::vector<db_building_level*>& getBuildingLevels() const { return container->buildingsLevels; }
+	const std::vector<db_technology*>& getTechnologies() const { return container->technologies; }
+	db_technology* getTechnology(unsigned short id) const { return container->technologies[id]; }
+	const std::vector<db_technology_level*>& getTechnologyLevels() const { return container->technologyLevels; }
+	db_technology_level* getTechnologyLevel(unsigned short id) const { return container->technologyLevels[id]; }
 
 	void setGraphSettings(int i, db_graph_settings* gs);
 	void setSettings(db_settings* settings);

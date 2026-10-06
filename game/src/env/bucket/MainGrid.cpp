@@ -15,6 +15,8 @@
 #include "math/VectorUtils.h"
 #include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
+#include "player/Player.h"
+#include "player/PlayersManager.h"
 #include "env/CloseIndexes.h"
 #include "env/Environment.h"
 
@@ -351,7 +353,9 @@ void MainGrid::addResourceBonuses(Building* building, std::vector<int>& changedI
 		std::ranges::copy(indexesWithBonus, std::back_inserter(changedIndexes));
 
 		for (const int index : indexesWithBonus) {
-			complexData[index].setResBonuses(building->getPlayer(), dbBuilding->resourceType, level->collect);
+			const auto bonus = Game::getPlayersMan()->getPlayer(building->getPlayer())
+				->applyTechnologyResourceBonus(level->collect, dbBuilding, dbBuilding->resourceType);
+			complexData[index].setResBonuses(building->getPlayer(), dbBuilding->resourceType, bonus);
 		}
 	}
 }

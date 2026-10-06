@@ -4,6 +4,7 @@
 #include "db_struct.h"
 #include "db_other_struct.h"
 #include "db_world_age_struct.h"
+#include "db_technology_struct.h"
 #include "utils/DeleteUtils.h"
 
 struct db_hud_vars;
@@ -27,6 +28,9 @@ struct db_container {
 	std::vector<db_building_level*> buildingsLevels;
 	std::vector<db_nation*> nations;
 	std::vector<db_resource*> resources;
+	std::vector<db_technology*> technologies;
+	std::vector<db_technology_level*> technologyLevels;
+	std::vector<db_technology_effect*> technologyEffects;
 	std::vector<db_player_colors*> playerColors;
 	db_world_age_catalog worldAgeCatalog;
 
@@ -41,6 +45,9 @@ struct db_container {
 		delete settings;
 
 		clear_vector(resources);
+		clear_vector(technologyEffects);
+		clear_vector(technologyLevels);
+		clear_vector(technologies);
 		clear_vector(nations);
 		clear_vector(units);
 		clear_vector(buildings);

@@ -5,6 +5,7 @@
 
 #include "database/db_insert_defs.h"
 #include "database/db_read_defs.h"
+#include "objects/queue/QueueActionType.h"
 #include "player/ai/WantList.h"
 #include "scene/save/SaveTable.h"
 
@@ -67,6 +68,7 @@ TEST(PersistenceRowTest, AllSaveTableContractsCreateAndSelect) {
 	checkSaveTableContract<AimPathCol>(database);
 	checkSaveTableContract<QueueCol>(database);
 	checkSaveTableContract<PlayerLevelCol>(database);
+	checkSaveTableContract<PlayerTechnologyCol>(database);
 	checkSaveTableContract<AiStateCol>(database);
 	checkSaveTableContract<AiWantCol>(database);
 	checkSaveTableContract<AiHistoryCol>(database);
@@ -78,6 +80,17 @@ TEST(PersistenceRowTest, AllSaveTableContractsCreateAndSelect) {
 	checkSaveTableContract<WorldAgeStateCol>(database);
 
 	sqlite3_close(database);
+}
+
+TEST(PersistenceRowTest, QueueRowsRoundTripResearchDuration) {
+	const QueueRow expected{{7, 0, static_cast<char>(QueueActionType::TECH_RESEARCH), 2, 4, 1, 12, 240}, 0};
+	const auto actual = roundTrip<QueueCol>(expected);
+
+	EXPECT_EQ(expected.data.ownerId, actual.data.ownerId);
+	EXPECT_EQ(expected.data.type, actual.data.type);
+	EXPECT_EQ(expected.data.levelId, actual.data.levelId);
+	EXPECT_EQ(expected.data.elapsedTicks, actual.data.elapsedTicks);
+	EXPECT_EQ(expected.data.durationTicks, actual.data.durationTicks);
 }
 
 TEST(PersistenceRowTest, AiStateRoundTripsAllPressureValues) {
@@ -186,7 +199,7 @@ TEST(PersistenceRowTest, PendingCommandRoundTripsScalarFields) {
 	expected.action = 2;
 	expected.actionType = 3;
 	expected.id = 7;
-	expected.player = 1;
+	expected.playerId = 1;
 	expected.level = 2;
 	expected.number = 9;
 	expected.x = 14.5f;
@@ -203,7 +216,7 @@ TEST(PersistenceRowTest, PendingCommandRoundTripsScalarFields) {
 	EXPECT_EQ(expected.action, actual.action);
 	EXPECT_EQ(expected.actionType, actual.actionType);
 	EXPECT_EQ(expected.id, actual.id);
-	EXPECT_EQ(expected.player, actual.player);
+	EXPECT_EQ(expected.playerId, actual.playerId);
 	EXPECT_EQ(expected.level, actual.level);
 	EXPECT_EQ(expected.number, actual.number);
 	EXPECT_FLOAT_EQ(expected.x, actual.x);

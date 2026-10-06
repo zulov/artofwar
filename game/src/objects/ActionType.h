@@ -12,5 +12,6 @@ enum class ActionType : unsigned char {
 	ORDER,
 	FORMATION,
 
-	RESOURCE
+	RESOURCE,
+	TECH_RESEARCH
 };

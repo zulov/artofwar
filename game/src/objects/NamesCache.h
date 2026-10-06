@@ -34,6 +34,8 @@ inline Urho3D::String getIconName(QueueActionType type, int level, int i) {
 	case QueueActionType::RESOURCE_CREATE:
 		return "mock.png";
 		//"resources/" + dbCache->getResource(i)->icon;
+	case QueueActionType::TECH_RESEARCH:
+		return Urho3D::String("technology/") + Urho3D::String(dbCache->getTechnologyLevel(level)->icon.c_str());
 	default:
 		return "mock.png";
 	}

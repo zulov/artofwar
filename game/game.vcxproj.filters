@@ -536,6 +536,7 @@
     <ClInclude Include="src\database\db_insert_defs.h" />
     <ClInclude Include="src\database\db_read_defs.h" />
     <ClInclude Include="src\utils\CountUtils.h" />
+    <ClInclude Include="src\utils\TechnologyUtils.h" />
     <ClInclude Include="src\env\bucket\ArrayProviderUtils.h" />
     <ClInclude Include="src\player\ai\AiHistory.h" />
     <ClInclude Include="src\player\ai\AiHistoryEnums.h" />

@@ -13,10 +13,13 @@
 #include "AiUtils.h"
 #include "Game.h"
 #include "NormScale.h"
+#include "commands/action/GeneralActionCommand.h"
+#include "commands/action/GeneralActionType.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
 #include "commands/upgrade/UpgradeCommand.h"
 #include "database/DatabaseCache.h"
+#include "database/db_technology_struct.h"
 #include "env/Environment.h"
 #include "env/influence/CenterType.h"
 #include "math/MathUtils.h"
@@ -137,10 +140,23 @@ void AiOrchestrator::action() {
 	// submitBuildingRequest(lastMasterOut.defenceBuildingUrgency, ParentBuildingType::DEFENCE);
 	// submitBuildingRequest(lastMasterOut.buildingUrgency, ParentBuildingType::OTHER);
 	// submitBuildingRequest(lastMasterOut.techUrgency, ParentBuildingType::TECH);
+	submitTechnologyRequest(lastMasterOut.techUrgency);
 
 	// 6. Execute WantList
 	wantExecutor.prepare(lastMasterOut);
 	lastLacking = wantList.execute(player->getResources()->getValues(), wantExecutor);
+}
+
+void AiOrchestrator::submitTechnologyRequest(float urgency) {
+	if (urgency <= 0.1f || !player->getQueue().isEmpty()) return;
+
+	for (const auto* level : Game::getDatabase()->getTechnologyLevels()) {
+		if (level && player->canResearchTechnology(level->id)) {
+			Game::getActionCenter()->add(new GeneralActionCommand(
+				static_cast<short>(level->id), GeneralActionType::TECH_RESEARCH, playerId));
+			return;
+		}
+	}
 }
 
 void AiOrchestrator::order() {
@@ -549,7 +565,12 @@ db_unit* AiOrchestrator::resolveWorkerUpgrade() {
 }
 
 // TODO: pick a worker type intentionally; for now just use the first one the nation has.
-short AiOrchestrator::resolveWorkerId() const { return nation->workers.empty() ? -1 : nation->workers.at(0)->id; }
+short AiOrchestrator::resolveWorkerId() const {
+		for (const auto* worker : nation->workers) {
+			return worker->id;
+		}
+		return -1;
+}
 
 db_building* AiOrchestrator::resolveResBuildingUpgrade(const std::vector<ResBuildingNeed>& buildingNeeds) const {
 	std::vector<db_building*> candidates;

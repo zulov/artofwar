@@ -598,7 +598,7 @@ player_technologies
         <div class="card"><h3>Timeout tie-breaker</h3><p>Choose the deterministic fallback when branch progress is tied at the passive timer limit: neutral outcome, map data, or a stable branch priority.</p></div>
         <div class="card"><h3>Elimination timing</h3><p>The living-only rule is fixed, but the exact tick at which defeat is committed must match the game's authoritative defeat flow.</p></div>
         <div class="card"><h3>Technology rounding</h3><p>Choose one rounding policy for multiplied integer costs and queue durations. The same policy must be used by UI previews, resource deduction, and queue completion.</p></div>
-        <div class="card"><h3>Branch power budget</h3><p>Each selected branch should have a distinct identity, but its exclusive technologies must not make the omitted branch an automatic losing outcome on every map.</p></div>
+        <div class="card"><h3>Branch power budget</h3><p>Each branch should have a distinct identity, but its technologies must not make another strategic route an automatic losing outcome on every map.</p></div>
       </div>
       <div class="callout danger">
         <strong>Primary risk:</strong> because elimination removes a divisor, a winning player may accelerate the next era by defeating a weak opponent. This is acceptable if it is visible and balanced, but it should be tested deliberately in scenarios where one player is close to defeat and the world is close to a threshold.

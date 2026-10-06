@@ -38,15 +38,21 @@ inline AimPathSaveData readRow<AimPathSaveData>(sqlite3_stmt* stmt, int) {
 template <>
 inline QueueRow readRow<QueueRow>(sqlite3_stmt* stmt, int) {
 	return {{asUI(stmt, QueueCol::owner_id), asUByte(stmt, QueueCol::owner_type), asByte(stmt, QueueCol::type),
-				 asUShort(stmt, QueueCol::id), asUShort(stmt, QueueCol::level_id), asUShort(stmt, QueueCol::amount),
-				 asUShort(stmt, QueueCol::elapsed_ticks)},
-			asUShort(stmt, QueueCol::order_idx)};
+					 asUShort(stmt, QueueCol::id), asUShort(stmt, QueueCol::level_id), asUShort(stmt, QueueCol::amount),
+					 asUShort(stmt, QueueCol::elapsed_ticks), asUShort(stmt, QueueCol::duration_ticks)},
+				asUShort(stmt, QueueCol::order_idx)};
 }
 
 template <>
 inline PlayerLevelSaveData readRow<PlayerLevelSaveData>(sqlite3_stmt* stmt, int) {
 	return {asUByte(stmt, PlayerLevelCol::player), asUByte(stmt, PlayerLevelCol::type),
 			asUShort(stmt, PlayerLevelCol::id), asByte(stmt, PlayerLevelCol::level)};
+}
+
+template <>
+inline PlayerTechnologySaveData readRow<PlayerTechnologySaveData>(sqlite3_stmt* stmt, int) {
+	return {asUByte(stmt, PlayerTechnologyCol::player), asUShort(stmt, PlayerTechnologyCol::technology),
+			asUByte(stmt, PlayerTechnologyCol::level)};
 }
 
 template <>
@@ -138,7 +144,7 @@ inline PendingCommandSaveData readRow<PendingCommandSaveData>(sqlite3_stmt* stmt
 	return {asUShort(stmt, PendingCommandCol::order_idx),
 			static_cast<PendingCommandKind>(asByte(stmt, PendingCommandCol::kind)), asByte(stmt, PendingCommandCol::action),
 			asByte(stmt, PendingCommandCol::action_type), asUShort(stmt, PendingCommandCol::id_db),
-			asByte(stmt, PendingCommandCol::player), asByte(stmt, PendingCommandCol::level),
+			asUByte(stmt, PendingCommandCol::player), asByte(stmt, PendingCommandCol::level),
 			asUI(stmt, PendingCommandCol::number), asScaledFloat(stmt, PendingCommandCol::x, precision),
 			asScaledFloat(stmt, PendingCommandCol::z, precision), asScaledFloat(stmt, PendingCommandCol::hp, precision),
 			asUI(stmt, PendingCommandCol::target_uid),

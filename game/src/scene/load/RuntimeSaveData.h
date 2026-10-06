@@ -14,6 +14,7 @@ struct QueueSaveData {
 	unsigned short levelId{};
 	unsigned short amount{};
 	unsigned short elapsedTicks{};
+	unsigned short durationTicks{};
 };
 
 struct QueueRow {
@@ -60,6 +61,12 @@ struct PlayerLevelSaveData {
 	char level{};
 };
 
+struct PlayerTechnologySaveData {
+	unsigned char player{};
+	unsigned short technology{};
+	unsigned char level{};
+};
+
 struct WorldAgeStateSaveData {
 	unsigned short currentAge{};
 	unsigned ageStartedTick{};
@@ -83,7 +90,7 @@ struct PendingCommandSaveData {
 	char action{};
 	char actionType{};
 	unsigned short id{};
-	char player{};
+	unsigned char playerId{};
 	char level{};
 	unsigned number{};
 	float x{};

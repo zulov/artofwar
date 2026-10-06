@@ -234,6 +234,7 @@ void Hud::updateSelected(SelectedInfo* selectedInfo, const FrameInfo* frameInfo)
 	} else {
 		if (frameInfo->shouldRun(PerFrameAction::QUEUE_HUD)) {
 			queuePanel->show(Game::getPlayersMan()->getActivePlayer()->getQueue());
+			menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
 		}
 
 		selectedHudPanel->clearSelected();

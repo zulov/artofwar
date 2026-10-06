@@ -43,6 +43,7 @@ private:
 	bool saveAimPaths(const std::vector<UnitRuntimeSaveData>& unitStates);
 	bool saveQueues(const std::vector<Building*>* buildings, const std::vector<Player*>& players);
 	bool savePlayerLevels(const std::vector<Player*>& players);
+	bool savePlayerTechnologies(const std::vector<Player*>& players);
 	bool saveAiState(const std::vector<Player*>& players);
 	bool saveAiWants(const std::vector<Player*>& players);
 	bool saveAiHistory(const std::vector<Player*>& players);

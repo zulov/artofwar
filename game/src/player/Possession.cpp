@@ -320,11 +320,14 @@ void Possession::ensureUnitMetrics() {
 		levels[unit->getLevel()->id] += per;
 	}
 	constexpr auto attackIdx = static_cast<unsigned char>(UnitMetricIdx::ATTACK);
-	auto& uLevels = Game::getDatabase()->getUnitLevels();
 	for (int i = 0; i < levelsSize; ++i) {
 		const auto val = levels[i];
 		if (val > 0.f) {
-			auto& metric1 = uLevels[i]->dbUnitMetric->getValuesNormForSum();
+			const auto unit = std::ranges::find_if(units, [i](const auto* candidate) {
+				return candidate->getLevel()->id == i;
+			});
+			if (unit == units.end()) continue;
+			auto& metric1 = (*unit)->getLevel()->dbUnitMetric->getValuesNormForSum();
 			assert(metric1.size() == metric->unitsSum.size());
 			for (int j = 0; j < metric->unitsSum.size(); ++j) {
 				metric->unitsSum[j] += val * metric1[j];
@@ -335,7 +338,7 @@ void Possession::ensureUnitMetrics() {
 
 	for (const auto unit : units) {
 		if (isFreeSolider(unit)) {
-			auto& metric1 = uLevels[unit->getLevel()->id]->dbUnitMetric->getValuesNormForSum();
+			auto& metric1 = unit->getLevel()->dbUnitMetric->getValuesNormForSum();
 			freeArmyAttackSum += unit->getHealthPercent() * metric1[attackIdx];
 		}
 	}
@@ -369,11 +372,14 @@ void Possession::ensureBuildingMetrics() {
 		}
 	}
 
-	auto& bLevels = Game::getDatabase()->getBuildingLevels();
 	for (int i = 0; i < levelsSize; ++i) {
 		const auto lVal = levels[i];
 		if (lVal > 0.f) {
-			auto& metric1 = bLevels[i]->dbBuildingMetric->getValuesNormForSum();
+			const auto building = std::ranges::find_if(buildings, [i](const auto* candidate) {
+				return candidate->getLevel()->id == i;
+			});
+			if (building == buildings.end()) continue;
+			auto& metric1 = (*building)->getLevel()->dbBuildingMetric->getValuesNormForSum();
 			assert(metric1.size() == metric->buildingsSum.size());
 			for (int j = 0; j < metric->buildingsSum.size(); ++j) {
 				metric->buildingsSum[j] += lVal * metric1[j];

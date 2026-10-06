@@ -36,6 +36,7 @@ public:
 	void load(dbload_resource* resource) const;
 	void refreshAllStatic();
 	void refreshResourceBonuses() const;
+	void refreshPlayerEffectiveLevels(unsigned char player) const;
 	void setResUid(unsigned resUid);
 
 private:

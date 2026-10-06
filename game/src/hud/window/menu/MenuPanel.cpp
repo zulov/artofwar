@@ -1,5 +1,6 @@
 ﻿#include "MenuPanel.h"
 
+#include <algorithm>
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/CheckBox.h>
@@ -16,6 +17,7 @@
 #include "player/PlayersManager.h"
 #include "commands/action/ResourceActionType.h"
 #include "database/db_other_struct.h"
+#include "database/db_technology_struct.h"
 #include "math/VectorUtils.h"
 #include "objects/unit/order/UnitConst.h"
 
@@ -78,7 +80,7 @@ void MenuPanel::setCheckVisibility(std::initializer_list<bool> active) {
 void MenuPanel::updateMode(LeftMenuMode mode) {
 	switch (mode) {
 	case LeftMenuMode::BUILDING:
-		return setCheckVisibility({true, true, false});
+		return setCheckVisibility({true, true, true});
 	case LeftMenuMode::UNIT:
 		return setCheckVisibility({true, true, true});
 	case LeftMenuMode::ORDER:
@@ -134,6 +136,10 @@ void MenuPanel::setChecks(char val) {
 }
 
 void MenuPanel::NextPage(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+	if (maxPage <= 1) {
+		page = 0;
+		return;
+	}
 	page = (page + 1) % maxPage;
 	updateButtons(lastSelectedInfo);
 }
@@ -151,7 +157,11 @@ void MenuPanel::ChangeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMa
 
 void MenuPanel::setNext(int& k, const Urho3D::String& texture, short id, ActionType menuAction,
                         Urho3D::String text) const {
-	setTextureToSprite(sprites[k], Game::getCache()->GetResource<Urho3D::Texture2D>(ICONS_PATH + texture));
+	auto* icon = Game::getCache()->GetResource<Urho3D::Texture2D>(ICONS_PATH + texture);
+	if (!icon) {
+		icon = Game::getCache()->GetResource<Urho3D::Texture2D>(ICONS_PATH + Urho3D::String("mock.png"));
+	}
+	setTextureToSprite(sprites[k], icon);
 
 	buttons[k]->SetVisible(true);
 
@@ -161,8 +171,11 @@ void MenuPanel::setNext(int& k, const Urho3D::String& texture, short id, ActionT
 
 void MenuPanel::basicBuilding() {
 	const short nation = Game::getPlayersMan()->getActivePlayer()->getNation();
-
-	setIcons(Game::getDatabase()->getNation(nation)->buildings, "building/", ActionType::BUILDING_CREATE);
+	std::vector<db_building*> buildings;
+	for (auto* building : Game::getDatabase()->getNation(nation)->buildings) {
+		buildings.push_back(building);
+	}
+	setIcons(buildings, "building/", ActionType::BUILDING_CREATE);
 }
 
 void MenuPanel::levelBuilding() {
@@ -182,6 +195,31 @@ void MenuPanel::levelBuilding() {
 		const db_building* building = Game::getDatabase()->getBuilding(level->building);
 		setNext(k, "building/levels/" + Urho3D::String((int)level->level) + "/" + building->icon,
 		        building->id, ActionType::BUILDING_LEVEL);
+	}
+	resetRestButtons(k);
+}
+
+void MenuPanel::technologyResearch() {
+	int k = 0;
+	std::vector<const db_technology_level*> levels;
+	const auto* player = Game::getPlayersMan()->getActivePlayer();
+	for (const auto* level : Game::getDatabase()->getTechnologyLevels()) {
+		if (level && player->canResearchTechnology(level->id)) {
+			levels.push_back(level);
+		}
+	}
+
+	maxPage = static_cast<char>(std::max<std::size_t>(1, (levels.size() + BUTTONS_NUMBER - 1) / BUTTONS_NUMBER));
+	if (page >= maxPage) page = 0;
+	for (int i = page * BUTTONS_NUMBER; i < levels.size() && i < (page + 1) * BUTTONS_NUMBER; ++i) {
+		const auto* technology = Game::getDatabase()->getTechnology(levels[i]->technology);
+		Urho3D::String icon = Urho3D::String("technology/") + Urho3D::String(levels[i]->icon.c_str());
+		if (!Game::getCache()->GetResource<Urho3D::Texture2D>(ICONS_PATH + icon) && technology &&
+			!technology->researchBuilding.empty() && technology->researchBuilding != "none") {
+			icon = Urho3D::String("building/") + Urho3D::String(technology->researchBuilding.c_str()) + ".png";
+		}
+		setNext(k, icon,
+		        static_cast<short>(levels[i]->id), ActionType::TECH_RESEARCH);
 	}
 	resetRestButtons(k);
 }
@@ -329,6 +367,8 @@ void MenuPanel::buildingMenu() {
 		return basicBuilding();
 	case LeftMenuSubMode::LEVEL:
 		return levelBuilding();
+	case LeftMenuSubMode::UPGRADE:
+		return technologyResearch();
 	}
 }
 

@@ -7,7 +7,8 @@ enum class ActionType : unsigned char;
 
 class QueueElement {
 public:
-	QueueElement(QueueActionType type, unsigned short id, unsigned short secondId, unsigned char maxCapacity);
+	QueueElement(QueueActionType type, unsigned short id, unsigned short secondId, unsigned char maxCapacity,
+				 unsigned short durationOverride = 0);
 	~QueueElement() = default;
 	bool checkType(QueueActionType _type, unsigned short _id, unsigned short _secondId) const;
 	short add(short value);

@@ -285,11 +285,11 @@
       <h2>3. Design Principles</h2>
       <div class="grid">
         <div class="card"><h3>1. Separate identity from scope</h3><p>A unit level targets one unit definition. A technology targets a filter, relationship, rule, or capability. Do not encode global bonuses by copying values into every unit level.</p></div>
-        <div class="card"><h3>2. Prefer meaningful choices</h3><p>A technology should create a decision: faster pressure, stronger defense, better economy, a counter, a new unit, or a trade-off. Avoid a tree where every node is an automatic universal bonus.</p></div>
+          <div class="card"><h3>2. Prefer meaningful choices</h3><p>A technology should create a decision: faster pressure, stronger defense, better economy, a counter, a specialization, or a trade-off. Avoid a tree where every node is an automatic universal bonus.</p></div>
         <div class="card"><h3>3. Make filters visible</h3><p>The player should understand exactly who benefits. “Melee attackers” and “damage against melee targets” are different effects and should be displayed differently.</p></div>
         <div class="card"><h3>4. Keep calculations deterministic</h3><p>Effects should be resolved from completed player technologies and static database definitions. Avoid hidden per-unit mutation when a calculation-time modifier is sufficient.</p></div>
         <div class="card"><h3>5. Use existing categories first</h3><p>Existing unit tags such as melee, infantry, cavalry, heavy, light, range, worker, and special already provide useful grouping without requiring a new class system.</p></div>
-        <div class="card"><h3>6. Build a small core first</h3><p>Start with a handful of effect types and one exclusive branch. A generic effect system can grow later after the queue, save, UI, and balance rules are proven.</p></div>
+        <div class="card"><h3>6. Build a small core first</h3><p>Start with a handful of effect types and one strategic branch. A generic effect system can grow later after the queue, save, UI, and balance rules are proven.</p></div>
       </div>
     </section>
 
@@ -300,11 +300,11 @@
         <thead><tr><th>Layer</th><th>Question it answers</th><th>Example</th><th>Scope</th><th>Recommended behavior</th></tr></thead>
         <tbody>
           <tr><td>Entity level</td><td>How does this unit/building definition become better?</td><td>Spearman level 2 gains HP and attack.</td><td>One unit or building ID.</td><td>Keep the current level tables and level queues.</td></tr>
-          <tr><td>Technology</td><td>What capability or specialization has the player researched?</td><td>All melee units gain +10% attack.</td><td>Player-wide filter or rule.</td><td>Add a dedicated research queue and unlock state.</td></tr>
-          <tr><td>Doctrine</td><td>What strategic identity has the player committed to?</td><td>Shock doctrine improves speed and attack but reduces armor.</td><td>Player-wide mutually exclusive branch.</td><td>Use exclusive groups and irreversible choices, at least initially.</td></tr>
+          <tr><td>Technology</td><td>What capability or specialization has the player researched?</td><td>All melee units gain +10% attack.</td><td>Player-wide filter or rule.</td><td>Add a dedicated research queue and completed effect state.</td></tr>
+          <tr><td>Doctrine</td><td>What strategic identity has the player committed to?</td><td>Shock doctrine improves speed and attack but reduces armor.</td><td>Player-wide strategic branch.</td><td>Use prerequisites and meaningful trade-offs, at least initially.</td></tr>
         </tbody>
       </table>
-      <div class="callout warning"><strong>Do not make every technology permanent power stacking.</strong> If every branch can be completed, the late game converges to the same fully upgraded civilization. Use limited research slots, exclusive doctrines, escalating costs, or situational technologies to preserve differentiation.</div>
+      <div class="callout warning"><strong>Do not make every technology permanent power stacking.</strong> If every branch can be completed, the late game converges to the same fully upgraded civilization. Use limited research slots, escalating costs, meaningful trade-offs, or situational technologies to preserve differentiation.</div>
 
       <div class="diagram">
         <svg viewBox="0 0 1180 330" role="img" aria-labelledby="layers-title layers-desc">
@@ -344,7 +344,7 @@
     <section id="technology-model">
       <h2>5. Technology Model</h2>
       <h3>5.1 A technology is a player-owned rule package</h3>
-      <p>A technology should define its identity, cost, prerequisites, research location, effects, and optional exclusive group. The player stores completion state. A unit does not store a copied list of every technology that affected it.</p>
+      <p>A technology should define its identity, cost, prerequisites, research location, and effects. The player stores completion state. A unit does not store a copied list of every technology that affected it.</p>
       <pre>Technology
   id: 12
   name: "Tempered Blades"
@@ -353,7 +353,6 @@
   cost: 100 wood, 75 gold
   research_time: 180 ticks
   prerequisites: []
-  exclusive_group: "offense_doctrine"  // optional
   effects:
     - own_unit_tag = MELEE
       stat = ATTACK_PERCENT
@@ -366,7 +365,7 @@
           <tr><td>Source filter</td><td>Own melee unit, own worker, own defensive building.</td><td>Which entity receives the modifier?</td></tr>
           <tr><td>Target filter</td><td>Enemy cavalry, enemy building, resource node.</td><td>When should a relationship bonus activate?</td></tr>
           <tr><td>Statistic</td><td>Attack, armor, speed, reload, range, HP, gather rate, cost.</td><td>What changes?</td></tr>
-          <tr><td>Operation</td><td>Add, multiply, replace, unlock, cap, or conditional bonus.</td><td>How is the value combined?</td></tr>
+          <tr><td>Operation</td><td>Add, multiply, replace, cap, or conditional bonus.</td><td>How is the value combined?</td></tr>
           <tr><td>Context</td><td>Combat, production, construction, map, health threshold, stance.</td><td>When does the effect apply?</td></tr>
           <tr><td>Duration</td><td>Permanent, timed, battle-only, or until a doctrine changes.</td><td>How long does it remain active?</td></tr>
         </tbody>
@@ -386,8 +385,6 @@
           <tr><td><code>GATHER_PERCENT</code></td><td>Workers gather +10% faster.</td><td>Resource collection calculation</td></tr>
           <tr><td><code>COST_PERCENT</code></td><td>Infantry cost 10% less food.</td><td>Cost resolution before queue insertion</td></tr>
           <tr><td><code>BUILD_TIME_PERCENT</code></td><td>Buildings construct 15% faster.</td><td>Queue nominal duration</td></tr>
-          <tr><td><code>UNLOCK_UNIT</code></td><td>Unlocks the Dragoon unit.</td><td>Creation validation and UI</td></tr>
-          <tr><td><code>UNLOCK_BUILDING</code></td><td>Unlocks the Siege Workshop.</td><td>Building placement validation and UI</td></tr>
           <tr><td><code>QUEUE_CAPACITY_ADD</code></td><td>Universities can hold one extra research.</td><td>Queue capacity</td></tr>
         </tbody>
       </table>
@@ -420,7 +417,7 @@
           <text x="387" y="91" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Validation</text>
           <text x="387" y="117" text-anchor="middle" fill="#ddd6fe" font-size="12">prerequisites complete?</text>
           <text x="387" y="137" text-anchor="middle" fill="#ddd6fe" font-size="12">building ready?</text>
-          <text x="387" y="157" text-anchor="middle" fill="#ddd6fe" font-size="12">exclusive branch free?</text>
+          <text x="387" y="157" text-anchor="middle" fill="#ddd6fe" font-size="12">branch prerequisites met?</text>
 
           <rect x="540" y="55" width="205" height="125" rx="10" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
           <text x="642" y="91" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Player queue</text>
@@ -545,7 +542,7 @@ finalAttack = base * (1 + levelTargetBonus + technologyBonus)</pre>
       <div class="diagram">
         <svg viewBox="0 0 1220 610" role="img" aria-labelledby="blacksmith-title blacksmith-desc">
           <title id="blacksmith-title">Blacksmith military technology tree</title>
-          <desc id="blacksmith-desc">A branching tree starts with metallurgy and leads to offensive, defensive, and counter-specialization branches, ending in exclusive Shock Doctrine or Shield Wall Doctrine.</desc>
+          <desc id="blacksmith-desc">A branching tree starts with metallurgy and leads to offensive, defensive, and counter-specialization branches, ending in Shock Doctrine or Shield Wall Doctrine.</desc>
           <defs>
             <marker id="arrow-tree" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#86efac"/></marker>
           </defs>
@@ -583,7 +580,7 @@ finalAttack = base * (1 + levelTargetBonus + technologyBonus)</pre>
           <rect x="875" y="340" width="260" height="105" rx="10" fill="#3e315d" stroke="#c4b5fd" stroke-width="2"/>
           <text x="1005" y="373" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Shock Doctrine</text>
           <text x="1005" y="397" text-anchor="middle" fill="#ddd6fe" font-size="12">melee attack +12%, speed +8%</text>
-          <text x="1005" y="417" text-anchor="middle" fill="#fda4af" font-size="11">armor -5%; exclusive with Shield Wall</text>
+          <text x="1005" y="417" text-anchor="middle" fill="#fda4af" font-size="11">armor -5%; trades defense for tempo</text>
 
           <rect x="400" y="505" width="420" height="70" rx="10" fill="#4a3c1b" stroke="#fcd34d" stroke-width="2"/>
           <text x="610" y="535" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Late choice: one doctrine</text>
@@ -668,7 +665,7 @@ Tier 3:  doctrine capstone
 
     <section id="upgrade-ideas">
       <h2>9. Different Upgrade Styles</h2>
-      <p>Use a mix of these styles. A healthy technology roster should contain direct power, counters, economic choices, unlocks, and rules that change how the player approaches the map.</p>
+      <p>Use a mix of these styles. A healthy technology roster should contain direct power, counters, economic choices, and rules that change how the player approaches the map.</p>
       <table>
         <thead><tr><th>Style</th><th>Example</th><th>Strategic question</th><th>Balance risk</th></tr></thead>
         <tbody>
@@ -676,7 +673,6 @@ Tier 3:  doctrine capstone
           <tr><td>Source-target counter</td><td>Ranged units +15% damage against cavalry.</td><td>What is the enemy likely to build?</td><td>Weak if scouting is absent or enemy composition is unknown.</td></tr>
           <tr><td>Stat trade-off</td><td>+12% attack, -5% armor.</td><td>Do I want speed and pressure or staying power?</td><td>Harder to explain and tune.</td></tr>
           <tr><td>Production transformation</td><td>Units train 15% faster but cost 5% more food.</td><td>Can my economy sustain tempo?</td><td>May snowball if both bonuses are too strong.</td></tr>
-          <tr><td>Unlock technology</td><td>Unlocks a fast but fragile cavalry unit.</td><td>Do I spend now to access a new plan?</td><td>Must validate all ownership and producer paths.</td></tr>
           <tr><td>Infrastructure bonus</td><td>Defensive buildings gain HP or range.</td><td>Can I hold a location?</td><td>Static defense can make games stall.</td></tr>
           <tr><td>Map interaction</td><td>Workers gather +20% near owned storage buildings.</td><td>Where should I place infrastructure?</td><td>Placement and pathing can dominate balance.</td></tr>
           <tr><td>Formation or army rule</td><td>Infantry in formation take less damage from the front.</td><td>Can I use the formation system well?</td><td>Requires clear feedback and formation testing.</td></tr>
@@ -722,17 +718,17 @@ Tier 3:  doctrine capstone
       <div class="diagram">
         <svg viewBox="0 0 1240 590" role="img" aria-labelledby="schema-title schema-desc">
           <title id="schema-title">Technology database schema</title>
-          <desc id="schema-desc">Technology definitions connect to prerequisites, effects, exclusive groups, and building requirements. Player save state is separate from definition data.</desc>
+          <desc id="schema-desc">Technology definitions connect to prerequisites, effects, and building requirements. Player save state is separate from definition data.</desc>
           <rect width="1240" height="590" rx="8" fill="#111b2d"/>
           <rect x="55" y="65" width="295" height="240" rx="10" fill="#1d493b" stroke="#86efac" stroke-width="2"/>
           <text x="202" y="100" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">technology</text>
           <text x="80" y="135" fill="#bbf7d0" font-size="13">id (stable runtime key)</text>
-          <text x="80" y="158" fill="#bbf7d0" font-size="13">name, description, icon</text>
+          <text x="80" y="158" fill="#bbf7d0" font-size="13">code, generated level keys</text>
           <text x="80" y="181" fill="#bbf7d0" font-size="13">tier, research_time</text>
           <text x="80" y="204" fill="#bbf7d0" font-size="13">food, wood, stone, gold</text>
           <text x="80" y="227" fill="#bbf7d0" font-size="13">required building type</text>
-          <text x="80" y="250" fill="#bbf7d0" font-size="13">exclusive_group</text>
-          <text x="80" y="281" fill="#a8d8bb" font-size="11">one definition per technology</text>
+          <text x="80" y="250" fill="#bbf7d0" font-size="13">effects and prerequisites</text>
+          <text x="80" y="281" fill="#a8d8bb" font-size="11">level name, description, and icon derive from code + level</text>
 
           <rect x="465" y="45" width="295" height="155" rx="10" fill="#263a55" stroke="#7dd3fc" stroke-width="2"/>
           <text x="612" y="80" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">technology_prerequisite</text>
@@ -779,7 +775,8 @@ Tier 3:  doctrine capstone
       <table>
         <thead><tr><th>Table</th><th>Required first version</th><th>Later extension</th></tr></thead>
         <tbody>
-          <tr><td><code>technology</code></td><td><code>id</code>, name, icon, tier, cost fields, research time, required building category, exclusive group.</td><td>nation restrictions, repeatable flag, display order, AI weight.</td></tr>
+          <tr><td><code>technology</code></td><td><code>id</code>, code, cost fields, research time, required building category.</td><td>nation restrictions, repeatable flag, display order, AI weight.</td></tr>
+          <tr><td><code>technology_level</code></td><td><code>id</code>, technology, level, age/building gates, cost, research time.</td><td>Display keys are generated as <code>code_level</code>, <code>code_level_description</code>, and <code>code_level.png</code>.</td></tr>
           <tr><td><code>technology_prerequisite</code></td><td>technology ID and required technology ID.</td><td>OR groups, minimum building levels, resource thresholds.</td></tr>
           <tr><td><code>technology_effect</code></td><td>technology ID, effect enum, source tag, target tag, value.</td><td>building/resource tags, context, condition, secondary value, cap.</td></tr>
           <tr><td><code>technology_variant</code></td><td>Not needed if the first tree has fixed effects.</td><td>Choice-based rewards such as attack, range, or cost.</td></tr>
@@ -842,7 +839,7 @@ Tier 3:  doctrine capstone
         <li>Restore technology state after players exist and before gameplay calculations resume.</li>
         <li>Validate that every saved technology ID exists in the loaded <code>data.db</code>.</li>
         <li>Decide whether temporary technologies store remaining duration, activation time, or are excluded from the first release.</li>
-        <li>Test a save with completed technology, active research, prerequisite branches, and an exclusive doctrine.</li>
+        <li>Test a save with completed technology, active research, prerequisite branches, and a strategic doctrine.</li>
       </ul>
     </section>
 
@@ -855,7 +852,7 @@ Tier 3:  doctrine capstone
         <tbody>
           <tr><td>Technology card</td><td>Icon, name, tier, short effect summary, cost, time, required building.</td></tr>
           <tr><td>Effect detail</td><td>Source filter and target filter separately: “melee attackers” versus “against melee targets.”</td></tr>
-          <tr><td>Prerequisite state</td><td>Completed, missing prerequisite, missing building, insufficient resource, blocked exclusive group.</td></tr>
+          <tr><td>Prerequisite state</td><td>Completed, missing prerequisite, missing building, or insufficient resource.</td></tr>
           <tr><td>Research queue</td><td>Current technology, progress, remaining time, cancel policy, and whether the cost is refundable.</td></tr>
           <tr><td>Active effects</td><td>A compact list of completed technologies with the units/buildings they affect.</td></tr>
           <tr><td>Choice dialog</td><td>For variants, compare choices side by side and explain that the choice is permanent or reversible.</td></tr>
@@ -891,14 +888,14 @@ Tier 3:  doctrine capstone
       <h2>13. Implementation Phases</h2>
       <p>Build the smallest complete vertical slice first. Do not begin with every possible effect or a fully generic scripting language.</p>
 
-      <div class="phase"><span class="phase-number">1</span><h3>Player technology state</h3><p>Add a technology collection to <code>Player</code>, with queries such as <code>hasTechnology(id)</code> and <code>getTechnologyEffects()</code>. Keep ownership/lifecycle consistent with the existing raw-pointer service graph.</p><p class="small">Verification: deterministic tests for unlock, duplicate completion, unknown ID, and exclusive group rejection.</p></div>
+      <div class="phase"><span class="phase-number">1</span><h3>Player technology state</h3><p>Add a technology collection to <code>Player</code>, with queries such as <code>hasTechnology(id)</code> and <code>getTechnologyEffects()</code>. Keep ownership/lifecycle consistent with the existing raw-pointer service graph.</p><p class="small">Verification: deterministic tests for unlock, duplicate completion, unknown ID, and prerequisite rejection.</p></div>
       <div class="phase"><span class="phase-number">2</span><h3>Three fixed effects</h3><p>Implement only <code>ATTACK_PERCENT</code>, <code>GATHER_PERCENT</code>, and <code>ARMOR_PERCENT</code>. Use existing unit tags and apply effects at combat/resource calculation points.</p><p class="small">Verification: melee-only attack bonus, non-melee unaffected, existing units and future units both affected, armor and gather values remain in valid ranges.</p></div>
       <div class="phase"><span class="phase-number">3</span><h3>Technology research queue</h3><p>Add <code>TECH_RESEARCH</code>, research cost validation, fixed-tick progress, completion command, prerequisite validation, and one required building category.</p><p class="small">Verification: no duplicate queue entries, no completion before required ticks, deferred command ordering, insufficient resources, and missing research building.</p></div>
       <div class="phase"><span class="phase-number">4</span><h3>Data-driven definitions</h3><p>Add the technology, prerequisite, and effect tables to <code>data.db</code>. Update ordinal column enums and constructors together. Start with 8-12 technologies.</p><p class="small">Verification: database referential integrity, stable IDs, level/building relationship checks, and runtime load from the game working directory.</p></div>
-      <div class="phase"><span class="phase-number">5</span><h3>Save/load</h3><p>Add <code>player_technologies</code> and preserve in-progress research. Rebuild active effects after loading player state.</p><p class="small">Verification: save/load with completed technology, active queue, exclusive branch, and existing unit/building levels.</p></div>
+      <div class="phase"><span class="phase-number">5</span><h3>Save/load</h3><p>Add <code>player_technologies</code> and preserve in-progress research. Rebuild active effects after loading player state.</p><p class="small">Verification: save/load with completed technology, active queue, branching technology, and existing unit/building levels.</p></div>
       <div class="phase"><span class="phase-number">6</span><h3>Research UI</h3><p>Add technology cards, prerequisites, costs, queue progress, active effects, and locked reasons. Reuse the established Urho3D UI patterns.</p><p class="small">Verification: long names, missing icons, mobile/window resizing, disabled actions, and correct effect descriptions.</p></div>
       <div class="phase"><span class="phase-number">7</span><h3>AI selection</h3><p>Use deterministic scoring with existing <code>TECH_URGENCY</code>. Add AI history results for researched, blocked, unaffordable, and duplicate requests.</p><p class="small">Verification: headless match where the AI researches a valid technology and does not repeatedly request a blocked branch.</p></div>
-      <div class="phase"><span class="phase-number">8</span><h3>Advanced branches</h3><p>Add mutually exclusive doctrines, target-specific counters, unlocks, temporary effects, map interaction, and optional building-owned research queues one at a time.</p><p class="small">Verification: each new effect gets a focused test and a balance scenario before it enters the default data set.</p></div>
+      <div class="phase"><span class="phase-number">8</span><h3>Advanced branches</h3><p>Add doctrines, target-specific counters, unlocks, temporary effects, map interaction, and optional building-owned research queues one at a time.</p><p class="small">Verification: each new effect gets a focused test and a balance scenario before it enters the default data set.</p></div>
     </section>
 
     <section id="balance">
@@ -937,7 +934,7 @@ Cost: 100 wood + 75 gold
 Research time: 180 fixed ticks
 Effect: own units with typeMelee deal +10% attack
 Scope: existing and newly created units
-Exclusive: no
+Restriction: none
 AI: selected when melee army ratio and TECH_URGENCY are high</pre>
       <ol class="checklist">
         <li>Research it in the player queue.</li>

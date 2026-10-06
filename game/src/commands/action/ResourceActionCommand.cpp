@@ -3,13 +3,13 @@
 #include "objects/resource/ResourceEntity.h"
 #include "scene/load/RuntimeSaveData.h"
 
-ResourceActionCommand::ResourceActionCommand(ResourceEntity* resource, ResourceActionType action, char player)
-	: action(action), player(player) {
+ResourceActionCommand::ResourceActionCommand(ResourceEntity* resource, ResourceActionType action, unsigned char playerId)
+	: action(action), playerId(playerId) {
 	resources.emplace_back(resource);
 }
 
 ResourceActionCommand::ResourceActionCommand(const std::vector<Physical*>& resources, ResourceActionType action,
-                                             char player) : action(action), player(player) {
+                                             unsigned char playerId) : action(action), playerId(playerId) {
 	this->resources.reserve(resources.size());
 	for (auto* resource : resources) {
 		this->resources.emplace_back(reinterpret_cast<ResourceEntity*>(resource));
@@ -19,7 +19,7 @@ ResourceActionCommand::ResourceActionCommand(const std::vector<Physical*>& resou
 void ResourceActionCommand::execute() {
 	for (const auto resource : resources) {
 		if(resource->isAlive()) {
-			resource->action(action, player);
+			resource->action(action, playerId);
 		}
 	}
 }
@@ -29,7 +29,7 @@ PendingCommandSaveData ResourceActionCommand::saveState(unsigned short order) co
 	state.order = order;
 	state.kind = PendingCommandKind::RESOURCE_ACTION;
 	state.action = static_cast<char>(action);
-	state.player = player;
+	state.playerId = playerId;
 	for (const auto* resource : resources) {
 		state.entityUids.push_back(resource->getUid());
 	}

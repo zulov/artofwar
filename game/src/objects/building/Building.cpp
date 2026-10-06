@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "commands/action/BuildingActionType.h"
 #include "database/DatabaseCache.h"
+#include "database/db_technology_struct.h"
 #include "env/Environment.h"
 #include "math/MathUtils.h"
 #include "objects/NodeUtils.h"
@@ -12,6 +13,7 @@
 #include "objects/queue/QueueActionType.h"
 #include "objects/queue/QueueElement.h"
 #include "objects/queue/QueueManager.h"
+#include "objects/unit/Unit.h"
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
@@ -22,11 +24,11 @@
 
 Building::Building(const Urho3D::Vector3& _position, db_building* db_building, unsigned char playerId,
 				   unsigned char teamId, unsigned char level, int indexInGrid, UId uId) :
-	Static(_position, indexInGrid, uId), dbLevel(db_building->getLevel(level).value()) {
+	Static(_position, indexInGrid, uId), dbLevel(Game::getPlayersMan()->getPlayer(playerId)->getBuildingLevel(db_building->id)) {
 	player = playerId;
 	team = teamId;
 	dbEntity = db_building;
-	levelUp(level);
+	levelUp();
 }
 
 Building::~Building() { if (node) { node->RemoveAllChildren(); } }
@@ -86,7 +88,16 @@ unsigned char Building::getMaxCloseUsers() const { return getDbBuilding()->maxUs
 
 const Urho3D::String& Building::getName() const { return getDbBuilding()->name; }
 
-float Building::getAttackVal(Physical* aim) { return dbLevel->attack; }
+float Building::getAttackVal(Physical* aim) {
+	const auto* owner = Game::getPlayersMan()->getPlayer(player);
+	if (aim && aim->getType() == ObjectType::UNIT) {
+		return owner->applyTechnologyAttack(dbLevel->attack, getDb(), static_cast<Unit*>(aim)->getDb());
+	}
+	if (aim && aim->getType() == ObjectType::BUILDING) {
+		return owner->applyTechnologyAttack(dbLevel->attack, getDb(), static_cast<Building*>(aim)->getDb());
+	}
+	return dbLevel->attack;
+}
 
 void Building::action(BuildingActionType type, unsigned short id) {
 	if (!isReady()) { return; }
@@ -113,12 +124,20 @@ void Building::action(BuildingActionType type, unsigned short id) {
 	}
 }
 
-void Building::levelUp(char level) {
-	dbLevel = getDbBuilding()->getLevel(level).value(); // TODO BUG value()
+void Building::levelUp() {
+	dbLevel = Game::getPlayersMan()->getPlayer(player)->getBuildingLevel(getDbBuilding()->id);
 	const int hpTemp = hp;
 	loadXml("Objects/buildings/" + dbLevel->nodeName);
 	populate();
 	if (hpTemp >= 0) { hp = hpTemp; }
+}
+
+void Building::refreshEffectiveLevel() {
+	const auto currentHp = hp;
+	dbLevel = Game::getPlayersMan()->getPlayer(player)->getBuildingLevel(getDbBuilding()->id);
+	invMaxHp = dbLevel->invMaxHp;
+	hp = std::min(currentHp, static_cast<float>(dbLevel->maxHp));
+	queue.changeMaxUnitsGroupSize(dbLevel->queueMaxCapacity);
 }
 
 Building* Building::load(dbload_building* dbloadBuilding) {

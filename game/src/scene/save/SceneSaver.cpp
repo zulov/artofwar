@@ -11,6 +11,7 @@
 #include "math/RandGen.h"
 #include "objects/building/Building.h"
 #include "objects/projectile/ProjectileManager.h"
+#include "objects/queue/QueueActionType.h"
 #include "objects/queue/QueueElement.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
@@ -194,6 +195,7 @@ bool SceneSaver::saveRuntimeState(const std::vector<Unit*>* units, const std::ve
 	}
 	if (!saveUnitOrders(unitStates) || !saveAimPaths(unitStates) || !saveQueues(buildings, players) ||
 			!savePlayerLevels(players) || !saveAiState(players) || !saveAiHistory(players) ||
+			!savePlayerTechnologies(players) ||
 			!saveAiWants(players) || !saveProjectiles() || !saveFormations() || !saveFormationOrders() ||
 			!saveWorldAgeState(worldAgeController)) {
 		return false;
@@ -269,8 +271,9 @@ bool SceneSaver::saveQueues(const std::vector<Building*>* buildings, const std::
 			for (std::size_t i = 0; i < queue.getSize(); ++i) {
 				const auto* element = queue.getAt(i);
 				const QueueRow row{{ownerId, ownerType, static_cast<char>(element->getType()), element->getId(),
-									element->getLevelId(), element->getAmount(), element->getElapsedTicks()},
-									static_cast<unsigned short>(i)};
+																	 element->getLevelId(), element->getAmount(), element->getElapsedTicks(),
+																	 element->getType() == QueueActionType::TECH_RESEARCH ? element->getTicksToComplete() : 0},
+																	 static_cast<unsigned short>(i)};
 				bindRow(stmt, precision, &row);
 				success = stepAndReset(stmt, sql);
 				if (!success) { break; }
@@ -291,8 +294,8 @@ bool SceneSaver::saveQueues(const std::vector<Building*>* buildings, const std::
 
 bool SceneSaver::savePlayerLevels(const std::vector<Player*>& players) {
 	const bool hasLevels = std::ranges::any_of(players, [](const auto* player) {
-		return std::ranges::any_of(player->getUnitLevels(), [](const char level) { return level > 0; }) ||
-				std::ranges::any_of(player->getBuildingLevels(), [](const char level) { return level > 0; });
+		return std::ranges::any_of(player->getUnitLevels(), [](const auto& level) { return level.level > 0; }) ||
+				std::ranges::any_of(player->getBuildingLevels(), [](const auto& level) { return level.level > 0; });
 	});
 	if (!hasLevels) {
 		return true;
@@ -301,8 +304,8 @@ bool SceneSaver::savePlayerLevels(const std::vector<Player*>& players) {
 		auto saveLevels = [&](const Player* player, const auto& levels, unsigned char type) {
 			bool success = true;
 			for (unsigned short i = 0; i < levels.size(); ++i) {
-				if (const char level = levels[i]; level > 0) {
-					const PlayerLevelSaveData row{player->getId(), type, i, level};
+				if (const auto& level = levels[i]; level.id >= 0 && level.level > 0) {
+					const PlayerLevelSaveData row{player->getId(), type, i, static_cast<char>(level.level)};
 					bindRow(stmt, precision, &row);
 					success = stepAndReset(stmt, sql);
 					if (!success) { break; }
@@ -313,6 +316,25 @@ bool SceneSaver::savePlayerLevels(const std::vector<Player*>& players) {
 		for (const auto* player : players) {
 			if (!saveLevels(player, player->getUnitLevels(), 0) || !saveLevels(player, player->getBuildingLevels(), 1)) {
 				return false;
+			}
+		}
+		return true;
+	});
+}
+
+bool SceneSaver::savePlayerTechnologies(const std::vector<Player*>& players) {
+	const bool hasTechnologies = std::ranges::any_of(players, [](const auto* player) {
+		return std::ranges::any_of(player->getTechnologyLevels(), [](const auto level) { return level > 0; });
+	});
+	if (!hasTechnologies) return true;
+	return saveRows<PlayerTechnologyCol>([&](sqlite3_stmt* stmt, const char* sql) {
+		for (const auto* player : players) {
+			const auto levels = player->getTechnologyLevels();
+			for (unsigned short id = 0; id < levels.size(); ++id) {
+				if (!levels[id]) continue;
+				const PlayerTechnologySaveData row{player->getId(), id, levels[id]};
+				bindRow(stmt, precision, &row);
+				if (!stepAndReset(stmt, sql)) return false;
 			}
 		}
 		return true;

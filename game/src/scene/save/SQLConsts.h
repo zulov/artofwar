@@ -85,13 +85,16 @@ struct SQLConsts {
 			"(unit_uid INT PRIMARY KEY, path TEXT NOT NULL, pending_path TEXT NOT NULL) WITHOUT ROWID;";
 	inline static constexpr const char* QUEUE_NAME = "queues";
 	inline static constexpr const char* QUEUE_COL = "(owner_id INT NOT NULL, owner_type INT NOT NULL, order_idx INT "
-													"NOT NULL, type INT NOT NULL, id INT NOT NULL, "
-																												 "level_id INT NOT NULL, amount INT NOT NULL, elapsed_ticks INT NOT NULL, "
+																	"NOT NULL, type INT NOT NULL, id INT NOT NULL, "
+																																				 "level_id INT NOT NULL, amount INT NOT NULL, elapsed_ticks INT NOT NULL, duration_ticks INT NOT NULL, "
 													"PRIMARY KEY(owner_id, owner_type, order_idx)) WITHOUT ROWID;";
 	inline static constexpr const char* PLAYER_LEVEL_NAME = "player_levels";
 	inline static constexpr const char* PLAYER_LEVEL_COL =
 			"(player INT NOT NULL, type INT NOT NULL, id INT NOT NULL, level INT NOT NULL, PRIMARY KEY(player, type, "
 			"id)) WITHOUT ROWID;";
+	inline static constexpr const char* PLAYER_TECHNOLOGY_NAME = "player_technologies";
+	inline static constexpr const char* PLAYER_TECHNOLOGY_COL =
+			"(player INT NOT NULL, technology INT NOT NULL, level INT NOT NULL, PRIMARY KEY(player, technology)) WITHOUT ROWID;";
 	inline static constexpr const char* AI_STATE_NAME = "ai_state";
 	inline static constexpr const char* AI_STATE_COL =
 			"(player INT PRIMARY KEY, prev_score INT NOT NULL, prev_enemy_score INT NOT NULL, prev_units INT NOT NULL, "

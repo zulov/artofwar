@@ -59,15 +59,6 @@ private:
 		return false;
 	}
 
-	template <typename Col, class Creator>
-	bool loadOptionalSaveTable(const std::string& suffix, Creator createFn) const {
-		if (hasTable(SaveTable<Col>::name)) {
-			return loadSaveTable<Col>(suffix, createFn);
-		}
-		return true;
-	}
-
-	bool hasTable(const char* tableName) const;
 	void loadAimPaths() const;
 	void loadRuntimeState() const;
 	void reportError(const std::string& message) const;

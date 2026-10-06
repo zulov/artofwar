@@ -15,6 +15,8 @@ inline float getSecToComplete(QueueActionType type, unsigned short id, unsigned 
 		return Game::getDatabase()->getBuildingLevels()[levelId]->upgradeTime;
 	case QueueActionType::RESOURCE_CREATE:
 		return Game::getDatabase()->getBuildingLevels()[levelId]->spawnResourceTime;
+	case QueueActionType::TECH_RESEARCH:
+		return Game::getDatabase()->getTechnologyLevel(levelId)->researchTime;
 	default:
 		return 1;
 	}

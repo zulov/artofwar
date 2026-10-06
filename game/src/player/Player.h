@@ -1,6 +1,6 @@
 #pragma once
 
-#include <span>
+#include <vector>
 #include "ai/AiHistory.h"
 #include "ai/AiOrchestrator.h"
 #include "database/db_insert_utils.h"
@@ -9,7 +9,20 @@
 class Possession;
 class Resources;
 struct db_nation;
+struct db_unit;
+struct db_unit_level;
+struct db_building;
+struct db_building_level;
+struct db_technology_level;
+struct db_with_cost;
 enum class ActionType : unsigned char;
+
+template <typename T>
+struct PlayerLevel {
+	int id = -1;
+	unsigned char level = 0;
+	T* effective = nullptr;
+};
 
 class Player {
 	friend void bindRow<Player>(sqlite3_stmt*, int, const Player*);
@@ -21,7 +34,10 @@ public:
 
 	void setResourceAmount(float food, float wood, float stone, float gold) const;
 	void setResourceAmount(float amount) const;
-	char upgradeLevel(QueueActionType type, int id) const;
+	char upgradeLevel(QueueActionType type, int id);
+	bool startTechnologyResearch(unsigned short levelId);
+	unsigned short technologyResearchDuration(unsigned short levelId) const;
+	db_with_cost technologyResearchCost(unsigned short levelId) const;
 
 	Resources* getResources() const { return resources; }
 	Possession* getPossession() const { return possession; }
@@ -53,10 +69,22 @@ public:
 	std::optional<db_building_level*> getNextBuildingLevel(unsigned short id) const;
 	void addKilled(Physical* physical) const;
 	void resetScore();
-	std::span<const char> getUnitLevels() const;
-	std::span<const char> getBuildingLevels() const;
-	void restoreUnitLevel(unsigned short id, char level) const;
-	void restoreBuildingLevel(unsigned short id, char level) const;
+	const std::vector<PlayerLevel<db_unit_level>>& getUnitLevels() const { return unitLevels; }
+	const std::vector<PlayerLevel<db_building_level>>& getBuildingLevels() const { return buildingLevels; }
+	void restoreUnitLevel(unsigned short id, char level);
+	void restoreBuildingLevel(unsigned short id, char level);
+	void restoreTechnologyLevel(unsigned short id, unsigned char level);
+	unsigned char getTechnologyLevel(unsigned short id) const;
+	bool canResearchTechnology(unsigned short levelId) const;
+	bool completeTechnology(unsigned short levelId);
+	float applyTechnologyAttack(float attack, const db_unit* source, const db_unit* target) const;
+	float applyTechnologyAttack(float attack, const db_unit* source, const db_building* target) const;
+	float applyTechnologyAttack(float attack, const db_building* source, const db_unit* target) const;
+	float applyTechnologyAttack(float attack, const db_building* source, const db_building* target) const;
+	float applyTechnologyResourceBonus(float bonus, const db_building* source, unsigned char resourceId) const;
+	float applyTechnologyResourceBonus(float bonus, unsigned char resourceId) const;
+	void refreshEffectiveLevels();
+	const std::vector<unsigned char>& getTechnologyLevels() const { return technologyLevels; }
 	AiHistory& getAiHistory() { return aiHistory; }
 	const AiHistory& getAiHistory() const { return aiHistory; }
 	AiOrchestrator& getAiOrchestrator() { return aiOrchestrator; }
@@ -66,6 +94,8 @@ public:
 	unsigned getNextUnitId() { return ++currentUnitUId; }
 
 private:
+	float technologyAgeMultiplier(const db_technology_level* level) const;
+
 	int score = -1;
 
 	unsigned char team;
@@ -83,6 +113,7 @@ private:
 	AiOrchestrator aiOrchestrator;
 	Urho3D::String name;
 
-	char* unitLevels;
-	char* buildingLevels;
+	std::vector<PlayerLevel<db_unit_level>> unitLevels;
+	std::vector<PlayerLevel<db_building_level>> buildingLevels;
+	std::vector<unsigned char> technologyLevels;
 };

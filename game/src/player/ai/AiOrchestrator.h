@@ -73,6 +73,7 @@ private:
 	std::optional<unsigned short> findBuildingToBuild(unsigned short unitId) const;
 	bool hasAnyBuildingThatDeploy(unsigned short unitId) const;
 	void tryToUpgradeBuilding(unsigned short id, float priority);
+	void submitTechnologyRequest(float urgency);
 
 	// Army control (used by order())
 	static constexpr float COMMAND_PRIORITY_DECAY_MULTIPLIER = 0.9f;

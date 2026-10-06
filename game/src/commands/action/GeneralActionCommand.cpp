@@ -9,15 +9,15 @@
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
 #include "simulation/WorldAgeController.h"
+#include "database/db_technology_struct.h"
 
-GeneralActionCommand::GeneralActionCommand(short id, GeneralActionType action, char player)
-	: id(id), action(action), player(player) {
+GeneralActionCommand::GeneralActionCommand(short id, GeneralActionType action, unsigned char playerId)
+	: id(id), action(action), playerId(playerId) {
 }
 
 void GeneralActionCommand::execute() {
+	auto playerEnt = Game::getPlayersMan()->getPlayer(playerId);
 	if (action == GeneralActionType::BUILDING_LEVEL) {
-		auto playerEnt = Game::getPlayersMan()->getPlayer(player);
-
 		auto opt = playerEnt->getNextBuildingLevel(id); //TODO ten id to powinien byc id levelu konkretnego
 		if (opt.has_value()) {
 			if (Game::getWorldAgeController()->isLevelAvailable(opt.value()->ageStage) &&
@@ -25,9 +25,11 @@ void GeneralActionCommand::execute() {
 				playerEnt->getQueue().add(QueueActionType::BUILDING_LEVEL, id, opt.value()->id);
 			}
 		}
+	} else if (action == GeneralActionType::TECH_RESEARCH) {
+		playerEnt->startTechnologyResearch(static_cast<unsigned short>(id));
 	}
 }
 
 PendingCommandSaveData GeneralActionCommand::saveState(unsigned short order) const {
-	return {order, PendingCommandKind::GENERAL_ACTION, static_cast<char>(action), 0, static_cast<unsigned short>(id), player};
+	return {order, PendingCommandKind::GENERAL_ACTION, static_cast<char>(action), 0, static_cast<unsigned short>(id), playerId};
 }
