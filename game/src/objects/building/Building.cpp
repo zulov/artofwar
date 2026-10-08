@@ -23,7 +23,7 @@
 #include "utils/StringUtils.h"
 
 Building::Building(const Urho3D::Vector3& _position, db_building* db_building, unsigned char playerId,
-				   unsigned char teamId, unsigned char level, int indexInGrid, UId uId) :
+				   unsigned char teamId, int indexInGrid, UId uId) :
 	Static(_position, indexInGrid, uId), dbLevel(Game::getPlayersMan()->getPlayer(playerId)->getBuildingLevel(db_building->id)) {
 	player = playerId;
 	team = teamId;

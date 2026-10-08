@@ -29,10 +29,9 @@
 #include "state/StateManager.h"
 #include "state/StateUtils.h"
 #include "utils/Flags.h"
-#include "utils/PrintUtils.h"
 #include "utils/consts.h"
 
-Unit::Unit(const Urho3D::Vector3& _position, short dbId, char playerId, char teamId, char level, UId uId) :
+Unit::Unit(const Urho3D::Vector3& _position, unsigned short dbId, unsigned char playerId, unsigned char teamId, UId uId) :
 	Physical(_position, uId), state(UnitState::STOP), nextState(UnitState::STOP) {
 	auto dbUnit = Game::getDatabase()->getUnit(dbId);
 	dbEntity = dbUnit;

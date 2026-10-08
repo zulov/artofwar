@@ -117,7 +117,7 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 	}
 }
 
-void Physical::setPlayerAndTeam(char playerId, char teamId) {
+void Physical::setPlayerAndTeam(unsigned char playerId, unsigned char teamId) {
 	player = playerId;
 	team = teamId;
 }

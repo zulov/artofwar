@@ -101,7 +101,7 @@ private:
 
 	bool inited = false;
 	short coefToEdit = 0;
-	int timeLimit = 600;
+	int timeLimit = 6000;
 
 	NewGameForm* newGameForm;
 	Urho3D::String saveToLoad = "quicksave.db";

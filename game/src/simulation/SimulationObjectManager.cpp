@@ -48,13 +48,11 @@ void SimulationObjectManager::clearNodesWithoutDelete() {
 	}
 }
 
-void SimulationObjectManager::addUnits(unsigned number, unsigned short id, const Urho3D::Vector2& center, char level,
-                                      char player) {
-	addUnits(unitFactory.create(number, id, center, player, level));
+void SimulationObjectManager::addUnits(unsigned number, unsigned short id, const Urho3D::Vector2& center, unsigned char player) {
+	addUnits(unitFactory.create(number, id, center, player));
 }
 
-void SimulationObjectManager::addBuilding(unsigned short id, const Urho3D::UShortVector2& _bucketCords, char level,
-                                          char player) const {
+void SimulationObjectManager::addBuilding(unsigned short id, const Urho3D::UShortVector2& _bucketCords, unsigned char player) const {
 	auto* const playerEnt = Game::getPlayersMan()->getPlayer(player);
 	auto* const dbBuilding = Game::getDatabase()->getBuilding(id);
 	auto* const resources = playerEnt->getResources();
@@ -62,7 +60,7 @@ void SimulationObjectManager::addBuilding(unsigned short id, const Urho3D::UShor
 		return;
 	}
 
-	if (auto* building = buildingFactory.create(id, _bucketCords, level, player)) {
+	if (auto* building = buildingFactory.create(id, _bucketCords, player)) {
 		resources->reduce(dbBuilding);
 		building->postCreate();
 		addBuilding(building, false);

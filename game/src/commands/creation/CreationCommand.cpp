@@ -13,19 +13,19 @@ CreationCommand::CreationCommand(ObjectType type, unsigned short id, const Urho3
 
 CreationCommand::CreationCommand(ObjectType type, unsigned short id, const Urho3D::UShortVector2& bucketCords, char level,
                                  unsigned char playerId)
-	: bucketCords(bucketCords), id(id), objectType(type), level(level), playerId(playerId) {}
+	: bucketCords(bucketCords), id(id), objectType(type), playerId(playerId) {}
 
 CreationCommand::CreationCommand(ObjectType type, unsigned short id, const Urho3D::Vector2& position, char level,
                                  unsigned char playerId, unsigned number) : position(position), number(number),
-                                                    id(id), objectType(type), level(level), playerId(playerId) {}
+                                                    id(id), objectType(type), playerId(playerId) {}
 
 void CreationCommand::execute(SimulationObjectManager* simulationObjectManager) {
 	switch (objectType) {
 	case ObjectType::UNIT:
-		simulationObjectManager->addUnits(number, id, position, level, playerId);
+		simulationObjectManager->addUnits(number, id, position, playerId);
 		break;
 	case ObjectType::BUILDING:
-		simulationObjectManager->addBuilding(id, bucketCords, level, playerId);
+		simulationObjectManager->addBuilding(id, bucketCords, playerId);
 		break;
 	case ObjectType::RESOURCE:
 		auto res = simulationObjectManager->addResource(id, bucketCords);
@@ -43,7 +43,6 @@ PendingCommandSaveData CreationCommand::saveState(unsigned short order) const {
 	state.action = static_cast<char>(objectType);
 	state.id = id;
 	state.playerId = playerId;
-	state.level = level;
 	state.number = number;
 	state.hp = hp;
 	if (objectType == ObjectType::UNIT) {

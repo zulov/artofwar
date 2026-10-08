@@ -119,7 +119,7 @@ protected:
 
 	virtual Urho3D::Color getColor(db_player_colors* col) const = 0;
 	void loadXml(const Urho3D::String& xmlName);
-	void setPlayerAndTeam(char playerId, char teamId);
+	void setPlayerAndTeam(unsigned char playerId, unsigned char teamId);
 
 	Urho3D::Node* node{};
 	Urho3D::Vector2 position;//TODO try ecs

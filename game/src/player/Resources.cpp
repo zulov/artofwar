@@ -51,9 +51,9 @@ void Resources::addIncome(int id, float value) {
 
 void Resources::setValue(float food, float wood, float stone, float gold) {
 	values[cast(ResourceType::FOOD)] = food;
-	values[cast(ResourceType::WOOD)] = wood;
-	values[cast(ResourceType::STONE)] = stone;
-	values[cast(ResourceType::GOLD)] = gold;
+	values[cast(ResourceType::WOOD)] = wood*100;
+	values[cast(ResourceType::STONE)] = stone * 100;
+	values[cast(ResourceType::GOLD)] = gold * 100;
 }
 
 ResourcesSaveData Resources::saveState(unsigned char player) const {

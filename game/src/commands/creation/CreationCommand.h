@@ -27,6 +27,5 @@ private:
 	float hp = -1.f;
 	unsigned short id;
 	ObjectType objectType;
-	char level = -1;
 	unsigned char playerId;
 };

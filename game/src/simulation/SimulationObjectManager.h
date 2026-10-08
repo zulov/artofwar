@@ -23,8 +23,8 @@ public:
 	const std::vector<Building*>* getBuildings() const { return buildings; }
 	const std::vector<ResourceEntity*>* getResources() const { return resources; }
 
-	void addUnits(unsigned number, unsigned short id, const Urho3D::Vector2& center, char level, char player);
-	void addBuilding(unsigned short id, const Urho3D::UShortVector2& _bucketCords, char level, char player) const;
+	void addUnits(unsigned number, unsigned short id, const Urho3D::Vector2& center, unsigned char player);
+	void addBuilding(unsigned short id, const Urho3D::UShortVector2& _bucketCords, unsigned char player) const;
 	ResourceEntity* addResource(unsigned short id, const Urho3D::UShortVector2& _bucketCords);
 
 	void dispose() const;
