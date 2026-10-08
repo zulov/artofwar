@@ -121,6 +121,9 @@ void Building::action(BuildingActionType type, unsigned short id) {
 	break;
 	case BuildingActionType::UNIT_UPGRADE:
 		break;
+	case BuildingActionType::TECH_RESEARCH:
+		player->startTechnologyResearch(id, this);
+		break;
 	}
 }
 

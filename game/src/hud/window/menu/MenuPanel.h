@@ -51,7 +51,7 @@ private:
 
 	void basicBuilding();
 	void levelBuilding();
-	void technologyResearch();
+	void technologyResearch(SelectedInfo* selectedInfo);
 
 	void basicOrder(SelectedInfo* selectedInfo);
 	void formationOrder();

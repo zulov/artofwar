@@ -1,6 +1,7 @@
 ﻿#include "MenuPanel.h"
 
 #include <algorithm>
+#include <ranges>
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/CheckBox.h>
@@ -13,13 +14,17 @@
 #include "hud/UiUtils.h"
 #include "info/LeftMenuInfoPanel.h"
 #include "objects/ActionType.h"
+#include "objects/ObjectEnums.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "commands/action/ResourceActionType.h"
 #include "database/db_other_struct.h"
+#include "database/db_struct.h"
 #include "database/db_technology_struct.h"
 #include "math/VectorUtils.h"
+#include "objects/building/Building.h"
 #include "objects/unit/order/UnitConst.h"
+#include "simulation/WorldAgeController.h"
 
 static constexpr const char* ICONS_PATH = "textures/hud/icon/";
 
@@ -171,9 +176,10 @@ void MenuPanel::setNext(int& k, const Urho3D::String& texture, short id, ActionT
 
 void MenuPanel::basicBuilding() {
 	const short nation = Game::getPlayersMan()->getActivePlayer()->getNation();
+	const auto* player = Game::getPlayersMan()->getActivePlayer();
 	std::vector<db_building*> buildings;
 	for (auto* building : Game::getDatabase()->getNation(nation)->buildings) {
-		buildings.push_back(building);
+		if (player->isBuildingAvailable(building->id)) buildings.push_back(building);
 	}
 	setIcons(buildings, "building/", ActionType::BUILDING_CREATE);
 }
@@ -183,9 +189,10 @@ void MenuPanel::levelBuilding() {
 	int k = 0;
 	std::vector<db_building_level*> levels;
 	const auto player = Game::getPlayersMan()->getActivePlayer();
+	const auto* ageController = Game::getWorldAgeController();
 	for (const auto building : Game::getDatabase()->getNation(nation)->buildings) {
 		auto opt = player->getNextBuildingLevel(building->id);
-		if (opt.has_value()) {
+		if (opt.has_value() && (!ageController || ageController->isLevelAvailable(opt.value()->ageStage))) {
 			levels.push_back(opt.value());
 		}
 	}
@@ -199,12 +206,21 @@ void MenuPanel::levelBuilding() {
 	resetRestButtons(k);
 }
 
-void MenuPanel::technologyResearch() {
+void MenuPanel::technologyResearch(SelectedInfo* selectedInfo) {
 	int k = 0;
 	std::vector<const db_technology_level*> levels;
 	const auto* player = Game::getPlayersMan()->getActivePlayer();
+	if (!selectedInfo || selectedInfo->getSelectedType() != ObjectType::BUILDING) {
+		resetRestButtons(k);
+		return;
+	}
 	for (const auto* level : Game::getDatabase()->getTechnologyLevels()) {
-		if (level && player->canResearchTechnology(level->id)) {
+		const bool canResearch = level && std::ranges::any_of(selectedInfo->getSelectedTypes(), [player, level](const auto* selectedType) {
+			return std::ranges::any_of(selectedType->getData(), [player, level](const auto* physical) {
+				return player->canResearchTechnology(level->id, static_cast<const Building*>(physical));
+			});
+		});
+		if (canResearch) {
 			levels.push_back(level);
 		}
 	}
@@ -215,8 +231,9 @@ void MenuPanel::technologyResearch() {
 		const auto* technology = Game::getDatabase()->getTechnology(levels[i]->technology);
 		Urho3D::String icon = Urho3D::String("technology/") + Urho3D::String(levels[i]->icon.c_str());
 		if (!Game::getCache()->GetResource<Urho3D::Texture2D>(ICONS_PATH + icon) && technology &&
-			!technology->researchBuilding.empty() && technology->researchBuilding != "none") {
-			icon = Urho3D::String("building/") + Urho3D::String(technology->researchBuilding.c_str()) + ".png";
+			!technology->researchBuildingIds.empty()) {
+			const auto* building = Game::getDatabase()->getBuilding(technology->researchBuildingIds.front());
+			if (building) icon = Urho3D::String("building/") + building->icon;
 		}
 		setNext(k, icon,
 		        static_cast<short>(levels[i]->id), ActionType::TECH_RESEARCH);
@@ -358,6 +375,8 @@ void MenuPanel::unitMenu(SelectedInfo* selectedInfo) {
 		return basicUnit(selectedInfo);
 	case LeftMenuSubMode::LEVEL:
 		return levelUnit(selectedInfo);
+	case LeftMenuSubMode::UPGRADE:
+		return technologyResearch(selectedInfo);
 	}
 }
 
@@ -368,7 +387,7 @@ void MenuPanel::buildingMenu() {
 	case LeftMenuSubMode::LEVEL:
 		return levelBuilding();
 	case LeftMenuSubMode::UPGRADE:
-		return technologyResearch();
+		return resetRestButtons(0);
 	}
 }
 

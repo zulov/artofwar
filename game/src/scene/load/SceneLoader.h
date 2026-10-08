@@ -49,6 +49,11 @@ private:
 	}
 
 	template <typename Col, class Creator>
+	bool loadSaveTable(Creator createFn) const {
+		return loadSaveTable<Col>(std::string{}, createFn);
+	}
+
+	template <typename Col, class Creator>
 	bool loadSaveTable(const std::string& suffix, Creator createFn) const {
 		const auto sql = saveSelectSql<Col>(suffix);
 		std::string detail;

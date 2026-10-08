@@ -120,6 +120,7 @@ bool WantExecutor::executeUnit(unsigned short unitId) {
 
 bool WantExecutor::executeBuilding(unsigned short buildingId) {
 	auto* building = Game::getDatabase()->getBuilding(buildingId);
+	if (!player->isBuildingAvailable(buildingId)) return false;
 	
 	auto pos = findPosToBuild(building);
 	if (pos.has_value()) {

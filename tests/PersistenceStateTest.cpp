@@ -1,8 +1,31 @@
 #include "pch.h"
 
+#include "database/db_technology_struct.h"
 #include "math/RandGen.h"
+#include "objects/queue/QueueActionType.h"
+#include "objects/queue/QueueManager.h"
 #include "player/Resources.h"
 #include "simulation/FrameInfo.h"
+
+TEST(PersistenceStateTest, TechnologyResearchBuildingIdsParseAsConcreteIds) {
+	EXPECT_EQ(parseTechnologyBuildingIds("5,2"), std::vector<unsigned short>({5, 2}));
+	EXPECT_TRUE(parseTechnologyBuildingIds("none").empty());
+}
+
+TEST(PersistenceStateTest, QueueContainsMatchesResearchTechnologyId) {
+	QueueManager firstBuildingQueue;
+	QueueManager secondBuildingQueue;
+	firstBuildingQueue.restore(QueueActionType::TECH_RESEARCH, 2, 20, 1, 0, 100);
+	secondBuildingQueue.restore(QueueActionType::TECH_RESEARCH, 3, 30, 1, 0, 100);
+
+	EXPECT_TRUE(firstBuildingQueue.contains(QueueActionType::TECH_RESEARCH, 2));
+	EXPECT_FALSE(firstBuildingQueue.contains(QueueActionType::TECH_RESEARCH, 3));
+	EXPECT_TRUE(secondBuildingQueue.contains(QueueActionType::TECH_RESEARCH, 3));
+	EXPECT_FALSE(secondBuildingQueue.contains(QueueActionType::TECH_RESEARCH, 2));
+	firstBuildingQueue.restore(QueueActionType::TECH_RESEARCH, 2, 21, 1, 0, 100);
+	EXPECT_FALSE(firstBuildingQueue.contains(QueueActionType::TECH_RESEARCH, 3));
+	EXPECT_TRUE(firstBuildingQueue.contains(QueueActionType::TECH_RESEARCH, 2));
+}
 
 TEST(PersistenceStateTest, RandomStateContinuesBothSequences) {
 	RandGen::init(false);

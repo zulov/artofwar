@@ -91,7 +91,7 @@ void SceneLoader::createLoad(const Urho3D::String& fileName, bool tryReuse) {
 		return;
 	}
 	bool hasConfig = false;
-	if (!loadSaveTable<ConfigCol>("", [this, &hasConfig](auto* s) {
+	if (!loadSaveTable<ConfigCol>([this, &hasConfig](auto* s) {
 		if (hasConfig) {
 			reportError("load '" + path + "' failed: config table must contain exactly one row");
 			return;
@@ -140,7 +140,7 @@ const std::vector<dbload_player*>* SceneLoader::loadPlayers() const {
 	}
 	dbLoad->players = new std::vector<dbload_player*>();
 
-	loadSaveTable<PlayerCol>("", [this](auto* s) {
+	loadSaveTable<PlayerCol>([this](auto* s) {
 		dbLoad->players->push_back(new dbload_player(s, dbLoad->config->precision));
 	});
 	return dbLoad->players;
@@ -157,7 +157,7 @@ void SceneLoader::loadUnits() const {
 		return;
 	}
 	dbLoad->units = new std::vector<dbload_unit*>();
-	loadSaveTable<UnitCol>("", [this](auto* s) {
+	loadSaveTable<UnitCol>([this](auto* s) {
 		auto* unit = new dbload_unit(s, dbLoad->config->precision);
 		if (const auto it = dbLoad->unitVariable.find(unit->uid); it != dbLoad->unitVariable.end()) {
 			unit->runtime.orders = std::move(it->second.orders);
@@ -180,7 +180,7 @@ void SceneLoader::loadBuildings() const {
 		return;
 	}
 	dbLoad->buildings = new std::vector<dbload_building*>();
-	loadSaveTable<BuildingCol>("", [this](auto* s) {
+	loadSaveTable<BuildingCol>([this](auto* s) {
 		dbLoad->buildings->push_back(new dbload_building(s, dbLoad->config->precision));
 	});
 }
@@ -200,7 +200,7 @@ void SceneLoader::loadResourcesEntities() const {
 	if (!count(SaveTable<ResourceCol>::name, [this](auto* s) { dbLoad->resources->reserve(asInt(s, 0)); })) {
 		return;
 	}
-	loadSaveTable<ResourceCol>("", [this](auto* s) {
+	loadSaveTable<ResourceCol>([this](auto* s) {
 		dbLoad->resources->push_back(new dbload_resource(s, dbLoad->config->precision));
 	});
 }
@@ -224,7 +224,7 @@ void SceneLoader::reportError(const std::string& message) const {
 void SceneLoader::loadRuntimeState() const {
 	const int precision = dbLoad->config->precision;
 	bool hasWorldAgeState = false;
-	if (!loadSaveTable<WorldAgeStateCol>("", [this, &hasWorldAgeState](sqlite3_stmt* s) {
+	if (!loadSaveTable<WorldAgeStateCol>([this, &hasWorldAgeState](sqlite3_stmt* s) {
 		if (hasWorldAgeState) {
 			reportError("load '" + path + "' failed: world_age table must contain exactly one row");
 			return;
@@ -252,10 +252,10 @@ void SceneLoader::loadRuntimeState() const {
 		dbLoad->queues.push_back(readRow<QueueRow>(s, precision).data);
 	});
 
-	loadSaveTable<PlayerLevelCol>("", [this, precision](sqlite3_stmt* s) {
+	loadSaveTable<PlayerLevelCol>([this, precision](sqlite3_stmt* s) {
 		dbLoad->playerLevels.push_back(readRow<PlayerLevelSaveData>(s, precision));
 	});
-	loadSaveTable<PlayerTechnologyCol>("", [this, precision](sqlite3_stmt* s) {
+	loadSaveTable<PlayerTechnologyCol>([this, precision](sqlite3_stmt* s) {
 		dbLoad->playerTechnologies.push_back(readRow<PlayerTechnologySaveData>(s, precision));
 	});
 
@@ -274,11 +274,11 @@ void SceneLoader::loadRuntimeState() const {
 		}
 	}
 
-	loadSaveTable<ProjectileCol>("", [this, precision](sqlite3_stmt* s) {
+	loadSaveTable<ProjectileCol>([this, precision](sqlite3_stmt* s) {
 		dbLoad->projectiles.push_back(readRow<ProjectileSaveData>(s, precision));
 	});
 
-	loadSaveTable<FormationCol>("", [this, precision](sqlite3_stmt* s) {
+	loadSaveTable<FormationCol>([this, precision](sqlite3_stmt* s) {
 		dbLoad->formations.push_back(readRow<FormationSaveData>(s, precision));
 	});
 
@@ -300,7 +300,7 @@ void SceneLoader::loadRuntimeState() const {
 		}
 	});
 
-	loadSaveTable<AiStateCol>("", [this, precision](sqlite3_stmt* s) {
+	loadSaveTable<AiStateCol>([this, precision](sqlite3_stmt* s) {
 		dbLoad->aiStates.push_back(readRow<AiSaveData>(s, precision));
 	});
 	loadSaveTable<AiWantCol>(" ORDER BY player, order_idx", [this, precision](sqlite3_stmt* s) {
@@ -314,7 +314,7 @@ void SceneLoader::loadRuntimeState() const {
 }
 
 void SceneLoader::loadAimPaths() const {
-	loadSaveTable<AimPathCol>("", [this](sqlite3_stmt* s) {
+	loadSaveTable<AimPathCol>([this](sqlite3_stmt* s) {
 		const auto row = readRow<AimPathSaveData>(s, 1);
 		auto& state = dbLoad->unitVariable[row.unitUid];
 		std::string pathError;

@@ -35,6 +35,7 @@ Art of War is a Windows real-time strategy game written in C++ and built on Urho
 
 - Follow `.clang-format`: LLVM-derived style, tabs at width 4, 120-column limit, left-aligned pointers, and namespace indentation.
 - Preserve existing ownership and lifecycle conventions unless a task explicitly calls for a broader refactor. Raw pointers, assertions, ID-indexed data, and global services are intentional existing patterns.
+- Do not introduce C++ exceptions or smart pointers. On fatal data/runtime errors, print a diagnostic and terminate the process using the established raw-pointer ownership model.
 - Keep database schema/data changes, content assets, and code changes consistent. Verify ID/index assumptions and metric ranges when changing gameplay definitions.
 - Do not edit generated build output, local IDE files, copied DLLs, package directories, or database WAL/SHM files.
 - Check `git status` before editing. The working tree may contain unrelated user changes; never overwrite or revert them.

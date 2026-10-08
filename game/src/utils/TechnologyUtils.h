@@ -29,6 +29,11 @@ inline bool matchesBuildingTag(TechnologySourceTag tag, const db_building* build
 		(tag == TechnologySourceTag::TECH_BUILDING && building->parentType[static_cast<int>(ParentBuildingType::TECH)]);
 }
 
+inline bool matchesResearchBuilding(const db_technology* technology, const db_building* building) {
+	return technology && building && std::ranges::find(technology->researchBuildingIds, building->id) !=
+		technology->researchBuildingIds.end();
+}
+
 inline bool matchesTargetId(short targetId, unsigned short id) {
 	return targetId < 0 || static_cast<unsigned short>(targetId) == id;
 }

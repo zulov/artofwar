@@ -13,8 +13,6 @@
 #include "AiUtils.h"
 #include "Game.h"
 #include "NormScale.h"
-#include "commands/action/GeneralActionCommand.h"
-#include "commands/action/GeneralActionType.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
 #include "commands/upgrade/UpgradeCommand.h"
@@ -148,13 +146,16 @@ void AiOrchestrator::action() {
 }
 
 void AiOrchestrator::submitTechnologyRequest(float urgency) {
-	if (urgency <= 0.1f || !player->getQueue().isEmpty()) return;
+	if (urgency <= 0.1f) return;
 
 	for (const auto* level : Game::getDatabase()->getTechnologyLevels()) {
-		if (level && player->canResearchTechnology(level->id)) {
-			Game::getActionCenter()->add(new GeneralActionCommand(
-				static_cast<short>(level->id), GeneralActionType::TECH_RESEARCH, playerId));
-			return;
+		if (!level) continue;
+		for (auto* building : possession->getBuildings()) {
+			if (player->canResearchTechnology(level->id, building)) {
+				Game::getActionCenter()->add(
+					new BuildingActionCommand(building, BuildingActionType::TECH_RESEARCH, level->id));
+				return;
+			}
 		}
 	}
 }
@@ -292,6 +293,7 @@ void AiOrchestrator::upgradeResBuilding(const std::vector<ResBuildingNeed>& buil
 }
 
 void AiOrchestrator::tryToUpgradeBuilding(unsigned short id, float priority) {
+	if (!player->isBuildingAvailable(id)) return;
 	if (hasOwnedBuildingInstance(id)) {
 		if (player->getNextBuildingLevel(id).has_value()) {
 			wantList.addRequest(WantItemType::BUILDING_UPGRADE, priority, id);
@@ -397,7 +399,8 @@ void AiOrchestrator::submitBuildingUpgradeRequest(float urgency, ParentBuildingT
 		return;
 	}
 	for (auto* building : nation->buildings) {
-		if (building->parentType[static_cast<int>(type)] && player->getNextBuildingLevel(building->id).has_value()) {
+		if (player->isBuildingAvailable(building->id) &&
+			building->parentType[static_cast<int>(type)] && player->getNextBuildingLevel(building->id).has_value()) {
 			wantList.addRequest(WantItemType::BUILDING_UPGRADE, urgency, building->id);
 		}
 	}
@@ -531,7 +534,8 @@ db_building* AiOrchestrator::resolveBuildingUpgrade(std::span<const float> unitP
 	std::vector<db_building*> candidates;
 	candidates.reserve(buildings.size());
 	for (auto building : buildings) {
-		if (building->parentType[static_cast<int>(ParentBuildingType::UNITS)]
+		if (player->isBuildingAvailable(building->id) &&
+			building->parentType[static_cast<int>(ParentBuildingType::UNITS)]
 			&& player->getNextBuildingLevel(building->id).has_value()) { candidates.push_back(building); }
 	}
 	if (candidates.empty()) { return nullptr; }
@@ -578,7 +582,8 @@ db_building* AiOrchestrator::resolveResBuildingUpgrade(const std::vector<ResBuil
 	candidates.reserve(buildingNeeds.size());
 	weights.reserve(buildingNeeds.size());
 	for (const auto& buildingNeed : buildingNeeds) {
-		if (buildingNeed.need >= MIN_RES_BUILDING_NEED &&
+		if (player->isBuildingAvailable(buildingNeed.building->id) &&
+			buildingNeed.need >= MIN_RES_BUILDING_NEED &&
 			player->getNextBuildingLevel(buildingNeed.building->id).has_value()) {
 			candidates.push_back(buildingNeed.building);
 			weights.push_back(buildingNeed.need);
@@ -598,7 +603,7 @@ db_building* AiOrchestrator::resolveResBuildingUpgrade(const std::vector<ResBuil
 std::optional<unsigned short> AiOrchestrator::findBuildingToBuild(unsigned short unitId) const {
 	// std::vector <canditeds>//TODO potencjalnie moze byc wiecej niz jeden
 	for (const auto building : nation->buildings) {
-		if (building->canEverProduceUnit(player->getNation(), unitId)) {
+		if (player->isBuildingAvailable(building->id) && building->canEverProduceUnit(player->getNation(), unitId)) {
 			return building->id;
 		}
 	}
@@ -633,7 +638,7 @@ std::vector<db_building*> AiOrchestrator::getPossibleBuildingsInType(ParentBuild
 	std::vector<db_building*> buildings;
 	buildings.reserve(nation->buildings.size());
 	for (auto dbBuilding : nation->buildings) {
-		if (dbBuilding->parentType[castC(type)]) {
+		if (dbBuilding->parentType[castC(type)] && player->isBuildingAvailable(dbBuilding->id)) {
 			buildings.push_back(dbBuilding);
 		}
 	}

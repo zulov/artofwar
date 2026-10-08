@@ -344,12 +344,12 @@
     <section id="technology-model">
       <h2>5. Technology Model</h2>
       <h3>5.1 A technology is a player-owned rule package</h3>
-      <p>A technology should define its identity, cost, prerequisites, research location, and effects. The player stores completion state. A unit does not store a copied list of every technology that affected it.</p>
+      <p>A technology should define its identity, cost, prerequisites, one or more concrete research building IDs, and effects. The player stores completion state. A unit does not store a copied list of every technology that affected it.</p>
       <pre>Technology
   id: 12
   name: "Tempered Blades"
   tier: 1
-  research_building: BLACKSMITH
+  research_building: 11,5
   cost: 100 wood, 75 gold
   research_time: 180 ticks
   prerequisites: []

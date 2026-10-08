@@ -35,7 +35,7 @@ public:
 	// TODO target to nie to samo co gdzie sie maja pojawiac!
 	QueueManager& getQueue() { return queue; }
 	const QueueManager& getQueue() const { return queue; }
-	bool isReady() const { return state != StaticState::CREATING; }
+	bool isReady() const { return state == StaticState::ALIVE; }
 
 	Urho3D::String getInfo() const override;
 	const Urho3D::String& getName() const override;

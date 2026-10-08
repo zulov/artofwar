@@ -40,7 +40,7 @@ struct db_graph_settings : db_entity {
 		  hud_size(asShort(s, C::hud_size)),
 		  max_fps(asInt(s, C::max_fps)),
 		  min_fps(asInt(s, C::min_fps)),
-		  styles(Urho3D::String(asText(s, C::styles)).Split(SPLIT_SIGN)),
+		  styles(Urho3D::String(asText(s, C::style)).Split(SPLIT_SIGN)),
 		  name(asText(s, C::name)),
 		  texture_quality(asShort(s, C::texture_quality)),
 		  fullscreen(asInt(s, C::fullscreen)),

@@ -22,7 +22,10 @@ CreationCommand* CreationCommandList::addUnits(unsigned number, unsigned short i
 
 CreationCommand* CreationCommandList::addBuilding(unsigned short id, const Urho3D::Vector2& position, unsigned char playerId,
                                                    int level) const {
-	Resources* resources = Game::getPlayersMan()->getPlayer(playerId)->getResources();
+	Player* player = Game::getPlayersMan()->getPlayer(playerId);
+	if (!player->isBuildingAvailable(id)) return nullptr;
+
+	Resources* resources = player->getResources();
 	db_building* building = Game::getDatabase()->getBuilding(id);
 	if (resources->hasEnough(building)) {
 		const auto env = Game::getEnvironment();

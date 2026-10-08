@@ -6,10 +6,10 @@
 #include "GeneralActionType.h"
 #include "database/db_struct.h"
 #include "player/Player.h"
+#include "player/Possession.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
 #include "simulation/WorldAgeController.h"
-#include "database/db_technology_struct.h"
 
 GeneralActionCommand::GeneralActionCommand(short id, GeneralActionType action, unsigned char playerId)
 	: id(id), action(action), playerId(playerId) {
@@ -26,7 +26,13 @@ void GeneralActionCommand::execute() {
 			}
 		}
 	} else if (action == GeneralActionType::TECH_RESEARCH) {
-		playerEnt->startTechnologyResearch(static_cast<unsigned short>(id));
+		// Compatibility for pending commands created before research belonged to buildings.
+		for (auto* building : playerEnt->getPossession()->getBuildings()) {
+			if (playerEnt->canResearchTechnology(static_cast<unsigned short>(id), building)) {
+				playerEnt->startTechnologyResearch(static_cast<unsigned short>(id), building);
+				break;
+			}
+		}
 	}
 }
 

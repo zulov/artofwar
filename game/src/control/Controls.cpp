@@ -254,6 +254,8 @@ BuildingActionType Controls::getBuildingActionType(ActionType type) {
 		return BuildingActionType::UNIT_LEVEL;
 	case ActionType::UNIT_UPGRADE:
 		return BuildingActionType::UNIT_UPGRADE;
+	case ActionType::TECH_RESEARCH:
+		return BuildingActionType::TECH_RESEARCH;
 	default: ;
 	}
 }
@@ -261,16 +263,13 @@ BuildingActionType Controls::getBuildingActionType(ActionType type) {
 void Controls::order(short id, ActionType type) {
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::NONE: {
-		const auto action = type == ActionType::TECH_RESEARCH
-			? GeneralActionType::TECH_RESEARCH
-			: GeneralActionType::BUILDING_LEVEL;
+		if (type == ActionType::TECH_RESEARCH) return;
 		return Game::getActionCenter()->add(
-				new GeneralActionCommand(id, action, Game::getPlayersMan()->getActivePlayerID()));
+				new GeneralActionCommand(id, GeneralActionType::BUILDING_LEVEL, Game::getPlayersMan()->getActivePlayerID()));
 	}
 	case ObjectType::UNIT:
 		return actionUnit(id, type);
 	case ObjectType::BUILDING:
-		if (type == ActionType::TECH_RESEARCH) return;
 		return executeOnBuildings(getBuildingActionType(type), id);
 	case ObjectType::RESOURCE:
 		return executeOnResources(ResourceActionType(id));

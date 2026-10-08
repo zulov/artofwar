@@ -7,7 +7,15 @@
 #include "db_utils.h"
 
 #include <cassert>
-#include <stdexcept>
+#include <cstdlib>
+#include <iostream>
+
+namespace {
+[[noreturn]] void exitDatabaseError(const std::string& message) {
+	std::cerr << "[Database Error] " << message << "\n";
+	std::exit(EXIT_FAILURE);
+}
+}
 
 bool DatabaseCache::openDatabase(const std::string& name, bool readOnly) {
 	database = openDb(pathStr + name, readOnly);
@@ -16,53 +24,50 @@ bool DatabaseCache::openDatabase(const std::string& name, bool readOnly) {
 
 DatabaseCache::DatabaseCache() {
 	container = new db_container();
+	database = nullptr;
 
 	pathStr = std::string("Data/");
 	if (!SIM_GLOBALS.HEADLESS) { loadBasic("Database/base.db"); }
 
-	try {
-		loadData("Database/data.db");
-		loadMaps("map/maps.db");
-	} catch (...) {
-		delete container;
-		container = nullptr;
-		throw;
-	}
+	loadData("Database/data.db");
+	loadMaps("map/maps.db");
 }
 
 void DatabaseCache::loadBasic(const std::string& name) {
-	if (!openDatabase(name)) { return; }
+	if (!openDatabase(name)) { exitDatabaseError("Required data database failed to open: " + name); }
 
-	load("hud_size", [this](auto* s) { container->hudSizes.push_back(new db_hud_size(s)); });
-	load("graph_settings", [this](auto* s) { setEntity(container->graphSettings, new db_graph_settings(s)); });
-	load("hud_size_vars", [this](auto* s) { container->hudVars.push_back(new db_hud_vars(s)); });
-	load("resolution", [this](auto* s) { setEntity(container->resolutions, new db_resolution(s)); });
-	load("settings", [this](auto* s) { container->settings = new db_settings(s); });
+	load<HudSizeCol>("hud_size", "id", [this](auto* s) { container->hudSizes.push_back(new db_hud_size(s)); });
+	load<GraphSettingsCol>("graph_settings", "id",
+		[this](auto* s) { setEntity(container->graphSettings, new db_graph_settings(s)); });
+	load<HudVarsCol>("hud_size_vars", "id", [this](auto* s) { container->hudVars.push_back(new db_hud_vars(s)); });
+	load<ResolutionCol>("resolution", "id", [this](auto* s) { setEntity(container->resolutions, new db_resolution(s)); });
+	load<SettingsCol>("settings", nullptr, [this](auto* s) { container->settings = new db_settings(s); });
 
 	sqlite3_close_v2(database);
+	database = nullptr;
 }
 
 void DatabaseCache::loadData(const std::string& name) {
 	if (!openDatabase(name)) {
-		throw std::runtime_error("Required data database failed to open: " + name);
+		exitDatabaseError("Required data database failed to open: " + name);
 	}
 
-	load("nation order by id desc", [this](auto* s) { setEntity(container->nations, new db_nation(s)); });
-	load("unit order by id desc", [this](auto* s) { setEntity(container->units, new db_unit(s)); });
-	load("building order by id desc", [this](auto* s) { setEntity(container->buildings, new db_building(s)); });
+	load<DbNationCol>("nation", "id DESC", [this](auto* s) { setEntity(container->nations, new db_nation(s)); });
+	load<DbUnitCol>("unit", "id DESC", [this](auto* s) { setEntity(container->units, new db_unit(s)); });
+	load<DbBuildingCol>("building", "id DESC", [this](auto* s) { setEntity(container->buildings, new db_building(s)); });
 
-	load("resource order by id desc",
+	load<DbResourceCol>("resource", "id DESC",
 		[this](auto* s) { setEntity(container->resources, new db_resource(s)); });
 
-	load("player_color order by id desc",
+	load<PlayerColorsCol>("player_color", "id DESC",
 		[this](auto* s) { setEntity(container->playerColors, new db_player_colors(s)); });
 
-	load("unit_level order by unit,level", [this](auto* s) {
+	load<DbUnitLevelCol>("unit_level", "unit, level", [this](auto* s) {
 		auto level = new db_unit_level(s);
 		setEntity(container->unitsLevels, level);
 		container->units[level->unit]->levels.push_back(level);
 	});
-	load("building_level order by level", [this](auto* s) {
+	load<DbBuildingLevelCol>("building_level", "building, level", [this](auto* s) {
 		auto level = new db_building_level(s);
 		setEntity(container->buildingsLevels, level);
 		container->buildings[level->building]->levels.push_back(level);
@@ -80,24 +85,24 @@ void DatabaseCache::loadData(const std::string& name) {
 		}
 	});
 
-	load("unit_to_nation order by unit", [this](auto* s) {
-		auto unit = container->units[asShort(s, 0)];
-		auto nation = container->nations[asShort(s, 1)];
+	load<DbUnitNationCol>("unit_to_nation", "unit", [this](auto* s) {
+		auto unit = container->units[asUShort(s, DbUnitNationCol::unit)];
+		auto nation = container->nations[asUShort(s, DbUnitNationCol::nation)];
 		nation->units.push_back(unit);
 		if (unit->typeWorker) { nation->workers.push_back(unit); }
 		unit->nations.push_back(nation);
 	});
-	load("building_to_nation order by building", [this](auto* s) {
-		auto building = container->buildings[asShort(s, 0)];
-		auto nation = container->nations[asShort(s, 1)];
+	load<DbBuildingNationCol>("building_to_nation", "building", [this](auto* s) {
+		auto building = container->buildings[asUShort(s, DbBuildingNationCol::building)];
+		auto nation = container->nations[asUShort(s, DbBuildingNationCol::nation)];
 
 		nation->buildings.push_back(building);
 		building->nations.push_back(nation);
 	});
 
-	load("unit_to_building_level order by unit", [this](auto* s) {
-		auto level = container->buildingsLevels[asShort(s, 0)];
-		auto unit = container->units[asShort(s, 1)];
+	load<DbUnitBuildingLevelCol>("unit_to_building_level", "unit", [this](auto* s) {
+		auto level = container->buildingsLevels[asUShort(s, DbUnitBuildingLevelCol::building_level)];
+		auto unit = container->units[asUShort(s, DbUnitBuildingLevelCol::unit)];
 		level->allUnits.push_back(unit);
 		for (auto nation : unit->nations) {
 			level->unitsPerNation[nation->id]->push_back(unit);
@@ -105,19 +110,21 @@ void DatabaseCache::loadData(const std::string& name) {
 		}
 	});
 
-	const auto loadRequired = [this](const char* table, auto createFn) {
-		if (!load(std::string(table) + " order by id", createFn)) {
-			const std::string message = "Required data table failed to load: " + std::string(table);
-			sqlite3_close_v2(database);
-			database = nullptr;
-			throw std::runtime_error(message);
+	if (!load<DbTechnologyCol>("technology", "id", [this](auto* s) {
+		auto* technology = new db_technology(s);
+		for (const auto buildingId : technology->researchBuildingIds) {
+			if (buildingId >= container->buildings.size() || !container->buildings[buildingId]) {
+				exitDatabaseError("Technology " + std::to_string(technology->id) +
+					" references missing research building " + std::to_string(buildingId));
+			}
 		}
-	};
-
-	loadRequired("technology", [this](auto* s) {
-		setEntity(container->technologies, new db_technology(s));
-	});
-	if (!load("technology_level order by technology,level", [this](auto* s) {
+		setEntity(container->technologies, technology);
+	})) {
+		sqlite3_close_v2(database);
+		database = nullptr;
+		exitDatabaseError("Required data table failed to load: technology");
+	}
+	if (!load<DbTechnologyLevelCol>("technology_level", "technology, level", [this](auto* s) {
 		const auto technologyId = asUShort(s, DbTechnologyLevelCol::technology);
 		assert(technologyId < container->technologies.size() && container->technologies[technologyId]);
 		auto* level = new db_technology_level(s, container->technologies[technologyId]->code);
@@ -127,9 +134,9 @@ void DatabaseCache::loadData(const std::string& name) {
 	})) {
 		sqlite3_close_v2(database);
 		database = nullptr;
-		throw std::runtime_error("Required data table failed to load: technology_level");
+		exitDatabaseError("Required data table failed to load: technology_level");
 	}
-	if (!load("technology_level_effect order by technology_level,effect_order", [this](auto* s) {
+	if (!load<DbTechnologyEffectCol>("technology_level_effect", "technology_level, effect_order", [this](auto* s) {
 		auto* effect = new db_technology_effect(s);
 		container->technologyEffects.push_back(effect);
 		assert(effect->technologyLevel < container->technologyLevels.size());
@@ -137,7 +144,7 @@ void DatabaseCache::loadData(const std::string& name) {
 	})) {
 		sqlite3_close_v2(database);
 		database = nullptr;
-		throw std::runtime_error("Required data table failed to load: technology_level_effect");
+		exitDatabaseError("Required data table failed to load: technology_level_effect");
 	}
 
 	container->finish();
@@ -147,15 +154,15 @@ void DatabaseCache::loadData(const std::string& name) {
 }
 
 void DatabaseCache::loadMaps(const std::string& name) {
-	if (!openDatabase(name)) { return; }
+	if (!openDatabase(name)) { exitDatabaseError("Required data database failed to open: " + name); }
 
-	load("\"condition\" order by id desc", [this](auto* s) {
+	load<DbWorldAgeConditionCol>("condition", "id DESC", [this](auto* s) {
 		setEntity(container->worldAgeCatalog.conditions, new db_world_age_condition(s));
 	});
-	load("age order by id desc", [this](auto* s) {
+	load<DbWorldAgeCol>("age", "id DESC", [this](auto* s) {
 		setEntity(container->worldAgeCatalog.ages, new db_world_age(s));
 	});
-	load("age_condition order by age_id, condition_id", [this](auto* s) {
+	load<DbWorldAgeJoinCol>("age_condition", "age_id, condition_id", [this](auto* s) {
 		const auto ageId = asUShort(s, DbWorldAgeJoinCol::age_id);
 		auto* age = container->worldAgeCatalog.getAge(ageId);
 		assert(age != nullptr && "age_condition must reference an existing age");
@@ -164,7 +171,7 @@ void DatabaseCache::loadMaps(const std::string& name) {
 		assert(condition != nullptr && "age_condition must reference an existing condition");
 		age->conditions.push_back(condition);
 	});
-	load("age_transition order by age_id, next_age_id", [this](auto* s) {
+	load<DbWorldAgeTransitionCol>("age_transition", "age_id, next_age_id", [this](auto* s) {
 		const auto ageId = asUShort(s, DbWorldAgeTransitionCol::age_id);
 		auto* age = container->worldAgeCatalog.getAge(ageId);
 		assert(age != nullptr && "age_transition must reference an existing age");
@@ -173,10 +180,11 @@ void DatabaseCache::loadMaps(const std::string& name) {
 		       "age_transition must reference an existing target age");
 		age->nextAgeIds.push_back(nextAgeId);
 	});
-	load("map order by id desc", [this](auto* s) { setEntity(container->maps, new db_map(s)); });
+	load<MapCol>("map", "id DESC", [this](auto* s) { setEntity(container->maps, new db_map(s)); });
 	validateWorldAgeCatalog();
 
 	sqlite3_close_v2(database);
+	database = nullptr;
 }
 
 void DatabaseCache::validateWorldAgeCatalog() const {
@@ -226,7 +234,10 @@ void DatabaseCache::validateWorldAgeCatalog() const {
 }
 
 
-DatabaseCache::~DatabaseCache() { delete container; }
+DatabaseCache::~DatabaseCache() {
+	if (database) { sqlite3_close_v2(database); }
+	delete container;
+}
 
 void DatabaseCache::setGraphSettings(int id, db_graph_settings* gs) {
 	gs->name = container->graphSettings[id]->name;

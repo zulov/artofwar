@@ -15,7 +15,7 @@ struct db_map : db_with_name {
 	const std::vector<unsigned short> ageIds;
 
 	db_map(sqlite3_stmt* stmt)
-		: db_with_name(asShort(stmt, MapCol::id), asText(stmt, MapCol::name)), xmlName(asText(stmt, MapCol::xml_name)),
+		: db_with_name(asShort(stmt, MapCol::id), asText(stmt, MapCol::name)), xmlName(asText(stmt, MapCol::xmlName)),
 		  ageIds(parseAgeIds(asText(stmt, MapCol::age_ids))) {}
 
 	private:

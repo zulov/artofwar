@@ -1,7 +1,6 @@
 #include "InfluenceTemplateProvider.h"
 
 #include <cassert>
-#include <memory>
 #include <vector>
 
 namespace {
@@ -11,8 +10,16 @@ namespace {
 		std::vector<float> values;
 	};
 
-	std::vector<std::unique_ptr<InfluenceTemplate>>& getTemplates() {
-		static std::vector<std::unique_ptr<InfluenceTemplate>> templates;
+	struct InfluenceTemplates {
+		std::vector<InfluenceTemplate*> values;
+
+		~InfluenceTemplates() {
+			for (auto* value : values) delete value;
+		}
+	};
+
+	InfluenceTemplates& getTemplates() {
+		static InfluenceTemplates templates;
 		return templates;
 	}
 }
@@ -20,15 +27,15 @@ namespace {
 const float* InfluenceTemplateProvider::get(float coef, char level) {
 	assert(level > 0);
 
-	auto& templates = getTemplates();
-	for (const auto& influenceTemplate : templates) {
+	auto& templates = getTemplates().values;
+	for (const auto* influenceTemplate : templates) {
 		if (influenceTemplate->coef == coef && influenceTemplate->level == level) {
 			return influenceTemplate->values.data();
 		}
 	}
 
 	const auto levelRes = level * 2 + 1;
-	auto influenceTemplate = std::make_unique<InfluenceTemplate>(coef, level, std::vector<float>(levelRes * levelRes));
+	auto* influenceTemplate = new InfluenceTemplate{coef, level, std::vector<float>(levelRes * levelRes)};
 	auto* value = influenceTemplate->values.data();
 	for (short i = -level; i <= level; ++i) {
 		const auto a = i * i;
@@ -38,6 +45,6 @@ const float* InfluenceTemplateProvider::get(float coef, char level) {
 		}
 	}
 	const auto* result = influenceTemplate->values.data();
-	templates.emplace_back(std::move(influenceTemplate));
+	templates.push_back(influenceTemplate);
 	return result;
 }

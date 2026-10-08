@@ -64,8 +64,14 @@
     <ClCompile Include="OtherUtilsTest.cpp" />
     <ClCompile Include="PathFinderTest.cpp" />
     <ClCompile Include="PriorityHeapTest.cpp" />
-	<ClCompile Include="PersistenceStateTest.cpp" />
+    <ClCompile Include="PersistenceStateTest.cpp" />
 	<ClCompile Include="PersistenceRowTest.cpp" />
+    <ClCompile Include="..\game\src\objects\queue\QueueElement.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\game\src\objects\queue\QueueManager.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="RandGenTest.cpp" />
     <ClCompile Include="ResourcesTest.cpp" />
     <ClCompile Include="SimulationHelpersTest.cpp" />

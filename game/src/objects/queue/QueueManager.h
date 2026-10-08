@@ -16,6 +16,7 @@ public:
 	bool isEmpty() const { return getSize() == 0; }
 	QueueElement* getAt(short i) const;
 	QueueElement* first() const;
+	bool contains(QueueActionType type, unsigned short id) const;
 	void changeMaxUnitsGroupSize(unsigned char maxUnitsGroupSize);
 	void restore(QueueActionType type, unsigned short id, unsigned short levelId, unsigned short amount,
 				 unsigned short elapsedTicks, unsigned short durationOverride = 0);

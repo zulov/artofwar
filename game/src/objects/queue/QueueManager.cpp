@@ -48,6 +48,13 @@ QueueElement* QueueManager::getAt(short i) const { return queue.at(i); }
 
 QueueElement* QueueManager::first() const { return queue.at(0); }
 
+bool QueueManager::contains(QueueActionType type, unsigned short id) const {
+	for (const auto* element : queue) {
+		if (element->getType() == type && element->getId() == id) return true;
+	}
+	return false;
+}
+
 void QueueManager::changeMaxUnitsGroupSize(unsigned char maxUnitsGroupSize) { maxUnitsGroup = maxUnitsGroupSize; }
 
 void QueueManager::restore(QueueActionType type, unsigned short id, unsigned short levelId, unsigned short amount,

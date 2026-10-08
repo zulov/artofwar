@@ -8,6 +8,7 @@
 
 class Possession;
 class Resources;
+class Building;
 struct db_nation;
 struct db_unit;
 struct db_unit_level;
@@ -35,7 +36,7 @@ public:
 	void setResourceAmount(float food, float wood, float stone, float gold) const;
 	void setResourceAmount(float amount) const;
 	char upgradeLevel(QueueActionType type, int id);
-	bool startTechnologyResearch(unsigned short levelId);
+	bool startTechnologyResearch(unsigned short levelId, Building* building);
 	unsigned short technologyResearchDuration(unsigned short levelId) const;
 	db_with_cost technologyResearchCost(unsigned short levelId) const;
 
@@ -65,6 +66,7 @@ public:
 	const QueueManager& getQueue() const { return queue; }
 	db_unit_level* getUnitLevel(unsigned short id) const;
 	db_building_level* getBuildingLevel(unsigned short id) const;
+	bool isBuildingAvailable(unsigned short id) const;
 	std::optional<db_unit_level*> getNextUnitLevel(unsigned short id) const;
 	std::optional<db_building_level*> getNextBuildingLevel(unsigned short id) const;
 	void addKilled(Physical* physical) const;
@@ -76,6 +78,9 @@ public:
 	void restoreTechnologyLevel(unsigned short id, unsigned char level);
 	unsigned char getTechnologyLevel(unsigned short id) const;
 	bool canResearchTechnology(unsigned short levelId) const;
+	bool canResearchTechnology(unsigned short levelId, const Building* building) const;
+	bool hasTechnologyResearch(unsigned short technologyId) const;
+	Building* findResearchBuilding(unsigned short levelId) const;
 	bool completeTechnology(unsigned short levelId);
 	float applyTechnologyAttack(float attack, const db_unit* source, const db_unit* target) const;
 	float applyTechnologyAttack(float attack, const db_unit* source, const db_building* target) const;

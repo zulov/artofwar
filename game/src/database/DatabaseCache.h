@@ -5,7 +5,7 @@
 #include <sqlite3/sqlite3.h>
 
 #include "db_container.h"
-#include "scene/save/SQLConsts.h"
+#include "db_columns.h"
 
 struct db_unit;
 struct db_building;
@@ -62,9 +62,21 @@ public:
 	int getResourcesSize() const { return container->resources.size(); }
 
 private:
-	template <class Creator>
-	bool load(const std::string& tableName, Creator createFn) const {
-		return loadFromTable(database, SQLConsts::SELECT + tableName, createFn);
+	template <typename Columns, class Creator>
+	bool load(const char* tableName, const char* orderBy, Creator createFn) const {
+		const auto columns = columnNames<Columns>();
+		std::string sql = "SELECT ";
+		for (size_t i = 0; i < columns.size(); ++i) {
+			if (i > 0) sql += ", ";
+			sql += columns[i];
+		}
+		sql += " FROM ";
+		sql += tableName;
+		if (orderBy && *orderBy) {
+			sql += " ORDER BY ";
+			sql += orderBy;
+		}
+		return loadFromTable(database, sql, createFn);
 	}
 	void validateWorldAgeCatalog() const;
 	db_container* container;

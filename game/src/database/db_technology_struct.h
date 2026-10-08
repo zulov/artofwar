@@ -3,6 +3,9 @@
 #include <algorithm>
 #include <cassert>
 #include <cctype>
+#include <cstdlib>
+#include <iostream>
+#include <limits>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -129,16 +132,34 @@ inline std::optional<TechnologyTargetKind> parseTechnologyEnum(const char* value
 	return {};
 }
 
-inline std::vector<std::string> parseTechnologyList(const char* value) {
-	std::vector<std::string> result;
-	if (!value) return result;
+inline std::vector<unsigned short> parseTechnologyIds(const char* value, const char* fieldName) {
+	std::vector<unsigned short> result;
+	if (!value || *value == '\0') return {};
 	std::string input(value);
 	size_t begin = 0;
 	while (begin <= input.size()) {
 		const auto end = input.find(',', begin);
 		const auto tokenEnd = end == std::string::npos ? input.size() : end;
-		std::string token = input.substr(begin, tokenEnd - begin);
-		if (!token.empty() && token != "none") result.push_back(std::move(token));
+		const auto token = input.substr(begin, tokenEnd - begin);
+		if (token.empty()) {
+			std::cerr << "[Database Error] Empty " << fieldName << " ID\n";
+			std::exit(EXIT_FAILURE);
+		}
+		if (token == "none" && begin == 0 && end == std::string::npos) return {};
+		unsigned long parsed = 0;
+		for (const char character : token) {
+			if (character < '0' || character > '9') {
+				std::cerr << "[Database Error] Invalid " << fieldName << " ID: " << token << "\n";
+				std::exit(EXIT_FAILURE);
+			}
+			const auto digit = static_cast<unsigned long>(character - '0');
+			if (parsed > (std::numeric_limits<unsigned short>::max() - digit) / 10) {
+				std::cerr << "[Database Error] " << fieldName << " ID is out of range: " << token << "\n";
+				std::exit(EXIT_FAILURE);
+			}
+			parsed = parsed * 10 + digit;
+		}
+		result.push_back(static_cast<unsigned short>(parsed));
 		if (end == std::string::npos) break;
 		begin = end + 1;
 	}
@@ -146,15 +167,11 @@ inline std::vector<std::string> parseTechnologyList(const char* value) {
 }
 
 inline std::vector<unsigned short> parseTechnologyAgeIds(const char* value) {
-	std::vector<unsigned short> result;
-	for (const auto& token : parseTechnologyList(value)) {
-		try {
-			result.push_back(static_cast<unsigned short>(std::stoul(token)));
-		} catch (...) {
-			return {};
-		}
-	}
-	return result;
+	return parseTechnologyIds(value, "technology age");
+}
+
+inline std::vector<unsigned short> parseTechnologyBuildingIds(const char* value) {
+	return parseTechnologyIds(value, "technology research building");
 }
 
 inline std::string technologyLevelKey(const std::string& code, unsigned char level) {
@@ -214,13 +231,13 @@ struct db_technology_level : db_with_name {
 
 struct db_technology : db_with_name {
 	const std::string code;
-	const std::string researchBuilding;
+	const std::vector<unsigned short> researchBuildingIds;
 	std::vector<db_technology_level*> levels;
 
 	using C = DbTechnologyCol;
 	db_technology(sqlite3_stmt* stmt)
 		: db_with_name(asUShort(stmt, C::id), asText(stmt, C::code)), code(asText(stmt, C::code)),
-		  researchBuilding(asText(stmt, C::research_building)) {}
+		  researchBuildingIds(parseTechnologyBuildingIds(asText(stmt, C::research_building))) {}
 
 	std::optional<db_technology_level*> getLevel(unsigned char level) const {
 		return levels.size() > level ? std::optional(levels.at(level)) : std::nullopt;

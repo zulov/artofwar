@@ -221,15 +221,15 @@ enum class DbUnitCol : unsigned char {
 	wood,
 	stone,
 	gold,
-	action_state,
-	type_infantry,
-	type_range,
-	type_cavalry,
-	type_worker,
-	type_special,
-	type_melee,
-	type_heavy,
-	type_light
+	defaultAction, // action_state
+	tI, // type_infantry
+	tR, // type_range
+	tC, // type_cavalry
+	tW, // type_worker
+	tS, // type_special
+	tM, // type_melee
+	tH, // type_heavy
+	tL // type_light
 };
 
 enum class DbUnitLevelCol : unsigned char {
@@ -242,29 +242,29 @@ enum class DbUnitLevelCol : unsigned char {
 	wood,
 	stone,
 	gold,
-	build_time,
-	upgrade_time,
-	min_dist,
+	buildTime, // build_time
+	upgradeTime, // upgrade_time
+	minDist, // min_dist
 	mass,
-	min_speed,
-	max_speed,
-	max_force,
-	max_hp,
+	minSpeed, // min_speed
+	maxSpeed, // max_speed
+	maxForce, // max_force
+	maxHp, // max_hp
 	armor,
-	sight_range,
+	sightRng, // sight_range
 	collect,
-	attack,
-	attack_reload,
-	attack_range,
-	bonus_infantry,
-	bonus_range,
-	bonus_cavalry,
-	bonus_worker,
-	bonus_special,
-	bonus_melee,
-	bonus_heavy,
-	bonus_light,
-	bonus_building,
+	atck, // attack
+	atckRld, // attack_reload
+	atckRng, // attack_range
+	bI, // bonus_infantry
+	bR, // bonus_range
+	bC, // bonus_cavalry
+	bW, // bonus_worker
+	bS, // bonus_special
+	bM, // bonus_melee
+	bH, // bonus_heavy
+	bL, // bonus_light
+	bB, // bonus_building
 	age_stage
 };
 
@@ -276,19 +276,19 @@ enum class DbBuildingCol : unsigned char {
 	wood,
 	stone,
 	gold,
-	size_x,
-	size_z,
-	type_center,
-	type_home,
-	type_defence,
-	type_resource,
-	type_tech_blacksmith,
-	type_tech_university,
-	type_unit_barracks,
-	type_unit_range,
-	type_unit_cavalry,
+	sizeX, // size_x
+	sizeZ, // size_z
+	tC, // type_center
+	tH, // type_home
+	tD, // type_defence
+	tR, // type_resource
+	tTb, // type_tech_blacksmith
+	tTu, // type_tech_university
+	tUb, // type_unit_barracks
+	tUr, // type_unit_range
+	tUc, // type_unit_cavalry
 	ruinable,
-	to_resource
+	toResource // to_resource
 };
 
 enum class DbBuildingLevelCol : unsigned char {
@@ -296,45 +296,49 @@ enum class DbBuildingLevelCol : unsigned char {
 	level,
 	building,
 	name,
-	node_name,
-	food,
-	wood,
-	stone,
-	gold,
-	queue_max_capacity,
-	build_speed,
-	upgrade_speed,
-	max_hp,
+	node,
+	cost_food,
+	cost_wood,
+	cost_stone,
+	cost_gold,
+	queueMax, // queue_max_capacity
+	buildTime, // build_speed
+	upgradeTime, // upgrade_speed
+	maxHp, // max_hp
 	armor,
-	sight_range,
+	sightRng, // sight_range
 	collect,
-	attack,
-	attack_reload,
-	attack_range,
-	resource_range,
-	food_storage,
-	gold_storage,
-	stone_refine_capacity,
-	gold_refine_capacity,
-	spawn_resource_time,
-	spawn_resource_range,
+	atck, // attack
+	atckRld, // attack_reload
+	atckRng, // attack_range
+	resRng, // resource_range
+	foodStorage,
+	goldStorage,
+	stoneRefaineCapacity,
+	goldRefaineCapacity,
+	spawnResourceTime,
+	spawnResourceRange,
 	age_stage
 };
 
 enum class DbNationCol : unsigned char { id, name, brain_prefix };
 
+enum class DbUnitNationCol : unsigned char { unit, nation };
+enum class DbBuildingNationCol : unsigned char { building, nation };
+enum class DbUnitBuildingLevelCol : unsigned char { building_level, unit };
+
 enum class DbResourceCol : unsigned char {
 	id,
-	resource_id,
+	resourceId, // resource_id
 	name,
 	icon,
-	max_hp,
-	node_name,
-	size_x,
-	size_z,
-	max_users,
+	maxCapacity, // max_hp
+	nodeName, // node_name
+	sizeX, // size_x
+	sizeZ, // size_z
+	maxUsers, // max_users
 	mini_map_color,
-	collect_speed,
+	collectSpeed, // collect_speed
 	rotatable
 };
 
@@ -385,7 +389,7 @@ enum class ResolutionCol : unsigned char { id, x, y };
 enum class GraphSettingsCol : unsigned char {
 	id,
 	hud_size,
-	styles,
+	style, // styles
 	fullscreen,
 	max_fps,
 	min_fps,
@@ -399,7 +403,7 @@ enum class HudVarsCol : unsigned char { id, hud_size, name, value };
 
 // --- Map table ---
 
-enum class MapCol : unsigned char { id, xml_name, name, age_ids };
+enum class MapCol : unsigned char { id, xmlName, name, age_ids }; // xml_name
 
 // --- Other data tables ---
 

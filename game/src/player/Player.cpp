@@ -75,13 +75,13 @@ db_unit_level* Player::getUnitLevel(unsigned short id) const {
 	return id < unitLevels.size() ? unitLevels[id].effective : nullptr;
 }
 
-bool Player::startTechnologyResearch(unsigned short levelId) {
-	if (!canResearchTechnology(levelId)) return false;
+bool Player::startTechnologyResearch(unsigned short levelId, Building* building) {
+	if (!canResearchTechnology(levelId, building)) return false;
 	const auto* level = Game::getDatabase()->getTechnologyLevel(levelId);
 	const auto effectiveCost = technologyResearchCost(levelId);
 	if (!resources->reduce(&effectiveCost)) return false;
 	const auto duration = technologyResearchDuration(levelId);
-	queue.add(QueueActionType::TECH_RESEARCH, level->technology, levelId, 1, duration);
+	building->getQueue().add(QueueActionType::TECH_RESEARCH, level->technology, levelId, 1, duration);
 	return true;
 }
 
@@ -93,6 +93,18 @@ unsigned short Player::technologyResearchDuration(unsigned short levelId) const 
 
 db_building_level* Player::getBuildingLevel(unsigned short id) const {
 	return id < buildingLevels.size() ? buildingLevels[id].effective : nullptr;
+}
+
+bool Player::isBuildingAvailable(unsigned short id) const {
+	const auto* building = Game::getDatabase()->getBuilding(id);
+	const auto* firstLevel = building ? [&building] {
+		const auto it = std::ranges::find_if(building->levels, [](const auto* level) { return level && level->level == 0; });
+		return it == building->levels.end() ? nullptr : *it;
+	}() : nullptr;
+	if (!firstLevel) return false;
+
+	const auto* ageController = Game::getWorldAgeController();
+	return !ageController || ageController->isLevelAvailable(firstLevel->ageStage);
 }
 
 std::optional<db_unit_level*> Player::getNextUnitLevel(unsigned short id) const {
@@ -114,6 +126,12 @@ unsigned char Player::getTechnologyLevel(unsigned short id) const {
 }
 
 bool Player::canResearchTechnology(unsigned short levelId) const {
+	return std::ranges::any_of(possession->getBuildings(), [this, levelId](const auto* building) {
+		return canResearchTechnology(levelId, building);
+	});
+}
+
+bool Player::canResearchTechnology(unsigned short levelId, const Building* building) const {
 	if (levelId >= Game::getDatabase()->getTechnologyLevels().size()) return false;
 	const auto* level = Game::getDatabase()->getTechnologyLevel(levelId);
 	if (level->technology >= technologyLevels.size() || technologyLevels[level->technology] + 1 != level->level) {
@@ -126,17 +144,32 @@ bool Player::canResearchTechnology(unsigned short levelId) const {
 		return false;
 	}
 	const auto* technology = Game::getDatabase()->getTechnology(level->technology);
-	if (technology && !technology->researchBuilding.empty() && technology->researchBuilding != "none") {
-		const auto& owned = possession->getBuildings();
-		const bool hasBuilding = std::ranges::any_of(owned, [&technology](const auto* building) {
-			if (!building->isReady()) return false;
-			return (technology->researchBuilding == "blacksmith" && building->getDb()->typeTechBlacksmith) ||
-				(technology->researchBuilding == "university" && building->getDb()->typeTechUniversity);
-		});
-		if (!hasBuilding) return false;
-	}
+	if (!building || building->getPlayer() != id || !building->isReady() || !building->getQueue().isEmpty() ||
+		!TechnologyUtils::matchesResearchBuilding(technology, building->getDb())) return false;
+	if (hasTechnologyResearch(level->technology)) return false;
 	const auto effectiveCost = technologyResearchCost(levelId);
-	return resources->hasEnough(&effectiveCost) && queue.isEmpty();
+	return resources->hasEnough(&effectiveCost);
+}
+
+bool Player::hasTechnologyResearch(unsigned short technologyId) const {
+	if (queue.contains(QueueActionType::TECH_RESEARCH, technologyId)) return true;
+	return std::ranges::any_of(possession->getBuildings(), [technologyId](const auto* building) {
+		return building->isAlive() && building->getQueue().contains(QueueActionType::TECH_RESEARCH, technologyId);
+	});
+}
+
+Building* Player::findResearchBuilding(unsigned short levelId) const {
+	if (levelId >= Game::getDatabase()->getTechnologyLevels().size()) return nullptr;
+	const auto* level = Game::getDatabase()->getTechnologyLevel(levelId);
+	const auto* technology = Game::getDatabase()->getTechnology(level->technology);
+	if (hasTechnologyResearch(level->technology)) return nullptr;
+	for (auto* building : possession->getBuildings()) {
+		if (building->isReady() && building->getQueue().isEmpty() &&
+			TechnologyUtils::matchesResearchBuilding(technology, building->getDb())) {
+			return building;
+		}
+	}
+	return nullptr;
 }
 
 float Player::technologyAgeMultiplier(const db_technology_level* level) const {
