@@ -293,19 +293,12 @@ bool SceneSaver::saveQueues(const std::vector<Building*>* buildings, const std::
 }
 
 bool SceneSaver::savePlayerLevels(const std::vector<Player*>& players) {
-	const bool hasLevels = std::ranges::any_of(players, [](const auto* player) {
-		return std::ranges::any_of(player->getUnitLevels(), [](const auto& level) { return level.level > 0; }) ||
-				std::ranges::any_of(player->getBuildingLevels(), [](const auto& level) { return level.level > 0; });
-	});
-	if (!hasLevels) {
-		return true;
-	}
 	return saveRows<PlayerLevelCol>([&](sqlite3_stmt* stmt, const char* sql) {
 		auto saveLevels = [&](const Player* player, const auto& levels, unsigned char type) {
 			bool success = true;
 			for (unsigned short i = 0; i < levels.size(); ++i) {
-				if (const auto& level = levels[i]; level.id >= 0 && level.level > 0) {
-					const PlayerLevelSaveData row{player->getId(), type, i, static_cast<char>(level.level)};
+				if (const auto& level = levels[i]; level.id >= 0) {
+					const PlayerLevelSaveData row{player->getId(), type, static_cast<unsigned short>(level.id), level.level};
 					bindRow(stmt, precision, &row);
 					success = stepAndReset(stmt, sql);
 					if (!success) { break; }

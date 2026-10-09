@@ -46,7 +46,7 @@ inline QueueRow readRow<QueueRow>(sqlite3_stmt* stmt, int) {
 template <>
 inline PlayerLevelSaveData readRow<PlayerLevelSaveData>(sqlite3_stmt* stmt, int) {
 	return {asUByte(stmt, PlayerLevelCol::player), asUByte(stmt, PlayerLevelCol::type),
-			asUShort(stmt, PlayerLevelCol::id), asByte(stmt, PlayerLevelCol::level)};
+			asUShort(stmt, PlayerLevelCol::id), asUByte(stmt, PlayerLevelCol::level)};
 }
 
 template <>

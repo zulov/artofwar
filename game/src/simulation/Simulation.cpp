@@ -3,7 +3,9 @@
 #include <Urho3D/Resource/ResourceCache.h>
 
 #include <algorithm>
+#include <cassert>
 #include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 #include "FrameInfo.h"
@@ -181,6 +183,35 @@ void Simulation::restoreRuntimeState(dbload_container* data) const {
 	if (!worldAgeController->restore(*data)) {
 		assert(false && "saved world age state is incompatible with the selected map");
 		return;
+	}
+	std::unordered_set<unsigned long long> restoredPlayerLevels;
+	for (const auto& saved : data->playerLevels) {
+		auto* player = Game::getPlayersMan()->getPlayer(saved.player);
+		const auto key = (static_cast<unsigned long long>(saved.player) << 32) |
+				(static_cast<unsigned long long>(saved.type) << 24) | saved.id;
+		assert(restoredPlayerLevels.insert(key).second && "duplicate player level row");
+		if (saved.type == 0) {
+			assert(saved.id < player->getUnitLevels().size() && player->getUnitLevels()[saved.id].id >= 0 &&
+					"player_levels references unsupported unit");
+		} else {
+			assert(saved.id < player->getBuildingLevels().size() && player->getBuildingLevels()[saved.id].id >= 0 &&
+					"player_levels references unsupported building");
+		}
+	}
+	for (auto* player : Game::getPlayersMan()->getAllPlayers()) {
+		for (unsigned short id = 0; id < player->getUnitLevels().size(); ++id) {
+			if (player->getUnitLevels()[id].id >= 0) {
+				const auto key = (static_cast<unsigned long long>(player->getId()) << 32) | id;
+				assert(restoredPlayerLevels.contains(key) && "player_levels is missing a supported unit");
+			}
+		}
+		for (unsigned short id = 0; id < player->getBuildingLevels().size(); ++id) {
+			if (player->getBuildingLevels()[id].id >= 0) {
+				const auto key = (static_cast<unsigned long long>(player->getId()) << 32) |
+						(1ull << 24) | id;
+				assert(restoredPlayerLevels.contains(key) && "player_levels is missing a supported building");
+			}
+		}
 	}
 	for (auto* player : Game::getPlayersMan()->getAllPlayers()) {
 		player->getResources()->recalculateBuildingState(player->getPossession());

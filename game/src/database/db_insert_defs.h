@@ -21,7 +21,6 @@ inline void bindRow<Unit>(sqlite3_stmt* stmt, int precision, const Unit* x) {
 	bindI(stmt, UnitCol::hp_coef, (int)(x->getHp() * precision));
 	bindU(stmt, UnitCol::uid, x->getUid());
 	bindC(stmt, UnitCol::player, x->getPlayer());
-	bindC(stmt, UnitCol::level, x->getLevelNum());
 	bindI(stmt, UnitCol::position_x, x->position.x_ * precision);
 	bindI(stmt, UnitCol::position_z, x->position.y_ * precision);
 	bindC(stmt, UnitCol::state, castC(x->getState()));
@@ -55,7 +54,6 @@ inline void bindRow<Building>(sqlite3_stmt* stmt, int precision, const Building*
 	bindI(stmt, BuildingCol::hp_coef, (int)(x->getHp() * precision));
 	bindU(stmt, BuildingCol::uid, x->getUid());
 	bindC(stmt, BuildingCol::player, x->getPlayer());
-	bindC(stmt, BuildingCol::level, x->getLevelNum());
 	const auto cordsCell = Game::getEnvironment()->getCords(x->indexInMainGrid);
 	bindI(stmt, BuildingCol::bucket_x, cordsCell.x_);
 	bindI(stmt, BuildingCol::bucket_y, cordsCell.y_);
@@ -159,7 +157,7 @@ inline void bindRow<PlayerLevelSaveData>(sqlite3_stmt* stmt, int, const PlayerLe
 	bindUC(stmt, PlayerLevelCol::player, x->player);
 	bindUC(stmt, PlayerLevelCol::type, x->type);
 	bindI(stmt, PlayerLevelCol::id, x->id);
-	bindC(stmt, PlayerLevelCol::level, x->level);
+	bindUC(stmt, PlayerLevelCol::level, x->level);
 }
 
 template <>

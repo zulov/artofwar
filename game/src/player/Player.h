@@ -73,8 +73,8 @@ public:
 	void resetScore();
 	const std::vector<PlayerLevel<db_unit_level>>& getUnitLevels() const { return unitLevels; }
 	const std::vector<PlayerLevel<db_building_level>>& getBuildingLevels() const { return buildingLevels; }
-	void restoreUnitLevel(unsigned short id, char level);
-	void restoreBuildingLevel(unsigned short id, char level);
+	void restoreUnitLevel(unsigned short id, unsigned char level);
+	void restoreBuildingLevel(unsigned short id, unsigned char level);
 	void restoreTechnologyLevel(unsigned short id, unsigned char level);
 	unsigned char getTechnologyLevel(unsigned short id) const;
 	bool canResearchTechnology(unsigned short levelId) const;

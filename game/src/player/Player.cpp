@@ -392,15 +392,15 @@ void Player::addKilled(Physical* physical) const { possession->addKilled(physica
 
 void Player::resetScore() { score = -1; }
 
-void Player::restoreUnitLevel(unsigned short id, char level) {
+void Player::restoreUnitLevel(unsigned short id, unsigned char level) {
 	if (id < unitLevels.size() && unitLevels[id].id >= 0) {
-		unitLevels[id].level = static_cast<unsigned char>(std::max(0, static_cast<int>(level)));
+		unitLevels[id].level = level;
 	}
 }
 
-void Player::restoreBuildingLevel(unsigned short id, char level) {
+void Player::restoreBuildingLevel(unsigned short id, unsigned char level) {
 	if (id < buildingLevels.size() && buildingLevels[id].id >= 0) {
-		buildingLevels[id].level = static_cast<unsigned char>(std::max(0, static_cast<int>(level)));
+		buildingLevels[id].level = level;
 	}
 }
 

@@ -30,6 +30,7 @@
 -- sqlite3.exe -bail game\saves\<save>-migrated.db < docs\quicksave-migration.txt
 
 PRAGMA foreign_keys = OFF;
+ATTACH 'Data/Database/data.db' AS data;
 BEGIN IMMEDIATE;
 
 -- Rebuild config to rename the legacy RNG columns. Rebuilding instead of
@@ -67,6 +68,18 @@ FROM config;
 DROP TABLE config;
 ALTER TABLE config_current RENAME TO config;
 
+-- Preserve legacy per-entity levels before rebuilding the entity tables.
+CREATE TABLE legacy_entity_levels (
+    player INT NOT NULL,
+    type INT NOT NULL,
+    id INT NOT NULL,
+    level INT NOT NULL
+);
+INSERT INTO legacy_entity_levels (player, type, id, level)
+SELECT player, 0, id_db, MAX(level) FROM units GROUP BY player, id_db;
+INSERT INTO legacy_entity_levels (player, type, id, level)
+SELECT player, 1, id_db, MAX(level) FROM buildings GROUP BY player, id_db;
+
 -- Rebuild units so legacy REAL continuation values become precision-scaled
 -- integers. The current loader reads these columns by name, but rebuilding
 -- also makes the physical schema match SQLConsts::UNIT_COL.
@@ -75,7 +88,6 @@ CREATE TABLE units_current (
     hp_coef INT NOT NULL,
     uid INT PRIMARY KEY,
     player INT NOT NULL,
-    level INT NOT NULL,
     position_x INT NOT NULL,
     position_z INT NOT NULL,
     state INT NOT NULL,
@@ -104,7 +116,7 @@ CREATE TABLE units_current (
 ) WITHOUT ROWID;
 
 INSERT INTO units_current (
-    id_db, hp_coef, uid, player, level, position_x, position_z, state,
+    id_db, hp_coef, uid, player, position_x, position_z, state,
     velocity_x, velocity_z, next_state, state_pending, frame_state, formation,
     pos_in_state, command_priority, command_center, charge_energy, target_uid,
     pending_target_uid, aim_kind, aim_target_uid, aim_current, aim_direction_x,
@@ -112,7 +124,7 @@ INSERT INTO units_current (
     pending_aim_current, pending_aim_direction_x, pending_aim_direction_z
 )
 SELECT
-    id_db, hp_coef, uid, player, level, position_x, position_z, state,
+    id_db, hp_coef, uid, player, position_x, position_z, state,
     velocity_x, velocity_z, next_state, state_pending, frame_state, formation,
     pos_in_state,
     CAST(CASE WHEN typeof(command_priority) = 'real'
@@ -148,7 +160,6 @@ CREATE TABLE buildings_current (
     hp_coef INT NOT NULL,
     uid INT PRIMARY KEY,
     player INT NOT NULL,
-    level INT NOT NULL,
     bucket_x INT NOT NULL,
     bucket_y INT NOT NULL,
     state INT NOT NULL,
@@ -158,11 +169,11 @@ CREATE TABLE buildings_current (
 ) WITHOUT ROWID;
 
 INSERT INTO buildings_current (
-    id_db, hp_coef, uid, player, level, bucket_x, bucket_y, state, next_state,
+    id_db, hp_coef, uid, player, bucket_x, bucket_y, state, next_state,
     target_uid, frame_state
 )
 SELECT
-    id_db, hp_coef, uid, player, level, bucket_x, bucket_y, state, next_state,
+    id_db, hp_coef, uid, player, bucket_x, bucket_y, state, next_state,
     target_uid, frame_state
 FROM buildings;
 
@@ -253,7 +264,7 @@ PRAGMA foreign_keys = ON;
 -- Validation
 -- ----------
 -- The current required table column counts are:
--- units: 30, buildings: 11, players: 22, config: 13.
+-- units: 29, buildings: 10, players: 22, config: 13.
 -- The following commands should show those schemas and no legacy GUI columns.
 PRAGMA table_info(units);
 PRAGMA table_info(buildings);
@@ -263,6 +274,41 @@ PRAGMA table_info(config);
 -- Optional runtime tables remain absent in this quicksave; this migration does
 -- not synthesize empty continuation state. A normal current save also creates
 -- ai_state even when the other optional runtime tables have no rows.
+ALTER TABLE player_levels RENAME TO player_levels_legacy;
+CREATE TABLE player_levels (
+    player INT NOT NULL,
+    type INT NOT NULL,
+    id INT NOT NULL,
+    level INT NOT NULL,
+    PRIMARY KEY(player, type, id)
+) WITHOUT ROWID;
+
+-- Populate the mandatory complete row set from data.db. Existing player-level
+-- values win; otherwise legacy per-entity levels are used, defaulting to zero.
+INSERT INTO player_levels (player, type, id, level)
+SELECT p.id, 0, un.unit,
+       COALESCE((SELECT MAX(level) FROM player_levels_legacy pl
+                 WHERE pl.player = p.id AND pl.type = 0 AND pl.id = un.unit),
+                (SELECT MAX(el.level) FROM legacy_entity_levels el
+                 WHERE el.player = p.id AND el.type = 0 AND el.id = un.unit), 0)
+FROM players p
+JOIN data.unit_to_nation un ON un.nation = p.nation
+JOIN data.unit_level ul ON ul.unit = un.unit
+GROUP BY p.id, un.unit;
+INSERT INTO player_levels (player, type, id, level)
+SELECT p.id, 1, bn.building,
+       COALESCE((SELECT MAX(level) FROM player_levels_legacy pl
+                 WHERE pl.player = p.id AND pl.type = 1 AND pl.id = bn.building),
+                (SELECT MAX(el.level) FROM legacy_entity_levels el
+                 WHERE el.player = p.id AND el.type = 1 AND el.id = bn.building), 0)
+FROM players p
+JOIN data.building_to_nation bn ON bn.nation = p.nation
+JOIN data.building_level bl ON bl.building = bn.building
+GROUP BY p.id, bn.building;
+DROP TABLE player_levels_legacy;
+DROP TABLE legacy_entity_levels;
+DETACH data;
+
 SELECT name FROM sqlite_master
 WHERE type = 'table'
   AND name IN ('unit_orders', 'aim_paths', 'queues', 'player_levels',

@@ -58,7 +58,7 @@ struct PlayerLevelSaveData {
 	unsigned char player{};
 	unsigned char type{};
 	unsigned short id{};
-	char level{};
+	unsigned char level{};
 };
 
 struct PlayerTechnologySaveData {

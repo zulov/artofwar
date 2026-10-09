@@ -109,20 +109,25 @@ PRAGMA table_info(config);
 -- have more physical columns because named-column reads ignore legacy fields
 -- that were removed from the current contract.
 
--- units: 30
--- buildings: 11
+-- units: 29
+-- buildings: 10
 -- players: 22
 -- config: 13
 
 -- With the documented legacy input, the physical counts after this script are:
--- units: 30
--- buildings: 12 (the legacy deploy_Idx column is retained and ignored)
+-- units: 29 (the old per-entity level column is retained and ignored if present)
+-- buildings: 12 (the legacy deploy_Idx and per-entity level columns are retained and ignored)
 -- players: 24 (the legacy name and color columns are retained and ignored)
 -- config: 13
 
--- The optional current-format runtime tables are intentionally not created by
--- this migration. The loader treats them as absent and starts their state
--- empty. RNG continuation is represented by config in the current schema;
--- camera state is intentionally recreated on load. AI continuation state remains
--- empty because it is stored in optional
--- ai_state, ai_wants, and ai_history tables.
+-- player_levels is mandatory in the current format. Populate it from the
+-- current data.db nation relationships: one row at level 0 for every supported
+-- unit and building definition for each saved player, then replace level 0 with
+-- any known player-wide upgrade values. The loader rejects missing or incomplete
+-- coverage.
+
+-- The other optional current-format runtime tables are intentionally not created
+-- by this migration. RNG continuation is represented by config in the current
+-- schema; camera state is intentionally recreated on load. AI continuation state
+-- remains empty because it is stored in optional ai_state, ai_wants, and
+-- ai_history tables.

@@ -192,6 +192,31 @@ TEST(PersistenceRowTest, WorldAgeRowsRoundTripContinuationState) {
 	EXPECT_EQ(expectedState.history, actualState.history);
 }
 
+TEST(PersistenceRowTest, PlayerLevelRowsRoundTripZeroAndNonZeroLevels) {
+	const PlayerLevelSaveData expectedZero{1, 0, 7, 0};
+	const PlayerLevelSaveData expectedLevel{1, 1, 4, 2};
+
+	const auto actualZero = roundTrip<PlayerLevelCol>(expectedZero);
+	const auto actualLevel = roundTrip<PlayerLevelCol>(expectedLevel);
+
+	EXPECT_EQ(expectedZero.player, actualZero.player);
+	EXPECT_EQ(expectedZero.type, actualZero.type);
+	EXPECT_EQ(expectedZero.id, actualZero.id);
+	EXPECT_EQ(expectedZero.level, actualZero.level);
+	EXPECT_EQ(expectedLevel.player, actualLevel.player);
+	EXPECT_EQ(expectedLevel.type, actualLevel.type);
+	EXPECT_EQ(expectedLevel.id, actualLevel.id);
+	EXPECT_EQ(expectedLevel.level, actualLevel.level);
+}
+
+TEST(PersistenceRowTest, EntitySaveColumnsDoNotContainPlayerLevels) {
+	const auto unitColumns = saveColumns<UnitCol>();
+	const auto buildingColumns = saveColumns<BuildingCol>();
+
+	EXPECT_TRUE(std::ranges::none_of(unitColumns, [](const auto& column) { return column == "level"; }));
+	EXPECT_TRUE(std::ranges::none_of(buildingColumns, [](const auto& column) { return column == "level"; }));
+}
+
 TEST(PersistenceRowTest, PendingCommandRoundTripsScalarFields) {
 	PendingCommandSaveData expected;
 	expected.order = 4;

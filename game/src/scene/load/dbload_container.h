@@ -24,12 +24,11 @@ struct dbload_physical {
 	unsigned uid;
 	unsigned short id_db;
 	char player;
-	char level;
 	char state;
 	char nextState;
 
-	dbload_physical(unsigned short idDb, float hp, unsigned uid, char player, char level, char state, char nextState) :
-		hp(hp), uid(uid), id_db(idDb), player(player), level(level), state(state), nextState(nextState) {}
+	dbload_physical(unsigned short idDb, float hp, unsigned uid, char player, char state, char nextState) :
+		hp(hp), uid(uid), id_db(idDb), player(player), state(state), nextState(nextState) {}
 };
 
 struct dbload_static : dbload_physical {
@@ -37,8 +36,8 @@ struct dbload_static : dbload_physical {
 	unsigned short buc_y;
 
 	dbload_static(unsigned short idDb, float hp, unsigned uid, char player, unsigned short bucX, unsigned short bucY,
-				  char level, char state, char nextState) :
-		dbload_physical(idDb, hp, uid, player, level, state, nextState), buc_x(bucX), buc_y(bucY) {}
+				  char state, char nextState) :
+		 dbload_physical(idDb, hp, uid, player, state, nextState), buc_x(bucX), buc_y(bucY) {}
 };
 
 struct dbload_unit : dbload_physical {
@@ -52,7 +51,7 @@ struct dbload_unit : dbload_physical {
 
 	dbload_unit(sqlite3_stmt* stmt, int p) :
 		dbload_physical(asUShort(stmt, C::id_db), asItoF(stmt, C::hp_coef, p), asUI(stmt, C::uid), asByte(stmt, C::player),
-					asByte(stmt, C::level), asByte(stmt, C::state), -1),
+					asByte(stmt, C::state), -1),
 			pos_x(asItoF(stmt, C::position_x, p)), pos_z(asItoF(stmt, C::position_z, p)),
 			vel_x(asItoF(stmt, C::velocity_x, p)), vel_z(asItoF(stmt, C::velocity_z, p)) {
 		runtime.uid = uid;
@@ -78,9 +77,9 @@ struct dbload_unit : dbload_physical {
 	runtime.pendingAim.directionZ = asScaledFloat(stmt, C::pending_aim_direction_z, p);
 	}
 
-	dbload_unit(unsigned short idDb, float hp, unsigned uid, char player, char level, float posX, float posZ,
+	dbload_unit(unsigned short idDb, float hp, unsigned uid, char player, float posX, float posZ,
 				char state, float velX, float velZ) :
-		dbload_physical(idDb, hp, uid, player, level, state, -1), pos_x(posX), pos_z(posZ), vel_x(velX), vel_z(velZ) {}
+		dbload_physical(idDb, hp, uid, player, state, -1), pos_x(posX), pos_z(posZ), vel_x(velX), vel_z(velZ) {}
 };
 
 struct dbload_building : dbload_static {
@@ -90,14 +89,14 @@ struct dbload_building : dbload_static {
 
 	dbload_building(sqlite3_stmt* stmt, int p) :
 		 dbload_building(asUShort(stmt, C::id_db), asItoF(stmt, C::hp_coef, p), asUI(stmt, C::uid),
-						asByte(stmt, C::player), asByte(stmt, C::level), asUShort(stmt, C::bucket_x),
+						asByte(stmt, C::player), asUShort(stmt, C::bucket_x),
 						asUShort(stmt, C::bucket_y), asByte(stmt, C::state), asByte(stmt, C::next_state),
 						asUI(stmt, C::target_uid), asUShort(stmt, C::frame_state)) {}
 
-	dbload_building(unsigned short idDb, float hpCoef, unsigned uid, char player, char level, unsigned short bucX,
+	dbload_building(unsigned short idDb, float hpCoef, unsigned uid, char player, unsigned short bucX,
 					unsigned short bucY, char state, char nextState, unsigned targetUid,
 					unsigned short frameState) :
-		dbload_static(idDb, hpCoef, uid, player, bucX, bucY, level, state, nextState), thingToInteract(targetUid),
+		dbload_static(idDb, hpCoef, uid, player, bucX, bucY, state, nextState), thingToInteract(targetUid),
 					currentFrameState(frameState) {}
 };
 
@@ -111,7 +110,7 @@ struct dbload_resource : dbload_static {
 
 	dbload_resource(unsigned short idDb, float hpCoef, unsigned uid, unsigned short bucX, unsigned short bucY,
 					char state, char nextState) :
-		dbload_static(idDb, hpCoef, uid, -1, bucX, bucY, -1, state, nextState) {}
+		dbload_static(idDb, hpCoef, uid, -1, bucX, bucY, state, nextState) {}
 };
 
 struct dbload_player {

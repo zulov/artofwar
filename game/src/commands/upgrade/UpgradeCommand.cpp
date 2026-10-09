@@ -23,11 +23,12 @@ void UpgradeCommand::execute(SimulationObjectManager* simulationObjectManager) c
 		for (auto unit : *simulationObjectManager->getUnits()) {
 			if (unit->getPlayer() == playerId && unit->getDbId() == id) unit->levelUp();
 		}
+		simulationObjectManager->refreshPlayerEffectiveLevels(playerId);
 	} else if (type == QueueActionType::BUILDING_LEVEL && level > 0) {
 		for (auto building : *simulationObjectManager->getBuildings()) {
 			if (building->getPlayer() == playerId && building->getDbId() == id) building->levelUp();
 		}
-		simulationObjectManager->refreshResourceBonuses();
+		simulationObjectManager->refreshPlayerEffectiveLevels(playerId);
 	} else if (type == QueueActionType::UNIT_LEVEL || type == QueueActionType::BUILDING_LEVEL) {
 		simulationObjectManager->refreshPlayerEffectiveLevels(playerId);
 	}

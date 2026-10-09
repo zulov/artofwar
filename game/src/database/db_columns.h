@@ -10,7 +10,6 @@ enum class UnitCol : unsigned char {
 	hp_coef,
 	uid,
 	player,
-	level,
 	position_x,
 	position_z,
 	state,
@@ -43,7 +42,6 @@ enum class BuildingCol : unsigned char {
 	hp_coef,
 	uid,
 	player,
-	level,
 	bucket_x,
 	bucket_y,
 	state,
@@ -424,10 +422,10 @@ std::vector<std::string> columnNames() {
 // --- Save/Load contract checks ---
 static_assert(magic_enum::enum_count<PlayerCol>() == 22,
 			  "PlayerCol must match the 22 columns in SQLConsts::PLAYER_COL and bindRow<Player>");
-static_assert(magic_enum::enum_count<UnitCol>() == 30,
-			  "UnitCol must match the 30 columns in SQLConsts::UNIT_COL and bindRow<Unit>");
-static_assert(magic_enum::enum_count<BuildingCol>() == 11,
-			  "BuildingCol must match the 11 columns in SQLConsts::BUILDING_COL and bindRow<Building>");
+static_assert(magic_enum::enum_count<UnitCol>() == 29,
+			  "UnitCol must match the 29 columns in SQLConsts::UNIT_COL and bindRow<Unit>");
+static_assert(magic_enum::enum_count<BuildingCol>() == 10,
+			  "BuildingCol must match the 10 columns in SQLConsts::BUILDING_COL and bindRow<Building>");
 static_assert(magic_enum::enum_count<ResourceCol>() == 7,
 			  "ResourceCol must match the 7 columns in SQLConsts::RESOURCE_COL and bindRow<ResourceEntity>");
 static_assert(magic_enum::enum_count<ConfigCol>() == 13,

@@ -10,8 +10,7 @@ struct SQLConsts {
 
 #define PHYSICAL_COL                                                                                                   \
 	BASIC_COL                                                                                                          \
-	"player INT NOT NULL,"                                                                                             \
-	"level INT NOT NULL,"
+	"player INT NOT NULL,"
 
 #define STATIC_COL                                                                                                     \
 	"bucket_x INT NOT NULL,"                                                                                           \
