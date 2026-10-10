@@ -179,13 +179,12 @@ struct db_technology_level : db_with_name {
 };
 
 struct db_technology : db_with_name {
-	const std::string code;
 	const std::vector<unsigned short> researchBuildingIds;
 	std::vector<db_technology_level*> levels;
 
 	using C = DbTechnologyCol;
 	db_technology(sqlite3_stmt* stmt)
-		: db_with_name(asUShort(stmt, C::id), asText(stmt, C::code)), code(asText(stmt, C::code)),
+		: db_with_name(asUShort(stmt, C::id), asText(stmt, C::code)),
 		  researchBuildingIds(parseTechnologyBuildingIds(asText(stmt, C::research_building))) {}
 
 	std::optional<db_technology_level*> getLevel(unsigned char level) const {

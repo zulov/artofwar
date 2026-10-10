@@ -21,7 +21,7 @@ LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _
 }
 
 void LeftMenuInfoPanel::createBody() {
-	text = addChildText(window, "MyText", style);
+	text = addChildText(window, "LeftMenuInfoText", style);
 }
 
 void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {

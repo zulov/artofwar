@@ -1,5 +1,6 @@
 #include "pch.h"
 
+#include "database/db_struct.h"
 #include "player/Resources.h"
 #include "player/Resources.cpp"
 
@@ -28,6 +29,38 @@ TEST_F(ResourcesFixture, FoodDecayKeepsFractionalLoss) {
 
 TEST_F(ResourcesFixture, ZeroFoodDoesNotDecay) {
 	resources.setValue(0.f, 0.f, 0.f, 0.f);
+
+	resources.updateMonth();
+
+	EXPECT_FLOAT_EQ(resources.getLastFoodLost(), 0.f);
+	EXPECT_FLOAT_EQ(resources.getValue(ResourceType::FOOD), 0.f);
+}
+
+TEST_F(ResourcesFixture, ResourceReductionCannotMakeValueNegative) {
+	resources.setValue(5.f, 0.f, 0.f, 0.f);
+	db_with_cost cost(5, 0, 0, 0);
+
+	EXPECT_TRUE(resources.reduce(&cost));
+	EXPECT_FLOAT_EQ(resources.getValue(ResourceType::FOOD), 0.f);
+}
+
+TEST_F(ResourcesFixture, InsufficientResourceReductionDoesNotChangeValues) {
+	resources.setValue(5.f, 0.f, 0.f, 0.f);
+	db_with_cost cost(6, 0, 0, 0);
+
+	EXPECT_FALSE(resources.reduce(&cost));
+	EXPECT_FLOAT_EQ(resources.getValue(ResourceType::FOOD), 5.f);
+}
+
+TEST_F(ResourcesFixture, InvalidInitialResourceValuesAreNormalized) {
+	resources.setValue(-5.f, -1.f, 0.f, 0.f);
+
+	EXPECT_FLOAT_EQ(resources.getValue(ResourceType::FOOD), 0.f);
+	EXPECT_FLOAT_EQ(resources.getValue(ResourceType::WOOD), 0.f);
+}
+
+TEST_F(ResourcesFixture, MonthlyDecayRecoversInvalidNegativeFood) {
+	resources.addIncome(cast(ResourceType::FOOD), -5.f);
 
 	resources.updateMonth();
 

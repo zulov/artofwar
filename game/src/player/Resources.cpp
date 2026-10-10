@@ -1,6 +1,7 @@
 #include "Resources.h"
 
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <numeric>
 
@@ -15,7 +16,7 @@ Resources::Resources() { init(0); }
 Resources::Resources(float valueForAll) { init(valueForAll); }
 
 void Resources::init(float valueForAll) {
-	resetSpan(values, valueForAll);
+	resetSpan(values, std::isfinite(valueForAll) ? std::max(0.f, valueForAll) : 0.f);
 	resetSpan(gatherSpeeds1s);
 	resetSpan(sumGatherSpeed);
 	resetSpan(sumValues);
@@ -24,7 +25,8 @@ void Resources::init(float valueForAll) {
 bool Resources::reduce(const db_with_cost* costs) {
 	if (hasEnough(costs)) {
 		for (int i = 0; i < costs->values.size(); ++i) {
-			values[i] -= costs->values[i];
+			// Keep the resource invariant intact even when floating-point subtraction rounds below zero.
+			values[i] = std::max(0.f, values[i] - static_cast<float>(costs->values[i]));
 		}
 		return true;
 	}
@@ -33,7 +35,7 @@ bool Resources::reduce(const db_with_cost* costs) {
 
 bool Resources::hasEnough(const db_with_cost* costs) const {
 	for (int i = 0; i < costs->values.size(); ++i) {
-		if (values[i] < costs->values[i]) {
+		if (!std::isfinite(values[i]) || values[i] < costs->values[i]) {
 			return false;
 		}
 	}
@@ -52,10 +54,13 @@ void Resources::addIncome(int id, float value) {
 }
 
 void Resources::setValue(float food, float wood, float stone, float gold) {
-	values[cast(ResourceType::FOOD)] = food;
-	values[cast(ResourceType::WOOD)] = wood*100;
-	values[cast(ResourceType::STONE)] = stone * 100;
-	values[cast(ResourceType::GOLD)] = gold * 100;
+	const auto normalize = [](float value) {
+		return std::isfinite(value) ? std::max(0.f, value) : 0.f;
+	};
+	values[cast(ResourceType::FOOD)] = normalize(food);
+	values[cast(ResourceType::WOOD)] = normalize(wood * 100.f);
+	values[cast(ResourceType::STONE)] = normalize(stone * 100.f);
+	values[cast(ResourceType::GOLD)] = normalize(gold * 100.f);
 }
 
 ResourcesSaveData Resources::saveState(unsigned char player) const {
@@ -107,9 +112,14 @@ void Resources::update1s(Possession* possession) {
 }
 
 void Resources::updateMonth() {
-	lastFoodLost = potentialFoodLost();
-	values[cast(ResourceType::FOOD)] -= lastFoodLost;
-	assert(values[0] >= 0);
+	auto& food = values[cast(ResourceType::FOOD)];
+	if (!std::isfinite(food) || food < 0.f) {
+		std::cerr << "[Resource Error] Invalid food value before monthly decay: " << food << "\n";
+		food = 0.f;
+	}
+	lastFoodLost = std::min(food, potentialFoodLost());
+	food -= lastFoodLost;
+	assert(std::isfinite(food) && food >= 0.f);
 }
 
 void Resources::updateYear() {

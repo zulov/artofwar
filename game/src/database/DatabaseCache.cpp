@@ -127,7 +127,7 @@ void DatabaseCache::loadData(const std::string& name) {
 	if (!load<DbTechnologyLevelCol>("technology_level", "technology, level", [this](auto* s) {
 		const auto technologyId = asUShort(s, DbTechnologyLevelCol::technology);
 		assert(technologyId < container->technologies.size() && container->technologies[technologyId]);
-		auto* level = new db_technology_level(s, container->technologies[technologyId]->code);
+		auto* level = new db_technology_level(s, container->technologies[technologyId]->name.CString());
 		setEntity(container->technologyLevels, level);
 		assert(level->technology < container->technologies.size());
 		container->technologies[level->technology]->levels.push_back(level);
