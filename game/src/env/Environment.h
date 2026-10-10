@@ -179,7 +179,7 @@ private:
 	Grid sparseUnitGrid;
 	Urho3D::Terrain* terrain;
 	InfluenceManager influenceManager;
-	Grid* grids[3] = {&mainGrid, &buildingGrid, &resourceStaticGrid};
+	Grid* grids[3]{};
 	GridCalculator* calculator;
 
 	mutable std::vector<Physical*> neighbors;

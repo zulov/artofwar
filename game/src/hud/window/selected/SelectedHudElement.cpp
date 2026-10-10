@@ -15,7 +15,7 @@ SelectedHudElement::SelectedHudElement(Urho3D::UIElement* parent, Urho3D::XMLFil
 
 	icon = createElement<MySprite>(button, style, "NormalSprite");
 	button->SetVar("SelectedHudElement", this);
-	const auto mock = createElement<Urho3D::UIElement>(button, style, "mock");
+	const auto mock = createElement<Urho3D::UIElement>(button, style, "SelectedHudMock");
 
 	bar = createElement<Urho3D::ProgressBar>(mock, style, "MiniProgressBar");
 	bar->SetRange(1);

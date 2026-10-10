@@ -6,7 +6,7 @@
 </element>
 
 <element type="LeftMenuInfoPanel" style="MyWindow">
-	<attribute name="Min Size" value="{3*iconX} {1*iconY+2*spaceY}"/>
+	<attribute name="Min Size" value="{4*iconX+5*spaceX} {4*iconY+3*spaceY}"/>
 	<attribute name="Max Size" value="{4*iconX+5*spaceX} {4*iconY+3*spaceY}"/>
 	<attribute name="Vert Alignment" value="Bottom"/>
 	<attribute name="Horiz Alignment" value="Left"/>

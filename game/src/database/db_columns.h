@@ -363,8 +363,8 @@ enum class DbTechnologyLevelCol : unsigned char {
 };
 
 enum class DbTechnologyEffectCol : unsigned char {
+	id,
 	technology_level,
-	effect_order,
 	stat,
 	operation,
 	source_kind,

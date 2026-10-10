@@ -1,9 +1,7 @@
 #pragma once
 
-#include <algorithm>
 #include <cassert>
 #include <charconv>
-#include <cctype>
 #include <cstdlib>
 #include <iostream>
 #include <optional>
@@ -64,17 +62,13 @@ enum class TechnologySourceTag : unsigned char {
 
 enum class TechnologyTargetKind : unsigned char { NONE, UNIT, BUILDING, RESOURCE };
 
-inline std::string lowerTechnologyName(const char* value) {
-	std::string result = value ? value : "";
-	std::ranges::transform(result, result.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-	return result;
-}
+enum class TechnologyResourceType : unsigned char { NONE, ANY, FOOD, WOOD, STONE, GOLD, INVALID };
 
 template <typename T>
 inline std::optional<T> parseTechnologyEnum(const char* value) {
 	const std::string_view name = value ? value : "";
-	if constexpr (std::is_same_v<T, TechnologyTargetKind>) {
-		if (name.empty()) return TechnologyTargetKind::NONE;
+	if constexpr (std::is_same_v<T, TechnologyTargetKind> || std::is_same_v<T, TechnologyResourceType>) {
+		if (name.empty()) return T::NONE;
 	}
 	return magic_enum::enum_cast<T>(name, magic_enum::case_insensitive);
 }
@@ -129,29 +123,28 @@ inline std::string technologyLevelKey(const std::string& code, unsigned char lev
 
 struct db_technology_effect : db_entity {
 	const unsigned short technologyLevel;
-	const unsigned short effectOrder;
 	const TechnologyStat stat;
 	const TechnologyOperation operation;
 	const TechnologySourceKind sourceKind;
 	const TechnologySourceTag sourceTag;
 	const TechnologyTargetKind targetKind;
 	const TechnologySourceTag targetTag;
-	const std::string resourceType;
+	const TechnologyResourceType resourceType;
 	const short targetId;
 	const float value;
 
 	using C = DbTechnologyEffectCol;
 	db_technology_effect(sqlite3_stmt* stmt)
-		: db_entity(asUShort(stmt, C::technology_level)),
+		: db_entity(asUShort(stmt, C::id)),
 		  technologyLevel(asUShort(stmt, C::technology_level)),
-		  effectOrder(asUShort(stmt, C::effect_order)),
 		  stat(parseTechnologyEnum<TechnologyStat>(asText(stmt, C::stat)).value_or(TechnologyStat::ATTACK)),
 		  operation(parseTechnologyEnum<TechnologyOperation>(asText(stmt, C::operation)).value_or(TechnologyOperation::ADD)),
 		  sourceKind(parseTechnologyEnum<TechnologySourceKind>(asText(stmt, C::source_kind)).value_or(TechnologySourceKind::PLAYER)),
 		  sourceTag(parseTechnologyEnum<TechnologySourceTag>(asText(stmt, C::source_tag)).value_or(TechnologySourceTag::ANY)),
 		  targetKind(parseTechnologyEnum<TechnologyTargetKind>(asText(stmt, C::target_kind)).value_or(TechnologyTargetKind::NONE)),
 		  targetTag(parseTechnologyEnum<TechnologySourceTag>(asText(stmt, C::target_tag)).value_or(TechnologySourceTag::ANY)),
-		  resourceType(asText(stmt, C::resource_type)), targetId(asShort(stmt, C::target_id)),
+		  resourceType(parseTechnologyEnum<TechnologyResourceType>(asText(stmt, C::resource_type)).value_or(TechnologyResourceType::INVALID)),
+		  targetId(asShort(stmt, C::target_id)),
 		  value(asFloat(stmt, C::value)) {}
 };
 
