@@ -106,6 +106,9 @@ void Aims::loadState(Unit* unit, const AimSaveData& state, const std::vector<Uni
 		if (saved.hasTarget) {
 			const auto it = byUid.find(saved.targetUid);
 			if (it != byUid.end()) {
+				if (static_cast<UnitAction>(saved.action) == UnitAction::COLLECT) {
+					unit->rememberCollectionTarget(it->second);
+				}
 				nextAims.push_back(
 						new IndividualOrder(unit, static_cast<UnitAction>(saved.action), it->second, saved.append));
 			}

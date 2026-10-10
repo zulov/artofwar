@@ -47,6 +47,7 @@ void TopInfoPanel::update(const WorldAgeController* controller, const std::vecto
 	} else {
 		toolTip->SetPosition(window->GetScreenPosition().x_ - tooltipBorder->GetWidth(), toolTip->GetPosition().y_);
 	}
+	keepElementOnScreen(toolTip);
 	if (ageProgress.empty()) {
 		timeoutText->SetVisible(false);
 		timeoutBar->SetVisible(false);

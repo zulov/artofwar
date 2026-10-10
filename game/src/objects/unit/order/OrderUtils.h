@@ -40,26 +40,30 @@ inline void tryToAttack(Unit* unit,
 }
 
 inline void tryToCollect(Unit* unit) {
-	// This runtime-only preference is intentionally not saved. Revisit persistence if worker continuity needs it.
 	const auto resourceId = unit->getLastActionThingId();
-	if (resourceId < 0) { return; }
-
 	const auto& allResources = Game::getEnvironment()->getResources(unit->getPosition(), unit->getLevel()->interestRange);
-	std::vector<Physical*> boosted;
-	std::vector<Physical*> regular;
-	boosted.reserve(allResources.size());
-	regular.reserve(allResources.size());
-	for (auto* physical : allResources) {
-		if (physical->getSecondaryId() != resourceId) { continue; }
-		if (static_cast<ResourceEntity*>(physical)->getBonus(unit->getPlayer()) > 1.f) {
-			boosted.push_back(physical);
-		} else {
-			regular.push_back(physical);
+
+	if (resourceId >= 0) {
+		std::vector<Physical*> boosted;
+		std::vector<Physical*> regular;
+		boosted.reserve(allResources.size());
+		regular.reserve(allResources.size());
+		for (auto* physical : allResources) {
+			if (physical->getSecondaryId() != resourceId) { continue; }
+			if (static_cast<ResourceEntity*>(physical)->getBonus(unit->getPlayer()) > 1.f) {
+				boosted.push_back(physical);
+			} else {
+				regular.push_back(physical);
+			}
+		}
+
+		// Keep gathering the same type. A reachable boosted node wins; otherwise use a regular one.
+		if (toAction(unit, boosted, UnitAction::COLLECT, belowClose, false)
+			|| toAction(unit, regular, UnitAction::COLLECT, belowClose, false)) {
+			return;
 		}
 	}
 
-	// Keep gathering the same type. A reachable boosted node wins; otherwise use a regular one.
-	if (!toAction(unit, boosted, UnitAction::COLLECT, belowClose, false)) {
-		toAction(unit, regular, UnitAction::COLLECT, belowClose, false);
-	}
+	// The previous type may be unavailable or unknown after loading an older runtime state.
+	toAction(unit, allResources, UnitAction::COLLECT, belowClose, false);
 }

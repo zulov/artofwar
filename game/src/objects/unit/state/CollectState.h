@@ -30,7 +30,7 @@ public:
 
 		setStartData(unit, parameter.thingToInteract, CellState::COLLECT);
 
-		unit->lastActionThingId = parameter.thingToInteract->getSecondaryId();
+		unit->rememberCollectionTarget(parameter.thingToInteract);
 		unit->velocity = Urho3D::Vector2::ZERO;
 		
 	}

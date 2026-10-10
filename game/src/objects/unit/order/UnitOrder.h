@@ -27,6 +27,7 @@ public:
 
 	bool getAppend() const { return append; }
 	UnitAction getAction() const { return static_cast<UnitAction>(id); }
+	Physical* getTarget() const { return toUse; }
 
 protected:
 	//TODO union or variant

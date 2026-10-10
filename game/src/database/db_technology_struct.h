@@ -2,19 +2,23 @@
 
 #include <algorithm>
 #include <cassert>
+#include <charconv>
 #include <cctype>
 #include <cstdlib>
 #include <iostream>
-#include <limits>
 #include <optional>
 #include <string>
 #include <string_view>
+#include <type_traits>
 #include <vector>
+
+#include <magic_enum.hpp>
 
 #include "db_basic_struct.h"
 #include "db_columns.h"
 #include "db_struct.h"
 #include "db_utils.h"
+#include "utils/StringUtils.h"
 
 enum class TechnologyStat : unsigned char {
 	ATTACK,
@@ -65,104 +69,47 @@ inline std::string lowerTechnologyName(const char* value) {
 }
 
 template <typename T>
-std::optional<T> parseTechnologyEnum(const char* value);
-
-template <>
-inline std::optional<TechnologyStat> parseTechnologyEnum(const char* value) {
-	const auto name = lowerTechnologyName(value);
-	static constexpr std::pair<std::string_view, TechnologyStat> values[] = {
-		{"attack", TechnologyStat::ATTACK}, {"armor", TechnologyStat::ARMOR}, {"max_hp", TechnologyStat::MAX_HP},
-		{"speed", TechnologyStat::SPEED}, {"sight_range", TechnologyStat::SIGHT_RANGE},
-		{"attack_range", TechnologyStat::ATTACK_RANGE}, {"attack_reload", TechnologyStat::ATTACK_RELOAD},
-		{"gather_rate", TechnologyStat::GATHER_RATE}, {"resource_bonus", TechnologyStat::RESOURCE_BONUS},
-		{"resource_range", TechnologyStat::RESOURCE_RANGE}, {"food_storage", TechnologyStat::FOOD_STORAGE},
-		{"gold_storage", TechnologyStat::GOLD_STORAGE}, {"stone_refinement", TechnologyStat::STONE_REFINEMENT},
-		{"gold_refinement", TechnologyStat::GOLD_REFINEMENT}, {"build_time", TechnologyStat::BUILD_TIME},
-		{"train_time", TechnologyStat::TRAIN_TIME}};
-	for (const auto& [candidate, parsed] : values) {
-		if (name == candidate) return parsed;
+inline std::optional<T> parseTechnologyEnum(const char* value) {
+	const std::string_view name = value ? value : "";
+	if constexpr (std::is_same_v<T, TechnologyTargetKind>) {
+		if (name.empty()) return TechnologyTargetKind::NONE;
 	}
-	return {};
-}
-
-template <>
-inline std::optional<TechnologyOperation> parseTechnologyEnum(const char* value) {
-	const auto name = lowerTechnologyName(value);
-	if (name == "add") return TechnologyOperation::ADD;
-	if (name == "percent") return TechnologyOperation::PERCENT;
-	return {};
-}
-
-template <>
-inline std::optional<TechnologySourceKind> parseTechnologyEnum(const char* value) {
-	const auto name = lowerTechnologyName(value);
-	if (name == "unit") return TechnologySourceKind::UNIT;
-	if (name == "building") return TechnologySourceKind::BUILDING;
-	if (name == "resource") return TechnologySourceKind::RESOURCE;
-	if (name == "player") return TechnologySourceKind::PLAYER;
-	return {};
-}
-
-template <>
-inline std::optional<TechnologySourceTag> parseTechnologyEnum(const char* value) {
-	const auto name = lowerTechnologyName(value);
-	static constexpr std::pair<std::string_view, TechnologySourceTag> values[] = {
-		{"any", TechnologySourceTag::ANY}, {"army", TechnologySourceTag::ARMY},
-		{"worker", TechnologySourceTag::WORKER}, {"infantry", TechnologySourceTag::INFANTRY},
-		{"ranged", TechnologySourceTag::RANGED}, {"cavalry", TechnologySourceTag::CAVALRY},
-		{"melee", TechnologySourceTag::MELEE}, {"heavy", TechnologySourceTag::HEAVY},
-		{"light", TechnologySourceTag::LIGHT}, {"special", TechnologySourceTag::SPECIAL},
-		{"all_buildings", TechnologySourceTag::ALL_BUILDINGS},
-		{"resource_building", TechnologySourceTag::RESOURCE_BUILDING},
-		{"defensive_building", TechnologySourceTag::DEFENSIVE_BUILDING},
-		{"tech_building", TechnologySourceTag::TECH_BUILDING}};
-	for (const auto& [candidate, parsed] : values) {
-		if (name == candidate) return parsed;
-	}
-	return {};
-}
-
-template <>
-inline std::optional<TechnologyTargetKind> parseTechnologyEnum(const char* value) {
-	const auto name = lowerTechnologyName(value);
-	if (name.empty() || name == "none") return TechnologyTargetKind::NONE;
-	if (name == "unit") return TechnologyTargetKind::UNIT;
-	if (name == "building") return TechnologyTargetKind::BUILDING;
-	if (name == "resource") return TechnologyTargetKind::RESOURCE;
-	return {};
+	return magic_enum::enum_cast<T>(name, magic_enum::case_insensitive);
 }
 
 inline std::vector<unsigned short> parseTechnologyIds(const char* value, const char* fieldName) {
-	std::vector<unsigned short> result;
 	if (!value || *value == '\0') return {};
-	std::string input(value);
-	size_t begin = 0;
-	while (begin <= input.size()) {
-		const auto end = input.find(',', begin);
-		const auto tokenEnd = end == std::string::npos ? input.size() : end;
-		const auto token = input.substr(begin, tokenEnd - begin);
+	const std::string input(value);
+	if (input == "none") return {};
+
+	const auto reportEmpty = [&]() {
+		std::cerr << "[Database Error] Empty " << fieldName << " ID\n";
+		std::exit(EXIT_FAILURE);
+	};
+	const auto reportInvalid = [](const char* name, const std::string& token) {
+		std::cerr << "[Database Error] Invalid " << name << " ID: " << token << "\n";
+		std::exit(EXIT_FAILURE);
+	};
+	const auto reportOutOfRange = [](const char* name, const std::string& token) {
+		std::cerr << "[Database Error] " << name << " ID is out of range: " << token << "\n";
+		std::exit(EXIT_FAILURE);
+	};
+
+	const auto tokens = split(input, ',');
+	std::vector<unsigned short> result;
+	result.reserve(tokens.size());
+	for (const auto& token : tokens) {
 		if (token.empty()) {
-			std::cerr << "[Database Error] Empty " << fieldName << " ID\n";
-			std::exit(EXIT_FAILURE);
+			reportEmpty();
 		}
-		if (token == "none" && begin == 0 && end == std::string::npos) return {};
-		unsigned long parsed = 0;
-		for (const char character : token) {
-			if (character < '0' || character > '9') {
-				std::cerr << "[Database Error] Invalid " << fieldName << " ID: " << token << "\n";
-				std::exit(EXIT_FAILURE);
-			}
-			const auto digit = static_cast<unsigned long>(character - '0');
-			if (parsed > (std::numeric_limits<unsigned short>::max() - digit) / 10) {
-				std::cerr << "[Database Error] " << fieldName << " ID is out of range: " << token << "\n";
-				std::exit(EXIT_FAILURE);
-			}
-			parsed = parsed * 10 + digit;
-		}
-		result.push_back(static_cast<unsigned short>(parsed));
-		if (end == std::string::npos) break;
-		begin = end + 1;
+
+		unsigned short parsed = 0;
+		const auto [end, error] = std::from_chars(token.data(), token.data() + token.size(), parsed);
+		if (error == std::errc::result_out_of_range) reportOutOfRange(fieldName, token);
+		if (error != std::errc{} || end != token.data() + token.size()) reportInvalid(fieldName, token);
+		result.push_back(parsed);
 	}
+	if (input.back() == ',') reportEmpty();
 	return result;
 }
 

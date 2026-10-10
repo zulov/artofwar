@@ -77,6 +77,7 @@
     <ClCompile Include="SimulationHelpersTest.cpp" />
     <ClCompile Include="SpanUtilsTest.cpp" />
     <ClCompile Include="StringAndRegexUtilsTest.cpp" />
+    <ClCompile Include="TechnologyDescriptionTest.cpp" />
     <ClCompile Include="VectorUtilsTest.cpp" />
     <ClCompile Include="VisibilityMapTest.cpp" />
     <ClCompile Include="WantListTest.cpp" />

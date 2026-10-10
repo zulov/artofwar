@@ -167,8 +167,17 @@ bool Unit::toAction(Physical* closest, UnitAction order) {
 }
 
 void Unit::addOrder(IndividualOrder* aim) {
+	if (aim->getAction() == UnitAction::COLLECT) {
+		rememberCollectionTarget(aim->getTarget());
+	}
 	resetFormation();
 	aims.add(aim);
+}
+
+void Unit::rememberCollectionTarget(Physical* target) {
+	if (target) {
+		lastActionThingId = target->getSecondaryId();
+	}
 }
 
 void Unit::setIndexChanged(bool changed) { indexHasChanged = changed; }
@@ -467,6 +476,9 @@ void Unit::loadRuntimeState(const UnitRuntimeSaveData& runtime, Physical* target
 	if (stateChangePending) {
 		if (nextState == UnitState::ATTACK || nextState == UnitState::COLLECT || nextState == UnitState::SHOT) {
 			nextActionParameter.thingToInteract = pendingTarget;
+			if (nextState == UnitState::COLLECT && pendingTarget) {
+				rememberCollectionTarget(pendingTarget);
+			}
 			stateChangePending = pendingTarget != nullptr;
 		} else if (nextState == UnitState::GO || nextState == UnitState::FOLLOW || nextState == UnitState::CHARGE) {
 			nextActionParameter.aim = Aims::createAim(runtime.pendingAim, byUid);
@@ -494,7 +506,13 @@ void Unit::loadRuntimeState(const UnitRuntimeSaveData& runtime, Physical* target
 }
 
 void Unit::restoreInteraction() {
-	if (!thingToInteract || !thingToInteract->isAlive()) {
+	if (!thingToInteract) {
+		return;
+	}
+	if (state == UnitState::COLLECT) {
+		rememberCollectionTarget(thingToInteract);
+	}
+	if (!thingToInteract->isAlive()) {
 		thingToInteract = nullptr;
 		return;
 	}

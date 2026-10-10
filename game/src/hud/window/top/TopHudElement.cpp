@@ -39,4 +39,5 @@ const TopHudElement* TopHudElement::setText(const Urho3D::String& msg, const Urh
 
 void TopHudElement::setToolTip(const Urho3D::String& msg) const {
 	tooltipText->SetText(msg);
+	keepElementOnScreen(toolTip);
 }

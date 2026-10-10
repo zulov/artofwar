@@ -12,6 +12,11 @@ TEST(PersistenceStateTest, TechnologyResearchBuildingIdsParseAsConcreteIds) {
 	EXPECT_TRUE(parseTechnologyBuildingIds("none").empty());
 }
 
+TEST(PersistenceStateTest, TechnologyAgeIdsParseAsConcreteIds) {
+	EXPECT_EQ(parseTechnologyAgeIds("0,2,65535"), std::vector<unsigned short>({0, 2, 65535}));
+	EXPECT_TRUE(parseTechnologyAgeIds("").empty());
+}
+
 TEST(PersistenceStateTest, QueueContainsMatchesResearchTechnologyId) {
 	QueueManager firstBuildingQueue;
 	QueueManager secondBuildingQueue;

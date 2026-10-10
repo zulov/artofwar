@@ -239,5 +239,169 @@
 	},
 	"info_unit":{
 		"pl":"%s %s\nAtak: %s|%s|%s\nObrona: %s\nZdrowie: %d/%d\nUżytkowników: %d/%d %d/%d\nStan: %s"
+	},
+	"tech_effects":{
+		"pl":"Efekty:",
+		"en":"Effects:"
+	},
+	"tech_effect_for":{
+		"pl":"dla",
+		"en":"for"
+	},
+	"tech_effect_affecting":{
+		"pl":"wpływające na",
+		"en":"affecting"
+	},
+	"tech_stat_attack":{
+		"pl":"Atak",
+		"en":"Attack"
+	},
+	"tech_stat_armor":{
+		"pl":"Obrona",
+		"en":"Armor"
+	},
+	"tech_stat_max_hp":{
+		"pl":"Maks. zdrowie",
+		"en":"Maximum health"
+	},
+	"tech_stat_speed":{
+		"pl":"Prędkość",
+		"en":"Speed"
+	},
+	"tech_stat_sight_range":{
+		"pl":"Zasięg widzenia",
+		"en":"Sight range"
+	},
+	"tech_stat_attack_range":{
+		"pl":"Zasięg ataku",
+		"en":"Attack range"
+	},
+	"tech_stat_attack_reload":{
+		"pl":"Czas przeładowania",
+		"en":"Attack reload"
+	},
+	"tech_stat_gather_rate":{
+		"pl":"Tempo zbierania",
+		"en":"Gather rate"
+	},
+	"tech_stat_resource_bonus":{
+		"pl":"Bonus zasobów",
+		"en":"Resource bonus"
+	},
+	"tech_stat_resource_range":{
+		"pl":"Zasięg zasobów",
+		"en":"Resource range"
+	},
+	"tech_stat_food_storage":{
+		"pl":"Magazyn żywności",
+		"en":"Food storage"
+	},
+	"tech_stat_gold_storage":{
+		"pl":"Magazyn złota",
+		"en":"Gold storage"
+	},
+	"tech_stat_stone_refinement":{
+		"pl":"Obróbka kamienia",
+		"en":"Stone refinement"
+	},
+	"tech_stat_gold_refinement":{
+		"pl":"Obróbka złota",
+		"en":"Gold refinement"
+	},
+	"tech_stat_build_time":{
+		"pl":"Czas budowy",
+		"en":"Build time"
+	},
+	"tech_stat_train_time":{
+		"pl":"Czas szkolenia",
+		"en":"Train time"
+	},
+	"tech_stat_unknown":{
+		"pl":"Nieznana statystyka",
+		"en":"Unknown stat"
+	},
+	"tech_scope_unit_any":{
+		"pl":"wszystkich jednostek",
+		"en":"all units"
+	},
+	"tech_scope_unit_army":{
+		"pl":"armii",
+		"en":"army units"
+	},
+	"tech_scope_unit_worker":{
+		"pl":"robotników",
+		"en":"workers"
+	},
+	"tech_scope_unit_infantry":{
+		"pl":"piechoty",
+		"en":"infantry"
+	},
+	"tech_scope_unit_ranged":{
+		"pl":"jednostek dystansowych",
+		"en":"ranged units"
+	},
+	"tech_scope_unit_cavalry":{
+		"pl":"kawalerii",
+		"en":"cavalry"
+	},
+	"tech_scope_unit_melee":{
+		"pl":"jednostek walczących wręcz",
+		"en":"melee units"
+	},
+	"tech_scope_unit_heavy":{
+		"pl":"ciężkich jednostek",
+		"en":"heavy units"
+	},
+	"tech_scope_unit_light":{
+		"pl":"lekkich jednostek",
+		"en":"light units"
+	},
+	"tech_scope_unit_special":{
+		"pl":"jednostek specjalnych",
+		"en":"special units"
+	},
+	"tech_scope_building_any":{
+		"pl":"wszystkich budynków",
+		"en":"all buildings"
+	},
+	"tech_scope_building_resource":{
+		"pl":"budynków zasobów",
+		"en":"resource buildings"
+	},
+	"tech_scope_building_defensive":{
+		"pl":"budynków obronnych",
+		"en":"defensive buildings"
+	},
+	"tech_scope_building_tech":{
+		"pl":"budynków technologicznych",
+		"en":"technology buildings"
+	},
+	"tech_scope_resource_any":{
+		"pl":"wszystkich zasobów",
+		"en":"all resources"
+	},
+	"tech_scope_player":{
+		"pl":"gracza",
+		"en":"the player"
+	},
+	"tech_scope_unknown":{
+		"pl":"nieznanego celu",
+		"en":"an unknown target"
+	},
+	"tech_resource_food":{
+		"pl":"żywności",
+		"en":"food"
+	},
+	"tech_resource_wood":{
+		"pl":"drewna",
+		"en":"wood"
+	},
+	"tech_resource_stone":{
+		"pl":"kamienia",
+		"en":"stone"
+	},
+	"tech_resource_gold":{
+		"pl":"złota",
+		"en":"gold"
 	}
 }

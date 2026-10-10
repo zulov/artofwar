@@ -103,6 +103,7 @@ public:
 
 	void changeColor(SimColorMode mode);
 	void addOrder(IndividualOrder* aim);
+	void rememberCollectionTarget(Physical* target);
 
 	void drawLineTo(const Urho3D::Vector2& second, const Urho3D::Color& color) const;
 	void debug(DebugUnitType type, ForceStats& stats);
@@ -202,7 +203,7 @@ private:
 	bool stateChangePending = false;
 	char slotToInteract = -1;
 	unsigned char useSockets = 0;
-	char lastActionThingId = -1; // Runtime-only collection preference; revisit save persistence if worker continuity requires it.
+	char lastActionThingId = -1;
 
 	bool indexHasChanged = false;
 	bool shouldUpdate = false;

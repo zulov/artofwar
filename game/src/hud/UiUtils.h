@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <utility>
 #include <vector>
 #include <Urho3D/Graphics/Texture2D.h>
@@ -6,6 +7,7 @@
 #include <Urho3D/UI/DropDownList.h>
 #include <Urho3D/UI/Sprite.h>
 #include <Urho3D/UI/Text.h>
+#include <Urho3D/UI/UIElement.h>
 #include "Game.h"
 #include "MySprite.h"
 
@@ -54,6 +56,30 @@ T* createElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style,
 	auto element = parent->CreateChild<T>();
 	element->SetStyle(styleName, style);
 	return element;
+}
+
+inline void keepElementOnScreen(Urho3D::UIElement* element) {
+	if (!element) {
+		return;
+	}
+
+	const auto* root = element->GetRoot();
+	const auto* parent = element->GetParent();
+	if (!root || !parent) {
+		return;
+	}
+
+	const auto rootPosition = root->GetScreenPosition();
+	const auto elementPosition = element->GetScreenPosition();
+	const int leftEdge = rootPosition.x_;
+	const int topEdge = rootPosition.y_;
+	const int rightEdge = leftEdge + root->GetWidth();
+	const int bottomEdge = topEdge + root->GetHeight();
+	const int visibleX = std::max(leftEdge, std::min(elementPosition.x_, rightEdge - element->GetWidth()));
+	const int visibleY = std::max(topEdge, std::min(elementPosition.y_, bottomEdge - element->GetHeight()));
+
+	const auto position = element->GetPosition();
+	element->SetPosition(position.x_ + visibleX - elementPosition.x_, position.y_ + visibleY - elementPosition.y_);
 }
 
 static MySprite* createSprite(Urho3D::UIElement* parent, Urho3D::Texture2D* texture, Urho3D::XMLFile* style,

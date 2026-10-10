@@ -14,6 +14,7 @@
 #include "objects/unit/order/UnitConst.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
+#include "utils/TechnologyDescription.h"
 #include "utils/NamesUtils.h"
 
 LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style) : SimplePanel(root, _style, "LeftMenuInfoPanel", {}) {
@@ -94,7 +95,12 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 			const auto* level = technologyLevels[id];
 			if (level) {
 				const auto cost = Game::getPlayersMan()->getActivePlayer()->technologyResearchCost(level->id);
-				return stringFrom(level->name, &cost);
+				auto name = Game::getLocalization()->Get(level->name);
+				if (const auto description = TechnologyDescription::effects(level); !description.Empty()) {
+					name += "\n";
+					name += description;
+				}
+				return stringFrom(name, &cost);
 			}
 		}
 		break;

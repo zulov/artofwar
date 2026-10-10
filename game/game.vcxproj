@@ -404,6 +404,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utils\CountUtils.h" />
+    <ClInclude Include="src\utils\TechnologyDescription.h" />
     <ClInclude Include="src\utils\TechnologyUtils.h" />
     <ClInclude Include="src\database\db_columns.h" />
     <ClInclude Include="src\database\db_update_utils.h" />
