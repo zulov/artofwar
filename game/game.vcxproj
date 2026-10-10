@@ -383,7 +383,7 @@
     <ClCompile Include="src\objects\unit\Unit.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\simulation\Simulation.cpp" />
-	<ClCompile Include="src\simulation\WorldAgeController.cpp" />
+    <ClCompile Include="src\simulation\WorldAgeController.cpp" />
     <ClCompile Include="src\commands\upgrade\UpgradeCommand.cpp" />
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
     <ClCompile Include="src\hud\window\top\info\TopInfoPanel.cpp" />
@@ -447,7 +447,6 @@
     <ClInclude Include="src\env\GridCalculatorProvider.h" />
     <ClInclude Include="src\control\HealthBarProvider.h" />
     <ClInclude Include="src\commands\action\GeneralActionCommand.h" />
-    <ClInclude Include="src\commands\action\GeneralActionType.h" />
     <ClInclude Include="src\math\RandGen.h" />
     <ClInclude Include="src\math\RandType.h" />
     <ClInclude Include="src\objects\unit\order\OrderUtils.h" />
@@ -455,8 +454,7 @@
     <ClInclude Include="src\player\ai\AiHistoryEnums.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
     <ClInclude Include="src\env\CloseIndexes.h" />
-    <ClInclude Include="src\commands\action\BuildingActionType.h" />
-    <ClInclude Include="src\commands\action\ResourceActionType.h" />
+    <ClInclude Include="src\commands\action\ActionTypes.h" />
     <ClInclude Include="src\commands\action\ResourceActionCommand.h" />
     <ClInclude Include="src\commands\action\BuildingActionCommand.h" />
     <ClInclude Include="src\player\ai\ActionCenter.h" />
@@ -549,9 +547,9 @@
     <ClInclude Include="src\objects\unit\state\GoState.h" />
     <ClInclude Include="src\objects\unit\state\MoveState.h" />
     <ClInclude Include="src\scene\load\dbload_container.h" />
-	<ClInclude Include="src\scene\load\RuntimeSaveData.h" />
-	<ClInclude Include="src\scene\save\SaveTable.h" />
-	<ClInclude Include="src\scene\save\SaveTableUtils.h" />
+    <ClInclude Include="src\scene\load\RuntimeSaveData.h" />
+    <ClInclude Include="src\scene\save\SaveTable.h" />
+    <ClInclude Include="src\scene\save\SaveTableUtils.h" />
     <ClInclude Include="src\scene\load\SceneLoader.h" />
     <ClInclude Include="src\scene\save\SceneSaver.h" />
     <ClInclude Include="src\env\bucket\Bucket.h" />
@@ -617,8 +615,8 @@
     <ClInclude Include="src\objects\unit\Unit.h" />
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\simulation\Simulation.h" />
-	<ClInclude Include="src\simulation\WorldAgeController.h" />
-	<ClInclude Include="src\database\db_world_age_struct.h" />
+    <ClInclude Include="src\simulation\WorldAgeController.h" />
+    <ClInclude Include="src\database\db_world_age_struct.h" />
     <ClInclude Include="src\objects\unit\state\UnitState.h" />
     <ClInclude Include="src\utils\DeleteUtils.h" />
     <ClInclude Include="src\commands\upgrade\UpgradeCommand.h" />

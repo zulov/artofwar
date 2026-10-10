@@ -14,7 +14,7 @@
 #include "Game.h"
 #include "NormScale.h"
 #include "commands/action/BuildingActionCommand.h"
-#include "commands/action/BuildingActionType.h"
+#include "commands/action/ActionTypes.h"
 #include "commands/upgrade/UpgradeCommand.h"
 #include "database/DatabaseCache.h"
 #include "database/db_technology_struct.h"

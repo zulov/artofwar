@@ -3,12 +3,10 @@
 #include <utility>
 
 #include "Game.h"
+#include "commands/action/ActionTypes.h"
 #include "commands/action/BuildingActionCommand.h"
-#include "commands/action/BuildingActionType.h"
 #include "commands/action/GeneralActionCommand.h"
-#include "commands/action/GeneralActionType.h"
 #include "commands/action/ResourceActionCommand.h"
-#include "commands/action/ResourceActionType.h"
 #include "commands/action/UnitActionCommand.h"
 #include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"

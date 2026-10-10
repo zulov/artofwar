@@ -3,7 +3,7 @@
 
 #include "Game.h"
 #include "objects/queue/QueueActionType.h"
-#include "GeneralActionType.h"
+#include "ActionTypes.h"
 #include "database/db_struct.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"

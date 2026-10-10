@@ -3,7 +3,7 @@
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Scene/Node.h>
 #include "Game.h"
-#include "commands/action/ResourceActionType.h"
+#include "commands/action/ActionTypes.h"
 #include "database/DatabaseCache.h"
 #include "database/db_struct.h"
 #include "math/RandGen.h"

@@ -3,7 +3,7 @@
 #include <magic_enum.hpp>
 #include <string>
 #include "Game.h"
-#include "commands/action/BuildingActionType.h"
+#include "commands/action/ActionTypes.h"
 #include "database/DatabaseCache.h"
 #include "database/db_technology_struct.h"
 #include "env/Environment.h"

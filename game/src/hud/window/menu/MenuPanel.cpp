@@ -17,7 +17,7 @@
 #include "objects/ObjectEnums.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "commands/action/ResourceActionType.h"
+#include "commands/action/ActionTypes.h"
 #include "database/db_other_struct.h"
 #include "database/db_struct.h"
 #include "database/db_technology_struct.h"
