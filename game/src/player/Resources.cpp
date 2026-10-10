@@ -1,5 +1,7 @@
 #include "Resources.h"
 
+#include <algorithm>
+#include <cmath>
 #include <numeric>
 
 #include "Possession.h"
@@ -71,13 +73,28 @@ void Resources::recalculateBuildingState(const Possession* possession) {
 	goldStorage = 0;
 	stoneRefineCapacity = 0;
 	goldRefineCapacity = 0;
+	int baseFoodStorage = 0;
+	int baseGoldStorage = 0;
 	for (const auto* building : possession->getBuildings()) {
+		if (!building->isReady()) continue;
 		const auto* level = building->getLevel();
-		foodStorage += level->foodStorage;
-		goldStorage += level->goldStorage;
+		baseFoodStorage += level->foodStorage;
+		baseGoldStorage += level->goldStorage;
 		stoneRefineCapacity += level->stoneRefineCapacity;
 		goldRefineCapacity += level->goldRefineCapacity;
 	}
+	foodStorage = std::round(baseFoodStorage * foodStorageMultiplier);
+	goldStorage = std::round(baseGoldStorage * goldStorageMultiplier);
+}
+
+void Resources::setTechnologyModifiers(float newFoodLostRate, float newGoldGainRate, float newStoneRefineBonus,
+		float newGoldRefineBonus, float newFoodStorageMultiplier, float newGoldStorageMultiplier) {
+	foodLostRate = std::clamp(newFoodLostRate, 0.f, 1.f);
+	goldGainRate = std::max(0.f, newGoldGainRate);
+	stoneRefineBonus = std::max(0.f, newStoneRefineBonus);
+	goldRefineBonus = std::max(0.f, newGoldRefineBonus);
+	foodStorageMultiplier = std::max(0.f, newFoodStorageMultiplier);
+	goldStorageMultiplier = std::max(0.f, newGoldStorageMultiplier);
 }
 
 void Resources::update1s(Possession* possession) {

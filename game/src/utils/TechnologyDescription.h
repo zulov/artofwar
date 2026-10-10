@@ -55,6 +55,8 @@ inline const char* statKey(TechnologyStat stat) {
 	case TechnologyStat::GOLD_REFINEMENT: return "tech_stat_gold_refinement";
 	case TechnologyStat::BUILD_TIME: return "tech_stat_build_time";
 	case TechnologyStat::TRAIN_TIME: return "tech_stat_train_time";
+	case TechnologyStat::FOOD_DECAY: return "tech_stat_food_decay";
+	case TechnologyStat::GOLD_INTEREST: return "tech_stat_gold_interest";
 	default: return "tech_stat_unknown";
 	}
 }

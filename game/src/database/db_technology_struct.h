@@ -36,7 +36,9 @@ enum class TechnologyStat : unsigned char {
 	STONE_REFINEMENT,
 	GOLD_REFINEMENT,
 	BUILD_TIME,
-	TRAIN_TIME
+	TRAIN_TIME,
+	FOOD_DECAY,
+	GOLD_INTEREST
 };
 
 enum class TechnologyOperation : unsigned char { ADD, PERCENT };

@@ -39,5 +39,10 @@ const TopHudElement* TopHudElement::setText(const Urho3D::String& msg, const Urh
 
 void TopHudElement::setToolTip(const Urho3D::String& msg) const {
 	tooltipText->SetText(msg);
-	keepElementOnScreen(toolTip);
+	const auto* tooltipBorder = tooltipText->GetParent();
+	if (toolTip->GetParent() == button) {
+		toolTip->SetPosition(-tooltipBorder->GetWidth(), toolTip->GetPosition().y_);
+	} else {
+		toolTip->SetPosition(button->GetScreenPosition().x_ - tooltipBorder->GetWidth(), toolTip->GetPosition().y_);
+	}
 }

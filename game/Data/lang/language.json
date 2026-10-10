@@ -316,6 +316,14 @@
 		"pl":"Czas szkolenia",
 		"en":"Train time"
 	},
+	"tech_stat_food_decay":{
+		"pl":"Utrata żywności",
+		"en":"Food decay"
+	},
+	"tech_stat_gold_interest":{
+		"pl":"Odsetki od złota",
+		"en":"Gold interest"
+	},
 	"tech_stat_unknown":{
 		"pl":"Nieznana statystyka",
 		"en":"Unknown stat"

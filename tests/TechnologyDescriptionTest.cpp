@@ -16,3 +16,8 @@ TEST(TechnologyDescriptionTest, RemovesFloatingPointNoise) {
 	EXPECT_EQ(TechnologyDescription::formatEffectValue(TechnologyOperation::ADD, 1.234f), "+1.23");
 	EXPECT_EQ(TechnologyDescription::formatEffectValue(TechnologyOperation::PERCENT, 0.f), "0%");
 }
+
+TEST(TechnologyDescriptionTest, ProvidesEconomyStatKeys) {
+	EXPECT_STREQ(TechnologyDescription::statKey(TechnologyStat::FOOD_DECAY), "tech_stat_food_decay");
+	EXPECT_STREQ(TechnologyDescription::statKey(TechnologyStat::GOLD_INTEREST), "tech_stat_gold_interest");
+}

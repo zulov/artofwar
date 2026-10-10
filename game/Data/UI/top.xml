@@ -10,16 +10,16 @@
 </element>
 
 <element type="TopButtons" style="Button">
-	<attribute name="Min Size" value="{iconX*2} {iconY/2}"/>
-	<attribute name="Max Size" value="{iconX*2.5} {iconY/2}"/>
+	<attribute name="Min Size" value="{iconX*2.25} {iconY/2}"/>
+	<attribute name="Max Size" value="{iconX*2.75} {iconY/2}"/>
 </element>
 <element type="TopButtonsNarrow" style="Button">
-	<attribute name="Min Size" value="{iconX*1.5} {iconY/2}"/>
-	<attribute name="Max Size" value="{iconX*2} {iconY/2}"/>
+	<attribute name="Min Size" value="{iconX*1.75} {iconY/2}"/>
+	<attribute name="Max Size" value="{iconX*2.25} {iconY/2}"/>
 </element>
 <element type="TopButtonsWide" style="Button">
-	<attribute name="Min Size" value="{iconX*2.5} {iconY/2}"/>
-	<attribute name="Max Size" value="{iconX*3.5} {iconY/2}"/>
+	<attribute name="Min Size" value="{iconX*2.75} {iconY/2}"/>
+	<attribute name="Max Size" value="{iconX*3.75} {iconY/2}"/>
 </element>
 
 <element type="TopText" style="MyText">

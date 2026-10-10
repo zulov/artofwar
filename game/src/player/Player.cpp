@@ -189,6 +189,66 @@ float Player::technologyAgeMultiplier(const db_technology_level* level) const {
 	return difference == 0 ? 1.f : difference == 1 ? .8f : difference == 2 ? .6f : difference == 3 ? .4f : .3f;
 }
 
+void Player::refreshResourceTechnologyModifiers() {
+	float foodLostRate = Resources::DEFAULT_FOOD_LOST_RATE;
+	float goldGainRate = Resources::DEFAULT_GOLD_GAIN_RATE;
+	float stoneRefineBonus = Resources::DEFAULT_STONE_REFINE_BONUS;
+	float goldRefineBonus = Resources::DEFAULT_GOLD_REFINE_BONUS;
+	float foodStorageMultiplier = Resources::DEFAULT_FOOD_STORAGE_MULTIPLIER;
+	float goldStorageMultiplier = Resources::DEFAULT_GOLD_STORAGE_MULTIPLIER;
+
+	const auto appliesToResource = [](const db_technology_effect* effect, ResourceType resource) {
+		if (effect->targetKind == TechnologyTargetKind::NONE) return true;
+		return effect->targetKind == TechnologyTargetKind::RESOURCE &&
+			TechnologyUtils::matchesResourceTarget(effect, cast(resource));
+	};
+
+	for (const auto* technology : Game::getDatabase()->getTechnologyLevels()) {
+		if (!TechnologyUtils::isActive(this, technology)) continue;
+		for (const auto* effect : technology->effects) {
+			if (effect->sourceKind != TechnologySourceKind::PLAYER) continue;
+			switch (effect->stat) {
+			case TechnologyStat::FOOD_DECAY:
+				if (appliesToResource(effect, ResourceType::FOOD)) {
+					TechnologyUtils::applyEffect(foodLostRate, effect);
+				}
+				break;
+			case TechnologyStat::GOLD_INTEREST:
+				if (appliesToResource(effect, ResourceType::GOLD)) {
+					TechnologyUtils::applyEffect(goldGainRate, effect);
+				}
+				break;
+			case TechnologyStat::STONE_REFINEMENT:
+				if (appliesToResource(effect, ResourceType::STONE)) {
+					TechnologyUtils::applyEffect(stoneRefineBonus, effect);
+				}
+				break;
+			case TechnologyStat::GOLD_REFINEMENT:
+				if (appliesToResource(effect, ResourceType::GOLD)) {
+					TechnologyUtils::applyEffect(goldRefineBonus, effect);
+				}
+				break;
+			case TechnologyStat::FOOD_STORAGE:
+				if (appliesToResource(effect, ResourceType::FOOD)) {
+					TechnologyUtils::applyEffect(foodStorageMultiplier, effect);
+				}
+				break;
+			case TechnologyStat::GOLD_STORAGE:
+				if (appliesToResource(effect, ResourceType::GOLD)) {
+					TechnologyUtils::applyEffect(goldStorageMultiplier, effect);
+				}
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	resources->setTechnologyModifiers(foodLostRate, goldGainRate, stoneRefineBonus, goldRefineBonus,
+			foodStorageMultiplier, goldStorageMultiplier);
+	resources->recalculateBuildingState(possession);
+}
+
 db_with_cost Player::technologyResearchCost(unsigned short levelId) const {
 	const auto* level = Game::getDatabase()->getTechnologyLevel(levelId);
 	const auto multiplier = technologyAgeMultiplier(level);
@@ -386,6 +446,7 @@ void Player::refreshEffectiveLevels() {
 		playerLevel.effective->sqAttackRange = static_cast<float>(playerLevel.effective->attackRange) * playerLevel.effective->attackRange;
 		playerLevel.effective->finish(const_cast<db_building*>(building));
 	}
+	refreshResourceTechnologyModifiers();
 }
 
 void Player::addKilled(Physical* physical) const { possession->addKilled(physical); }

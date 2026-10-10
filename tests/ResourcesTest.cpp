@@ -35,6 +35,30 @@ TEST_F(ResourcesFixture, ZeroFoodDoesNotDecay) {
 	EXPECT_FLOAT_EQ(resources.getValue(ResourceType::FOOD), 0.f);
 }
 
+TEST_F(ResourcesFixture, TechnologyCanReduceFoodDecayRate) {
+	resources.setValue(5.f, 0.f, 0.f, 0.f);
+	resources.setTechnologyModifiers(0.04f, Resources::DEFAULT_GOLD_GAIN_RATE,
+			Resources::DEFAULT_STONE_REFINE_BONUS, Resources::DEFAULT_GOLD_REFINE_BONUS,
+			Resources::DEFAULT_FOOD_STORAGE_MULTIPLIER, Resources::DEFAULT_GOLD_STORAGE_MULTIPLIER);
+
+	resources.updateMonth();
+
+	EXPECT_FLOAT_EQ(resources.getLastFoodLost(), 0.2f);
+	EXPECT_FLOAT_EQ(resources.getValue(ResourceType::FOOD), 4.8f);
+}
+
+TEST_F(ResourcesFixture, TechnologyCanDisableFoodDecay) {
+	resources.setValue(5.f, 0.f, 0.f, 0.f);
+	resources.setTechnologyModifiers(0.f, Resources::DEFAULT_GOLD_GAIN_RATE,
+			Resources::DEFAULT_STONE_REFINE_BONUS, Resources::DEFAULT_GOLD_REFINE_BONUS,
+			Resources::DEFAULT_FOOD_STORAGE_MULTIPLIER, Resources::DEFAULT_GOLD_STORAGE_MULTIPLIER);
+
+	resources.updateMonth();
+
+	EXPECT_FLOAT_EQ(resources.getLastFoodLost(), 0.f);
+	EXPECT_FLOAT_EQ(resources.getValue(ResourceType::FOOD), 5.f);
+}
+
 TEST_F(ResourcesFixture, GatheredResourcesUpdateCumulativeIncome) {
 	resources.addGathered(cast(ResourceType::STONE), 4.f);
 

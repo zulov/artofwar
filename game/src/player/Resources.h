@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <iostream>
 #include <objects/resource/ResourceType.h>
@@ -14,6 +15,13 @@ struct db_with_cost;
 
 class Resources {
 public:
+	static constexpr float DEFAULT_FOOD_LOST_RATE = 0.1f;
+	static constexpr float DEFAULT_STONE_REFINE_BONUS = 0.1f;
+	static constexpr float DEFAULT_GOLD_GAIN_RATE = 0.01f;
+	static constexpr float DEFAULT_GOLD_REFINE_BONUS = 0.1f;
+	static constexpr float DEFAULT_FOOD_STORAGE_MULTIPLIER = 1.f;
+	static constexpr float DEFAULT_GOLD_STORAGE_MULTIPLIER = 1.f;
+
 	Resources();
 	~Resources() = default;
 	void init(float valueForAll);
@@ -37,6 +45,8 @@ public:
 	ResourcesSaveData saveState(unsigned char player) const;
 	void loadState(const ResourcesSaveData& state);
 	void recalculateBuildingState(const Possession* possession);
+	void setTechnologyModifiers(float foodLostRate, float goldGainRate, float stoneRefineBonus,
+			float goldRefineBonus, float foodStorageMultiplier, float goldStorageMultiplier);
 
 	void update1s(Possession* possession);
 	void updateMonth();
@@ -70,15 +80,17 @@ private:
 
 	int foodStorage = 0;
 	float lastFoodLost = 0.f;
-	float foodLostRate = 0.1f;
+	float foodLostRate = DEFAULT_FOOD_LOST_RATE;
+	float foodStorageMultiplier = DEFAULT_FOOD_STORAGE_MULTIPLIER;
 
 	float stoneRefineCapacity = 0.f;
-	float stoneRefineBonus = 0.1f;
+	float stoneRefineBonus = DEFAULT_STONE_REFINE_BONUS;
 
 	float goldStorage = 0.f;
 	float lastGoldGain = 0.f;
-	float goldGainRate = 0.01f;
+	float goldGainRate = DEFAULT_GOLD_GAIN_RATE;
+	float goldStorageMultiplier = DEFAULT_GOLD_STORAGE_MULTIPLIER;
 
 	float goldRefineCapacity = 0.f;
-	float goldRefineBonus = 0.1f;
+	float goldRefineBonus = DEFAULT_GOLD_REFINE_BONUS;
 };

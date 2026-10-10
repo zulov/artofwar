@@ -100,6 +100,7 @@ public:
 
 private:
 	float technologyAgeMultiplier(const db_technology_level* level) const;
+	void refreshResourceTechnologyModifiers();
 
 	int score = -1;
 
