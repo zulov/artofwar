@@ -11,7 +11,7 @@
 #include "player/Resources.h"
 #include "simulation/WorldAgeController.h"
 
-GeneralActionCommand::GeneralActionCommand(short id, GeneralActionType action, unsigned char playerId)
+GeneralActionCommand::GeneralActionCommand(unsigned short id, GeneralActionType action, unsigned char playerId)
 	: id(id), action(action), playerId(playerId) {
 }
 
@@ -28,8 +28,8 @@ void GeneralActionCommand::execute() {
 	} else if (action == GeneralActionType::TECH_RESEARCH) {
 		// Compatibility for pending commands created before research belonged to buildings.
 		for (auto* building : playerEnt->getPossession()->getBuildings()) {
-			if (playerEnt->canResearchTechnology(static_cast<unsigned short>(id), building)) {
-				playerEnt->startTechnologyResearch(static_cast<unsigned short>(id), building);
+			if (playerEnt->canResearchTechnology(id, building)) {
+				playerEnt->startTechnologyResearch(id, building);
 				break;
 			}
 		}
@@ -37,5 +37,6 @@ void GeneralActionCommand::execute() {
 }
 
 PendingCommandSaveData GeneralActionCommand::saveState(unsigned short order) const {
-	return {order, PendingCommandKind::GENERAL_ACTION, static_cast<char>(action), 0, static_cast<unsigned short>(id), playerId};
+	return {.order = order, .kind = PendingCommandKind::GENERAL_ACTION, .action = static_cast<char>(action),
+	        .actionType = 0, .id = id, .playerId = playerId};
 }

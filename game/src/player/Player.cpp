@@ -14,7 +14,6 @@
 #include "objects/queue/QueueActionType.h"
 #include "objects/building/Building.h"
 #include "simulation/WorldAgeController.h"
-#include "objects/queue/QueueElement.h"
 #include "utils/TechnologyUtils.h"
 
 Player::Player(unsigned char nationId, unsigned char team, unsigned char id, unsigned char color, Urho3D::String name,
