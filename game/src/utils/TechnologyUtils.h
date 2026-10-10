@@ -1,5 +1,8 @@
 #pragma once
 
+#include <algorithm>
+#include <vector>
+
 #include "database/db_struct.h"
 #include "database/db_technology_struct.h"
 #include "player/Player.h"
@@ -52,12 +55,15 @@ inline bool matchesResourceTarget(const db_technology_effect* effect, unsigned c
 	if (effect->targetKind != TechnologyTargetKind::RESOURCE || !matchesTargetId(effect->targetId, resourceId)) {
 		return false;
 	}
-	const auto resourceType = lowerTechnologyName(effect->resourceType.c_str());
-	return resourceType.empty() || resourceType == "none" || resourceType == "any" ||
-		(resourceType == "food" && resourceId == cast(ResourceType::FOOD)) ||
-		(resourceType == "wood" && resourceId == cast(ResourceType::WOOD)) ||
-		(resourceType == "stone" && resourceId == cast(ResourceType::STONE)) ||
-		(resourceType == "gold" && resourceId == cast(ResourceType::GOLD));
+	switch (effect->resourceType) {
+	case TechnologyResourceType::NONE:
+	case TechnologyResourceType::ANY: return true;
+	case TechnologyResourceType::FOOD: return resourceId == cast(ResourceType::FOOD);
+	case TechnologyResourceType::WOOD: return resourceId == cast(ResourceType::WOOD);
+	case TechnologyResourceType::STONE: return resourceId == cast(ResourceType::STONE);
+	case TechnologyResourceType::GOLD: return resourceId == cast(ResourceType::GOLD);
+	default: return false;
+	}
 }
 
 inline bool isActive(const Player* player, const db_technology_level* technology) {
@@ -65,8 +71,53 @@ inline bool isActive(const Player* player, const db_technology_level* technology
 		player->getTechnologyLevel(technology->technology) >= technology->level;
 }
 
-inline void applyEffect(float& value, const db_technology_effect* effect) {
+inline unsigned char operationOrder(TechnologyOperation operation) {
+	return operation == TechnologyOperation::ADD ? 0 : 1;
+}
+
+inline bool effectComesBefore(TechnologyOperation leftOperation, unsigned short leftId,
+		TechnologyOperation rightOperation, unsigned short rightId) {
+	const auto leftOrder = operationOrder(leftOperation);
+	const auto rightOrder = operationOrder(rightOperation);
+	return leftOrder != rightOrder ? leftOrder < rightOrder : leftId < rightId;
+}
+
+inline std::vector<const db_technology_effect*> activeEffects(const Player* player,
+		const std::vector<db_technology_level*>& levels) {
+	std::vector<const db_technology_effect*> result;
+	for (const auto* level : levels) {
+		if (!isActive(player, level)) continue;
+		for (const auto* effect : level->effects) result.push_back(effect);
+	}
+	std::ranges::sort(result, [](const auto* left, const auto* right) {
+		return effectComesBefore(left->operation, left->id, right->operation, right->id);
+	});
+	return result;
+}
+
+template <typename Effect>
+inline void applyEffect(float& value, const Effect* effect) {
 	value = effect->operation == TechnologyOperation::PERCENT ? value * (1.f + effect->value) : value + effect->value;
+}
+
+template <typename EffectContainer, typename Predicate>
+inline float applyEffects(float value, const EffectContainer& effects, Predicate&& applies) {
+	using EffectPointer = typename EffectContainer::value_type;
+	std::vector<EffectPointer> ordered;
+	double additive = 0.0;
+	double multiplier = 1.0;
+	ordered.reserve(effects.size());
+	for (const auto* effect : effects) {
+		if (effect && applies(effect)) ordered.push_back(effect);
+	}
+	std::ranges::sort(ordered, [](const auto* left, const auto* right) {
+		return effectComesBefore(left->operation, left->id, right->operation, right->id);
+	});
+	for (const auto* effect : ordered) {
+		if (effect->operation == TechnologyOperation::ADD) additive += effect->value;
+		else multiplier *= 1.0 + effect->value;
+	}
+	return static_cast<float>((static_cast<double>(value) + additive) * multiplier);
 }
 
 }

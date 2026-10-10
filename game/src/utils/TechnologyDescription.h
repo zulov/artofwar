@@ -105,19 +105,20 @@ inline Urho3D::String targetScopeName(TechnologyTargetKind kind, TechnologySourc
 	}
 }
 
-inline Urho3D::String resourceName(const std::string& resourceType) {
-	const auto name = lowerTechnologyName(resourceType.c_str());
-	if (name == "food") return localize("tech_resource_food");
-	if (name == "wood") return localize("tech_resource_wood");
-	if (name == "stone") return localize("tech_resource_stone");
-	if (name == "gold") return localize("tech_resource_gold");
-	return {};
+inline Urho3D::String resourceName(TechnologyResourceType resourceType) {
+	switch (resourceType) {
+	case TechnologyResourceType::FOOD: return localize("tech_resource_food");
+	case TechnologyResourceType::WOOD: return localize("tech_resource_wood");
+	case TechnologyResourceType::STONE: return localize("tech_resource_stone");
+	case TechnologyResourceType::GOLD: return localize("tech_resource_gold");
+	default: return {};
+	}
 }
 
 inline Urho3D::String targetName(const db_technology_effect* effect) {
 	if (effect->targetKind == TechnologyTargetKind::RESOURCE) {
 		if (const auto name = resourceName(effect->resourceType); !name.Empty()) return name;
-		if (lowerTechnologyName(effect->resourceType.c_str()) == "any") return localize("tech_scope_resource_any");
+		if (effect->resourceType == TechnologyResourceType::ANY) return localize("tech_scope_resource_any");
 	}
 
 	if (effect->targetId >= 0) {

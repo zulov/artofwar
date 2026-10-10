@@ -6,7 +6,6 @@
 #include "GeneralActionType.h"
 #include "database/db_struct.h"
 #include "player/Player.h"
-#include "player/Possession.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
 #include "simulation/WorldAgeController.h"
@@ -23,14 +22,6 @@ void GeneralActionCommand::execute() {
 			if (Game::getWorldAgeController()->isLevelAvailable(opt.value()->ageStage) &&
 				playerEnt->getResources()->reduce(opt.value())) {
 				playerEnt->getQueue().add(QueueActionType::BUILDING_LEVEL, id, opt.value()->id);
-			}
-		}
-	} else if (action == GeneralActionType::TECH_RESEARCH) {
-		// Compatibility for pending commands created before research belonged to buildings.
-		for (auto* building : playerEnt->getPossession()->getBuildings()) {
-			if (playerEnt->canResearchTechnology(static_cast<unsigned short>(id), building)) {
-				playerEnt->startTechnologyResearch(static_cast<unsigned short>(id), building);
-				break;
 			}
 		}
 	}

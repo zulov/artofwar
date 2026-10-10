@@ -136,7 +136,7 @@ void DatabaseCache::loadData(const std::string& name) {
 		database = nullptr;
 		exitDatabaseError("Required data table failed to load: technology_level");
 	}
-	if (!load<DbTechnologyEffectCol>("technology_level_effect", "technology_level, effect_order", [this](auto* s) {
+	if (!load<DbTechnologyEffectCol>("technology_level_effect", "technology_level, id", [this](auto* s) {
 		auto* effect = new db_technology_effect(s);
 		container->technologyEffects.push_back(effect);
 		assert(effect->technologyLevel < container->technologyLevels.size());

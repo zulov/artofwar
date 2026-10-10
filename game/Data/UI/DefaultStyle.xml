@@ -463,6 +463,10 @@
 	<attribute name="Max Size" value="{iconX} {iconY*3/4}"/>
 </element>
 
+<element type="SelectedHudMock" style="mock">
+	<attribute name="Vert Alignment" value="Top"/>
+</element>
+
 <element type="MsgButton" style="Button">
 	<attribute name="Min Size" value="{iconX*2} {iconY*3/4}"/>
 	<attribute name="Max Size" value="{iconX*2} {iconY*3/4}"/>

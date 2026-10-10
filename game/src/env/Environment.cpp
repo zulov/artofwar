@@ -23,6 +23,10 @@ Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolut
 	sparseUnitGrid((short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256.f), terrain(terrain),
 	influenceManager(MAX_PLAYERS, mapSize, terrain),
 	calculator(GridCalculatorProvider::get(mainMapResolution, mapSize)) {
+	grids[castC(ObjectType::RESOURCE)] = &resourceStaticGrid;
+	grids[castC(ObjectType::UNIT)] = &mainGrid;
+	grids[castC(ObjectType::BUILDING)] = &buildingGrid;
+
 	auto a = {160, 192, 256, 320, 384, 512};
 	assert(std::ranges::any_of(a, [mainMapResolution](int i) { return mainMapResolution == i; }));
 }

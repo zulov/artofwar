@@ -41,7 +41,6 @@
 #include "scene/load/SceneLoader.h"
 #include "scene/load/dbload_container.h"
 #include "simulation/formation/FormationManager.h"
-#include "utils/TechnologyUtils.h"
 
 Simulation::Simulation(Environment* environment, const db_map* map) : env(environment), colorScheme(SimColorMode::BASIC) {
 	simObjectManager = new SimulationObjectManager();
@@ -315,25 +314,8 @@ void Simulation::restoreRuntimeState(dbload_container* data) const {
 		Player* playerOwner{};
 		if (saved.ownerType == 0) {
 			playerOwner = Game::getPlayersMan()->getPlayer(static_cast<unsigned char>(saved.ownerId));
-			if (saved.type == static_cast<char>(QueueActionType::TECH_RESEARCH)) {
-				// Move legacy player-owned research into a building queue.
-				if (playerOwner->hasTechnologyResearch(saved.id)) continue;
-				const auto* level = Game::getDatabase()->getTechnologyLevel(saved.levelId);
-				const auto* technology = Game::getDatabase()->getTechnology(level->technology);
-				for (auto* building : playerOwner->getPossession()->getBuildings()) {
-					if (building->isReady() && building->getQueue().isEmpty() &&
-						TechnologyUtils::matchesResearchBuilding(technology, building->getDb())) {
-						queue = &building->getQueue();
-						break;
-					}
-				}
-				if (!queue) {
-					// Preserve legacy research if the saved building no longer exists.
-					queue = &playerOwner->getQueue();
-				}
-			} else {
-				queue = &playerOwner->getQueue();
-			}
+			if (saved.type == static_cast<char>(QueueActionType::TECH_RESEARCH)) continue;
+			queue = &playerOwner->getQueue();
 		} else if (auto* owner = find(saved.ownerId); owner && owner->getType() == ObjectType::BUILDING) {
 			auto* building = static_cast<Building*>(owner);
 			queue = &building->getQueue();
@@ -492,7 +474,6 @@ void Simulation::updateQueues() const {
 		if (done) {
 			switch (done->getType()) {
 			case QueueActionType::BUILDING_LEVEL:
-			case QueueActionType::TECH_RESEARCH:
 				levelUp(done, player->getId());
 				break;
 			}
