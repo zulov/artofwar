@@ -3,34 +3,29 @@
 #include "QueueActionType.h"
 #include "database/DatabaseCache.h"
 
-inline float getSecToComplete(QueueActionType type, unsigned short id, unsigned short levelId) {
+inline float getSecToComplete(QueueActionType type, unsigned short id) {
 	switch (type) {
 	case QueueActionType::UNIT_CREATE:
-		return Game::getDatabase()->getUnitLevels()[levelId]->buildTime;
+		return Game::getDatabase()->getUnitLevels()[id]->buildTime;
 	case QueueActionType::BUILDING_CREATE:
-		return Game::getDatabase()->getBuildingLevels()[levelId]->buildTime;
+		return Game::getDatabase()->getBuildingLevels()[id]->buildTime;
 	case QueueActionType::UNIT_LEVEL:
-		return Game::getDatabase()->getUnitLevels()[levelId]->upgradeTime;
+		return Game::getDatabase()->getUnitLevels()[id]->upgradeTime;
 	case QueueActionType::BUILDING_LEVEL:
-		return Game::getDatabase()->getBuildingLevels()[levelId]->upgradeTime;
+		return Game::getDatabase()->getBuildingLevels()[id]->upgradeTime;
 	case QueueActionType::RESOURCE_CREATE:
-		return Game::getDatabase()->getBuildingLevels()[levelId]->spawnResourceTime;
+		return Game::getDatabase()->getBuildingLevels()[id]->spawnResourceTime;
 	case QueueActionType::TECH_RESEARCH:
-		return Game::getDatabase()->getTechnologyLevel(levelId)->researchTime;
+		return Game::getDatabase()->getTechnologyLevel(id)->researchTime;
 	default:
 		return 1;
 	}
 }
 
-inline float getSecPerInstance(QueueActionType type, unsigned short id, unsigned short level) {
-	//TODO performance przerobic na tablice
+inline float getSecPerInstance(QueueActionType type, unsigned short id) {
 	switch (type) {
 	case QueueActionType::UNIT_CREATE:
 		return 30;
-	case QueueActionType::BUILDING_CREATE:
-	case QueueActionType::UNIT_LEVEL:
-	case QueueActionType::BUILDING_LEVEL:
-	case QueueActionType::RESOURCE_CREATE:
 	default:
 		return 0;
 	}

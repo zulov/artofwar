@@ -50,29 +50,29 @@ struct SQLConsts {
 													 "nation INT NOT NULL,"
 													 "buildingUid INT NOT NULL,"
 													 "unitUid INT NOT NULL,"
-																 "food INT NOT NULL,"
-																 "wood INT NOT NULL,"
-																 "stone INT NOT NULL,"
-																 "gold INT NOT NULL,"
-																			 "gather_food INT NOT NULL, gather_wood INT NOT NULL,"
-																			 "gather_stone INT NOT NULL, gather_gold INT NOT NULL,"
-																			 "pending_gather_food INT NOT NULL, pending_gather_wood INT NOT NULL,"
-																			 "pending_gather_stone INT NOT NULL, pending_gather_gold INT NOT NULL,"
-																			 "sum_food INT NOT NULL, sum_wood INT NOT NULL,"
-																		 "sum_stone INT NOT NULL, sum_gold INT NOT NULL) WITHOUT ROWID;";
+													 "food INT NOT NULL,"
+													 "wood INT NOT NULL,"
+													 "stone INT NOT NULL,"
+													 "gold INT NOT NULL,"
+													 "gather_food INT NOT NULL, gather_wood INT NOT NULL,"
+													 "gather_stone INT NOT NULL, gather_gold INT NOT NULL,"
+													 "pending_gather_food INT NOT NULL, pending_gather_wood INT NOT NULL,"
+													 "pending_gather_stone INT NOT NULL, pending_gather_gold INT NOT NULL,"
+													 "sum_food INT NOT NULL, sum_wood INT NOT NULL,"
+													 "sum_stone INT NOT NULL, sum_gold INT NOT NULL) WITHOUT ROWID;";
 
 	inline static constexpr const char* CONFIG_NAME = "config";
 	inline static constexpr const char* CONFIG_COL = "(precision INT NOT NULL,"
-															 "map INT NOT NULL,"
-															 "size INT NOT NULL, total_ticks INT NOT NULL,"
-																 "rdn_present INT NOT NULL, rdn_seed INT NOT NULL,"
-																 "rdn_ai_idx INT NOT NULL,"
-																 "rdn_resource_rotation_idx INT NOT NULL,"
-																 "rdn_collision_force_idx INT NOT NULL,"
-																 "rdn_other_idx INT NOT NULL,"
-																 "rdn_save_idx INT NOT NULL,"
-																 "rdn_player_name_idx INT NOT NULL,"
-																 "rdn_resource_node_idx INT NOT NULL)";
+													 "map INT NOT NULL,"
+													 "size INT NOT NULL, total_ticks INT NOT NULL,"
+													 "rdn_present INT NOT NULL, rdn_seed INT NOT NULL,"
+													 "rdn_ai_idx INT NOT NULL,"
+													 "rdn_resource_rotation_idx INT NOT NULL,"
+													 "rdn_collision_force_idx INT NOT NULL,"
+													 "rdn_other_idx INT NOT NULL,"
+													 "rdn_save_idx INT NOT NULL,"
+													 "rdn_player_name_idx INT NOT NULL,"
+													 "rdn_resource_node_idx INT NOT NULL)";
 
 	inline static constexpr const char* UNIT_ORDER_NAME = "unit_orders";
 	inline static constexpr const char* UNIT_ORDER_COL = "(unit_uid INT NOT NULL, order_idx INT NOT NULL, action INT "
@@ -85,7 +85,7 @@ struct SQLConsts {
 	inline static constexpr const char* QUEUE_NAME = "queues";
 	inline static constexpr const char* QUEUE_COL = "(owner_id INT NOT NULL, owner_type INT NOT NULL, order_idx INT "
 																	"NOT NULL, type INT NOT NULL, id INT NOT NULL, "
-																																				 "level_id INT NOT NULL, amount INT NOT NULL, elapsed_ticks INT NOT NULL, duration_ticks INT NOT NULL, "
+													"amount INT NOT NULL, elapsed_ticks INT NOT NULL, duration_ticks INT NOT NULL, "
 													"PRIMARY KEY(owner_id, owner_type, order_idx)) WITHOUT ROWID;";
 	inline static constexpr const char* PLAYER_LEVEL_NAME = "player_levels";
 	inline static constexpr const char* PLAYER_LEVEL_COL =

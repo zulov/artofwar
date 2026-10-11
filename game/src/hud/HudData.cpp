@@ -7,7 +7,7 @@
 HudData::HudData(Urho3D::UIElement* _uiParent) : parent(_uiParent) {
 }
 
-void HudData::set(short _id, ActionType _type, Urho3D::String _text) {
+void HudData::set(unsigned short _id, ActionType _type, Urho3D::String _text) {
 	id = _id;
 	type = _type;
 	text = std::move(_text);

@@ -146,7 +146,6 @@ inline void bindRow<QueueRow>(sqlite3_stmt* stmt, int, const QueueRow* x) {
 	bindI(stmt, QueueCol::order_idx, x->orderIndex);
 	bindC(stmt, QueueCol::type, x->data.type);
 	bindI(stmt, QueueCol::id, x->data.id);
-	bindI(stmt, QueueCol::level_id, x->data.levelId);
 	bindI(stmt, QueueCol::amount, x->data.amount);
 	bindI(stmt, QueueCol::elapsed_ticks, x->data.elapsedTicks);
 	bindI(stmt, QueueCol::duration_ticks, x->data.durationTicks);

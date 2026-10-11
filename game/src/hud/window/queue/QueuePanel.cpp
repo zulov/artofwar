@@ -31,7 +31,7 @@ void QueuePanel::update(const QueueManager& queue, short& j) const {
 	for (std::size_t i = 0; i < size; ++i) {
 		QueueElement* element = queue.getAt(i);
 		 elements[j]->show();
-		auto name = getIconName(element->getType(), element->getLevelId(), element->getId());
+		auto name = getIconName(element->getType(), element->getId());
 		auto texture = getTexture("textures/hud/icon/" + name);
 		if (!texture) {
 			texture = getTexture("textures/hud/icon/mock.png");

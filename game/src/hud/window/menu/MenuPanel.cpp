@@ -160,8 +160,7 @@ void MenuPanel::ChangeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMa
 	}
 }
 
-void MenuPanel::setNext(int& k, const Urho3D::String& texture, short id, ActionType menuAction,
-                        Urho3D::String text) const {
+void MenuPanel::setNext(int& k, const Urho3D::String& texture, short id, ActionType menuAction, Urho3D::String text) const {
 	auto* icon = Game::getCache()->GetResource<Urho3D::Texture2D>(ICONS_PATH + texture);
 	if (!icon) {
 		icon = Game::getCache()->GetResource<Urho3D::Texture2D>(ICONS_PATH + Urho3D::String("mock.png"));
@@ -231,14 +230,14 @@ void MenuPanel::technologyResearch(SelectedInfo* selectedInfo) {
 	if (page >= maxPage) page = 0;
 	for (int i = page * BUTTONS_NUMBER; i < levels.size() && i < (page + 1) * BUTTONS_NUMBER; ++i) {
 		const auto* technology = Game::getDatabase()->getTechnology(levels[i]->technology);
-		Urho3D::String icon = Urho3D::String("technology/") + Urho3D::String(levels[i]->icon.c_str());
+		Urho3D::String icon = "technology/" + levels[i]->icon;
 		if (!Game::getCache()->GetResource<Urho3D::Texture2D>(ICONS_PATH + icon) && technology &&
 			!technology->researchBuildingIds.empty()) {
-			const auto* building = Game::getDatabase()->getBuilding(technology->researchBuildingIds.front());
-			if (building) icon = Urho3D::String("building/") + building->icon;
+			if (const auto* building = Game::getDatabase()->getBuilding(technology->researchBuildingIds.front())) {
+				icon = Urho3D::String("building/") + building->icon;
+			}
 		}
-		setNext(k, icon,
-		        static_cast<short>(levels[i]->id), ActionType::TECH_RESEARCH);
+		setNext(k, icon, static_cast<short>(levels[i]->id), ActionType::TECH_RESEARCH);
 	}
 	resetRestButtons(k);
 }

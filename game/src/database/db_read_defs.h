@@ -38,7 +38,7 @@ inline AimPathSaveData readRow<AimPathSaveData>(sqlite3_stmt* stmt, int) {
 template <>
 inline QueueRow readRow<QueueRow>(sqlite3_stmt* stmt, int) {
 	return {{asUI(stmt, QueueCol::owner_id), asUByte(stmt, QueueCol::owner_type), asByte(stmt, QueueCol::type),
-					 asUShort(stmt, QueueCol::id), asUShort(stmt, QueueCol::level_id), asUShort(stmt, QueueCol::amount),
+					 asUShort(stmt, QueueCol::id), asUShort(stmt, QueueCol::amount),
 					 asUShort(stmt, QueueCol::elapsed_ticks), asUShort(stmt, QueueCol::duration_ticks)},
 				asUShort(stmt, QueueCol::order_idx)};
 }

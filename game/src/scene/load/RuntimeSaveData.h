@@ -11,7 +11,7 @@ struct QueueSaveData {
 	unsigned char ownerType{};
 	char type{};
 	unsigned short id{};
-	unsigned short levelId{};
+	//unsigned short levelId{};
 	unsigned short amount{};
 	unsigned short elapsedTicks{};
 	unsigned short durationTicks{};

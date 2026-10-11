@@ -6,36 +6,36 @@
 #include "queue/QueueActionType.h"
 
 
-inline Urho3D::String getIconName(ObjectType type, int i) {
+inline Urho3D::String getIconName(ObjectType type, unsigned short id) {
 	auto dbCache = Game::getDatabase();
 	switch (type) {
 	case ObjectType::UNIT:
-		return "unit/" + dbCache->getUnit(i)->icon;
+		return "unit/" + dbCache->getUnit(id)->icon;
 	case ObjectType::BUILDING:
-		return "building/" + dbCache->getBuilding(i)->icon;
+		return "building/" + dbCache->getBuilding(id)->icon;
 	case ObjectType::RESOURCE:
-		return "resource/" + dbCache->getResource(i)->icon;
+		return "resource/" + dbCache->getResource(id)->icon;
 	default:
 		return "mock.png";
 	}
 }
 
-inline Urho3D::String getIconName(QueueActionType type, int level, int i) {
+inline Urho3D::String getIconName(QueueActionType type,unsigned short id) {
 	DatabaseCache* dbCache = Game::getDatabase();
 	switch (type) {
 	case QueueActionType::UNIT_CREATE:
-		return "unit/" + dbCache->getUnit(i)->icon;
+		return "unit/" + dbCache->getUnit(id)->icon;
 	case QueueActionType::UNIT_LEVEL:
-		return "unit/levels/" + Urho3D::String(level) + "/" + dbCache->getUnit(i)->icon;
+		return "unit/levels/" + Urho3D::String(0) + "/" + dbCache->getUnit(id)->icon;
 	case QueueActionType::BUILDING_LEVEL:
-		return "building/levels/" + Urho3D::String(level) + "/" + dbCache->getBuilding(i)->icon;
+		return "building/levels/" + Urho3D::String(0) + "/" + dbCache->getBuilding(id)->icon;
 	case QueueActionType::BUILDING_CREATE:
-		return "building/" + dbCache->getBuilding(i)->icon;	
+		return "building/" + dbCache->getBuilding(id)->icon;	
 	case QueueActionType::RESOURCE_CREATE:
 		return "mock.png";
 		//"resources/" + dbCache->getResource(i)->icon;
 	case QueueActionType::TECH_RESEARCH:
-		return Urho3D::String("technology/") + Urho3D::String(dbCache->getTechnologyLevel(level)->icon.c_str());
+		return "technology/" + dbCache->getTechnologyLevel(id)->icon;
 	default:
 		return "mock.png";
 	}

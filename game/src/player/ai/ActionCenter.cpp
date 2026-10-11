@@ -111,7 +111,7 @@ void ActionCenter::loadState(const std::vector<PendingCommandSaveData>& state,
 			break;
 		}
 		case PendingCommandKind::UPGRADE:
-			upgrade.add(new UpgradeCommand(item.playerId, item.id, static_cast<QueueActionType>(item.action), item.level));
+			upgrade.add(new UpgradeCommand(item.playerId, item.id, static_cast<QueueActionType>(item.action)));
 			break;
 		case PendingCommandKind::INDIVIDUAL_ORDER:
 			if (item.entityUids.empty()) {

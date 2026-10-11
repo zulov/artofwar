@@ -117,8 +117,8 @@ inline std::vector<unsigned short> parseTechnologyBuildingIds(const char* value)
 	return parseTechnologyIds(value, "technology research building");
 }
 
-inline std::string technologyLevelKey(const std::string& code, unsigned char level) {
-	return code + "_" + std::to_string(level);
+inline Urho3D::String technologyLevelKey(const Urho3D::String& code, unsigned char level) {
+	return code + "_" + Urho3D::String(level);
 }
 
 struct db_technology_effect : db_entity {
@@ -151,16 +151,16 @@ struct db_technology_effect : db_entity {
 struct db_technology_level : db_with_name {
 	const unsigned short technology;
 	const unsigned char level;
-	const std::string description;
-	const std::string icon;
+	const Urho3D::String description;
+	const Urho3D::String icon;
 	const std::vector<unsigned short> unlockAgeIds;
 	const db_with_cost cost;
 	const short researchTime;
 	std::vector<db_technology_effect*> effects;
 
 	using C = DbTechnologyLevelCol;
-	db_technology_level(sqlite3_stmt* stmt, const std::string& technologyCode)
-		: db_with_name(asUShort(stmt, C::id), technologyLevelKey(technologyCode, asUByte(stmt, C::level)).c_str()),
+	db_technology_level(sqlite3_stmt* stmt, const Urho3D::String& technologyCode)
+		: db_with_name(asUShort(stmt, C::id), technologyLevelKey(technologyCode, asUByte(stmt, C::level))),
 		  technology(asUShort(stmt, C::technology)), level(asUByte(stmt, C::level)),
 		  description(technologyLevelKey(technologyCode, level) + "_description"),
 		  icon(technologyLevelKey(technologyCode, level) + ".png"),

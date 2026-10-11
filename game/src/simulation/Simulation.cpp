@@ -325,10 +325,9 @@ void Simulation::restoreRuntimeState(dbload_container* data) const {
 			const auto duration = saved.durationTicks != 0
 				? saved.durationTicks
 				: saved.type == static_cast<char>(QueueActionType::TECH_RESEARCH) && playerOwner
-					? playerOwner->technologyResearchDuration(saved.levelId)
+					? playerOwner->technologyResearchDuration(saved.id)
 					: 0;
-			queue->restore(static_cast<QueueActionType>(saved.type), saved.id, saved.levelId, saved.amount,
-						   saved.elapsedTicks, duration);
+			queue->restore(static_cast<QueueActionType>(saved.type), saved.id, saved.amount, saved.elapsedTicks, duration);
 		}
 	}
 	for (auto* unit : *units) {
@@ -423,8 +422,8 @@ void Simulation::applyForce() const {
 	}
 }
 
-void Simulation::levelUp(QueueElement* done, unsigned char playerId) const {
-	Game::getActionCenter()->add(new UpgradeCommand(playerId, done->getId(), done->getType(), done->getLevelId()));
+void Simulation::upgrade(const QueueElement* done, unsigned char playerId) const {
+	Game::getActionCenter()->add(new UpgradeCommand(playerId, done->getId(), done->getType()));
 }
 
 void Simulation::updateBuildingQueues() const {
@@ -440,7 +439,7 @@ void Simulation::updateBuildingQueues() const {
 			case QueueActionType::UNIT_LEVEL:
 			//case QueueActionType::BUILDING_LEVEL:
 			case QueueActionType::TECH_RESEARCH:
-				levelUp(done, build->getPlayer());
+				upgrade(done, build->getPlayer());
 				break;
 			case QueueActionType::BUILDING_CREATE:
 				build->complete();
@@ -473,7 +472,7 @@ void Simulation::updateQueues() const {
 		if (done) {
 			switch (done->getType()) {
 			case QueueActionType::BUILDING_LEVEL:
-				levelUp(done, player->getId());
+				upgrade(done, player->getId());
 				break;
 			}
 			delete done;

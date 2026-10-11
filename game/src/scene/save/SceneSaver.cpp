@@ -271,7 +271,7 @@ bool SceneSaver::saveQueues(const std::vector<Building*>* buildings, const std::
 			for (std::size_t i = 0; i < queue.getSize(); ++i) {
 				const auto* element = queue.getAt(i);
 				const QueueRow row{{ownerId, ownerType, static_cast<char>(element->getType()), element->getId(),
-																	 element->getLevelId(), element->getAmount(), element->getElapsedTicks(),
+																	 element->getAmount(), element->getElapsedTicks(),
 																	 element->getType() == QueueActionType::TECH_RESEARCH ? element->getTicksToComplete() : 0},
 																	 static_cast<unsigned short>(i)};
 				bindRow(stmt, precision, &row);

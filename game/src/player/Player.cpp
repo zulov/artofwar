@@ -79,7 +79,7 @@ bool Player::startTechnologyResearch(unsigned short levelId, Building* building)
 	if (!resources->reduce(&effectiveCost)) return false;
 	const auto* level = Game::getDatabase()->getTechnologyLevel(levelId);
 	const auto duration = technologyResearchDuration(levelId);
-	building->getQueue().add(QueueActionType::TECH_RESEARCH, level->technology, levelId, 1, duration);
+	building->getQueue().add(QueueActionType::TECH_RESEARCH, levelId, 1, duration);
 	return true;
 }
 

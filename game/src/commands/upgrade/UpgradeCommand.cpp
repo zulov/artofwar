@@ -9,23 +9,23 @@
 #include "objects/queue/QueueActionType.h"
 
 
-UpgradeCommand::UpgradeCommand(unsigned char playerId, unsigned short id, QueueActionType type, unsigned short levelId)
-	: type(type), playerId(playerId), id(id), levelId(levelId) {
-}
+UpgradeCommand::UpgradeCommand(unsigned char playerId, unsigned short id, QueueActionType type) :
+	type(type), playerId(playerId), id(id) {}
 
 void UpgradeCommand::execute(const SimulationObjectManager* simulationObjectManager) const {
 	auto player = Game::getPlayersMan()->getPlayer(playerId);
-	char level = type == QueueActionType::TECH_RESEARCH ? player->completeTechnology(levelId) : player->upgradeLevel(type, id);
-	if (type == QueueActionType::TECH_RESEARCH && level) {
+	if (type == QueueActionType::TECH_RESEARCH && player->completeTechnology(id)) {
 		simulationObjectManager->refreshPlayerEffectiveLevels(playerId);
-	} else if (type == QueueActionType::UNIT_LEVEL && level > 0) {
+	} else if (type == QueueActionType::UNIT_LEVEL && player->upgradeLevel(type, id) > 0) {
 		for (auto unit : *simulationObjectManager->getUnits()) {
-			if (unit->getPlayer() == playerId && unit->getDbId() == id) unit->levelUp();
+			if (unit->getPlayer() == playerId && unit->getDbId() == id)
+				unit->levelUp();
 		}
 		simulationObjectManager->refreshPlayerEffectiveLevels(playerId);
-	} else if (type == QueueActionType::BUILDING_LEVEL && level > 0) {
+	} else if (type == QueueActionType::BUILDING_LEVEL && player->upgradeLevel(type, id) > 0) {
 		for (auto building : *simulationObjectManager->getBuildings()) {
-			if (building->getPlayer() == playerId && building->getDbId() == id) building->levelUp();
+			if (building->getPlayer() == playerId && building->getDbId() == id)
+				building->levelUp();
 		}
 		simulationObjectManager->refreshPlayerEffectiveLevels(playerId);
 	} else if (type == QueueActionType::UNIT_LEVEL || type == QueueActionType::BUILDING_LEVEL) {
@@ -34,6 +34,6 @@ void UpgradeCommand::execute(const SimulationObjectManager* simulationObjectMana
 }
 
 PendingCommandSaveData UpgradeCommand::saveState(unsigned short order) const {
-	return {order, PendingCommandKind::UPGRADE, static_cast<char>(type), 0, static_cast<unsigned short>(id), playerId,
-			static_cast<char>(levelId < 0 ? 0 : levelId)};
+	return {.order = order, .kind = PendingCommandKind::UPGRADE, .action = static_cast<char>(type), .actionType = 0,
+	        .id = static_cast<unsigned short>(id), .playerId = playerId};
 }

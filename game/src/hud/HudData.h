@@ -13,16 +13,16 @@ public:
 	explicit HudData(Urho3D::UIElement* _uiParent);
 	~HudData() = default;
 
-	void set(short _id, ActionType _type, Urho3D::String _text);
+	void set(unsigned short _id, ActionType _type, Urho3D::String _text);
 	static HudData* getFromElement(Urho3D::VariantMap& eventData);
 
 	Urho3D::String& getText() { return text; }
 	Urho3D::UIElement* getUIParent() const { return parent; }
 	ActionType getType() const { return type; }
-	short getId() const { return id; }
+	unsigned short getId() const { return id; }
 private:
 	Urho3D::UIElement* parent;
 	Urho3D::String text;
-	short id;
+	unsigned short id;
 	ActionType type;
 };

@@ -2,15 +2,12 @@
 #include "QueueActionType.h"
 #include "QueueUtils.h"
 
-QueueElement::QueueElement(QueueActionType type, unsigned short id, unsigned short secondId, unsigned char maxCapacity,
-						   unsigned short durationOverride) :
-		type(type), maxCapacity(maxCapacity), id(id), levelId(secondId), amount(0),
-		ticksToComplete(durationOverride ? durationOverride : getSecToComplete(type, id, secondId)), elapsedTicks(0),
-		ticksToCompletePerInstance(getSecPerInstance(type, id, secondId)) {}
+QueueElement::QueueElement(QueueActionType type, unsigned short id, unsigned char maxCapacity, unsigned short durationOverride) :
+		type(type), maxCapacity(maxCapacity), id(id), amount(0),
+		ticksToComplete(durationOverride ? durationOverride : getSecToComplete(type, id)), elapsedTicks(0),
+		ticksToCompletePerInstance(getSecPerInstance(type, id)) {}
 
-bool QueueElement::checkType(QueueActionType _type, unsigned short _id, unsigned short _secondId) const {
-	return type == _type && id == _id && _secondId == levelId;
-}
+bool QueueElement::checkType(QueueActionType _type, unsigned short _id) const { return type == _type && id == _id; }
 
 short QueueElement::add(short value) {
 	short rest;
