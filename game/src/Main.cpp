@@ -686,7 +686,10 @@ SelectedInfo* Main::control(const float timeStep, FrameInfo* frameInfo) {
 		auto progressBar = healthBarProvider.getNext(selected->getType());
 
 		if (progressBar) {
+			const auto objectPos = selected->getPosition();
 			auto pos = selected->getNode()->GetPosition();
+			pos.x_ = objectPos.x_;
+			pos.z_ = objectPos.y_;
 			pos.y_ += selected->getModelHeight() * 1.3f;
 			Urho3D::IntVector2 pixel{
 				VectorRoundToInt(Urho3D::Vector2(Game::getGraphics()->GetSize()) * camera->WorldToScreenPoint(pos))

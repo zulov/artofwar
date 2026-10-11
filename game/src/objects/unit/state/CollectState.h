@@ -41,8 +41,7 @@ public:
 
 	void execute(Unit* unit, float timeStep) override {
 		auto env = Game::getEnvironment();
-		if (!unit->isFirstThingAlive()
-			|| !env->cellInState(unit->getMainGridIndex(), CellState::COLLECT)) {
+		if (!unit->isFirstThingAlive()) {
 			StateManager::toDefaultState(unit);
 			return;
 		}
@@ -56,6 +55,10 @@ public:
 				StateManager::toDefaultState(unit);
 				return;
 			}
+		}
+		if (!env->cellInState(unit->getMainGridIndex(), CellState::COLLECT)) {
+			StateManager::toDefaultState(unit);
+			return;
 		}
 		++unit->currentFrameState;
 		if (unit->currentFrameState >= FRAMES_IN_PERIOD) {
