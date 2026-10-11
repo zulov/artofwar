@@ -41,7 +41,7 @@ Unit::Unit(const Urho3D::Vector3& _position, unsigned short dbId, unsigned char 
 	populate();
 	lastGroundHeight = _position.y_;
 
-	if (getDbUnit()->typeCavalry) {
+	if (getDb()->typeCavalry) {
 		chargeData = new ChargeData(150, 2);
 	}
 	shouldUpdate = true;
@@ -51,8 +51,7 @@ Unit::~Unit() { delete chargeData; }
 
 bool Unit::isAlive() const { return state != UnitState::DEAD && state != UnitState::DISPOSE; }
 
-db_unit* Unit::getDbUnit() const { return static_cast<db_unit*>(dbEntity); }
-db_unit* Unit::getDb() const { return getDbUnit(); }
+db_unit* Unit::getDb() const { return static_cast<db_unit*>(dbEntity); }
 
 void Unit::populate() {
 	maxSpeed = dbLevel->maxSpeed;
@@ -268,7 +267,7 @@ void Unit::setIndexToInteract(int index) { indexToInteract = index; }
 
 Urho3D::String Unit::getInfo() const {
 	return l10nFormat("info_unit",
-	                  getDbUnit()->name.CString(), dbLevel->name.CString(),
+	                  getDb()->name.CString(), dbLevel->name.CString(),
 	                  asStringF(dbLevel->attack, 1).c_str(),
 	                  asStringF(dbLevel->attackRange, 1).c_str(),
 	                  asStringF(dbLevel->attackReload, 1).c_str(),
@@ -279,7 +278,7 @@ Urho3D::String Unit::getInfo() const {
 	                  magic_enum::enum_name(state).data());
 }
 
-const Urho3D::String& Unit::getName() const { return getDbUnit()->name; }
+const Urho3D::String& Unit::getName() const { return getDb()->name; }
 
 bool Unit::action(UnitAction unitAction) {
 	assert(unitAction == UnitAction::STOP || unitAction == UnitAction::DEAD || unitAction == UnitAction::DEFEND);
@@ -295,7 +294,7 @@ bool Unit::action(UnitAction unitAction, const ActionParameter& parameter) {
 	case UnitAction::CHARGE:
 		return StateManager::changeState(this, UnitState::CHARGE, parameter);
 	case UnitAction::ATTACK:
-		if (getDbUnit()->typeRange) {
+		if (getDb()->typeRange) {
 			// TODO perf chyba trzeba dodacparamter do actionParameter
 			// TODO zawsze strzelac? nawet z bliska
 			if (!parameter.thingToInteract->isInCloseRange(getMainGridIndex())) {
@@ -583,7 +582,7 @@ float Unit::getMinimalDistance() const { return dbLevel->minDist; }
 
 float Unit::getMaxSeparationDistance() const { return dbLevel->maxSep; }
 
-UnitState Unit::getDesiredState() const { return getDbUnit()->desiredState; }
+UnitState Unit::getDesiredState() const { return getDb()->desiredState; }
 
 bool Unit::isFirstThingAlive() const { return thingToInteract != nullptr && thingToInteract->isUsable(); }
 
@@ -602,7 +601,7 @@ Urho3D::Vector2 Unit::getSocketPos(const Unit* toFollow, int i) const {
 	return {toFollow->getPosition().x_ + vector.x_, toFollow->getPosition().y_ + vector.y_};
 }
 
-std::uint32_t Unit::getCostSum() const { return getDbUnit()->getSumCost(); }
+std::uint32_t Unit::getCostSum() const { return getDb()->getSumCost(); }
 
 bool Unit::isInCloseRange(int index) const { return Game::getEnvironment()->isInLocalArea(getMainGridIndex(), index); }
 

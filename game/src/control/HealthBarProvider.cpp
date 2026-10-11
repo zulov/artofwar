@@ -30,8 +30,7 @@ Urho3D::ProgressBar** HealthBarProvider::createSet(int size) const {
 }
 
 void HealthBarProvider::reset(int size, ObjectType type) {
-	for (int i = type == ObjectType::BUILDING || type == ObjectType::UNIT ? size : 0; i < Urho3D::Min(
-		     playerIdx, PLAYER_SIZE); ++i) {
+	for (int i = type == ObjectType::BUILDING || type == ObjectType::UNIT ? size : 0; i < Urho3D::Min(playerIdx, PLAYER_SIZE); ++i) {
 		hide(playerBars[i]);
 	}
 

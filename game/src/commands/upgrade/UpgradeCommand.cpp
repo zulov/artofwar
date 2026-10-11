@@ -9,14 +9,13 @@
 #include "objects/queue/QueueActionType.h"
 
 
-UpgradeCommand::UpgradeCommand(unsigned char playerId, short id, QueueActionType type, short levelId)
+UpgradeCommand::UpgradeCommand(unsigned char playerId, unsigned short id, QueueActionType type, unsigned short levelId)
 	: type(type), playerId(playerId), id(id), levelId(levelId) {
 }
 
-void UpgradeCommand::execute(SimulationObjectManager* simulationObjectManager) const {
-	char level = type == QueueActionType::TECH_RESEARCH
-		? Game::getPlayersMan()->getPlayer(playerId)->completeTechnology(levelId)
-		: Game::getPlayersMan()->getPlayer(playerId)->upgradeLevel(type, id);
+void UpgradeCommand::execute(const SimulationObjectManager* simulationObjectManager) const {
+	auto player = Game::getPlayersMan()->getPlayer(playerId);
+	char level = type == QueueActionType::TECH_RESEARCH ? player->completeTechnology(levelId) : player->upgradeLevel(type, id);
 	if (type == QueueActionType::TECH_RESEARCH && level) {
 		simulationObjectManager->refreshPlayerEffectiveLevels(playerId);
 	} else if (type == QueueActionType::UNIT_LEVEL && level > 0) {
@@ -32,10 +31,6 @@ void UpgradeCommand::execute(SimulationObjectManager* simulationObjectManager) c
 	} else if (type == QueueActionType::UNIT_LEVEL || type == QueueActionType::BUILDING_LEVEL) {
 		simulationObjectManager->refreshPlayerEffectiveLevels(playerId);
 	}
-}
-
-void UpgradeCommand::setSimulationObjectManager(SimulationObjectManager* _simulationObjectManager) {
-	simulationObjectManager = _simulationObjectManager;
 }
 
 PendingCommandSaveData UpgradeCommand::saveState(unsigned short order) const {

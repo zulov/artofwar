@@ -9,10 +9,8 @@ struct PendingCommandSaveData;
 class CreationCommand {
 public:
 	CreationCommand(ObjectType type, unsigned short id, const Urho3D::UShortVector2& bucketCords);
-	CreationCommand(ObjectType type, unsigned short id, const Urho3D::UShortVector2& bucketCords, char level,
-					unsigned char playerId);
-	CreationCommand(ObjectType type, unsigned short id, const Urho3D::Vector2& position, char level, unsigned char playerId,
-					unsigned number);
+	CreationCommand(ObjectType type, unsigned short id, const Urho3D::UShortVector2& bucketCords, unsigned char playerId);
+	CreationCommand(ObjectType type, unsigned short id, const Urho3D::Vector2& position, unsigned char playerId, unsigned number);
 	~CreationCommand() = default;
 	void execute(SimulationObjectManager* simulationObjectManager);
 	void setHp(float value) { hp = value; }

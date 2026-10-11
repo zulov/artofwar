@@ -35,7 +35,7 @@ public:
 
 	void setResourceAmount(float food, float wood, float stone, float gold) const;
 	void setResourceAmount(float amount) const;
-	char upgradeLevel(QueueActionType type, int id);
+	char upgradeLevel(QueueActionType type, unsigned short levelId);
 	bool startTechnologyResearch(unsigned short levelId, Building* building);
 	unsigned short technologyResearchDuration(unsigned short levelId) const;
 	db_with_cost technologyResearchCost(unsigned short levelId) const;
@@ -67,8 +67,10 @@ public:
 	db_unit_level* getUnitLevel(unsigned short id) const;
 	db_building_level* getBuildingLevel(unsigned short id) const;
 	bool isBuildingAvailable(unsigned short id) const;
+	bool isAvailable(db_building * dbBuilding) const;
 	std::optional<db_unit_level*> getNextUnitLevel(unsigned short id) const;
 	std::optional<db_building_level*> getNextBuildingLevel(unsigned short id) const;
+	std::optional<db_building_level*> getNextLevel(db_building * dbBuilding) const;
 	void addKilled(Physical* physical) const;
 	void resetScore();
 	const std::vector<PlayerLevel<db_unit_level>>& getUnitLevels() const { return unitLevels; }

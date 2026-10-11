@@ -105,21 +105,26 @@ const db_world_age* WorldAgeController::getAge(unsigned short ageId) const {
 	return catalog->getAge(ageId);
 }
 
+const db_world_age* WorldAgeController::getCurrentAge() const {
+	return catalog->getAge(currentAgeId);
+}
+
 std::vector<WorldAgeProgress> WorldAgeController::getNextAgeProgress(const std::vector<Player*>& players) const {
 	std::vector<WorldAgeProgress> result;
 	const auto* current = catalog->getAge(currentAgeId);
-	if (!current) {
-		return result;
-	}
 
 	for (const auto ageId : *ageIds) {
 		const auto* age = catalog->getAge(ageId);
-		if (!age || !isNextAge(*current, ageId)) {
+		if (!isNextAge(*current, ageId)) {
 			continue;
 		}
 
 		const auto progress = players.empty() ? 0.f : ageProgress(players, *age);
-		result.push_back({ageId, std::clamp(progress, 0.f, 1.f), getConditionProgress(players, *age)});
+		result.push_back({
+			.ageId = ageId, 
+			.progress = std::clamp(progress, 0.f, 1.f), 
+			.conditions = getConditionProgress(players, *age)
+		});
 	}
 	return result;
 }

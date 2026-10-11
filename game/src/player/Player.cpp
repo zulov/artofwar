@@ -39,11 +39,11 @@ void Player::setResourceAmount(float food, float wood, float stone, float gold) 
 
 void Player::setResourceAmount(float amount) const { resources->init(amount); }
 
-char Player::upgradeLevel(QueueActionType type, int id) {
+char Player::upgradeLevel(QueueActionType type, unsigned short levelId) {
 	switch (type) {
 	case QueueActionType::UNIT_LEVEL:
-		if (id >= 0 && id < unitLevels.size() && unitLevels[id].id >= 0) {
-			if (const auto next = getNextUnitLevel(id);
+		if (id < unitLevels.size() && unitLevels[id].id >= 0) {
+			if (const auto next = getNextUnitLevel(levelId);
 				next && Game::getWorldAgeController()->isLevelAvailable((*next)->ageStage)) {
 				++unitLevels[id].level;
 				refreshEffectiveLevels();
@@ -52,16 +52,14 @@ char Player::upgradeLevel(QueueActionType type, int id) {
 		}
 		break;
 	case QueueActionType::BUILDING_LEVEL:
-		if (id >= 0 && id < buildingLevels.size() && buildingLevels[id].id >= 0) {
-			if (const auto next = getNextBuildingLevel(id);
+		if (id < buildingLevels.size() && buildingLevels[id].id >= 0) {
+			if (const auto next = getNextBuildingLevel(levelId);
 				next && Game::getWorldAgeController()->isLevelAvailable((*next)->ageStage)) {
 				++buildingLevels[id].level;
 				refreshEffectiveLevels();
 				return buildingLevels[id].level;
 			}
 		}
-		break;
-	case QueueActionType::UNIT_UPGRADE:
 		break;
 	default:;
 	}
@@ -76,16 +74,16 @@ db_unit_level* Player::getUnitLevel(unsigned short id) const {
 
 bool Player::startTechnologyResearch(unsigned short levelId, Building* building) {
 	if (!canResearchTechnology(levelId, building)) return false;
-	const auto* level = Game::getDatabase()->getTechnologyLevel(levelId);
+
 	const auto effectiveCost = technologyResearchCost(levelId);
 	if (!resources->reduce(&effectiveCost)) return false;
+	const auto* level = Game::getDatabase()->getTechnologyLevel(levelId);
 	const auto duration = technologyResearchDuration(levelId);
 	building->getQueue().add(QueueActionType::TECH_RESEARCH, level->technology, levelId, 1, duration);
 	return true;
 }
 
 unsigned short Player::technologyResearchDuration(unsigned short levelId) const {
-	if (levelId >= Game::getDatabase()->getTechnologyLevels().size()) return 1;
 	const auto* level = Game::getDatabase()->getTechnologyLevel(levelId);
 	return static_cast<unsigned short>(std::max(1.f, std::round(level->researchTime * technologyAgeMultiplier(level))));
 }
@@ -94,16 +92,20 @@ db_building_level* Player::getBuildingLevel(unsigned short id) const {
 	return id < buildingLevels.size() ? buildingLevels[id].effective : nullptr;
 }
 
-bool Player::isBuildingAvailable(unsigned short id) const {
-	const auto* building = Game::getDatabase()->getBuilding(id);
-	const auto* firstLevel = building ? [&building] {
-		const auto it = std::ranges::find_if(building->levels, [](const auto* level) { return level && level->level == 0; });
-		return it == building->levels.end() ? nullptr : *it;
-	}() : nullptr;
-	if (!firstLevel) return false;
+bool Player::isBuildingAvailable(unsigned short id) const { return isAvailable(Game::getDatabase()->getBuilding(id)); }
+
+//TODO what this does 
+bool Player::isAvailable(db_building* dbBuilding) const {
+	const auto* firstLevel = [&dbBuilding] {
+		const auto it =
+				std::ranges::find_if(dbBuilding->levels, [](const auto* level) { return level->level == 0; });
+		return it == dbBuilding->levels.end() ? nullptr : *it;
+	}();
+	if (!firstLevel)
+		return false;
 
 	const auto* ageController = Game::getWorldAgeController();
-	return !ageController || ageController->isLevelAvailable(firstLevel->ageStage);
+	return ageController->isLevelAvailable(firstLevel->ageStage);
 }
 
 std::optional<db_unit_level*> Player::getNextUnitLevel(unsigned short id) const {
@@ -115,9 +117,12 @@ std::optional<db_unit_level*> Player::getNextUnitLevel(unsigned short id) const 
 
 std::optional<db_building_level*> Player::getNextBuildingLevel(unsigned short id) const {
 	if (id >= buildingLevels.size() || buildingLevels[id].id < 0) return std::nullopt;
-	const auto* building = Game::getDatabase()->getBuilding(id);
-	const auto nextLevel = static_cast<size_t>(buildingLevels[id].level) + 1;
-	return building && nextLevel < building->levels.size() ? std::optional(building->levels[nextLevel]) : std::nullopt;
+	return getNextLevel(Game::getDatabase()->getBuilding(id));
+}
+
+std::optional<db_building_level*> Player::getNextLevel(db_building* dbBuilding) const {
+	const auto nextLevel = static_cast<size_t>(buildingLevels[dbBuilding->id].level) + 1;
+	return nextLevel < dbBuilding->levels.size() ? std::optional(dbBuilding->levels[nextLevel]) : std::nullopt;
 }
 
 unsigned char Player::getTechnologyLevel(unsigned short id) const {
@@ -131,20 +136,18 @@ bool Player::canResearchTechnology(unsigned short levelId) const {
 }
 
 bool Player::canResearchTechnology(unsigned short levelId, const Building* building) const {
-	if (levelId >= Game::getDatabase()->getTechnologyLevels().size()) return false;
 	const auto* level = Game::getDatabase()->getTechnologyLevel(levelId);
-	if (level->technology >= technologyLevels.size() || technologyLevels[level->technology] + 1 != level->level) {
+	if (technologyLevels[level->technology] + 1 != level->level) {
 		return false;
 	}
-	if (Game::getWorldAgeController() == nullptr ||
-		!std::ranges::any_of(level->unlockAgeIds, [](unsigned short age) {
-			return Game::getWorldAgeController()->hasReachedAge(age);
-		})) {
+	if (!std::ranges::any_of(level->unlockAgeIds, [](unsigned short age) { return Game::getWorldAgeController()->hasReachedAge(age); })) {
 		return false;
 	}
 	const auto* technology = Game::getDatabase()->getTechnology(level->technology);
-	if (!building || building->getPlayer() != id || !building->isReady() || !building->getQueue().isEmpty() ||
-		!TechnologyUtils::matchesResearchBuilding(technology, building->getDb())) return false;
+	if (!building->isReady() || !building->getQueue().isEmpty() ||
+		!TechnologyUtils::matchesResearchBuilding(technology, building->getDb())) {
+		return false;
+	}
 	if (hasTechnologyResearch(level->technology)) return false;
 	const auto effectiveCost = technologyResearchCost(levelId);
 	return resources->hasEnough(&effectiveCost);
@@ -157,7 +160,6 @@ bool Player::hasTechnologyResearch(unsigned short technologyId) const {
 }
 
 Building* Player::findResearchBuilding(unsigned short levelId) const {
-	if (levelId >= Game::getDatabase()->getTechnologyLevels().size()) return nullptr;
 	const auto* level = Game::getDatabase()->getTechnologyLevel(levelId);
 	const auto* technology = Game::getDatabase()->getTechnology(level->technology);
 	if (hasTechnologyResearch(level->technology)) return nullptr;
@@ -172,9 +174,8 @@ Building* Player::findResearchBuilding(unsigned short levelId) const {
 
 float Player::technologyAgeMultiplier(const db_technology_level* level) const {
 	const auto* ageController = Game::getWorldAgeController();
-	if (!ageController) return 1.f;
 
-	const auto* currentAge = ageController->getAge(ageController->getCurrentAgeId());
+	const auto* currentAge = ageController->getCurrentAge();
 	unsigned char unlockStage = 0;
 	for (const auto ageId : level->unlockAgeIds) {
 		if (ageController->hasReachedAge(ageId)) {
@@ -219,23 +220,22 @@ void Player::refreshResourceTechnologyModifiers() {
 	goldStorageMultiplier = TechnologyUtils::applyEffects(goldStorageMultiplier, effects,
 		[&](const auto* effect) { return appliesTo(effect, TechnologyStat::GOLD_STORAGE, ResourceType::GOLD); });
 
-	resources->setTechnologyModifiers(foodLostRate, goldGainRate, stoneRefineBonus, goldRefineBonus,
-			foodStorageMultiplier, goldStorageMultiplier);
+	resources->setTechnologyModifiers(foodLostRate, goldGainRate, stoneRefineBonus, goldRefineBonus, foodStorageMultiplier, goldStorageMultiplier);
 	resources->recalculateBuildingState(possession);
 }
 
 db_with_cost Player::technologyResearchCost(unsigned short levelId) const {
 	const auto* level = Game::getDatabase()->getTechnologyLevel(levelId);
 	const auto multiplier = technologyAgeMultiplier(level);
-	return db_with_cost(
-		static_cast<unsigned short>(std::round(level->cost.values[0] * multiplier)),
+	return {
+			static_cast<unsigned short>(std::round(level->cost.values[0] * multiplier)),
 		static_cast<unsigned short>(std::round(level->cost.values[1] * multiplier)),
 		static_cast<unsigned short>(std::round(level->cost.values[2] * multiplier)),
-		static_cast<unsigned short>(std::round(level->cost.values[3] * multiplier)));
+		static_cast<unsigned short>(std::round(level->cost.values[3] * multiplier))};
 }
 
 bool Player::completeTechnology(unsigned short levelId) {
-	if (levelId >= Game::getDatabase()->getTechnologyLevels().size()) return false;
+	assert(levelId < Game::getDatabase()->getTechnologyLevels().size());
 	const auto* level = Game::getDatabase()->getTechnologyLevel(levelId);
 	if (level->technology >= technologyLevels.size() || technologyLevels[level->technology] + 1 != level->level) {
 		return false;

@@ -31,10 +31,7 @@ void TopInfoPanel::update(const WorldAgeController* controller, const std::vecto
 		return;
 	}
 
-	const auto* currentAge = controller->getAge(controller->getCurrentAgeId());
-	if (!currentAge) {
-		return;
-	}
+	const auto* currentAge = controller->getCurrentAge();
 
 	const auto localization = Game::getLocalization();
 	text->SetText(localization->Get("top_age_title") + localization->Get(currentAge->name));

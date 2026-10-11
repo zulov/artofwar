@@ -10,18 +10,15 @@ class UpgradeCommand {
 	friend class Stats;
 
 public:
-	UpgradeCommand(unsigned char playerId, short id, QueueActionType type, short levelId = -1);
+	UpgradeCommand(unsigned char playerId, unsigned short id, QueueActionType type, unsigned short levelId);
 	~UpgradeCommand() = default;
 
-	void execute(SimulationObjectManager* simulationObjectManager) const;
-	void setSimulationObjectManager(SimulationObjectManager* _simulationObjectManager);
+	void execute(const SimulationObjectManager* simulationObjectManager) const;
 	PendingCommandSaveData saveState(unsigned short order) const;
 
 private:
 	QueueActionType type;
 	unsigned char playerId;
-	short id;
-	short levelId;
-
-	SimulationObjectManager* simulationObjectManager;
+	unsigned short id;
+	unsigned short levelId;
 };

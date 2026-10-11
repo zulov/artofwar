@@ -72,7 +72,7 @@ private:
 	void submitBuildingUpgradeRequest(float urgency, ParentBuildingType type);
 	std::optional<unsigned short> findBuildingToBuild(unsigned short unitId) const;
 	bool hasAnyBuildingThatDeploy(unsigned short unitId) const;
-	void tryToUpgradeBuilding(unsigned short id, float priority);
+	void tryToUpgradeBuilding(db_building* dbBuilding, float priority);
 	void submitTechnologyRequest(float urgency);
 
 	// Army control (used by order())

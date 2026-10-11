@@ -438,8 +438,7 @@ void Simulation::updateBuildingQueues() const {
 			}
 			break;
 			case QueueActionType::UNIT_LEVEL:
-			case QueueActionType::BUILDING_LEVEL:
-			case QueueActionType::UNIT_UPGRADE:
+			//case QueueActionType::BUILDING_LEVEL:
 			case QueueActionType::TECH_RESEARCH:
 				levelUp(done, build->getPlayer());
 				break;

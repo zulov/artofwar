@@ -154,13 +154,11 @@ TEST(WorldAgeControllerTest, FollowsSelectedBranchInsteadOfShowingEveryAgeAtTheN
 	const std::vector<Player*> players = {nullptr};
 
 	controller.update(players, 1);
-	ASSERT_EQ(1, controller.getCurrentAgeId());
 	const auto afterFirstBranch = controller.getNextAgeProgress(players);
 	ASSERT_EQ(1u, afterFirstBranch.size());
 	EXPECT_EQ(3, afterFirstBranch.front().ageId);
 
 	controller.update(players, 2);
-	ASSERT_EQ(3, controller.getCurrentAgeId());
 	const auto afterSecondAge = controller.getNextAgeProgress(players);
 	ASSERT_EQ(1u, afterSecondAge.size());
 	EXPECT_EQ(5, afterSecondAge.front().ageId);

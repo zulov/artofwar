@@ -248,12 +248,19 @@ std::optional<Urho3D::Vector2> Environment::validatePosition(int index, const Ur
 }
 
 const std::vector<Physical*>& Environment::getNeighbours(MouseHeld& held, char playerId) {
-	for (const auto grid : grids) {
-		const auto result = grid->getArrayNeight(held, playerId);
-		if (!result->empty()) {
-			return *result;
-		}
+	auto result = grids[castC(ObjectType::UNIT)]->getArrayNeight(held, playerId);
+	if (!result->empty()) {
+		return *result;
 	}
+	 result = grids[castC(ObjectType::BUILDING)]->getArrayNeight(held, playerId);
+	if (!result->empty()) {
+		return *result;
+	}
+	result = grids[castC(ObjectType::RESOURCE)]->getArrayNeight(held, playerId);
+	if (!result->empty()) {
+		return *result;
+	}
+	
 	return Consts::EMPTY_PHYSICAL;
 }
 

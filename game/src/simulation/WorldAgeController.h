@@ -41,8 +41,8 @@ public:
 	bool restore(const dbload_container& data);
 	void update(const std::vector<Player*>& players, unsigned totalTicks);
 
-	unsigned short getCurrentAgeId() const { return currentAgeId; }
 	const db_world_age* getAge(unsigned short ageId) const;
+	const db_world_age* getCurrentAge() const;
 	std::vector<WorldAgeProgress> getNextAgeProgress(const std::vector<Player*>& players) const;
 	float getTimeoutProgress(unsigned totalTicks) const;
 	bool hasReachedAge(unsigned short ageId) const;

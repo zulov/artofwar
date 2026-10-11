@@ -179,7 +179,9 @@ void MenuPanel::basicBuilding() {
 	const auto* player = Game::getPlayersMan()->getActivePlayer();
 	std::vector<db_building*> buildings;
 	for (auto* building : Game::getDatabase()->getNation(nation)->buildings) {
-		if (player->isBuildingAvailable(building->id)) buildings.push_back(building);
+		if (player->isAvailable(building)) {
+			buildings.push_back(building);
+		}
 	}
 	setIcons(buildings, "building/", ActionType::BUILDING_CREATE);
 }
@@ -191,7 +193,7 @@ void MenuPanel::levelBuilding() {
 	const auto player = Game::getPlayersMan()->getActivePlayer();
 	const auto* ageController = Game::getWorldAgeController();
 	for (const auto building : Game::getDatabase()->getNation(nation)->buildings) {
-		auto opt = player->getNextBuildingLevel(building->id);
+		auto opt = player->getNextLevel(building);
 		if (opt.has_value() && (!ageController || ageController->isLevelAvailable(opt.value()->ageStage))) {
 			levels.push_back(opt.value());
 		}

@@ -141,12 +141,16 @@ void StateManager::restoreUnitLifecycle(Unit* unit) {
 	}
 }
 
-void StateManager::restoreStaticStateChangePending(Static* obj) {
+void StateManager::setStatePending(Static* obj) {
 	if (obj->getType() == ObjectType::BUILDING) {
 		instance->buildingStateChangePending = true;
 	} else {
 		instance->resourceStateChangePending = true;
 	}
+}
+
+void StateManager::restoreStaticStateChangePending(Static* obj) {
+	setStatePending(obj);
 }
 
 void StateManager::restoreStaticLifecycle(Static* obj) {
@@ -171,11 +175,7 @@ void StateManager::restoreStaticLifecycle(Static* obj) {
 bool StateManager::changeState(Static* obj, StaticState stateTo) {
 	if (obj->getState() != StaticState::DISPOSE && obj->getState() != stateTo) {
 		obj->setNextState(stateTo);
-		if (obj->getType() == ObjectType::BUILDING) { 
-			instance->buildingStateChangePending = true; 
-		} else {
-			instance->resourceStateChangePending = true;
-		}
+		setStatePending(obj);
 		return true;
 	}
 	return false;
@@ -185,7 +185,7 @@ void StateManager::executeChange(const std::vector<Building*>* buildings) {
 	if (instance->buildingStateChangePending) {
 		instance->buildingStateChangePending = false;
 		for (const auto building : *buildings) {
-			// TODO perf kolekcja tylko zmienionych i iterowanie tylko po nich
+			// TODO perf kolekcja tylko zmi\enionych i iterowanie tylko po nich
 			executeChange(building);
 		}
 	}

@@ -15,13 +15,11 @@ CreationCommandList::CreationCommandList(SimulationObjectManager* simulationObje
 }
 
 
-CreationCommand* CreationCommandList::addUnits(unsigned number, unsigned short id, const Urho3D::Vector2& position,
-                                               unsigned char playerId, int level) const {
-	return new CreationCommand(ObjectType::UNIT, id, position, level, playerId, number);
+CreationCommand* CreationCommandList::addUnits(unsigned number, unsigned short id, const Urho3D::Vector2& position, unsigned char playerId) const {
+	return new CreationCommand(ObjectType::UNIT, id, position, playerId, number);
 }
 
-CreationCommand* CreationCommandList::addBuilding(unsigned short id, const Urho3D::Vector2& position, unsigned char playerId,
-                                                   int level) const {
+CreationCommand* CreationCommandList::addBuilding(unsigned short id, const Urho3D::Vector2& position, unsigned char playerId) const {
 	Player* player = Game::getPlayersMan()->getPlayer(playerId);
 	if (!player->isBuildingAvailable(id)) return nullptr;
 
@@ -32,7 +30,7 @@ CreationCommand* CreationCommandList::addBuilding(unsigned short id, const Urho3
 		if (env->isVisible(playerId, position)) {
 			const auto cords = env->getCords(position);
 			if (env->validateStatic(building->size, cords, true)) {
-				return new CreationCommand(ObjectType::BUILDING, id, cords, level, playerId);
+				return new CreationCommand(ObjectType::BUILDING, id, cords, playerId);
 			}
 		}
 	} else {
@@ -42,15 +40,13 @@ CreationCommand* CreationCommandList::addBuilding(unsigned short id, const Urho3
 	return nullptr;
 }
 
-CreationCommand*
-CreationCommandList::addBuildingForce(unsigned short id, const Urho3D::Vector2& position, unsigned char playerId,
-                                      int level) const {
+CreationCommand* CreationCommandList::addBuildingForce(unsigned short id, const Urho3D::Vector2& position, unsigned char playerId) const {
 	const db_building* building = Game::getDatabase()->getBuilding(id);
 	const auto env = Game::getEnvironment();
 
 	const auto cords = env->getCords(position);
 	if (env->validateStatic(building->size, cords, true)) {
-		return new CreationCommand(ObjectType::BUILDING, id, cords, level, playerId);
+		return new CreationCommand(ObjectType::BUILDING, id, cords, playerId);
 	}
 
 	return nullptr;

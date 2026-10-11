@@ -35,8 +35,7 @@ public:
 	explicit Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolution);
 	~Environment();
 
-	const std::vector<Physical*>& getNeighboursFromSparseSamePlayer(const Urho3D::Vector2& center, float radius,
-	                                                               char playerId);
+	const std::vector<Physical*>& getNeighboursFromSparseSamePlayer(const Urho3D::Vector2& center, float radius, char playerId);
 	const std::vector<Physical*>& getNeighboursFromTeamNotEq(const Urho3D::Vector2& center, float radius, char teamId);
 
 	const std::vector<Physical*>& getNeighbours(const Urho3D::Vector2& center, float radius);

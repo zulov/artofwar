@@ -30,6 +30,7 @@ public:
 	static void reset();
 	static void restoreUnitStateChangePending();
 	static void restoreUnitLifecycle(Unit* unit);
+	static void setStatePending(Static* obj);
 	static void restoreStaticStateChangePending(Static* obj);
 	static void restoreStaticLifecycle(Static* obj);
 	static const std::vector<Unit*>& getDeadUnits() { return instance->deadUnits; }

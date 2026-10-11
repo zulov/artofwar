@@ -181,7 +181,6 @@ public:
 private:
 	void setAim(Aim* aim);
 	void setTransform(const Urho3D::Vector2 &rotation, float y) const;
-	db_unit* getDbUnit() const;
 	Urho3D::Vector2 velocity, acceleration;//TODO ECS
 	Aims aims;
 

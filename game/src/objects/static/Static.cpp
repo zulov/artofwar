@@ -22,8 +22,8 @@ Static::~Static() {
 
 void Static::load(dbload_static* dbloadStatic) {
 	Physical::load(dbloadStatic);
-	this->state = StaticState(dbloadStatic->state);
-	this->nextState = StaticState(dbloadStatic->nextState);
+	this->state = static_cast<StaticState>(dbloadStatic->state);
+	this->nextState = static_cast<StaticState>(dbloadStatic->nextState);
 }
 
 bool Static::isInCloseRange(int index) const {

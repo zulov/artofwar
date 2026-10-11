@@ -11,11 +11,10 @@
 CreationCommand::CreationCommand(ObjectType type, unsigned short id, const Urho3D::UShortVector2& bucketCords)
 	: bucketCords(bucketCords), id(id), objectType(type), playerId(std::numeric_limits<unsigned char>::max()) {}
 
-CreationCommand::CreationCommand(ObjectType type, unsigned short id, const Urho3D::UShortVector2& bucketCords, char level,
-                                 unsigned char playerId)
+CreationCommand::CreationCommand(ObjectType type, unsigned short id, const Urho3D::UShortVector2& bucketCords, unsigned char playerId)
 	: bucketCords(bucketCords), id(id), objectType(type), playerId(playerId) {}
 
-CreationCommand::CreationCommand(ObjectType type, unsigned short id, const Urho3D::Vector2& position, char level,
+CreationCommand::CreationCommand(ObjectType type, unsigned short id, const Urho3D::Vector2& position,
                                  unsigned char playerId, unsigned number) : position(position), number(number),
                                                     id(id), objectType(type), playerId(playerId) {}
 
