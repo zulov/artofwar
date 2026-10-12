@@ -7,7 +7,7 @@ enum class ActionType : unsigned char;
 
 class QueueElement {
 public:
-	QueueElement(QueueActionType type, unsigned short id, unsigned char maxCapacity, unsigned short durationOverride = 0);
+	QueueElement(QueueActionType type, unsigned short id, unsigned char maxCapacity, unsigned short durationTicks);
 	~QueueElement() = default;
 	bool checkType(QueueActionType _type, unsigned short _id) const;
 	short add(short value);
@@ -21,7 +21,7 @@ public:
 	unsigned short getTicksToComplete() const { return ticksToComplete; }
 	unsigned short getElapsedTicks() const { return elapsedTicks; }
 	float getProgress() const { return ticksToComplete == 0 ? 1.f : ((float)elapsedTicks) / ticksToComplete; }
-	void restore(unsigned short savedElapsedTicks);
+	void restore(unsigned short savedAmount, unsigned short savedElapsedTicks, unsigned short savedDurationTicks);
 
 private:
 	QueueActionType type;
@@ -32,6 +32,7 @@ private:
 
 	unsigned short ticksToComplete;
 	unsigned short elapsedTicks;
+	unsigned short baseTicksToComplete;
 
 	unsigned short ticksToCompletePerInstance;
 };

@@ -9,7 +9,7 @@ public:
 	QueueManager() = default;
 	~QueueManager();
 
-	void add(QueueActionType type, unsigned short id, unsigned short number = 1, unsigned short durationOverride = 0);
+	void add(QueueActionType type, unsigned short id, unsigned short number, unsigned short durationTicks);
 	QueueElement* update();
 	short getSize() const;
 	bool isEmpty() const { return getSize() == 0; }
@@ -18,7 +18,7 @@ public:
 	bool contains(QueueActionType type, unsigned short id) const;
 	void changeMaxUnitsGroupSize(unsigned char maxUnitsGroupSize);
 	void restore(QueueActionType type, unsigned short id, unsigned short amount,
-				 unsigned short elapsedTicks, unsigned short durationOverride = 0);
+				 unsigned short elapsedTicks, unsigned short durationTicks);
 
 private:
 	std::vector<QueueElement*> queue;

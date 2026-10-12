@@ -6,7 +6,7 @@
 
 QueueManager::~QueueManager() { clear_vector(queue); }
 
-void QueueManager::add(QueueActionType type, unsigned short id, unsigned short number, unsigned short durationOverride) {
+void QueueManager::add(QueueActionType type, unsigned short id, unsigned short number, unsigned short durationTicks) {
 	for (auto i : queue) {
 		if (i->checkType(type, id)) {
 			number = i->add(number);
@@ -15,7 +15,7 @@ void QueueManager::add(QueueActionType type, unsigned short id, unsigned short n
 
 	while (number > 0) {
 		unsigned char maxCap = type == QueueActionType::UNIT_CREATE ? maxUnitsGroup : 1;
-		auto element = new QueueElement(type, id, maxCap, durationOverride);
+		auto element = new QueueElement(type, id, maxCap, durationTicks);
 		number = element->add(number);
 		queue.push_back(element);
 	}
@@ -57,10 +57,9 @@ bool QueueManager::contains(QueueActionType type, unsigned short id) const {
 void QueueManager::changeMaxUnitsGroupSize(unsigned char maxUnitsGroupSize) { maxUnitsGroup = maxUnitsGroupSize; }
 
 void QueueManager::restore(QueueActionType type, unsigned short id, unsigned short amount,
-						   unsigned short elapsedTicks, unsigned short durationOverride) {
+						   unsigned short elapsedTicks, unsigned short durationTicks) {
 	const unsigned char maxCapacity = type == QueueActionType::UNIT_CREATE ? maxUnitsGroup : 1;
-	auto* element = new QueueElement(type, id, maxCapacity, durationOverride);
-	element->add(static_cast<short>(amount));
-	element->restore(elapsedTicks);
+	auto* element = new QueueElement(type, id, maxCapacity, durationTicks);
+	element->restore(amount, elapsedTicks, durationTicks);
 	queue.push_back(element);
 }

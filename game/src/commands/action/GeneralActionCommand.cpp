@@ -21,7 +21,7 @@ void GeneralActionCommand::execute() {
 		if (opt.has_value()) {
 			if (Game::getWorldAgeController()->isLevelAvailable(opt.value()->ageStage) &&
 				playerEnt->getResources()->reduce(opt.value())) {
-				playerEnt->getQueue().add(QueueActionType::BUILDING_LEVEL, id, opt.value()->id);
+				playerEnt->getQueue().add(QueueActionType::BUILDING_LEVEL, id, 1, opt.value()->upgradeTime);
 			}
 		}
 	}

@@ -3,6 +3,7 @@
 #include "database/db_technology_struct.h"
 #include "math/RandGen.h"
 #include "objects/queue/QueueActionType.h"
+#include "objects/queue/QueueElement.h"
 #include "objects/queue/QueueManager.h"
 #include "player/Resources.h"
 #include "simulation/FrameInfo.h"
@@ -37,6 +38,38 @@ TEST(PersistenceStateTest, QueueContainsMatchesResearchTechnologyId) {
 	firstBuildingQueue.restore(QueueActionType::TECH_RESEARCH, 2, 1, 21, 100);
 	EXPECT_FALSE(firstBuildingQueue.contains(QueueActionType::TECH_RESEARCH, 3));
 	EXPECT_TRUE(firstBuildingQueue.contains(QueueActionType::TECH_RESEARCH, 2));
+}
+
+TEST(PersistenceStateTest, QueueAddUsesEntityIdAndCountAsSeparateValues) {
+	QueueManager queue;
+	queue.add(QueueActionType::BUILDING_CREATE, 0, 1, 17);
+
+	ASSERT_EQ(1, queue.getSize());
+	EXPECT_EQ(0, queue.first()->getId());
+	EXPECT_EQ(1, queue.first()->getAmount());
+	EXPECT_EQ(17, queue.first()->getTicksToComplete());
+}
+
+TEST(PersistenceStateTest, UnitQueueAddsDurationForAdditionalInstances) {
+	QueueManager queue;
+	queue.changeMaxUnitsGroupSize(3);
+	queue.add(QueueActionType::UNIT_CREATE, 1, 1, 100);
+	queue.add(QueueActionType::UNIT_CREATE, 1, 2, 100);
+
+	ASSERT_EQ(1, queue.getSize());
+	EXPECT_EQ(3, queue.first()->getAmount());
+	EXPECT_EQ(160, queue.first()->getTicksToComplete());
+}
+
+TEST(PersistenceStateTest, QueueRestorePreservesAmountElapsedAndDuration) {
+	QueueManager queue;
+	queue.changeMaxUnitsGroupSize(3);
+	queue.restore(QueueActionType::UNIT_CREATE, 1, 3, 40, 160);
+
+	ASSERT_EQ(1, queue.getSize());
+	EXPECT_EQ(3, queue.first()->getAmount());
+	EXPECT_EQ(40, queue.first()->getElapsedTicks());
+	EXPECT_EQ(160, queue.first()->getTicksToComplete());
 }
 
 TEST(PersistenceStateTest, RandomStateContinuesBothSequences) {

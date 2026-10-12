@@ -38,7 +38,7 @@ db_building* Building::getDb() const { return getDbBuilding(); }
 std::pair<db_building*, db_building_level*> Building::getData() const { return {getDbBuilding(), dbLevel}; }
 
 void Building::postCreate() {
-	queue.add(QueueActionType::BUILDING_CREATE, getDbId(), dbLevel->id);
+	queue.add(QueueActionType::BUILDING_CREATE, getDbId(), 1, dbLevel->buildTime);
 	setShaderParam(this, "Progress", 0.0);
 }
 
@@ -107,14 +107,15 @@ void Building::action(BuildingActionType type, unsigned short id) {
 	switch (type) {
 	case BuildingActionType::UNIT_CREATE:
 		if (resources->reduce(Game::getDatabase()->getUnit(id))) {
-			queue.add(QueueActionType::UNIT_CREATE, id, player->getUnitLevel(id)->id);
+			const auto* unitLevel = player->getUnitLevel(id);
+			queue.add(QueueActionType::UNIT_CREATE, id, 1, unitLevel->buildTime);
 		}
 		break;
 	case BuildingActionType::UNIT_LEVEL: {
 		// TODO bug czy to dobre uzycie optionala
 		if (auto nextLevel = player->getNextUnitLevel(id)) {
 			if (Game::getWorldAgeController()->isLevelAvailable((*nextLevel)->ageStage) && resources->reduce(*nextLevel)) {
-				queue.add(QueueActionType::UNIT_LEVEL, id, (*nextLevel)->id);
+				queue.add(QueueActionType::UNIT_LEVEL, id, 1, (*nextLevel)->upgradeTime);
 			}
 		}
 	}
@@ -182,7 +183,7 @@ void Building::updateAi(bool ifBuildingAction) {
 	}
 
 	if (getDbBuilding()->spawnsResourceNearby(dbLevel) && queue.isEmpty()) {
-		queue.add(QueueActionType::RESOURCE_CREATE, getDbBuilding()->id, dbLevel->id);
+		queue.add(QueueActionType::RESOURCE_CREATE, getDbBuilding()->id, 1, dbLevel->spawnResourceTime);
 	}
 }
 
