@@ -85,7 +85,7 @@ Changing a unit or building stat can change AI matching and aggregate possession
 
 ## Save Schema
 
-Save files use SQLite tables defined in `game/src/scene/save/SQLConsts.h`. `SaveTable.h` maps those definitions to the column enums in `game/src/database/db_columns.h`. `SceneSaver` writes named columns, and `SceneLoader` validates required columns before reading explicit enum-generated column lists. The loader checks whether optional runtime tables exist before restoring them.
+Save-file table schemas are generated in `game/src/scene/save/SQLConsts.h` from the column enums in `game/src/database/db_columns.h`; `SaveTable.h` maps each enum to its table name, primary key, and `WITHOUT ROWID` setting. Columns default to `INT NOT NULL`, with serialized path/history columns declared `TEXT NOT NULL`. `SceneSaver` writes named columns, and `SceneLoader` validates required columns before reading explicit enum-generated column lists. The loader checks whether optional runtime tables exist before restoring them.
 
 Age continuation is the `world_age` runtime table. It has one row with `current_age`, `age_started_tick`, and `history`; `config.map` identifies the map whose catalog must validate those IDs. Static age rows are never copied into a save. `world_age` is written by the active controller, while empty variable-length runtime tables are normally omitted. `player_levels` is mandatory and is filled with one level-0-or-higher row for every unit and building definition supported by each saved player's nation.
 

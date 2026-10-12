@@ -14,8 +14,9 @@ namespace {
 
 	template <typename Col>
 	void checkSaveTableContract(sqlite3* database) {
-		EXPECT_EQ(std::string::npos, std::string(SaveTable<Col>::schema).find("REAL"));
-		const auto createSql = std::string("CREATE TABLE ") + SaveTable<Col>::name + SaveTable<Col>::schema;
+		const auto schema = SaveTable<Col>::schema();
+		EXPECT_EQ(std::string::npos, schema.find("REAL"));
+		const auto createSql = std::string("CREATE TABLE ") + SaveTable<Col>::name + schema;
 		ASSERT_TRUE(execSql(database, createSql.c_str()));
 		sqlite3_stmt* statement = nullptr;
 		ASSERT_EQ(SQLITE_OK, sqlite3_prepare_v2(database, saveSelectSql<Col>().c_str(), -1, &statement, nullptr));
@@ -33,7 +34,8 @@ namespace {
 
 	template <typename Col, typename Row>
 	Row roundTrip(const Row& expected) {
-		sqlite3* database = makeDatabase(SaveTable<Col>::name, SaveTable<Col>::schema);
+		const auto schema = SaveTable<Col>::schema();
+		sqlite3* database = makeDatabase(SaveTable<Col>::name, schema.c_str());
 		if (!database) {
 			return {};
 		}
@@ -80,6 +82,15 @@ TEST(PersistenceRowTest, AllSaveTableContractsCreateAndSelect) {
 	checkSaveTableContract<WorldAgeStateCol>(database);
 
 	sqlite3_close(database);
+}
+
+TEST(PersistenceRowTest, GeneratedSchemaUsesTextForSerializedColumns) {
+	const auto aimPathSchema = SaveTable<AimPathCol>::schema();
+	EXPECT_NE(std::string::npos, aimPathSchema.find("path TEXT NOT NULL"));
+	EXPECT_NE(std::string::npos, aimPathSchema.find("pending_path TEXT NOT NULL"));
+
+	const auto worldAgeSchema = SaveTable<WorldAgeStateCol>::schema();
+	EXPECT_NE(std::string::npos, worldAgeSchema.find("history TEXT NOT NULL"));
 }
 
 TEST(PersistenceRowTest, QueueRowsRoundTripResearchDuration) {
