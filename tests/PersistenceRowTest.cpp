@@ -94,12 +94,13 @@ TEST(PersistenceRowTest, GeneratedSchemaUsesTextForSerializedColumns) {
 }
 
 TEST(PersistenceRowTest, QueueRowsRoundTripResearchDuration) {
-	const QueueRow expected{{7, 0, static_cast<char>(QueueActionType::TECH_RESEARCH), 2, 4, 1, 12, 240}, 0};
+	const QueueRow expected{{7, 0, static_cast<char>(QueueActionType::TECH_RESEARCH), 2, 4, 12, 240}, 0};
 	const auto actual = roundTrip<QueueCol>(expected);
 
 	EXPECT_EQ(expected.data.ownerId, actual.data.ownerId);
 	EXPECT_EQ(expected.data.type, actual.data.type);
-	EXPECT_EQ(expected.data.levelId, actual.data.levelId);
+	EXPECT_EQ(expected.data.id, actual.data.id);
+	EXPECT_EQ(expected.data.amount, actual.data.amount);
 	EXPECT_EQ(expected.data.elapsedTicks, actual.data.elapsedTicks);
 	EXPECT_EQ(expected.data.durationTicks, actual.data.durationTicks);
 }

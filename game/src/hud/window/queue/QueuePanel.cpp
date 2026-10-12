@@ -37,7 +37,8 @@ void QueuePanel::update(const QueueManager& queue, short& j) const {
 			texture = getTexture("textures/hud/icon/mock.png");
 		}
 		if (element->getMaxCapacity() > 1) {
-			elements[j]->setText(Urho3D::String(element->getAmount()) + "/" + Urho3D::String(element->getMaxCapacity()));
+			elements[j]->setText(Urho3D::String(static_cast<unsigned>(element->getAmount())) + "/" +
+								Urho3D::String(static_cast<unsigned>(element->getMaxCapacity())));
 		} else {
 			elements[j]->hideText();
 		}

@@ -27,14 +27,14 @@ TEST(PersistenceStateTest, TechnologyResourceTypeParsesAsEnum) {
 TEST(PersistenceStateTest, QueueContainsMatchesResearchTechnologyId) {
 	QueueManager firstBuildingQueue;
 	QueueManager secondBuildingQueue;
-	firstBuildingQueue.restore(QueueActionType::TECH_RESEARCH, 2, 20, 1, 0, 100);
-	secondBuildingQueue.restore(QueueActionType::TECH_RESEARCH, 3, 30, 1, 0, 100);
+	firstBuildingQueue.restore(QueueActionType::TECH_RESEARCH, 2, 1, 20, 100);
+	secondBuildingQueue.restore(QueueActionType::TECH_RESEARCH, 3, 1, 30, 100);
 
 	EXPECT_TRUE(firstBuildingQueue.contains(QueueActionType::TECH_RESEARCH, 2));
 	EXPECT_FALSE(firstBuildingQueue.contains(QueueActionType::TECH_RESEARCH, 3));
 	EXPECT_TRUE(secondBuildingQueue.contains(QueueActionType::TECH_RESEARCH, 3));
 	EXPECT_FALSE(secondBuildingQueue.contains(QueueActionType::TECH_RESEARCH, 2));
-	firstBuildingQueue.restore(QueueActionType::TECH_RESEARCH, 2, 21, 1, 0, 100);
+	firstBuildingQueue.restore(QueueActionType::TECH_RESEARCH, 2, 1, 21, 100);
 	EXPECT_FALSE(firstBuildingQueue.contains(QueueActionType::TECH_RESEARCH, 3));
 	EXPECT_TRUE(firstBuildingQueue.contains(QueueActionType::TECH_RESEARCH, 2));
 }
