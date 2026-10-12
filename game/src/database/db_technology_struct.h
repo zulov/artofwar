@@ -118,7 +118,7 @@ inline std::vector<unsigned short> parseTechnologyBuildingIds(const char* value)
 }
 
 inline Urho3D::String technologyLevelKey(const Urho3D::String& code, unsigned char level) {
-	return code + "_" + Urho3D::String(level);
+	return code + "_" + Urho3D::String(static_cast<unsigned>(level));
 }
 
 struct db_technology_effect : db_entity {
