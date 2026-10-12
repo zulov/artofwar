@@ -251,8 +251,6 @@ BuildingActionType Controls::getBuildingActionType(ActionType type) {
 		return BuildingActionType::UNIT_CREATE;
 	case ActionType::UNIT_LEVEL:
 		return BuildingActionType::UNIT_LEVEL;
-	case ActionType::UNIT_UPGRADE:
-		return BuildingActionType::UNIT_UPGRADE;
 	case ActionType::TECH_RESEARCH:
 		return BuildingActionType::TECH_RESEARCH;
 	default: ;

@@ -4,7 +4,6 @@ enum class ActionType : unsigned char {
 
 	UNIT_CREATE,
 	UNIT_LEVEL,
-	UNIT_UPGRADE,
 
 	BUILDING_CREATE,
 	BUILDING_LEVEL,

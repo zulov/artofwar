@@ -74,8 +74,6 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 			return stringFrom(dbLevel->name, dbLevel);
 		}
 	}
-	case ActionType::UNIT_UPGRADE:
-		return "TODO";
 	case ActionType::BUILDING_CREATE: {
 		const auto dbBuilding = Game::getDatabase()->getBuilding(id);
 

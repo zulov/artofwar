@@ -23,6 +23,18 @@ struct PlayerLevel {
 	int id = -1;
 	unsigned char level = 0;
 	T* effective = nullptr;
+	void reset() {
+		id = -1;
+		level = 0;
+		delete effective;
+		effective = nullptr;
+	}
+
+	void set(unsigned short id, T* level) { 
+		this->id = id;
+		delete effective;
+		effective = level;
+	}
 };
 
 class Player {
@@ -67,7 +79,7 @@ public:
 	db_unit_level* getUnitLevel(unsigned short id) const;
 	db_building_level* getBuildingLevel(unsigned short id) const;
 	bool isBuildingAvailable(unsigned short id) const;
-	bool isAvailable(db_building * dbBuilding) const;
+	bool isAvailable(const db_building * dbBuilding) const;
 	std::optional<db_unit_level*> getNextUnitLevel(unsigned short id) const;
 	std::optional<db_building_level*> getNextBuildingLevel(unsigned short id) const;
 	std::optional<db_building_level*> getNextLevel(db_building * dbBuilding) const;
@@ -90,6 +102,8 @@ public:
 	float applyTechnologyAttack(float attack, const db_building* source, const db_building* target) const;
 	float applyTechnologyResourceBonus(float bonus, const db_building* source, unsigned char resourceId) const;
 	float applyTechnologyResourceBonus(float bonus, unsigned char resourceId) const;
+	bool unitInPlayerNation(const db_unit* unit);
+	bool buildingInPlayerNation(const db_building* building);
 	void refreshEffectiveLevels();
 	const std::vector<unsigned char>& getTechnologyLevels() const { return technologyLevels; }
 	AiHistory& getAiHistory() { return aiHistory; }
