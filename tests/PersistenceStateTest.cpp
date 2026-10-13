@@ -18,11 +18,11 @@ TEST(PersistenceStateTest, TechnologyAgeIdsParseAsConcreteIds) {
 	EXPECT_TRUE(parseTechnologyAgeIds("").empty());
 }
 
-TEST(PersistenceStateTest, TechnologyResourceTypeParsesAsEnum) {
-	EXPECT_EQ(parseTechnologyEnum<TechnologyResourceType>(nullptr), TechnologyResourceType::NONE);
-	EXPECT_EQ(parseTechnologyEnum<TechnologyResourceType>("any"), TechnologyResourceType::ANY);
-	EXPECT_EQ(parseTechnologyEnum<TechnologyResourceType>("GoLd"), TechnologyResourceType::GOLD);
-	EXPECT_FALSE(parseTechnologyEnum<TechnologyResourceType>("unknown").has_value());
+TEST(PersistenceStateTest, TechResourceTypeParsesAsEnum) {
+	EXPECT_EQ(parseTechEnum<TechResourceType>(nullptr), TechResourceType::NONE);
+	EXPECT_EQ(parseTechEnum<TechResourceType>("any"), TechResourceType::ANY);
+	EXPECT_EQ(parseTechEnum<TechResourceType>("GoLd"), TechResourceType::GOLD);
+	EXPECT_FALSE(parseTechEnum<TechResourceType>("unknown").has_value());
 }
 
 TEST(PersistenceStateTest, QueueContainsMatchesResearchTechnologyId) {

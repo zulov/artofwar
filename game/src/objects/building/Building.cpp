@@ -88,14 +88,7 @@ unsigned char Building::getMaxCloseUsers() const { return getDbBuilding()->maxUs
 
 const Urho3D::String& Building::getName() const { return getDbBuilding()->name; }
 
-float Building::getAttackVal(Physical* aim) {
-	const auto* owner = Game::getPlayersMan()->getPlayer(player);
-	if (aim && aim->getType() == ObjectType::UNIT) {
-		return owner->applyTechnologyAttack(dbLevel->attack, getDb(), static_cast<Unit*>(aim)->getDb());
-	}
-	if (aim && aim->getType() == ObjectType::BUILDING) {
-		return owner->applyTechnologyAttack(dbLevel->attack, getDb(), static_cast<Building*>(aim)->getDb());
-	}
+float Building::getAttackVal(Physical*) {
 	return dbLevel->attack;
 }
 

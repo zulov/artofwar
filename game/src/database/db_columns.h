@@ -371,7 +371,6 @@ enum class DbTechnologyEffectCol : unsigned char {
 	target_kind,
 	target_tag,
 	resource_type,
-	target_id,
 	value
 };
 

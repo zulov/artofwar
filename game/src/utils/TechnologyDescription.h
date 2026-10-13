@@ -9,7 +9,6 @@
 #include <Urho3D/Resource/Localization.h>
 
 #include "Game.h"
-#include "database/DatabaseCache.h"
 #include "database/db_technology_struct.h"
 
 namespace TechnologyDescription {
@@ -25,124 +24,101 @@ inline std::string formatNumber(float value) {
 	return result;
 }
 
-inline std::string formatEffectValue(TechnologyOperation operation, float value) {
-	if (operation == TechnologyOperation::PERCENT) value *= 100.f;
+inline std::string formatEffectValue(TechOperation operation, float value) {
+	if (operation == TechOperation::PERCENT) value *= 100.f;
 
 	const auto number = formatNumber(value);
 	const auto signedNumber = value > 0.f ? "+" + number : number;
-	return signedNumber + (operation == TechnologyOperation::PERCENT ? "%" : "");
+	return signedNumber + (operation == TechOperation::PERCENT ? "%" : "");
 }
 
 inline Urho3D::String localize(const char* key) {
 	return Game::getLocalization()->Get(Urho3D::String(key));
 }
 
-inline const char* statKey(TechnologyStat stat) {
+inline const char* statKey(TechStat stat) {
 	switch (stat) {
-	case TechnologyStat::ATTACK: return "tech_stat_attack";
-	case TechnologyStat::ARMOR: return "tech_stat_armor";
-	case TechnologyStat::MAX_HP: return "tech_stat_max_hp";
-	case TechnologyStat::SPEED: return "tech_stat_speed";
-	case TechnologyStat::SIGHT_RANGE: return "tech_stat_sight_range";
-	case TechnologyStat::ATTACK_RANGE: return "tech_stat_attack_range";
-	case TechnologyStat::ATTACK_RELOAD: return "tech_stat_attack_reload";
-	case TechnologyStat::GATHER_RATE: return "tech_stat_gather_rate";
-	case TechnologyStat::RESOURCE_BONUS: return "tech_stat_resource_bonus";
-	case TechnologyStat::RESOURCE_RANGE: return "tech_stat_resource_range";
-	case TechnologyStat::FOOD_STORAGE: return "tech_stat_food_storage";
-	case TechnologyStat::GOLD_STORAGE: return "tech_stat_gold_storage";
-	case TechnologyStat::STONE_REFINEMENT: return "tech_stat_stone_refinement";
-	case TechnologyStat::GOLD_REFINEMENT: return "tech_stat_gold_refinement";
-	case TechnologyStat::BUILD_TIME: return "tech_stat_build_time";
-	case TechnologyStat::TRAIN_TIME: return "tech_stat_train_time";
-	case TechnologyStat::FOOD_DECAY: return "tech_stat_food_decay";
-	case TechnologyStat::GOLD_INTEREST: return "tech_stat_gold_interest";
+	case TechStat::ATTACK: return "tech_stat_attack";
+	case TechStat::ARMOR: return "tech_stat_armor";
+	case TechStat::MAX_HP: return "tech_stat_max_hp";
+	case TechStat::SPEED: return "tech_stat_speed";
+	case TechStat::SIGHT_RANGE: return "tech_stat_sight_range";
+	case TechStat::ATTACK_RANGE: return "tech_stat_attack_range";
+	case TechStat::ATTACK_RELOAD: return "tech_stat_attack_reload";
+	case TechStat::GATHER_RATE: return "tech_stat_gather_rate";
+	case TechStat::RESOURCE_BONUS: return "tech_stat_resource_bonus";
+	case TechStat::RESOURCE_RANGE: return "tech_stat_resource_range";
+	case TechStat::FOOD_STORAGE: return "tech_stat_food_storage";
+	case TechStat::GOLD_STORAGE: return "tech_stat_gold_storage";
+	case TechStat::STONE_REFINEMENT: return "tech_stat_stone_refinement";
+	case TechStat::GOLD_REFINEMENT: return "tech_stat_gold_refinement";
+	case TechStat::BUILD_TIME: return "tech_stat_build_time";
+	case TechStat::TRAIN_TIME: return "tech_stat_train_time";
+	case TechStat::FOOD_DECAY: return "tech_stat_food_decay";
+	case TechStat::GOLD_INTEREST: return "tech_stat_gold_interest";
 	default: return "tech_stat_unknown";
 	}
 }
 
-inline const char* scopeKey(TechnologySourceKind kind, TechnologySourceTag tag) {
+inline const char* scopeKey(TechSourceKind kind, TechSourceTag tag) {
 	switch (kind) {
-	case TechnologySourceKind::UNIT:
+	case TechSourceKind::UNIT:
 		switch (tag) {
-		case TechnologySourceTag::ANY: return "tech_scope_unit_any";
-		case TechnologySourceTag::ARMY: return "tech_scope_unit_army";
-		case TechnologySourceTag::WORKER: return "tech_scope_unit_worker";
-		case TechnologySourceTag::INFANTRY: return "tech_scope_unit_infantry";
-		case TechnologySourceTag::RANGED: return "tech_scope_unit_ranged";
-		case TechnologySourceTag::CAVALRY: return "tech_scope_unit_cavalry";
-		case TechnologySourceTag::MELEE: return "tech_scope_unit_melee";
-		case TechnologySourceTag::HEAVY: return "tech_scope_unit_heavy";
-		case TechnologySourceTag::LIGHT: return "tech_scope_unit_light";
-		case TechnologySourceTag::SPECIAL: return "tech_scope_unit_special";
+		case TechSourceTag::ANY: return "tech_scope_unit_any";
+		case TechSourceTag::ARMY: return "tech_scope_unit_army";
+		case TechSourceTag::WORKER: return "tech_scope_unit_worker";
+		case TechSourceTag::INFANTRY: return "tech_scope_unit_infantry";
+		case TechSourceTag::RANGED: return "tech_scope_unit_ranged";
+		case TechSourceTag::CAVALRY: return "tech_scope_unit_cavalry";
+		case TechSourceTag::MELEE: return "tech_scope_unit_melee";
+		case TechSourceTag::HEAVY: return "tech_scope_unit_heavy";
+		case TechSourceTag::LIGHT: return "tech_scope_unit_light";
+		case TechSourceTag::SPECIAL: return "tech_scope_unit_special";
 		default: return "tech_scope_unit_any";
 		}
-	case TechnologySourceKind::BUILDING:
+	case TechSourceKind::BUILDING:
 		switch (tag) {
-		case TechnologySourceTag::ANY:
-		case TechnologySourceTag::ALL_BUILDINGS: return "tech_scope_building_any";
-		case TechnologySourceTag::RESOURCE_BUILDING: return "tech_scope_building_resource";
-		case TechnologySourceTag::DEFENSIVE_BUILDING: return "tech_scope_building_defensive";
-		case TechnologySourceTag::TECH_BUILDING: return "tech_scope_building_tech";
+		case TechSourceTag::ANY:
+		case TechSourceTag::ALL_BUILDINGS: return "tech_scope_building_any";
+		case TechSourceTag::RESOURCE_BUILDING: return "tech_scope_building_resource";
+		case TechSourceTag::DEFENSIVE_BUILDING: return "tech_scope_building_defensive";
+		case TechSourceTag::TECH_BUILDING: return "tech_scope_building_tech";
 		default: return "tech_scope_building_any";
 		}
-	case TechnologySourceKind::RESOURCE: return "tech_scope_resource_any";
-	case TechnologySourceKind::PLAYER: return "tech_scope_player";
+	case TechSourceKind::RESOURCE: return "tech_scope_resource_any";
+	case TechSourceKind::PLAYER: return "tech_scope_player";
 	default: return "tech_scope_unknown";
 	}
 }
 
-inline Urho3D::String scopeName(TechnologySourceKind kind, TechnologySourceTag tag) {
+inline Urho3D::String scopeName(TechSourceKind kind, TechSourceTag tag) {
 	return localize(scopeKey(kind, tag));
 }
 
-inline Urho3D::String targetScopeName(TechnologyTargetKind kind, TechnologySourceTag tag) {
+inline Urho3D::String targetScopeName(TechTargetKind kind, TechSourceTag tag) {
 	switch (kind) {
-	case TechnologyTargetKind::UNIT: return scopeName(TechnologySourceKind::UNIT, tag);
-	case TechnologyTargetKind::BUILDING: return scopeName(TechnologySourceKind::BUILDING, tag);
-	case TechnologyTargetKind::RESOURCE: return scopeName(TechnologySourceKind::RESOURCE, tag);
+	case TechTargetKind::UNIT: return scopeName(TechSourceKind::UNIT, tag);
+	case TechTargetKind::BUILDING: return scopeName(TechSourceKind::BUILDING, tag);
+	case TechTargetKind::RESOURCE: return scopeName(TechSourceKind::RESOURCE, tag);
 	default: return localize("tech_scope_unknown");
 	}
 }
 
-inline Urho3D::String resourceName(TechnologyResourceType resourceType) {
+inline Urho3D::String resourceName(TechResourceType resourceType) {
 	switch (resourceType) {
-	case TechnologyResourceType::FOOD: return localize("tech_resource_food");
-	case TechnologyResourceType::WOOD: return localize("tech_resource_wood");
-	case TechnologyResourceType::STONE: return localize("tech_resource_stone");
-	case TechnologyResourceType::GOLD: return localize("tech_resource_gold");
+	case TechResourceType::FOOD: return localize("tech_resource_food");
+	case TechResourceType::WOOD: return localize("tech_resource_wood");
+	case TechResourceType::STONE: return localize("tech_resource_stone");
+	case TechResourceType::GOLD: return localize("tech_resource_gold");
 	default: return {};
 	}
 }
 
 inline Urho3D::String targetName(const db_technology_effect* effect) {
-	if (effect->targetKind == TechnologyTargetKind::RESOURCE) {
+	if (effect->targetKind == TechTargetKind::RESOURCE) {
 		if (const auto name = resourceName(effect->resourceType); !name.Empty()) return name;
-		if (effect->resourceType == TechnologyResourceType::ANY) return localize("tech_scope_resource_any");
+		if (effect->resourceType == TechResourceType::ANY) return localize("tech_scope_resource_any");
 	}
-
-	if (effect->targetId >= 0) {
-		auto* database = Game::getDatabase();
-		switch (effect->targetKind) {
-		case TechnologyTargetKind::UNIT:
-			if (static_cast<size_t>(effect->targetId) < database->getUnits().size()) {
-				if (const auto* unit = database->getUnit(static_cast<unsigned short>(effect->targetId))) return unit->name;
-			}
-			break;
-		case TechnologyTargetKind::BUILDING:
-			if (static_cast<size_t>(effect->targetId) < database->getBuildings().size()) {
-				if (const auto* building = database->getBuilding(static_cast<unsigned short>(effect->targetId))) return building->name;
-			}
-			break;
-		case TechnologyTargetKind::RESOURCE:
-			if (static_cast<size_t>(effect->targetId) < database->getResourcesSize()) {
-				if (const auto* resource = database->getResource(static_cast<unsigned short>(effect->targetId))) return resource->name;
-			}
-			break;
-		default: break;
-		}
-	}
-
 	return targetScopeName(effect->targetKind, effect->targetTag);
 }
 
@@ -154,7 +130,7 @@ inline Urho3D::String effect(const db_technology_effect* technologyEffect) {
 		+ localize("tech_effect_for") + " "
 		+ scopeName(technologyEffect->sourceKind, technologyEffect->sourceTag);
 
-	if (technologyEffect->targetKind != TechnologyTargetKind::NONE) {
+	if (technologyEffect->targetKind != TechTargetKind::NONE) {
 		result += " " + localize("tech_effect_affecting") + " " + targetName(technologyEffect);
 	}
 	return result;

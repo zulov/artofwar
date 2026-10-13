@@ -189,27 +189,27 @@ void Player::refreshResourceTechnologyModifiers(const std::vector<const db_techn
 	float goldStorageMultiplier = Resources::DEFAULT_GOLD_STORAGE_MULTIPLIER;
 
 	const auto appliesToResource = [](const db_technology_effect* effect, ResourceType resource) {
-		if (effect->targetKind == TechnologyTargetKind::NONE) return true;
-		return effect->targetKind == TechnologyTargetKind::RESOURCE &&
+		if (effect->targetKind == TechTargetKind::NONE) return true;
+		return effect->targetKind == TechTargetKind::RESOURCE &&
 			TechnologyUtils::matchesResourceTarget(effect, cast(resource));
 	};
 
-	const auto appliesTo = [&appliesToResource](const auto* effect, TechnologyStat stat, ResourceType resource) {
-		return effect->sourceKind == TechnologySourceKind::PLAYER && effect->stat == stat &&
+	const auto appliesTo = [&appliesToResource](const auto* effect, TechStat stat, ResourceType resource) {
+		return effect->sourceKind == TechSourceKind::PLAYER && effect->stat == stat &&
 			appliesToResource(effect, resource);
 	};
 	foodLostRate = TechnologyUtils::applyEffects(foodLostRate, effects,
-		[&](const auto* effect) { return appliesTo(effect, TechnologyStat::FOOD_DECAY, ResourceType::FOOD); });
+		[&](const auto* effect) { return appliesTo(effect, TechStat::FOOD_DECAY, ResourceType::FOOD); });
 	goldGainRate = TechnologyUtils::applyEffects(goldGainRate, effects,
-		[&](const auto* effect) { return appliesTo(effect, TechnologyStat::GOLD_INTEREST, ResourceType::GOLD); });
+		[&](const auto* effect) { return appliesTo(effect, TechStat::GOLD_INTEREST, ResourceType::GOLD); });
 	stoneRefineBonus = TechnologyUtils::applyEffects(stoneRefineBonus, effects,
-		[&](const auto* effect) { return appliesTo(effect, TechnologyStat::STONE_REFINEMENT, ResourceType::STONE); });
+		[&](const auto* effect) { return appliesTo(effect, TechStat::STONE_REFINEMENT, ResourceType::STONE); });
 	goldRefineBonus = TechnologyUtils::applyEffects(goldRefineBonus, effects,
-		[&](const auto* effect) { return appliesTo(effect, TechnologyStat::GOLD_REFINEMENT, ResourceType::GOLD); });
+		[&](const auto* effect) { return appliesTo(effect, TechStat::GOLD_REFINEMENT, ResourceType::GOLD); });
 	foodStorageMultiplier = TechnologyUtils::applyEffects(foodStorageMultiplier, effects,
-		[&](const auto* effect) { return appliesTo(effect, TechnologyStat::FOOD_STORAGE, ResourceType::FOOD); });
+		[&](const auto* effect) { return appliesTo(effect, TechStat::FOOD_STORAGE, ResourceType::FOOD); });
 	goldStorageMultiplier = TechnologyUtils::applyEffects(goldStorageMultiplier, effects,
-		[&](const auto* effect) { return appliesTo(effect, TechnologyStat::GOLD_STORAGE, ResourceType::GOLD); });
+		[&](const auto* effect) { return appliesTo(effect, TechStat::GOLD_STORAGE, ResourceType::GOLD); });
 
 	resources->setTechnologyModifiers(foodLostRate, goldGainRate, stoneRefineBonus, goldRefineBonus, foodStorageMultiplier, goldStorageMultiplier);
 	resources->recalculateBuildingState(possession);
@@ -250,56 +250,18 @@ std::vector<const db_technology_effect*> Player::activeTechnologyEffects() const
 	return effects;
 }
 
-float Player::applyTechnologyAttack(float attack, const db_unit* source, const db_unit* target) const {
-	const auto effects = activeTechnologyEffects();
-	return TechnologyUtils::applyEffects(attack, effects, [&](const auto* effect) {
-		return effect->stat == TechnologyStat::ATTACK && effect->sourceKind == TechnologySourceKind::UNIT &&
-			effect->targetKind == TechnologyTargetKind::UNIT && TechnologyUtils::matchesUnitTag(effect->sourceTag, source) &&
-			TechnologyUtils::matchesAttackTarget(effect, target);
-	});
-}
-
-float Player::applyTechnologyAttack(float attack, const db_unit* source, const db_building* target) const {
-	const auto effects = activeTechnologyEffects();
-	return TechnologyUtils::applyEffects(attack, effects, [&](const auto* effect) {
-		return effect->stat == TechnologyStat::ATTACK && effect->sourceKind == TechnologySourceKind::UNIT &&
-			effect->targetKind == TechnologyTargetKind::BUILDING && TechnologyUtils::matchesUnitTag(effect->sourceTag, source) &&
-			TechnologyUtils::matchesAttackTarget(effect, target);
-	});
-}
-
-float Player::applyTechnologyAttack(float attack, const db_building* source, const db_unit* target) const {
-	const auto effects = activeTechnologyEffects();
-	return TechnologyUtils::applyEffects(attack, effects, [&](const auto* effect) {
-		return effect->stat == TechnologyStat::ATTACK && effect->sourceKind == TechnologySourceKind::BUILDING &&
-			effect->targetKind == TechnologyTargetKind::UNIT && TechnologyUtils::matchesBuildingTag(effect->sourceTag, source) &&
-			TechnologyUtils::matchesAttackTarget(effect, target);
-	});
-}
-
-float Player::applyTechnologyAttack(float attack, const db_building* source, const db_building* target) const {
-	const auto effects = activeTechnologyEffects();
-	return TechnologyUtils::applyEffects(attack, effects, [&](const auto* effect) {
-		return effect->stat == TechnologyStat::ATTACK && effect->sourceKind == TechnologySourceKind::BUILDING &&
-			effect->targetKind == TechnologyTargetKind::BUILDING && TechnologyUtils::matchesBuildingTag(effect->sourceTag, source) &&
-			TechnologyUtils::matchesAttackTarget(effect, target);
-	});
-}
-
 float Player::applyTechnologyResourceBonus(float bonus, const db_building* source, unsigned char resourceId) const {
-	const auto effects = activeTechnologyEffects();
-	return TechnologyUtils::applyEffects(bonus, effects, [&](const auto* effect) {
-		return effect->stat == TechnologyStat::RESOURCE_BONUS && effect->sourceKind == TechnologySourceKind::BUILDING &&
-			effect->targetKind == TechnologyTargetKind::RESOURCE && TechnologyUtils::matchesBuildingTag(effect->sourceTag, source) &&
+	return TechnologyUtils::applyEffects(bonus, activeTechnologyEffectCache, [&](const auto* effect) {
+		return effect->stat == TechStat::RESOURCE_BONUS && effect->sourceKind == TechSourceKind::BUILDING &&
+			effect->targetKind == TechTargetKind::RESOURCE && TechnologyUtils::matchesBuildingTag(effect->sourceTag, source) &&
 			TechnologyUtils::matchesResourceTarget(effect, resourceId);
 	});
 }
 
 float Player::applyTechnologyResourceBonus(float bonus, unsigned char resourceId) const {
-	const auto effects = activeTechnologyEffects();
-	return TechnologyUtils::applyEffects(bonus, effects, [&](const auto* effect) {
-		return effect->stat == TechnologyStat::RESOURCE_BONUS && effect->sourceKind == TechnologySourceKind::RESOURCE &&
-			effect->targetKind == TechnologyTargetKind::RESOURCE && TechnologyUtils::matchesResourceTarget(effect, resourceId);
+	return TechnologyUtils::applyEffects(bonus, activeTechnologyEffectCache, [&](const auto* effect) {
+		return effect->stat == TechStat::RESOURCE_BONUS && effect->sourceKind == TechSourceKind::RESOURCE &&
+			effect->targetKind == TechTargetKind::RESOURCE && TechnologyUtils::matchesResourceTarget(effect, resourceId);
 	});
 }
 
@@ -313,7 +275,8 @@ bool Player::buildingInPlayerNation(const db_building* building) {
 
 void Player::refreshEffectiveLevels() {
 	const auto database = Game::getDatabase();
-	const auto effects = activeTechnologyEffects();
+	activeTechnologyEffectCache = activeTechnologyEffects();
+	const auto& effects = activeTechnologyEffectCache;
 	auto &allUnits = database->getUnits();
 
 	for (const auto* unit : allUnits) {
@@ -325,20 +288,40 @@ void Player::refreshEffectiveLevels() {
 		}
 		playerLevel.set(unit->id, new db_unit_level(*unit->levels[playerLevel.level]));
 
-		const auto appliesToUnit = [&](const auto* effect, TechnologyStat stat) {
-			return effect->sourceKind == TechnologySourceKind::UNIT &&
-					effect->targetKind == TechnologyTargetKind::NONE &&
-					effect->stat == stat &&
-					TechnologyUtils::matchesUnitTag(effect->sourceTag, unit);
-		};
-		playerLevel.effective->attack = TechnologyUtils::applyEffects(playerLevel.effective->attack, effects, [&](const auto* effect) { return appliesToUnit(effect, TechnologyStat::ATTACK); });
-		playerLevel.effective->armor = TechnologyUtils::applyEffects(playerLevel.effective->armor, effects, [&](const auto* effect) { return appliesToUnit(effect, TechnologyStat::ARMOR); });
-		playerLevel.effective->maxHp = static_cast<unsigned short>(std::max(1.f, TechnologyUtils::applyEffects( playerLevel.effective->maxHp, effects, [&](const auto* effect) { return appliesToUnit(effect, TechnologyStat::MAX_HP); })));
-		playerLevel.effective->maxSpeed = TechnologyUtils::applyEffects(playerLevel.effective->maxSpeed, effects, [&](const auto* effect) { return appliesToUnit(effect, TechnologyStat::SPEED); });
-		playerLevel.effective->sightRadius = TechnologyUtils::applyEffects(playerLevel.effective->sightRadius, effects, [&](const auto* effect) { return appliesToUnit(effect, TechnologyStat::SIGHT_RANGE); });
-		playerLevel.effective->attackRange = static_cast<short>(TechnologyUtils::applyEffects(playerLevel.effective->attackRange, effects, [&](const auto* effect) { return appliesToUnit(effect, TechnologyStat::ATTACK_RANGE); }));
-		playerLevel.effective->attackReload = std::max<short>(1, static_cast<short>(TechnologyUtils::applyEffects( playerLevel.effective->attackReload, effects, [&](const auto* effect) { return appliesToUnit(effect, TechnologyStat::ATTACK_RELOAD); })));
-		playerLevel.effective->collect = TechnologyUtils::applyEffects(playerLevel.effective->collect, effects, [&](const auto* effect) { return appliesToUnit(effect, TechnologyStat::GATHER_RATE); });
+		const auto baseAttack = unit->levels[playerLevel.level]->attack;
+		playerLevel.effective->attack = TechnologyUtils::applyUnitTechStat(baseAttack, effects, unit, TechStat::ATTACK);
+		playerLevel.effective->armor = TechnologyUtils::applyUnitTechStat(playerLevel.effective->armor, effects, unit, TechStat::ARMOR);
+		playerLevel.effective->maxHp = static_cast<unsigned short>(std::max(1.f, TechnologyUtils::applyUnitTechStat(
+			playerLevel.effective->maxHp, effects, unit, TechStat::MAX_HP)));
+		playerLevel.effective->maxSpeed = TechnologyUtils::applyUnitTechStat(playerLevel.effective->maxSpeed, effects, unit, TechStat::SPEED);
+		playerLevel.effective->sightRadius = TechnologyUtils::applyUnitTechStat(playerLevel.effective->sightRadius, effects,
+			unit, TechStat::SIGHT_RANGE);
+		playerLevel.effective->attackRange = static_cast<short>(TechnologyUtils::applyUnitTechStat(
+			playerLevel.effective->attackRange, effects, unit, TechStat::ATTACK_RANGE));
+		playerLevel.effective->attackReload = std::max<short>(1, static_cast<short>(TechnologyUtils::applyUnitTechStat(
+			playerLevel.effective->attackReload, effects, unit, TechStat::ATTACK_RELOAD)));
+		playerLevel.effective->collect = TechnologyUtils::applyUnitTechStat(playerLevel.effective->collect, effects,
+			unit, TechStat::GATHER_RATE);
+		playerLevel.effective->bonusInfantry = TechnologyUtils::applyUnitAttackTargetBonus(playerLevel.effective->attack,
+			playerLevel.effective->bonusInfantry, effects, unit, TechTargetKind::UNIT, TechSourceTag::INFANTRY);
+		playerLevel.effective->bonusRange = TechnologyUtils::applyUnitAttackTargetBonus(playerLevel.effective->attack,
+			playerLevel.effective->bonusRange, effects, unit, TechTargetKind::UNIT, TechSourceTag::RANGED);
+		playerLevel.effective->bonusCavalry = TechnologyUtils::applyUnitAttackTargetBonus(playerLevel.effective->attack,
+			playerLevel.effective->bonusCavalry, effects, unit, TechTargetKind::UNIT, TechSourceTag::CAVALRY);
+		playerLevel.effective->bonusWorker = TechnologyUtils::applyUnitAttackTargetBonus(playerLevel.effective->attack,
+			playerLevel.effective->bonusWorker, effects, unit, TechTargetKind::UNIT, TechSourceTag::WORKER);
+		playerLevel.effective->bonusSpecial = TechnologyUtils::applyUnitAttackTargetBonus(playerLevel.effective->attack,
+			playerLevel.effective->bonusSpecial, effects, unit, TechTargetKind::UNIT, TechSourceTag::SPECIAL);
+		playerLevel.effective->bonusMelee = TechnologyUtils::applyUnitAttackTargetBonus(playerLevel.effective->attack,
+			playerLevel.effective->bonusMelee, effects, unit, TechTargetKind::UNIT, TechSourceTag::MELEE);
+		playerLevel.effective->bonusHeavy = TechnologyUtils::applyUnitAttackTargetBonus(playerLevel.effective->attack,
+			playerLevel.effective->bonusHeavy, effects, unit, TechTargetKind::UNIT, TechSourceTag::HEAVY);
+		playerLevel.effective->bonusLight = TechnologyUtils::applyUnitAttackTargetBonus(playerLevel.effective->attack,
+			playerLevel.effective->bonusLight, effects, unit, TechTargetKind::UNIT, TechSourceTag::LIGHT);
+		// Building-sourced attack bonuses against target categories need effective fields on db_building_attack if introduced.
+		// Building-sourced target-specific attack bonuses need effective target-bonus fields on db_building_attack if introduced.
+		playerLevel.effective->bonusBuilding = TechnologyUtils::applyUnitAttackTargetBonus(playerLevel.effective->attack,
+			playerLevel.effective->bonusBuilding, effects, unit, TechTargetKind::BUILDING, TechSourceTag::ANY);
 		playerLevel.effective->invMaxHp = 1.f / playerLevel.effective->maxHp;
 		playerLevel.effective->sqSightRadius = playerLevel.effective->sightRadius * playerLevel.effective->sightRadius;
 		playerLevel.effective->interestRange = playerLevel.effective->sightRadius * 0.8f;
@@ -358,18 +341,25 @@ void Player::refreshEffectiveLevels() {
 		}
 
 		playerLevel.set(building->id, new db_building_level(*building->levels[playerLevel.level]));
-		const auto appliesToBuilding = [&](const auto* effect, TechnologyStat stat) {
-			return effect->sourceKind == TechnologySourceKind::BUILDING && effect->targetKind == TechnologyTargetKind::NONE &&
-				effect->stat == stat && TechnologyUtils::matchesBuildingTag(effect->sourceTag, building);
-		};
-		playerLevel.effective->attack = TechnologyUtils::applyEffects(playerLevel.effective->attack, effects, [&](const auto* effect) { return appliesToBuilding(effect, TechnologyStat::ATTACK); });
-		playerLevel.effective->armor = TechnologyUtils::applyEffects(playerLevel.effective->armor, effects, [&](const auto* effect) { return appliesToBuilding(effect, TechnologyStat::ARMOR); });
-		playerLevel.effective->maxHp = static_cast<unsigned short>(std::max(1.f, TechnologyUtils::applyEffects( playerLevel.effective->maxHp, effects, [&](const auto* effect) { return appliesToBuilding(effect, TechnologyStat::MAX_HP); })));
-		playerLevel.effective->sightRadius = TechnologyUtils::applyEffects(playerLevel.effective->sightRadius, effects,[&](const auto* effect) { return appliesToBuilding(effect, TechnologyStat::SIGHT_RANGE); });
-		playerLevel.effective->attackRange = static_cast<short>(TechnologyUtils::applyEffects(playerLevel.effective->attackRange, effects,[&](const auto* effect) { return appliesToBuilding(effect, TechnologyStat::ATTACK_RANGE); }));
-		playerLevel.effective->attackReload = std::max<short>(1, static_cast<short>(TechnologyUtils::applyEffects(playerLevel.effective->attackReload, effects,[&](const auto* effect) { return appliesToBuilding(effect, TechnologyStat::ATTACK_RELOAD); })));
-		playerLevel.effective->resourceRange = TechnologyUtils::applyEffects(playerLevel.effective->resourceRange, effects,[&](const auto* effect) { return appliesToBuilding(effect, TechnologyStat::RESOURCE_RANGE); });
-		playerLevel.effective->collect = TechnologyUtils::applyEffects(playerLevel.effective->collect, effects,[&](const auto* effect) { return appliesToBuilding(effect, TechnologyStat::RESOURCE_BONUS); });
+		// Building attackers currently lack target-category bonus fields; revisit if target-specific building attacks are added.
+		// Building attackers currently have no target-category bonus fields; revisit if target-specific building attacks are added.
+		// Building-sourced attack-vs-target bonuses need effective target-bonus fields on db_building_attack if introduced.
+		playerLevel.effective->attack = TechnologyUtils::applyBuildingTechStat(playerLevel.effective->attack, effects,
+			building, TechStat::ATTACK);
+		playerLevel.effective->armor = TechnologyUtils::applyBuildingTechStat(playerLevel.effective->armor, effects,
+			building, TechStat::ARMOR);
+		playerLevel.effective->maxHp = static_cast<unsigned short>(std::max(1.f, TechnologyUtils::applyBuildingTechStat(
+			playerLevel.effective->maxHp, effects, building, TechStat::MAX_HP)));
+		playerLevel.effective->sightRadius = TechnologyUtils::applyBuildingTechStat(playerLevel.effective->sightRadius,
+			effects, building, TechStat::SIGHT_RANGE);
+		playerLevel.effective->attackRange = static_cast<short>(TechnologyUtils::applyBuildingTechStat(
+			playerLevel.effective->attackRange, effects, building, TechStat::ATTACK_RANGE));
+		playerLevel.effective->attackReload = std::max<short>(1, static_cast<short>(TechnologyUtils::applyBuildingTechStat(
+			playerLevel.effective->attackReload, effects, building, TechStat::ATTACK_RELOAD)));
+		playerLevel.effective->resourceRange = TechnologyUtils::applyBuildingTechStat(playerLevel.effective->resourceRange,
+			effects, building, TechStat::RESOURCE_RANGE);
+		playerLevel.effective->collect = TechnologyUtils::applyBuildingTechStat(playerLevel.effective->collect, effects,
+			building, TechStat::RESOURCE_BONUS);
 		playerLevel.effective->invMaxHp = 1.f / playerLevel.effective->maxHp;
 		playerLevel.effective->sqSightRadius = playerLevel.effective->sightRadius * playerLevel.effective->sightRadius;
 		playerLevel.effective->interestRange = playerLevel.effective->sightRadius * 0.8f;
@@ -397,7 +387,9 @@ void Player::restoreBuildingLevel(unsigned short id, unsigned char level) {
 }
 
 void Player::restoreTechnologyLevel(unsigned short id, unsigned char level) {
-	if (id < technologyLevels.size()) technologyLevels[id] = level;
+	if (id < technologyLevels.size()) {
+		technologyLevels[id] = level;
+	}
 }
 
 void Player::updateResource1s() const { resources->update1s(possession); }

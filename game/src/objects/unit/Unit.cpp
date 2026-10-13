@@ -417,14 +417,13 @@ char Unit::getLevelNum() const{
 float Unit::getAttackVal(Physical* aim) {
 	auto attack = dbLevel->attack;
 	if (aim->getType() == ObjectType::BUILDING) {
-		const auto* target = static_cast<Building*>(aim);
 		attack *= 1.f + dbLevel->bonusBuilding;
-		return Game::getPlayersMan()->getPlayer(player)->applyTechnologyAttack(attack, getDb(), target->getDb());
+		return attack;
 	}
 	if (aim->getType() == ObjectType::UNIT) {
 		const auto* target = static_cast<Unit*>(aim);
 		attack *= 1.f + target->getDb()->getBonuses(dbLevel);
-		return Game::getPlayersMan()->getPlayer(player)->applyTechnologyAttack(attack, getDb(), target->getDb());
+		return attack;
 	}
 	return attack;
 }

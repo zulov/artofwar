@@ -321,8 +321,7 @@ struct db_unit : db_with_icon, db_with_cost {
 	}
 
 	float getBonuses(db_unit_attack* dbLevel) const {
-		return typeInfantry * dbLevel->bonusInfantry +
-			typeRange * dbLevel->bonusRange +
+		return typeInfantry * dbLevel->bonusInfantry + typeRange * dbLevel->bonusRange +
 			typeCavalry * dbLevel->bonusCavalry +
 			typeWorker * dbLevel->bonusWorker +
 			typeSpecial * dbLevel->bonusSpecial +

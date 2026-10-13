@@ -18,7 +18,7 @@
 #include "db_utils.h"
 #include "utils/StringUtils.h"
 
-enum class TechnologyStat : unsigned char {
+enum class TechStat : unsigned char {
 	ATTACK,
 	ARMOR,
 	MAX_HP,
@@ -39,11 +39,11 @@ enum class TechnologyStat : unsigned char {
 	GOLD_INTEREST
 };
 
-enum class TechnologyOperation : unsigned char { ADD, PERCENT };
+enum class TechOperation : unsigned char { ADD, PERCENT };
 
-enum class TechnologySourceKind : unsigned char { UNIT, BUILDING, RESOURCE, PLAYER };
+enum class TechSourceKind : unsigned char { UNIT, BUILDING, RESOURCE, PLAYER };
 
-enum class TechnologySourceTag : unsigned char {
+enum class TechSourceTag : unsigned char {
 	ANY,
 	ARMY,
 	WORKER,
@@ -60,14 +60,14 @@ enum class TechnologySourceTag : unsigned char {
 	TECH_BUILDING
 };
 
-enum class TechnologyTargetKind : unsigned char { NONE, UNIT, BUILDING, RESOURCE };
+enum class TechTargetKind : unsigned char { NONE, UNIT, BUILDING, RESOURCE };
 
-enum class TechnologyResourceType : unsigned char { NONE, ANY, FOOD, WOOD, STONE, GOLD, INVALID };
+enum class TechResourceType : unsigned char { NONE, ANY, FOOD, WOOD, STONE, GOLD, INVALID };
 
 template <typename T>
-inline std::optional<T> parseTechnologyEnum(const char* value) {
+inline std::optional<T> parseTechEnum(const char* value) {
 	const std::string_view name = value ? value : "";
-	if constexpr (std::is_same_v<T, TechnologyTargetKind> || std::is_same_v<T, TechnologyResourceType>) {
+	if constexpr (std::is_same_v<T, TechTargetKind> || std::is_same_v<T, TechResourceType>) {
 		if (name.empty()) return T::NONE;
 	}
 	return magic_enum::enum_cast<T>(name, magic_enum::case_insensitive);
@@ -123,28 +123,26 @@ inline Urho3D::String technologyLevelKey(const Urho3D::String& code, unsigned ch
 
 struct db_technology_effect : db_entity {
 	const unsigned short technologyLevel;
-	const TechnologyStat stat;
-	const TechnologyOperation operation;
-	const TechnologySourceKind sourceKind;
-	const TechnologySourceTag sourceTag;
-	const TechnologyTargetKind targetKind;
-	const TechnologySourceTag targetTag;
-	const TechnologyResourceType resourceType;
-	const short targetId;
+	const TechStat stat;
+	const TechOperation operation;
+	const TechSourceKind sourceKind;
+	const TechSourceTag sourceTag;
+	const TechTargetKind targetKind;
+	const TechSourceTag targetTag;
+	const TechResourceType resourceType;
 	const float value;
 
 	using C = DbTechnologyEffectCol;
 	db_technology_effect(sqlite3_stmt* stmt)
 		: db_entity(asUShort(stmt, C::id)),
 		  technologyLevel(asUShort(stmt, C::technology_level)),
-		  stat(parseTechnologyEnum<TechnologyStat>(asText(stmt, C::stat)).value_or(TechnologyStat::ATTACK)),
-		  operation(parseTechnologyEnum<TechnologyOperation>(asText(stmt, C::operation)).value_or(TechnologyOperation::ADD)),
-		  sourceKind(parseTechnologyEnum<TechnologySourceKind>(asText(stmt, C::source_kind)).value_or(TechnologySourceKind::PLAYER)),
-		  sourceTag(parseTechnologyEnum<TechnologySourceTag>(asText(stmt, C::source_tag)).value_or(TechnologySourceTag::ANY)),
-		  targetKind(parseTechnologyEnum<TechnologyTargetKind>(asText(stmt, C::target_kind)).value_or(TechnologyTargetKind::NONE)),
-		  targetTag(parseTechnologyEnum<TechnologySourceTag>(asText(stmt, C::target_tag)).value_or(TechnologySourceTag::ANY)),
-		  resourceType(parseTechnologyEnum<TechnologyResourceType>(asText(stmt, C::resource_type)).value_or(TechnologyResourceType::INVALID)),
-		  targetId(asShort(stmt, C::target_id)),
+		  stat(parseTechEnum<TechStat>(asText(stmt, C::stat)).value_or(TechStat::ATTACK)),
+		  operation(parseTechEnum<TechOperation>(asText(stmt, C::operation)).value_or(TechOperation::ADD)),
+		  sourceKind(parseTechEnum<TechSourceKind>(asText(stmt, C::source_kind)).value_or(TechSourceKind::PLAYER)),
+		  sourceTag(parseTechEnum<TechSourceTag>(asText(stmt, C::source_tag)).value_or(TechSourceTag::ANY)),
+		  targetKind(parseTechEnum<TechTargetKind>(asText(stmt, C::target_kind)).value_or(TechTargetKind::NONE)),
+		  targetTag(parseTechEnum<TechSourceTag>(asText(stmt, C::target_tag)).value_or(TechSourceTag::ANY)),
+		  resourceType(parseTechEnum<TechResourceType>(asText(stmt, C::resource_type)).value_or(TechResourceType::INVALID)),
 		  value(asFloat(stmt, C::value)) {}
 };
 

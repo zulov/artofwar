@@ -97,10 +97,6 @@ public:
 	bool hasTechnologyResearch(unsigned short technologyId) const;
 	Building* findResearchBuilding(unsigned short levelId) const;
 	bool completeTechnology(unsigned short levelId);
-	float applyTechnologyAttack(float attack, const db_unit* source, const db_unit* target) const;
-	float applyTechnologyAttack(float attack, const db_unit* source, const db_building* target) const;
-	float applyTechnologyAttack(float attack, const db_building* source, const db_unit* target) const;
-	float applyTechnologyAttack(float attack, const db_building* source, const db_building* target) const;
 	float applyTechnologyResourceBonus(float bonus, const db_building* source, unsigned char resourceId) const;
 	float applyTechnologyResourceBonus(float bonus, unsigned char resourceId) const;
 	bool unitInPlayerNation(const db_unit* unit);
@@ -140,4 +136,5 @@ private:
 	std::vector<PlayerLevel<db_unit_level>> unitLevels;
 	std::vector<PlayerLevel<db_building_level>> buildingLevels;
 	std::vector<unsigned char> technologyLevels;
+	std::vector<const db_technology_effect*> activeTechnologyEffectCache;
 };
