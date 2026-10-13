@@ -5,7 +5,6 @@
 
 #include "database/db_struct.h"
 #include "database/db_technology_struct.h"
-#include "player/Player.h"
 
 namespace TechnologyUtils {
 
@@ -66,11 +65,6 @@ inline bool matchesResourceTarget(const db_technology_effect* effect, unsigned c
 	}
 }
 
-inline bool isActive(const Player* player, const db_technology_level* technology) {
-	return technology && technology->technology < player->getTechnologyLevels().size() &&
-		player->getTechnologyLevel(technology->technology) >= technology->level;
-}
-
 inline unsigned char operationOrder(TechnologyOperation operation) {
 	return operation == TechnologyOperation::ADD ? 0 : 1;
 }
@@ -80,19 +74,6 @@ inline bool effectComesBefore(TechnologyOperation leftOperation, unsigned short 
 	const auto leftOrder = operationOrder(leftOperation);
 	const auto rightOrder = operationOrder(rightOperation);
 	return leftOrder != rightOrder ? leftOrder < rightOrder : leftId < rightId;
-}
-
-inline std::vector<const db_technology_effect*> activeEffects(const Player* player,
-		const std::vector<db_technology_level*>& levels) {
-	std::vector<const db_technology_effect*> result;
-	for (const auto* level : levels) {
-		if (!isActive(player, level)) continue;
-		for (const auto* effect : level->effects) result.push_back(effect);
-	}
-	std::ranges::sort(result, [](const auto* left, const auto* right) {
-		return effectComesBefore(left->operation, left->id, right->operation, right->id);
-	});
-	return result;
 }
 
 template <typename Effect>

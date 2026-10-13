@@ -14,6 +14,7 @@ struct db_unit;
 struct db_unit_level;
 struct db_building;
 struct db_building_level;
+struct db_technology_effect;
 struct db_technology_level;
 struct db_with_cost;
 enum class ActionType : unsigned char;
@@ -115,8 +116,9 @@ public:
 	unsigned getNextUnitId() { return ++currentUnitUId; }
 
 private:
+	std::vector<const db_technology_effect*> activeTechnologyEffects() const;
 	float technologyAgeMultiplier(const db_technology_level* level) const;
-	void refreshResourceTechnologyModifiers();
+	void refreshResourceTechnologyModifiers(const std::vector<const db_technology_effect*>& effects);
 
 	int score = -1;
 
