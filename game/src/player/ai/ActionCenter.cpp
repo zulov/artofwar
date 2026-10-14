@@ -10,6 +10,7 @@
 #include "commands/action/UnitActionCommand.h"
 #include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"
+#include "commands/upgrade/UpgradeType.h"
 #include "database/db_struct.h"
 #include "env/Environment.h"
 #include "objects/Physical.h"
@@ -111,7 +112,7 @@ void ActionCenter::loadState(const std::vector<PendingCommandSaveData>& state,
 			break;
 		}
 		case PendingCommandKind::UPGRADE:
-			upgrade.add(new UpgradeCommand(item.playerId, item.id, static_cast<QueueActionType>(item.action)));
+			upgrade.add(new UpgradeCommand(item.playerId, item.id, static_cast<UpgradeType>(item.action)));
 			break;
 		case PendingCommandKind::INDIVIDUAL_ORDER:
 			if (item.entityUids.empty()) {

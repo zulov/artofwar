@@ -14,6 +14,7 @@
 #include "WorldAgeController.h"
 #include "camera/CameraManager.h"
 #include "commands/upgrade/UpgradeCommand.h"
+#include "commands/upgrade/UpgradeType.h"
 #include "database/DatabaseCache.h"
 #include "database/db_other_struct.h"
 #include "debug/DebugLineRepo.h"
@@ -422,8 +423,8 @@ void Simulation::applyForce() const {
 	}
 }
 
-void Simulation::upgrade(const QueueElement* done, unsigned char playerId) const {
-	Game::getActionCenter()->add(new UpgradeCommand(playerId, done->getId(), done->getType()));
+void Simulation::upgrade(unsigned short id, unsigned char playerId, UpgradeType type) const {
+	Game::getActionCenter()->add(new UpgradeCommand(playerId, id, type));
 }
 
 void Simulation::updateBuildingQueues() const {
@@ -438,8 +439,10 @@ void Simulation::updateBuildingQueues() const {
 			break;
 			case QueueActionType::UNIT_LEVEL:
 			//case QueueActionType::BUILDING_LEVEL:
+				upgrade(done->getId(), build->getPlayer(), UpgradeType::UNIT_LEVEL);
+				break;
 			case QueueActionType::TECH_RESEARCH:
-				upgrade(done, build->getPlayer());
+				upgrade(done->getId(), build->getPlayer(), UpgradeType::TECH_RESEARCH);
 				break;
 			case QueueActionType::BUILDING_CREATE:
 				build->complete();
@@ -472,7 +475,7 @@ void Simulation::updateQueues() const {
 		if (done) {
 			switch (done->getType()) {
 			case QueueActionType::BUILDING_LEVEL:
-				upgrade(done, player->getId());
+				upgrade(done->getId(), player->getId(), UpgradeType::BUILDING_LEVEL);
 				break;
 			}
 			delete done;

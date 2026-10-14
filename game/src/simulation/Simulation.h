@@ -25,6 +25,7 @@ class SimulationObjectManager;
 class UpgradeCommandList;
 class CommandList;
 class WorldAgeController;
+enum class UpgradeType : char;
 
 namespace Urho3D {
 	class Node;
@@ -63,7 +64,7 @@ private:
 	void loadEntities(dbload_container* data) const;
 	void restoreRuntimeState(dbload_container* data) const;
 	void applyForce() const;
-	void upgrade(const QueueElement* done, unsigned char playerId) const;
+	void upgrade(unsigned short id, unsigned char playerId, UpgradeType type) const;
 	void updateBuildingQueues() const;
 	void updateQueues() const;
 	std::function<bool(Physical*)> ifAttack(db_unit* dbUnit) const;

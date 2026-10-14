@@ -48,7 +48,8 @@ public:
 
 	void setResourceAmount(float food, float wood, float stone, float gold) const;
 	void setResourceAmount(float amount) const;
-	char upgradeLevel(QueueActionType type, unsigned short levelId);
+	void upgradeUnitLevel(unsigned short unitId);
+	void upgradeBuildingLevel(unsigned short buildingId);
 	bool startTechnologyResearch(unsigned short levelId, Building* building);
 	unsigned short technologyResearchDuration(unsigned short levelId) const;
 	db_with_cost technologyResearchCost(unsigned short levelId) const;
@@ -97,7 +98,7 @@ public:
 	bool canResearchTechnology(unsigned short levelId, const Building* building) const;
 	bool hasTechnologyResearch(unsigned short technologyId) const;
 	Building* findResearchBuilding(unsigned short levelId) const;
-	bool completeTechnology(unsigned short levelId);
+	void completeTechnology(unsigned short levelId);
 	float applyTechnologyResourceBonus(float bonus, const db_building* source, unsigned char resourceId) const;
 	float applyTechnologyResourceBonus(float bonus, unsigned char resourceId) const;
 	bool unitInPlayerNation(const db_unit* unit) const;

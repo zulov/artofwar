@@ -41,23 +41,14 @@ void Player::setResourceAmount(float food, float wood, float stone, float gold) 
 
 void Player::setResourceAmount(float amount) const { resources->init(amount); }
 
-char Player::upgradeLevel(QueueActionType type, unsigned short entityId) {
-	switch (type) {
-	case QueueActionType::UNIT_LEVEL:
-		++levelsOfUnit[entityId].level;
-		refreshEffectiveLevels();
-		return levelsOfUnit[entityId].level;
+void Player::upgradeUnitLevel(unsigned short unitId) {
+	++levelsOfUnit[unitId].level;
+	refreshEffectiveLevels();
+}
 
-		break;
-	case QueueActionType::BUILDING_LEVEL:
-	
-		++levelsForBuilding[entityId].level;
-		refreshEffectiveLevels();
-		return levelsForBuilding[entityId].level;
-		break;
-	default:;
-	}
-	return -1;
+void Player::upgradeBuildingLevel(unsigned short buildingId) {
+	++levelsForBuilding[buildingId].level;
+	refreshEffectiveLevels();
 }
 
 unsigned char Player::getNation() const { return dbNation->id; }
@@ -212,15 +203,11 @@ db_with_cost Player::technologyResearchCost(unsigned short levelId) const {
 			RoundUtils::toUShort(level->cost.values[3] * multiplier)};
 }
 
-bool Player::completeTechnology(unsigned short levelId) {
+void Player::completeTechnology(unsigned short levelId) {
 	assert(levelId < Game::getDatabase()->getTechnologyLevels().size());
 	const auto* level = Game::getDatabase()->getTechnologyLevel(levelId);
-	if (level->technology >= technologyLevels.size() || technologyLevels[level->technology] + 1 != level->level) {
-		return false;
-	}
 	technologyLevels[level->technology] = level->level;
 	refreshEffectiveLevels();
-	return true;
 }
 
 std::vector<const db_technology_effect*> Player::activeTechnologyEffects() const {

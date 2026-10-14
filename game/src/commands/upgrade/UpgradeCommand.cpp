@@ -1,4 +1,5 @@
 #include "UpgradeCommand.h"
+#include "UpgradeType.h"
 #include "scene/load/RuntimeSaveData.h"
 #include "Game.h"
 #include "objects/building/Building.h"
@@ -6,31 +7,37 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimulationObjectManager.h"
-#include "objects/queue/QueueActionType.h"
 
 
-UpgradeCommand::UpgradeCommand(unsigned char playerId, unsigned short id, QueueActionType type) :
+UpgradeCommand::UpgradeCommand(unsigned char playerId, unsigned short id, UpgradeType type) :
 	type(type), playerId(playerId), id(id) {}
 
 void UpgradeCommand::execute(const SimulationObjectManager* simulationObjectManager) const {
 	auto player = Game::getPlayersMan()->getPlayer(playerId);
-	if (type == QueueActionType::TECH_RESEARCH && player->completeTechnology(id)) {
-		simulationObjectManager->refreshPlayerEffectiveLevels(playerId);
-	} else if (type == QueueActionType::UNIT_LEVEL && player->upgradeLevel(type, id) > 0) {
+	switch (type) {
+	case UpgradeType::TECH_RESEARCH:
+		player->completeTechnology(id);
+		break;
+	case UpgradeType::UNIT_LEVEL:
+		player->upgradeUnitLevel(id);
 		for (auto unit : *simulationObjectManager->getUnits()) {
-			if (unit->getPlayer() == playerId && unit->getDbId() == id)
+			if (unit->getPlayer() == playerId && unit->getDbId() == id) {
 				unit->levelUp();
+			}
 		}
-		simulationObjectManager->refreshPlayerEffectiveLevels(playerId);
-	} else if (type == QueueActionType::BUILDING_LEVEL && player->upgradeLevel(type, id) > 0) {
+		break;
+	case UpgradeType::BUILDING_LEVEL:
+		player->upgradeBuildingLevel(id);
 		for (auto building : *simulationObjectManager->getBuildings()) {
-			if (building->getPlayer() == playerId && building->getDbId() == id)
+			if (building->getPlayer() == playerId && building->getDbId() == id) {
 				building->levelUp();
+			}
 		}
-		simulationObjectManager->refreshPlayerEffectiveLevels(playerId);
-	} else if (type == QueueActionType::UNIT_LEVEL || type == QueueActionType::BUILDING_LEVEL) {
-		simulationObjectManager->refreshPlayerEffectiveLevels(playerId);
+		break;
+	default:
+		return;
 	}
+	simulationObjectManager->refreshPlayerEffectiveLevels(playerId);
 }
 
 PendingCommandSaveData UpgradeCommand::saveState(unsigned short order) const {
