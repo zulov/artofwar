@@ -78,16 +78,16 @@ public:
 	QueueManager& getQueue() { return queue; }
 	const QueueManager& getQueue() const { return queue; }
 	db_unit_level* getUnitLevel(unsigned short id) const;
-	db_building_level* getBuildingLevel(unsigned short id) const;
+	db_building_level* getBuildingLevel(unsigned short buidingId) const;
 	bool isBuildingAvailable(unsigned short id) const;
 	bool isAvailable(const db_building * dbBuilding) const;
-	std::optional<db_unit_level*> getNextUnitLevel(unsigned short id) const;
-	std::optional<db_building_level*> getNextBuildingLevel(unsigned short id) const;
+	std::optional<db_unit_level*> getNextUnitLevel(unsigned short unitId) const;
+	std::optional<db_building_level*> getNextBuildingLevel(unsigned short buildingId) const;
 	std::optional<db_building_level*> getNextLevel(db_building * dbBuilding) const;
 	void addKilled(Physical* physical) const;
 	void resetScore();
-	const std::vector<PlayerLevel<db_unit_level>>& getUnitLevels() const { return unitLevels; }
-	const std::vector<PlayerLevel<db_building_level>>& getBuildingLevels() const { return buildingLevels; }
+	const std::vector<PlayerLevel<db_unit_level>>& getUnitLevels() const { return levelsOfUnit; }
+	const std::vector<PlayerLevel<db_building_level>>& getBuildingLevels() const { return levelsForBuilding; }
 	void restoreUnitLevel(unsigned short id, unsigned char level);
 	void restoreBuildingLevel(unsigned short id, unsigned char level);
 	void restoreTechnologyLevel(unsigned short id, unsigned char level);
@@ -133,8 +133,8 @@ private:
 	AiOrchestrator aiOrchestrator;
 	Urho3D::String name;
 
-	std::vector<PlayerLevel<db_unit_level>> unitLevels;
-	std::vector<PlayerLevel<db_building_level>> buildingLevels;
+	std::vector<PlayerLevel<db_unit_level>> levelsOfUnit;
+	std::vector<PlayerLevel<db_building_level>> levelsForBuilding;
 	std::vector<unsigned char> technologyLevels;
 	std::vector<const db_technology_effect*> activeTechnologyEffectCache;
 };

@@ -23,14 +23,14 @@ Player::Player(unsigned char nationId, unsigned char team, unsigned char id, uns
 	possession(new Possession(nationId)), resources(new Resources()), aiOrchestrator(this, dbNation, &aiHistory),
 	name(std::move(name)) {
 	technologyLevels.assign(Game::getDatabase()->getTechnologies().size(), 0);
-	unitLevels.resize(Game::getDatabase()->getUnits().size());
-	buildingLevels.resize(Game::getDatabase()->getBuildings().size());
+	levelsOfUnit.resize(Game::getDatabase()->getUnits().size());
+	levelsForBuilding.resize(Game::getDatabase()->getBuildings().size());
 	refreshEffectiveLevels();
 }
 
 Player::~Player() {
-	for (auto& level : unitLevels) delete level.effective;
-	for (auto& level : buildingLevels) delete level.effective;
+	for (auto& level : levelsOfUnit) delete level.effective;
+	for (auto& level : levelsForBuilding) delete level.effective;
 	delete resources;
 	delete possession;
 }
@@ -44,22 +44,22 @@ void Player::setResourceAmount(float amount) const { resources->init(amount); }
 char Player::upgradeLevel(QueueActionType type, unsigned short levelId) {
 	switch (type) {
 	case QueueActionType::UNIT_LEVEL:
-		if (id < unitLevels.size() && unitLevels[id].id >= 0) {
+		if (id < levelsOfUnit.size() && levelsOfUnit[id].id >= 0) {
 			if (const auto next = getNextUnitLevel(levelId);
 				Game::getWorldAgeController()->isLevelAvailable((*next)->ageStage)) {
-				++unitLevels[id].level;
+				++levelsOfUnit[id].level;
 				refreshEffectiveLevels();
-				return unitLevels[id].level;
+				return levelsOfUnit[id].level;
 			}
 		}
 		break;
 	case QueueActionType::BUILDING_LEVEL:
-		if (id < buildingLevels.size() && buildingLevels[id].id >= 0) {
+		if (id < levelsForBuilding.size() && levelsForBuilding[id].id >= 0) {
 			if (const auto next = getNextBuildingLevel(levelId);
 				Game::getWorldAgeController()->isLevelAvailable((*next)->ageStage)) {
-				++buildingLevels[id].level;
+				++levelsForBuilding[id].level;
 				refreshEffectiveLevels();
-				return buildingLevels[id].level;
+				return levelsForBuilding[id].level;
 			}
 		}
 		break;
@@ -71,7 +71,7 @@ char Player::upgradeLevel(QueueActionType type, unsigned short levelId) {
 unsigned char Player::getNation() const { return dbNation->id; }
 
 db_unit_level* Player::getUnitLevel(unsigned short id) const {
-	return id < unitLevels.size() ? unitLevels[id].effective : nullptr;
+	return id < levelsOfUnit.size() ? levelsOfUnit[id].effective : nullptr;
 }
 
 bool Player::startTechnologyResearch(unsigned short levelId, Building* building) {
@@ -90,8 +90,8 @@ unsigned short Player::technologyResearchDuration(unsigned short levelId) const 
 	return RoundUtils::toUShort(level->researchTime * technologyAgeMultiplier(level), 1);
 }
 
-db_building_level* Player::getBuildingLevel(unsigned short id) const {
-	return id < buildingLevels.size() ? buildingLevels[id].effective : nullptr;
+db_building_level* Player::getBuildingLevel(unsigned short buidingId) const {
+	return buidingId < levelsForBuilding.size() ? levelsForBuilding[buidingId].effective : nullptr;
 }
 
 bool Player::isBuildingAvailable(unsigned short id) const { return isAvailable(Game::getDatabase()->getBuilding(id)); }
@@ -100,20 +100,20 @@ bool Player::isAvailable(const db_building* dbBuilding) const {
 	return Game::getWorldAgeController()->isLevelAvailable(dbBuilding->levels.front()->ageStage);
 }
 
-std::optional<db_unit_level*> Player::getNextUnitLevel(unsigned short id) const {
-	if (id >= unitLevels.size() || unitLevels[id].id < 0) return std::nullopt;
-	const auto* unit = Game::getDatabase()->getUnit(id);
-	const auto nextLevel = static_cast<size_t>(unitLevels[id].level) + 1;
+std::optional<db_unit_level*> Player::getNextUnitLevel(unsigned short unitId) const {
+	if (unitId >= levelsOfUnit.size() || levelsOfUnit[unitId].id < 0) return std::nullopt;
+	const auto* unit = Game::getDatabase()->getUnit(unitId);
+	const auto nextLevel = static_cast<size_t>(levelsOfUnit[unitId].level) + 1;
 	return unit && nextLevel < unit->levels.size() ? std::optional(unit->levels[nextLevel]) : std::nullopt;
 }
 
-std::optional<db_building_level*> Player::getNextBuildingLevel(unsigned short id) const {
-	if (id >= buildingLevels.size() || buildingLevels[id].id < 0) return std::nullopt;
-	return getNextLevel(Game::getDatabase()->getBuilding(id));
+std::optional<db_building_level*> Player::getNextBuildingLevel(unsigned short buildingId) const {
+	if (buildingId >= levelsForBuilding.size() || levelsForBuilding[buildingId].id < 0) return std::nullopt;
+	return getNextLevel(Game::getDatabase()->getBuilding(buildingId));
 }
 
 std::optional<db_building_level*> Player::getNextLevel(db_building* dbBuilding) const {
-	const auto nextLevel = static_cast<size_t>(buildingLevels[dbBuilding->id].level) + 1;
+	const auto nextLevel = static_cast<size_t>(levelsForBuilding[dbBuilding->id].level) + 1;
 	return nextLevel < dbBuilding->levels.size() ? std::optional(dbBuilding->levels[nextLevel]) : std::nullopt;
 }
 
@@ -275,7 +275,7 @@ void Player::refreshEffectiveLevels() {
 
 	for (const auto* unit : allUnits) {
 		if (!unit) continue;
-		auto& level = unitLevels[unit->id];
+		auto& level = levelsOfUnit[unit->id];
 		if (!unitInPlayerNation(unit)) {
 			level.reset();
 			continue;
@@ -315,7 +315,7 @@ void Player::refreshEffectiveLevels() {
 
 	for (const auto* building : database->getBuildings()) {
 		if (!building) continue;
-		auto& level = buildingLevels[building->id];
+		auto& level = levelsForBuilding[building->id];
 
 		if (!buildingInPlayerNation(building)) {
 			level.reset();
@@ -351,14 +351,14 @@ void Player::addKilled(Physical* physical) const { possession->addKilled(physica
 void Player::resetScore() { score = -1; }
 
 void Player::restoreUnitLevel(unsigned short id, unsigned char level) {
-	if (id < unitLevels.size() && unitLevels[id].id >= 0) {
-		unitLevels[id].level = level;
+	if (id < levelsOfUnit.size() && levelsOfUnit[id].id >= 0) {
+		levelsOfUnit[id].level = level;
 	}
 }
 
 void Player::restoreBuildingLevel(unsigned short id, unsigned char level) {
-	if (id < buildingLevels.size() && buildingLevels[id].id >= 0) {
-		buildingLevels[id].level = level;
+	if (id < levelsForBuilding.size() && levelsForBuilding[id].id >= 0) {
+		levelsForBuilding[id].level = level;
 	}
 }
 
