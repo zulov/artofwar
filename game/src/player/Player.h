@@ -99,7 +99,7 @@ public:
 	bool completeTechnology(unsigned short levelId);
 	float applyTechnologyResourceBonus(float bonus, const db_building* source, unsigned char resourceId) const;
 	float applyTechnologyResourceBonus(float bonus, unsigned char resourceId) const;
-	bool unitInPlayerNation(const db_unit* unit);
+	bool unitInPlayerNation(const db_unit* unit) const;
 	bool buildingInPlayerNation(const db_building* building);
 	void refreshEffectiveLevels();
 	const std::vector<unsigned char>& getTechnologyLevels() const { return technologyLevels; }

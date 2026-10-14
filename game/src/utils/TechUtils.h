@@ -7,7 +7,7 @@
 #include "database/db_struct.h"
 #include "database/db_technology_struct.h"
 
-namespace TechnologyUtils {
+namespace TechUtils {
 
 inline bool matchesUnitTag(TechSourceTag tag, const db_unit* unit) {
 	switch (tag) {
@@ -162,8 +162,7 @@ inline float applyUnitTechStat(float value, const EffectContainer& effects, cons
 }
 
 template <typename EffectContainer>
-inline float applyBuildingTechStat(float value, const EffectContainer& effects, const db_building* building,
-		TechStat stat) {
+inline float applyBuildingTechStat(float value, const EffectContainer& effects, const db_building* building, TechStat stat) {
 	return applyEffects(value, effects, BuildingStatEffectPredicate(building, stat));
 }
 

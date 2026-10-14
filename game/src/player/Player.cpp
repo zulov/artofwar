@@ -315,39 +315,33 @@ void Player::refreshEffectiveLevels() {
 
 	for (const auto* building : database->getBuildings()) {
 		if (!building) continue;
-		auto& playerLevel = buildingLevels[building->id];
-		const bool available = buildingInPlayerNation(building);
-		if (!available) {
-			playerLevel.reset();
+		auto& level = buildingLevels[building->id];
+
+		if (!buildingInPlayerNation(building)) {
+			level.reset();
 			continue;
 		}
-
-		playerLevel.set(building->id, new db_building_level(*building->levels[playerLevel.level]));
+		auto effective = new db_building_level(*building->levels[level.level]);
+		level.set(building->id, effective);
 		// Building attackers currently lack target-category bonus fields; revisit if target-specific building attacks are added.
 		// Building attackers currently have no target-category bonus fields; revisit if target-specific building attacks are added.
 		// Building-sourced attack-vs-target bonuses need effective target-bonus fields on db_building_attack if introduced.
-		playerLevel.effective->attack = TechUtils::applyBuildingTechStat(playerLevel.effective->attack, effects,
-			building, TechStat::ATTACK);
-		playerLevel.effective->armor = TechUtils::applyBuildingTechStat(playerLevel.effective->armor, effects,
-			building, TechStat::ARMOR);
-		playerLevel.effective->maxHp = static_cast<unsigned short>(std::max(1.f, TechUtils::applyBuildingTechStat(
-			playerLevel.effective->maxHp, effects, building, TechStat::MAX_HP)));
-		playerLevel.effective->sightRadius = TechUtils::applyBuildingTechStat(playerLevel.effective->sightRadius,
-			effects, building, TechStat::SIGHT_RANGE);
-		playerLevel.effective->attackRange = static_cast<short>(TechUtils::applyBuildingTechStat(
-			playerLevel.effective->attackRange, effects, building, TechStat::ATTACK_RANGE));
-		playerLevel.effective->attackReload = std::max<short>(1, static_cast<short>(TechUtils::applyBuildingTechStat(
-			playerLevel.effective->attackReload, effects, building, TechStat::ATTACK_RELOAD)));
-		playerLevel.effective->resourceRange = TechUtils::applyBuildingTechStat(playerLevel.effective->resourceRange,
+		effective->attack = TechUtils::applyBuildingTechStat(effective->attack, effects, building, TechStat::ATTACK);
+		effective->armor = TechUtils::applyBuildingTechStat(effective->armor, effects, building, TechStat::ARMOR);
+		effective->maxHp = static_cast<unsigned short>(std::max(1.f, TechUtils::applyBuildingTechStat(effective->maxHp, effects, building, TechStat::MAX_HP)));
+		effective->sightRadius = TechUtils::applyBuildingTechStat(effective->sightRadius, effects, building, TechStat::SIGHT_RANGE);
+		effective->attackRange = static_cast<short>(TechUtils::applyBuildingTechStat(effective->attackRange, effects, building, TechStat::ATTACK_RANGE));
+		effective->attackReload = std::max<short>(1, static_cast<short>(TechUtils::applyBuildingTechStat(effective->attackReload, effects, building, TechStat::ATTACK_RELOAD)));
+		effective->resourceRange = TechUtils::applyBuildingTechStat(effective->resourceRange,
 			effects, building, TechStat::RESOURCE_RANGE);
-		playerLevel.effective->collect = TechUtils::applyBuildingTechStat(playerLevel.effective->collect, effects,
+		effective->collect = TechUtils::applyBuildingTechStat(effective->collect, effects,
 			building, TechStat::RESOURCE_BONUS);
-		playerLevel.effective->invMaxHp = 1.f / playerLevel.effective->maxHp;
-		playerLevel.effective->sqSightRadius = playerLevel.effective->sightRadius * playerLevel.effective->sightRadius;
-		playerLevel.effective->interestRange = playerLevel.effective->sightRadius * 0.8f;
-		playerLevel.effective->sqInterestRange = playerLevel.effective->interestRange * playerLevel.effective->interestRange;
-		playerLevel.effective->sqAttackRange = static_cast<float>(playerLevel.effective->attackRange) * playerLevel.effective->attackRange;
-		playerLevel.effective->finish(const_cast<db_building*>(building));
+		effective->invMaxHp = 1.f / effective->maxHp;
+		effective->sqSightRadius = effective->sightRadius * effective->sightRadius;
+		effective->interestRange = effective->sightRadius * 0.8f;
+		effective->sqInterestRange = effective->interestRange * effective->interestRange;
+		effective->sqAttackRange = static_cast<float>(effective->attackRange) * effective->attackRange;
+		effective->finish(const_cast<db_building*>(building));
 	}
 	refreshResourceTechnologyModifiers(effects);
 }
