@@ -469,7 +469,7 @@ db_unit* AiOrchestrator::resolveUnitUpgrade(std::span<const float> unitProfileDi
 	std::vector<db_unit*> candidates;
 	candidates.reserve(units.size());
 	for (auto unit : units) {
-		if (!unit->typeWorker && player->getNextUnitLevel(unit->id).has_value()) { candidates.push_back(unit); }
+		if (!unit->typeWorker && player->getNextLevel(unit).has_value()) { candidates.push_back(unit); }
 	}
 	if (candidates.empty()) { return nullptr; }
 
@@ -484,9 +484,9 @@ db_building* AiOrchestrator::resolveBuildingUpgrade(std::span<const float> unitP
 	std::vector<db_building*> candidates;
 	candidates.reserve(buildings.size());
 	for (auto building : buildings) {
-		if (player->isBuildingAvailable(building->id) &&
+		if (player->isAvailable(building) &&
 			building->parentType[static_cast<int>(ParentBuildingType::UNITS)]
-			&& player->getNextBuildingLevel(building->id).has_value()) { candidates.push_back(building); }
+			&& player->getNextLevel(building).has_value()) { candidates.push_back(building); }
 	}
 	if (candidates.empty()) { return nullptr; }
 
@@ -510,7 +510,7 @@ db_building* AiOrchestrator::resolveBuildingUpgrade(std::span<const float> unitP
 }
 
 db_unit* AiOrchestrator::resolveWorkerUpgrade() {
-	for (auto* worker : nation->workers) { if (player->getNextUnitLevel(worker->id).has_value()) { return worker; } }
+	for (auto* worker : nation->workers) { if (player->getNextLevel(worker).has_value()) { return worker; } }
 	return nullptr;
 }
 
@@ -528,7 +528,7 @@ db_building* AiOrchestrator::resolveResBuildingUpgrade(const std::vector<ResBuil
 	for (const auto& buildingNeed : buildingNeeds) {
 		if (player->isBuildingAvailable(buildingNeed.building->id) &&
 			buildingNeed.need >= MIN_RES_BUILDING_NEED &&
-			player->getNextBuildingLevel(buildingNeed.building->id).has_value()) {
+			player->getNextLevel(buildingNeed.building).has_value()) {
 			candidates.push_back(buildingNeed.building);
 			weights.push_back(buildingNeed.need);
 		}

@@ -100,15 +100,16 @@ bool Player::isAvailable(const db_building* dbBuilding) const {
 	return Game::getWorldAgeController()->isLevelAvailable(dbBuilding->levels.front()->ageStage);
 }
 
+std::optional<db_unit_level*> Player::getNextLevel(db_unit* dbUnit) const {
+	const auto nextLevel = static_cast<size_t>(levelsOfUnit[dbUnit->id].level) + 1;
+	return nextLevel < dbUnit->levels.size() ? std::optional(dbUnit->levels[nextLevel]) : std::nullopt;
+}
+
 std::optional<db_unit_level*> Player::getNextUnitLevel(unsigned short unitId) const {
-	if (unitId >= levelsOfUnit.size() || levelsOfUnit[unitId].id < 0) return std::nullopt;
-	const auto* unit = Game::getDatabase()->getUnit(unitId);
-	const auto nextLevel = static_cast<size_t>(levelsOfUnit[unitId].level) + 1;
-	return unit && nextLevel < unit->levels.size() ? std::optional(unit->levels[nextLevel]) : std::nullopt;
+	return getNextLevel(Game::getDatabase()->getUnit(unitId));
 }
 
 std::optional<db_building_level*> Player::getNextBuildingLevel(unsigned short buildingId) const {
-	if (buildingId >= levelsForBuilding.size() || levelsForBuilding[buildingId].id < 0) return std::nullopt;
 	return getNextLevel(Game::getDatabase()->getBuilding(buildingId));
 }
 
@@ -259,11 +260,11 @@ float Player::applyTechnologyResourceBonus(float bonus, unsigned char resourceId
 	});
 }
 
-bool Player::unitInPlayerNation(const db_unit* unit) {
+bool Player::unitInPlayerNation(const db_unit* unit) const {
 	return std::ranges::find(unit->nations, dbNation) != unit->nations.end();
 }
 
-bool Player::buildingInPlayerNation(const db_building* building) {
+bool Player::buildingInPlayerNation(const db_building* building) const {
 	return std::ranges::find(building->nations, dbNation) != building->nations.end();
 }
 

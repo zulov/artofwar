@@ -81,6 +81,7 @@ public:
 	db_building_level* getBuildingLevel(unsigned short buidingId) const;
 	bool isBuildingAvailable(unsigned short id) const;
 	bool isAvailable(const db_building * dbBuilding) const;
+	std::optional<db_unit_level*> getNextLevel(db_unit* dbUnit) const;
 	std::optional<db_unit_level*> getNextUnitLevel(unsigned short unitId) const;
 	std::optional<db_building_level*> getNextBuildingLevel(unsigned short buildingId) const;
 	std::optional<db_building_level*> getNextLevel(db_building * dbBuilding) const;
@@ -100,7 +101,7 @@ public:
 	float applyTechnologyResourceBonus(float bonus, const db_building* source, unsigned char resourceId) const;
 	float applyTechnologyResourceBonus(float bonus, unsigned char resourceId) const;
 	bool unitInPlayerNation(const db_unit* unit) const;
-	bool buildingInPlayerNation(const db_building* building);
+	bool buildingInPlayerNation(const db_building* building) const;
 	void refreshEffectiveLevels();
 	const std::vector<unsigned char>& getTechnologyLevels() const { return technologyLevels; }
 	AiHistory& getAiHistory() { return aiHistory; }
