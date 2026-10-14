@@ -41,27 +41,19 @@ void Player::setResourceAmount(float food, float wood, float stone, float gold) 
 
 void Player::setResourceAmount(float amount) const { resources->init(amount); }
 
-char Player::upgradeLevel(QueueActionType type, unsigned short levelId) {
+char Player::upgradeLevel(QueueActionType type, unsigned short entityId) {
 	switch (type) {
 	case QueueActionType::UNIT_LEVEL:
-		if (id < levelsOfUnit.size() && levelsOfUnit[id].id >= 0) {
-			if (const auto next = getNextUnitLevel(levelId);
-				Game::getWorldAgeController()->isLevelAvailable((*next)->ageStage)) {
-				++levelsOfUnit[id].level;
-				refreshEffectiveLevels();
-				return levelsOfUnit[id].level;
-			}
-		}
+		++levelsOfUnit[entityId].level;
+		refreshEffectiveLevels();
+		return levelsOfUnit[entityId].level;
+
 		break;
 	case QueueActionType::BUILDING_LEVEL:
-		if (id < levelsForBuilding.size() && levelsForBuilding[id].id >= 0) {
-			if (const auto next = getNextBuildingLevel(levelId);
-				Game::getWorldAgeController()->isLevelAvailable((*next)->ageStage)) {
-				++levelsForBuilding[id].level;
-				refreshEffectiveLevels();
-				return levelsForBuilding[id].level;
-			}
-		}
+	
+		++levelsForBuilding[entityId].level;
+		refreshEffectiveLevels();
+		return levelsForBuilding[entityId].level;
 		break;
 	default:;
 	}
