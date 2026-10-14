@@ -1,7 +1,6 @@
 #include "player/Player.h"
 
 #include <algorithm>
-#include <cmath>
 #include <ranges>
 
 #include "Game.h"
@@ -14,6 +13,7 @@
 #include "objects/queue/QueueActionType.h"
 #include "objects/building/Building.h"
 #include "simulation/WorldAgeController.h"
+#include "utils/RoundUtils.h"
 #include "utils/TechUtils.h"
 
 Player::Player(unsigned char nationId, unsigned char team, unsigned char id, unsigned char color, Urho3D::String name,
@@ -87,7 +87,7 @@ bool Player::startTechnologyResearch(unsigned short levelId, Building* building)
 
 unsigned short Player::technologyResearchDuration(unsigned short levelId) const {
 	const auto* level = Game::getDatabase()->getTechnologyLevel(levelId);
-	return static_cast<unsigned short>(std::max(1.f, std::round(level->researchTime * technologyAgeMultiplier(level))));
+	return RoundUtils::toUShort(level->researchTime * technologyAgeMultiplier(level), 1);
 }
 
 db_building_level* Player::getBuildingLevel(unsigned short id) const {
@@ -213,10 +213,10 @@ db_with_cost Player::technologyResearchCost(unsigned short levelId) const {
 	const auto* level = Game::getDatabase()->getTechnologyLevel(levelId);
 	const auto multiplier = technologyAgeMultiplier(level);
 	return {
-			static_cast<unsigned short>(std::round(level->cost.values[0] * multiplier)),
-		static_cast<unsigned short>(std::round(level->cost.values[1] * multiplier)),
-		static_cast<unsigned short>(std::round(level->cost.values[2] * multiplier)),
-		static_cast<unsigned short>(std::round(level->cost.values[3] * multiplier))};
+			RoundUtils::toUShort(level->cost.values[0] * multiplier),
+			RoundUtils::toUShort(level->cost.values[1] * multiplier),
+			RoundUtils::toUShort(level->cost.values[2] * multiplier),
+			RoundUtils::toUShort(level->cost.values[3] * multiplier)};
 }
 
 bool Player::completeTechnology(unsigned short levelId) {

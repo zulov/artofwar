@@ -19,6 +19,7 @@
     <ClCompile Include="..\game\src\objects\queue\QueueElement.cpp" />
     <ClCompile Include="..\game\src\objects\queue\QueueManager.cpp" />
     <ClCompile Include="WorldAgeDataTest.cpp" />
+	<ClCompile Include="RoundUtilsTest.cpp" />
 	<ClCompile Include="WorldAgeControllerTest.cpp" />
   </ItemGroup>
   <ItemGroup>

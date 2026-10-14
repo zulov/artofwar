@@ -9,6 +9,7 @@
 #include "database/DatabaseCache.h"
 #include "math/VectorUtils.h"
 #include "objects/building/Building.h"
+#include "utils/RoundUtils.h"
 #include "utils/SpanUtils.h"
 
 Resources::Resources() { init(0); }
@@ -88,8 +89,8 @@ void Resources::recalculateBuildingState(const Possession* possession) {
 		stoneRefineCapacity += level->stoneRefineCapacity;
 		goldRefineCapacity += level->goldRefineCapacity;
 	}
-	foodStorage = std::round(baseFoodStorage * foodStorageMultiplier);
-	goldStorage = std::round(baseGoldStorage * goldStorageMultiplier);
+	foodStorage = RoundUtils::toInt(baseFoodStorage * foodStorageMultiplier);
+	goldStorage = RoundUtils::toInt(baseGoldStorage * goldStorageMultiplier);
 }
 
 void Resources::setTechnologyModifiers(float newFoodLostRate, float newGoldGainRate, float newStoneRefineBonus,

@@ -120,8 +120,7 @@ EconomyOutput EconomyBrain::decide(Player* player, Player* enemy, const std::arr
 	float workerAlloc = result[idx(O::WORKER_ALLOCATION)];
 	unsigned char workerCount = 0;
 	if (workerAlloc > MIN_WORKER_ALLOCATION) {
-		int raw = roundToInt(workerAlloc * MAX_WORKERS_PER_TICK);
-		workerCount = static_cast<unsigned char>(std::max(1, raw));
+		workerCount = RoundUtils::toUChar(workerAlloc * MAX_WORKERS_PER_TICK, 1);
 	}
 
 	return EconomyOutput{

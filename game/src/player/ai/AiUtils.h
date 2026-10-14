@@ -1,11 +1,11 @@
 #pragma once
-#include <cmath>
 #include <functional>
 #include <vector>
 #include "WeightedSample.h"
 #include "math/RandGen.h"
 #include "math/VectorUtils.h"
 #include "utils/SpanUtils.h"
+#include "utils/RoundUtils.h"
 
 class Player;
 struct db_unit;
@@ -30,8 +30,6 @@ inline float normPositive(float value, float scale) { return value <= 0.f ? 0.f 
 // constexpr float norm(float value);
 // using enum NormScale;
 // auto gameTime = norm<GAME_TIME_SHORT>(Game::getFrameInfo()->getSeconds());
-
-inline int roundToInt(float value) { return static_cast<int>(std::round(value)); }
 
 // Average level of units matching a filter, normalized per-type by max level. Returns [0, 1].
 float avgUnitLevel(const std::vector<db_unit*>& units, Player* player,

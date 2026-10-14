@@ -90,8 +90,7 @@ UnitOutput UnitBrain::decide(Player* player, Player* enemy,
 
 	// Count scaling
 	if (unitUrgency > 0.f) {
-		int raw = roundToInt(unitUrgency * MAX_UNITS_PER_TICK);
-		output.count = static_cast<unsigned char>(std::max(1, raw));
+		output.count = RoundUtils::toUChar(unitUrgency * MAX_UNITS_PER_TICK, 1);
 	} else {
 		output.count = 0;
 	}
