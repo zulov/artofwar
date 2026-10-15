@@ -220,4 +220,7 @@ db_building_level* Building::getLevel() const { return dbLevel; }
 
 float Building::getModelHeight() const { return dbLevel->modelHeight; }
 
-void Building::setModelData(float modelHeight) const { dbLevel->modelHeight = modelHeight; }
+void Building::setModelData(float modelHeight) const {
+	dbLevel->modelHeight = modelHeight;
+	getDbBuilding()->levels[dbLevel->level]->modelHeight = modelHeight;
+}

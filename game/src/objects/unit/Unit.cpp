@@ -324,7 +324,10 @@ void Unit::setSparseIndex(int index) {
 
 float Unit::getModelHeight() const { return dbLevel->modelHeight; }
 
-void Unit::setModelData(float modelHeight) const { dbLevel->modelHeight = modelHeight; }
+void Unit::setModelData(float modelHeight) const {
+	dbLevel->modelHeight = modelHeight;
+	getDb()->levels[dbLevel->level]->modelHeight = modelHeight;
+}
 
 Urho3D::Color Unit::getColor(db_player_colors* col) const { return col->unitColor; }
 
