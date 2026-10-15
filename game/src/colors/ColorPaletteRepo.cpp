@@ -12,6 +12,18 @@
 #include "env/Environment.h"
 #include "player/Resources.h"
 
+const Urho3D::Color ColorPaletteRepo::FPS_NEUTRAL(0.85f, 0.85f, 0.85f);
+const Urho3D::Color ColorPaletteRepo::FPS_LOW_RANK_COLORS[3] = {
+	Urho3D::Color(1.0f, 0.42f, 0.42f), // Coral red
+	Urho3D::Color(1.0f, 0.62f, 0.26f), // Orange
+	Urho3D::Color(1.0f, 0.82f, 0.40f)  // Amber
+};
+const Urho3D::Color ColorPaletteRepo::FPS_HIGH_RANK_COLORS[3] = {
+	Urho3D::Color(0.72f, 0.89f, 0.66f), // Light green
+	Urho3D::Color(0.51f, 0.83f, 0.60f), // Medium green
+	Urho3D::Color(0.30f, 0.80f, 0.50f)  // Emerald
+};
+
 ColorPaletteRepo::ColorPaletteRepo() {
 	if (!SIM_GLOBALS.HEADLESS) {
 		lineMaterial = Game::getCache()->GetResource<Urho3D::Material>("Materials/line.xml");
@@ -23,6 +35,18 @@ ColorPaletteRepo::ColorPaletteRepo() {
 		basicSpectrum[SPECTRUM_RESOLUTION] = basicSpectrum[SPECTRUM_RESOLUTION - 1];
 		basicSpectrumSolid[SPECTRUM_RESOLUTION] = basicSpectrumSolid[SPECTRUM_RESOLUTION - 1];
 	}
+}
+
+const Urho3D::Color& ColorPaletteRepo::getFpsRankColor(unsigned rank) {
+	return FPS_LOW_RANK_COLORS[rank];
+}
+
+const Urho3D::Color& ColorPaletteRepo::getFpsBestRankColor(unsigned rank) {
+	return FPS_HIGH_RANK_COLORS[rank];
+}
+
+const Urho3D::Color& ColorPaletteRepo::getFpsNeutralColor() {
+	return FPS_NEUTRAL;
 }
 
 const Urho3D::Color& ColorPaletteRepo::getColor(float value, float maxValue) const {

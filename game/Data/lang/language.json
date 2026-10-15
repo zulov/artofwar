@@ -443,5 +443,77 @@
 	"tech_resource_gold":{
 		"pl":"złota",
 		"en":"gold"
+	},
+	"hud_stat_health":{
+		"pl":"Zdrowie",
+		"en":"Health"
+	},
+	"hud_stat_armor":{
+		"pl":"Pancerz",
+		"en":"Armor"
+	},
+	"hud_stat_attack":{
+		"pl":"Atak",
+		"en":"Attack"
+	},
+	"hud_stat_attack_range":{
+		"pl":"Zasięg ataku",
+		"en":"Attack range"
+	},
+	"hud_stat_attack_reload":{
+		"pl":"Przeładowanie",
+		"en":"Attack reload"
+	},
+	"hud_stat_speed":{
+		"pl":"Prędkość",
+		"en":"Speed"
+	},
+	"hud_stat_sight":{
+		"pl":"Zasięg widzenia",
+		"en":"Sight range"
+	},
+	"hud_stat_gather_rate":{
+		"pl":"Tempo zbierania",
+		"en":"Gather rate"
+	},
+	"hud_stat_train_time":{
+		"pl":"Czas szkolenia",
+		"en":"Training time"
+	},
+	"hud_stat_upgrade_time":{
+		"pl":"Czas ulepszenia",
+		"en":"Upgrade time"
+	},
+	"hud_stat_build_time":{
+		"pl":"Czas budowy",
+		"en":"Build time"
+	},
+	"hud_stat_size":{
+		"pl":"Rozmiar",
+		"en":"Size"
+	},
+	"hud_stat_resource_range":{
+		"pl":"Zasięg zasobów",
+		"en":"Resource range"
+	},
+	"hud_stat_food_storage":{
+		"pl":"Magazyn żywności",
+		"en":"Food storage"
+	},
+	"hud_stat_gold_storage":{
+		"pl":"Magazyn złota",
+		"en":"Gold storage"
+	},
+	"hud_stat_stone_refinement":{
+		"pl":"Przeróbka kamienia",
+		"en":"Stone refinement"
+	},
+	"hud_stat_gold_refinement":{
+		"pl":"Przeróbka złota",
+		"en":"Gold refinement"
+	},
+	"hud_stat_queue_capacity":{
+		"pl":"Pojemność kolejki",
+		"en":"Queue capacity"
 	}
 }

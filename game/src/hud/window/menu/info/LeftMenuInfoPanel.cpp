@@ -16,6 +16,61 @@
 #include "player/PlayersManager.h"
 #include "utils/TechnologyDescription.h"
 #include "utils/NamesUtils.h"
+#include <type_traits>
+
+void LeftMenuInfoPanel::appendStat(Urho3D::String& message, const char* labelKey, const Urho3D::String& value) {
+	message += Game::getLocalization()->Get(labelKey) + ": " + value + "\n";
+}
+
+void LeftMenuInfoPanel::appendStat(Urho3D::String& message, const char* labelKey, float value) {
+	appendStat(message, labelKey, Urho3D::String(asStringF(value, 1).c_str()));
+}
+
+template <typename T>
+void LeftMenuInfoPanel::appendStatIfPositive(Urho3D::String& message, const char* labelKey, T value) {
+	if (value <= 0) {
+		return;
+	}
+	if constexpr (std::is_floating_point_v<T>) {
+		appendStat(message, labelKey, value);
+	} else {
+		appendStat(message, labelKey, Urho3D::String(value));
+	}
+}
+
+void LeftMenuInfoPanel::appendUnitStats(Urho3D::String& message, const db_unit_level* level, bool upgrade) {
+	appendStat(message, "hud_stat_health", Urho3D::String(level->maxHp));
+	appendStat(message, "hud_stat_armor", level->armor);
+	appendStatIfPositive(message, "hud_stat_attack", level->attack);
+	appendStatIfPositive(message, "hud_stat_attack_range", level->attackRange);
+	appendStatIfPositive(message, "hud_stat_attack_reload", level->attackReload);
+	appendStat(message, "hud_stat_speed", level->maxSpeed);
+	appendStat(message, "hud_stat_sight", level->sightRadius);
+	appendStatIfPositive(message, "hud_stat_gather_rate", level->collect);
+	const auto time = upgrade ? level->upgradeTime : level->buildTime;
+	appendStatIfPositive(message, upgrade ? "hud_stat_upgrade_time" : "hud_stat_train_time", time);
+}
+
+void LeftMenuInfoPanel::appendBuildingStats(Urho3D::String& message, const db_building* building,
+                                           const db_building_level* level, bool upgrade) {
+	appendStat(message, "hud_stat_health", Urho3D::String(level->maxHp));
+	appendStat(message, "hud_stat_armor", level->armor);
+	appendStatIfPositive(message, "hud_stat_attack", level->attack);
+	appendStatIfPositive(message, "hud_stat_attack_range", level->attackRange);
+	appendStatIfPositive(message, "hud_stat_attack_reload", level->attackReload);
+	appendStat(message, "hud_stat_sight", level->sightRadius);
+	appendStat(message, "hud_stat_size", Urho3D::String(static_cast<int>(building->size.x_)) + " x " +
+	                                       Urho3D::String(static_cast<int>(building->size.y_)));
+	appendStatIfPositive(message, "hud_stat_gather_rate", level->collect);
+	appendStatIfPositive(message, "hud_stat_resource_range", level->resourceRange);
+	appendStatIfPositive(message, "hud_stat_food_storage", level->foodStorage);
+	appendStatIfPositive(message, "hud_stat_gold_storage", level->goldStorage);
+	appendStatIfPositive(message, "hud_stat_stone_refinement", level->stoneRefineCapacity);
+	appendStatIfPositive(message, "hud_stat_gold_refinement", level->goldRefineCapacity);
+	appendStatIfPositive(message, "hud_stat_queue_capacity", level->queueMaxCapacity);
+	const auto time = upgrade ? level->upgradeTime : level->buildTime;
+	appendStatIfPositive(message, upgrade ? "hud_stat_upgrade_time" : "hud_stat_build_time", time);
+}
 
 LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style) : SimplePanel(root, _style, "LeftMenuInfoPanel", {}) {
 }
@@ -68,28 +123,40 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 	switch (hudData->getType()) {
 	case ActionType::UNIT_CREATE: {
 		const auto dbUnit = Game::getDatabase()->getUnit(id);
-
-		return stringFrom(dbUnit->name, dbUnit);
+		auto message = stringFrom(dbUnit->name, dbUnit);
+		if (const auto* level = Game::getPlayersMan()->getActivePlayer()->getUnitLevel(id)) {
+			appendUnitStats(message, level, false);
+		}
+		return message;
 	}
 	case ActionType::UNIT_LEVEL: {
 		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextUnitLevel(id);
 		if (opt.has_value()) {
 			const auto dbLevel = opt.value();
-			return stringFrom(dbLevel->name, dbLevel);
+			auto message = stringFrom(dbLevel->name, dbLevel);
+			appendUnitStats(message, dbLevel, true);
+			return message;
 		}
+		break;
 	}
 	case ActionType::BUILDING_CREATE: {
 		const auto dbBuilding = Game::getDatabase()->getBuilding(id);
-
-		return stringFrom(dbBuilding->name, dbBuilding);
+		auto message = stringFrom(dbBuilding->name, dbBuilding);
+		if (const auto* level = Game::getPlayersMan()->getActivePlayer()->getBuildingLevel(id)) {
+			appendBuildingStats(message, dbBuilding, level, false);
+		}
+		return message;
 	}
 	case ActionType::BUILDING_LEVEL: {
 		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextBuildingLevel(id);
 
 		if (opt.has_value()) {
 			auto dbLevel = opt.value();
-			return stringFrom(dbLevel->name, dbLevel);
+			auto message = stringFrom(dbLevel->name, dbLevel);
+			appendBuildingStats(message, Game::getDatabase()->getBuilding(id), dbLevel, true);
+			return message;
 		}
+		break;
 	}
 	case ActionType::TECH_RESEARCH: {
 		const auto technologyLevels = Game::getDatabase()->getTechnologyLevels();
@@ -115,6 +182,7 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 		return hudData->getText();
 	default: ;
 	}
+	return {};
 }
 
 void LeftMenuInfoPanel::setHoverInfo(HudData* hudData) {

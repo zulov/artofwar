@@ -26,7 +26,13 @@ public:
 	Urho3D::Color getInfoForGrid(CellState state) const;
 	Urho3D::Color getCircleColor(const db_building* dbBuilding) const;
 	Urho3D::Color getColorForValidation(const db_building* building, const Urho3D::Vector2& hitPos) const;
+	static const Urho3D::Color& getFpsRankColor(unsigned rank);
+	static const Urho3D::Color& getFpsBestRankColor(unsigned rank);
+	static const Urho3D::Color& getFpsNeutralColor();
 private:
+	static const Urho3D::Color FPS_NEUTRAL;
+	static const Urho3D::Color FPS_LOW_RANK_COLORS[3];
+	static const Urho3D::Color FPS_HIGH_RANK_COLORS[3];
 	Urho3D::Material* lineMaterial;
 	Urho3D::Material* influenceMaterial;
 	Urho3D::Color basicSpectrum[SPECTRUM_RESOLUTION + 1];

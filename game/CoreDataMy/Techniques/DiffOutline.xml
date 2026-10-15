@@ -8,4 +8,6 @@
 	<pass name="depth" vs="Depth" ps="Depth" />
 	<pass name="shadow" vs="Shadow" ps="Shadow" />
 	<pass name="outline" vs="Outline" ps="Outline" psdefines="MASK" depthtest="always" depthwrite="false" />
+	<pass name="alpha" psdefines="CONSTRUCTION_ALPHA" depthwrite="false" blend="alpha" />
+	<pass name="litalpha" psdefines="CONSTRUCTION_ALPHA" depthwrite="false" blend="addalpha" />
 </technique>

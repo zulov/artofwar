@@ -187,19 +187,25 @@ void PS(
 	out float4 oColor : OUTCOLOR0)
 {
 	float4 newMatDiffColor = cMatDiffColor;
+	bool constructionUnfinished = false;
 	if(cSemiHide){
 		newMatDiffColor.rgb /= 4;
 	} else if(cProgress < 1.f) {
 		float diff = cVerticalPos.y - cVerticalPos.x;
-		diff *= cProgress;
-		
-		if(iWorldPos.y > cVerticalPos.x + diff){
-			newMatDiffColor.rgb *= cProgress*cProgress;
-			newMatDiffColor.r *= 2;
-		}
+		float constructionProgress = cProgress * cProgress;
+		diff *= constructionProgress;
+		constructionUnfinished = iWorldPos.y > cVerticalPos.x + diff;
 	} else if (cColorPercent < 1.f){
 		newMatDiffColor *= cColorPercent;
 	}
+	#ifdef CONSTRUCTION_ALPHA
+		if (!constructionUnfinished)
+			discard;
+		newMatDiffColor.a *= 0.4f;
+	#else
+		if (constructionUnfinished)
+			discard;
+	#endif
 	// Get material diffuse albedo
 	#ifdef DIFFMAP
 		float4 diffInput = Sample2D(DiffMap, iTexCoord.xy);
