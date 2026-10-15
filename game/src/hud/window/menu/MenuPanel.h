@@ -29,7 +29,7 @@ public:
 	explicit MenuPanel(Urho3D::UIElement* root, Urho3D::XMLFile* _style);
 	~MenuPanel();
 	void removeHoverInfo() const;
-	void refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo);
+	void refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo, bool selectionChanged);
 
 	void setHoverInfo(HudData* hudData) const;
 	void updateSelected(SelectedInfo* selectedInfo) const;
@@ -39,6 +39,7 @@ public:
 private:
 	void setCheckVisibility(std::initializer_list<bool> active);
 	void updateMode(LeftMenuMode mode);
+	bool hasVisibleButton() const;
 	void createBody() override;
 	void setChecks(char val);
 

@@ -41,7 +41,7 @@ void MenuPanel::removeHoverInfo() const {
 	infoPanel->removeHoverInfo();
 }
 
-void MenuPanel::refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo) {
+void MenuPanel::refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo, bool selectionChanged) {
 	lastSelectedInfo = selectedInfo;
 	if (mode != _mode) {
 		mode = _mode;
@@ -49,7 +49,35 @@ void MenuPanel::refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo) {
 		subMode = LeftMenuSubMode::BASIC;
 		page = 0;
 	}
+	if (selectionChanged) {
+		page = 0;
+	}
 	updateButtons(lastSelectedInfo);
+	if (selectionChanged && !hasVisibleButton()) {
+		auto lastUpdatedSubMode = subMode;
+		for (int i = 0; i < CHECKS_NUMBER; ++i) {
+			if (!checks[i]->IsVisible()) {
+				continue;
+			}
+			const auto candidate = static_cast<LeftMenuSubMode>(i);
+			if (candidate == subMode) {
+				continue;
+			}
+			subMode = candidate;
+			page = 0;
+			updateButtons(lastSelectedInfo);
+			lastUpdatedSubMode = candidate;
+			if (hasVisibleButton()) {
+				return;
+			}
+		}
+
+		subMode = LeftMenuSubMode::BASIC;
+		page = 0;
+		if (lastUpdatedSubMode != LeftMenuSubMode::BASIC) {
+			updateButtons(lastSelectedInfo);
+		}
+	}
 }
 
 void MenuPanel::setHoverInfo(HudData* hudData) const {
@@ -80,6 +108,15 @@ void MenuPanel::setCheckVisibility(std::initializer_list<bool> active) {
 	for (auto a : active) {
 		checks[k++]->SetVisible(a);
 	}
+}
+
+bool MenuPanel::hasVisibleButton() const {
+	for (const auto* button : buttons) {
+		if (button->IsVisible()) {
+			return true;
+		}
+	}
+	return false;
 }
 
 void MenuPanel::updateMode(LeftMenuMode mode) {

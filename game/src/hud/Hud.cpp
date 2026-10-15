@@ -211,19 +211,19 @@ void Hud::updateSelected(SelectedInfo* selectedInfo, const FrameInfo* frameInfo)
 			menuPanel->updateSelected(selectedInfo);
 			switch (selectedInfo->getSelectedType()) {
 			case ObjectType::NONE:
-				menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
+				menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo, selectedInfo->hasChanged());
 				queuePanel->show(Game::getPlayersMan()->getActivePlayer()->getQueue());
 				break;
 			case ObjectType::UNIT:
-				menuPanel->refresh(LeftMenuMode::ORDER, selectedInfo);
+				menuPanel->refresh(LeftMenuMode::ORDER, selectedInfo, selectedInfo->hasChanged());
 				queuePanel->setVisible(false);
 				break;
 			case ObjectType::BUILDING:
-				menuPanel->refresh(LeftMenuMode::UNIT, selectedInfo);
+				menuPanel->refresh(LeftMenuMode::UNIT, selectedInfo, selectedInfo->hasChanged());
 				queuePanel->show(selectedInfo);
 				break;
 			case ObjectType::RESOURCE:
-				menuPanel->refresh(LeftMenuMode::RESOURCE, selectedInfo);
+				menuPanel->refresh(LeftMenuMode::RESOURCE, selectedInfo, selectedInfo->hasChanged());
 				queuePanel->setVisible(false);
 				break;
 			}
@@ -234,7 +234,7 @@ void Hud::updateSelected(SelectedInfo* selectedInfo, const FrameInfo* frameInfo)
 	} else {
 		if (frameInfo->shouldRun(PerFrameAction::QUEUE_HUD)) {
 			queuePanel->show(Game::getPlayersMan()->getActivePlayer()->getQueue());
-			menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
+			menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo, false);
 		}
 
 		selectedHudPanel->clearSelected();
