@@ -15,6 +15,8 @@ public:
 	~LeftMenuInfoPanel() = default;
 	void updateSelected(SelectedInfo* selectedInfo);
 	void setHoverInfo(HudData* hudData);
+	void setCategoryMessage(const Urho3D::String& message);
+	void clearCategoryMessage();
 	void removeHoverInfo();
 	void clearSelected();
 private:
@@ -22,6 +24,7 @@ private:
 	void createBody() override;
 
 	Urho3D::Text* text;
+	Urho3D::String categoryMessage;
 	bool hoverIsOn = false;
 	bool selectedIsOn = false;
 };

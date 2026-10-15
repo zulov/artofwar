@@ -213,6 +213,38 @@
 	"form_square":{
 		"pl":"Formuj kwadrat"
 	},
+	"menu_empty_buildings":{
+		"pl":"Brak dostępnych budynków do zbudowania.",
+		"en":"No buildings are available to construct."
+	},
+	"menu_empty_building_upgrades":{
+		"pl":"Brak dostępnych ulepszeń budynków.",
+		"en":"No building upgrades are available."
+	},
+	"menu_empty_unit_training":{
+		"pl":"Ten budynek nie może obecnie szkolić jednostek.",
+		"en":"This building cannot train any units right now."
+	},
+	"menu_empty_unit_upgrades":{
+		"pl":"Brak dostępnych ulepszeń jednostek.",
+		"en":"No unit upgrades are available."
+	},
+	"menu_empty_technology":{
+		"pl":"Brak dostępnych technologii do zbadania w tym budynku.",
+		"en":"No technologies are available to research at this building."
+	},
+	"menu_empty_orders":{
+		"pl":"Brak dostępnych rozkazów dla zaznaczonych jednostek.",
+		"en":"No orders are available for the selected units."
+	},
+	"menu_empty_formations":{
+		"pl":"Brak dostępnych formacji.",
+		"en":"No formations are available."
+	},
+	"menu_empty_resource_actions":{
+		"pl":"Brak dostępnych działań dla tego zasobu.",
+		"en":"No actions are available for this resource."
+	},
 	"load_msg_0":{
 		"pl":"Ładowanie początkowe"
 	},

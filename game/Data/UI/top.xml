@@ -6,7 +6,7 @@
 	<attribute name="Layout Mode" value="Horizontal"/>
 	<attribute name="Layout Spacing" value="{spaceX}"/>
 	<attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}"/>
-	<attribute name="Position" value="{-iconX} 0"/>
+	<attribute name="Position" value="{-3*iconX} 0"/>
 </element>
 
 <element type="TopButtons" style="Button">

@@ -85,7 +85,7 @@ void MenuPanel::setCheckVisibility(std::initializer_list<bool> active) {
 void MenuPanel::updateMode(LeftMenuMode mode) {
 	switch (mode) {
 	case LeftMenuMode::BUILDING:
-		return setCheckVisibility({true, true, true});
+		return setCheckVisibility({true, true, false});
 	case LeftMenuMode::UNIT:
 		return setCheckVisibility({true, true, true});
 	case LeftMenuMode::ORDER:
@@ -270,9 +270,11 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 
 void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 	std::vector<db_unit_level*> levels;
+	const auto* player = Game::getPlayersMan()->getActivePlayer();
+	const auto* ageController = Game::getWorldAgeController();
 	for (auto id : getUnitInBuilding(selectedInfo)) {
-		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextUnitLevel(id);
-		if (opt.has_value()) {
+		auto opt = player->getNextUnitLevel(id);
+		if (opt.has_value() && (!ageController || ageController->isLevelAvailable(opt.value()->ageStage))) {
 			levels.push_back(opt.value());
 		}
 	}
@@ -359,14 +361,74 @@ void MenuPanel::updateButtons(SelectedInfo* selectedInfo) {
 	setChecks(castC(subMode));
 	switch (mode) {
 	case LeftMenuMode::BUILDING:
-		return buildingMenu();
+		buildingMenu();
+		break;
 	case LeftMenuMode::UNIT:
-		return unitMenu(selectedInfo);
+		unitMenu(selectedInfo);
+		break;
 	case LeftMenuMode::ORDER:
-		return orderMenu(selectedInfo);
+		orderMenu(selectedInfo);
+		break;
 	case LeftMenuMode::RESOURCE:
-		return resourceMenu(selectedInfo);
+		resourceMenu(selectedInfo);
+		break;
 	default: ;
+	}
+
+	bool hasVisibleButton = false;
+	for (const auto button : buttons) {
+		if (button->IsVisible()) {
+			hasVisibleButton = true;
+			break;
+		}
+	}
+	if (hasVisibleButton) {
+		infoPanel->clearCategoryMessage();
+		infoPanel->updateSelected(lastSelectedInfo);
+		return;
+	}
+
+	const auto localization = Game::getLocalization();
+	Urho3D::String messageKey;
+	switch (mode) {
+	case LeftMenuMode::BUILDING:
+		if (subMode == LeftMenuSubMode::BASIC) {
+			messageKey = "menu_empty_buildings";
+		} else if (subMode == LeftMenuSubMode::LEVEL) {
+			messageKey = "menu_empty_building_upgrades";
+		}
+		break;
+	case LeftMenuMode::UNIT:
+		switch (subMode) {
+		case LeftMenuSubMode::BASIC:
+			messageKey = "menu_empty_unit_training";
+			break;
+		case LeftMenuSubMode::LEVEL:
+			messageKey = "menu_empty_unit_upgrades";
+			break;
+		case LeftMenuSubMode::UPGRADE:
+			messageKey = "menu_empty_technology";
+			break;
+		}
+		break;
+	case LeftMenuMode::ORDER:
+		if (subMode == LeftMenuSubMode::BASIC) {
+			messageKey = "menu_empty_orders";
+		} else if (subMode == LeftMenuSubMode::LEVEL) {
+			messageKey = "menu_empty_formations";
+		}
+		break;
+	case LeftMenuMode::RESOURCE:
+		if (subMode == LeftMenuSubMode::BASIC) {
+			messageKey = "menu_empty_resource_actions";
+		}
+		break;
+	}
+	if (!messageKey.Empty()) {
+		infoPanel->setCategoryMessage(localization->Get(messageKey));
+	} else {
+		infoPanel->clearCategoryMessage();
+		infoPanel->updateSelected(lastSelectedInfo);
 	}
 }
 

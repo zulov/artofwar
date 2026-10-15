@@ -56,6 +56,10 @@ void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 		} else {
 			setVisible(false);
 		}
+		if (!categoryMessage.Empty()) {
+			text->SetText(categoryMessage);
+			setVisible(true);
+		}
 	}
 }
 
@@ -126,16 +130,34 @@ void LeftMenuInfoPanel::setHoverInfo(HudData* hudData) {
 
 }
 
+void LeftMenuInfoPanel::setCategoryMessage(const Urho3D::String& message) {
+	categoryMessage = message;
+	if (!hoverIsOn) {
+		text->SetText(categoryMessage);
+		setVisible(true);
+	}
+}
+
+void LeftMenuInfoPanel::clearCategoryMessage() {
+	categoryMessage.Clear();
+}
+
 void LeftMenuInfoPanel::removeHoverInfo() {
 	hoverIsOn = false;
-	if (!selectedIsOn) {
+	if (!categoryMessage.Empty()) {
+		text->SetText(categoryMessage);
+		setVisible(true);
+	} else if (!selectedIsOn) {
 		setVisible(false);
 	}
 }
 
 void LeftMenuInfoPanel::clearSelected() {
 	selectedIsOn = false;
-	if (!hoverIsOn) {
+	if (!categoryMessage.Empty() && !hoverIsOn) {
+		text->SetText(categoryMessage);
+		setVisible(true);
+	} else if (!hoverIsOn) {
 		setVisible(false);
 	}
 }
