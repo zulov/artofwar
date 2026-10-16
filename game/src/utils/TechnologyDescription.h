@@ -106,10 +106,10 @@ inline Urho3D::String targetScopeName(TechTargetKind kind, TechSourceTag tag) {
 
 inline Urho3D::String resourceName(TechResourceType resourceType) {
 	switch (resourceType) {
-	case TechResourceType::FOOD: return localize("tech_resource_food");
-	case TechResourceType::WOOD: return localize("tech_resource_wood");
-	case TechResourceType::STONE: return localize("tech_resource_stone");
-	case TechResourceType::GOLD: return localize("tech_resource_gold");
+	case TechResourceType::FOOD: return localize("resource_food");
+	case TechResourceType::WOOD: return localize("resource_wood");
+	case TechResourceType::STONE: return localize("resource_stone");
+	case TechResourceType::GOLD: return localize("resource_gold");
 	default: return {};
 	}
 }

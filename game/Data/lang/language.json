@@ -428,19 +428,19 @@
 		"pl":"nieznanego celu",
 		"en":"an unknown target"
 	},
-	"tech_resource_food":{
+	"resource_food":{
 		"pl":"żywności",
 		"en":"food"
 	},
-	"tech_resource_wood":{
+	"resource_wood":{
 		"pl":"drewna",
 		"en":"wood"
 	},
-	"tech_resource_stone":{
+	"resource_stone":{
 		"pl":"kamienia",
 		"en":"stone"
 	},
-	"tech_resource_gold":{
+	"resource_gold":{
 		"pl":"złota",
 		"en":"gold"
 	},
