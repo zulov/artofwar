@@ -15,6 +15,9 @@ struct db_with_cost;
 
 class Resources {
 public:
+	static constexpr float DEFAULT_ARMY_UPKEEP_RATE = 0.01f;
+	static constexpr float DEFAULT_STARVATION_DAMAGE_RATE = 0.1f;
+
 	static constexpr float DEFAULT_FOOD_LOST_RATE = 0.1f;
 	static constexpr float DEFAULT_STONE_REFINE_BONUS = 0.1f;
 	static constexpr float DEFAULT_GOLD_GAIN_RATE = 0.01f;
@@ -46,17 +49,35 @@ public:
 	void loadState(const ResourcesSaveData& state);
 	void recalculateBuildingState(const Possession* possession);
 	void setTechnologyModifiers(float foodLostRate, float goldGainRate, float stoneRefineBonus,
-			float goldRefineBonus, float foodStorageMultiplier, float goldStorageMultiplier);
+			float goldRefineBonus, float foodStorageMultiplier, float goldStorageMultiplier,
+			float armyUpkeepRate, float starvationDamageRate);
 
 	void update1s(Possession* possession);
-	void updateMonth();
+	void updateMonth(Possession* possession);
 	void updateYear();
+	void refreshArmyUpkeep(const Possession* possession);
+	void settleArmyUpkeep(Possession* possession);
 
 	float getFoodStorage() const { return foodStorage; }
 	float getGoldStorage() const { return goldStorage; }
 
 	float getLastFoodLost() const { return lastFoodLost; }
 	float potentialFoodLost() const { return std::max(0.f, getValue(ResourceType::FOOD) - foodStorage) * foodLostRate; }
+	float getFoodLostRate() const { return foodLostRate; }
+	float getArmyUpkeep() const { return armyUpkeep; }
+	float getFreeArmyUpkeep() const { return freeArmyUpkeep; }
+	float getArmyUpkeepDue() const { return armyUpkeepDue; }
+	float getLastArmyUpkeepPaid() const { return lastArmyUpkeepPaid; }
+	float getArmyUpkeepRate() const { return armyUpkeepRate; }
+	float getStarvationDamageRate() const { return starvationDamageRate; }
+	float getLastArmyFoodShortfall() const { return lastArmyFoodShortfall; }
+	float getLastStarvationDamagePercent() const { return lastStarvationDamagePercent; }
+	float getPotentialArmyFoodShortfall() const { return std::max(0.f, armyUpkeepDue - getValue(ResourceType::FOOD)); }
+	float getPotentialStarvationDamagePercent() const {
+		return armyUpkeepDue > 0.f
+			? std::clamp(getPotentialArmyFoodShortfall() / armyUpkeepDue, 0.f, 1.f) * starvationDamageRate * 100.f
+			: 0.f;
+	}
 
 	float getLastGoldGains() const { return lastGoldGain; }
 	float potentialGoldGain() const { return std::min(goldStorage, getValue(ResourceType::GOLD)) * goldGainRate; }
@@ -82,6 +103,14 @@ private:
 	float lastFoodLost = 0.f;
 	float foodLostRate = DEFAULT_FOOD_LOST_RATE;
 	float foodStorageMultiplier = DEFAULT_FOOD_STORAGE_MULTIPLIER;
+	float armyUpkeepRate = DEFAULT_ARMY_UPKEEP_RATE;
+	float starvationDamageRate = DEFAULT_STARVATION_DAMAGE_RATE;
+	float armyUpkeep = 0.f;
+	float freeArmyUpkeep = 0.f;
+	float armyUpkeepDue = 0.f;
+	float lastArmyUpkeepPaid = 0.f;
+	float lastArmyFoodShortfall = 0.f;
+	float lastStarvationDamagePercent = 0.f;
 
 	float stoneRefineCapacity = 0.f;
 	float stoneRefineBonus = DEFAULT_STONE_REFINE_BONUS;

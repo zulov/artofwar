@@ -20,4 +20,7 @@ TEST(TechnologyDescriptionTest, RemovesFloatingPointNoise) {
 TEST(TechnologyDescriptionTest, ProvidesEconomyStatKeys) {
 	EXPECT_STREQ(TechnologyDescription::statKey(TechStat::FOOD_DECAY), "tech_stat_food_decay");
 	EXPECT_STREQ(TechnologyDescription::statKey(TechStat::GOLD_INTEREST), "tech_stat_gold_interest");
+	EXPECT_STREQ(TechnologyDescription::statKey(TechStat::ARMY_UPKEEP), "tech_stat_army_upkeep");
+	EXPECT_STREQ(TechnologyDescription::statKey(TechStat::SUPPLY_UPKEEP), "tech_stat_supply_upkeep");
+	EXPECT_STREQ(TechnologyDescription::statKey(TechStat::STARVATION_DAMAGE), "tech_stat_starvation_damage");
 }

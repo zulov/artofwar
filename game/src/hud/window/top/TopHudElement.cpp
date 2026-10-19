@@ -1,5 +1,6 @@
 #include "TopHudElement.h"
 #include "../../UiUtils.h"
+#include <Urho3D/Math/Color.h>
 #include <Urho3D/UI/ToolTip.h>
 
 TopHudElement::TopHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style, Urho3D::Texture2D* texture,
@@ -35,6 +36,18 @@ const TopHudElement* TopHudElement::setText(const Urho3D::String& msg, const Urh
 	value->SetText(msg);
 	value1->SetText("(" + msg1 + ")");
 	return this;
+}
+
+const TopHudElement* TopHudElement::setRatioText(const Urho3D::String& numerator,
+		const Urho3D::String& denominator) const {
+	value->SetText(numerator);
+	value1->SetText("/" + denominator);
+	return this;
+}
+
+void TopHudElement::setTextColor(const Urho3D::Color& primary, const Urho3D::Color& secondary) const {
+	value->SetColor(primary);
+	value1->SetColor(secondary);
 }
 
 void TopHudElement::setToolTip(const Urho3D::String& msg) const {

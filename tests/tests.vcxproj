@@ -75,6 +75,9 @@
     </ClCompile>
     <ClCompile Include="RandGenTest.cpp" />
     <ClCompile Include="ResourcesTest.cpp" />
+    <ClCompile Include="..\game\src\player\Resources.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="SimulationHelpersTest.cpp" />
     <ClCompile Include="SpanUtilsTest.cpp" />
     <ClCompile Include="StringAndRegexUtilsTest.cpp" />

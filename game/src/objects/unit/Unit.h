@@ -71,6 +71,7 @@ public:
 	Urho3D::Vector2 getDestination(float boostCoef, float aimCoef);
 
 	std::pair<float, bool> absorbAttack(float attackCoef) override;
+	void absorbStarvation(float damage);
 
 	bool toActionIfInRange(Physical* closest, UnitAction order);
 	bool toAction(Physical* closest, UnitAction order);

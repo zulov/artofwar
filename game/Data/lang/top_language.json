@@ -64,6 +64,10 @@
 	"top_food_tooltip":{
 		"pl":"Tempo: %s/s\nZ bonusem %d/%d\nW spirażniach: %d/%d\nOstatnia strata %s\nPrzyszła strata %s"
 	},
+	"top_army_upkeep_tooltip":{
+		"pl":"Koszt utrzymania armii: %s jedzenia (%s%%)\nDarmowy przydział z domów i centrów: %s\nDo zapłaty: %s\nPobrano ostatnio: %s\nOstatni niedobór: %s\nNiedobór przy rozliczeniu teraz: %s\nObrażenia przy rozliczeniu teraz: %s%%\nOstatnie obrażenia od głodu: %s%%",
+		"en":"Army upkeep cost: %s food (%s%%)\nFree allowance from houses and town centers: %s\nDue: %s\nLast paid: %s\nLast shortfall: %s\nShortfall if settled now: %s\nDamage if settled now: %s%%\nLast starvation damage: %s%%"
+	},
 	"top_wood_tooltip":{
 		"pl":"Tempo: %s/s\nZ bonusem %d/%d"
 	},

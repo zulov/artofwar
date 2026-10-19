@@ -56,6 +56,9 @@ inline const char* statKey(TechStat stat) {
 	case TechStat::TRAIN_TIME: return "tech_stat_train_time";
 	case TechStat::FOOD_DECAY: return "tech_stat_food_decay";
 	case TechStat::GOLD_INTEREST: return "tech_stat_gold_interest";
+	case TechStat::ARMY_UPKEEP: return "tech_stat_army_upkeep";
+	case TechStat::SUPPLY_UPKEEP: return "tech_stat_supply_upkeep";
+	case TechStat::STARVATION_DAMAGE: return "tech_stat_starvation_damage";
 	default: return "tech_stat_unknown";
 	}
 }
@@ -83,6 +86,7 @@ inline const char* scopeKey(TechSourceKind kind, TechSourceTag tag) {
 		case TechSourceTag::RESOURCE_BUILDING: return "tech_scope_building_resource";
 		case TechSourceTag::DEFENSIVE_BUILDING: return "tech_scope_building_defensive";
 		case TechSourceTag::TECH_BUILDING: return "tech_scope_building_tech";
+		case TechSourceTag::SUPPLY_BUILDING: return "tech_scope_building_supply";
 		default: return "tech_scope_building_any";
 		}
 	case TechSourceKind::RESOURCE: return "tech_scope_resource_any";

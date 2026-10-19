@@ -150,6 +150,15 @@ std::pair<float, bool> Unit::absorbAttack(float attackCoef) {
 	return {val, false};
 }
 
+void Unit::absorbStarvation(float damage) {
+	if (hp <= 0.f || damage <= 0.f) return;
+	hp -= damage;
+	if (hp <= 0.f) {
+		hp = 0.f;
+		StateManager::changeState(this, UnitState::DEAD);
+	}
+}
+
 bool Unit::toActionIfInRange(Physical* closest, UnitAction order) {
 	if (closest && getPosition().SqDistXZ(closest->getPosition()) < dbLevel->sqSightRadius) {
 		return toAction(closest, order);

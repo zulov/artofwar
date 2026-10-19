@@ -356,6 +356,18 @@
 		"pl":"Odsetki od złota",
 		"en":"Gold interest"
 	},
+	"tech_stat_army_upkeep":{
+		"pl":"Koszt utrzymania armii",
+		"en":"Army upkeep cost"
+	},
+	"tech_stat_supply_upkeep":{
+		"pl":"Darmowe utrzymanie z budynków zaopatrzenia",
+		"en":"Free upkeep from supply buildings"
+	},
+	"tech_stat_starvation_damage":{
+		"pl":"Obrażenia od głodu",
+		"en":"Starvation damage"
+	},
 	"tech_stat_unknown":{
 		"pl":"Nieznana statystyka",
 		"en":"Unknown stat"
@@ -415,6 +427,10 @@
 	"tech_scope_building_tech":{
 		"pl":"budynków technologicznych",
 		"en":"technology buildings"
+	},
+	"tech_scope_building_supply":{
+		"pl":"budynków zaopatrzenia",
+		"en":"supply buildings"
 	},
 	"tech_scope_resource_any":{
 		"pl":"wszystkich zasobów",

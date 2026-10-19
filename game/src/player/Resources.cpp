@@ -9,6 +9,8 @@
 #include "database/DatabaseCache.h"
 #include "math/VectorUtils.h"
 #include "objects/building/Building.h"
+#include "objects/unit/Unit.h"
+#include "player/ArmyUpkeep.h"
 #include "utils/RoundUtils.h"
 #include "utils/SpanUtils.h"
 
@@ -91,16 +93,20 @@ void Resources::recalculateBuildingState(const Possession* possession) {
 	}
 	foodStorage = RoundUtils::toInt(baseFoodStorage * foodStorageMultiplier);
 	goldStorage = RoundUtils::toInt(baseGoldStorage * goldStorageMultiplier);
+	refreshArmyUpkeep(possession);
 }
 
 void Resources::setTechnologyModifiers(float newFoodLostRate, float newGoldGainRate, float newStoneRefineBonus,
-		float newGoldRefineBonus, float newFoodStorageMultiplier, float newGoldStorageMultiplier) {
+		float newGoldRefineBonus, float newFoodStorageMultiplier, float newGoldStorageMultiplier,
+		float newArmyUpkeepRate, float newStarvationDamageRate) {
 	foodLostRate = std::clamp(newFoodLostRate, 0.f, 1.f);
 	goldGainRate = std::max(0.f, newGoldGainRate);
 	stoneRefineBonus = std::max(0.f, newStoneRefineBonus);
 	goldRefineBonus = std::max(0.f, newGoldRefineBonus);
 	foodStorageMultiplier = std::max(0.f, newFoodStorageMultiplier);
 	goldStorageMultiplier = std::max(0.f, newGoldStorageMultiplier);
+	armyUpkeepRate = std::clamp(newArmyUpkeepRate, 0.f, 1.f);
+	starvationDamageRate = std::clamp(newStarvationDamageRate, 0.f, 1.f);
 }
 
 void Resources::update1s(Possession* possession) {
@@ -112,15 +118,53 @@ void Resources::update1s(Possession* possession) {
 	addIncome(cast(ResourceType::GOLD), getPotentialGoldRefinement());
 }
 
-void Resources::updateMonth() {
+void Resources::updateMonth(Possession* possession) {
 	auto& food = values[cast(ResourceType::FOOD)];
 	if (!std::isfinite(food) || food < 0.f) {
 		std::cerr << "[Resource Error] Invalid food value before monthly decay: " << food << "\n";
 		food = 0.f;
 	}
+	if (possession) settleArmyUpkeep(possession);
 	lastFoodLost = std::min(food, potentialFoodLost());
 	food -= lastFoodLost;
 	assert(std::isfinite(food) && food >= 0.f);
+}
+
+void Resources::refreshArmyUpkeep(const Possession* possession) {
+	armyUpkeep = 0.f;
+	for (const auto* unit : possession->getUnits()) {
+		if (!unit->isAlive() || unit->getDb()->typeWorker) continue;
+		armyUpkeep += static_cast<float>(unit->getDb()->values[cast(ResourceType::FOOD)]) * armyUpkeepRate;
+	}
+	freeArmyUpkeep = 0.f;
+	for (const auto* building : possession->getBuildings()) {
+		if (!building->isReady()) continue;
+		const auto* dbBuilding = building->getDb();
+		if (dbBuilding->typeHome || dbBuilding->typeCenter) {
+			freeArmyUpkeep += building->getLevel()->freeArmyUpkeep;
+		}
+	}
+	armyUpkeepDue = std::max(0.f, armyUpkeep - freeArmyUpkeep);
+}
+
+void Resources::settleArmyUpkeep(Possession* possession) {
+	refreshArmyUpkeep(possession);
+	const auto settlement = calculateArmyUpkeep(armyUpkeep, freeArmyUpkeep,
+		values[cast(ResourceType::FOOD)], starvationDamageRate);
+	// Charge all available upkeep before applying the existing excess-food spoilage.
+	values[cast(ResourceType::FOOD)] -= settlement.paid;
+	armyUpkeepDue = settlement.due;
+	lastArmyUpkeepPaid = settlement.paid;
+	lastArmyFoodShortfall = settlement.shortfall;
+	lastStarvationDamagePercent = settlement.starvationFraction * 100.f;
+	if (settlement.starvationFraction <= 0.f) return;
+
+	// Monthly settlement runs after this tick's transition pass, so lethal starvation is applied next tick.
+	// Damage can mark units dead, but their collection remains stable until the next cleanup phase.
+	for (auto* unit : possession->getUnits()) {
+		if (!unit->isAlive() || unit->getDb()->typeWorker) continue;
+		unit->absorbStarvation(unit->getLevel()->maxHp * settlement.starvationFraction);
+	}
 }
 
 void Resources::updateYear() {

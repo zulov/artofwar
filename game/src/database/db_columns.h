@@ -315,7 +315,8 @@ enum class DbBuildingLevelCol : unsigned char {
 	goldRefaineCapacity,
 	spawnResourceTime,
 	spawnResourceRange,
-	age_stage
+	age_stage,
+	freeArmyUpkeep
 };
 
 enum class DbNationCol : unsigned char { id, name, brain_prefix };

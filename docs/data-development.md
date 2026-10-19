@@ -126,3 +126,9 @@ Save failures identify the target path and table or transaction operation. The s
 5. Run focused tests and a runtime smoke test from the game working directory.
 
 Use a SQLite-aware editor or migration script that preserves the repository's database files. Do not treat the copied runtime databases or build output as the source of truth.
+
+## Army Upkeep Data
+
+`building_level.freeArmyUpkeep` is a shared per-period food allowance granted by ready houses and town centers. Current sample values are defined by level in `Data/Database/data.db`; technologies with `stat='supply_upkeep'` and `source_tag='supply_building'` modify both building types. The base army upkeep and starvation damage rates are defined by constants in `Resources`. `Data/Database` is local runtime data and is ignored by Git; keep each runtime database in sync with the current code schema and data.
+
+Army upkeep has no save-schema migration: upkeep, house/center allowance, due food, and starvation damage are derived from the saved living units, buildings, technology levels, and the base rates in code. The last settlement is a transient UI report, like the existing last-period food-loss report; loading a save reconstructs current upkeep and the next settlement estimate.

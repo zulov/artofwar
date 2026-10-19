@@ -171,6 +171,8 @@ void Player::refreshResourceTechnologyModifiers(const std::vector<const db_techn
 	float goldRefineBonus = Resources::DEFAULT_GOLD_REFINE_BONUS;
 	float foodStorageMultiplier = Resources::DEFAULT_FOOD_STORAGE_MULTIPLIER;
 	float goldStorageMultiplier = Resources::DEFAULT_GOLD_STORAGE_MULTIPLIER;
+	float armyUpkeepRate = Resources::DEFAULT_ARMY_UPKEEP_RATE;
+	float starvationDamageRate = Resources::DEFAULT_STARVATION_DAMAGE_RATE;
 
 	const auto appliesToResource = [](const db_technology_effect* effect, ResourceType resource) {
 		if (effect->targetKind == TechTargetKind::NONE) return true;
@@ -188,8 +190,17 @@ void Player::refreshResourceTechnologyModifiers(const std::vector<const db_techn
 	goldRefineBonus = TechUtils::applyEffects(goldRefineBonus, effects, [&](const auto* effect) { return appliesTo(effect, TechStat::GOLD_REFINEMENT, ResourceType::GOLD); });
 	foodStorageMultiplier = TechUtils::applyEffects(foodStorageMultiplier, effects, [&](const auto* effect) { return appliesTo(effect, TechStat::FOOD_STORAGE, ResourceType::FOOD); });
 	goldStorageMultiplier = TechUtils::applyEffects(goldStorageMultiplier, effects, [&](const auto* effect) { return appliesTo(effect, TechStat::GOLD_STORAGE, ResourceType::GOLD); });
+	armyUpkeepRate = TechUtils::applyEffects(armyUpkeepRate, effects, [&](const auto* effect) {
+		return effect->sourceKind == TechSourceKind::PLAYER && effect->targetKind == TechTargetKind::NONE &&
+			effect->stat == TechStat::ARMY_UPKEEP;
+	});
+	starvationDamageRate = TechUtils::applyEffects(starvationDamageRate, effects, [&](const auto* effect) {
+		return effect->sourceKind == TechSourceKind::PLAYER && effect->targetKind == TechTargetKind::NONE &&
+			effect->stat == TechStat::STARVATION_DAMAGE;
+	});
 
-	resources->setTechnologyModifiers(foodLostRate, goldGainRate, stoneRefineBonus, goldRefineBonus, foodStorageMultiplier, goldStorageMultiplier);
+	resources->setTechnologyModifiers(foodLostRate, goldGainRate, stoneRefineBonus, goldRefineBonus,
+		foodStorageMultiplier, goldStorageMultiplier, armyUpkeepRate, starvationDamageRate);
 	resources->recalculateBuildingState(possession);
 }
 
@@ -312,10 +323,9 @@ void Player::refreshEffectiveLevels() {
 		effective->sightRadius = TechUtils::applyBuildingTechStat(effective->sightRadius, effects, building, TechStat::SIGHT_RANGE);
 		effective->attackRange = static_cast<short>(TechUtils::applyBuildingTechStat(effective->attackRange, effects, building, TechStat::ATTACK_RANGE));
 		effective->attackReload = std::max<short>(1, static_cast<short>(TechUtils::applyBuildingTechStat(effective->attackReload, effects, building, TechStat::ATTACK_RELOAD)));
-		effective->resourceRange = TechUtils::applyBuildingTechStat(effective->resourceRange,
-			effects, building, TechStat::RESOURCE_RANGE);
-		effective->collect = TechUtils::applyBuildingTechStat(effective->collect, effects,
-			building, TechStat::RESOURCE_BONUS);
+		effective->resourceRange = TechUtils::applyBuildingTechStat(effective->resourceRange, effects, building, TechStat::RESOURCE_RANGE);
+		effective->freeArmyUpkeep = std::max(0.f, TechUtils::applyBuildingTechStat(effective->freeArmyUpkeep, effects, building, TechStat::SUPPLY_UPKEEP));
+		effective->collect = TechUtils::applyBuildingTechStat(effective->collect, effects, building, TechStat::RESOURCE_BONUS);
 		effective->invMaxHp = 1.f / effective->maxHp;
 		effective->sqSightRadius = effective->sightRadius * effective->sightRadius;
 		effective->interestRange = effective->sightRadius * 0.8f;
@@ -350,7 +360,7 @@ void Player::restoreTechnologyLevel(unsigned short id, unsigned char level) {
 
 void Player::updateResource1s() const { resources->update1s(possession); }
 
-void Player::updateResourceMonth() const { resources->updateMonth(); }
+void Player::updateResourceMonth() const { resources->updateMonth(possession); }
 
 void Player::updateResourceYear() const { resources->updateYear(); }
 

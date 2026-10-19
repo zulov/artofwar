@@ -25,11 +25,14 @@ inline bool matchesUnitTag(TechSourceTag tag, const db_unit* unit) {
 	}
 }
 
+inline bool isSupplyBuilding(bool typeHome, bool typeCenter) { return typeHome || typeCenter; }
+
 inline bool matchesBuildingTag(TechSourceTag tag, const db_building* building) {
 	return tag == TechSourceTag::ANY || tag == TechSourceTag::ALL_BUILDINGS ||
 		(tag == TechSourceTag::RESOURCE_BUILDING && building->isResourceBuilding()) ||
 		(tag == TechSourceTag::DEFENSIVE_BUILDING && building->typeDefence) ||
-		(tag == TechSourceTag::TECH_BUILDING && building->parentType[static_cast<int>(ParentBuildingType::TECH)]);
+		(tag == TechSourceTag::TECH_BUILDING && building->parentType[static_cast<int>(ParentBuildingType::TECH)]) ||
+		(tag == TechSourceTag::SUPPLY_BUILDING && isSupplyBuilding(building->typeHome, building->typeCenter));
 }
 
 inline bool matchesUnitTargetTag(TechSourceTag effectTag, TechSourceTag matchupTag) {

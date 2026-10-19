@@ -434,6 +434,7 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 	float goldRefineCapacity;
 	short spawnResourceTime;
 	short spawnResourceRange;
+	float freeArmyUpkeep;
 
 	const Urho3D::String nodeName;
 
@@ -463,6 +464,7 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 		  goldRefineCapacity(asFloat(s, C::goldRefaineCapacity)),
 		  spawnResourceTime(asShort(s, C::spawnResourceTime)),
 		  spawnResourceRange(asShort(s, C::spawnResourceRange)),
+		  freeArmyUpkeep(asFloat(s, C::freeArmyUpkeep)),
 		  nodeName(asText(s, C::node)) {}
 
 	db_building_level(const db_building_level& other)
@@ -472,6 +474,7 @@ struct db_building_level : db_with_name, db_with_cost, db_level, db_base, db_bui
 		  foodStorage(other.foodStorage), goldStorage(other.goldStorage),
 		  stoneRefineCapacity(other.stoneRefineCapacity), goldRefineCapacity(other.goldRefineCapacity),
 		  spawnResourceTime(other.spawnResourceTime), spawnResourceRange(other.spawnResourceRange),
+		  freeArmyUpkeep(other.freeArmyUpkeep),
 		  nodeName(other.nodeName), allUnits(other.allUnits), unitsPerNation(other.unitsPerNation),
 		  unitsPerNationIds(other.unitsPerNationIds), dbBuildingMetric(nullptr), ownsRuntimeData(false) {}
 

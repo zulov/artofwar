@@ -59,3 +59,9 @@ TEST(TechnologyOrderingTest, SpecificTargetTagOnlyMatchesItsUnitMatchup) {
 	EXPECT_TRUE(TechUtils::matchesUnitTargetTag(TechSourceTag::CAVALRY, TechSourceTag::CAVALRY));
 	EXPECT_FALSE(TechUtils::matchesUnitTargetTag(TechSourceTag::CAVALRY, TechSourceTag::INFANTRY));
 }
+
+TEST(TechnologyOrderingTest, SupplyBuildingTagMatchesHomesAndCentersOnly) {
+	EXPECT_TRUE(TechUtils::isSupplyBuilding(true, false));
+	EXPECT_TRUE(TechUtils::isSupplyBuilding(false, true));
+	EXPECT_FALSE(TechUtils::isSupplyBuilding(false, false));
+}

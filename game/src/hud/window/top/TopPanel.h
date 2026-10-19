@@ -24,6 +24,7 @@ private:
 
 	TopHudElement* elements[RESOURCES_SIZE];
 	TopHudElement* units;
+	TopHudElement* armyUpkeep;
 	TopHudElement* workers;
 	TopHudElement* name;
 	TopHudElement* time;

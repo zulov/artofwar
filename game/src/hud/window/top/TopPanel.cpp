@@ -1,5 +1,6 @@
 #include "TopPanel.h"
 #include <Urho3D/Graphics/Texture2D.h>
+#include <Urho3D/Math/Color.h>
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/UI/Window.h>
 #include "GameState.h"
@@ -28,6 +29,7 @@ TopPanel::TopPanel(Urho3D::UIElement* root, Urho3D::XMLFile* style) : SimplePane
 TopPanel::~TopPanel() {
 	clear_array(elements, RESOURCES_SIZE);
 	delete units;
+	delete armyUpkeep;
 	delete workers;
 	delete name;
 	delete infoPanel;
@@ -40,6 +42,8 @@ void TopPanel::createBody() {
 	name = new TopHudElement(window, style, getTexture(path + "helmet.png"));
 	time = new TopHudElement(window, style, getTexture(path + "time.png"), false, "TopButtonsWide");
 	units = new TopHudElement(window, style, getTexture(path + "human.png"), "TopButtonsNarrow");
+	armyUpkeep = new TopHudElement(window, style, getTexture("textures/hud/icon/resource/food.png"), true,
+			"TopButtonsNarrow");
 	workers = new TopHudElement(window, style, getTexture(path + "worker.png"), "TopButtonsNarrow");
 
 	const Urho3D::String resIconPath = "textures/hud/icon/resource/";
@@ -92,6 +96,7 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	                               workersPerRes[3]));
 
 	const auto& resources = player->getResources();
+	resources->refreshArmyUpkeep(poss);
 	auto vals = resources->getValues();
 	for (int i = 0; i < vals.size(); ++i) {
 		elements[i]->setText(Urho3D::String((int)vals[i]), Urho3D::String(workersPerRes[i]));
@@ -99,14 +104,31 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 	auto gather = resources->getGatherSpeeds();
 	auto without = poss->getResWithOutBonus();
 
-	elements[cast(ResourceType::FOOD)]->setToolTip(l10nFormat("top_food_tooltip",
+	const auto foodTooltip = l10nFormat("top_food_tooltip",
 	                                   asStringF(gather[cast(ResourceType::FOOD)], 1).c_str(),
 	                                   (int)(workersPerRes[cast(ResourceType::FOOD)] - without[cast(ResourceType::FOOD)]),
 	                                   workersPerRes[cast(ResourceType::FOOD)],
 	                                   (int)vals[cast(ResourceType::FOOD)],
 	                                   (int)resources->getFoodStorage(),
 	                                   asStringF(resources->getLastFoodLost(), 1).c_str(),
-	                                   asStringF(resources->potentialFoodLost(), 1).c_str()));
+	                                   asStringF(resources->potentialFoodLost(), 1).c_str());
+	armyUpkeep->setRatioText(asStringF(resources->getArmyUpkeep(), 1).c_str(),
+	                          asStringF(resources->getFreeArmyUpkeep(), 1).c_str());
+	const bool armyUpkeepExceeded = resources->getArmyUpkeep() > resources->getFreeArmyUpkeep();
+	armyUpkeep->setTextColor(armyUpkeepExceeded ? Urho3D::Color::RED : Urho3D::Color::WHITE,
+		armyUpkeepExceeded ? Urho3D::Color::RED : Urho3D::Color(0.6f, 0.6f, 0.6f));
+	const auto upkeepTooltip = l10nFormat("top_army_upkeep_tooltip",
+	                                   asStringF(resources->getArmyUpkeep(), 2).c_str(),
+	                                   asStringF(resources->getArmyUpkeepRate() * 100.f, 2).c_str(),
+	                                   asStringF(resources->getFreeArmyUpkeep(), 2).c_str(),
+	                                   asStringF(resources->getArmyUpkeepDue(), 2).c_str(),
+	                                   asStringF(resources->getLastArmyUpkeepPaid(), 2).c_str(),
+	                                   asStringF(resources->getLastArmyFoodShortfall(), 2).c_str(),
+	                                   asStringF(resources->getPotentialArmyFoodShortfall(), 2).c_str(),
+	                                   asStringF(resources->getPotentialStarvationDamagePercent(), 1).c_str(),
+	                                   asStringF(resources->getLastStarvationDamagePercent(), 1).c_str());
+	elements[cast(ResourceType::FOOD)]->setToolTip(foodTooltip);
+	armyUpkeep->setToolTip(upkeepTooltip);
 	elements[cast(ResourceType::WOOD)]->setToolTip(l10nFormat("top_wood_tooltip",
 	                                   asStringF(gather[cast(ResourceType::WOOD)], 1).c_str(),
 	                                   (int)(workersPerRes[cast(ResourceType::WOOD)] - without[cast(ResourceType::WOOD)]),

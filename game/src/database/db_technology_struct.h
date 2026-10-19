@@ -36,7 +36,10 @@ enum class TechStat : unsigned char {
 	BUILD_TIME,
 	TRAIN_TIME,
 	FOOD_DECAY,
-	GOLD_INTEREST
+	GOLD_INTEREST,
+	ARMY_UPKEEP,
+	SUPPLY_UPKEEP,
+	STARVATION_DAMAGE
 };
 
 enum class TechOperation : unsigned char { ADD, PERCENT };
@@ -57,7 +60,8 @@ enum class TechSourceTag : unsigned char {
 	ALL_BUILDINGS,
 	RESOURCE_BUILDING,
 	DEFENSIVE_BUILDING,
-	TECH_BUILDING
+	TECH_BUILDING,
+	SUPPLY_BUILDING
 };
 
 enum class TechTargetKind : unsigned char { NONE, UNIT, BUILDING, RESOURCE };

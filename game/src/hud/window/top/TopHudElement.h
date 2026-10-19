@@ -2,6 +2,7 @@
 #include "Urho3D/Container/Str.h"
 
 namespace Urho3D {
+	class Color;
 	class String;
 	class Button;
 	class Text;
@@ -21,6 +22,8 @@ public:
 	void hide() const;
 	void show() const;
 	const TopHudElement* setText(const Urho3D::String& msg, const Urho3D::String& msg1) const;
+	const TopHudElement* setRatioText(const Urho3D::String& numerator, const Urho3D::String& denominator) const;
+	void setTextColor(const Urho3D::Color& primary, const Urho3D::Color& secondary) const;
 	void setToolTip(const Urho3D::String& msg) const;
 
 private:
