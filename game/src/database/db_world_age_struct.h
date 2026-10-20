@@ -13,20 +13,20 @@ enum class WorldAgeMetric : unsigned char {
 	ARMY_COUNT
 };
 
-struct db_world_age_condition : db_entity {
+struct db_age_condition {
+	const unsigned short ageId;
 	const WorldAgeMetric metric;
 	const float target;
 
-	using C = DbWorldAgeConditionCol;
-	explicit db_world_age_condition(sqlite3_stmt* stmt)
-		: db_entity(asUShort(stmt, C::id)), metric(static_cast<WorldAgeMetric>(asUByte(stmt, C::metric))),
+	using C = DbAgeConditionCol;
+	explicit db_age_condition(sqlite3_stmt* stmt)
+		: ageId(asUShort(stmt, C::age_id)), metric(static_cast<WorldAgeMetric>(asUByte(stmt, C::metric))),
 		  target(asFloat(stmt, C::target)) {}
 };
 
 struct db_world_age : db_with_name {
 	const unsigned char stage;
-	std::vector<const db_world_age_condition*> conditions;
-	std::vector<unsigned short> nextAgeIds;
+	std::vector<const db_age_condition*> ageConditions;
 
 	using C = DbWorldAgeCol;
 	explicit db_world_age(sqlite3_stmt* stmt)
@@ -35,11 +35,11 @@ struct db_world_age : db_with_name {
 
 struct db_world_age_catalog {
 	std::vector<db_world_age*> ages;
-	std::vector<db_world_age_condition*> conditions;
+	std::vector<db_age_condition*> ageConditions;
 
 	~db_world_age_catalog() {
 		clear_vector(ages);
-		clear_vector(conditions);
+		clear_vector(ageConditions);
 	}
 
 	const db_world_age* getAge(unsigned short id) const {
@@ -47,10 +47,6 @@ struct db_world_age_catalog {
 	}
 
 	db_world_age* getAge(unsigned short id) { return id < ages.size() ? ages[id] : nullptr; }
-
-	const db_world_age_condition* getCondition(unsigned short id) const {
-		return id < conditions.size() ? conditions[id] : nullptr;
-	}
 
 	unsigned char maxStage() const {
 		unsigned char result = 0;

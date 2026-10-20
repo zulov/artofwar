@@ -147,6 +147,9 @@ const std::vector<Building*>& Possession::getBuildings() const {
 
 void Possession::addKilled(Physical* physical) {
 	valueDestroyed += physical->getCostSum();
+	if (physical->getType() == ObjectType::UNIT) {
+		++unitKills;
+	}
 }
 
 const PossessionMetric* Possession::getMetrics() {

@@ -25,6 +25,8 @@ class SimulationObjectManager;
 class UpgradeCommandList;
 class CommandList;
 class WorldAgeController;
+class MissionController;
+enum class MissionResult : unsigned char;
 enum class UpgradeType : char;
 
 namespace Urho3D {
@@ -51,6 +53,7 @@ public:
 	const std::vector<Building*>* getBuildings() const { return buildings; }
 	const std::vector<ResourceEntity*>* getResources() const { return resources; }
 	const WorldAgeController* getWorldAgeController() const { return worldAgeController; }
+	const MissionController* getMissionController() const { return missionController; }
 
 private:
 	void aiPlayers() const;
@@ -82,4 +85,5 @@ private:
 	Environment* env;
 	SimulationObjectManager* simObjectManager;
 	WorldAgeController* worldAgeController;
+	MissionController* missionController;
 };

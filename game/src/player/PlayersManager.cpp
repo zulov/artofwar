@@ -23,6 +23,7 @@ void PlayersManager::load(const std::vector<dbload_player*>* players) {
 		                            player->is_active, player->buildingUid, player->unitUid);
 		newPlayer->setResourceAmount(player->food, player->wood, player->stone, player->gold);
 		newPlayer->getResources()->loadState(player->resources);
+		newPlayer->restoreUnitKills(player->unitKills);
 		if (player->is_active) {
 			activePlayer = newPlayer;
 		}

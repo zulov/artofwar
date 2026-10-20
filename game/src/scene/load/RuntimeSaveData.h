@@ -73,6 +73,14 @@ struct WorldAgeStateSaveData {
 	std::string history;
 };
 
+struct MissionGoalDeadlineSaveData {
+	unsigned char player{};
+	unsigned short goalId{};
+	bool success{};
+	float playerScore{};
+	float enemyScore{};
+};
+
 enum class PendingCommandKind : char {
 	CREATION,
 	UPGRADE,

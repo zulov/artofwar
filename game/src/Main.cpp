@@ -49,6 +49,7 @@
 #include "scene/LevelBuilder.h"
 #include "scene/load/dbload_container.h"
 #include "simulation/FrameInfo.h"
+#include "simulation/MissionController.h"
 #include "simulation/SimGlobals.h"
 #include "simulation/Simulation.h"
 #include "simulation/formation/FormationManager.h"
@@ -234,6 +235,11 @@ void Main::running(const float timeStep) {
 			debugManager.draw();
 			SelectedInfo* selectedInfo = control(timeStep, frameInfo);
 			hud->update(benchmark, Game::getCameraManager(), selectedInfo, frameInfo);
+		}
+		if (!SIM_GLOBALS.HEADLESS && Game::getMissionController() &&
+			Game::getMissionController()->getResult() != MissionResult::RUNNING) {
+			changeState(GameState::PAUSE);
+			break;
 		}
 	}
 

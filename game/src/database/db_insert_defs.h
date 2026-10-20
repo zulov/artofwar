@@ -101,6 +101,7 @@ inline void bindRow<Player>(sqlite3_stmt* stmt, int precision, const Player* x) 
 	bindScaledI(stmt, PlayerCol::sum_wood, resourceState.sumValues[1], precision);
 	bindScaledI(stmt, PlayerCol::sum_stone, resourceState.sumValues[2], precision);
 	bindScaledI(stmt, PlayerCol::sum_gold, resourceState.sumValues[3], precision);
+	bindU(stmt, PlayerCol::unit_kills, x->getUnitKills());
 }
 
 template <>
@@ -171,6 +172,15 @@ inline void bindRow<WorldAgeStateSaveData>(sqlite3_stmt* stmt, int, const WorldA
 	bindI(stmt, WorldAgeStateCol::current_age, x->currentAge);
 	bindU(stmt, WorldAgeStateCol::age_started_tick, x->ageStartedTick);
 	bindT(stmt, WorldAgeStateCol::history, x->history);
+}
+
+template <>
+inline void bindRow<MissionGoalDeadlineSaveData>(sqlite3_stmt* stmt, int precision, const MissionGoalDeadlineSaveData* x) {
+	bindUC(stmt, MissionGoalStateCol::player, x->player);
+	bindI(stmt, MissionGoalStateCol::goal_id, x->goalId);
+	bindB(stmt, MissionGoalStateCol::success, x->success);
+	bindScaledI(stmt, MissionGoalStateCol::player_score, x->playerScore, precision);
+	bindScaledI(stmt, MissionGoalStateCol::enemy_score, x->enemyScore, precision);
 }
 
 template <>

@@ -78,6 +78,8 @@ public:
 	void updateNearbyResourceSupply();
 	const std::array<float, RESOURCES_SIZE>& getNearbyResourceSupply() const { return nearbyResourceSupply; }
 	float getValueDestroyed() const { return valueDestroyed; }
+	unsigned getUnitKills() const { return unitKills; }
+	void restoreUnitKills(unsigned value) { unitKills = value; }
 private:
 	std::vector<Building*> buildings;
 	std::vector<std::vector<Building*>*> buildingsPerId;
@@ -105,6 +107,7 @@ private:
 	float resourcesSum = 0.f;
 	float freeArmyAttackSum = 0.f;
 	float valueDestroyed = 0.f;
+	unsigned unitKills = 0;
 
 	bool unitMetricsReady = false;
 	bool buildingMetricsReady = false;

@@ -26,12 +26,7 @@ void WorldAgeController::reset(unsigned ageStartedTick) {
 }
 
 bool WorldAgeController::restore(const dbload_container& data) {
-	if (!data.worldAgeState) {
-		reset(data.config ? data.config->frame.totalTicks : 0);
-		return true;
-	}
-
-	const auto& state = *data.worldAgeState;
+	const auto& state = data.worldAgeState;
 	if (!catalog->getAge(state.currentAge) ||
 		std::ranges::find(*ageIds, state.currentAge) == ageIds->end() ||
 		(state.ageStartedTick > (data.config ? data.config->frame.totalTicks : 0))) {
@@ -53,8 +48,7 @@ bool WorldAgeController::restore(const dbload_container& data) {
 		if (!age || std::ranges::find(*ageIds, ageId) == ageIds->end() ||
 			std::ranges::find(restoredReached, ageId) != restoredReached.end() ||
 			(restoredReached.empty() ? ageId != 0 || age->stage != 0 :
-				!previous || age->stage != previous->stage + 1 ||
-				std::ranges::find(previous->nextAgeIds, ageId) == previous->nextAgeIds.end())) {
+				!previous || age->stage != previous->stage + 1)) {
 			return false;
 		}
 		restoredReached.push_back(ageId);
@@ -87,7 +81,7 @@ void WorldAgeController::update(const std::vector<Player*>& players, unsigned to
 
 	for (const auto ageId : *ageIds) {
 		const auto* age = catalog->getAge(ageId);
-		if (age && isNextAge(*current, ageId) && ageMet(players, *age)) {
+		if (age && isNextAge(*current, *age) && ageMet(players, *age)) {
 			advance(ageId, totalTicks);
 			return;
 		}
@@ -115,7 +109,7 @@ std::vector<WorldAgeProgress> WorldAgeController::getNextAgeProgress(const std::
 
 	for (const auto ageId : *ageIds) {
 		const auto* age = catalog->getAge(ageId);
-		if (!isNextAge(*current, ageId)) {
+		if (!isNextAge(*current, *age)) {
 			continue;
 		}
 
@@ -123,7 +117,7 @@ std::vector<WorldAgeProgress> WorldAgeController::getNextAgeProgress(const std::
 		result.push_back({
 			.ageId = ageId, 
 			.progress = std::clamp(progress, 0.f, 1.f), 
-			.conditions = getConditionProgress(players, *age)
+			.ageConditions = getConditionProgress(players, *age)
 		});
 	}
 	return result;
@@ -156,7 +150,7 @@ WorldAgeStateSaveData WorldAgeController::saveState() const {
 	return {currentAgeId, ageStartedTick, std::move(serializedHistory)};
 }
 
-float WorldAgeController::getMetric(const Player& player, const db_world_age_condition& condition) const {
+float WorldAgeController::getMetric(const Player& player, const db_age_condition& condition) const {
 	switch (condition.metric) {
 	case WorldAgeMetric::WORKER_COUNT:
 		return static_cast<float>(player.getWorkersNumber());
@@ -169,7 +163,7 @@ float WorldAgeController::getMetric(const Player& player, const db_world_age_con
 
 bool WorldAgeController::ageMet(const std::vector<Player*>& players, const db_world_age& age) const {
 	float total = 0.f;
-	for (const auto* condition : age.conditions) {
+	for (const auto* condition : age.ageConditions) {
 		for (const auto* player : players) {
 			total += getMetric(*player, *condition);
 		}
@@ -182,12 +176,12 @@ bool WorldAgeController::ageMet(const std::vector<Player*>& players, const db_wo
 }
 
 float WorldAgeController::ageProgress(const std::vector<Player*>& players, const db_world_age& age) const {
-	if (age.conditions.empty()) {
+	if (age.ageConditions.empty()) {
 		return 0.f;
 	}
 
 	float progress = 1.f;
-	for (const auto* condition : age.conditions) {
+	for (const auto* condition : age.ageConditions) {
 		float total = 0.f;
 		for (const auto* player : players) {
 			total += getMetric(*player, *condition);
@@ -200,9 +194,9 @@ float WorldAgeController::ageProgress(const std::vector<Player*>& players, const
 std::vector<WorldAgeConditionProgress> WorldAgeController::getConditionProgress(
 		const std::vector<Player*>& players, const db_world_age& age) const {
 	std::vector<WorldAgeConditionProgress> result;
-	result.reserve(age.conditions.size());
+	result.reserve(age.ageConditions.size());
 
-	for (const auto* condition : age.conditions) {
+	for (const auto* condition : age.ageConditions) {
 		WorldAgeConditionProgress conditionProgress;
 		conditionProgress.metric = condition->metric;
 		conditionProgress.target = condition->target;
@@ -234,7 +228,7 @@ unsigned short WorldAgeController::selectTimeoutAge(const std::vector<Player*>& 
 	float bestProgress = -1.f;
 	for (const auto ageId : *ageIds) {
 		const auto* age = catalog->getAge(ageId);
-		if (!age || !isNextAge(current, ageId)) {
+		if (!age || !isNextAge(current, *age)) {
 			continue;
 		}
 		const auto progress = ageProgress(players, *age);
@@ -246,8 +240,8 @@ unsigned short WorldAgeController::selectTimeoutAge(const std::vector<Player*>& 
 	return best ? best->id : current.id;
 }
 
-bool WorldAgeController::isNextAge(const db_world_age& current, unsigned short ageId) const {
-	return std::ranges::find(current.nextAgeIds, ageId) != current.nextAgeIds.end();
+bool WorldAgeController::isNextAge(const db_world_age& current, const db_world_age& candidate) const {
+	return candidate.stage == current.stage + 1;
 }
 
 void WorldAgeController::advance(unsigned short ageId, unsigned totalTicks) {

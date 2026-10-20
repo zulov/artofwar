@@ -1,6 +1,6 @@
 # TODO — mechaniki
 
-- [ ] **Warunki zwycięstwa i porażki** — ustalić, kiedy gracz lub drużyna wygrywa, przegrywa albo zostaje wyeliminowana.
+- [x] **Warunki zwycięstwa i porażki** — cele misji są definiowane per mapa w `maps.db`; zwycięstwo wymaga spełnienia wszystkich celów, a gracz przegrywa po utracie wszystkich własnych jednostek i budynków.
 - [ ] **Miękki limit armii** — domki zwiększają limit darmowego zaopatrzenia; wojsko ponad limit zużywa żywność. Przekroczenie nie blokuje rekrutacji ani nie zabija jednostek. Ustalić skutek braku żywności i zapewnić budowanie domków przez AI.
 - [ ] **Obsługa dźwięku** — dodać efekty dźwiękowe i muzykę oraz ustalić ich odtwarzanie i ustawienia głośności.
 - [ ] **Animacje** — dodać i dopracować animacje jednostek, budynków oraz efektów akcji.

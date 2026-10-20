@@ -44,6 +44,7 @@ SAVE_TABLE(PendingCommandCol, "pending_commands", true, PendingCommandCol::order
 SAVE_TABLE(PendingCommandEntityCol, "pending_command_entities", true, PendingCommandEntityCol::command_idx,
 		   PendingCommandEntityCol::order_idx);
 SAVE_TABLE(WorldAgeStateCol, "world_age", false);
+SAVE_TABLE(MissionGoalStateCol, "mission_goal_state", true, MissionGoalStateCol::player, MissionGoalStateCol::goal_id);
 
 #undef SAVE_TABLE
 

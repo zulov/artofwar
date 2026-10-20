@@ -460,6 +460,118 @@
 		"pl":"złota",
 		"en":"gold"
 	},
+	"mission_goals_title":{
+		"pl":"Cele misji",
+		"en":"Mission objectives"
+	},
+	"mission_victory":{
+		"pl":"Zwycięstwo",
+		"en":"Victory"
+	},
+	"mission_defeat":{
+		"pl":"Porażka",
+		"en":"Defeat"
+	},
+	"mission_goal_remaining":{
+		"pl":"%d pozostało",
+		"en":"%d remaining"
+	},
+	"mission_progress_count":{
+		"pl":"%d/%d",
+		"en":"%d/%d"
+	},
+	"mission_survive_10":{
+		"pl":"Przetrwaj 10 minut",
+		"en":"Survive for 10 minutes"
+	},
+	"mission_survive_building_10":{
+		"pl":"Przetrwaj 10 minut, zachowując ukończony budynek",
+		"en":"Survive for 10 minutes with a completed building"
+	},
+	"mission_survive_15_center":{
+		"pl":"Przetrwaj 15 minut, zachowując ukończony budynek",
+		"en":"Survive for 15 minutes with a completed building"
+	},
+	"mission_eliminate_all":{
+		"pl":"Zniszcz wszystkie jednostki i budynki wroga",
+		"en":"Destroy all enemy units and buildings"
+	},
+	"mission_eliminate_specific_team":{
+		"pl":"Zniszcz wszystkie jednostki i budynki wskazanej drużyny",
+		"en":"Destroy all units and buildings of the assigned team"
+	},
+	"mission_resource_stock":{
+		"pl":"Miej %d %s",
+		"en":"Have %d %s"
+	},
+	"mission_resource_gathered":{
+		"pl":"Zbierz łącznie %d %s",
+		"en":"Gather a total of %d %s"
+	},
+	"mission_building_count":{
+		"pl":"Posiadaj %d ukończone budynki typu %s",
+		"en":"Own %d completed %s buildings"
+	},
+	"mission_building_count_any":{
+		"pl":"Posiadaj %d ukończone budynki dowolnego typu",
+		"en":"Own %d completed buildings of any type"
+	},
+	"mission_score_reach":{
+		"pl":"Osiągnij wynik %d",
+		"en":"Reach a score of %d"
+	},
+	"mission_kill_units":{
+		"pl":"Pokonaj %d jednostek wroga",
+		"en":"Defeat %d enemy units"
+	},
+	"mission_score_lead":{
+		"pl":"Po czasie miej więcej punktów niż wróg (%d : %d)",
+		"en":"Have a higher score than the enemy at the deadline (%d : %d)"
+	},
+	"mission_eliminate_player":{
+		"pl":"Wyeliminuj: %s",
+		"en":"Eliminate: %s"
+	},
+	"mission_eliminate_specific_team":{
+		"pl":"Wyeliminuj drużynę: %d",
+		"en":"Eliminate team: %d"
+	},
+	"mission_kill_20":{
+		"pl":"Pokonaj 20 jednostek wroga",
+		"en":"Defeat 20 enemy units"
+	},
+	"mission_gather_wood":{
+		"pl":"Zbierz 1000 drewna",
+		"en":"Gather 1000 wood"
+	},
+	"mission_build_houses":{
+		"pl":"Posiadaj 2 ukończone domy",
+		"en":"Own 2 completed houses"
+	},
+	"mission_score_1000":{
+		"pl":"Osiągnij 1000 punktów",
+		"en":"Reach 1000 points"
+	},
+	"mission_stock_500_gold":{
+		"pl":"Miej 500 złota",
+		"en":"Have 500 gold"
+	},
+	"mission_gather_500_food":{
+		"pl":"Zbierz 500 żywności",
+		"en":"Gather 500 food"
+	},
+	"mission_eliminate_player":{
+		"pl":"Wyeliminuj wskazanego przeciwnika",
+		"en":"Eliminate the assigned opponent"
+	},
+	"mission_eliminate_units":{
+		"pl":"Zniszcz wszystkie jednostki wroga",
+		"en":"Destroy all enemy units"
+	},
+	"mission_eliminate_buildings":{
+		"pl":"Zniszcz wszystkie budynki wroga",
+		"en":"Destroy all enemy buildings"
+	},
 	"hud_stat_health":{
 		"pl":"Zdrowie",
 		"en":"Health"

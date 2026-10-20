@@ -21,6 +21,7 @@ class ColorPaletteRepo;
 class FormationManager;
 class ActionCenter;
 class WorldAgeController;
+class MissionController;
 
 class Game {
 public:
@@ -45,6 +46,7 @@ public:
 	static Game* setLog(Urho3D::Log* _log);
 	static Game* setActionCenter(ActionCenter* _actionCenter);
 	static Game* setWorldAgeController(WorldAgeController* _worldAgeController);
+	static Game* setMissionController(MissionController* _missionController);
 
 	static Urho3D::Localization* getLocalization() { return instance->localization; }
 	static Urho3D::Scene* getScene() { return instance->scene; }
@@ -63,6 +65,7 @@ public:
 	static Environment* getEnvironment() { return instance->environment; }
 	static ActionCenter* getActionCenter() { return instance->actionCenter; }
 	static WorldAgeController* getWorldAgeController() { return instance->worldAgeController; }
+	static MissionController* getMissionController() { return instance->missionController; }
 	static FrameInfo* getFrameInfo() { return &instance->frameInfo; }
 
 private:
@@ -87,6 +90,7 @@ private:
 
 	ActionCenter* actionCenter;
 	WorldAgeController* worldAgeController{};
+	MissionController* missionController{};
 
 	FrameInfo frameInfo;
 };

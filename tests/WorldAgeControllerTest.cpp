@@ -46,7 +46,6 @@ TEST(WorldAgeControllerTest, ReturnsEveryNextStageCandidateInMapOrder) {
 	auto* age0 = new db_world_age(age0Sql.statement);
 	auto* age1 = new db_world_age(age1Sql.statement);
 	auto* age2 = new db_world_age(age2Sql.statement);
-	age0->nextAgeIds = {2, 1};
 	db_world_age_catalog catalog;
 	catalog.ages = {age0, age1, age2};
 	const db_map map(mapSql.statement);
@@ -84,7 +83,6 @@ TEST(WorldAgeControllerTest, ReturnsOnlyCandidatesListedBySelectedMap) {
 	auto* age0 = new db_world_age(age0Sql.statement);
 	auto* age1 = new db_world_age(age1Sql.statement);
 	auto* age2 = new db_world_age(age2Sql.statement);
-	age0->nextAgeIds = {1};
 	catalog.ages = {age0, age1, age2};
 	const db_map map(mapSql.statement);
 	WorldAgeController controller(&catalog, &map);
@@ -98,17 +96,16 @@ TEST(WorldAgeControllerTest, ReturnsOnlyCandidatesListedBySelectedMap) {
 TEST(WorldAgeControllerTest, ReportsConditionValuesAndPlayerShares) {
 	SqliteStatement age0Sql("SELECT 0, 0, 'age_0';");
 	SqliteStatement age1Sql("SELECT 1, 1, 'age_1';");
-	SqliteStatement conditionSql("SELECT 0, 0, 10.0;");
+	SqliteStatement conditionSql("SELECT 1, 0, 10.0;");
 	SqliteStatement mapSql("SELECT 0, 'map.xml', 'Map', '0,1';");
 
 	db_world_age_catalog catalog;
 	auto* age0 = new db_world_age(age0Sql.statement);
 	auto* age1 = new db_world_age(age1Sql.statement);
-	auto* condition = new db_world_age_condition(conditionSql.statement);
-	age0->nextAgeIds = {1};
-	age1->conditions = {condition};
+	auto* condition = new db_age_condition(conditionSql.statement);
+	age1->ageConditions = {condition};
 	catalog.ages = {age0, age1};
-	catalog.conditions = {condition};
+	catalog.ageConditions = {condition};
 	const db_map map(mapSql.statement);
 	WorldAgeController controller(&catalog, &map);
 
@@ -120,8 +117,8 @@ TEST(WorldAgeControllerTest, ReportsConditionValuesAndPlayerShares) {
 
 	const auto progress = controller.getNextAgeProgress(players);
 	ASSERT_EQ(1u, progress.size());
-	ASSERT_EQ(1u, progress.front().conditions.size());
-	const auto& conditionProgress = progress.front().conditions.front();
+	ASSERT_EQ(1u, progress.front().ageConditions.size());
+	const auto& conditionProgress = progress.front().ageConditions.front();
 	EXPECT_FLOAT_EQ(5.f, conditionProgress.average);
 	EXPECT_FLOAT_EQ(0.5f, conditionProgress.progress);
 	ASSERT_EQ(2u, conditionProgress.contributions.size());
@@ -131,7 +128,7 @@ TEST(WorldAgeControllerTest, ReportsConditionValuesAndPlayerShares) {
 	EXPECT_FLOAT_EQ(0.4f, conditionProgress.contributions[1].share);
 }
 
-TEST(WorldAgeControllerTest, FollowsSelectedBranchInsteadOfShowingEveryAgeAtTheNextStage) {
+TEST(WorldAgeControllerTest, OffersEveryAgeInNextStageRegardlessOfSelectedAge) {
 	std::vector<SqliteStatement> ageSql;
 	ageSql.reserve(7);
 	for (int ageId = 0; ageId < 7; ++ageId) {
@@ -143,25 +140,19 @@ TEST(WorldAgeControllerTest, FollowsSelectedBranchInsteadOfShowingEveryAgeAtTheN
 	for (auto& statement : ageSql) {
 		catalog.ages.push_back(new db_world_age(statement.statement));
 	}
-	catalog.ages[0]->nextAgeIds = {1, 2};
-	catalog.ages[1]->nextAgeIds = {3};
-	catalog.ages[2]->nextAgeIds = {4};
-	catalog.ages[3]->nextAgeIds = {5};
-	catalog.ages[4]->nextAgeIds = {6};
-	SqliteStatement mapSql("SELECT 0, 'map.xml', 'Map', '0,1,2,3,4,5,6';");
-	const db_map map(mapSql.statement);
-	WorldAgeController controller(&catalog, &map);
+	SqliteStatement mapAge1FirstSql("SELECT 0, 'map.xml', 'Map', '0,1,2,3,4,5,6';");
+	SqliteStatement mapAge2FirstSql("SELECT 0, 'map.xml', 'Map', '0,2,1,3,4,5,6';");
 	const std::vector<Player*> players = {nullptr};
-
-	controller.update(players, 1);
-	const auto afterFirstBranch = controller.getNextAgeProgress(players);
-	ASSERT_EQ(1u, afterFirstBranch.size());
-	EXPECT_EQ(3, afterFirstBranch.front().ageId);
-
-	controller.update(players, 2);
-	const auto afterSecondAge = controller.getNextAgeProgress(players);
-	ASSERT_EQ(1u, afterSecondAge.size());
-	EXPECT_EQ(5, afterSecondAge.front().ageId);
+	for (const auto* mapStatement : {&mapAge1FirstSql, &mapAge2FirstSql}) {
+		const db_map map(mapStatement->statement);
+		WorldAgeController controller(&catalog, &map);
+		controller.update(players, 1);
+		EXPECT_TRUE(controller.getCurrentAge()->stage == 1);
+		const auto nextCandidates = controller.getNextAgeProgress(players);
+		ASSERT_EQ(2u, nextCandidates.size());
+		EXPECT_EQ(3, nextCandidates[0].ageId);
+		EXPECT_EQ(4, nextCandidates[1].ageId);
+	}
 }
 
 TEST(WorldAgeControllerTest, ReportsAgeTimeoutProgress) {

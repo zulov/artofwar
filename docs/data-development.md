@@ -17,7 +17,7 @@ The runtime data databases and save tables use different query contracts. `Datab
 
 The runtime `game/Data/Database/data.db` contains the technology tables and sample data. Each `technology` row stores a comma-separated `research_building` list of concrete building IDs, such as `5,2`; a technology can therefore be researched in any listed building. The selected building must be ready with an idle queue, and the technology must not already be researched by the player. `DatabaseCache` validates each listed building ID while loading. The value `none` means that the technology has no eligible research buildings. Technology levels contain only level-specific age gates, costs, and research time. Technology effects use a stable global `id`; `effect_order` is not part of the current schema. Effect targets are selected by target kind and category tag, not by individual entity ID; run [technology-target-id-migration.sql](technology-target-id-migration.sql) on an older local database before running the updated game. Technology attack effects are folded into each player's effective unit levels when levels refresh. Unit target-category attack effects use effective unit-level matchup bonuses; additive target-specific values are converted to proportional bonuses against the effective attack. Building-sourced attack bonuses against target categories are not currently represented and should be added to the effective building attack model if introduced. Other effects use the cached active-effect list during effective-level/resource refresh; resource-targeted building bonuses are still evaluated when queried. When effects are combined, additive effects (including negative values) are applied before percentage effects, and effects within each operation are ordered by ascending ID. Runtime conversion to integer stat types happens after all applicable effects for that stat have been combined. Technology level display keys are derived at load time as `<technology.code>_<level>`, `<technology.code>_<level>_description`, and `<technology.code>_<level>.png`; they are not duplicated in `technology_level`. The runtime database is ignored by Git; keep the local database aligned with the code before starting the game. `DatabaseCache` treats a missing technology table as a required data error and stops startup rather than silently running without research.
 
-## Age-Related Database Structure
+## Map And Mission Database Structure
 
 World-age content is split by ownership. Static definitions are loaded from the installed databases; a save contains only the mutable age state for one match.
 
@@ -27,19 +27,21 @@ Data/Database/data.db                 shared gameplay definitions
   building_level(..., age_stage)      minimum logical stage for a building level
 
 Data/map/maps.db                      map-owned progression catalog
-  map(id, xmlName, name, age_ids)     ordered candidate age IDs for each map
+  map(id, xmlName, name, age_ids, goal_ids) ordered age IDs and mission goal IDs
+  mission_goal(id, type, ...)         reusable objective definitions; type is a string token
   age(id, stage, name)                 age identity, stage, and localization key
-  condition(id, metric, target)       reusable worker/army threshold
-  age_condition(age_id, condition_id) age-to-condition join; all joins are ANDed
-  age_transition(age_id, next_age_id) direct progression edges between ages
+  age_condition(age_id, metric, target)    worker/army age threshold; rows per age are ANDed
 
 saves/<name>.db                       one scene and its continuation state
   config(..., map, total_ticks, ...)  selected map and simulation clock
   world_age(current_age,              selected age, entry tick, reached route
-            age_started_tick, history)
+             age_started_tick, history)
+  mission_goal_state(player, goal_id, ...)       resolved deadline results; table is required and may be empty
 ```
 
-The current checked-in age catalog uses logical stages plus explicit progression edges:
+Mission goal definitions live only in `maps.db`; comma-separated `map.goal_ids` attaches reusable goal IDs to maps, while `config.map` identifies the mission. The `age_condition` table stores age-progression thresholds and is not used for mission goals. Goal types are enum-name strings such as `RESOURCE_GATHERED` and `ELIMINATE_ALL`, not numeric enum ordinals. Goal truth is recomputed from current world state every simulation tick, so goals must remain true simultaneously for victory. The active player is used for owner-scoped goals and loss occurs when that player's living units and buildings are both gone. `players.unit_kills` stores cumulative unit kills. Cumulative gathered resource goals use the existing `players.sum_*` counters; these include gathered amounts and passive income and must be understood as cumulative total resources received, not exclusively worker gathering. Run [mission-goals-migration.sql](mission-goals-migration.sql) once to convert old junction references to map ID lists. The current map DB is local runtime content; keep its migration applied in each runtime copy.
+
+The current checked-in age catalog uses logical stages to determine progression:
 
 ```text
 stage 0: age 0  Age of Settlement
@@ -52,7 +54,10 @@ stage 3: age 5  Age of Industry      (workers >= 40)
                 age 6  Age of Conquest (army >= 70)
 ```
 
-`map.age_ids` supplies the candidate order and deterministic tie-break. The controller only evaluates direct targets from `age_transition` that are listed by the selected map. There is no `world_age_node` or hold table in the active schema.
+`map.age_ids` supplies the candidate order and deterministic tie-break. Every
+listed age at `current stage + 1` is a candidate, regardless of which age ID was
+selected previously. Save history validation uses the same consecutive-stage
+rule. There is no transition, `world_age_node`, or hold table in the active schema.
 
 The checked-in map rows are `map 0 -> 0,1` and `map 1 -> 0,1,2,3,4,5,6`. The runtime `data.db` currently contains nine unit-level rows and 18 building-level rows at each of `age_stage` 0, 1, and 2. `age_stage` is a shared logical gate: a level is available when the selected map age reaches at least that stage, regardless of which candidate ID won within the stage. See [Map-Owned Age System](map-age-system.md) and [World Age Database Schema](world-age-database-schema.html) for the complete age table and save examples.
 
@@ -87,7 +92,7 @@ Changing a unit or building stat can change AI matching and aggregate possession
 
 Save-file table schemas are generated in `game/src/scene/save/SQLConsts.h` from the column enums in `game/src/database/db_columns.h`; `SaveTable.h` maps each enum to its table name, primary key, and `WITHOUT ROWID` setting. Columns default to `INT NOT NULL`, with serialized path/history columns declared `TEXT NOT NULL`. `SceneSaver` writes named columns, and `SceneLoader` validates required columns before reading explicit enum-generated column lists. The loader checks whether optional runtime tables exist before restoring them.
 
-Age continuation is the `world_age` runtime table. It has one row with `current_age`, `age_started_tick`, and `history`; `config.map` identifies the map whose catalog must validate those IDs. Static age rows are never copied into a save. `world_age` is written by the active controller, while empty variable-length runtime tables are normally omitted. `player_levels` is mandatory and is filled with one level-0-or-higher row for every unit and building definition supported by each saved player's nation.
+Age continuation is the required `world_age` runtime table. It has one row with `current_age`, `age_started_tick`, and `history`; `config.map` identifies the map whose catalog must validate those IDs. Static age rows are never copied into a save. The required `mission_goal_state` table stores resolved deadline results and remains present when it has no rows. Other empty variable-length runtime tables are normally omitted. `player_levels` is mandatory and is filled with one level-0-or-higher row for every unit and building definition supported by each saved player's nation.
 
 Saves are scene snapshots. The current saver persists mandatory unit continuation fields in `units` (including each unit's formation ID and layout slot, but not the transient acceleration result), mutable player resource statistics in `players`, player and building queues, player-wide upgrade levels, unit paths/orders, building combat state, pending commands, formations and formation orders, logical projectile state, simulation tick timing, RNG seed and named stream indexes, AI history, AI scheduler wants and lacking feedback, and consolidated MasterBrain/economy/military cached state in `ai_state`. Aim paths use one `aim_paths` row per unit with comma-separated `path` and `pending_path` cell lists; the path progress indexes remain in `units`. Player display name/color, camera position/mode, and last-period resource report values are intentionally not saved; they are GUI state and are recreated with defaults. Building deployment cells and queue capacity/nominal duration are derived from the loaded map/building definitions; queue amount and elapsed progress remain persisted. Cumulative resource totals remain because headless benchmark output uses them. Projectile rows store only target UID, remaining travel, speed, attack value, and player attribution; graphical nodes and trajectories are recreated during load. Global singleton state is stored in the one-row `config` table. Storage and refinement capacities are derived from loaded buildings and rebuilt after entity loading. Runtime tables are omitted when they have no rows. Simulation frame and seconds are derived from the persisted total tick count; wall time and the render accumulator are transient runtime state and are reset when loading. Cross-entity runtime links are stored by UID and resolved only after all entities and static grids have been rebuilt. Each unit belongs to at most one formation, so formation membership is reconstructed from `units.formation`; the runtime `Formation::units` vector is not separately persisted.
 
@@ -100,7 +105,7 @@ For a save-format change:
 1. Update the SQL table definition.
 2. Update the matching column enum.
 3. Update the save bindings and loader DTOs under `game/src/scene/save/` and `game/src/scene/load/`, preserving the same enum and binding order.
-4. Decide explicitly whether existing saves must remain readable; saves that do not contain the required current tables or columns need an explicit migration or regeneration. Legacy `REAL` values in fields converted to precision-scaled integers remain readable, but newly saved databases use integer storage. There is no automatic schema-version migration.
+4. Decide explicitly whether existing saves must remain readable; saves that do not contain the required current tables or columns need an explicit migration or regeneration. The `players.unit_kills` column is optional when loading older saves and defaults to zero; newly written saves include it. Legacy `REAL` values in fields converted to precision-scaled integers remain readable, but newly saved databases use integer storage. There is no automatic schema-version migration.
 5. Validate the required column names and generated SQL, then exercise save and load with a representative scene that includes queues if queue preservation is required.
 
 ## Save/Load Diagnostics

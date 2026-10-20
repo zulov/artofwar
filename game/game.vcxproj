@@ -383,10 +383,12 @@
     <ClCompile Include="src\objects\unit\Unit.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\simulation\Simulation.cpp" />
+    <ClCompile Include="src\simulation\MissionController.cpp" />
     <ClCompile Include="src\simulation\WorldAgeController.cpp" />
     <ClCompile Include="src\commands\upgrade\UpgradeCommand.cpp" />
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
     <ClCompile Include="src\hud\window\top\info\TopInfoPanel.cpp" />
+    <ClCompile Include="src\hud\window\top\info\MissionPanel.cpp" />
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
     <ClCompile Include="src\env\bucket\StaticGrid.cpp" />
     <ClCompile Include="src\env\influence\VisibilityManager.cpp" />
@@ -617,12 +619,14 @@
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\simulation\Simulation.h" />
     <ClInclude Include="src\simulation\WorldAgeController.h" />
+    <ClInclude Include="src\simulation\MissionController.h" />
     <ClInclude Include="src\database\db_world_age_struct.h" />
     <ClInclude Include="src\objects\unit\state\UnitState.h" />
     <ClInclude Include="src\utils\DeleteUtils.h" />
     <ClInclude Include="src\commands\upgrade\UpgradeCommand.h" />
     <ClInclude Include="src\commands\upgrade\UpgradeCommandList.h" />
     <ClInclude Include="src\hud\window\top\info\TopInfoPanel.h" />
+    <ClInclude Include="src\hud\window\top\info\MissionPanel.h" />
     <ClInclude Include="src\math\VectorUtils.h" />
     <ClInclude Include="src\objects\unit\order\UnitOrder.h" />
     <ClInclude Include="src\env\influence\map\VisibilityMap.h" />

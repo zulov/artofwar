@@ -17,6 +17,7 @@ The current order in `game/src/simulation/Simulation.cpp` is:
 5. Move units, update projectiles, execute unit states, and apply state transitions.
 6. Advance production queues and update influence/visibility maps.
 7. Remove entities from grids, dispose deleted entities, update players, and update formations.
+8. Advance the world age and evaluate mission objectives/result for the current active player.
 
 Do not move a step without checking the data it reads and invalidates. For example, AI queues commands before action execution; queues can add upgrade commands for a later creation/upgrade pass; movement invalidates environment caches before later users consume them. Influence and visibility refresh before disposal, so their snapshot can include entities transitioned to dead/dispose state earlier in the same tick.
 
@@ -42,3 +43,5 @@ Relevant launch flags are parsed in `game/src/Main.cpp`: `-headless`, `-benchmar
 3. Queue creation, upgrade, or player commands through the established command path instead of directly mutating collections during iteration.
 4. Update grids, caches, influence, visibility, queues, and disposal behavior for any new object lifecycle or spatial mutation.
 5. Add a focused unit test when the behavior is deterministic. Exercise a game or headless smoke test for cross-system ordering.
+
+Mission objectives are evaluated after player possession is cleaned and the simulation tick is counted. Objective state reflects current conditions, not one-time completion. Defeat (the active player's loss of all living units and buildings) takes priority over victory on the same tick. `-timelimit` remains the outer run limit for training and does not itself decide a mission result.

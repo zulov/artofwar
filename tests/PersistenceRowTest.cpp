@@ -80,6 +80,7 @@ TEST(PersistenceRowTest, AllSaveTableContractsCreateAndSelect) {
 	checkSaveTableContract<PendingCommandCol>(database);
 	checkSaveTableContract<PendingCommandEntityCol>(database);
 	checkSaveTableContract<WorldAgeStateCol>(database);
+	checkSaveTableContract<MissionGoalStateCol>(database);
 
 	sqlite3_close(database);
 }
@@ -202,6 +203,17 @@ TEST(PersistenceRowTest, WorldAgeRowsRoundTripContinuationState) {
 	EXPECT_EQ(expectedState.currentAge, actualState.currentAge);
 	EXPECT_EQ(expectedState.ageStartedTick, actualState.ageStartedTick);
 	EXPECT_EQ(expectedState.history, actualState.history);
+}
+
+TEST(PersistenceRowTest, MissionGoalDeadlineRoundTripsResolvedResult) {
+	const MissionGoalDeadlineSaveData expected{1, 2, true, 1234.f, 1200.f};
+	const auto actual = roundTrip<MissionGoalStateCol>(expected);
+
+	EXPECT_EQ(expected.player, actual.player);
+	EXPECT_EQ(expected.goalId, actual.goalId);
+	EXPECT_EQ(expected.success, actual.success);
+	EXPECT_FLOAT_EQ(expected.playerScore, actual.playerScore);
+	EXPECT_FLOAT_EQ(expected.enemyScore, actual.enemyScore);
 }
 
 TEST(PersistenceRowTest, PlayerLevelRowsRoundTripZeroAndNonZeroLevels) {

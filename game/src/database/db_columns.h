@@ -74,8 +74,11 @@ enum class PlayerCol : unsigned char {
 	sum_food,
 	sum_wood,
 	sum_stone,
-	sum_gold
+	sum_gold,
+	unit_kills
 };
+
+
 
 enum class ConfigCol : unsigned char {
 	precision,
@@ -206,7 +209,7 @@ enum class PendingCommandCol : unsigned char {
 enum class PendingCommandEntityCol : unsigned char { command_idx, order_idx, uid };
 
 enum class WorldAgeStateCol : unsigned char { current_age, age_started_tick, history };
-
+enum class MissionGoalStateCol : unsigned char { player, goal_id, success, player_score, enemy_score };
 
 // --- Data tables (data.db) ---
 
@@ -342,11 +345,7 @@ enum class DbResourceCol : unsigned char {
 
 enum class DbWorldAgeCol : unsigned char { id, stage, name };
 
-enum class DbWorldAgeConditionCol : unsigned char { id, metric, target };
-
-enum class DbWorldAgeJoinCol : unsigned char { age_id, condition_id };
-
-enum class DbWorldAgeTransitionCol : unsigned char { age_id, next_age_id };
+enum class DbAgeConditionCol : unsigned char { age_id, metric, target };
 
 enum class DbTechnologyCol : unsigned char { id, code, research_building };
 
@@ -400,7 +399,8 @@ enum class HudVarsCol : unsigned char { id, hud_size, name, value };
 
 // --- Map table ---
 
-enum class MapCol : unsigned char { id, xmlName, name, age_ids }; // xml_name
+enum class MapCol : unsigned char { id, xmlName, name, age_ids, goal_ids }; // xml_name
+enum class DbMissionGoalCol : unsigned char { id, type, text_key, target_player, target_id, target_value, time_ticks };
 
 // --- Other data tables ---
 

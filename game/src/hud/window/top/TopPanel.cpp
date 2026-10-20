@@ -150,7 +150,5 @@ void TopPanel::update(Player* player, FrameInfo* frameInfo) const {
 
 void TopPanel::setVisible(bool enable) {
 	SimplePanel::setVisible(enable);
-	//if (!enable) {
 	infoPanel->setVisible(enable);
-	//}
 }

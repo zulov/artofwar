@@ -124,30 +124,32 @@ struct dbload_player {
 	float wood;
 	float stone;
 	float gold;
+	unsigned unitKills;
 	ResourcesSaveData resources;
 
-	using C = PlayerCol;
-
 	dbload_player(sqlite3_stmt* stmt, int p) :
-		dbload_player(asUByte(stmt, C::id), asBool(stmt, C::is_active), asUByte(stmt, C::team),
-					  asUByte(stmt, C::nation),
-					  asUI(stmt, C::buildingUid), asUI(stmt, C::unitUid), asItoF(stmt, C::food, p),
-					  asItoF(stmt, C::wood, p), asItoF(stmt, C::stone, p), asItoF(stmt, C::gold, p)) {
+		dbload_player(asUByte(stmt, PlayerCol::id), asBool(stmt, PlayerCol::is_active), asUByte(stmt, PlayerCol::team),
+					  asUByte(stmt, PlayerCol::nation), asUI(stmt, PlayerCol::buildingUid), asUI(stmt, PlayerCol::unitUid),
+					  asItoF(stmt, PlayerCol::food, p), asItoF(stmt, PlayerCol::wood, p), asItoF(stmt, PlayerCol::stone, p),
+					  asItoF(stmt, PlayerCol::gold, p)) {
+		unitKills = asUI(stmt, PlayerCol::unit_kills);
 		resources.player = id;
-		resources.gatherSpeeds1s = {asScaledFloat(stmt, C::gather_food, p), asScaledFloat(stmt, C::gather_wood, p),
-				asScaledFloat(stmt, C::gather_stone, p), asScaledFloat(stmt, C::gather_gold, p)};
-		resources.sumGatherSpeed = {asScaledFloat(stmt, C::pending_gather_food, p),
-				asScaledFloat(stmt, C::pending_gather_wood, p), asScaledFloat(stmt, C::pending_gather_stone, p),
-				asScaledFloat(stmt, C::pending_gather_gold, p)};
-		resources.sumValues = {asScaledFloat(stmt, C::sum_food, p), asScaledFloat(stmt, C::sum_wood, p),
-				asScaledFloat(stmt, C::sum_stone, p), asScaledFloat(stmt, C::sum_gold, p)};
+		resources.gatherSpeeds1s = {asScaledFloat(stmt, PlayerCol::gather_food, p),
+				asScaledFloat(stmt, PlayerCol::gather_wood, p), asScaledFloat(stmt, PlayerCol::gather_stone, p),
+				asScaledFloat(stmt, PlayerCol::gather_gold, p)};
+		resources.sumGatherSpeed = {asScaledFloat(stmt, PlayerCol::pending_gather_food, p),
+				asScaledFloat(stmt, PlayerCol::pending_gather_wood, p),
+				asScaledFloat(stmt, PlayerCol::pending_gather_stone, p),
+				asScaledFloat(stmt, PlayerCol::pending_gather_gold, p)};
+		resources.sumValues = {asScaledFloat(stmt, PlayerCol::sum_food, p), asScaledFloat(stmt, PlayerCol::sum_wood, p),
+				asScaledFloat(stmt, PlayerCol::sum_stone, p), asScaledFloat(stmt, PlayerCol::sum_gold, p)};
 	}
 
 	dbload_player(unsigned char id, bool isActive, unsigned char team, unsigned char nation, unsigned buildingUid,
 				  unsigned unitUid, float food, float wood, float stone,
 				  float gold) :
 		is_active(isActive), id(id), team(team), nation(nation), buildingUid(buildingUid),
-		unitUid(unitUid), food(food), wood(wood), stone(stone), gold(gold) {}
+		unitUid(unitUid), food(food), wood(wood), stone(stone), gold(gold), unitKills(0) {}
 };
 
 struct dbload_container {
@@ -181,7 +183,8 @@ struct dbload_container {
 	std::vector<AiSaveData> aiStates;
 	std::vector<AiWantSaveData> aiWants;
 	std::vector<AiHistorySaveData> aiHistory;
-	std::optional<WorldAgeStateSaveData> worldAgeState;
+	WorldAgeStateSaveData worldAgeState;
+	std::vector<MissionGoalDeadlineSaveData> missionGoalDeadlines;
 	std::optional<FrameSaveData> frame;
 	std::optional<RandSaveData> random;
 };

@@ -37,8 +37,9 @@ private:
 	bool savePlayers(const std::vector<Player*>& players);
 	bool saveConfig(int mapId, int size);
 	bool saveRuntimeState(const std::vector<Unit*>* units, const std::vector<Building*>* buildings,
-						  const std::vector<Player*>& players, const WorldAgeController* worldAgeController);
+						  const std::vector<Player*>& players, const WorldAgeController* worldAgeController, int mapId);
 	bool saveWorldAgeState(const WorldAgeController* worldAgeController);
+	bool saveMissionGoalState(const std::vector<Player*>& players, int mapId);
 	bool saveUnitOrders(const std::vector<UnitRuntimeSaveData>& unitStates);
 	bool saveAimPaths(const std::vector<UnitRuntimeSaveData>& unitStates);
 	bool saveQueues(const std::vector<Building*>* buildings, const std::vector<Player*>& players);

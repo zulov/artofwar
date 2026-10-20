@@ -338,6 +338,10 @@ void Player::refreshEffectiveLevels() {
 
 void Player::addKilled(Physical* physical) const { possession->addKilled(physical); }
 
+unsigned Player::getUnitKills() const { return possession->getUnitKills(); }
+
+void Player::restoreUnitKills(unsigned value) { possession->restoreUnitKills(value); }
+
 void Player::resetScore() { score = -1; }
 
 void Player::restoreUnitLevel(unsigned short id, unsigned char level) {

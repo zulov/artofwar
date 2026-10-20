@@ -21,6 +21,7 @@ struct db_container {
 	db_settings *settings = nullptr;
 
 	std::vector<db_map*> maps;
+	std::vector<db_mission_goal*> missionGoals;
 
 	std::vector<db_unit*> units;
 	std::vector<db_unit_level*> unitsLevels;
@@ -42,6 +43,7 @@ struct db_container {
 		clear_vector(resolutions);
 		clear_vector(graphSettings);
 		clear_vector(maps);
+		clear_vector(missionGoals);
 		delete settings;
 
 		clear_vector(resources);

@@ -139,10 +139,42 @@ const std::vector<dbload_player*>* SceneLoader::loadPlayers() const {
 		return dbLoad->players;
 	}
 	dbLoad->players = new std::vector<dbload_player*>();
+	bool hasUnitKills = false;
+	sqlite3_stmt* tableStatement = nullptr;
+	if (sqlite3_prepare_v2(database, "PRAGMA table_info(players)", -1, &tableStatement, nullptr) == SQLITE_OK) {
+		int rc = SQLITE_OK;
+		while ((rc = sqlite3_step(tableStatement)) == SQLITE_ROW) {
+			const auto* columnName = reinterpret_cast<const char*>(sqlite3_column_text(tableStatement, 1));
+			if (columnName && std::string_view(columnName) == "unit_kills") {
+				hasUnitKills = true;
+				break;
+			}
+		}
+		sqlite3_finalize(tableStatement);
+		if (rc != SQLITE_ROW && rc != SQLITE_DONE) {
+			reportError("load '" + path + "' failed: could not read players table columns");
+			return dbLoad->players;
+		}
+	} else {
+		reportError("load '" + path + "' failed: could not inspect players table columns");
+		return dbLoad->players;
+	}
 
-	loadSaveTable<PlayerCol>([this](auto* s) {
+	std::string sql = "SELECT ";
+	const auto& columns = saveColumns<PlayerCol>();
+	bool firstColumn = true;
+	for (const auto& column : columns) {
+		if (!firstColumn) sql += ", ";
+		sql += column == "unit_kills" && !hasUnitKills ? "0 AS unit_kills" : column;
+		firstColumn = false;
+	}
+	sql += " FROM players";
+	std::string detail;
+	if (!loadFromTable(database, sql, [this](auto* s) {
 		dbLoad->players->push_back(new dbload_player(s, dbLoad->config->precision));
-	});
+	}, &detail)) {
+		reportError("load '" + path + "': table 'players' failed: " + detail);
+	}
 	return dbLoad->players;
 }
 
@@ -223,21 +255,15 @@ void SceneLoader::reportError(const std::string& message) const {
 
 void SceneLoader::loadRuntimeState() const {
 	const int precision = dbLoad->config->precision;
-	bool hasWorldAgeState = false;
-	if (!loadSaveTable<WorldAgeStateCol>([this, &hasWorldAgeState](sqlite3_stmt* s) {
-		if (hasWorldAgeState) {
-			reportError("load '" + path + "' failed: world_age table must contain exactly one row");
-			return;
-		}
+	if (!loadSaveTable<WorldAgeStateCol>([this](sqlite3_stmt* s) {
 		dbLoad->worldAgeState = readRow<WorldAgeStateSaveData>(s, 1);
-		hasWorldAgeState = true;
 	}) || hasError()) {
 		return;
 	}
-	if (!hasWorldAgeState) {
-		reportError("load '" + path + "' failed: world_age table must contain exactly one row");
-		return;
-	}
+	loadSaveTable<MissionGoalStateCol>([this, precision](sqlite3_stmt* s) {
+		dbLoad->missionGoalDeadlines.push_back(readRow<MissionGoalDeadlineSaveData>(s, precision));
+	});
+	if (hasError()) return;
 	loadSaveTable<UnitOrderCol>(" ORDER BY unit_uid, order_idx", [this, precision](sqlite3_stmt* s) {
 		const auto order = readRow<UnitOrderSaveData>(s, precision);
 		dbLoad->unitVariable[order.unitUid].orders.push_back(order);

@@ -97,7 +97,7 @@ Urho3D::String TopInfoPanel::createAgeTooltip(const WorldAgeController* controll
 		}
 
 		result.Append("\n").Append(Game::getLocalization()->Get(age->name));
-		for (const auto& condition : candidate.conditions) {
+		for (const auto& condition : candidate.ageConditions) {
 			const auto metricName = condition.metric == WorldAgeMetric::WORKER_COUNT
 				? Game::getLocalization()->Get("top_age_workers")
 				: Game::getLocalization()->Get("top_age_army");

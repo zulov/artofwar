@@ -9,12 +9,14 @@
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
+#include <algorithm>
 
 namespace {
 [[noreturn]] void exitDatabaseError(const std::string& message) {
 	std::cerr << "[Database Error] " << message << "\n";
 	std::exit(EXIT_FAILURE);
 }
+
 }
 
 bool DatabaseCache::openDatabase(const std::string& name, bool readOnly) {
@@ -156,31 +158,55 @@ void DatabaseCache::loadData(const std::string& name) {
 void DatabaseCache::loadMaps(const std::string& name) {
 	if (!openDatabase(name)) { exitDatabaseError("Required data database failed to open: " + name); }
 
-	load<DbWorldAgeConditionCol>("condition", "id DESC", [this](auto* s) {
-		setEntity(container->worldAgeCatalog.conditions, new db_world_age_condition(s));
-	});
 	load<DbWorldAgeCol>("age", "id DESC", [this](auto* s) {
 		setEntity(container->worldAgeCatalog.ages, new db_world_age(s));
 	});
-	load<DbWorldAgeJoinCol>("age_condition", "age_id, condition_id", [this](auto* s) {
-		const auto ageId = asUShort(s, DbWorldAgeJoinCol::age_id);
-		auto* age = container->worldAgeCatalog.getAge(ageId);
+	load<DbAgeConditionCol>("age_condition", "age_id, metric, target", [this](auto* s) {
+		auto* condition = new db_age_condition(s);
+		container->worldAgeCatalog.ageConditions.push_back(condition);
+		auto* age = container->worldAgeCatalog.getAge(condition->ageId);
 		assert(age != nullptr && "age_condition must reference an existing age");
-		const auto conditionId = asUShort(s, DbWorldAgeJoinCol::condition_id);
-		const auto* condition = container->worldAgeCatalog.getCondition(conditionId);
-		assert(condition != nullptr && "age_condition must reference an existing condition");
-		age->conditions.push_back(condition);
-	});
-	load<DbWorldAgeTransitionCol>("age_transition", "age_id, next_age_id", [this](auto* s) {
-		const auto ageId = asUShort(s, DbWorldAgeTransitionCol::age_id);
-		auto* age = container->worldAgeCatalog.getAge(ageId);
-		assert(age != nullptr && "age_transition must reference an existing age");
-		const auto nextAgeId = asUShort(s, DbWorldAgeTransitionCol::next_age_id);
-		assert(container->worldAgeCatalog.getAge(nextAgeId) != nullptr &&
-		       "age_transition must reference an existing target age");
-		age->nextAgeIds.push_back(nextAgeId);
+		age->ageConditions.push_back(condition);
 	});
 	load<MapCol>("map", "id DESC", [this](auto* s) { setEntity(container->maps, new db_map(s)); });
+	load<DbMissionGoalCol>("mission_goal", "id", [this](auto* s) {
+		setEntity(container->missionGoals, new db_mission_goal(s));
+	});
+	for (size_t i = 0; i < container->missionGoals.size(); ++i) {
+		assert(container->missionGoals[i] && container->missionGoals[i]->id == i &&
+			"mission goal IDs must be dense and match their database IDs");
+	}
+	for (auto* map : container->maps) {
+		if (!map) continue;
+		for (size_t i = 0; i < map->goalIds.size(); ++i) {
+			assert(std::find(map->goalIds.begin(), map->goalIds.begin() + i, map->goalIds[i]) == map->goalIds.begin() + i &&
+				"map goal_ids must not contain duplicate IDs");
+		}
+		for (const auto goalId : map->goalIds) {
+			if (goalId >= container->missionGoals.size() || !container->missionGoals[goalId]) {
+				exitDatabaseError("Map " + std::to_string(map->id) + " references missing mission goal " +
+					std::to_string(goalId));
+			}
+			map->goals.push_back(container->missionGoals[goalId]);
+		}
+		for (const auto* goal : map->goals) {
+			assert(goal->targetValue >= 0.f && "mission goal targets must be non-negative");
+			assert(goal->targetPlayer >= -1 && "mission goal target player must be -1 or a player ID");
+			if (goal->type == MissionGoalType::ELIMINATE_PLAYER || goal->type == MissionGoalType::ELIMINATE_TEAM) {
+				assert(goal->targetPlayer >= 0 && "targeted elimination goals require target_player");
+			}
+			if (goal->type == MissionGoalType::RESOURCE_STOCK || goal->type == MissionGoalType::RESOURCE_GATHERED) {
+				assert(goal->targetId >= 0 && goal->targetId < 4 && "resource goals require a resource ID from 0 to 3");
+			}
+			if (goal->type == MissionGoalType::BUILDING_COUNT || goal->type == MissionGoalType::SURVIVE_WITH_BUILDING_UNTIL) {
+				assert(goal->targetId >= -1 && (goal->targetId < 0 ||
+					(goal->targetId < container->buildings.size() && container->buildings[goal->targetId])));
+			}
+			assert(goal->timeTicks > 0 || (goal->type != MissionGoalType::SURVIVE_UNTIL &&
+				goal->type != MissionGoalType::SURVIVE_WITH_BUILDING_UNTIL &&
+				goal->type != MissionGoalType::SCORE_LEAD_AT_TIME));
+		}
+	}
 	validateWorldAgeCatalog();
 
 	sqlite3_close_v2(database);
@@ -196,16 +222,11 @@ void DatabaseCache::validateWorldAgeCatalog() const {
 			continue;
 		}
 		assert(!age->name.Empty());
-		assert(age->stage == 0 || !age->conditions.empty());
-		for (const auto* condition : age->conditions) {
+		assert(age->stage == 0 || !age->ageConditions.empty());
+		for (const auto* condition : age->ageConditions) {
 			assert(condition != nullptr);
 			assert(static_cast<unsigned char>(condition->metric) <= static_cast<unsigned char>(WorldAgeMetric::ARMY_COUNT));
 			assert(condition->target > 0.f);
-		}
-		for (const auto nextAgeId : age->nextAgeIds) {
-			const auto* nextAge = catalog.getAge(nextAgeId);
-			assert(nextAge != nullptr);
-			assert(nextAge->stage == age->stage + 1 && "age transitions must advance one stage");
 		}
 	}
 	for (const auto* map : container->maps) {

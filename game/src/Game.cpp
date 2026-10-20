@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "simulation/MissionController.h"
 Game* Game::instance = nullptr;
 
 Game::Game() = default;
@@ -93,5 +94,10 @@ Game* Game::setActionCenter(ActionCenter* _actionCenter) {
 
 Game* Game::setWorldAgeController(WorldAgeController* _worldAgeController) {
 	instance->worldAgeController = _worldAgeController;
+	return instance;
+}
+
+Game* Game::setMissionController(MissionController* _missionController) {
+	instance->missionController = _missionController;
 	return instance;
 }

@@ -12,6 +12,7 @@
 #include "Game.h"
 #include "SimulationObjectManager.h"
 #include "WorldAgeController.h"
+#include "MissionController.h"
 #include "camera/CameraManager.h"
 #include "commands/upgrade/UpgradeCommand.h"
 #include "commands/upgrade/UpgradeType.h"
@@ -46,6 +47,8 @@
 Simulation::Simulation(Environment* environment, const db_map* map) : env(environment), colorScheme(SimColorMode::BASIC) {
 	simObjectManager = new SimulationObjectManager();
 	worldAgeController = new WorldAgeController(Game::getDatabase()->getWorldAgeCatalog(), map);
+	missionController = new MissionController(map);
+	Game::setMissionController(missionController);
 	Game::setWorldAgeController(worldAgeController);
 	Game::setActionCenter(new ActionCenter(simObjectManager));
 
@@ -59,7 +62,9 @@ Simulation::~Simulation() {
 	delete Game::getActionCenter();
 	Game::setActionCenter(nullptr);
 	Game::setWorldAgeController(nullptr);
+	Game::setMissionController(nullptr);
 	delete worldAgeController;
+	delete missionController;
 	delete simObjectManager;
 }
 
@@ -119,6 +124,8 @@ FrameInfo* Simulation::update(float timeStep) {
 
 		frameInfo->countFrame();
 		worldAgeController->update(Game::getPlayersMan()->getAllPlayers(), frameInfo->getTotalTicks());
+		missionController->update(Game::getPlayersMan()->getActivePlayer(), Game::getPlayersMan()->getAllPlayers(),
+			frameInfo->getTotalTicks());
 	}
 
 	return frameInfo;
@@ -184,6 +191,8 @@ void Simulation::restoreRuntimeState(dbload_container* data) const {
 		assert(false && "saved world age state is incompatible with the selected map");
 		return;
 	}
+	missionController->restoreDeadlines(data->missionGoalDeadlines,
+		Game::getPlayersMan()->getActivePlayer()->getId());
 	std::unordered_set<unsigned long long> restoredPlayerLevels;
 	for (const auto& saved : data->playerLevels) {
 		auto* player = Game::getPlayersMan()->getPlayer(saved.player);

@@ -7,6 +7,7 @@
 #include "SQLConsts.h"
 #include "database/db_insert_defs.h"
 #include "database/db_insert_utils.h"
+#include "database/DatabaseCache.h"
 #include "database/db_utils.h"
 #include "math/RandGen.h"
 #include "objects/building/Building.h"
@@ -22,6 +23,7 @@
 #include "player/ai/ActionCenter.h"
 #include "scene/load/RuntimeSaveData.h"
 #include "simulation/FrameInfo.h"
+#include "simulation/MissionController.h"
 #include "simulation/WorldAgeController.h"
 #include "simulation/formation/Formation.h"
 #include "simulation/formation/FormationManager.h"
@@ -103,7 +105,7 @@ bool SceneSaver::createSave(const Urho3D::String& fileName, const std::vector<Un
 	}
 
 	const bool saved = saveUnits(units) && saveBuildings(buildings) && saveResources(resources) && savePlayers(players) &&
-			saveConfig(mapId, size) && saveRuntimeState(units, buildings, players, worldAgeController);
+					  saveConfig(mapId, size) && saveRuntimeState(units, buildings, players, worldAgeController, mapId);
 	if (!saved || !execSql(database, "COMMIT;")) {
 		if (error.empty()) {
 			fail("save '" + path + "': " + (saved ? "commit failed: " : "write failed: ") + sqlite3_errmsg(database));
@@ -185,7 +187,7 @@ bool SceneSaver::saveConfig(int mapId, int size) {
 }
 
 bool SceneSaver::saveRuntimeState(const std::vector<Unit*>* units, const std::vector<Building*>* buildings,
-								  const std::vector<Player*>& players, const WorldAgeController* worldAgeController) {
+								  const std::vector<Player*>& players, const WorldAgeController* worldAgeController, int mapId) {
 	std::vector<UnitRuntimeSaveData> unitStates;
 	if (units) {
 		unitStates.reserve(units->size());
@@ -197,11 +199,28 @@ bool SceneSaver::saveRuntimeState(const std::vector<Unit*>* units, const std::ve
 			!savePlayerLevels(players) || !saveAiState(players) || !saveAiHistory(players) ||
 			!savePlayerTechnologies(players) ||
 			!saveAiWants(players) || !saveProjectiles() || !saveFormations() || !saveFormationOrders() ||
-			!saveWorldAgeState(worldAgeController)) {
+			!saveWorldAgeState(worldAgeController) || !saveMissionGoalState(players, mapId)) {
 		return false;
 	}
 	const auto pendingCommands = Game::getActionCenter()->saveState();
 	return savePendingCommands(pendingCommands) && savePendingCommandEntities(pendingCommands);
+}
+
+bool SceneSaver::saveMissionGoalState(const std::vector<Player*>&, int mapId) {
+	return saveRows<MissionGoalStateCol>([&](sqlite3_stmt* stmt, const char* sql) {
+		const auto& maps = Game::getDatabase()->getMaps();
+		if (mapId < 0 || static_cast<size_t>(mapId) >= maps.size() || !maps[mapId] || maps[mapId]->goals.empty()) {
+			return true;
+		}
+		const auto* activePlayer = Game::getPlayersMan()->getActivePlayer();
+		if (!activePlayer) return true;
+		const auto deadlines = Game::getMissionController()->saveDeadlines(activePlayer->getId());
+		for (const auto& deadline : deadlines) {
+			bindRow(stmt, precision, &deadline);
+			if (!stepAndReset(stmt, sql)) { return false; }
+		}
+		return true;
+	});
 }
 
 bool SceneSaver::saveUnitOrders(const std::vector<UnitRuntimeSaveData>& unitStates) {
@@ -243,9 +262,6 @@ bool SceneSaver::saveAimPaths(const std::vector<UnitRuntimeSaveData>& unitStates
 }
 
 bool SceneSaver::saveWorldAgeState(const WorldAgeController* worldAgeController) {
-	if (!worldAgeController) {
-		return true;
-	}
 	const auto state = worldAgeController->saveState();
 	return saveRows<WorldAgeStateCol>([&](sqlite3_stmt* stmt, const char* sql) {
 		bindRow(stmt, precision, &state);

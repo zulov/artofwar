@@ -21,6 +21,7 @@ class SelectedInfo;
 class CameraManager;
 class MiniMapPanel;
 class TopPanel;
+class MissionPanel;
 class HudData;
 class DebugPanel;
 class QueuePanel;
@@ -79,6 +80,7 @@ private:
 	SelectedHudPanel* selectedHudPanel{};
 	DebugPanel* debugPanel{};
 	TopPanel* topPanel{};
+	MissionPanel* missionPanel{};
 	MiniMapPanel* miniMapPanel{};
 	MenuPanel* menuPanel{};
 	QueuePanel* queuePanel{};
@@ -87,7 +89,7 @@ private:
 	MainMenuPanel* mainMenuPanel{};
 	ScorePanel* scorePanel{};
 
-	std::array<SimplePanel*, 10> panels;
+	std::array<SimplePanel*, 11> panels;
 
 	db_graph_settings* graphSettings;
 	db_resolution* resolution;

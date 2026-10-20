@@ -62,6 +62,17 @@ inline WorldAgeStateSaveData readRow<WorldAgeStateSaveData>(sqlite3_stmt* stmt, 
 }
 
 template <>
+inline MissionGoalDeadlineSaveData readRow<MissionGoalDeadlineSaveData>(sqlite3_stmt* stmt, int precision) {
+	return {asUByte(stmt, MissionGoalStateCol::player), asUShort(stmt, MissionGoalStateCol::goal_id),
+			asBool(stmt, MissionGoalStateCol::success), asScaledFloat(stmt, MissionGoalStateCol::player_score, precision),
+			asScaledFloat(stmt, MissionGoalStateCol::enemy_score, precision)};
+}
+
+
+
+
+
+template <>
 inline AiSaveData readRow<AiSaveData>(sqlite3_stmt* stmt, int precision) {
 	AiSaveData state;
 	state.player = asUByte(stmt, AiStateCol::player);

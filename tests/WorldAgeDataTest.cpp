@@ -18,30 +18,17 @@ TEST(WorldAgeDataTest, AgeReadsStageAndLocalizationKeyInMapTableOrder) {
 	sqlite3_close(database);
 }
 
-TEST(WorldAgeDataTest, ConditionReadsMetricAndTargetInMapTableOrder) {
+TEST(WorldAgeDataTest, AgeConditionReadsAgeMetricAndTargetInTableOrder) {
 	sqlite3* database = nullptr;
 	sqlite3_stmt* statement = nullptr;
 	ASSERT_EQ(SQLITE_OK, sqlite3_open(":memory:", &database));
-	ASSERT_EQ(SQLITE_OK, sqlite3_prepare_v2(database, "SELECT 4, 1, 50.0;", -1, &statement, nullptr));
+	ASSERT_EQ(SQLITE_OK, sqlite3_prepare_v2(database, "SELECT 3, 1, 50.0;", -1, &statement, nullptr));
 	ASSERT_EQ(SQLITE_ROW, sqlite3_step(statement));
-	const db_world_age_condition condition(statement);
+	const db_age_condition condition(statement);
 
-	EXPECT_EQ(4, condition.id);
+	EXPECT_EQ(3, condition.ageId);
 	EXPECT_EQ(WorldAgeMetric::ARMY_COUNT, condition.metric);
 	EXPECT_FLOAT_EQ(50.f, condition.target);
-	sqlite3_finalize(statement);
-	sqlite3_close(database);
-}
-
-TEST(WorldAgeDataTest, AgeConditionJoinReadsAgeAndConditionIds) {
-	sqlite3* database = nullptr;
-	sqlite3_stmt* statement = nullptr;
-	ASSERT_EQ(SQLITE_OK, sqlite3_open(":memory:", &database));
-	ASSERT_EQ(SQLITE_OK, sqlite3_prepare_v2(database, "SELECT 3, 4;", -1, &statement, nullptr));
-	ASSERT_EQ(SQLITE_ROW, sqlite3_step(statement));
-
-	EXPECT_EQ(3, asUShort(statement, DbWorldAgeJoinCol::age_id));
-	EXPECT_EQ(4, asUShort(statement, DbWorldAgeJoinCol::condition_id));
 	sqlite3_finalize(statement);
 	sqlite3_close(database);
 }
@@ -51,7 +38,8 @@ TEST(WorldAgeDataTest, MapReadsOrderedAgeList) {
 	sqlite3_stmt* statement = nullptr;
 	ASSERT_EQ(SQLITE_OK, sqlite3_open(":memory:", &database));
 	ASSERT_EQ(SQLITE_OK,
-			sqlite3_prepare_v2(database, "SELECT 1, 'map/map1.xml', 'Standard', '0,1,2,3,4,5,6';", -1, &statement, nullptr));
+			sqlite3_prepare_v2(database,
+				"SELECT 1, 'map/map1.xml', 'Standard', '0,1,2,3,4,5,6', '';", -1, &statement, nullptr));
 	ASSERT_EQ(SQLITE_ROW, sqlite3_step(statement));
 	const db_map map(statement);
 

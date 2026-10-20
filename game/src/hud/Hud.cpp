@@ -26,6 +26,7 @@
 #include "window/queue/QueuePanel.h"
 #include "window/score/ScorePanel.h"
 #include "window/top/TopPanel.h"
+#include "window/top/info/MissionPanel.h"
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) const {
 	exprtk::symbol_table<float> symbol_table;
@@ -84,7 +85,8 @@ void Hud::createMyPanels() {
 		inGameMenuPanel = new InGameMenuPanel(root, style),
 		mainMenuPanel = new MainMenuPanel(root, style),
 		miniMapPanel = new MiniMapPanel(root, style),
-		scorePanel = new ScorePanel(root, style)
+		scorePanel = new ScorePanel(root, style),
+		missionPanel = new MissionPanel(root, style)
 	};
 
 	for (auto panel : panels) {
@@ -170,6 +172,7 @@ void Hud::update(const Benchmark& benchmark, const CameraManager* cameraManager,
 	                    benchmark.getTickAvgs(), cameraManager->getPosInfo());
 	if (frameInfo->shouldRun(PerFrameAction::HUD_UPDATE)) {
 		topPanel->update(Game::getPlayersMan()->getActivePlayer(), frameInfo);
+		missionPanel->update();
 		scorePanel->update(Game::getPlayersMan()->getAllPlayers());
 	}
 	miniMapPanel->update();

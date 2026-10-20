@@ -87,6 +87,8 @@ public:
 	std::optional<db_building_level*> getNextBuildingLevel(unsigned short buildingId) const;
 	std::optional<db_building_level*> getNextLevel(db_building * dbBuilding) const;
 	void addKilled(Physical* physical) const;
+	unsigned getUnitKills() const;
+	void restoreUnitKills(unsigned value);
 	void resetScore();
 	const std::vector<PlayerLevel<db_unit_level>>& getUnitLevels() const { return levelsOfUnit; }
 	const std::vector<PlayerLevel<db_building_level>>& getBuildingLevels() const { return levelsForBuilding; }
