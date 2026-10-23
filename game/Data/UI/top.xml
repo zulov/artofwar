@@ -56,41 +56,6 @@
 	<attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}"/>
 </element>
 
-<element type="MissionGoalsWindow" style="MyWindow">
-	<attribute name="Min Size" value="{7*iconX} {resY/2}"/>
-	<attribute name="Max Size" value="{11*iconX} {resY-2*spaceY}"/>
-	<attribute name="Vert Alignment" value="Center"/>
-	<attribute name="Horiz Alignment" value="Left"/>
-	<attribute name="Layout Mode" value="Vertical"/>
-	<attribute name="Position" value="{spaceX} 0"/>
-	<attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}"/>
-</element>
-
-<element type="MissionGoalsScrollView" style="ScrollView">
-	<attribute name="Min Size" value="0 {resY/2-iconY}"/>
-	<attribute name="Max Size" value="10000 {resY-iconY}"/>
-	<attribute name="Scroll Bars Auto Visible" value="true"/>
-</element>
-
-<element type="MissionGoalsTitle" style="MyText">
-	<attribute name="Font Size" value="{fontSize}"/>
-	<attribute name="Min Size" value="0 {iconY/2+spaceY/2}"/>
-	<attribute name="Max Size" value="10000 {iconY/2+spaceY/2}"/>
-</element>
-
-<element type="MissionGoalsRows">
-	<attribute name="Layout Mode" value="Vertical"/>
-	<attribute name="Layout Spacing" value="{spaceY/4}"/>
-	<attribute name="Min Size" value="0 0"/>
-	<attribute name="Max Size" value="10000 10000"/>
-</element>
-
-<element type="MissionGoalText" style="MyText">
-	<attribute name="Font Size" value="{fontSize-1}"/>
-	<attribute name="Min Size" value="0 {iconY/3}"/>
-	<attribute name="Max Size" value="10000 {iconY/3}"/>
-</element>
-
 <element type="AgeTitle" style="MyText">
 	<attribute name="Font Size" value="{fontSize}"/>
 	<attribute name="Min Size" value="0 {iconY/2}"/>
